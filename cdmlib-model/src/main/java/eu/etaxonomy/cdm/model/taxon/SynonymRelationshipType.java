@@ -26,6 +26,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -91,7 +92,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * @see 				 #SynonymRelationshipType()
 	 */
 	public SynonymRelationshipType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev, false, false);
+		super(TermType.SynonymRelationshipType, term, label, labelAbbrev, false, false);
 	}
 
 	

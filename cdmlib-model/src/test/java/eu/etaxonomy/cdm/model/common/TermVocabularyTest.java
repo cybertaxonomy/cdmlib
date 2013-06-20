@@ -49,9 +49,9 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Before
 	public void setUp() throws Exception {
-		dtb1 = new DerivedDefinedTermBase("otb1", "high", null);
-		dtb2 = new DerivedDefinedTermBase("term", "middel", null);
-		dtb3 = new DerivedDefinedTermBase("otb3", "low", null);
+		dtb1 = new DerivedDefinedTermBase(TermType.Unknown, "otb1", "high", null);
+		dtb2 = new DerivedDefinedTermBase(TermType.Unknown, "term", "middel", null);
+		dtb3 = new DerivedDefinedTermBase(TermType.Unknown, "otb3", "low", null);
 		dtbFree = new DerivedDefinedTermBase();
 		voc1 = new TermVocabulary<DefinedTermBase>();
 		voc1.addTerm(dtb1);
@@ -67,8 +67,8 @@ public class TermVocabularyTest extends EntityTestBase {
 		private DerivedDefinedTermBase(){
 			super();
 		}
-		private DerivedDefinedTermBase(String term, String label, String labelAbbrev){
-			super(term, label, labelAbbrev);
+		private DerivedDefinedTermBase(TermType type, String term, String label, String labelAbbrev){
+			super(type, term, label, labelAbbrev);
 		}
 		@Override
 		protected void setDefaultTerms(TermVocabulary<DerivedDefinedTermBase> termVocabulary) {}
@@ -97,7 +97,7 @@ public class TermVocabularyTest extends EntityTestBase {
 
 	@Test
 	public final void testTermVocabularyStringStringString() {
-		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown, "term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("label", voc2.getLabel());	
 	}
 
@@ -160,7 +160,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	@Test
 	public final void testGetTermSourceUri() {
 		assertEquals(null, voc1.getTermSourceUri());
-		voc2 = new TermVocabulary<DefinedTermBase>("term", "label", null, URI.create("http://term.Source.Uri"));
+		voc2 = new TermVocabulary<DefinedTermBase>(TermType.Unknown,"term", "label", null, URI.create("http://term.Source.Uri"));
 		assertEquals("http://term.Source.Uri", voc2.getTermSourceUri().toString());
 	}
 

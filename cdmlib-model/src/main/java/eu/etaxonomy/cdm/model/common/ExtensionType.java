@@ -101,7 +101,7 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 	 * @see 				 #ExtensionType()
 	 */
 	protected ExtensionType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.ExtensionType, term, label, labelAbbrev);
 	}
 
 //************************** METHODS *******************************************************/

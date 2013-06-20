@@ -43,6 +43,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -89,7 +90,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @IndexedEmbedded(depth=1)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
-    private Set<Modifier> modifiers = new HashSet<Modifier>();
+    private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -151,7 +152,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * Returns the set of {@link Modifier modifiers} used to qualify the validity
      * of <i>this</i> state data. This is only metainformation.
      */
-    public Set<Modifier> getModifiers(){
+    public Set<DefinedTerm> getModifiers(){
         return this.modifiers;
     }
 
@@ -162,7 +163,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * @param modifier	the modifier to be added to <i>this</i> state data
      * @see    	   		#getModifiers()
      */
-    public void addModifier(Modifier modifier){
+    public void addModifier(DefinedTerm modifier){
         this.modifiers.add(modifier);
     }
     /**
@@ -173,7 +174,7 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
      * @see     		#getModifiers()
      * @see     		#addModifier(Modifier)
      */
-    public void removeModifier(Modifier modifier){
+    public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
 
@@ -288,8 +289,8 @@ public class StateData extends VersionableEntity implements IModifiable, IMultiL
             StateData result = (StateData)super.clone();
 
             //modifiers
-            result.modifiers = new HashSet<Modifier>();
-            for (Modifier modifier : getModifiers()){
+            result.modifiers = new HashSet<DefinedTerm>();
+            for (DefinedTerm modifier : getModifiers()){
                 result.modifiers.add(modifier);
             }
 

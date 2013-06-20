@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -39,7 +38,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 })
 @XmlSeeAlso({
 	RelationshipTermBase.class,
-	Modifier.class,
 	PresenceAbsenceTermBase.class,
 	State.class,
 	NamedArea.class,
@@ -73,8 +71,8 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	public OrderedTermBase() {
 		super();
 	}
-	public OrderedTermBase(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	public OrderedTermBase(TermType type, String term, String label, String labelAbbrev) {
+		super(type, term, label, labelAbbrev);
 	}	
 	
 	/**

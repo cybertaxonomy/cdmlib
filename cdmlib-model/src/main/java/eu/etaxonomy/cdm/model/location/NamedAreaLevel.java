@@ -24,6 +24,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -79,7 +80,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	}
 
 	protected NamedAreaLevel(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.NamedAreaLevel, term, label, labelAbbrev);
 	}
 
 	

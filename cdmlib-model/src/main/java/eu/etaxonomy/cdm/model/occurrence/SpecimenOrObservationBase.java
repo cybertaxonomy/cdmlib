@@ -47,14 +47,13 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
@@ -104,13 +103,13 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Sex sex;
+	private DefinedTerm sex;
 
 	@XmlElement(name = "LifeStage")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private Stage lifeStage;
+	private DefinedTerm lifeStage;
 
 	@XmlElement(name = "IndividualCount")
 	@Field(analyze = Analyze.NO)
@@ -270,19 +269,19 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		this.determinations.remove(determination);
 	}
 
-	public Sex getSex() {
+	public DefinedTerm getSex() {
 		return sex;
 	}
 
-	public void setSex(Sex sex) {
+	public void setSex(DefinedTerm sex) {
 		this.sex = sex;
 	}
 
-	public Stage getLifeStage() {
+	public DefinedTerm getLifeStage() {
 		return lifeStage;
 	}
 
-	public void setLifeStage(Stage lifeStage) {
+	public void setLifeStage(DefinedTerm lifeStage) {
 		this.lifeStage = lifeStage;
 	}
 

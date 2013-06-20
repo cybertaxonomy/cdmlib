@@ -9,19 +9,18 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -70,8 +69,8 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	Person primaryCollector;
 
 	Integer individualCount = 1;
-	Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
-	Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
+	DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
+	DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
 	NamedArea country = WaterbodyOrCountry.GERMANY();
 

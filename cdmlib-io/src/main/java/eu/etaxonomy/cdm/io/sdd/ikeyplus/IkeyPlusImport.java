@@ -22,6 +22,7 @@ import org.codehaus.plexus.util.StringUtils;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.KeyStatement;
@@ -50,7 +51,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
     public static final Logger logger = Logger.getLogger(IkeyPlusImport.class);
 
-    private TermVocabulary<Feature> termVoc;
+    private TermVocabulary<Feature> featureVoc;
 
     private PolytomousKey cdmKey;
 
@@ -114,7 +115,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
 
         cdmKey = PolytomousKey.NewTitledInstance(singleAccessKey.getLabel() + "_1");
 
-        termVoc = TermVocabulary.NewInstance(singleAccessKey.getLabel(), singleAccessKey.getLabel(), null, null);
+        featureVoc = TermVocabulary.NewInstance(TermType.Feature, singleAccessKey.getLabel(), singleAccessKey.getLabel(), null, null);
 
         Set<PolytomousKeyNode> rootNode = recursivlyCreateKeyNodes(singleAccessKey.getRoot(), null);
 //        Assert.assertEquals(1, rootNode.size());
@@ -135,7 +136,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
         // persist features
         Collection features = featureMap.values();
         getTermService().saveOrUpdate(features);
-        getVocabularyService().saveOrUpdate(termVoc);
+        getVocabularyService().saveOrUpdate(featureVoc);
 
         // persist the rest
         getPolytomousKeyService().saveOrUpdate(cdmKey);
@@ -253,7 +254,7 @@ public class IkeyPlusImport extends CdmImportBase<IkeyPlusImportConfigurator, Ik
             String featureLabel = character.getName();
 
             Feature newFeature = Feature.NewInstance(featureLabel, featureLabel, null);
-            termVoc.addTerm(newFeature);
+            featureVoc.addTerm(newFeature);
             featureMap.put(character.getId(),
                     newFeature);
 

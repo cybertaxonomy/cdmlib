@@ -25,6 +25,7 @@ import org.hibernate.envers.Audited;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 
 /**
@@ -75,7 +76,7 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
      * @see 				 #PresenceAbsenceTermBase()
      */
     protected PresenceAbsenceTermBase(String term, String label, String labelAbbrev) {
-        super(term, label, labelAbbrev);
+        super(TermType.PresenceAbsenceTerm, term, label, labelAbbrev);
     }
 
     /* (non-Javadoc)

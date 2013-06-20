@@ -90,8 +90,10 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 
     }
 
-    protected TermBase(String term, String label, String labelAbbrev) {
+    protected TermBase(TermType type, String term, String label, String labelAbbrev) {
         super();
+        assert type != null;
+        this.termType = type;
         initCacheStrategy();
         this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
     }

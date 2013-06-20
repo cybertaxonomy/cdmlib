@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -180,7 +181,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * @see 	#Rank()
      */
     public Rank(String term, String label, String labelAbbrev) {
-        super(term, label, labelAbbrev);
+        super(TermType.Rank, term, label, labelAbbrev);
     }
 
 

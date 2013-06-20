@@ -19,6 +19,7 @@ import org.hibernate.search.annotations.Indexed;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -56,7 +57,7 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	}
 	
 	public NaturalLanguageTerm(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.NaturalLanguageTerm, term, label, labelAbbrev);
 	}
 	
 	

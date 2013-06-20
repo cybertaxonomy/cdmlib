@@ -26,6 +26,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -71,7 +72,7 @@ public class State extends OrderedTermBase<State> {
 	 * @see 				 #State()
 	 */
 	public State(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.State, term, label, labelAbbrev);
 	}
 	
 	//********* METHODS **************************************/

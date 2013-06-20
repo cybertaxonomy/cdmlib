@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -148,7 +149,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     }
 
     public NamedArea(String term, String label, String labelAbbrev) {
-        super(term, label, labelAbbrev);
+        super(TermType.NamedArea, term, label, labelAbbrev);
     }
 
 //********************************* GETTER /SETTER *********************************************/

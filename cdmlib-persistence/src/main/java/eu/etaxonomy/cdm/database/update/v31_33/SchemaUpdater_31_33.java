@@ -111,7 +111,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				
 		//TODO update tree index for feature node
 				
+		//TODO update idInVocabulary for DefinedTerms
 		
+		//TODO update termType for DefinedTerms and TermVocabulary, no type must be null
 		
 		
 		

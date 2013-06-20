@@ -18,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -44,7 +46,7 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance("Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature, "Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
@@ -53,7 +55,7 @@ public class CategoricalDataTest {
         StateData stateData = StateData.NewInstance(useCategory1);
         data.addState(stateData);
         StateData stateData2 = StateData.NewInstance(useCategory2);
-        stateData2.addModifier(Modifier.NewInstance(null, "Any modifer", null));
+        stateData2.addModifier(DefinedTerm.NewModifierInstance(null, "Any modifer", null));
         data.addState(stateData2);
 
         List<State> states = data.getStatesOnly();
@@ -69,7 +71,7 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance("Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature,"Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         data.addState(useCategory1);

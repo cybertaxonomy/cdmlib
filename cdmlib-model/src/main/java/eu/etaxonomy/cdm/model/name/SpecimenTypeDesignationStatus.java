@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -109,7 +110,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * @see 				 #TypeDesignationStatus()
 	 */
 	public SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.SpecimenTypeDesignationStatus, term, label, labelAbbrev);
 	}
 	
 //************************** METHODS ********************************

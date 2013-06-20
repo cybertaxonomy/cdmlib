@@ -15,9 +15,8 @@ import java.net.URISyntaxException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
@@ -36,8 +35,8 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	private DwcaId locationId;
 	private String locality;
 	private String countryCode;
-	private Sex sex;
-	private Stage lifeStage;
+	private DefinedTerm sex;
+	private DefinedTerm lifeStage;
 	private Boolean isPlural;
 	private Boolean isPreferredName;
 	private String organismPart;
@@ -175,12 +174,12 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 	}
 
 
-	public Stage getLifeStage() {
+	public DefinedTerm getLifeStage() {
 		return lifeStage;
 	}
 
 
-	public void setLifeStage(Stage lifeStage) {
+	public void setLifeStage(DefinedTerm lifeStage) {
 		this.lifeStage = lifeStage;
 	}
 
@@ -194,12 +193,12 @@ public class DwcaVernacularRecord extends DwcaRecordBase implements IDwcaAreaRec
 		this.locationId.setId(locationId);
 	}
 	
-	public Sex getSex() {
+	public DefinedTerm getSex() {
 		return sex;
 	}
 
 
-	public void setSex(Sex sex) {
+	public void setSex(DefinedTerm sex) {
 		this.sex = sex;
 	}
 

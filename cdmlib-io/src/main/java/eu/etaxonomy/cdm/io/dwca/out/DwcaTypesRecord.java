@@ -16,8 +16,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -41,7 +41,7 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	private String collectionCode;
 	private String catalogNumber;
 	private String locality;
-	private Sex sex;
+	private DefinedTerm sex;
 	private AgentBase<?> recordedBy;
 	private String source;
 	private TimePeriod eventDate;
@@ -217,11 +217,11 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 		this.locality = locality;
 	}
 
-	public Sex getSex() {
+	public DefinedTerm getSex() {
 		return sex;
 	}
 
-	public void setSex(Sex sex) {
+	public void setSex(DefinedTerm sex) {
 		this.sex = sex;
 	}
 

@@ -20,7 +20,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -51,7 +51,7 @@ public class SpecimenTest {
 			assertNotNull("Taxon must not be null",taxon);
 			TaxonNameBase name = dataSet.getTaxonomicNames().get(0);
 			assertNotNull("TaxonNameBase must not be null",name);
-			Sex sex = (Sex)dataSet.getTerms().get(1);
+			DefinedTerm sex = (DefinedTerm)dataSet.getTerms().get(1);
 			
 			Collection collection = (Collection)dataSet.getCollections().get(0);
 			assertNotNull("Collection must not be null", collection);

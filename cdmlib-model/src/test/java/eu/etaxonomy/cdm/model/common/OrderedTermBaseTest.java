@@ -40,7 +40,7 @@ public class OrderedTermBaseTest extends EntityTestBase {
 	@Before
 	public void setUp() throws Exception {
 		otb1 = new DerivedOrderedTermBase();
-		otb2 = new DerivedOrderedTermBase("term", "label", null);
+		otb2 = new DerivedOrderedTermBase(TermType.Unknown, "term", "label", null);
 		otb3 = new DerivedOrderedTermBase();
 		otb4 = new DerivedOrderedTermBase();
 		
@@ -54,8 +54,8 @@ public class OrderedTermBaseTest extends EntityTestBase {
 		private DerivedOrderedTermBase(){
 			super();
 		}
-		private DerivedOrderedTermBase(String term, String label, String labelAbbrev){
-			super(term, label, labelAbbrev);
+		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev){
+			super(type, term, label, labelAbbrev);
 		}
 		@Override
 		protected void setDefaultTerms(TermVocabulary<DerivedOrderedTermBase> termVocabulary) {}

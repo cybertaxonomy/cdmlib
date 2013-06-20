@@ -22,8 +22,8 @@ import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.VocabularyCreator;
 import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_30_31;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 
 /**
  * @author a.mueller
@@ -59,24 +59,24 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
 
 		// cf.
-		UUID uuidTerm = DeterminationModifier.uuidConfer;
+		UUID uuidTerm = DefinedTerm.uuidConfer;
 		String description = "Confer";
 		String label = "confer";
 		String abbrev = "cf.";
-		String dtype = DeterminationModifier.class.getSimpleName();
+		String dtype = DefinedTerm.class.getSimpleName();
 		UUID uuidVocabulary = UUID.fromString("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77");
 		UUID uuidAfterTerm = null ; //UUID.fromString("");
 		list.add( SingleTermUpdater.NewInstance("Add 'confer (cf.)' determination modifier", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
 
 		
 		// aff.
-		uuidTerm = DeterminationModifier.uuidAffinis;
+		uuidTerm = DefinedTerm.uuidAffinis;
 		description = "Affinis";
 		label = "affinis";
 		abbrev = "aff.";
-		dtype = DeterminationModifier.class.getSimpleName();
+		dtype = DefinedTerm.class.getSimpleName();
 		uuidVocabulary = UUID.fromString("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77");
-		uuidAfterTerm = DeterminationModifier.uuidConfer;
+		uuidAfterTerm = DefinedTerm.uuidConfer;
 		list.add( SingleTermUpdater.NewInstance("Add 'affinis (aff.)' determination modifier", uuidTerm, description, label, abbrev, dtype, uuidVocabulary, Language.uuidLatin, true, uuidAfterTerm));
 
 		

@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -41,9 +42,7 @@ import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -105,8 +104,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     String fieldNotes = "such a beautiful specimen";
 
     Integer individualCount = 1;
-    Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
-    Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
+    DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
+    DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
     LanguageString locality = LanguageString.NewInstance("My locality",
             Language.DEFAULT());
 

@@ -14,6 +14,7 @@ import java.util.Set;
 
 import org.apache.poi.poifs.filesystem.OfficeXmlFileException;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -48,9 +49,9 @@ public interface IIdentificationKey {
      * The scope of this key, this may be the sex, stage or any other character defined via a subclass
      * of {@link Scope}
      */
-    public Set<Scope> getScopeRestrictions();
-    public void addScopeRestriction(Scope scope);
-    public void removeScopeRestriction(Scope scope);
+    public Set<DefinedTerm> getScopeRestrictions();
+    public void addScopeRestriction(DefinedTerm scope);
+    public void removeScopeRestriction(DefinedTerm scope);
    
     
     /**

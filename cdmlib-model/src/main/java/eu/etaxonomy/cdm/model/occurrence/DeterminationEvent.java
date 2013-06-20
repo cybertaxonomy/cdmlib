@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -81,7 +82,7 @@ public class DeterminationEvent extends EventBase {
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
-	private DeterminationModifier modifier;
+	private DefinedTerm modifier;
 	
 	@XmlElement(name = "PreferredFlag")
 	private boolean preferredFlag;
@@ -122,11 +123,11 @@ public class DeterminationEvent extends EventBase {
 		super();
 	}
 	
-	public DeterminationModifier getModifier() {
+	public DefinedTerm getModifier() {
 		return modifier;
 	}
 
-	public void setModifier(DeterminationModifier modifier) {
+	public void setModifier(DefinedTerm modifier) {
 		this.modifier = modifier;
 	}
 

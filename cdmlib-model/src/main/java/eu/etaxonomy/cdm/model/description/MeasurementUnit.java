@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
@@ -70,7 +71,7 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	 * @see 				 #NewInstance()
 	 */
 	public MeasurementUnit(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.MeasurementUnit, term, label, labelAbbrev);
 	}
 
 	

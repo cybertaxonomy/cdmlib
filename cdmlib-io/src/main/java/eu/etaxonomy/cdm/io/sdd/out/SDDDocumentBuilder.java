@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -58,7 +59,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -109,7 +109,7 @@ public class SDDDocumentBuilder {
 	private final Map<State, String> states = new HashMap<State, String>();
 	private final Map<Reference<?>, String> articles = new HashMap<Reference<?>, String>();
 	private final Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
-	private final Map<Modifier, String> modifiers = new HashMap<Modifier, String>();
+	private final Map<DefinedTerm, String> modifiers = new HashMap<DefinedTerm, String>();
 	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
 	private final Map<NamedArea, String> namedAreas = new HashMap<NamedArea, String>();
 	private final Map<Specimen, String> specimens = new HashMap<Specimen, String>();
@@ -679,15 +679,13 @@ public class SDDDocumentBuilder {
 										.isEmpty()) {
 									ElementImpl elModifiers = new ElementImpl(
 											document, "Modifiers");
-									for (Iterator<TermVocabulary<Modifier>> menum = feature
+									for (Iterator<TermVocabulary<DefinedTerm>> menum = feature
 											.getRecommendedModifierEnumeration()
 											.iterator(); menum.hasNext();) {
-										TermVocabulary<Modifier> termVoc = menum
-												.next();
-										Set<Modifier> sm = termVoc.getTerms();
-										for (Iterator<Modifier> modif = sm
-												.iterator(); modif.hasNext();) {
-											Modifier modifier = modif.next();
+										TermVocabulary<DefinedTerm> termVoc = menum.next();
+										Set<DefinedTerm> sm = termVoc.getTerms();
+										for (Iterator<DefinedTerm> modif = sm.iterator(); modif.hasNext();) {
+											DefinedTerm modifier = modif.next();
 											ElementImpl elModifier = new ElementImpl(
 													document, "Modifier");
 											modifiersCount = buildReference(

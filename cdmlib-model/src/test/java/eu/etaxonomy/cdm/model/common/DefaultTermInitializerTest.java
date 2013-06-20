@@ -23,7 +23,6 @@ import org.junit.Test;
 /**
  * @author a.mueller
  * @created 02.03.2009
- * @version 1.0
  */
 public class DefaultTermInitializerTest {
 	@SuppressWarnings("unused")
@@ -32,30 +31,10 @@ public class DefaultTermInitializerTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.DefaultTermInitializer#initialize()}.

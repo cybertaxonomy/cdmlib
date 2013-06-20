@@ -88,8 +88,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 
 // ********************************* FACTORY METHODS *****************************************/
 
-	public static TermVocabulary NewInstance(String description, String label, String abbrev, URI termSourceUri){
-		return new TermVocabulary(description, label, abbrev, termSourceUri);
+	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
+		return new TermVocabulary(type, description, label, abbrev, termSourceUri);
 	}
 
 // ************************* CONSTRUCTOR *************************************************
@@ -97,8 +97,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	protected TermVocabulary() {
 	}
 
-	protected TermVocabulary(String term, String label, String labelAbbrev, URI termSourceUri) {
-		super(term, label, labelAbbrev);
+	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
+		super(type, term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
 
@@ -177,6 +177,8 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(URI.create(csvLine.get(1)));
 		//this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
+		this.setTermType(TermType.byKey(csvLine.get(4)));
+		
 		return this;
 	}
 

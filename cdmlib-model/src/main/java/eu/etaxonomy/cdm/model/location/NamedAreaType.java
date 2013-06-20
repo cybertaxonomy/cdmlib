@@ -25,6 +25,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -62,7 +63,7 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 	 * Constructor
 	 */
 	public NamedAreaType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.NamedAreaType, term, label, labelAbbrev);
 	}
 	
 	public NamedAreaType(){

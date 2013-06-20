@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -212,7 +213,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();
         NamedAreaLevel areaLevel = NamedAreaLevel.NewInstance("Cyprus Division", "Cyprus Division", null);
 
-        TermVocabulary areaVocabulary = TermVocabulary.NewInstance("Cyprus devisions", "Cyprus divisions", null, null);
+        TermVocabulary areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea, "Cyprus devisions", "Cyprus divisions", null, null);
         areaVocabulary.setUuid(uuidCyprusDivisionsVocabulary);
 
         for(int i = 1; i <= 8; i++){
@@ -269,7 +270,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
     @Test
     public void testGetWebServiceUrlBangka() throws ClientProtocolException, IOException, URISyntaxException {
         NamedArea areaBangka = NamedArea.NewInstance("Bangka", "Bangka", null);
-        TermVocabulary<NamedArea> voc = TermVocabulary.NewInstance("test Voc", "test voc", null, null);
+        TermVocabulary<NamedArea> voc = TermVocabulary.NewInstance(TermType.NamedArea, "test Voc", "test voc", null, null);
         voc.addTerm(areaBangka);
 
         GeoServiceArea geoServiceArea = new GeoServiceArea();

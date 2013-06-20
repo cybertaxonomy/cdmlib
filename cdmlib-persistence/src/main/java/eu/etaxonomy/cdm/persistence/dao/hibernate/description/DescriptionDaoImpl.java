@@ -26,6 +26,7 @@ import org.hibernate.envers.query.AuditQuery;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -33,7 +34,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -177,7 +177,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     }
 
     @Override
-    public int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes,Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
+    public int countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes,Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(TaxonDescription.class);
@@ -188,7 +188,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             if(scopes != null && !scopes.isEmpty()) {
                 Set<Integer> scopeIds = new HashSet<Integer>();
-                for(Scope s : scopes) {
+                for(DefinedTerm s : scopes) {
                     scopeIds.add(s.getId());
                 }
                 criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));
@@ -319,7 +319,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
     }
 
     @Override
-    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScopes, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = getSession().createCriteria(TaxonDescription.class);
@@ -330,7 +330,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             if(scopes != null && !scopes.isEmpty()) {
                 Set<Integer> scopeIds = new HashSet<Integer>();
-                for(Scope s : scopes) {
+                for(DefinedTerm s : scopes) {
                     scopeIds.add(s.getId());
                 }
                 criteria.createCriteria("scopes").add(Restrictions.in("id", scopeIds));

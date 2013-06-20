@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -62,7 +64,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -120,7 +121,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,TaxonNode> taxonNodes = new HashMap<String,TaxonNode>();
 	private Map<String,NamedArea> namedAreas = new HashMap<String,NamedArea>();
 	private Map<String,Specimen> specimens = new HashMap<String,Specimen>();
-	private Map<String,Modifier> modifiers = new HashMap<String,Modifier>();
+	private Map<String,DefinedTerm> modifiers = new HashMap<String,DefinedTerm>();
 	
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
 	private Set<TermVocabulary<?>> vocabularies = new HashSet<TermVocabulary<?>>();
@@ -713,7 +714,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	}
 
 	private void saveModifiers() {
-		for (Modifier modifier : modifiers.values() ){
+		for (DefinedTerm modifier : modifiers.values() ){
 			getTermService().save(modifier);
 		}
 	}
@@ -954,7 +955,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 				// <StateDefinition id="s1">
 				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(null, null, null, null);
+				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(TermType.State, null, null, null, null);
 				
 				vocabularies.add(termVocabularyState);
 				
@@ -1399,7 +1400,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
 					for (Element elModifier : elModifiers){
 						ref = elModifier.getAttributeValue("ref");
-						Modifier modifier = modifiers.get(ref);
+						DefinedTerm modifier = modifiers.get(ref);
 						if (modifier != null) {
 							stateData.addModifier(modifier);
 						}
@@ -1684,9 +1685,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 						Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
 					if (elModifiers !=null){
 						List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
-							TermVocabulary<Modifier> termVocabularyState = TermVocabulary.NewInstance(null, null, null, null);
+							TermVocabulary<DefinedTerm> termVocabularyState = TermVocabulary.NewInstance(TermType.Modifier, null, null, null, null);
 						for (Element elModifier : listModifiers) {
-								Modifier modif = Modifier.NewInstance();
+								DefinedTerm modif = DefinedTerm.NewModifierInstance(null, null, null);
 								String idmod = elModifier.getAttributeValue("id");
 								importRepresentation(elModifier, sddNamespace, modif, idmod, state);
 								termVocabularyState.addTerm(modif);

@@ -22,13 +22,13 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -74,7 +74,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
 	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
 	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
-	private Map<UUID, Modifier> modifierMap = new HashMap<UUID, Modifier>();
+	private Map<UUID, DefinedTerm> modifierMap = new HashMap<UUID, DefinedTerm>();
 	
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
@@ -278,11 +278,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		measurementUnitMap.put(unit.getUuid(), unit);
 	}
 	
-	public Modifier getModifier(UUID uuid){
+	public DefinedTerm getModifier(UUID uuid){
 		return modifierMap.get(uuid);
 	}
 	
-	public void putModifier(Modifier unit){
+	public void putModifier(DefinedTerm unit){
 		modifierMap.put(unit.getUuid(), unit);
 	}
 	

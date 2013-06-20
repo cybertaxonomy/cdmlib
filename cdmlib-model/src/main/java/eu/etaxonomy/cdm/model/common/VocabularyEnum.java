@@ -16,12 +16,8 @@ import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
-import eu.etaxonomy.cdm.model.description.Scope;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
@@ -39,7 +35,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -76,10 +71,10 @@ public enum VocabularyEnum {
 	TdwgArea("1fb40504-d1d7-44b0-9731-374fbe6cac77", NamedArea.class),
 	PresenceTerm("adbbbe15-c4d3-47b7-80a8-c7d104e53a05", PresenceTerm.class),
 	AbsenceTerm("5cd438c8-a8a1-4958-842e-169e83e2ceee", AbsenceTerm.class),
-	Sex("9718b7dd-8bc0-4cad-be57-3c54d4d432fe", Sex.class),
+	Sex("9718b7dd-8bc0-4cad-be57-3c54d4d432fe", DefinedTerm.class),
 	DerivationEventType("398b50bb-348e-4fe0-a7f5-a75afd846d1f", DerivationEventType.class),
 	PreservationMethod("a7dc20c9-e6b3-459e-8f05-8d6d8fceb465", PreservationMethod.class),
-	DeterminationModifier("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77", DeterminationModifier.class),
+	DeterminationModifier("fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77", DefinedTerm.class),
 	StatisticalMeasure("066cc62e-7213-495e-a020-97a1233bc037", StatisticalMeasure.class),
 	RightsTerm("8627c526-73af-44d9-902c-11c1f11b60b4", RightsTerm.class),
 	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
@@ -87,13 +82,13 @@ public enum VocabularyEnum {
 	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class),
 	InstitutionType("29ad808b-3126-4274-be81-4561e7afc76f", InstitutionType.class),
 	MeasurementUnit("3b82c375-66bb-4636-be74-dc9cd087292a", MeasurementUnit.class),
-	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", Scope.class),
-	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", Stage.class),
+	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", DefinedTerm.class),
+	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", DefinedTerm.class),
 	State("ceb65a53-c6cf-42bb-862f-daca7f2fc11d", State.class),
 	TextFormat("ac3926d2-5f6b-45a5-9cf9-be2a5a43f9b3", TextFormat.class),
 //	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
 	NaturalLanguageTerm("fdaba4b0-5c14-11df-a08a-0800200c9a66", NaturalLanguageTerm.class),
-	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", Modifier.class)
+	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", DefinedTerm.class)
 	;
 	
 	

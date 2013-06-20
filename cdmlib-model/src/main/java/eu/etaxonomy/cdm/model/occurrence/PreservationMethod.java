@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
@@ -71,7 +72,7 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	 * Constructor
 	 */
 	protected PreservationMethod(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.PreservationMethod, term, label, labelAbbrev);
 	}
 
 // *************************** METHODS ******************************************************/	

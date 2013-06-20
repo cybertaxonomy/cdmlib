@@ -65,7 +65,7 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 	 * @param label
 	 */
 	protected AnnotationType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.AnnotationType , term, label, labelAbbrev);
 	}
 
 	

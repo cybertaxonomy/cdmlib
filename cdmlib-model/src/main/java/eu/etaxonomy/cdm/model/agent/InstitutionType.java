@@ -24,6 +24,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -69,7 +70,7 @@ public class InstitutionType extends DefinedTermBase<InstitutionType> {
 	 * @see           		 eu.etaxonomy.cdm.model.common.TermBase#TermBase(String, String, String)
 	 */
 	public InstitutionType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.InstitutionType, term, label, labelAbbrev);
 	}
 
 	

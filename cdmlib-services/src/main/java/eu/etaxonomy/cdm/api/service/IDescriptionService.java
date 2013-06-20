@@ -18,6 +18,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -26,7 +27,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -178,7 +178,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *
      * @see #pageMarkedTaxonDescriptions(Taxon, Set, Set, Set, Integer, Integer, List)
      */
-    public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
@@ -192,7 +192,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager containing TaxonDescription instances
      */
-    public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * @see {@link #pageTaxonDescriptions(Taxon, Set, Set, Integer, Integer, List)}
@@ -205,7 +205,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param propertyPaths
      * @return
      */
-    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
 
@@ -220,7 +220,7 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @param propertyPaths
      * @return
      */
-    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns all {@link Media} attached to a taxon via TaxonDescription.elements.media.

@@ -86,8 +86,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 
 	public RelationshipTermBase() {
 	}
-	public RelationshipTermBase(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
-		super(term, label, labelAbbrev);
+	public RelationshipTermBase(TermType type, String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+		super(type, term, label, labelAbbrev);
 		setSymmetric(symmetric);
 		setTransitive(transitive);
 	}

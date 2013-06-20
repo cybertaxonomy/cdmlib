@@ -32,6 +32,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -100,7 +101,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="MultiAccessKey_Scope")
 	@NotNull
-	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
+	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 	
 	/** 
 	 * Class constructor: creates a new empty multi-access key instance.
@@ -227,9 +228,9 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	 * Returns the set of {@link Scope scope restrictions} corresponding to
 	 * <i>this</i> identification key 
 	 */
-	public Set<Scope> getScopeRestrictions() {
+	public Set<DefinedTerm> getScopeRestrictions() {
 		if(scopeRestrictions == null) {
-			this.scopeRestrictions = new HashSet<Scope>();
+			this.scopeRestrictions = new HashSet<DefinedTerm>();
 		}
 		return scopeRestrictions;
 	}
@@ -241,7 +242,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	 * @param	scopeRestriction	the scope restriction to be added to <i>this</i> identification key
 	 * @see    	   		#getScopeRestrictions()
 	 */
-	public void addScopeRestriction(Scope scopeRestriction) {
+	public void addScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.add(scopeRestriction);
 	}
 	
@@ -253,7 +254,7 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 	 * @see     		#getScopeRestrictions()
 	 * @see     		#addScopeRestriction(Scope)
 	 */
-	public void removeScopeRestriction(Scope scopeRestriction) {
+	public void removeScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
 	
@@ -283,8 +284,8 @@ public class MultiAccessKey extends WorkingSet implements IIdentificationKey{
 				result.addGeographicalScope(area);
 			}
 			
-			result.scopeRestrictions = new HashSet<Scope>();
-			for (Scope scope: this.scopeRestrictions){
+			result.scopeRestrictions = new HashSet<DefinedTerm>();
+			for (DefinedTerm scope: this.scopeRestrictions){
 				result.addScopeRestriction(scope);
 			}
 			

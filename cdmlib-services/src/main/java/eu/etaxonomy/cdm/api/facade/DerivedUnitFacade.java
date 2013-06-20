@@ -31,18 +31,16 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -1707,23 +1705,23 @@ public class DerivedUnitFacade {
 
 	// life stage
 	@Transient
-	public Stage getLifeStage() {
+	public DefinedTerm getLifeStage() {
 		return (hasFieldObservation() ? getFieldObservation(true)
 				.getLifeStage() : null);
 	}
 
-	public void setLifeStage(Stage lifeStage) {
+	public void setLifeStage(DefinedTerm lifeStage) {
 		getFieldObservation(true).setLifeStage(lifeStage);
 	}
 
 	// sex
 	@Transient
-	public Sex getSex() {
+	public DefinedTerm getSex() {
 		return (hasFieldObservation() ? getFieldObservation(true).getSex()
 				: null);
 	}
 
-	public void setSex(Sex sex) {
+	public void setSex(DefinedTerm sex) {
 		getFieldObservation(true).setSex(sex);
 	}
 

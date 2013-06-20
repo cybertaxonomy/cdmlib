@@ -26,6 +26,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 
@@ -124,7 +125,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * @see 				 #TaxonRelationshipType()
 	 */
 	public TaxonRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
-		super(term, label, labelAbbrev, symmetric, transitive);
+		super(TermType.TaxonRelationshipType, term, label, labelAbbrev, symmetric, transitive);
 	}
 
 	

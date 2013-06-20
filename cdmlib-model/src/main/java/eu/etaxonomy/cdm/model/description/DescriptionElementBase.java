@@ -44,6 +44,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
@@ -113,7 +114,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionElementBase_Modifier")
     @IndexedEmbedded(depth=1)
-    private Set<Modifier> modifiers = new HashSet<Modifier>();
+    private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -239,7 +240,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * Returns the set of {@link Modifier modifiers} used to qualify the validity of
      * <i>this</i> description element. This is only metainformation.
      */
-    public Set<Modifier> getModifiers(){
+    public Set<DefinedTerm> getModifiers(){
         return this.modifiers;
     }
 
@@ -250,7 +251,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @param modifier	the modifier to be added to <i>this</i> description element
      * @see    	   		#getModifiers()
      */
-    public void addModifier(Modifier modifier){
+    public void addModifier(DefinedTerm modifier){
         this.modifiers.add(modifier);
     }
     /**
@@ -261,7 +262,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @see     		#getModifiers()
      * @see     		#addModifier(Modifier)
      */
-    public void removeModifier(Modifier modifier){
+    public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
 
@@ -427,22 +428,22 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 
 // ******************* METHODS *************************************************************/
 
-    protected Map<TermVocabulary, List<Modifier>> makeModifierMap(){
-        Map<TermVocabulary, List<Modifier>> result = new HashMap<TermVocabulary, List<Modifier>>();
-        for (Modifier modifier : getModifiers()){
-            TermVocabulary<Modifier> voc = modifier.getVocabulary();
+    protected Map<TermVocabulary, List<DefinedTerm>> makeModifierMap(){
+        Map<TermVocabulary, List<DefinedTerm>> result = new HashMap<TermVocabulary, List<DefinedTerm>>();
+        for (DefinedTerm modifier : getModifiers()){
+            TermVocabulary<DefinedTerm> voc = modifier.getVocabulary();
             if (result.get(voc) == null){
-                result.put(voc, new ArrayList<Modifier>());
+                result.put(voc, new ArrayList<DefinedTerm>());
             }
             result.get(voc).add(modifier);
         }
         return result;
     }
 
-    public List<Modifier> getModifiers(TermVocabulary voc){
-        List<Modifier> result = makeModifierMap().get(voc);
+    public List<DefinedTerm> getModifiers(TermVocabulary voc){
+        List<DefinedTerm> result = makeModifierMap().get(voc);
         if (result == null){
-            result = new ArrayList<Modifier>();
+            result = new ArrayList<DefinedTerm>();
         }
         return result;
     }
@@ -485,8 +486,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         }
 
         //modifiers
-        result.modifiers = new HashSet<Modifier>();
-        for (Modifier modifier : getModifiers()){
+        result.modifiers = new HashSet<DefinedTerm>();
+        for (DefinedTerm modifier : getModifiers()){
             result.modifiers.add(modifier);
         }
 

@@ -35,8 +35,10 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -116,7 +118,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
-	private Set<TermVocabulary<Modifier>> recommendedModifierEnumeration = new HashSet<TermVocabulary<Modifier>>();
+	private Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<TermVocabulary<DefinedTerm>>();
 	
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -159,7 +161,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see 				 #Feature()
 	 */
 	protected Feature(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.Feature, term, label, labelAbbrev);
 	}
 
 	/** 
@@ -347,7 +349,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "RecommendedModifierEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<Modifier>> getRecommendedModifierEnumeration() {
+	public Set<TermVocabulary<DefinedTerm>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
@@ -360,7 +362,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see    	   								#getRecommendedModifierEnumeration()
 	 */
 	public void addRecommendedModifierEnumeration(
-			TermVocabulary<Modifier> recommendedModifierEnumeration) {
+			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
 	/** 
@@ -372,7 +374,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
 	 */
 	public void removeRecommendedModifierEnumeration(
-			TermVocabulary<Modifier> recommendedModifierEnumeration) {
+			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 

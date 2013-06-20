@@ -30,6 +30,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -43,7 +44,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * to the SDD schema.
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:54
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -65,7 +65,7 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
 //	@NotNull // avoids creating a UNIQUE key for this field -> not needed for ManyToMany
-	private Set<Modifier> modifiers = new HashSet<Modifier>();
+	private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
 	
 	@XmlElement(name = "StatisticalMeasureType")
 	@XmlIDREF
@@ -132,11 +132,11 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	
 	
 	/** 
-	 * Returns the set of {@link Modifier modifiers} used to qualify the validity
+	 * Returns the set of terms of {@link TermType type} Modifier used to qualify the validity
 	 * or probability of <i>this</i> statistical measurement value.
 	 * This is only metainformation.
 	 */
-	public Set<Modifier> getModifiers() {
+	public Set<DefinedTerm> getModifiers() {
 		return modifiers;
 	}
 
@@ -147,7 +147,7 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	 * @param modifier	the modifier to be added to <i>this</i> statistical measurement value
 	 * @see    	   		#getModifiers()
 	 */
-	public void addModifier(Modifier modifier) {
+	public void addModifier(DefinedTerm modifier) {
 		this.modifiers.add(modifier);
 	}
 	/** 
@@ -158,7 +158,7 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 	 * @see     		#getModifiers()
 	 * @see     		#addModifier(Modifier)
 	 */
-	public void removeModifier(Modifier modifier) {
+	public void removeModifier(DefinedTerm modifier) {
 		this.modifiers.remove(modifier);
 	}
 	
@@ -180,8 +180,8 @@ public class StatisticalMeasurementValue extends VersionableEntity implements IM
 			StatisticalMeasurementValue result = (StatisticalMeasurementValue)super.clone();
 			
 			//modifiers
-			result.modifiers = new HashSet<Modifier>();
-			for (Modifier modifier : getModifiers()){
+			result.modifiers = new HashSet<DefinedTerm>();
+			for (DefinedTerm modifier : getModifiers()){
 				result.modifiers.add(modifier);
 			}
 			

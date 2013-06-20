@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.HashSet;
 import java.util.List;
@@ -62,7 +63,6 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
  * use partOf relation and BreadthFirst. Default iterator order should therefore
  * be BreadthFirst (not DepthFirst)
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:19
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -75,6 +75,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 @XmlSeeAlso({
     AnnotationType.class,
     DerivationEventType.class,
+    DefinedTerm.class,
     ExtensionType.class,
     Feature.class,
     InstitutionType.class,
@@ -166,8 +167,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     public DefinedTermBase() {
         super();
     }
-    public DefinedTermBase(String term, String label, String labelAbbrev) {
-        super(term, label, labelAbbrev);
+    public DefinedTermBase(TermType type, String description, String label, String labelAbbrev) {
+        super(type, description, label, labelAbbrev);
     }
 
 
@@ -316,7 +317,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
      */
     public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
         try {
-            T newInstance = termClass.newInstance();
+            T newInstance = getInstance(termClass);
             return readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE());
         } catch (Exception e) {
             logger.error(e);
@@ -327,6 +328,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
         return null;
     }
+    
+	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+		try {
+			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
+			c.setAccessible(true);
+			T termInstance = c.newInstance();
+			return termInstance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang) {
             newInstance.setUuid(UUID.fromString(csvLine.get(0)));

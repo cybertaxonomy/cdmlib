@@ -20,6 +20,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * The class representing status (categories) of {@link SpecimenTypeDesignation specimen type designations}
@@ -83,7 +84,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
 	 * @see 				 #SnameTypeDesignationStatus()
 	 * @see 				 #SpecimenTypeDesignationStatus()
 	 */
-	public TypeDesignationStatusBase(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	public TypeDesignationStatusBase(TermType type, String term, String label, String labelAbbrev) {
+		super(type, term, label, labelAbbrev);
 	}
 }

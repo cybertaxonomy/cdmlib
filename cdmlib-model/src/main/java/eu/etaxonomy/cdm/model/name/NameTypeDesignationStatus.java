@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -90,7 +91,7 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	}
 	
 	protected NameTypeDesignationStatus(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.NameTypeDesignationStatus, term, label, labelAbbrev);
 	}
 
 //************************** METHODS ********************************

@@ -104,7 +104,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	 * @param label
 	 */
 	protected MarkerType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.MarkerType, term, label, labelAbbrev);
 	}
 
 //***************************** TERMS **************************************/

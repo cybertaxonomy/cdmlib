@@ -39,9 +39,9 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -142,7 +142,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         //languages
         List<Language> langs = LocaleContext.getLanguages();
 
-        Set<Scope> scopes = null;
+        Set<DefinedTerm> scopes = null;
         Set<NamedArea> geographicalScope = null;
         Integer pageSize = null;
         Integer pageNumber = null;

@@ -27,6 +27,7 @@ import org.hibernate.search.annotations.Indexed;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -97,7 +98,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * @see 				 #HybridRelationshipType()
 	 */
 	public HybridRelationshipType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev, false, false);
+		super(TermType.HybridRelationshipType, term, label, labelAbbrev, false, false);
 	}
 
 	

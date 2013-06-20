@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.common.init;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +26,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -51,16 +54,8 @@ public class TermLoader implements ITermLoader {
 
 	private <T extends DefinedTermBase> void unloadVocabularyType(VocabularyEnum vocType){
 		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
-		try {
-			T termInstance = ((Class<T>)termClass).newInstance();
-			termInstance.resetTerms();
-			
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} 
-
+		getInstance(termClass).resetTerms();
+		return;
 	}
 
 	
@@ -84,24 +79,25 @@ public class TermLoader implements ITermLoader {
 		
 		try {
 			CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
+			String [] nextLine = reader.readNext();
 			
 			//vocabulary
 			TermVocabulary<T> voc = null;
 			String labelAbbrev = null;
 			
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
-				voc = OrderedTermVocabulary.NewInstance(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = OrderedTermVocabulary.NewInstance(TermType.Unknown, termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
 			}else{
-				voc = TermVocabulary.NewInstance(termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = TermVocabulary.NewInstance(TermType.Unknown, termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
 			}
 			
-			String [] nextLine = reader.readNext();
 			if (nextLine != null){
 				voc.readCsvLine(arrayedLine(nextLine));
 			}
 			
 			// Ugly, I know, but I don't think we can use a static method here . . 
-			T classDefiningTermInstance = ((Class<T>)termClass).newInstance(); 
+			
+			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance(); 
 			
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
@@ -122,6 +118,17 @@ public class TermLoader implements ITermLoader {
 			throw new RuntimeException(e);
 		}
 		
+	}
+
+	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+		try {
+			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
+			c.setAccessible(true);
+			T termInstance = c.newInstance();
+			return termInstance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private List<String> arrayedLine(String [] nextLine){

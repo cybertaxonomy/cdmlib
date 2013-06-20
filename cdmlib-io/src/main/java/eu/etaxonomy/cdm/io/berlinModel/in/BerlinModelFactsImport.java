@@ -39,6 +39,7 @@ import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -85,7 +86,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return featureVocabulary;
 		} catch (UnknownCdmTypeException e) {
 			logger.error("Feature vocabulary not available. New vocabulary created");
-			return TermVocabulary.NewInstance("User Defined Feature Vocabulary", "User Defined Feature Vocabulary", null, null); 
+			return TermVocabulary.NewInstance(TermType.Feature, "User Defined Feature Vocabulary", "User Defined Feature Vocabulary", null, null); 
 		}
 	}
 	

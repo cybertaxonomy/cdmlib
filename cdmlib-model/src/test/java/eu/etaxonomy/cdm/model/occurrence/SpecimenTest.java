@@ -30,6 +30,7 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -38,9 +39,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -155,7 +154,7 @@ public class SpecimenTest {
 		DerivationEvent derivedFrom = DerivationEvent.NewInstance(null);
 		int id = 22;
 		int individualCount = 25;
-		Stage lifeStage = Stage.NewInstance();
+		DefinedTerm lifeStage = DefinedTerm.NewStageInstance(null, null, null);
 		LSID lsid = null;
 		try {
 			lsid = new LSID("urn:lsid:example.com:foo:1");
@@ -167,7 +166,7 @@ public class SpecimenTest {
 		Specimen previousVersion = Specimen.NewInstance();
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
-		Sex sex = Sex.FEMALE();
+		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
 		TaxonNameBase<?, ?> storedUnder = BotanicalName.NewInstance(Rank.GENUS());
 		String titleCache = "title";
 		Calendar updated = Calendar.getInstance();

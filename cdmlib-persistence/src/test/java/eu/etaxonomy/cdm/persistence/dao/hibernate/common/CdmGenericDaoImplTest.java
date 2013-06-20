@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -78,10 +79,7 @@ import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.Scope;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -138,7 +136,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -177,7 +174,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @created 27.07.2009
- * @version 1.0
  */
 @Ignore
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
@@ -362,6 +358,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Representation.class, 
 				TermVocabulary.class, 
 				User.class, 
+				DefinedTerm.class,
 				
 				AbsenceTerm.class, 
 				CategoricalData.class, 
@@ -378,10 +375,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				PresenceAbsenceTermBase.class, 
 				PresenceTerm.class, 
 				QuantitativeData.class, 
-				Scope.class, 
-				Sex.class, 
 				SpecimenDescription.class, 
-				Stage.class, 
 				State.class, 
 				StateData.class, 
 				StatisticalMeasure.class, 
@@ -437,7 +431,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				DerivedUnit.class, 
 				DerivedUnitBase.class, 
 				DeterminationEvent.class, 
-				DeterminationModifier.class, 
 				FieldObservation.class, 
 				Fossil.class, 
 				GatheringEvent.class, 
