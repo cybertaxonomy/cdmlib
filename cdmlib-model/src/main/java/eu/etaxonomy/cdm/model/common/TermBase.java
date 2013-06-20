@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -73,6 +74,8 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 	@XmlAttribute(name ="TermType")
 //	@Column(name="termType")
 //	@NotNull
+	
+	@Enumerated
 	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")

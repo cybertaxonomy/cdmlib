@@ -591,7 +591,7 @@ public class Language extends DefinedTermBase<Language> {
 //***** CONSTRUCTOR ***************************************/    
     
     //for hibernate use only
-    private Language() {};
+    protected Language() {};
     
     public Language(UUID uuid) {
         this.setUuid(uuid);

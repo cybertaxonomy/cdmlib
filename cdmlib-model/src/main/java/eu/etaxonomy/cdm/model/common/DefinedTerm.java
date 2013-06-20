@@ -73,7 +73,7 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate use only
-	private DefinedTerm(){};
+	protected DefinedTerm(){};
 	
 	public DefinedTerm(TermType type, String description, String label, String labelAbbrev) {
 		super(type, description, label, labelAbbrev);

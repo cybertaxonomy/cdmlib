@@ -14,6 +14,7 @@ public enum UTF8 {
 	
 	EN_DASH("\u2013"),   // https://de.wikipedia.org/wiki/Halbgeviertstrich
 	HYBRID ("\u00D7"),   // hybrid sign
+	SHARP_S("\u00DF")
 	;
 
 	private String value;
