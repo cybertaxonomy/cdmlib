@@ -1054,10 +1054,10 @@ public class DerivedUnitFacade {
 			if (StringUtils.isNotBlank(ev.getAbsoluteElevationText())){
 				return ev.getAbsoluteElevationText();
 			}else{
-				String min = getAbsoluteElevation() == null? null : String.valueOf(getAbsoluteElevation());
-				String max = getAbsoluteElevationMaximum() == null? null : String.valueOf(getAbsoluteElevationMaximum());
-				String result = CdmUtils.concat(" " + UTF8.EN_DASH + " ", min, max);
-				return result;
+				String text = ev.getAbsoluteElevationText();
+				Integer min = getAbsoluteElevation();
+				Integer max = getAbsoluteElevationMaximum();
+				return distanceString(min, max, text);
 			}
 		}
 	}
@@ -1086,32 +1086,6 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setAbsoluteElevationText(absoluteElevationText);
 	}
 	
-//	// absolute elevation error
-//	@Transient
-//	public Integer getAbsoluteElevationError() {
-//		return (hasGatheringEvent() ? getGatheringEvent(true)
-//				.getAbsoluteElevationError() : null);
-//	}
-//
-//	public void setAbsoluteElevationError(Integer absoluteElevationError) {
-//		getGatheringEvent(true).setAbsoluteElevationError(
-//				absoluteElevationError);
-//	}
-
-//	/**
-//	 * @see #getAbsoluteElevation()
-//	 * @see #setAbsoluteElevationRange(Integer, Integer)
-//	 * @see #getAbsoluteElevationMaximum()
-//	 */
-//	@Transient
-//	public Integer getAbsoluteElevationMinimum() {
-//		if (!hasGatheringEvent()) {
-//			return null;
-//		}else{
-//			return getGatheringEvent(true).getAbsoluteElevation();
-//		}
-//	}
-
 	/**
 	 * @see #getAbsoluteElevation()
 	 * @see #getAbsoluteElevationError()
@@ -1143,34 +1117,16 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * This method replaces absoluteElevation and absoulteElevationError by
-	 * internally translating minimum and maximum values into average and error
-	 * values. As all these values are integer based it is necessary that the
-	 * distance is between minimum and maximum is <b>even</b>, otherwise we will
-	 * get a rounding error resulting in a maximum that is increased by 1.
+	 * Convenience method to set absolute elevation minimum and maximum.
 	 * 
 	 * @see #setAbsoluteElevation(Integer)
-	 * @see #setAbsoluteElevationError(Integer)
-	 * @param minimumElevation
-	 *            minimum of the range
-	 * @param maximumElevation
-	 *            maximum of the range
-	 * @throws IllegalArgumentException
+	 * @see #setAbsoluteElevationMax(Integer)
+	 * @param minimumElevation minimum of the range
+	 * @param maximumElevation maximum of the range
 	 */
-	public void setAbsoluteElevationRange(Integer minimumElevation, Integer maximumElevation) throws IllegalArgumentException{
+	public void setAbsoluteElevationRange(Integer minimumElevation, Integer maximumElevation) {
 		getGatheringEvent(true).setAbsoluteElevation(minimumElevation);
 		getGatheringEvent(true).setAbsoluteElevationMax(maximumElevation);
-	}
-
-	/**
-	 * @param minimumElevation
-	 * @param maximumElevation
-	 * @return
-	 */
-	public boolean isEvenDistance(Integer minimumElevation,
-			Integer maximumElevation) {
-		Integer diff = (maximumElevation - minimumElevation);
-		return diff % 2 == 0;
 	}
 
 	// collector
@@ -1195,6 +1151,27 @@ public class DerivedUnitFacade {
 	}
 
 	// distance to ground
+	
+	/**
+	 * Returns the correctly formatted <code>distance to ground</code> information.
+	 * If distanceToGroundText is not blank, it will be returned,
+	 * otherwise distanceToGround will be returned, followed by distanceToGroundMax 
+	 * if existing, separated by " - " 
+	 * @return
+	 */
+	@Transient
+	public String distanceToGroundToString() {
+		if (! hasGatheringEvent()){
+			return null;
+		}else{
+			GatheringEvent ev = getGatheringEvent(true);
+			String text = ev.getDistanceToGroundText();
+			Double min = getDistanceToGround();
+			Double max = getDistanceToGroundMax();
+			return distanceString(min, max, text);
+		}
+	}
+
 	@Transient
 	public Double getDistanceToGround() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToGround() : null);
@@ -1203,7 +1180,74 @@ public class DerivedUnitFacade {
 	public void setDistanceToGround(Double distanceToGround) {
 		getGatheringEvent(true).setDistanceToGround(distanceToGround);
 	}
-
+	
+	/**
+	 * @see #getDistanceToGround()
+	 * @see #getDistanceToGroundRange(Integer, Integer)
+	 */
+	@Transient
+	public Double getDistanceToGroundMax() {
+		if (!hasGatheringEvent()) {
+			return null;
+		}else{
+			return getGatheringEvent(true).getDistanceToGroundMax();
+		}
+	}
+	
+	public void setDistanceToGroundMax(Double distanceToGroundMax) {
+		getGatheringEvent(true).setDistanceToGroundMax(distanceToGroundMax);
+	}
+	
+	/**
+	 * @see #getDistanceToGround()
+	 * @see #setDistanceToGroundRange(Integer, Integer)
+	 */
+	@Transient
+	public String getDistanceToGroundText() {
+		if (!hasGatheringEvent()) {
+			return null;
+		}else{
+			return getGatheringEvent(true).getDistanceToGroundText();
+		}
+	}
+	public void setDistanceToGroundText(String distanceToGroundText) {
+		getGatheringEvent(true).setDistanceToGroundText(distanceToGroundText);
+	}
+	
+	/**
+	 * Convenience method to set distance to ground minimum and maximum.
+	 * 
+	 * @see #getDistanceToGround()
+	 * @see #getDistanceToGroundMax()
+	 * @param minimumDistance minimum of the range
+	 * @param maximumDistance maximum of the range
+	 */
+	public void setDistanceToGroundRange(Double minimumDistance, Double maximumDistance) throws IllegalArgumentException{
+		getGatheringEvent(true).setDistanceToGround(minimumDistance);
+		getGatheringEvent(true).setDistanceToGroundMax(maximumDistance);
+	}
+	
+	
+	/**
+	 * Returns the correctly formatted <code>distance to water surface</code> information.
+	 * If distanceToWaterSurfaceText is not blank, it will be returned,
+	 * otherwise distanceToWaterSurface will be returned, followed by distanceToWatersurfaceMax 
+	 * if existing, separated by " - " 
+	 * @return
+	 */
+	@Transient
+	public String distanceToWaterSurfaceToString() {
+		if (! hasGatheringEvent()){
+			return null;
+		}else{
+			GatheringEvent ev = getGatheringEvent(true);
+			String text = ev.getDistanceToWaterSurfaceText();
+			Double min = getDistanceToWaterSurface();
+			Double max = getDistanceToWaterSurfaceMax();
+			return distanceString(min, max, text);
+		}
+	}
+	
 	// distance to water surface
 	@Transient
 	public Double getDistanceToWaterSurface() {
@@ -1214,6 +1258,53 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setDistanceToWaterSurface(distanceToWaterSurface);
 	}
 
+	/**
+	 * @see #getDistanceToWaterSurface()
+	 * @see #getDistanceToWaterSurfaceRange(Double, Double)
+	 */
+	@Transient
+	public Double getDistanceToWaterSurfaceMax() {
+		if (!hasGatheringEvent()) {
+			return null;
+		}else{
+			return getGatheringEvent(true).getDistanceToWaterSurfaceMax();
+		}
+	}
+	
+	public void setDistanceToWaterSurfaceMax(Double distanceToWaterSurfaceMax) {
+		getGatheringEvent(true).setDistanceToWaterSurfaceMax(distanceToWaterSurfaceMax);
+	}
+	
+	/**
+	 * @see #getDistanceToWaterSurface()
+	 * @see #getDistanceToWaterSurfaceRange(Double, Double)
+	 */
+	@Transient
+	public String getDistanceToWaterSurfaceText() {
+		if (!hasGatheringEvent()) {
+			return null;
+		}else{
+			return getGatheringEvent(true).getDistanceToWaterSurfaceText();
+		}
+	}
+	public void setDistanceToWaterSurfaceText(String distanceToWaterSurfaceText) {
+		getGatheringEvent(true).setDistanceToWaterSurfaceText(distanceToWaterSurfaceText);
+	}
+	
+	/**
+	 * Convenience method to set distance to ground minimum and maximum.
+	 * 
+	 * @see #getDistanceToWaterSurface()
+	 * @see #getDistanceToWaterSurfaceMax()
+	 * @param minimumDistance minimum of the range
+	 * @param maximumDistance maximum of the range
+	 */
+	public void setDistanceToWaterSurfaceRange(Double minimumDistance, Double maximumDistance) throws IllegalArgumentException{
+		getGatheringEvent(true).setDistanceToWaterSurface(minimumDistance);
+		getGatheringEvent(true).setDistanceToWaterSurfaceMax(maximumDistance);
+	}
+	
+	
 	// exact location
 	@Transient
 	public Point getExactLocation() {
@@ -2382,6 +2473,26 @@ public class DerivedUnitFacade {
 		for (PropertyChangeListener listener : this.listeners.keySet()){
 			CdmBase listeningObject = listeners.get(listener);
 			listeningObject.removePropertyChangeListener(listener);
+		}
+	}
+	
+	
+	/**
+	 * Computes the correct distance string for given values for min, max and text.
+	 * If text is not blank, text is returned, otherwise "min - max" or a single value is returned.
+	 * @param min min value as number  
+	 * @param max max value as number
+	 * @param text text representation of distance
+	 * @return the formatted distance string
+	 */
+	private String distanceString(Number min, Number max, String text) {
+		if (StringUtils.isNotBlank(text)){
+			return text;
+		}else{
+			String minStr = min == null? null : String.valueOf(min);
+			String maxStr = max == null? null : String.valueOf(max);
+			String result = CdmUtils.concat(" " + UTF8.EN_DASH + " ", minStr, maxStr);
+			return result;
 		}
 	}
 }

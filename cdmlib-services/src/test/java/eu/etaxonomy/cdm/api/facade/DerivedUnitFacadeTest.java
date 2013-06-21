@@ -94,7 +94,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     AgentBase<?> collector = Team.NewInstance();
     String collectingMethod = "Collection Method";
     Double distanceToGround = 22.0;
-    Double distanceToSurface = 50.0;
+    Double distanceToSurface = 0.3;
+    Double distanceToSurfaceMax = 0.7;
+    
     ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
     Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
     String gatheringEventDescription = "A nice gathering description";
@@ -153,6 +155,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         gatheringEvent.setCollectingMethod(collectingMethod);
         gatheringEvent.setDistanceToGround(distanceToGround);
         gatheringEvent.setDistanceToWaterSurface(distanceToSurface);
+        gatheringEvent.setDistanceToWaterSurfaceMax(distanceToSurfaceMax);
         gatheringEvent.setExactLocation(exactLocation);
         gatheringEvent.setDescription(gatheringEventDescription);
         gatheringEvent.setCountry(country);
@@ -628,29 +631,49 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetDistanceToWaterSurface() {
-        Assert.assertEquals("Distance to surface must be same",
-                distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("Distance to surface must be same", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
         specimenFacade.setDistanceToWaterSurface(6.0);
-        Assert.assertEquals("Distance to surface must be 6",
-                Double.valueOf(6), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("Distance to surface must be 6", Double.valueOf(6), specimenFacade.getDistanceToWaterSurface());
         // empty facade tests
-        Assert.assertNull("Empty facace must not have any gathering values",
-                emptyFacade.getDistanceToWaterSurface());
+        Assert.assertNull("Empty facace must not have any gathering values", emptyFacade.getDistanceToWaterSurface());
         emptyFacade.setDistanceToWaterSurface(13.0);
-        Assert.assertNotNull(
-                "Field observation must exist if distance to water exists",
-                emptyFacade.getFieldObservation(false));
-        Assert.assertNotNull(
-                "Gathering event must exist if distance to water exists",
-                emptyFacade.getGatheringEvent(false));
+        Assert.assertNotNull("Field observation must exist if distance to water exists", emptyFacade.getFieldObservation(false));
+        Assert.assertNotNull("Gathering event must exist if distance to water exists", emptyFacade.getGatheringEvent(false));
         FieldObservation specimenFieldObservation = (FieldObservation) emptyFacade
-                .innerDerivedUnit().getDerivedFrom().getOriginals().iterator()
-                .next();
-        Assert.assertSame(
-                "Gathering event of facade and of specimen must be the same",
-                specimenFieldObservation.getGatheringEvent(),
-                emptyFacade.getGatheringEvent(false));
+                .innerDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
+        Assert.assertSame("Gathering event of facade and of specimen must be the same",
+                specimenFieldObservation.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
     }
+    
+    @Test
+    public void testGetSetDistanceToWaterText() {
+        Assert.assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", distanceToSurfaceMax ,specimenFacade.getDistanceToWaterSurfaceMax());
+        Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceText());
+
+        String distText = "approx. 0.3 - 0.6";
+        specimenFacade.setDistanceToWaterSurfaceText(distText);
+        Assert.assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", distanceToSurfaceMax,specimenFacade.getDistanceToWaterSurfaceMax());
+        Assert.assertEquals("", distText,specimenFacade.distanceToWaterSurfaceToString());
+        
+        specimenFacade.setDistanceToWaterSurfaceRange(0.6, 1.4);
+        Assert.assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("", Double.valueOf(0.6), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", Double.valueOf(1.4),specimenFacade.getDistanceToWaterSurfaceMax());
+
+        specimenFacade.setDistanceToWaterSurfaceRange(41.2, null);
+        Assert.assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
+        
+        specimenFacade.setDistanceToWaterSurfaceText(null);
+        Assert.assertNull("", specimenFacade.getDistanceToWaterSurfaceText());
+        Assert.assertEquals("ToString should change by setting text to null", "41.2",specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
+    }
+
 
     /**
      * Test method for

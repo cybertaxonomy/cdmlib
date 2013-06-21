@@ -122,6 +122,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO change column type for DistanceToWaterSurface und DistanceToGround
 		
+		//TODO add column for DistanceToWaterSurfaceMax/Text und DistanceToGroundMax/Text
+		
+		
 		
 		return stepList;
 	}

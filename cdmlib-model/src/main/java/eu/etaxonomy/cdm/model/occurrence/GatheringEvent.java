@@ -66,8 +66,10 @@ import eu.etaxonomy.cdm.model.location.Point;
     "absoluteElevationText",
     "distanceToGround",
     "distanceToGroundMax",
+    "distanceToGroundText",
     "distanceToWaterSurface",
-    "distanceToWaterSurfaceMax"
+    "distanceToWaterSurfaceMax",
+    "distanceToWaterSurfaceText"
 })
 @XmlRootElement(name = "GatheringEvent")
 @Entity
@@ -158,6 +160,20 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Field(analyze = Analyze.NO)
 	@NumericField
 	private Double distanceToGroundMax;
+	
+	
+	/**
+	 * Distance to ground (e.g. when sample is taken from a tree) as text.
+	 * If min/max value exists together with distanceToGroundText
+	 * the later will be preferred for formatting whereas the former
+	 * will be used for computations. If the distanceToGround
+	 * does not require any additional information such as 
+	 * "ca." it is suggested to use min/max value instead. 
+	 */
+	@XmlElement(name = "distanceToGroundText")
+	@Field
+	@Size(max=30)
+	private String distanceToGroundText;
 
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
 	@XmlElement(name = "DistanceToWaterSurface")
@@ -171,6 +187,20 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@NumericField
 	private Double distanceToWaterSurfaceMax;
 
+	/**
+	 * Distance to water surface (e.g. when sample is taken within water) as text.
+	 * If min/max value exists together with distanceToWaterSurfaceText
+	 * the later will be preferred for formatting whereas the former
+	 * will be used for computations. If the distanceToWaterSurface
+	 * does not require any additional information such as 
+	 * "ca." it is suggested to use min/max value instead. 
+	 */
+	@XmlElement(name = "distanceToGroundText")
+	@Field
+	@Size(max=30)
+	private String distanceToWaterSurfaceText;
+
+	
 	/**
 	 * Factory method
 	 * @return
@@ -301,14 +331,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 		this.absoluteElevationText = absoluteElevationText;
 	}
 
-//	public Integer getAbsoluteElevationError() {
-//		return absoluteElevationError;
-//	}
-//
-//	public void setAbsoluteElevationError(Integer absoluteElevationError) {
-//		this.absoluteElevationError = absoluteElevationError;
-//	}
-
 	public Double getDistanceToGround() {
 		return distanceToGround;
 	}
@@ -323,6 +345,39 @@ public class GatheringEvent extends EventBase implements Cloneable{
 
 	public void setDistanceToWaterSurface(Double distanceToWaterSurface) {
 		this.distanceToWaterSurface = distanceToWaterSurface;
+	}
+	
+
+	public Double getDistanceToGroundMax() {
+		return distanceToGroundMax;
+	}
+
+	public void setDistanceToGroundMax(Double distanceToGroundMax) {
+		this.distanceToGroundMax = distanceToGroundMax;
+	}
+
+	public Double getDistanceToWaterSurfaceMax() {
+		return distanceToWaterSurfaceMax;
+	}
+
+	public void setDistanceToWaterSurfaceMax(Double distanceToWaterSurfaceMax) {
+		this.distanceToWaterSurfaceMax = distanceToWaterSurfaceMax;
+	}
+
+	public String getDistanceToGroundText() {
+		return distanceToGroundText;
+	}
+
+	public void setDistanceToGroundText(String distanceToGroundText) {
+		this.distanceToGroundText = distanceToGroundText;
+	}
+
+	public String getDistanceToWaterSurfaceText() {
+		return distanceToWaterSurfaceText;
+	}
+
+	public void setDistanceToWaterSurfaceText(String distanceToWaterSurfaceText) {
+		this.distanceToWaterSurfaceText = distanceToWaterSurfaceText;
 	}
 
 //*********** CLONE **********************************/
@@ -364,6 +419,7 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	private static Set<NamedArea> getNewNamedAreaSet(){
 		return new HashSet<NamedArea>();
 	}
+
 
 
 }
