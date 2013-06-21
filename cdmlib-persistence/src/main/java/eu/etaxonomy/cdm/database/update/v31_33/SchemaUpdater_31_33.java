@@ -110,7 +110,16 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 				
 		//TODO update tree index for feature node
-				
+		
+		//update introduced: adventitious (casual) label
+		//#3540
+		stepName = "Update introduced: adventitious (casual) label";
+		String query = " UPDATE representation r " + 
+				" SET r.abbreviatedlabel = ia " +
+				" WHERE r.abbreviatedlabel = 'id' AND r.label = 'introduced: adventitious (casual)' ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
 		//TODO update idInVocabulary for DefinedTerms
 		
 		//TODO update termType for DefinedTerms and TermVocabulary, no type must be null
@@ -124,6 +133,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO add column for DistanceToWaterSurfaceMax/Text und DistanceToGroundMax/Text
 		
+		//TODO update datatype of sequence.sequence (keeping data not necessary #3325)
+
 		
 		
 		return stepList;

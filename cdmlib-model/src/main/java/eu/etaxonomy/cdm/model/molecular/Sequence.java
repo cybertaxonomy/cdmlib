@@ -16,6 +16,7 @@ import java.util.Set;
 import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
@@ -78,6 +79,7 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 	
 	//the sequence as a string of base pairs. 5'->3'
 	@XmlElement(name = "Sequence")
+    @Lob
 	private String sequence;
 	
 	//should be calculated in case sequence is set
