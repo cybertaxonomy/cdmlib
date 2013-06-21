@@ -1196,23 +1196,22 @@ public class DerivedUnitFacade {
 
 	// distance to ground
 	@Transient
-	public Integer getDistanceToGround() {
+	public Double getDistanceToGround() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToGround() : null);
 	}
 
-	public void setDistanceToGround(Integer distanceToGround) {
+	public void setDistanceToGround(Double distanceToGround) {
 		getGatheringEvent(true).setDistanceToGround(distanceToGround);
 	}
 
 	// distance to water surface
 	@Transient
-	public Integer getDistanceToWaterSurface() {
+	public Double getDistanceToWaterSurface() {
 		return (hasGatheringEvent() ? getGatheringEvent(true).getDistanceToWaterSurface() : null);
 	}
 
-	public void setDistanceToWaterSurface(Integer distanceToWaterSurface) {
-		getGatheringEvent(true).setDistanceToWaterSurface(
-				distanceToWaterSurface);
+	public void setDistanceToWaterSurface(Double distanceToWaterSurface) {
+		getGatheringEvent(true).setDistanceToWaterSurface(distanceToWaterSurface);
 	}
 
 	// exact location

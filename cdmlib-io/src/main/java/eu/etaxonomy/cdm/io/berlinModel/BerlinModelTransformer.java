@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.reference.ISectionBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -483,9 +484,7 @@ public class BerlinModelTransformer {
 		}else if (rankId == 57){
 			
 			if (collSpeciesRank == null){
-				collSpeciesRank = new Rank();
-				Representation representation = Representation.NewInstance("Collective species", "Coll. species", "coll.", Language.ENGLISH());
-				collSpeciesRank.addRepresentation(representation);
+				collSpeciesRank = Rank.NewInstance(RankClass.SpeciesGroup, "Collective species", "Coll. species", "coll.");
 				collSpeciesRank.setUuid(uuidRankCollSpecies);
 				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
 				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());

@@ -68,6 +68,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -316,7 +317,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 
 	
 	
-	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank){
+	protected Rank getRank(STATE state, UUID uuid, String label, String text, String labelAbbrev,OrderedTermVocabulary<Rank> voc, Rank lowerRank, RankClass rankClass){
 		if (uuid == null){
 			uuid = UUID.randomUUID();
 		}
@@ -324,7 +325,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (rank == null){
 			rank = (Rank)getTermService().find(uuid);
 			if (rank == null){
-				rank = new Rank(text, label, labelAbbrev);
+				rank = Rank.NewInstance(rankClass, text, label, labelAbbrev);
 				if (voc == null){
 					boolean isOrdered = true;
 					voc = (OrderedTermVocabulary)getVocabulary(TermType.Rank, uuidUserDefinedRankVocabulary, "User defined vocabulary for ranks", "User Defined Reference System", null, null, isOrdered, rank);

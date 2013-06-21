@@ -15,6 +15,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 
+import eu.etaxonomy.cdm.model.agent.InstitutionTypeTest;
 import eu.etaxonomy.cdm.model.common.*;
 import eu.etaxonomy.cdm.model.common.init.TermLoaderTest;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBaseTest;
@@ -46,7 +47,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 			TaxonTest.class,
 			//strategy
 			BotanicNameCacheStrategyTest.class,
-			NonViralNameParserImplTest.class
+			NonViralNameParserImplTest.class,
+			MarkerTypeTest.class,
+			InstitutionTypeTest.class
 		}
 	)
 public class CdmTestSuite {

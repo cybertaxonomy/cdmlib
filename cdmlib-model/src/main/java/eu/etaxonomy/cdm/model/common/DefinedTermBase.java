@@ -344,10 +344,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
             newInstance.setUuid(UUID.fromString(csvLine.get(0)));
             newInstance.setUri( URI.create(csvLine.get(1)));
             String label = csvLine.get(2).trim();
-            String text = csvLine.get(3);
+            String description = csvLine.get(3);
             String abbreviatedLabel = csvLine.get(4);
             newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
-            newInstance.addRepresentation(Representation.NewInstance(text, label, abbreviatedLabel, lang) );
+            newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
             return newInstance;
     }
 

@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -569,10 +570,10 @@ public class Language extends DefinedTermBase<Language> {
         return new Language(term, label, labelAbbrev);
     }
 
-    public static Language NewInstance(UUID uuid, String label, String iso639_3){
-        Language result = Language.NewInstance(label, label, iso639_3);
+    public static Language NewInstance(UUID uuid, String label, String iso639_2){
+        Language result = Language.NewInstance(label, label, iso639_2);
         result.setUuid(uuid);
-        result.setIso639_2(iso639_3);
+//        result.setIso639_2(iso639_2);
         return result;
     }
 
@@ -583,10 +584,10 @@ public class Language extends DefinedTermBase<Language> {
     @Column(length=2)
     private String iso639_1;
 
-    @XmlAttribute(name = "iso639_2")
-    //TODO create userDefinedType ?
-    @Column(length=3)
-    private String iso639_2;
+//    @XmlAttribute(name = "iso639_2")
+//    //TODO create userDefinedType ?
+//    @Column(length=3)
+//    private String iso639_2;
 
 //***** CONSTRUCTOR ***************************************/    
     
@@ -596,19 +597,19 @@ public class Language extends DefinedTermBase<Language> {
     public Language(UUID uuid) {
         this.setUuid(uuid);
     }
-    public Language(String iso639_1, String iso639_2, String englishLabel, String frenchLabel) throws Exception {
+    public Language(String iso639_1, String iso639_x2, String englishLabel, String frenchLabel) throws Exception {
         super();
-        if(iso639_1 != null && iso639_1.length() > 2){
-            logger.warn("iso639_1 too long: "+iso639_1.toString());
+        if(iso639_1 != null && iso639_1.length() != 2){
+            logger.warn("iso639_1 is not of size 2: "+iso639_1.toString());
         }
-        if(iso639_1 != null && iso639_2.length() > 3){
-            logger.warn("iso639_2 too long: "+iso639_2.toString());
+        if(iso639_x2 != null && iso639_x2.length() != 3){
+            logger.warn("iso639_2 is not of size 3: "+iso639_x2.toString());
         }
         this.iso639_1=iso639_1;
-        this.iso639_2=iso639_2;
+//        this.iso639_2=iso639_2;
         String textEnglish = englishLabel;
         String textFrench = englishLabel;
-        String label = iso639_2;
+        String label = iso639_x2;
         String labelAbbrev = null;
         this.addRepresentation(new Representation(textEnglish, label, labelAbbrev, Language.ENGLISH()));
         this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
@@ -1176,19 +1177,20 @@ public class Language extends DefinedTermBase<Language> {
      *
      * @return the iso639 alpha-3 language code or null if not available
      */
+    @Transient
     public String getIso639_2() {
-        return iso639_2;
+        return getIdInVocabulary();
     }
 
-    public void setIso639_2(String iso639_2) {
-        if (iso639_2 != null){
-            iso639_2 = iso639_2.trim();
-            if(iso639_2.length() > 3 ){
-                logger.warn("Iso639-2: "+iso639_2+" too long");
-            }
-        }
-        this.iso639_2 = iso639_2;
-    }
+//    public void setIso639_2(String iso639_2) {
+//        if (iso639_2 != null){
+//            iso639_2 = iso639_2.trim();
+//            if(iso639_2.length() > 3 ){
+//                logger.warn("Iso639-2: "+iso639_2+" too long");
+//            }
+//        }
+//        this.iso639_2 = iso639_2;
+//    }
 
     @Override
     public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
@@ -1200,7 +1202,7 @@ public class Language extends DefinedTermBase<Language> {
                 DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish));
             }
 
-            newInstance.setIso639_2(csvLine.get(4).trim());
+//            newInstance.setIso639_2(csvLine.get(4).trim());
             newInstance.setIdInVocabulary(csvLine.get(4).trim());
             
             
@@ -1209,7 +1211,7 @@ public class Language extends DefinedTermBase<Language> {
             if(iso639_1 != null && iso639_1.length() > 2){
                 logger.warn("Iso639-1: "+ newInstance.getIso639_1() +" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
             }
-            if(iso639_2 != null &&  iso639_2.length() > 3 ){
+            if(getIdInVocabulary() != null &&  getIdInVocabulary().length() != 3 ){
                 logger.warn("Iso639-2: "+newInstance.getIso639_2()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
             }
 

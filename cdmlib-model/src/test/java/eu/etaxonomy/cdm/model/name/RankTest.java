@@ -106,13 +106,14 @@ public class RankTest extends EntityTestBase {
 
 	@Test
 	public void testRankStringString() {
-		Rank rank = new Rank("term", "label", null);
+		Rank rank = new Rank(RankClass.Species, "term", "label", null);
 		assertEquals("label", rank.getLabel());
 	}
 	
 	@Test
 	public void testEMPIRE() {
 		assertEquals(uuidEmpire,  Rank.EMPIRE().getUuid());
+		assertTrue(Rank.EMPIRE().isSupraGeneric());
 	}
 
 	@Test

@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -332,11 +333,11 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		String rankAbbrev = rs.getString("RankAbbrev");
 		String rankStr = rs.getString("Rank");
 		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
-			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
+			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR(), RankClass.Infraspecific);
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
-			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
+			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR(), RankClass.Infraspecific);
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "sublusus")){
-			result = getRank(state, BerlinModelTransformer.uuidRankSublusus, rankStr, "Rank Sublusus", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
+			result = getRank(state, BerlinModelTransformer.uuidRankSublusus, rankStr, "Rank Sublusus", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR(), RankClass.Infraspecific);
 		}else{
 			result = rank;
 			logger.warn("Unhandled rank: " + rankAbbrev);

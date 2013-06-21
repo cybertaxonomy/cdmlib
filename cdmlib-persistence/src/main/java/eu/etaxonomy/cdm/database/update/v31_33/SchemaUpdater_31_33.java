@@ -115,7 +115,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO update termType for DefinedTerms and TermVocabulary, no type must be null
 		
+		//TODO update DTYPE for modifiers (Stage, Scope, Sex, DeterminationModifier, Modifier -> DefinedTerm)
 		
+		
+		//TODO update rankClass
+		
+		//TODO change column type for DistanceToWaterSurface und DistanceToGround
 		
 		
 		return stepList;

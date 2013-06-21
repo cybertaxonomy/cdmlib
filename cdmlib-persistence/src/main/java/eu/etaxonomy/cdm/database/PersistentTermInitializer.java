@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.database;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -91,6 +92,17 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     @Override
     public void doInitialize(){
         logger.info("PersistentTermInitializer initialize start ...");
+        
+        //only for testing - remove
+        TransactionStatus txStatus2 = transactionManager.getTransaction(txDefinition);
+        int i = vocabularyDao.count();
+        List<TermVocabulary> list = vocabularyDao.list(null, null);
+        for (TermVocabulary voc : list){
+        	System.out.println(voc.getUuid());
+        }
+        transactionManager.commit(txStatus2);
+        // end testing
+        
         if (omit){
             logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
             return;
@@ -157,13 +169,13 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             terms.put(d.getUuid(), d);
         }
 
-        TermVocabulary loadedVocabulary  = termLoader.loadTerms(vocabularyType, terms);
+        TermVocabulary<?> loadedVocabulary  = termLoader.loadTerms(vocabularyType, terms);
 
         UUID vocabularyUuid = loadedVocabulary.getUuid();
 
 
         logger.debug("loading vocabulary " + vocabularyUuid);
-        TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
+        TermVocabulary<DefinedTermBase> persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
         if(persistedVocabulary == null) { // i.e. there is no persisted vocabulary
             logger.debug("vocabulary " + vocabularyUuid + " does not exist - saving");
             saveVocabulary(loadedVocabulary);

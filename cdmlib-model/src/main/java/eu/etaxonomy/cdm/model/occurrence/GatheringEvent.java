@@ -65,7 +65,9 @@ import eu.etaxonomy.cdm.model.location.Point;
     "absoluteElevationMax",
     "absoluteElevationText",
     "distanceToGround",
-    "distanceToWaterSurface"
+    "distanceToGroundMax",
+    "distanceToWaterSurface",
+    "distanceToWaterSurfaceMax"
 })
 @XmlRootElement(name = "GatheringEvent")
 @Entity
@@ -149,13 +151,25 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@XmlElement(name = "DistanceToGround")
 	@Field(analyze = Analyze.NO)
 	@NumericField
-	private Integer distanceToGround;
+	private Double distanceToGround;
+	
+	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
+	@XmlElement(name = "distanceToGroundMax")
+	@Field(analyze = Analyze.NO)
+	@NumericField
+	private Double distanceToGroundMax;
 
 	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
 	@XmlElement(name = "DistanceToWaterSurface")
 	@Field(analyze = Analyze.NO)
 	@NumericField
-	private Integer distanceToWaterSurface;
+	private Double distanceToWaterSurface;
+	
+	// distance in meters to lake or sea surface. Similar to distanceToGround use negative integers for distance *below* the surface, ie under water
+	@XmlElement(name = "DistanceToWaterSurface")
+	@Field(analyze = Analyze.NO)
+	@NumericField
+	private Double distanceToWaterSurfaceMax;
 
 	/**
 	 * Factory method
@@ -295,19 +309,19 @@ public class GatheringEvent extends EventBase implements Cloneable{
 //		this.absoluteElevationError = absoluteElevationError;
 //	}
 
-	public Integer getDistanceToGround() {
+	public Double getDistanceToGround() {
 		return distanceToGround;
 	}
 
-	public void setDistanceToGround(Integer distanceToGround) {
+	public void setDistanceToGround(Double distanceToGround) {
 		this.distanceToGround = distanceToGround;
 	}
 
-	public Integer getDistanceToWaterSurface() {
+	public Double getDistanceToWaterSurface() {
 		return distanceToWaterSurface;
 	}
 
-	public void setDistanceToWaterSurface(Integer distanceToWaterSurface) {
+	public void setDistanceToWaterSurface(Double distanceToWaterSurface) {
 		this.distanceToWaterSurface = distanceToWaterSurface;
 	}
 

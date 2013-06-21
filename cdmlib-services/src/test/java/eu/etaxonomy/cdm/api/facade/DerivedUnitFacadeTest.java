@@ -93,8 +93,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     Integer absoluteElevationMaximum = 14;
     AgentBase<?> collector = Team.NewInstance();
     String collectingMethod = "Collection Method";
-    Integer distanceToGround = 22;
-    Integer distanceToSurface = 50;
+    Double distanceToGround = 22.0;
+    Double distanceToSurface = 50.0;
     ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
     Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
     String gatheringEventDescription = "A nice gathering description";
@@ -392,7 +392,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-            specimenFacade.setDistanceToGround(2);
+            specimenFacade.setDistanceToGround(2.0);
             FieldObservation specimenFieldObservation = (FieldObservation) specimen
                     .getDerivedFrom().getOriginals().iterator().next();
             Assert.assertSame(
@@ -616,11 +616,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetSetDistanceToGround() {
-        Assert.assertEquals("Distance to ground must be same",
-                distanceToGround, specimenFacade.getDistanceToGround());
-        specimenFacade.setDistanceToGround(5);
-        Assert.assertEquals("Distance to ground must be 5", Integer.valueOf(5),
-                specimenFacade.getDistanceToGround());
+        Assert.assertEquals("Distance to ground must be same",distanceToGround, specimenFacade.getDistanceToGround());
+        specimenFacade.setDistanceToGround(5.0);
+        Assert.assertEquals("Distance to ground must be 5", Double.valueOf(5), specimenFacade.getDistanceToGround());
     }
 
     /**
@@ -632,13 +630,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     public void testGetDistanceToWaterSurface() {
         Assert.assertEquals("Distance to surface must be same",
                 distanceToSurface, specimenFacade.getDistanceToWaterSurface());
-        specimenFacade.setDistanceToWaterSurface(6);
+        specimenFacade.setDistanceToWaterSurface(6.0);
         Assert.assertEquals("Distance to surface must be 6",
-                Integer.valueOf(6), specimenFacade.getDistanceToWaterSurface());
+                Double.valueOf(6), specimenFacade.getDistanceToWaterSurface());
         // empty facade tests
         Assert.assertNull("Empty facace must not have any gathering values",
                 emptyFacade.getDistanceToWaterSurface());
-        emptyFacade.setDistanceToWaterSurface(13);
+        emptyFacade.setDistanceToWaterSurface(13.0);
         Assert.assertNotNull(
                 "Field observation must exist if distance to water exists",
                 emptyFacade.getFieldObservation(false));
@@ -741,7 +739,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertFalse("The field observation should be null now",
                 specimenFacade.hasFieldObject());
 
-        specimenFacade.setDistanceToGround(33);
+        specimenFacade.setDistanceToGround(33.0);
         Assert.assertTrue(
                 "The field observation should have been created again",
                 specimenFacade.hasFieldObject());
@@ -1033,12 +1031,12 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Ignore // #######DerivationEvent ---------------------------------------- 1
     public void testSetGatheringEvent() {
         GatheringEvent newGatheringEvent = GatheringEvent.NewInstance();
-        newGatheringEvent.setDistanceToGround(43);
+        newGatheringEvent.setDistanceToGround(43.0);
         Assert.assertFalse("The initial distance to ground should not be 43",
-                specimenFacade.getDistanceToGround() == 43);
+                specimenFacade.getDistanceToGround() == 43.0);
         specimenFacade.setGatheringEvent(newGatheringEvent);
         Assert.assertTrue("The final distance to ground should be 43",
-                specimenFacade.getDistanceToGround() == 43);
+                specimenFacade.getDistanceToGround() == 43.0);
         Assert.assertSame(
                 "The new gathering event should be 'newGatheringEvent'",
                 newGatheringEvent, specimenFacade.innerGatheringEvent());
@@ -1578,7 +1576,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test // #######DerivationEvent
     public void testEventPropagation() {
-        specimenFacade.setDistanceToGround(24);
+        specimenFacade.setDistanceToGround(24.0);
 
     }
 

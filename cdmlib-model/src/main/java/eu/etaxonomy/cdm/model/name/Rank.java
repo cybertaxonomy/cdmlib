@@ -15,9 +15,12 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -136,14 +139,14 @@ public class Rank extends OrderedTermBase<Rank> {
 
 //*********************** Factory methods ********************************************/
 
-    /**
-     * Creates a new empty rank.
-     *
-     * @see #NewInstance(String, String, String)
-     */
-    private static Rank NewInstance(){
-        return new Rank();
-    }
+//    /**
+//     * Creates a new empty rank.
+//     *
+//     * @see #NewInstance(String, String, String)
+//     */
+//    private static Rank NewInstance(){
+//        return new Rank();
+//    }
 
     /**
      * Creates an additional rank with a description (in the {@link Language#DEFAULT() default language}),
@@ -156,18 +159,24 @@ public class Rank extends OrderedTermBase<Rank> {
      * 						 new rank to be created
      * @see 				 #NewInstance()
      */
-    private static Rank NewInstance(String term, String label, String labelAbbrev){
-        return new Rank(term, label, labelAbbrev);
+    public static Rank NewInstance(RankClass rankClass, String term, String label, String labelAbbrev){
+        return new Rank(rankClass, term, label, labelAbbrev);
     }
+    
+	/**
+	 * The {@link RankClass rank class} of a rank. It is usually needed for correct formatting of a
+	 * rank by using e.g. isSupraGeneric(). Prior to v3.3 this was computed by comparison of ranks.
+	 */
+	@XmlAttribute(name ="RankClass")
+	@NotNull
+	@Enumerated  //TODO use UserType 
+	private RankClass rankClass;
 
-// ********************* CONSTRUCTORS ************************************+/
-    /**
-     * Class constructor: creates a new empty rank instance.
-     *
-     * @see 	#Rank(String, String, String)
-     */
-    public Rank() {
-    }
+
+	// ********************* CONSTRUCTORS ************************************+/
+    
+	//for hibernate use only
+	protected Rank() {}
 
     /**
      * Class constructor: creates an additional rank instance with a description
@@ -180,8 +189,9 @@ public class Rank extends OrderedTermBase<Rank> {
      * 						 new rank to be created
      * @see 	#Rank()
      */
-    public Rank(String term, String label, String labelAbbrev) {
+    protected Rank(RankClass rankClass, String term, String label, String labelAbbrev) {
         super(TermType.Rank, term, label, labelAbbrev);
+        this.rankClass = rankClass;
     }
 
 
@@ -422,7 +432,19 @@ public class Rank extends OrderedTermBase<Rank> {
     public static final Rank UNRANKED_INFRAGENERIC(){
         return getTermByUuid(uuidInfragenericTaxon);
     }
+    
+// ************************ GETTER / SETTER **********************************/
 
+    public RankClass getRankClass() {
+		return rankClass;
+	}
+
+	public void setRankClass(RankClass rankClass) {
+		this.rankClass = rankClass;
+	}
+    
+// ******************************** METHODS ***************************************/
+	
     /**
      * Returns the boolean value indicating whether <i>this</i> rank is higher than
      * the genus rank (true) or not (false). Returns false if <i>this</i> rank is null.
@@ -434,7 +456,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isSupraGeneric(){
-        return (this.isHigher(Rank.GENUS()));
+        return this.rankClass.equals(RankClass.Suprageneric); // (this.isHigher(Rank.GENUS()));
     }
 
     /**
@@ -448,7 +470,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isGenus(){
-        return (this.equals(Rank.GENUS()));
+        return this.rankClass.equals(RankClass.Genus); // (this.equals(Rank.GENUS()));
     }
 
     /**
@@ -465,7 +487,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isInfraGeneric(){
-        return (this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
+        return this.rankClass.equals(RankClass.Infrageneric) || this.rankClass.equals(RankClass.SpeciesGroup) ; //(this.isLower(Rank.GENUS()) && this.isHigher(Rank.SPECIES()));
     }
 
     /**
@@ -476,7 +498,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isSpeciesAggregate(){
-        return (this.equals(Rank.SPECIESAGGREGATE()) || (this.isLower(Rank.SPECIESAGGREGATE()) && this.isHigher(Rank.SPECIES())));
+        return this.rankClass.equals(RankClass.SpeciesGroup); //(this.equals(Rank.SPECIESAGGREGATE()) || (this.isLower(Rank.SPECIESAGGREGATE()) && this.isHigher(Rank.SPECIES())));
     }
 
     /**
@@ -490,7 +512,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isSpecies(){
-        return (this.equals(Rank.SPECIES()));
+        return this.rankClass.equals(RankClass.Species); //(this.equals(Rank.SPECIES()));
     }
 
     /**
@@ -504,7 +526,7 @@ public class Rank extends OrderedTermBase<Rank> {
      */
     @Transient
     public boolean isInfraSpecific(){
-        return (this.isLower(Rank.SPECIES()));
+        return this.rankClass.equals(RankClass.Infraspecific); // (this.isLower(Rank.SPECIES()));
     }
 
 
@@ -515,8 +537,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * @param	strRank	the string identifying the rank
      * @return  		the rank
      */
-    public static Rank getRankByNameOrAbbreviation(String strRank)
-                throws UnknownCdmTypeException{
+    public static Rank getRankByNameOrAbbreviation(String strRank) throws UnknownCdmTypeException{
         return getRankByNameOrAbbreviation(strRank, false);
     }
 
@@ -877,7 +898,11 @@ public class Rank extends OrderedTermBase<Rank> {
 
     @Override
     public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-        return super.readCsvLine(termClass, csvLine, terms);
+        Rank rank = super.readCsvLine(termClass, csvLine, terms);
+        RankClass rankClass = RankClass.byKey(csvLine.get(5));
+        assert rankClass != null: "XXXXXXXXXXXXXXXXXXXXX  Rank class must not be null: " + csvLine ;
+        rank.setRankClass(rankClass);
+        return rank;
     }
 
     @Override

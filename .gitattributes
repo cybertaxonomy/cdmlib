@@ -847,6 +847,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NomenclaturalStatus.java 
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NomenclaturalStatusType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/NonViralName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/Rank.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/RankClass.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/SpecimenTypeDesignationStatus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/TaxonNameBase.java -text
@@ -1524,7 +1525,6 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmEntityDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/CdmGenericDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest_old.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/GroupDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/TermVocabularyDaoImplTest.testListVocabularyEmpty.xml -text

@@ -55,8 +55,8 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	Integer absoluteElevationError = 2;
 	Team collector = Team.NewInstance();
 	String collectingMethod = "Collection Method";
-	Integer distanceToGround = 22;
-	Integer distanceToSurface = 50;
+	Double distanceToGround = 22.0;
+	Double distanceToSurface = 50.0;
 	ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
 	Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
 	String gatheringEventDescription = "A nice gathering description";

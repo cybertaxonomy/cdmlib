@@ -74,8 +74,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 	@XmlAttribute(name ="TermType")
 //	@Column(name="termType")
 //	@NotNull
-	
-	@Enumerated
+	@Enumerated  //TODO use UserType 
 	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")
@@ -122,7 +121,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     public void addRepresentation(Representation representation) {
         this.representations.add(representation);
         // this is just a preliminary solution (see ticket #3148)
-        if(representation.language!=null && representation.language.equals(Language.DEFAULT())){
+        if(representation.language !=null && representation.language.equals(Language.DEFAULT())){
         	this.regenerateTitleCache();
         }
     }
