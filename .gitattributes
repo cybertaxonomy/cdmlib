@@ -1504,7 +1504,6 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet-wit
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/database/TermsDataSet.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.xml -text
-cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/FreeTextSearchIntegration.xml.backup -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.testDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.testExists.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/agent/AgentDaoImplTest.testFind.xml -text
