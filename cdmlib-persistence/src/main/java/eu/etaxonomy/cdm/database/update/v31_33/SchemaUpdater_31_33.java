@@ -127,7 +127,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO update DTYPE for modifiers (Stage, Scope, Sex, DeterminationModifier, Modifier -> DefinedTerm)
 		
 		
-		//TODO update rankClass
+		//TODO update rankClass (#3521)
 		
 		//TODO change column type for DistanceToWaterSurface und DistanceToGround
 		
