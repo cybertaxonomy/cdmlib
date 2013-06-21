@@ -1320,8 +1320,7 @@ public class DerivedUnitFacade {
 	}
 
 	public void setLocality(String locality, Language language) {
-		LanguageString langString = LanguageString.NewInstance(locality,
-				language);
+		LanguageString langString = LanguageString.NewInstance(locality, language);
 		setLocality(langString);
 	}
 
@@ -2317,8 +2316,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public Specimen addDuplicate(Collection collection, String catalogNumber,
-			String accessionNumber,
-			TaxonNameBase storedUnder, PreservationMethod preservation) {
+			String accessionNumber, TaxonNameBase storedUnder, PreservationMethod preservation) {
 		testDerivedUnit();
 		Specimen duplicate = Specimen.NewInstance();
 		duplicate.setDerivedFrom(getDerivationEvent(CREATE));

@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.facade;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -72,10 +73,11 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			//Herbarium & accession number
 			String code = getCode(facade);
 			String collectionData = CdmUtils.concat(" ", code, facade.getAccessionNumber());
-			if (CdmUtils.isNotEmpty(collectionData)) {
+			if (StringUtils.isNotBlank(collectionData)) {
 				result = (result + " (" +  collectionData + ")").trim();
 			}
 			
+			//result
 			result = fieldStrategy.addPlantDescription(result, facade);
 
 			
@@ -95,12 +97,12 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		String code = "";
 		if(facade.getCollection() != null){			
 			code = facade.getCollection().getCode();
-			if (CdmUtils.isEmpty(code)){
+			if (StringUtils.isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
 				if (institution != null){
 					code = institution.getCode();
 				}
-				if (CdmUtils.isEmpty(code)){
+				if (StringUtils.isBlank(code)){
 					Collection superCollection = facade.getCollection().getSuperCollection();
 					if (superCollection != null){
 						code = superCollection.getCode();

@@ -93,15 +93,15 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     public void doInitialize(){
         logger.info("PersistentTermInitializer initialize start ...");
         
-        //only for testing - remove
-        TransactionStatus txStatus2 = transactionManager.getTransaction(txDefinition);
-        int i = vocabularyDao.count();
-        List<TermVocabulary> list = vocabularyDao.list(null, null);
-        for (TermVocabulary voc : list){
-        	System.out.println(voc.getUuid());
-        }
-        transactionManager.commit(txStatus2);
-        // end testing
+//        //only for testing - remove
+//        TransactionStatus txStatus2 = transactionManager.getTransaction(txDefinition);
+//        int i = vocabularyDao.count();
+//        List<TermVocabulary> list = vocabularyDao.list(null, null);
+//        for (TermVocabulary voc : list){
+//        	System.out.println(voc.getUuid());
+//        }
+//        transactionManager.commit(txStatus2);
+//        // end testing
         
         if (omit){
             logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");

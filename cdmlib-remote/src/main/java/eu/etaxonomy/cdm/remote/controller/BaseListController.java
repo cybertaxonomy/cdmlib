@@ -57,11 +57,12 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
      *
      * @param pageIndex
      *            the index of the page to be returned, the first page has the
-     *            pageIndex = 0 - <i>optional parameter</i>
+     *            pageIndex = 0 - <i>optional parameter</i>. Defaults to 0 if
+     *            set to <code>NULL</code>.
      * @param pageSize
-     *            the maximum number of entities returned per page (can be null
-     *            to return all entities in a single page) - <i>optional
-     *            parameter</i>
+     *            the maximum number of entities returned per page.
+     *            The {@link #DEFAULT_PAGE_SIZE} will be used if pageSize is set to
+     *            <code>null</code> - <i>optional parameter</i>
      * @param type
      *            Further restricts the type of entities to be returned.
      *            If null the base type <code>&lt;T&gt;</code> is being used. - <i>optional parameter</i>

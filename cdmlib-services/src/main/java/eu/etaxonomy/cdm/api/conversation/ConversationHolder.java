@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.api.conversation;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 import javax.sql.DataSource;
 
@@ -23,6 +26,7 @@ import org.hibernate.SessionFactory;
 import org.hibernate.jdbc.Work;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
+import org.springframework.jdbc.datasource.ConnectionHolder;
 import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.orm.hibernate4.SessionHolder;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -30,19 +34,50 @@ import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.TransactionStatus;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
+import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ServiceImpl;
 import eu.etaxonomy.cdm.persistence.hibernate.CdmPostDataChangeObservableListener;
 
 /**
- * This is an implementation of the session-per-conversation pattern for usage
- * in a Spring context.
+ * This is an implementation of the session-per-conversation pattern for usage in a Spring context.
+ * 
+ * The primary aim of this class is to create and maintain sessions across multiple transactions. 
+ * It is important to ensure that these (long running) sessions must always behave consistently 
+ * with regards to session management behaviour expected by Hibernate. 
+ * <p>
+ * This behaviour essentially revolves around the resources map in the {@link org.springframework.transaction.support.TransactionSynchronizationManager TransactionSynchronizationManager}.
+ * This resources map contains two entries of interest,
+ *  - (Autowired) {@link org.hibernate.SessionFactory} mapped to the {@link org.springframework.orm.hibernate4.SessionHolder}
+ *  - (Autowired) {@link javax.sql.DataSource} mapped to the {@link org.springframework.jdbc.datasource.ConnectionHolder}
+ *  <p>
+ * The SessionHolder object itself contains the {@link org.hibernate.Session Session} as well as the {@link org.hibernate.Transaction object. 
+ * The ConnectionHolder contains the (JDBC) {@link java.sql.Connection Connection} to the database. For every action to do with the 
+ * transaction object it is required to have both entries present in the resources. Both the session as well as the connection
+ * objects must not be null and the corresponding holders must have their 'synchronizedWithTransaction' flag set to true. 
+ * <p>
+ * The default behaviour of the {@link org.springframework.transaction.PlatformTransactionManager PlatformTransactionManager} which in the CDM case is autowired
+ * to {@link org.springframework.orm.hibernate4.HibernateTransactionManager HibernateTransactionManager}, is to check these entries
+ * when starting a transaction. If this entries do not exist in the resource map then they are created, implying a new session, which
+ * is in fact how hibernate implements the default 'session-per-request' pattern internally. 
+ * <p>
+ * Given the above conditions, this class manages long running sessions by providing the following methods,
+ * - {@link #bind()} : binds the session owned by this conversation to the resource map
+ * - {@link #startTransaction()} : starts a transaction 
+ * - {@link #commit()} : commits the current transaction, with the option of restarting a new transaction.
+ * - {@link #unbind()} : unbinds the session owned by this conversation from the resource map.
+ * - {@link #close()} : closes the session owned by this conversation
+ * <p>
+ * With the exception of {@link #unbind()} (which should be called explicitly), the above sequence must be strictly followed to 
+ * maintain a consistent session state. Even though it is possible to interweave multiple conversations at the same time, for a 
+ * specific conversation the above sequence must be followed.
  *  
  * @see http://www.hibernate.org/42.html
  * 
- * @author n.hoffmann
+ * @author n.hoffmann,c.mathew
  * @created 12.03.2009
  * @version 1.0
  */
-public class ConversationHolder{
+public class ConversationHolder {
 
 	private static final Logger logger = Logger.getLogger(ConversationHolder.class);
 
@@ -55,6 +90,8 @@ public class ConversationHolder{
 	@Autowired
 	private PlatformTransactionManager transactionManager;
 
+	@Autowired
+	private IService service;
 
 	
 	/**
@@ -76,6 +113,7 @@ public class ConversationHolder{
 	 * This conversations transaction
 	 */
 	private TransactionStatus transactionStatus;
+	
 
 	private boolean closed = false;
 
@@ -91,13 +129,14 @@ public class ConversationHolder{
 		this();
 		this.dataSource = dataSource;
 		this.sessionFactory = sessionFactory;
-		this.transactionManager = transactionManager;
+		this.transactionManager = transactionManager;				
 		
 		bind();
 		
 		if(TransactionSynchronizationManager.hasResource(getDataSource())){
 			TransactionSynchronizationManager.unbindResource(getDataSource());
 		}
+		
 	}
 	
 	/**
@@ -107,7 +146,7 @@ public class ConversationHolder{
 	public void bind() {
 		
 		logger.info("Binding resources for ConversationHolder");	
-				
+		
 		if(TransactionSynchronizationManager.isSynchronizationActive()){
 			TransactionSynchronizationManager.clearSynchronization();
 		}
@@ -117,17 +156,43 @@ public class ConversationHolder{
 			logger.info("Starting new Synchronization in TransactionSynchronizationManager");
 			TransactionSynchronizationManager.initSynchronization();
 			
+			
 			if(TransactionSynchronizationManager.hasResource(getSessionFactory())){
 				TransactionSynchronizationManager.unbindResource(getSessionFactory());
 			}
 			
 			logger.info("Binding Session to TransactionSynchronizationManager: Session: " + getSessionHolder());
 			TransactionSynchronizationManager.bindResource(getSessionFactory(), getSessionHolder());
-			
-		}catch(Exception e){
+
+
+											
+		} catch(Exception e){
 			logger.error("Error binding resources for session", e);
 		}			
 		
+	}
+	
+	/**
+	 * This method has to be called when suspending the current unit of work. The conversation can be later bound again.
+	 */
+	public void unbind() {
+		
+		logger.info("Unbinding resources for ConversationHolder");	
+
+		if(TransactionSynchronizationManager.isSynchronizationActive()){
+			TransactionSynchronizationManager.clearSynchronization();
+		}
+			
+			
+		if(isBound()) {			
+			// unbind the current session.
+			// there is no need to bind a new session, since HibernateTransactionManager will create a new one
+			// if the resource map does not contain one (ditto for the datasource-to-connection entry).
+			TransactionSynchronizationManager.unbindResource(getSessionFactory());				
+			if(TransactionSynchronizationManager.hasResource(getDataSource())){
+				TransactionSynchronizationManager.unbindResource(getDataSource());
+			}
+		}
 	}
 	
 	public SessionHolder getSessionHolder(){
@@ -150,7 +215,8 @@ public class ConversationHolder{
 	 */
 	public boolean isBound(){
 		//return sessionHolder != null && longSession != null && longSession.isConnected();
-		return longSession != null && getSessionFactory().getCurrentSession() == longSession;
+		SessionHolder currentSessionHolder = (SessionHolder)TransactionSynchronizationManager.getResource(getSessionFactory());
+		return longSession != null && currentSessionHolder != null && getSessionFactory().getCurrentSession() == longSession;
 	}
 	
 	/**
@@ -164,7 +230,13 @@ public class ConversationHolder{
 			logger.warn("We allow only one transaction at the moment but startTransaction " +
 					"was called a second time.\nReturning the transaction already associated with this " +
 					"ConversationManager");
-		}else{				
+		}else{	
+			//always safe to remove the datasource-to-connection entry since we
+			// know that HibernateTransactionManager will create a new one
+			if(TransactionSynchronizationManager.hasResource(getDataSource())){					
+				TransactionSynchronizationManager.unbindResource(getDataSource());						
+			}
+			
 			transactionStatus = transactionManager.getTransaction(definition);
 			
 			logger.info("Transaction started: " + transactionStatus);
@@ -219,6 +291,26 @@ public class ConversationHolder{
 			if(getSessionHolder().isRollbackOnly()){
 				logger.error("Commiting this session will not work. It has been marked as rollback only.");
 			}
+			// if a datasource-to-connection entry already exists in the resource map
+			// then its setSynchronizedWithTransaction should be true, since hibernate has added
+			// this entry.
+			// if the datasource-to-connection entry does not exist then we need to create one
+			// and explicitly setSynchronizedWithTransaction to true.
+			TransactionSynchronizationManager.getResource(getDataSource());
+			if(!TransactionSynchronizationManager.hasResource(getDataSource())){
+				try {
+					ConnectionHolder ch = new ConnectionHolder(getDataSource().getConnection());
+					ch.setSynchronizedWithTransaction(true);
+					TransactionSynchronizationManager.bindResource(getDataSource(),ch);
+					
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SQLException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 			
 			// commit the changes
 			transactionManager.commit(transactionStatus);
@@ -244,34 +336,36 @@ public class ConversationHolder{
 	/**
 	 * @return the session associated with this conversation manager 
 	 */
-	private Session getSession() {
+	public Session getSession() {
 		if(longSession == null){
-			logger.info("Creating Session: [" + longSession + "]");
-			try{
-				//TODO still need to check if connection and session() handling still works correctly
-				//after upgrade to hibernate 4.
-				//With hibernate 4 JDBC {@link Connection connection(s)} will be obtained from the
-				// configured {@link org.hibernate.service.jdbc.connections.spi.ConnectionProvider}
-				//as needed.
-				//Also interesting: http://stackoverflow.com/questions/3526556/session-connection-deprecated-on-hibernate
-				//http://blog-it.hypoport.de/2012/05/10/hibernate-4-migration/
-				longSession = sessionFactory.openSession();
-				longSession.setFlushMode(FlushMode.COMMIT);
-			}
-			catch (HibernateException ex) {
-				throw new DataAccessResourceFailureException("Could not open Hibernate Session", ex);
-			}
-			
-
+			longSession = getNewSession();				
 		}
-		
 		return longSession;
+	}	
+	
+	/**
+	 * @return a new session to be managed by this conversation
+	 */
+	private Session getNewSession() {
+
+		// Interesting: http://stackoverflow.com/questions/3526556/session-connection-deprecated-on-hibernate
+		// Also, http://blog-it.hypoport.de/2012/05/10/hibernate-4-migration/
+		
+		// This will create a new session which must be explicitly managed by this conversation, which includes
+		// binding / unbinding / closing session as well as starting / committing transactions. 
+		Session session = sessionFactory.openSession();
+		session.setFlushMode(FlushMode.COMMIT);
+		logger.info("Creating Session: [" + longSession + "]");
+		return session;
 	}
+	
+	
+
 	
 	/** 
 	 * @return the session factory that is bound to this conversation manager
 	 */
-	private SessionFactory getSessionFactory() {
+	public SessionFactory getSessionFactory() {
 		return sessionFactory;
 	}
 
@@ -322,12 +416,18 @@ public class ConversationHolder{
 	 * Free resources bound to this conversationHolder
 	 */
 	public void close(){
-		if(getSession().isOpen())
-			getSession().close();
+		if(getSession().isOpen()) {
+			getSession().close();		
+			unbind();				
+		}		
+		longSession = null;
+		sessionHolder = null;
 		closed = true;
 	}
 	
 	public boolean isClosed(){
 		return closed;
 	}
+	
+	
 }
