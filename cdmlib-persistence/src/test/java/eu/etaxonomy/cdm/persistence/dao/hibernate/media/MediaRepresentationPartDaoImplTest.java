@@ -99,5 +99,26 @@ public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrat
 		}
 		
 	}
+	
+	@Test
+	public void testLongUri() {
+		try {
+			URI uri = new URI("http://www.test3.de/woieoriuwoirwuwouroiwuowiuoiuwoieuroiuewroiououi/hdsfiuwhuehfhiuhiuhwihiuhew"+
+					"wereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+
+					"weeeeeeeeeeeeeeeeeeeeeee/eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"+
+					"uizweiuzriuzewiurziuewui/weeeeeeeeeeeeeeeeeuiziuzwueziuzweiurziuwzriufsfdds");
+			
+			MediaRepresentationPart part1 = MediaRepresentationPart.NewInstance(uri, 22);
+			//a representation is needed otherwise a not nullable exception is thrown (due to lucene index (?))
+			MediaRepresentation representation = MediaRepresentation.NewInstance();
+			representation.addRepresentationPart(part1);
+			dao.save(part1);
+			commit();
+			
+		} catch (URISyntaxException e) {
+			Assert.fail("URI should be ok");
+		}
+		
+	}
 
 }

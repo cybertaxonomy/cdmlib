@@ -135,6 +135,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO update datatype of sequence.sequence (keeping data not necessary #3325)
 
+		//TODO update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference
+		//Rights, MediaRepresentationPart, GenBankAccession, ) #3345
+		
 		
 		
 		return stepList;
