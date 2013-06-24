@@ -13,6 +13,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -30,7 +31,6 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
-import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -50,6 +50,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 
 	private IImportConfigurator configurator;
+	private IImportConfigurator configurator2;
+	private IImportConfigurator configurator3;
 
 	@Before
 	public void setUp() {
@@ -57,12 +59,35 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		URL url = this.getClass().getResource(inputFile);
 		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		try {
-			configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null);
+			configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();
 		}
 		assertNotNull("Configurator could not be created", configurator);
+
+		inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml";
+        url = this.getClass().getResource(inputFile);
+        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+        try {
+            configurator2 = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+        } catch (URISyntaxException e) {
+            e.printStackTrace();
+            Assert.fail();
+        }
+        assertNotNull("Configurator2 could not be created", configurator2);
+
+//        inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml";
+//        url = this.getClass().getResource(inputFile);
+//        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+//        try {
+//            configurator3 = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+//        } catch (URISyntaxException e) {
+//            e.printStackTrace();
+//            Assert.fail();
+//        }
+//        assertNotNull("Configurator3 could not be created", configurator3);
+
 	}
 
 	@Test
@@ -72,16 +97,51 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
 
+//	@Test
+//	@DataSet( value="../../../BlankDataSet.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
+//	public void testDoInvoke() {
+//		boolean result = defaultImport.invoke(configurator);
+//		assertTrue("Return value for import.invoke should be true", result);
+//		assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+//		assertEquals("Number of specimen is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
+//	}
+
 	@Test
-	@DataSet( value="../../../BlankDataSet.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
-	public void testDoInvoke() {
-		boolean result = defaultImport.invoke(configurator);
-		assertTrue("Return value for import.invoke should be true", result);
+    @DataSet( value="../../../BlankDataSet.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
+    public void testDoInvoke2() {
+        boolean result = defaultImport.invoke(configurator2);
+        assertTrue("Return value for import.invoke should be true", result);
+        assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
+        try {
+            writeDbUnitDataSetFile(new String[] {
+                    "TAXONBASE", "TAXONNAMEBASE",
+                    "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
+                    "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+                    "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
+                    "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
+                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT",
+                    "HIBERNATE_SEQUENCES",
+             });
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+//                File file = new File("./ABCDPart1Dataset.xml");
+//        FileOutputStream fos;
+//        try {
+//            fos = new FileOutputStream(file);
+//            printDataSet(fos);
+//            fos.close();
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        } catch (IOException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
-		assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-		assertEquals("Number of specimen is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
 
 
-	}
-
+    }
 }
