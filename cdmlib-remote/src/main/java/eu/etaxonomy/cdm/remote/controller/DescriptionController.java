@@ -31,7 +31,6 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -69,16 +68,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         super();
     }
 
-    private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
-            new String[]{
-                "representations",
-                "root.feature.representations",
-                "root.children.feature.representations",
-                "root.children.children.feature.representations",
-            });
-
-
-
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
@@ -111,14 +100,14 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = {"/featureTree/{uuid}"}, method = RequestMethod.GET)
-    public FeatureTree doGetFeatureTree(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response)throws IOException {
-        FeatureTree featureTree = getCdmBaseInstance(FeatureTree.class, featureTreeService, uuid, response, FEATURETREE_INIT_STRATEGY);
-        return featureTree;
-    }
+//    @RequestMapping(value = {"/featureTree/{uuid}"}, method = RequestMethod.GET)
+//    public FeatureTree doGetFeatureTree(
+//            @PathVariable("uuid") UUID uuid,
+//            HttpServletRequest request,
+//            HttpServletResponse response)throws IOException {
+//        FeatureTree featureTree = getCdmBaseInstance(FeatureTree.class, featureTreeService, uuid, response, FEATURETREE_INIT_STRATEGY);
+//        return featureTree;
+//    }
 
     @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET)
     public ModelAndView doGetDescriptionElement(
@@ -149,7 +138,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             return null;
         }
 
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
+        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 
@@ -201,7 +190,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        Pager<DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
+        Pager<DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, getInitializationStrategy());
 
         return pager;
     }

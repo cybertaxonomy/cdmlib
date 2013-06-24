@@ -82,7 +82,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, DEFAULT_INIT_STRATEGY);
+        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, getInitializationStrategy());
     }
 
 //    /**
@@ -125,7 +125,7 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
         //if(start == null){ start = 0;}
         if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
         if(limit < 1){ limit = null;}
-        return service.list(type, limit, start, null, DEFAULT_INIT_STRATEGY);
+        return service.list(type, limit, start, null, getInitializationStrategy());
     }
 
   /* TODO

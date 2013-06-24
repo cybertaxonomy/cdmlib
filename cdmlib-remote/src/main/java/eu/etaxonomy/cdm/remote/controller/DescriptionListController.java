@@ -25,13 +25,11 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution;
 import eu.etaxonomy.cdm.api.service.description.TransmissionEngineDistribution.AggregationMode;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -49,8 +47,6 @@ import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
 @RequestMapping(value = {"/description"})
 public class DescriptionListController extends IdentifiableListController<DescriptionBase, IDescriptionService> {
 
-	@Autowired
-	private IFeatureTreeService featureTreeService;
 
     @Autowired
     private ITermService termService;
@@ -68,29 +64,16 @@ public class DescriptionListController extends IdentifiableListController<Descri
      */
     private static UUID transmissionEngineMonitorUuid = null;
 
-	private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
-			new String[]{
-				"representations",
-				"root.feature.representations",
-				"root.children.feature.representations"
-			});
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Override
-	@Autowired
-	public void setService(IDescriptionService service) {
-		this.service = service;
-	}
 
-	@RequestMapping(method = RequestMethod.GET, value="/featureTree")
-	public List<FeatureTree> doGetFeatureTrees(HttpServletRequest request, HttpServletResponse response) throws IOException {
-
-		List<FeatureTree> obj = featureTreeService.list(null,null,null,null,FEATURETREE_INIT_STRATEGY);
-		return obj;
-	}
-
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.BaseListController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Override
+    @Autowired
+    public void setService(IDescriptionService service) {
+        this.service = service;
+    }
 
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
