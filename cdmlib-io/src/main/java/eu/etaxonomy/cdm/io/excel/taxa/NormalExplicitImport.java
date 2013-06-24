@@ -510,7 +510,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		TaxonBase taxonBase = null;
 		
 		String titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
-		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isDoMatchTaxa()){
+		if (! synonymMarkers.contains(nameStatus)  && state.getConfig().isReuseExistingTaxaWhenPossible()){
 			titleCache = CdmUtils.concat(" ", taxonNameStr, authorStr);
 			taxonBase = getTaxonService().findBestMatchingTaxon(titleCache);
 		}else{
