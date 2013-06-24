@@ -60,7 +60,7 @@ public abstract class ExcelImportConfiguratorBase extends ImportConfiguratorBase
 		return sourceReference;
 	}
 
-	public boolean isDoMatchTaxa() {
+	public boolean isReuseExistingTaxaWhenPossible() {
 		return false;
 	}
 
