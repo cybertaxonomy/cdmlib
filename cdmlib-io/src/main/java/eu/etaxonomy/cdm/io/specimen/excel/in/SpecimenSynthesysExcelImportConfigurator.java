@@ -11,7 +11,9 @@ package eu.etaxonomy.cdm.io.specimen.excel.in;
 
 
 import java.net.URI;
+import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -39,6 +41,9 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     private Map<String, Team> titleCacheTeam;
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
+    
+    private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+    private Reference<?> dataReference;
 
 
 	//TODO
@@ -188,6 +193,35 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 
     public String getDefaultAuthor(){
      return defaultAuthor;
+    }
+
+    
+    public Map<String,UUID> getNamedAreaDecisions() {
+        return namedAreaDecisions;
+    }
+
+    public void setNamedAreaDecisions(Map<String,UUID> namedAreaDecisions) {
+        this.namedAreaDecisions = namedAreaDecisions;
+    }
+
+    public void putNamedAreaDecision(String areaStr,UUID uuid){
+        this.namedAreaDecisions.put(areaStr,uuid);
+    }
+
+    public UUID getNamedAreaDecision(String areaStr){
+        return namedAreaDecisions.get(areaStr);
+    }
+
+    /**
+     * @param ref
+     */
+    public void setDataReference(Reference<?> ref) {
+        this.dataReference=ref;
+
+    }
+
+    public Reference<?> getDataReference() {
+        return dataReference;
     }
 
 
