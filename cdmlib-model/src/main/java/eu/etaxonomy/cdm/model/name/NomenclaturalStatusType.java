@@ -93,6 +93,7 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
+	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
 	
 	private static Map<String, UUID> abbrevMap = null;
@@ -206,7 +207,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 				this.equals(CONSERVED()) ||
 				this.equals(ORTHOGRAPHY_CONSERVED()) ||
 				this.equals(REJECTED_PROP()) ||
-				this.equals(UTIQUE_REJECTED_PROP())
+				this.equals(UTIQUE_REJECTED_PROP()) ||
+				this.equals(COMB_NOV())
 			){
 			return true;
 		}else{
@@ -648,6 +650,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 */
 	public static final NomenclaturalStatusType SUBNUDUM(){
 		return getTermByUuid(uuidSubnudum);
+	}
+	
+	/**
+	 * Returns the nomenclatural status type "comb. nov.". No further information available for now.
+	 * @return
+	 */
+	//TODO javadoc. this term was added for Flore du Gabon
+	public static final NomenclaturalStatusType COMB_NOV(){
+		return getTermByUuid(uuidCombNov);
 	}
 
 	/**

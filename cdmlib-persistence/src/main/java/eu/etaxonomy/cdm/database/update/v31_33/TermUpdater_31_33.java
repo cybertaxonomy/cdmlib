@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_314_315;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 
@@ -102,6 +103,20 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 		stepName = "Add 'sublusus' rank to ranks";
 		termType = TermType.Rank;
 		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm).setRankClass(rankClass));
+
+		// comb. nov., #3545
+		uuidTerm = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
+		description = "Nomenclatural status type 'new combination'";
+		label = "new combination";
+		abbrev = "comb. nov.";
+		dtype = NomenclaturalStatusType.class.getSimpleName();
+		isOrdered = true;
+		uuidVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
+		uuidAfterTerm = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'comb. nov.' status to nom. status types";
+		termType = TermType.NomenclaturalStatusType;
+		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
 
 		
 		return list;
