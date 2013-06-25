@@ -82,13 +82,12 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
 	private TaxonRelationshipType type;
-	
+
 	/**
 	 * @deprecated for hibernate only, don't use
 	 */
 	@Deprecated
-	private TaxonRelationship(){		
-	}
+	private TaxonRelationship(){}
 	
 	/**
 	 * Class constructor: creates a new taxon relationship instance (with the
