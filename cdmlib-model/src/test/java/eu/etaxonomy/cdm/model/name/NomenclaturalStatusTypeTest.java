@@ -25,13 +25,13 @@ import eu.etaxonomy.cdm.test.unit.EntityTestBase;
 /**
  * @author a.babadshanjan
  * @created 25.03.2009
- * @version 1.0
  */
 public class NomenclaturalStatusTypeTest extends EntityTestBase {
-	private static final Logger logger = Logger
-			.getLogger(NomenclaturalStatusTypeTest.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NomenclaturalStatusTypeTest.class);
 
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
+	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
 	@BeforeClass
 	public static void setUp() {
@@ -54,5 +54,11 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	@Test
 	public void testDOUBTFUL() {
 		assertEquals(uuidDoubtful,  NomenclaturalStatusType.DOUBTFUL().getUuid());	
+	}
+	
+	
+	@Test
+	public void testCombNov() {
+		assertEquals(uuidCombNov,  NomenclaturalStatusType.COMB_NOV().getUuid());	
 	}
 }
