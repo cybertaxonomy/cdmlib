@@ -43,12 +43,16 @@ import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
- * TODO write controller documentation
+ * IMPORTANT:
+ *
+ * This controller is mostly a 1:1 copy of the DescriptionController
+ * and this provides identical end points which only differ in the depth of the
+ * object graphs returned.
  *
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @date Jun 25, 2013
+ *
  */
-
 @Controller
 @RequestMapping(value = {
             "/portal/description/{uuid}",
@@ -56,10 +60,6 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
             "/portal/descriptionElement/{descriptionelement_uuid}"})
 public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
-    private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
-            "elements.sources.citation.$",
-            "elements.area.$",
-            });
 
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
