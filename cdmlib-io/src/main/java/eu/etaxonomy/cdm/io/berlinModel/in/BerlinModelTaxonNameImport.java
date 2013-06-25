@@ -331,13 +331,13 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	private Rank handleProlesAndRaceSublusus(BerlinModelImportState state, ResultSet rs, Rank rank) throws SQLException {
 		Rank result;
 		String rankAbbrev = rs.getString("RankAbbrev");
-		String rankStr = rs.getString("Rank");
+//		String rankStr = rs.getString("Rank");
 		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
-			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR(), RankClass.Infraspecific);
+			result = Rank.PROLES();
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
-			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR(), RankClass.Infraspecific);
+			result = Rank.RACE();
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "sublusus")){
-			result = getRank(state, BerlinModelTransformer.uuidRankSublusus, rankStr, "Rank Sublusus", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR(), RankClass.Infraspecific);
+			result = Rank.SUBLUSUS();
 		}else{
 			result = rank;
 			logger.warn("Unhandled rank: " + rankAbbrev);

@@ -791,11 +791,12 @@ public class Rank extends OrderedTermBase<Rank> {
         }else if (rankName.equalsIgnoreCase("tax.infragen.")){ return Rank.INFRAGENERICTAXON();
         }else if (rankName.equalsIgnoreCase("tax.infrasp.")){ return Rank.INFRASPECIFICTAXON();
         // old ranks
-        }else if (rankName.equalsIgnoreCase("proles")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
-        }else if (rankName.equalsIgnoreCase("race")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
-        }else if (rankName.equalsIgnoreCase("taxon")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
-        }else if (rankName.equalsIgnoreCase("sublusus")){ return Rank.INFRASPECIFICTAXON(); //to create the name put prol. and the infraspeciesepi to the field unnamed namephrase
+        }else if (rankName.equalsIgnoreCase("proles")){ return Rank.PROLES(); 
+        }else if (rankName.equalsIgnoreCase("race")){ return Rank.RACE(); 
+        }else if (rankName.equalsIgnoreCase("sublusus")){ return Rank.SUBLUSUS(); 
 
+        }else if (rankName.equalsIgnoreCase("taxon")){ return Rank.INFRASPECIFICTAXON(); //to create the name put 'taxon' and the infraspeciesepi to the field unnamed namephrase
+  
         }else{
             if (rankName == null){
                 rankName = "(null)";  //see NPE above
