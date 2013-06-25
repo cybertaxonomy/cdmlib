@@ -17,7 +17,10 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 
 /**
  * Creates a new term if a term with the same given uuid does not exist yet
@@ -29,9 +32,18 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	
+	/**
+	 * @Deprecated use {@link #NewInstance(String, TermType, UUID, String, String, String, String, UUID, UUID, boolean, UUID)} instead
+	 */
+	@Deprecated
 	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
+		return new SingleTermUpdater(stepName, null, uuidTerm, null, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
 	}
+
+	public static final SingleTermUpdater NewInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+		return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
+	}
+
 	
 	private UUID uuidTerm ;
 	private String description;
@@ -45,11 +57,16 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	private String reverseDescription;
 	private String reverseLabel;
 	private String reverseAbbrev;
+	private RankClass rankClass;
+	private TermType termType;
+	private String idInVocabulary;
 	
 	
 
-	private SingleTermUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
+	private SingleTermUpdater(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
 		super(stepName);
+		this.termType = termType;
+		this.idInVocabulary = idInVocabulary;
 		this.abbrev = abbrev;
 		this.description = description;
 		this.dtype = dtype;
@@ -108,11 +125,13 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 			orderIndex = "null";
 		}
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
-		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
-				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
+		String idInVocStr = idInVocabulary == null ? "NULL" : "'" + idInVocabulary + "'";
+		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, termtype, idInVocabulary, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
+				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + termType.ordinal() + ", " + idInVocStr +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
 		datasource.executeUpdate(sqlInsertTerm);
 		
 		updateFeatureTerms(termId, datasource, monitor);
+		updateRanks(termId, datasource, monitor);
 		
 //
 //		INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id) 
@@ -185,6 +204,19 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 	}
 
+	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		if (dtype.equals(Rank.class.getSimpleName())){
+			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
+				" termType = " + rankClass.ordinal() +  
+				" WHERE id = " + termId;
+			datasource.executeUpdate(sqlUpdate);
+		}
+	}
+	
+	public SingleTermUpdater setRankClass(RankClass rankClass) {
+		this.rankClass = rankClass;
+		return this;
+	}
 
 
 

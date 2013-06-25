@@ -79,6 +79,11 @@ public class RankTest extends EntityTestBase {
 	private static final UUID uuidPathoVariety = UUID.fromString("2f4f4303-a099-47e3-9048-d749d735423b");
 	private static final UUID uuidSubvariety = UUID.fromString("9a83862a-7aee-480c-a98d-4bceaf8712ca");
 	private static final UUID uuidSubsubvariety = UUID.fromString("bff22f84-553a-4429-a4e7-c4b3796c3a18");
+	
+	private static final UUID uuidProles = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
+	private static final UUID uuidRace = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
+	private static final UUID uuidSublusus = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
+	
 	private static final UUID uuidConvar = UUID.fromString("2cc740c9-cebb-43c8-9b06-1bef79e6a56a");
 	private static final UUID uuidForm = UUID.fromString("0461281e-458a-47b9-8d41-19a3d39356d5");
 	private static final UUID uuidSpecialForm = UUID.fromString("bed20aee-2f5a-4635-9c02-eff06246d067");
@@ -366,8 +371,24 @@ public class RankTest extends EntityTestBase {
 	}
 
 	@Test
+	public void testPROLES() {
+		assertEquals(uuidProles,  Rank.PROLES().getUuid());	
+	}
+	
+	@Test
+	public void testRACE() {
+		assertEquals(uuidRace,  Rank.RACE().getUuid());	
+	}
+	
+	@Test
+	public void testSUBLUSUS() {
+		assertEquals(uuidSublusus,  Rank.SUBLUSUS().getUuid());	
+	}
+	
+	@Test
 	public void testCONVAR() {
-		assertEquals(uuidConvar,  Rank.CONVAR().getUuid());	}
+		assertEquals(uuidConvar,  Rank.CONVAR().getUuid());	
+	}
 
 	@Test
 	public void testFORM() {
