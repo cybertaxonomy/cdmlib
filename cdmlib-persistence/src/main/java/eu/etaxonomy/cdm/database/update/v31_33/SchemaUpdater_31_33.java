@@ -153,6 +153,13 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
+		//remove homotypical group form type designation base
+		stepName = "Remove column homotypical group in type designation base";
+		tableName = "TypeDesignationBase";
+		String oldColumnName = "homotypicalgroup_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
 		return stepList;
 	}
 

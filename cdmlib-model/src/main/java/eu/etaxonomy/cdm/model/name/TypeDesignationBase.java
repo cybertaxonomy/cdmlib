@@ -79,12 +79,12 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
     @Cascade({CascadeType.SAVE_UPDATE})
     private Set<TaxonNameBase> typifiedNames = new HashSet<TaxonNameBase>();
 
-    @XmlElement(name = "HomotypicalGroup")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade(CascadeType.SAVE_UPDATE)
-    private HomotypicalGroup homotypicalGroup;
+//    @XmlElement(name = "HomotypicalGroup")
+//    @XmlIDREF
+//    @XmlSchemaType(name = "IDREF")
+//    @ManyToOne(fetch = FetchType.LAZY)
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    private HomotypicalGroup homotypicalGroup;
 
     @XmlElement(name = "TypeStatus")
     @XmlIDREF
@@ -160,21 +160,22 @@ public abstract class TypeDesignationBase<T extends TypeDesignationStatusBase> e
         this.typeStatus = typeStatus;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getHomotypicalGroup()
-     */
-    /**
-     * Returns the {@link HomotypicalGroup homotypical group} to which all (in <i>this</i>
-     * type designation) typified {@link TaxonNameBase taxon names} belong.
-     *
-     * @see   #getTypifiedNames()
-     * @deprecated homotypical group can not be set and always seems to be <code>null</code>.
-     * Probably it is a relict of an old version.
-     */
-    @Deprecated
-    public HomotypicalGroup getHomotypicalGroup() {
-        return homotypicalGroup;
-    }
+//    /* (non-Javadoc)
+//     * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getHomotypicalGroup()
+//     */
+//    /**
+//     * Returns the {@link HomotypicalGroup homotypical group} to which all (in <i>this</i>
+//     * type designation) typified {@link TaxonNameBase taxon names} belong.
+//     *
+//     * @see   #getTypifiedNames()
+//     * @deprecated homotypical group can not be set and always seems to be <code>null</code>.
+//     * Probably it is a relict of an old version.
+//     * See also http://dev.e-taxonomy.eu/trac/ticket/2173 
+//     */
+//    @Deprecated
+//    public HomotypicalGroup getHomotypicalGroup() {
+//        return homotypicalGroup;
+//    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.name.ITypeDesignation#getTypifiedNames()

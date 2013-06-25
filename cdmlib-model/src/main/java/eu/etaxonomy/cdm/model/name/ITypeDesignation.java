@@ -35,13 +35,16 @@ public interface ITypeDesignation {
 
 	public boolean isLectoType();
 	
-	/** 
-	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
-	 * in <i>this</i> type designation.
-	 *  
-	 * @see   #getTypeSpecimen()
-	 */
-	public HomotypicalGroup getHomotypicalGroup();
+//	/** 
+//	 * Returns the {@link HomotypicalGroup homotypical group} that is typified
+//	 * in <i>this</i> type designation.
+//	 *  
+//	 * @see   #getTypeSpecimen()
+//   * @deprecated homotypical group can not be set and always seems to be <code>null</code>.
+//   * Probably it is a relict of an old version.
+//   * See also http://dev.e-taxonomy.eu/trac/ticket/2173 
+//	 */
+//	public HomotypicalGroup getHomotypicalGroup();
 	
 	/** 
 	 * Returns the set of {@link TaxonNameBase taxon names} included in the
