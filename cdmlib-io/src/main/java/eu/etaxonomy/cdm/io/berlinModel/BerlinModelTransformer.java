@@ -547,6 +547,8 @@ public class BerlinModelTransformer {
 						case 60: return Rank.SPECIES();
 						case 61: return Rank.GREX();
 						case 65: return Rank.SUBSPECIES();
+						case 66: {System.out.println("Rank 66 not yet implemented"); throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());}
+						case 67: {System.out.println("Rank 67 not yet implemented"); throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());}
 						case 68: return Rank.CONVAR();
 						case 70: return Rank.VARIETY();
 						case 73: return Rank.SUBVARIETY();
