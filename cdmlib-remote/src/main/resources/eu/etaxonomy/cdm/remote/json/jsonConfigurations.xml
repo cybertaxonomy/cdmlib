@@ -44,7 +44,8 @@
              <value>MediaRepresentation.parts</value>
 
              <value>Sequence.locus</value>
-             <value>Sequence.genBankAccession</value>
+             <value>Sequence.genBankAccessionNumber</value>
+             <value>Sequence.genBankUri</value>
 
              <value>Annotation.annotationType</value>
              <value>Marker.markerType</value>

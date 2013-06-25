@@ -138,7 +138,13 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference
 		//Rights, MediaRepresentationPart, GenBankAccession, ) #3345
 		
+		//TODO remove table Sequence_GenBankAccession
 		
+		//TODO remove table GenBankAccession
+		
+		//TODO add columns GenBankAccessionNumber(String) and GenBankUri (URI) to Sequence
+		
+		//
 		
 		return stepList;
 	}

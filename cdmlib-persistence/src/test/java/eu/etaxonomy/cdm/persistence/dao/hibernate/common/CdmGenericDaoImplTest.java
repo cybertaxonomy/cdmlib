@@ -106,7 +106,6 @@ import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.GenBankAccession;
 import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
@@ -401,7 +400,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Rights.class, 
 				RightsTerm.class, 
 				DnaSample.class, 
-				GenBankAccession.class, 
 				Locus.class, 
 				PhylogeneticTree.class, 
 				Sequence.class, 

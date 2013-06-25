@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,6 +21,7 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -38,6 +40,8 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.joda.time.DateTime;
 import org.springframework.beans.factory.annotation.Configurable;
 
@@ -65,7 +69,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
     "publishedIn",
     "locus",
     "citations",
-    "genBankAccession",
+    "genBankAccessionNumber",
+    "genBankUri",
     "chromatograms"
 })
 @XmlRootElement(name = "Sequence")
@@ -115,11 +120,20 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
     @OneToMany(fetch = FetchType.LAZY)
 	private Set<Reference> citations = new HashSet<Reference>();
 	
-	@XmlElementWrapper(name = "GenBankAccessions")
-	@XmlElement(name = "GenBankAccession")
-    @OneToMany(fetch = FetchType.LAZY)
-	@Cascade(CascadeType.SAVE_UPDATE)
-    private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
+//	@XmlElementWrapper(name = "GenBankAccessions")
+//	@XmlElement(name = "GenBankAccession")
+//    @OneToMany(fetch = FetchType.LAZY)
+//	@Cascade(CascadeType.SAVE_UPDATE)
+//    private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
+	
+	@XmlElement(name = "GenBankAccessionNumber")
+	@Size(max=20)
+	private String genBankAccessionNumber;
+	
+	@XmlElement(name = "GenBankUri")
+	@Field(analyze = Analyze.NO)
+	@Type(type="uriUserType")
+	private URI genBankUri;
 	
 	@XmlElement(name = "Locus")
     @XmlIDREF
@@ -181,16 +195,20 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 		this.citations.remove(citation);
 	}
 
-	public Set<GenBankAccession> getGenBankAccession() {
-		return genBankAccession;
+	public String getGenBankAccessionNumber() {
+		return genBankAccessionNumber;
 	}
 
-	public void addGenBankAccession(GenBankAccession genBankAccession) {
-		this.genBankAccession.add(genBankAccession);
+	public void setGenBankAccessionNumber(String genBankAccessionNumber) {
+		this.genBankAccessionNumber = genBankAccessionNumber;
 	}
-	
-	public void removeGenBankAccession(GenBankAccession genBankAccession) {
-		this.genBankAccession.remove(genBankAccession);
+
+	public URI getGenBankUri() {
+		return genBankUri;
+	}
+
+	public void setGenBankUri(URI genBankUri) {
+		this.genBankUri = genBankUri;
 	}
 	
 	public Set<Media> getChromatograms() {
@@ -295,11 +313,6 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 		
 		}
 		
-		result.genBankAccession = new HashSet<GenBankAccession>();
-		for (GenBankAccession genBankAcc: this.genBankAccession){
-			result.genBankAccession.add((GenBankAccession)genBankAcc.clone());
-		}
-		
 		result.chromatograms = new HashSet<Media>();
 		
 		for (Media chromatogram: this.chromatograms){
@@ -313,4 +326,5 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
 			return null;
 		}
 	}
+
 }

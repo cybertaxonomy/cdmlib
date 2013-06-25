@@ -133,7 +133,6 @@
       <mapping class="eu.etaxonomy.cdm.model.media.RightsTerm"/>
       <!-- Molecular Package -->
       <mapping class="eu.etaxonomy.cdm.model.molecular.DnaSample"/>
-      <mapping class="eu.etaxonomy.cdm.model.molecular.GenBankAccession"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Locus"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.PhylogeneticTree"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Sequence"/>

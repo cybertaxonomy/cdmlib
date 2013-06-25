@@ -2491,7 +2491,7 @@ public class DerivedUnitFacade {
 		}else{
 			String minStr = min == null? null : String.valueOf(min);
 			String maxStr = max == null? null : String.valueOf(max);
-			String result = CdmUtils.concat(" " + UTF8.EN_DASH + " ", minStr, maxStr);
+			String result = CdmUtils.concat(UTF8.EN_DASH_SPATIUM.toString(), minStr, maxStr);
 			return result;
 		}
 	}

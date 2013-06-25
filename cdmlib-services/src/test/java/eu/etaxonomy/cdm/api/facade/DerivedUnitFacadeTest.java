@@ -533,11 +533,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.setAbsoluteElevationRange(30, 36);
         Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("", "30 " + UTF8.EN_DASH + " 36",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36",specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        Assert.assertEquals("Odd range should not throw an exception anymore", String.format("30 %s 35", UTF8.EN_DASH),specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("Odd range should not throw an exception anymore", String.format("30%s35", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
         
         specimenFacade.setAbsoluteElevationRange(41, null);
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());

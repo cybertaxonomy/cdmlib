@@ -825,7 +825,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Rights.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/RightsTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaSample.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/GenBankAccession.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Locus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/PhylogeneticTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text

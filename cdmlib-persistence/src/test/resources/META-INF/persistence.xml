@@ -86,7 +86,6 @@
         <class>eu.etaxonomy.cdm.model.media.RightsTerm</class>
       <!-- Molecular Package -->
         <class>eu.etaxonomy.cdm.model.molecular.DnaSample</class>
-        <class>eu.etaxonomy.cdm.model.molecular.GenBankAccession</class>
         <class>eu.etaxonomy.cdm.model.molecular.Locus</class>
         <class>eu.etaxonomy.cdm.model.molecular.PhylogeneticTree</class>
         <class>eu.etaxonomy.cdm.model.molecular.Sequence</class>

@@ -1,9 +1,8 @@
 package eu.etaxonomy.cdm.model.molecular;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
+import java.net.URI;
 import java.util.Iterator;
 
 import org.apache.log4j.Logger;
@@ -44,8 +43,8 @@ public class MolecularTest {
 		seq.setBarcode(true);
 		seq.setSequence("ATTGCCATCG");
 		
-		GenBankAccession genBankAccession = GenBankAccession.NewInstance("12393247");
-		seq.addGenBankAccession(genBankAccession );
+		seq.setGenBankAccessionNumber("HM347273");
+		seq.setGenBankUri(URI.create("http://www.abc.de"));
 		Media chromatogram = Media.NewInstance();
 		chromatogram.putTitle(LanguageString.NewInstance("chromatogram", Language.ENGLISH()));
 		seq.addChromatogram(chromatogram);
@@ -87,17 +86,9 @@ public class MolecularTest {
 		assertEquals(title, titleClone);
 		
 		
-		
-		assertTrue (sequenceClone.getGenBankAccession().size() == seq.getGenBankAccession().size());
-		
-		Iterator<GenBankAccession> genBankAccessionIteratorClone = sequenceClone.getGenBankAccession().iterator();
-		Iterator<GenBankAccession> genBankAccessionIterator = seq.getGenBankAccession().iterator();
-		GenBankAccession genBankAccession = (GenBankAccession)genBankAccessionIterator.next();
-		String numberStr = genBankAccession.getAccessionNumber();
-		GenBankAccession genBankAccessionClone = (GenBankAccession)genBankAccessionIteratorClone.next();
-		String numberStrClone = genBankAccessionClone.getAccessionNumber();	
-		assertEquals(numberStr, numberStrClone);
-		assertNotSame(genBankAccession, genBankAccessionClone);
+		assertTrue (sequenceClone.getGenBankAccessionNumber().equals(seq.getGenBankAccessionNumber()));
+		assertNotNull(sequenceClone.getGenBankUri());
+		assertTrue (sequenceClone.getGenBankUri().equals(seq.getGenBankUri()));
 		
 		DnaSample dnaSampleClone = (DnaSample)dnaSample.clone();
 		Sequence[] seqArray = new Sequence[dnaSample.getSequences().size()];
