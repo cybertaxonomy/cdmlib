@@ -36,13 +36,11 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
@@ -192,12 +190,12 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					}
 					
 					//create TaxonNameBase
-					TaxonNameBase taxonNameBase;
+					TaxonNameBase<?,?> taxonNameBase;
 					if (config.getNomenclaturalCode() != null){
 						taxonNameBase = config.getNomenclaturalCode().getNewTaxonNameInstance(rank);
 						//check cultivar
 						if (taxonNameBase instanceof BotanicalName){
-							if (CdmUtils.isNotEmpty(strCultivarGroupName) && CdmUtils.isNotEmpty(strCultivarName)){
+							if (isNotBlank(strCultivarGroupName) && isNotBlank(strCultivarName)){
 								taxonNameBase = CultivarPlantName.NewInstance(rank);
 							}
 						}
