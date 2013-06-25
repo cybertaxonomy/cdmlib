@@ -51,7 +51,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @XmlRootElement(name = "TypeDesignationBase")
 @XmlType(name = "TypeDesignationBase", propOrder = {
     "typifiedNames",
-    "homotypicalGroup",
     "notDesignated",
     "typeStatus"
 })
