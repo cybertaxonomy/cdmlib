@@ -53,8 +53,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 @RequestMapping(value = {
             "/portal/description/{uuid}",
             "/portal/description/{uuid_list}",
-            "/portal/descriptionElement/{descriptionelement_uuid}",
-    })
+            "/portal/descriptionElement/{descriptionelement_uuid}"})
 public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
     private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
