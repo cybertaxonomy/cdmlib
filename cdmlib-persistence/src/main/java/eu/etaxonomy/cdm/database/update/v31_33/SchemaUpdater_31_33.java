@@ -115,7 +115,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//#3540
 		stepName = "Update introduced: adventitious (casual) label";
 		String query = " UPDATE representation r " + 
-				" SET r.abbreviatedlabel = ia " +
+				" SET r.abbreviatedlabel = 'ia' " +
 				" WHERE r.abbreviatedlabel = 'id' AND r.label = 'introduced: adventitious (casual)' ";
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
@@ -144,7 +144,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO add columns GenBankAccessionNumber(String) and GenBankUri (URI) to Sequence
 		
-		//
+		//update Sicilia -> Sicily
+		//#3540
+		stepName = "Update Sicilia -> Sicily";
+		query = " UPDATE representation r " + 
+				" SET r.label = 'Sicily', r.text = 'Sicily' " +
+				" WHERE (r.abbreviatedlabel = 'SIC-SI'  OR r.abbreviatedlabel = 'SIC')  AND r.label = 'Sicilia' ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
 		
 		return stepList;
 	}
