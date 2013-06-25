@@ -215,8 +215,8 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
     /**
      * Returns the boolean value indicating whether the assignment of <i>this</i>
-     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class is definitive
-     * (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
+     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class 
+     * is definitive (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
      * taxon as an "accepted/correct" name or as a (junior) "synonym" might
      * still change in the course of taxonomical working process.
      */
