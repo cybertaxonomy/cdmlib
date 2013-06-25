@@ -868,7 +868,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				}
 				// legend
 				if (StringUtils.isNotBlank(legendString)) {
-					media.addDescription(legendString, getDefaultLanguage(state));
+					media.putDescription(getDefaultLanguage(state), legendString);
 				}
 				if (StringUtils.isNotBlank(numString)) {
 					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM

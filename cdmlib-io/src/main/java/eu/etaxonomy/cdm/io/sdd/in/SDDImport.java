@@ -339,17 +339,17 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	
 	/**
 	 * 
-	 * @param ve
+	 * @param media
 	 * @param langLabDet
 	 */
-	private void makeRepresentationForMedia(Media m, Map<Language, List<String>> langLabDet) {
+	private void makeRepresentationForMedia(Media media, Map<Language, List<String>> langLabDet) {
 		for (Language lang : langLabDet.keySet()){
 			List<String> labDet = langLabDet.get(lang);
 			if (labDet.get(0) != null){
-				m.putTitle(LanguageString.NewInstance(labDet.get(0), lang));
+				media.putTitle(LanguageString.NewInstance(labDet.get(0), lang));
 			}
 			if (labDet.size()>1) {
-				m.addDescription(labDet.get(1), lang);
+				media.putDescription(lang, labDet.get(1));
 			}
 		}
 	}
