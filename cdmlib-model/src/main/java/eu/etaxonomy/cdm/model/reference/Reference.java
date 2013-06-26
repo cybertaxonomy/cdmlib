@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -77,17 +78,19 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {
 	"type",
 	"uri",
+    "abbrevTitleCache",
+    "protectedAbbrevTitleCache",
 	"nomenclaturallyRelevant",
     "authorTeam",
     "referenceAbstract",
     "title",
+    "abbrevTitle",
     "editor",
 	"volume",
 	"pages",
@@ -131,8 +134,32 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Match(MatchMode.EQUAL_REQUIRED)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 4096)
+	@Length(max = 4096)  //TODO is the length attribute really requried twice (see @Column)??
 	private String title;
+	
+	//Title of the reference
+	@XmlElement(name ="AbbrevTitle" )
+	@Column(length=256, name="abbrevTitle")
+	@Field
+	@Match(MatchMode.EQUAL)  //TODO check if this is correct
+	@NullOrNotEmpty
+	@Length(max = 256)
+	private String abbrevTitle;
+	
+	//Title of the reference
+	@XmlElement(name ="AbbrevTitleCache" )
+	@Column(length=256, name="abbrevTitleCache")
+	@Field
+	@Lob
+	@Match(MatchMode.CACHE)
+    //TODO Val #3379
+//	@NotNull
+	@Length(max = 1024)
+	private String abbrevTitleCache;
+	
+	@XmlElement(name = "protectedAbbrevTitleCache")
+	@Merge(MergeMode.OR)
+	private boolean protectedAbbrevTitleCache;
 
 //********************************************************/
 
@@ -336,10 +363,51 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 
 //*************************** GETTER / SETTER ******************************************/
+	
+
+	@Override
+	public String getAbbrevTitleCache() {
+		return abbrevTitleCache;
+	}
+
+	@Override
+	@Deprecated
+	public void setAbbrevTitleCache(String abbrevTitleCache) {
+		this.abbrevTitleCache = abbrevTitleCache;
+	}
+	
+	@Override
+	public void setAbbrevTitleCache(String abbrevTitleCache, boolean isProtected) {
+		this.protectedAbbrevTitleCache = isProtected;	
+		setAbbrevTitleCache(abbrevTitleCache);
+	}
+	
+	@Override
+	public boolean isProtectedAbbrevTitleCache() {
+		return protectedAbbrevTitleCache;
+	}
+
+	@Override
+	public void setProtectedAbbrevTitleCache(boolean protectedAbbrevTitleCache) {
+		this.protectedAbbrevTitleCache = protectedAbbrevTitleCache;
+	}
+
+	@Override
+	public String getAbbrevTitle() {
+		return abbrevTitle;
+	}
+
+	@Override
+	public void setAbbrevTitle(String abbrevTitle) {
+		this.abbrevTitle = abbrevTitle;
+	}
+	
+
 	@Override
     public String getEditor() {
 		return editor;
 	}
+
 
 	@Override
     public void setEditor(String editor) {
@@ -1203,6 +1271,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return null;
 		}
 	}
+
 
 }
 

@@ -198,7 +198,7 @@ public class DefaultMatchStrategyTest {
 		matchStrategy = DefaultMatchStrategy.NewInstance(Reference.class);
 		Assert.assertTrue("Same object should always match", matchStrategy.invoke(book1, book1));
 		
-		IBook bookClone = (IBook) ((Reference<?>) book1).clone();
+		IBook bookClone = (IBook) book1.clone();
 		Assert.assertTrue("Cloned book should match", matchStrategy.invoke(book1, bookClone));
 		book1.setTitleCache("cache1",true);
 		Assert.assertFalse("Cached book should not match", matchStrategy.invoke(book1, bookClone));
