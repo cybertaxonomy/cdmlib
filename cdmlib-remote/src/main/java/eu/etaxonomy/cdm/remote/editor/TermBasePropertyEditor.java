@@ -15,23 +15,34 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
+ * This PropertyEditor translates a single string identifiers into a
+ * {@link DefinedTermBase} instance.
+ * The instance can be identified either by UUID or by ID.
+ *
  * @author a.kohlbecker
  * @date Jun 25, 2013
  *
  */
 public class TermBasePropertyEditor<T extends DefinedTermBase<?>> extends PropertyEditorSupport {
 
-    private final ITermService termService;
+    protected final ITermService termService;
 
     public TermBasePropertyEditor(ITermService termService){
         super();
         this.termService = termService;
     }
 
-    @SuppressWarnings("unchecked")
     @Override
     public void setAsText(String text) {
+        setValue(textToTerm(text));
+    }
 
+    /**
+     * @param text
+     * @return
+     */
+    @SuppressWarnings("unchecked")
+    protected T textToTerm(String text) {
         T term = null;
         // 1. try treating as UUID
         try {
@@ -50,8 +61,6 @@ public class TermBasePropertyEditor<T extends DefinedTermBase<?>> extends Proper
         if(term == null){
             throw new java.lang.IllegalArgumentException("No TermBase instance found for the supplied identifier " + text);
         }
-
-        setValue(term);
+        return term;
     }
-
 }
