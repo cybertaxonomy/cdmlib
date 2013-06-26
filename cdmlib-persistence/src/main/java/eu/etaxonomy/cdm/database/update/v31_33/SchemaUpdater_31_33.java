@@ -160,6 +160,21 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//add publish flag to taxon
+		stepName = "Add publish flag column to taxon base";
+		tableName = "TaxonBase";
+		columnName = "publish";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
+		stepList.add(step);
+		
+		//add publish flag to specimen
+		stepName = "Add publish flag column to SpecimenOrObservationBase";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "publish";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
+		stepList.add(step);
+		
+		
 		return stepList;
 	}
 

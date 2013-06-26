@@ -27,6 +27,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
@@ -68,6 +69,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
 	"sex",
+	"publish",
     "individualCount",
     "lifeStage",
     "definition",
@@ -137,6 +139,29 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     @NotNull
 	protected Set<DerivationEvent> derivationEvents = new HashSet<DerivationEvent>();
+    
+    @XmlAttribute(name = "publish")
+    private boolean publish = true;
+
+	/**
+	 * Returns the boolean value indicating if this specimen or observation should be withheld 
+	 * (<code>publish=false</code>) or not (<code>publish=true</code>) during any publication
+	 * process to the general public.
+	 * This publish flag implementation is preliminary and may be replaced by a more general 
+	 * implementation of READ rights in future.<BR>
+	 * The default value is <code>true</code>.
+	 */
+	public boolean isPublish() {
+		return publish;
+	}
+
+	/**
+	 * @see #isPublish()
+	 * @param publish
+	 */
+	public void setPublish(boolean publish) {
+		this.publish = publish;
+	}
 
 	/**
 	 * Constructor

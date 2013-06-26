@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
     "name",
     "sec",
     "doubtful",
+    "publish",
     "appendedPhrase",
     "useNameCache"
 })
@@ -93,6 +94,9 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     //The assignment to the Taxon or to the Synonym class is not definitive
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;
+    
+    @XmlAttribute(name = "publish")
+    private boolean publish = true;
 
     @XmlElement(name = "Name", required = true)
     @XmlIDREF
@@ -229,6 +233,22 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     public void setDoubtful(boolean doubtful){
         this.doubtful = doubtful;
     }
+    
+
+	/**
+	 * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not 
+	 * (<code>publish=true</code>) during any publication process to the general public.
+	 * This publish flag implementation is preliminary and may be replaced by a more general 
+	 * implementation of READ rights in future.<BR>
+	 * The default value is <code>true</code>.
+	 */
+	public boolean isPublish() {
+		return publish;
+	}
+
+	public void setPublish(boolean publish) {
+		this.publish = publish;
+	}
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
@@ -307,5 +327,6 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
 
     }
+
 
 }
