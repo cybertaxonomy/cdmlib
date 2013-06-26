@@ -35,9 +35,12 @@ import org.w3c.dom.Document;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author p.kelbert 2013
@@ -185,6 +188,24 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
 
         ref = taxonXstate.getConfig().getSourceReference();
 
+        Reference<?> secundum = taxonXstate.getConfig().getSecundum();
+        List<Reference> references = this.getReferenceService().list(Reference.class, null, null, null, null);
+        boolean refFound=false;
+        for (Reference<?> re:references){
+            if (re.getCitation().equalsIgnoreCase(secundum.getCitation())){
+                refFound=true;
+                secundum =re;
+            }
+        }
+        if (refFound) {
+            taxonXstate.getConfig().setSecundum(secundum);
+        } else {
+            this.getReferenceService().saveOrUpdate(secundum);
+        }
+
+        Rank maxRank = askForHigherRank(taxonXstate.getConfig().getNomenclaturalCode());
+        taxonXstate.getConfig().setMaxRank(maxRank);
+
 
         String message = "go taxonx!";
         logger.info(message);
@@ -267,6 +288,42 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
         }catch(Exception e){
             //logger.warn("derivedunit up to date or not created yet");
         }
+    }
+
+    /**
+     * @return
+     */
+    private Rank askForHigherRank(NomenclaturalCode nomenclaturalCode) {
+        JTextArea textArea = new JTextArea("Everything below that rank should be imported:");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
+
+        List<Rank> rankList = new ArrayList<Rank>();
+        rankList = getTermService().listByTermClass(Rank.class, null, null, null, null);
+
+        List<String> rankListStr = new ArrayList<String>();
+        for (Rank r:rankList) {
+            rankListStr.add(r.toString());
+        }
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+               null,
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                rankListStr.toArray(),
+                rankListStr.get(0));
+
+        Rank cR = null;
+        try {
+            cR = Rank.getRankByEnglishName(s,nomenclaturalCode,true);
+        } catch (UnknownCdmTypeException e) {
+            logger.warn("Unknown rank ?!"+s);
+            logger.warn(e);
+        }
+        return cR;
     }
 
 

@@ -323,6 +323,8 @@ src/main/java/eu/etaxonomy/cdm/io/jaxb/JaxbImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/jaxb/LsInputImpl.java -text
 src/main/java/eu/etaxonomy/cdm/io/jaxb/WarningTolerantValidationEventHandler.java -text
 src/main/java/eu/etaxonomy/cdm/io/jaxb/package-info.java -text
+src/main/java/eu/etaxonomy/cdm/io/markup/FeatureSorter.java -text
+src/main/java/eu/etaxonomy/cdm/io/markup/FeatureSorterInfo.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/FigureDataHolder.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/FootnoteDataHolder.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
@@ -332,6 +334,8 @@ src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupInputStream.java -text
+src/main/java/eu/etaxonomy/cdm/io/markup/MarkupKeyImport.java -text
+src/main/java/eu/etaxonomy/cdm/io/markup/MarkupNomenclatureImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupSpecimenImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/UnmatchedLeads.java -text
@@ -363,6 +367,7 @@ src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDDocumentBuilder.java -text
 src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDExportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/io/sdd/out/SDDExportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/specimen/SpecimenImportBase.java -text
+src/main/java/eu/etaxonomy/cdm/io/specimen/SpecimenUserInteraction.java -text
 src/main/java/eu/etaxonomy/cdm/io/specimen/UnitsGatheringArea.java -text
 src/main/java/eu/etaxonomy/cdm/io/specimen/UnitsGatheringEvent.java -text
 src/main/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/Abcd206DataHolder.java -text

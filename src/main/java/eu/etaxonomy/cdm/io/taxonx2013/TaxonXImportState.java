@@ -27,7 +27,7 @@ public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator,
 
 	private Reference<?> modsReference;
 
-	/**
+    /**
 	 * @return the modsReference
 	 */
 	public Reference<?> getModsReference() {
@@ -44,7 +44,6 @@ public class TaxonXImportState extends ImportStateBase<TaxonXImportConfigurator,
 	public TaxonXImportState(TaxonXImportConfigurator config) {
 		super(config);
 	}
-
 
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)

@@ -22,10 +22,10 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
+import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
 /**
  * @author p.kelbert
@@ -34,17 +34,21 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState, URI> implements IImportConfigurator, IMatchingImportConfigurator {
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
-    private boolean doParsing = false;
-    private boolean reuseMetadata = false;
-    private boolean reuseTaxon = true;
+    private static String sourceReferenceTitle = null;
+    private boolean parseNameAutomatically = false;
+    private boolean reuseExistingMetadata = true;
     private String taxonReference = null;
-    private boolean doCreateIndividualsAssociations = true;
-    private boolean doReuseExistingDescription = false;
-    private boolean doMatchTaxa = true;
+    private boolean addIndividualsAssociationsSuchAsSpecimenAndObservations = true;
+    private boolean reuseExistingDescriptiveGroups = false;
+    private boolean reuseExistingTaxaWhenPossible = true;
     private final Map<UUID, UUID> taxonToDescriptionMap = new HashMap<UUID, UUID>();
     private Map<String, Team> titleCacheTeam;
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
+    private boolean askUserForHelp =true;
+    private boolean allowReuseOtherClassifications =true;
+
+    private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
 
@@ -65,6 +69,16 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return new Abcd206ImportConfigurator(uri, destination);
     }
 
+    /**
+     * @param uri
+     * @param object
+     * @param b
+     * @return
+     */
+    public static Abcd206ImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean userInteraction) {
+        return new Abcd206ImportConfigurator(uri, destination,userInteraction);
+    }
+
 
     /**
      * @param berlinModelSource
@@ -75,17 +89,22 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         super(defaultTransformer);
         setSource(uri);
         setDestination(destination);
+        setSourceReferenceTitle("ABCD classic");
     }
 
+    /**
+     * @param berlinModelSource
+     * @param sourceReference
+     * @param destination
+     */
+    private Abcd206ImportConfigurator(URI uri, ICdmDataSource destination, boolean userInteraction) {
+        super(defaultTransformer);
+        setSource(uri);
+        setDestination(destination);
+        setSourceReferenceTitle("ABCD classic");
+        this.askUserForHelp=userInteraction;
+    }
 
-
-
-    //	/* (non-Javadoc)
-    //	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSource()
-    //	 */
-    //	public String getSource() {
-    //		return (String)super.getSource();
-    //	}
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
@@ -110,6 +129,15 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     }
 
 
+    @Override
+    public String getSourceReferenceTitle(){
+        return this.sourceReferenceTitle;
+    }
+
+    @Override
+    public void setSourceReferenceTitle(String name){
+        this.sourceReferenceTitle=name;
+    }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
@@ -117,11 +145,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     @Override
     public Reference getSourceReference() {
         //TODO
-        if (this.sourceReference == null){
-            logger.warn("getSource Reference not yet fully implemented");
-            sourceReference = ReferenceFactory.newDatabase();
-            sourceReference.setTitleCache("ABCD specimen import", true);
-        }
         return sourceReference;
     }
 
@@ -137,41 +160,25 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return sourceReference;
     }
 
-    public void setDoAutomaticParsing(boolean doParsing){
-        this.doParsing=doParsing;
+    public void setParseNameAutomatically(boolean doParsing){
+        this.parseNameAutomatically=doParsing;
     }
 
-    public boolean isDoAutomaticParsing(){
-        return this.doParsing;
+    public boolean isParseNameAutomatically(){
+        return this.parseNameAutomatically;
     }
 
-    public void setReUseExistingMetadata(boolean reuseMetadata){
-        this.reuseMetadata = reuseMetadata;
+    public void setReuseExistingMetadata(boolean reuseMetadata){
+        this.reuseExistingMetadata = reuseMetadata;
     }
 
     public boolean isReUseExistingMetadata(){
-        return this.reuseMetadata;
+        return this.reuseExistingMetadata;
     }
 
-    public void setReUseTaxon(boolean reuseTaxon){
-        this.reuseTaxon = reuseTaxon;
-    }
-
-    /**
-     * if {@link #doMatchTaxa} is set false or no matching taxon is found new
-     * taxa will be created. If this flag is set <code>true</code> the newly created taxa
-     * will be reused if possible. Setting this flag to <code>false</code> may lead to
-     * multiple identical taxa.
-     *
-     * @return
-     */
-    public boolean isDoReUseTaxon(){
-        return this.reuseTaxon;
-    }
-
-    public void setDoCreateIndividualsAssociations(
+    public void setAddIndividualsAssociationsSuchAsSpecimenAndObservations(
             boolean doCreateIndividualsAssociations) {
-        this.doCreateIndividualsAssociations = doCreateIndividualsAssociations;
+        this.addIndividualsAssociationsSuchAsSpecimenAndObservations = doCreateIndividualsAssociations;
     }
 
     /**
@@ -179,38 +186,39 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
      *
      * @return
      */
-    public boolean isDoCreateIndividualsAssociations() {
-        return doCreateIndividualsAssociations;
+    public boolean isAddIndividualsAssociationsSuchAsSpecimenAndObservations() {
+        return addIndividualsAssociationsSuchAsSpecimenAndObservations;
     }
 
     /**
      * @param doReuseExistingDescription the doReuseExistingDescription to set
+     * NOT USED YET
      */
-    public void setDoReuseExistingDescription(boolean doReuseExistingDescription) {
-        this.doReuseExistingDescription = doReuseExistingDescription;
+    public void reuseExistingDescriptiveGroups(boolean doReuseExistingDescription) {
+        this.reuseExistingDescriptiveGroups = doReuseExistingDescription;
     }
 
     /**
      * @return the doReuseExistingDescription
      */
-    public boolean isDoMatchToExistingDescription() {
-        return doReuseExistingDescription;
+    public boolean isReuseExistingDescriptiveGroups() {
+        return reuseExistingDescriptiveGroups;
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator#isDoMatchTaxa()
      */
     @Override
-    public boolean isDoMatchTaxa() {
-        return doMatchTaxa;
+    public boolean isReuseExistingTaxaWhenPossible() {
+        return reuseExistingTaxaWhenPossible;
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator#setDoMatchTaxa(boolean)
      */
     @Override
-    public void setDoMatchTaxa(boolean doMatchTaxa) {
-        this.doMatchTaxa = doMatchTaxa;
+    public void setReuseExistingTaxaWhenPossible(boolean doMatchTaxa) {
+        this.reuseExistingTaxaWhenPossible = doMatchTaxa;
     }
 
     /**
@@ -267,7 +275,37 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return namedAreaDecisions.get(areaStr);
     }
 
+    /**
+     * @return
+     */
+    public boolean isInteractWithUser() {
+        return askUserForHelp;
+    }
 
+    public void setInteractWithUser (boolean interaction){
+        this.askUserForHelp=interaction;
+    }
+
+    /**
+     * @return the allowReuseOtherClassifications
+     */
+    public boolean isAllowReuseOtherClassifications() {
+        return allowReuseOtherClassifications;
+    }
+
+    /**
+     * @param allowReuseOtherClassifications the allowReuseOtherClassifications to set
+     */
+    public void setAllowReuseOtherClassifications(boolean allowReuseOtherClassifications) {
+        this.allowReuseOtherClassifications = allowReuseOtherClassifications;
+    }
+
+    /**
+     * @return the specimenUserInteraction
+     */
+    public SpecimenUserInteraction getSpecimenUserInteraction() {
+        return specimenUserInteraction;
+    }
 
 
 

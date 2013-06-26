@@ -83,11 +83,11 @@ public class NormalExplicitImportConfigurator extends ExcelImportConfiguratorBas
 	}
 	
 	
-	public boolean isDoMatchTaxa() {
+	public boolean isReuseExistingTaxaWhenPossible() {
 		return isDoMatchTaxa;
 	}
 
-	public void setDoMatchTaxa(boolean isDoMatchTaxa) {
+	public void setReuseExistingTaxaWhenPossible(boolean isDoMatchTaxa) {
 		this.isDoMatchTaxa = isDoMatchTaxa;
 	}
 	

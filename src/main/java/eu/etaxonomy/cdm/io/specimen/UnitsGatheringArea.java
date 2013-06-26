@@ -9,14 +9,16 @@
 
 package eu.etaxonomy.cdm.io.specimen;
 
+import java.awt.Dimension;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.UUID;
 
-import javax.swing.JFrame;
 import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,239 +41,253 @@ import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
  */
 public class UnitsGatheringArea {
 
-    private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
-    private boolean useTDWGarea = false;
-    private ITermService termService;
-    private IOccurrenceService occurrenceService;
-    private DefinedTermBase<?> wbc = null;
-    Logger logger = Logger.getLogger(this.getClass());
-    private ImportConfiguratorBase<?, ?> config;
+	private static final boolean DEBUG = false;
+	private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
+	private boolean useTDWGarea = false;
+	//    private ITermService termService;
+	//    private IOccurrenceService occurrenceService;
+	private DefinedTermBase<?> wbc = null;
+	Logger logger = Logger.getLogger(this.getClass());
 
 
-    public UnitsGatheringArea(){
-        //
-    }
+	public UnitsGatheringArea(){
+		//
+	}
 
-    public void setParams(String isoCountry, String country){
+	public void setParams(String isoCountry, String country, ImportConfiguratorBase<?, ?> config, ITermService termService,
+			IOccurrenceService occurrenceService){
 
-        this.setCountry(isoCountry, country);
-    }
+		this.setCountry(isoCountry, country, config, termService, occurrenceService);
+	}
 
-    /*
-     * Constructor
-     * Set a list of NamedAreas
-     */
-    public void setAreas(List<String> namedAreaList ){
-        this.setAreaNames(namedAreaList);
-    }
+	/*
+	 * Constructor
+	 * Set a list of NamedAreas
+	 */
+	public void setAreas(List<String> namedAreaList, ImportConfiguratorBase<?, ?> config, ITermService termService ){
+		this.setAreaNames(namedAreaList, config, termService);
+	}
 
 
-    /*
-     * Return the current list of NamedAreas
-     */
-    public ArrayList<DefinedTermBase> getAreas(){
-        return this.areas;
-    }
+	/*
+	 * Return the current list of NamedAreas
+	 */
+	public ArrayList<DefinedTermBase> getAreas(){
+		return this.areas;
+	}
 
-    /*
-     * Set the list of NamedAreas
-     * @param namedAreas
-     */
-    @SuppressWarnings("rawtypes")
-    public void setAreaNames(List<String> namedAreas){
-        List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(Continent.class, 0, 0, null, null));
-        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+	/*
+	 * Set the list of NamedAreas
+	 * @param namedAreas
+	 */
+	@SuppressWarnings("rawtypes")
+	public void setAreaNames(List<String> namedAreas, ImportConfiguratorBase<?, ?> config, ITermService termService){
+		List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
+		termsList.addAll(termService.list(Continent.class, 0, 0, null, null));
+		termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
 
-        logger.info(termService.list(Continent.class, 0, 0, null, null));
+		if (DEBUG) {
+			logger.info(termService.list(Continent.class, 0, 0, null, null));
+		}
 
-        HashSet<String> areaToAdd= new HashSet<String>();
-        HashSet<UUID> areaSet = new HashSet<UUID>();
+		HashSet<String> areaToAdd= new HashSet<String>();
+		HashSet<UUID> areaSet = new HashSet<UUID>();
 
-        HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
-        for (String namedAreaStr : namedAreas){
-            for (DefinedTermBase na:termsList){
-                if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
-                    if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
-                        matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
-                    }
-                }
-            }
-//            logger.info("matchingterms: "+matchingTerms.keySet().toString());
-            UUID areaUUID = null;
-            areaUUID = getNamedAreaDecision(namedAreaStr);
+		HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
+		for (String namedAreaStr : namedAreas){
+			for (DefinedTermBase na:termsList){
+				if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
+					if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
+						matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
+					}
+				}
+			}
+			//            logger.info("matchingterms: "+matchingTerms.keySet().toString());
+			UUID areaUUID = null;
+			areaUUID = getNamedAreaDecision(namedAreaStr,config);
 
-            if (areaUUID == null){
-                areaUUID = askForArea(namedAreaStr, matchingTerms);
-            }
-            logger.info("selected area: "+areaUUID);
-            if (areaUUID == null){
-                areaToAdd.add(namedAreaStr);
-            } else {
-                areaSet.add(areaUUID);
-                addNamedAreaDecision(namedAreaStr,areaUUID);
-            }
+			if (areaUUID == null){
+				areaUUID = askForArea(namedAreaStr, matchingTerms);
+			}
+			if (DEBUG) {
+				logger.info("selected area: "+areaUUID);
+			}
+			if (areaUUID == null){
+				areaToAdd.add(namedAreaStr);
+			} else {
+				areaSet.add(areaUUID);
+				addNamedAreaDecision(namedAreaStr,areaUUID, config);
+			}
 
-        }
-        for (String areaStr:areaToAdd){
-            NamedArea ar = NamedArea.NewInstance();
-            ar.setTitleCache(areaStr, true);
-            termService.saveOrUpdate(ar);
-            this.areas.add(ar);
-            addNamedAreaDecision(areaStr,ar.getUuid());
-        }
-        if (!areaSet.isEmpty()){
-            List<DefinedTermBase> ldtb = termService.find(areaSet);
-            if (!ldtb.isEmpty()) {
-                this.areas.addAll(ldtb);
-            }
-        }
-    }
+		}
+		for (String areaStr:areaToAdd){
+			NamedArea ar = NamedArea.NewInstance();
+			ar.setTitleCache(areaStr, true);
+			termService.saveOrUpdate(ar);
+			this.areas.add(ar);
+			addNamedAreaDecision(areaStr,ar.getUuid(), config);
+		}
+		if (!areaSet.isEmpty()){
+			List<DefinedTermBase> ldtb = termService.find(areaSet);
+			if (!ldtb.isEmpty()) {
+				this.areas.addAll(ldtb);
+			}
+		}
+	}
 
-    private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms){
-        matchingTerms.put("Nothing matches, create a new area",null);
-        JFrame frame = new JFrame("I have a question");
-        frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-        String s = (String)JOptionPane.showInputDialog(
-                frame,
-                "Several CDM-areas could match the current '"+namedAreaStr,
-                "Select the right one from the list",
-                JOptionPane.QUESTION_MESSAGE,
-                null,
-                matchingTerms.keySet().toArray(),
-                null);
+	private UUID askForArea(String namedAreaStr, HashMap<String, UUID> matchingTerms){
+		matchingTerms.put("Nothing matches, create a new area",null);
 
-        return matchingTerms.get(s);
-    }
+		JTextArea textArea = new JTextArea("Several CDM-areas could match the current '"+namedAreaStr+"'");
+		JScrollPane scrollPane = new JScrollPane(textArea);
+		textArea.setLineWrap(true);
+		textArea.setWrapStyleWord(true);
+		scrollPane.setPreferredSize( new Dimension( 700, 50 ) );
+		String s=null;
+		while (s == null) {
+			s= (String)JOptionPane.showInputDialog(
+					null,
+					scrollPane,
+					"Select the right one from the list",
+					JOptionPane.QUESTION_MESSAGE,
+					null,
+					matchingTerms.keySet().toArray(),
+					null);
+		}
 
-    /*
-     * Set the current Country
-     * Search in the DB if the isoCode is known
-     * If not, search if the country name is in the DB
-     * If not, create a new Label with the Level Country
-     * @param iso: the country iso code
-     * @param fullName: the country's full name
-     * @param app: the CDM application controller
-     */
-    public void setCountry(String iso, String fullName){
-        List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+		return matchingTerms.get(s);
+	}
 
-        HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
+	/*
+	 * Set the current Country
+	 * Search in the DB if the isoCode is known
+	 * If not, search if the country name is in the DB
+	 * If not, create a new Label with the Level Country
+	 * @param iso: the country iso code
+	 * @param fullName: the country's full name
+	 * @param app: the CDM application controller
+	 */
+	@SuppressWarnings("rawtypes")
+	public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
+			IOccurrenceService occurrenceService){
+		List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
+		termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
 
-        if (!StringUtils.isEmpty(iso)){
-            wbc = occurrenceService.getCountryByIso(iso);
-        }
-        if (wbc == null){
-            if (!StringUtils.isEmpty(fullName)){
+		HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 
-                for (DefinedTermBase<?> na:termsList){
-                    if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
-                        if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
-                            matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
-                        }
-                    }
-                }
-//                logger.info("matchingterms: "+matchingTerms.keySet().toString());
-                UUID areaUUID = null;
-                areaUUID = getNamedAreaDecision(fullName);
+		if (!StringUtils.isEmpty(iso)){
+			wbc = occurrenceService.getCountryByIso(iso);
+		}
+		if (wbc == null){
+			if (!StringUtils.isEmpty(fullName)){
 
-                if (areaUUID == null){
-                    areaUUID = askForArea(fullName, matchingTerms);
-                    logger.info("selected area: "+areaUUID);
-                }
-                if (areaUUID == null){
-                    NamedArea ar = NamedArea.NewInstance();
-                    ar.setTitleCache(fullName, true);
-                    termService.saveOrUpdate(ar);
-                    wbc = ar;
-                } else {
-                    wbc = termService.find(areaUUID);
-                }
-                addNamedAreaDecision(fullName,wbc.getUuid());
-            }
-        }
-    }
+				for (DefinedTermBase<?> na:termsList){
+					if (na.getTitleCache().toLowerCase().indexOf(fullName.toLowerCase()) != -1) {
+						if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
+							matchingTerms.put(na.getTitleCache()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
+						}
+					}
+				}
+				//                logger.info("matchingterms: "+matchingTerms.keySet().toString());
+				UUID areaUUID = null;
+				areaUUID = getNamedAreaDecision(fullName,config);
 
-    /**
-     * @param fullName
-     * @param uuid
-     */
-    private void addNamedAreaDecision(String fullName, UUID uuid) {
-        if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
-            ((SpecimenSynthesysExcelImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
-        }
-        if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
-            ((Abcd206ImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
-        }
-        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
-            ((TaxonXImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
-        }
+				if (areaUUID == null && matchingTerms.keySet().size()>0){
+					areaUUID = askForArea(fullName, matchingTerms);
+					logger.info("selected area: "+areaUUID);
+				}
+				if (areaUUID == null){
+					NamedArea ar = NamedArea.NewInstance();
+					ar.setTitleCache(fullName, true);
+					termService.saveOrUpdate(ar);
+					wbc = ar;
+				} else {
+					wbc = termService.find(areaUUID);
+				}
+				addNamedAreaDecision(fullName,wbc.getUuid(),config);
+			}
+		}
+	}
 
-    }
+	/**
+	 * @param fullName
+	 * @param uuid
+	 */
+	private void addNamedAreaDecision(String fullName, UUID uuid,ImportConfiguratorBase<?, ?> config) {
+		if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
+			((SpecimenSynthesysExcelImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+		}
+		if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
+			((Abcd206ImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+		}
+		if (config.getClass().equals(TaxonXImportConfigurator.class)) {
+			((TaxonXImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+		}
 
-    /**
-     * @param fullName
-     * @return
-     */
-    private UUID getNamedAreaDecision(String fullName) {
-        UUID areaUUID = null;
-        System.out.println("getNamedAreaDecision "+config);
-        if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
-            areaUUID = ((SpecimenSynthesysExcelImportConfigurator) config).getNamedAreaDecision(fullName);
-        }
-        if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
-            areaUUID = ((Abcd206ImportConfigurator) config).getNamedAreaDecision(fullName);
-        }
-        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
-            areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
-        }
-        return areaUUID;
-    }
+	}
 
-    /**
-     * @param useTDWGarea2
-     */
-    public void useTDWGareas(boolean useTDWGarea) {
-        this.useTDWGarea=useTDWGarea;
+	/**
+	 * @param fullName
+	 * @return
+	 */
+	private UUID getNamedAreaDecision(String fullName, ImportConfiguratorBase<?, ?> config) {
+		UUID areaUUID = null;
+		System.out.println("getNamedAreaDecision "+config);
+		if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
+			areaUUID = ((SpecimenSynthesysExcelImportConfigurator) config).getNamedAreaDecision(fullName);
+		}
+		if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
+			areaUUID = ((Abcd206ImportConfigurator) config).getNamedAreaDecision(fullName);
+		}
+		if (config.getClass().equals(TaxonXImportConfigurator.class)) {
+			areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
+		}
+		return areaUUID;
+	}
 
-    }
+	/**
+	 * @param useTDWGarea2
+	 */
+	public void useTDWGareas(boolean useTDWGarea) {
+		this.useTDWGarea=useTDWGarea;
 
-    /**
-     * @return
-     */
-    public DefinedTermBase<?> getCountry() {
-        return wbc;
-    }
+	}
 
-    /**
-     * @param config
-     */
-    public void setConfig(SpecimenSynthesysExcelImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
-        this.config=config;
-        this.termService = termService;
-        this.occurrenceService = occurrenceService;
+	/**
+	 * @return
+	 */
+	public DefinedTermBase<?> getCountry() {
+		return wbc;
+	}
 
-    }
+	//    /**
+	//     * @param config
+	//     */
+	//    public void setConfig(SpecimenSynthesysExcelImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
+	//        this.config=config;
+	//        this.termService = termService;
+	//        this.occurrenceService = occurrenceService;
+	//
+	//    }
+	//
+	//    /**
+	//     * @param config2
+	//     */
+	//    public void setConfig(Abcd206ImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
+	//        this.config=config;
+	//        this.termService = termService;
+	//        this.occurrenceService = occurrenceService;
+	//
+	//    }
 
-    /**
-     * @param config2
-     */
-    public void setConfig(Abcd206ImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
-        this.config=config;
-        this.termService = termService;
-        this.occurrenceService = occurrenceService;
-
-    }
-
-    /**
-     * @param config2
-     */
-    public void setConfig(TaxonXImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
-        this.config=config;
-        this.termService = termService;
-        this.occurrenceService = occurrenceService;
-
-    }
+	//    /**
+	//     * @param config2
+	//     */
+	//    public void setConfig(TaxonXImportConfigurator config, IOccurrenceService occurrenceService, ITermService termService) {
+	//        this.config=config;
+	//        this.termService = termService;
+	//        this.occurrenceService = occurrenceService;
+	//
+	//    }
 
 }

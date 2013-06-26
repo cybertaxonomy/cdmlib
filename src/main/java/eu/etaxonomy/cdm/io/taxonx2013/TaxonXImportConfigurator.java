@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -52,6 +53,11 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
 
     private static Reference<?> sourceRef = null;
+
+    private Reference<?> secundum;
+    private boolean keepOriginalSecundum;
+    private Rank maxRank;
+
 
     @SuppressWarnings("unchecked")
     @Override
@@ -249,4 +255,36 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     public UUID getNamedAreaDecision(String areaStr){
         return namedAreaDecisions.get(areaStr);
     }
+
+    /**
+     * @return
+     */
+    public boolean doKeepOriginalSecundum() {
+        return keepOriginalSecundum;
+    }
+
+    public void setKeepOriginalSecundum(boolean reuseSecundum) {
+        this.keepOriginalSecundum = reuseSecundum;
+    }
+
+    /**
+     * @return
+     */
+    public Reference<?> getSecundum() {
+       return secundum;
+    }
+
+
+    public void setSecundum(Reference<?> reference){
+        this.secundum=reference;
+    }
+
+    public Rank getMaxRank() {
+        return maxRank;
+    }
+
+    public void setMaxRank(Rank maxRank) {
+        this.maxRank = maxRank;
+    }
+
 }

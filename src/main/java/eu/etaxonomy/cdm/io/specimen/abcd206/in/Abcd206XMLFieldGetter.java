@@ -617,7 +617,9 @@ public class Abcd206XMLFieldGetter {
     /*PARSING METHODS*/
 
     private HashMap<String, String> getAtomisedNames(String code,NodeList atomised) {
-        logger.info("code getatomised " + code);
+        if (DEBUG) {
+            logger.info("code getatomised " + code);
+        }
         if (code.indexOf("Botanical") != -1) {
             return this.getAtomisedBotanical(atomised);
         }
@@ -634,7 +636,9 @@ public class Abcd206XMLFieldGetter {
     }
 
     private HashMap<String, String> getAtomisedZoological(NodeList atomised) {
-        logger.info("getAtomisedZoo");
+        if(DEBUG) {
+            logger.info("getAtomisedZoo");
+        }
         HashMap<String, String> atomisedMap = new HashMap<String, String>();
 
         for (int i = 0; i < atomised.getLength(); i++) {

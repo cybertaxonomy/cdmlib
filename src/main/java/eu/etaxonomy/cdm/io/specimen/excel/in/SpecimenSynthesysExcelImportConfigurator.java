@@ -41,13 +41,12 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     private Map<String, Team> titleCacheTeam;
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
-
+    
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
     private Reference<?> dataReference;
 
 
-
-    //TODO
+	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
 
@@ -196,6 +195,7 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
      return defaultAuthor;
     }
 
+    
     public Map<String,UUID> getNamedAreaDecisions() {
         return namedAreaDecisions;
     }
@@ -223,6 +223,7 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     public Reference<?> getDataReference() {
         return dataReference;
     }
+
 
 
 }

@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
+//import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -67,7 +68,7 @@ public class UnitsGatheringEvent {
             this.setTeam(team, config);
         }
     }
-
+//
     public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
             Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
         if (!StringUtils.isEmpty(locality)) {

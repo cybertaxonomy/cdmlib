@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -245,14 +246,14 @@ public class TaxonXExtractor {
 
             unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
                     configState.getConfig(),importer.getAgentService());
+            
             if(tp!=null) {
                 unitsGatheringEvent.setGatheringDate(tp);
             }
 
             // country
             unitsGatheringArea = new UnitsGatheringArea();
-            unitsGatheringArea.setConfig(configState.getConfig(),importer.getOccurrenceService(), importer.getTermService());
-            unitsGatheringArea.setParams(null, country);
+            unitsGatheringArea.setParams(null, country, configState.getConfig(), importer.getTermService(), importer.getOccurrenceService());
 
             areaCountry =  unitsGatheringArea.getCountry();
 
@@ -454,7 +455,7 @@ public class TaxonXExtractor {
         if (!uuids.isEmpty()){
             List<AgentBase> existingPersons = agentService.find(uuids);
             for (AgentBase existingP:existingPersons){
-                titleCachePerson.put(existingP.getTitleCache(),(Person) existingP);
+                titleCachePerson.put(existingP.getTitleCache(),CdmBase.deproxy(existingP, Person.class));
             }
         }
 
@@ -476,7 +477,7 @@ public class TaxonXExtractor {
         if(!personToadd.isEmpty()){
             Map<UUID, AgentBase> uuuidPerson = agentService.save(personToadd);
             for (UUID u:uuuidPerson.keySet()){
-                titleCachePerson.put(uuuidPerson.get(u).getTitleCache(),(Person) uuuidPerson.get(u) );
+                titleCachePerson.put(uuuidPerson.get(u).getTitleCache(), CdmBase.deproxy(uuuidPerson.get(u), Person.class));
             }
         }
 
@@ -535,6 +536,55 @@ public class TaxonXExtractor {
         return s;
     }
 
+
+    protected int askAddParent(String s){
+    JTextArea textArea = new JTextArea("If you want to add a parent taxa for "+s+", click \"Yes\"." +
+            " If it is a root for this classification, click \"No\" or \"Cancel\".");
+    JScrollPane scrollPane = new JScrollPane(textArea);
+    textArea.setLineWrap(true);
+    textArea.setWrapStyleWord(true);
+    scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
+
+    int addTaxon = JOptionPane.showConfirmDialog(null,scrollPane);
+    return addTaxon;
+    }
+
+    protected String askSetParent(String s){
+        JTextArea textArea =  new JTextArea("What is the first taxon parent for "+s+"?\n"+
+                "The rank will be asked later. ");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
+
+        s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                null);
+        return s;
+        }
+
+    protected String askRank(String s, List<String> rankListStr){
+        JTextArea  textArea = new JTextArea("What is the rank for "+s+"?");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
+
+       String r = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                rankListStr.toArray(),
+                null);
+       return r;
+    }
 
     /**
      * @param name
