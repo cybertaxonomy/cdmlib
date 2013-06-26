@@ -64,8 +64,13 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
  * @version 2.0 (08.11.2010)
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PolytomousKey", propOrder = { "coveredTaxa", "taxonomicScope",
-		"geographicalScope", "scopeRestrictions", "root" })
+@XmlType(name = "PolytomousKey", propOrder = { 
+		"coveredTaxa", 
+		"taxonomicScope",
+		"geographicalScope", 
+		"scopeRestrictions", 
+		"root",
+		"startNumber"})
 @XmlRootElement(name = "PolytomousKey")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
@@ -115,6 +120,10 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKeyNode root;
+	
+	@XmlElement(name = "StartNumber")
+	private int startNumber = 1;
+	
 
 // ***************** STATIC METHODS ********************************/
 
@@ -321,6 +330,24 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	public void removeScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
+	
+
+	/**
+	 * The first number for the automated numbering of {@link PolytomousKeyNode key nodes}.
+	 * Default value is 1.
+	 * @return
+	 */
+	public int getStartNumber() {
+		return startNumber;
+	}
+
+	/**
+	 * @see #getStartNumber()
+	 * @param startNumber
+	 */
+	public void setStartNumber(int startNumber) {
+		this.startNumber = startNumber;
+	}
 
 	// ******************** toString *****************************************/
 
@@ -444,8 +471,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	// return getRoot().getChildren();
 	// }
 
-	// *********************** CLONE
-	// ********************************************************/
+	// *********************** CLONE ************************************/
 
 	/**
 	 * Clones <i>this</i> PolytomousKey. This is a shortcut that enables to
