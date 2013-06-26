@@ -11,9 +11,8 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -27,14 +26,17 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
-import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
+import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 
 /**
  * IMPORTANT:
@@ -52,6 +54,10 @@ import eu.etaxonomy.cdm.remote.editor.TermBasePropertyEditor;
 @Controller
 @RequestMapping(value = {"/portal/description"})
 public class DescriptionListPortalController extends IdentifiableListController<DescriptionBase, IDescriptionService> {
+
+
+    @Autowired
+    private ITaxonService taxonService;
 
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -87,9 +93,8 @@ public class DescriptionListPortalController extends IdentifiableListController<
     @Override
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
-        binder.registerCustomEditor(Feature.class, new TermBasePropertyEditor<Feature>(termService));
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<Feature>(termService));
     }
-
     /**
     *
     * @param queryString
@@ -124,26 +129,76 @@ public class DescriptionListPortalController extends IdentifiableListController<
        return pager;
    }
 
-   @RequestMapping(value = "/portal/descriptionElement", method = RequestMethod.GET)
+   /**
+    * Requires the query parameter "descriptionType" to be present
+    *
+    * @param features
+    * @param descriptionType
+    * @param type
+    * @param pageSize
+    * @param pageNumber
+    * @param request
+    * @param response
+    * @return
+    * @throws IOException
+    */
+   @RequestMapping(value = "/portal/descriptionElement/byFeature", method = RequestMethod.GET)
    public Pager<DescriptionElementBase> doPageDescriptionElementsByFeature(
-           @RequestParam(value = "feature", required = true) Feature feature,
+           @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
+           @RequestParam(value = "descriptionType", required = true) Class<? extends DescriptionBase> descriptionType,
            @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-           @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-           HttpServletRequest request,
-           HttpServletResponse response
-           )
-            throws IOException {
+           @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+           HttpServletResponse response) throws IOException {
 
-       logger.info("doPageDescriptionElementsByFeature : " + request.getRequestURI() + "?" + request.getQueryString() );
+       logger.info("doPageDescriptionElementsByFeature : " + requestPathAndQuery(request));
 
        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
        pagerParams.normalizeAndValidate(response);
 
-       Set<Feature> features = new HashSet<Feature>(1);
-       features.add(feature);
+       Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
+               type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
 
-       Pager<DescriptionElementBase> pager = service.getDescriptionElements(null, features, type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
+       return pager;
+   }
+
+   /**
+    * Requires the query parameter "taxon"  to be present
+    *
+    * @param taxon_uuid
+    * @param features
+    * @param type
+    * @param pageSize
+    * @param pageNumber
+    * @param request
+    * @param response
+    * @return
+    * @throws IOException
+    */
+   @RequestMapping(value = "/portal/descriptionElement/byTaxon", method = RequestMethod.GET)
+   public <T extends DescriptionElementBase> Pager<T> getDescriptionElementsForTaxon(
+           @RequestParam(value = "taxon", required = true) UUID taxon_uuid,
+           @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
+           @RequestParam(value = "type", required = false) Class<T> type,
+           @RequestParam(value = "pageSize", required = false) Integer pageSize,
+           @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+           HttpServletResponse response) throws IOException {
+
+       logger.info("getDescriptionElementsForTaxon : " + requestPathAndQuery(request));
+
+       PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+       pagerParams.normalizeAndValidate(response);
+
+       Taxon taxon = null;
+       if( taxon_uuid!= null){
+           try {
+               taxon = (Taxon) taxonService.load(taxon_uuid);
+           } catch (Exception e) {
+               HttpStatusMessage.UUID_NOT_FOUND.send(response);
+           }
+       }
+       Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features.asSet(), type, pageSize,
+               pageNumber, getInitializationStrategy());
 
        return pager;
    }
