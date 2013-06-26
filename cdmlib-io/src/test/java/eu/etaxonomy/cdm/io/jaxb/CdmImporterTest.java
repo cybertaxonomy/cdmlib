@@ -77,7 +77,7 @@ public class CdmImporterTest extends CdmTransactionalIntegrationTest{
 		try {
 			IDatabaseConnection databaseConnection = getConnection();
 			
-//			InputStreamReader dtdStream = CdmUtils.getUtf8ResourceReader("eu/etaxonomy/cdm/io/dataset.dtd");
+//			InputStreamReader dtdStream = CdmUtils.getUtf8ResourceReader("eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.dtd");
 			
 			FlatXmlDataSetBuilder builder = new FlatXmlDataSetBuilder();
 
