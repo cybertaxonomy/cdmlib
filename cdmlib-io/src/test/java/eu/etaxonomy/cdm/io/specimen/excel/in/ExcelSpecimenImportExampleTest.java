@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @created 10.05.2011
- * @version 1.0
  */
 public class ExcelSpecimenImportExampleTest extends
 		CdmTransactionalIntegrationTest {
