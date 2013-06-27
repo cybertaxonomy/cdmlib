@@ -445,8 +445,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Taxon taxon, Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-        List<T> descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
-        return new DefaultPagerImpl<T>(pageNumber, descriptionElements.size(), pageSize, descriptionElements);
+        Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
+        List<T> descriptionElements;
+        if(count > (pageSize * pageNumber + 1)){ // no point checking again
+            descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+        } else {
+            descriptionElements = new ArrayList<T>(0);
+        }
+        return new DefaultPagerImpl<T>(pageNumber, count.intValue(), pageSize, descriptionElements);
     }
 
 

@@ -62,12 +62,15 @@ public class DescriptionListPortalController extends IdentifiableListController<
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
-            "elements.sources.citation.authorTeam.$",
+            "elements.states.$",
+            "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource.originalNameString",
-            "elements.area.level",
-            "elements.modifyingText",
-            "elements.states.*",
+            "elements.multilanguageText",
             "elements.media",
+            "name.$",
+            "name.rank.representations",
+            "name.status.type.representations",
+            "sources.$",
     });
 
 

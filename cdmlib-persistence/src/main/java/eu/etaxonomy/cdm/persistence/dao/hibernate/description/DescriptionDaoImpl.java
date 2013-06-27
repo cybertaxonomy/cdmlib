@@ -682,7 +682,41 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-        String queryString = "select de" +
+        Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, false);
+
+        List<T> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    @Override
+    public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
+            Taxon taxon, Set<Feature> features, Class<T> type) {
+
+        Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, null, null, true);
+
+        return (Long)query.uniqueResult();
+    }
+
+    /**
+     * @param taxon
+     * @param features
+     * @param type
+     * @param pageSize
+     * @param pageNumber
+     * @return
+     */
+    private <T extends DescriptionElementBase> Query prepareGetDescriptionElementForTaxon(Taxon taxon,
+            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, boolean asCountQuery) {
+
+        String listOrCount;
+        if(asCountQuery){
+            listOrCount = "count(de)";
+        } else {
+            listOrCount = "de";
+        }
+        String queryString = "select " + listOrCount +
             " from TaxonDescription as td" +
             " left join td.descriptionElements as de" +
             " where td.taxon = :taxon ";
@@ -710,11 +744,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 query.setFirstResult(pageNumber * pageSize);
             }
         }
-
-        List<T> results = query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-        return results;
+        return query;
     }
 
     /* (non-Javadoc)

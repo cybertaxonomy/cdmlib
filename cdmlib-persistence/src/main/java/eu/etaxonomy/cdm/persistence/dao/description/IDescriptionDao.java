@@ -265,4 +265,15 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
             Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * @param taxon
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type A filter for DescriptionElements of a specific class
+     * @return the count of matching TaxonDescription instances
+     */
+    <T extends DescriptionElementBase> long countDescriptionElementForTaxon(Taxon taxon,
+            Set<Feature> features, Class<T> type);
 }
