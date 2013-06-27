@@ -150,7 +150,8 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	 */
 	protected PolytomousKey() {
 		super();
-		root = PolytomousKeyNode.NewRootInstance();
+		root = PolytomousKeyNode.NewInstance();
+		root.setNodeNumber(getStartNumber());
 		root.setKey(this);
 		this.cacheStrategy = PolytomousKeyDefaultCacheStrategy.NewInstance();
 	}

@@ -174,7 +174,18 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
 		stepList.add(step);
 		
+		//TODO add columns abbrevTitle, abbrevTitleCache and protectedAbbrevTitleCache to Reference
 		
+		
+		//TODO add column startNumber (int) , default = 1 in PolytomousKey
+		//add start number to PolytomousKey
+		stepName = "Add start number column to PolytomousKey";
+		tableName = "PolytomousKey";
+		columnName = "startNumber";
+		Integer defaultValue = 1;
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  defaultValue, true); 
+		stepList.add(step);
+				
 		return stepList;
 	}
 

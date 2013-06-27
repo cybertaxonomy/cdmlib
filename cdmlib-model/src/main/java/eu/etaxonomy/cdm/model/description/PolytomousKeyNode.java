@@ -248,7 +248,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
-	public static final Integer ROOT_NODE_NUMBER = 1;
 	/**
 	 * Class constructor: creates a new empty feature node instance.
 	 */
@@ -261,16 +260,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public static PolytomousKeyNode NewInstance() {
 		return new PolytomousKeyNode();
-	}
-
-	/**
-	 * Creates a new empty polytomous key node instance and sets the node number
-	 * to 0.
-	 */
-	public static PolytomousKeyNode NewRootInstance() {
-		PolytomousKeyNode result = new PolytomousKeyNode();
-		result.setNodeNumber(ROOT_NODE_NUMBER);
-		return result;
 	}
 
 	/**
@@ -413,8 +402,9 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * @return 
 	 */
 	private int getMaxNodeNumberFromRoot() {
-		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();		
-		return getMaxNodeNumber(ROOT_NODE_NUMBER, rootKeyNode);		
+		PolytomousKeyNode rootKeyNode = this.getKey().getRoot();	
+		int rootNumber = this.getKey().getStartNumber();
+		return getMaxNodeNumber(rootNumber, rootKeyNode);		
 	}
 	
 	/**
@@ -438,7 +428,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 * 	 
 	 */
 	public void refreshNodeNumbering() {				
-		updateNodeNumbering(getKey().getRoot(), ROOT_NODE_NUMBER);
+		updateNodeNumbering(getKey().getRoot(), getKey().getStartNumber());
 	}
 	
 	/**
