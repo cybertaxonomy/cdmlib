@@ -18,18 +18,18 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 /**
  * @author a.mueller
@@ -68,12 +68,12 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 				typeStatus = getTypeStatus(typeStatusStr, item);
 			}
 			
-			DerivedUnitType unitType = DerivedUnitType.DerivedUnit;
+			SpecimenOrObservationType unitType = SpecimenOrObservationType.DerivedUnit;
 			
 			if (hasDerivedUnit(item, isType)){
-				unitType = DerivedUnitType.Specimen;
+				unitType = SpecimenOrObservationType.PreservedSpecimen;
 			}else{
-				unitType = DerivedUnitType.FieldObservation;
+				unitType = SpecimenOrObservationType.FieldUnit;
 			}
 				
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(unitType);
@@ -83,14 +83,14 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 			facade.setCollection(collection);
 			facade.setCatalogNumber(catalogNumber);
 			
-			Specimen specimen = CdmBase.deproxy(facade.innerDerivedUnit(), Specimen.class);
+			DerivedUnit specimen = facade.innerDerivedUnit();
 			
 			if (isType){
-				TaxonNameBase name = taxon.getName();
+				TaxonNameBase<?,?> name = taxon.getName();
 				if (typeStatus.isInstanceOf(SpecimenTypeDesignationStatus.class)){
 					SpecimenTypeDesignationStatus status = CdmBase.deproxy(typeStatus, SpecimenTypeDesignationStatus.class);
 					name.addSpecimenTypeDesignation(specimen, status, null, null, null, false, true);
-					MappedCdmBase  mcb = new MappedCdmBase(taxon);
+					MappedCdmBase<?>  mcb = new MappedCdmBase(taxon);
 					resultList.add(mcb);
 				}else if (typeStatus.isInstanceOf(NameTypeDesignationStatus.class)){
 					String message = "NameTypeDesignation not yet implemented";
@@ -102,7 +102,7 @@ public class GbifTypesAndSpecimen2CdmConverter extends PartitionableConverterBas
 				}
 			}
 			
-			MappedCdmBase  mcb = new MappedCdmBase(specimen);
+			MappedCdmBase<?>  mcb = new MappedCdmBase(specimen);
 			resultList.add(mcb);
 
 		}else{

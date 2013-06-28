@@ -52,8 +52,8 @@ public class MolecularTest {
 		Sequence otherSeq = Sequence.NewInstance("CATCGAGTTGC");
 		
 		otherSeq.setBarcode(true);
-		dnaSample.addSequences(seq);
-		dnaSample.addSequences(otherSeq);
+		dnaSample.addSequence(seq);
+		dnaSample.addSequence(otherSeq);
 		
 		locus= Locus.NewInstance("Test", "test locus");
 		

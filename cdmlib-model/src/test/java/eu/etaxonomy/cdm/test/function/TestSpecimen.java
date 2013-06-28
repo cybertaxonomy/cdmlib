@@ -33,10 +33,10 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -99,7 +99,7 @@ public class TestSpecimen {
 		
 		
 		logger.info("Create new specimen ...");
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setCatalogNumber("JE 00004506");
 		specimen.setStoredUnder(botanicalName);   //??
 		specimen.setCollection(collection);

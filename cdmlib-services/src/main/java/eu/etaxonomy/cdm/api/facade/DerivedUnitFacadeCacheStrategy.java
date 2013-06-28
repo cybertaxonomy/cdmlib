@@ -17,7 +17,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @date 03.06.2010
  *
  */
-public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnitBase> {
+public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<DerivedUnit> {
 	private static final long serialVersionUID = 1578628591216605619L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategy.class);
@@ -49,7 +49,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
 	 */
 	@Override
-	public String getTitleCache(DerivedUnitBase derivedUnit) {
+	public String getTitleCache(DerivedUnit derivedUnit) {
 		DerivedUnitFacadeFieldObservationCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldObservationCacheStrategy();
 
 		String result = "";

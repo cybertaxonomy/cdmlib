@@ -163,15 +163,10 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEventType"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
-      <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DeterminationEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.FieldObservation"/>
-      <mapping class="eu.etaxonomy.cdm.model.occurrence.Fossil"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"/>
-      <mapping class="eu.etaxonomy.cdm.model.occurrence.LivingBeing"/>
-      <mapping class="eu.etaxonomy.cdm.model.occurrence.Observation"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.PreservationMethod"/>
-      <mapping class="eu.etaxonomy.cdm.model.occurrence.Specimen"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase"/>
       <!-- Reference Package -->
       <mapping class="eu.etaxonomy.cdm.model.reference.Reference"/>

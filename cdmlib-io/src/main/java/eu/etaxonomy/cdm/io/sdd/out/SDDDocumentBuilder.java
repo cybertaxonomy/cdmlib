@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -112,7 +112,7 @@ public class SDDDocumentBuilder {
 	private final Map<DefinedTerm, String> modifiers = new HashMap<DefinedTerm, String>();
 	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
 	private final Map<NamedArea, String> namedAreas = new HashMap<NamedArea, String>();
-	private final Map<Specimen, String> specimens = new HashMap<Specimen, String>();
+	private final Map<DerivedUnit, String> specimens = new HashMap<DerivedUnit, String>();
 	
 	private final Map<VersionableEntity, String> features = new HashMap<VersionableEntity, String>();
 	private int agentsCount = 0;
@@ -1501,11 +1501,9 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < cdmSource.getOccurrences().size(); i++) {
 				ElementImpl elSpecimen = new ElementImpl(document, "Specimen");
-				SpecimenOrObservationBase sob = cdmSource.getOccurrences().get(
-						i);
-				if (sob instanceof Specimen) {
-					specimenCount = buildReference(sob, specimens, ID,
-							elSpecimen, "s", specimenCount);
+				SpecimenOrObservationBase<?> sob = cdmSource.getOccurrences().get(i);
+				if (sob.getRecordBasis().isPreservedSpecimen()) {
+					specimenCount = buildReference(sob, specimens, ID, elSpecimen, "s", specimenCount);
 					buildRepresentation(elSpecimen, sob);
 					elSpecimens.appendChild(elSpecimen);
 				}

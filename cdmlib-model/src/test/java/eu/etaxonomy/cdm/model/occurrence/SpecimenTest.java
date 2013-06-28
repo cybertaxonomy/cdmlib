@@ -54,11 +54,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 public class SpecimenTest {
 	private static final Logger logger = Logger.getLogger(SpecimenTest.class);
 
-	private Specimen specimen;
+	private DerivedUnit specimen;
 	
 	@Before
 	public void setUp() throws Exception {
-		specimen = Specimen.NewInstance();
+		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 	}
 
 	/**
@@ -66,18 +66,10 @@ public class SpecimenTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		assertNotNull(specimen);
-		assertTrue(specimen instanceof Specimen);
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.occurrence.Specimen#Specimen()}.
-	 */
-	@Test
-	public void testSpecimen() {
-		Specimen specimen = new Specimen();
-		assertNotNull(specimen);
+		assertTrue(specimen instanceof DerivedUnit);
+		assertTrue(specimen.getRecordBasis().equals(SpecimenOrObservationType.PreservedSpecimen));
 	}
 
 	/**
@@ -96,7 +88,7 @@ public class SpecimenTest {
 	public void testBidirectionalTypeDesignation(){
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();
-		Specimen specimen2 = Specimen.NewInstance();
+		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
 		
 		specimen.addSpecimenTypeDesignation(desig1);
 		Assert.assertEquals("Specimen1 should be the designations specimen", specimen, desig1.getTypeSpecimen());
@@ -143,7 +135,7 @@ public class SpecimenTest {
 		
 		//Null test is not full implemented, but an error is thrown if null throws 
 		//null pointer exception somewhere
-		Specimen specimenNullClone = (Specimen)specimen.clone();
+		DerivedUnit specimenNullClone = (DerivedUnit)specimen.clone();
 		
 		String accessionNumber = "accNumber";
 		String catalogNumber = "catNumber";
@@ -162,8 +154,8 @@ public class SpecimenTest {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		Specimen nextVersion = Specimen.NewInstance();
-		Specimen previousVersion = Specimen.NewInstance();
+		DerivedUnit nextVersion = DerivedUnit.NewPreservedSpecimenInstance();
+		DerivedUnit previousVersion = DerivedUnit.NewPreservedSpecimenInstance();
 		PreservationMethod preservation = PreservationMethod.NewInstance();
 		boolean protectedTitleCache = true;
 		DefinedTerm sex = DefinedTerm.SEX_FEMALE();
@@ -221,7 +213,7 @@ public class SpecimenTest {
 		} catch (InterruptedException e) {
 			//ignore
 		}
-		Specimen specimenClone = (Specimen)specimen.clone();
+		DerivedUnit specimenClone = (DerivedUnit)specimen.clone();
 		
 		assertFalse(id == specimenClone.getId());
 		assertFalse(created.equals(specimenClone.getCreated()));

@@ -36,7 +36,6 @@ import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
@@ -66,15 +65,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -109,7 +103,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	private Reference<?> ref = null;
 
 	private Abcd206DataHolder dataHolder;
-	private DerivedUnitBase<?> derivedUnitBase;
+	private DerivedUnit derivedUnit;
 
 	public Abcd206Import() {
 		super();
@@ -224,7 +218,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
 			// create facade
 			DerivedUnitFacade derivedUnitFacade = getFacade();
-			derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+			derivedUnit = derivedUnitFacade.innerDerivedUnit();
 
 			/**
 			 * GATHERING EVENT
@@ -287,7 +281,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			setCollectionData(state.getConfig(), derivedUnitFacade);
 
 
-			getOccurrenceService().saveOrUpdate(derivedUnitBase);
+			getOccurrenceService().saveOrUpdate(derivedUnit);
 			refreshTransaction(state);
 
 			// handle identifications
@@ -337,30 +331,30 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		if(DEBUG) {
 			logger.info("getFacade()");
 		}
-		DerivedUnitType type = null;
+		SpecimenOrObservationType type = null;
 
 		// create specimen
 		if (NB((dataHolder.recordBasis)) != null) {
 			if (dataHolder.recordBasis.toLowerCase().startsWith("s") || dataHolder.recordBasis.toLowerCase().contains("specimen")) {// specimen
-				type = DerivedUnitType.Specimen;
+				type = SpecimenOrObservationType.PreservedSpecimen;
 			}
 			if (dataHolder.recordBasis.toLowerCase().startsWith("o")) {
-				type = DerivedUnitType.Observation;
+				type = SpecimenOrObservationType.Observation;
 			}
 			if (dataHolder.recordBasis.toLowerCase().contains("fossil")){
-				type = DerivedUnitType.Fossil;
+				type = SpecimenOrObservationType.Fossil;
 			}
 			if (dataHolder.recordBasis.toLowerCase().startsWith("l")) {
-				type = DerivedUnitType.LivingBeing;
+				type = SpecimenOrObservationType.LivingSpecimen;
 			}
 			if (type == null) {
 				logger.info("The basis of record does not seem to be known: " + dataHolder.recordBasis);
-				type = DerivedUnitType.DerivedUnit;
+				type = SpecimenOrObservationType.DerivedUnit;
 			}
 			// TODO fossils?
 		} else {
 			logger.info("The basis of record is null");
-			type = DerivedUnitType.DerivedUnit;
+			type = SpecimenOrObservationType.DerivedUnit;
 		}
 		DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
 		return derivedUnitFacade;
@@ -525,9 +519,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		determinationEvent.setTaxon(taxon);
 		determinationEvent.setPreferredFlag(preferredFlag);
 
-		determinationEvent.setIdentifiedUnit(derivedUnitBase);
+		determinationEvent.setIdentifiedUnit(derivedUnit);
 
-		derivedUnitBase.addDetermination(determinationEvent);
+		derivedUnit.addDetermination(determinationEvent);
 		//		refreshTransaction(state);
 
 		try {
@@ -548,7 +542,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 					SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
 
 					designation.setTypeStatus(specimenTypeDesignationstatus);
-					designation.setTypeSpecimen(derivedUnitBase);
+					designation.setTypeSpecimen(derivedUnit);
 					name.addTypeDesignation(designation, true);
 					refreshTransaction(state);
 
@@ -568,7 +562,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			}
 		}
 
-		getOccurrenceService().saveOrUpdate(derivedUnitBase);
+		getOccurrenceService().saveOrUpdate(derivedUnit);
 		refreshTransaction(state);
 
 
@@ -576,7 +570,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			if(DEBUG){ logger.info("isDoCreateIndividualsAssociations");}
 
 			makeIndividualsAssociation(state, taxon, determinationEvent);
-			getOccurrenceService().saveOrUpdate(derivedUnitBase);
+			getOccurrenceService().saveOrUpdate(derivedUnit);
 		}
 	}
 
@@ -590,8 +584,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 		taxon.addDescription(taxonDescription);
 
 		IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
-		Feature feature = makeFeature(derivedUnitBase);
-		indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
+		Feature feature = makeFeature(derivedUnit);
+		indAssociation.setAssociatedSpecimenOrObservation(derivedUnit);
 		indAssociation.setFeature(feature);
 
 		for (Reference<?> citation : determinationEvent.getReferences()) {
@@ -607,17 +601,18 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	}
 
 	private Feature makeFeature(SpecimenOrObservationBase<?> unit) {
-		if (unit.isInstanceOf(DerivedUnit.class)) {
-			return Feature.INDIVIDUALS_ASSOCIATION();
-		} 
-		else if (unit.isInstanceOf(FieldObservation.class) || unit.isInstanceOf(Observation.class)) {
+		SpecimenOrObservationType type = unit.getRecordBasis();
+		if (type.isFeatureObservation()){
 			return Feature.OBSERVATION();
-		} 
-		else if (unit.isInstanceOf(Fossil.class) || unit.isInstanceOf(LivingBeing.class) || unit.isInstanceOf(Specimen.class)) {
+		}else if (type.isFeatureSpecimen()){
 			return Feature.SPECIMEN();
+		}else if (type == SpecimenOrObservationType.DerivedUnit){
+			return Feature.INDIVIDUALS_ASSOCIATION();
+		}else{
+			String message = "Unhandled record basis '%s' for defining individuals association feature type. Use default.";
+			logger.warn(String.format(message, type.getMessage()));
+			return Feature.INDIVIDUALS_ASSOCIATION();
 		}
-		logger.warn("No feature defined for derived unit class: " + unit.getClass().getSimpleName());
-		return null;
 	}
 
 	private void refreshTransaction(Abcd206ImportState state){
@@ -630,8 +625,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 			if (classification != null){
 				classification = getClassificationService().find(classification.getUuid());
 			}
-			if (derivedUnitBase != null){
-				derivedUnitBase = (DerivedUnitBase<?>) getOccurrenceService().find(derivedUnitBase.getUuid());
+			if (derivedUnit != null){
+				derivedUnit = (DerivedUnit) getOccurrenceService().find(derivedUnit.getUuid());
 			}
 		}
 		catch(Exception e){

@@ -140,10 +140,6 @@ http://www.w3.org/2001/XMLSchema
               <xs:element ref="occurrence:DerivedUnit"/>
               <xs:element ref="occurrence:DnaSample"/>
               <xs:element ref="occurrence:FieldObservation"/>
-              <xs:element ref="occurrence:Fossil"/>
-              <xs:element ref="occurrence:LivingBeing"/>
-              <xs:element ref="occurrence:Observation"/>
-              <xs:element ref="occurrence:Specimen"/>
             </xs:choice>
           </xs:sequence>
         </xs:complexType>

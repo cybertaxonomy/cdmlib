@@ -69,7 +69,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
@@ -180,10 +180,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //check references with only reverse mapping
         Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
         for (CdmBase referencingObject : referencingObjects){
-            //DerivedUnitBase?.storedUnder
-            if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
+            //DerivedUnit?.storedUnder
+            if (referencingObject.isInstanceOf(DerivedUnit.class)){
                 String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
                 throw new ReferencedObjectUndeletableException(message);
             }
             //DescriptionElementSource#nameUsedInSource

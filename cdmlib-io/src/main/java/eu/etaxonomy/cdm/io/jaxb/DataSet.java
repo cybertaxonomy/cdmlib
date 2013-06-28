@@ -84,12 +84,8 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -221,11 +217,7 @@ public class DataSet {
     @XmlElements({
     	@XmlElement(name = "DerivedUnit", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivedUnit.class),
     	@XmlElement(name = "DnaSample", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DnaSample.class),
-    	@XmlElement(name = "FieldObservation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldObservation.class),
-    	@XmlElement(name = "Fossil", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Fossil.class),
-    	@XmlElement(name = "LivingBeing", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = LivingBeing.class),
-    	@XmlElement(name = "Observation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Observation.class),
-    	@XmlElement(name = "Specimen", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = Specimen.class)
+    	@XmlElement(name = "FieldObservation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldObservation.class)
     })
     protected List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
     

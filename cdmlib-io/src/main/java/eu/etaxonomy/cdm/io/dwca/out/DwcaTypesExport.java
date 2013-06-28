@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -218,7 +218,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		if (designation.isInstanceOf(SpecimenTypeDesignation.class)){
 			SpecimenTypeDesignation specDesig = CdmBase.deproxy(designation, SpecimenTypeDesignation.class);
 			try {
-				DerivedUnitBase<?> derivedUnit = specDesig.getTypeSpecimen();
+				DerivedUnit derivedUnit = specDesig.getTypeSpecimen();
 				if (derivedUnit == null){
 					return null;
 				}else{
@@ -239,13 +239,13 @@ public class DwcaTypesExport extends DwcaExportBase {
 	private DerivedUnitFacade getFacadeFromAssociation(IndividualsAssociation individualsAssociation) {
 		SpecimenOrObservationBase<?> specimen = individualsAssociation.getAssociatedSpecimenOrObservation();
 		DerivedUnitFacade facade;
-		if (! specimen.isInstanceOf(DerivedUnitBase.class)){
+		if (! specimen.isInstanceOf(DerivedUnit.class)){
 			String message = "Non DerivedUnit specimen can not yet be handled by this export";
 			logger.warn(message);
 			//TODO handle empty records
 			return null; 
 		}else{
-			DerivedUnitBase<?> derivedUnit = CdmBase.deproxy(specimen, DerivedUnitBase.class);
+			DerivedUnit derivedUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
 			try {
 				facade = DerivedUnitFacade.NewInstance(derivedUnit);
 			} catch (DerivedUnitFacadeNotSupportedException e) {

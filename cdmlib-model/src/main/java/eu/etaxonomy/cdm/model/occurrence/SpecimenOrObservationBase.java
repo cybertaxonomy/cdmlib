@@ -14,7 +14,9 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -49,10 +51,13 @@ import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -68,10 +73,12 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SpecimenOrObservationBase", propOrder = {
-	"sex",
+	"recordBasis",
 	"publish",
-    "individualCount",
-    "lifeStage",
+	"sex",
+	"lifeStage",
+    "kindOfUnit",
+	"individualCount",
     "definition",
     "descriptions",
     "determinations",
@@ -86,6 +93,23 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 
+	/**
+	 * An indication of what the unit record describes.
+	 * 
+	 * NOTE: The name of the attribute was chosen against the common naming conventions of the CDM
+	 * as it is well known in common standards like ABCD and DarwinCore. According to CDM naming
+	 * conventions it would specimenOrObservationType. 
+	 * 
+	 * @see ABCD: DataSets/DataSet/Units/Unit/RecordBasis
+	 * @see Darwin Core: http://wiki.tdwg.org/twiki/bin/view/DarwinCore/BasisOfRecord 
+	 */
+	@XmlAttribute(name ="RecordBasis")
+	@Column(name="recordBasis")
+	@NotNull
+	@Enumerated  //TODO use UserType 
+	private SpecimenOrObservationType recordBasis;
+
+	
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
 	@ManyToMany(fetch = FetchType.LAZY,mappedBy="describedSpecimenOrObservations",targetEntity=DescriptionBase.class)
@@ -112,6 +136,19 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DefinedTerm lifeStage;
+	
+	/**
+	 * Part(s) of organism or class of materials represented by this unit.
+	 * Example: fruits, seeds, tissue, gDNA, leaves
+	 * 
+	 * @see ABCD: DataSets/DataSet/Units/Unit/KindOfUnit
+	 */
+	@XmlElement(name = "KindOfUnit")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+//    @IndexedEmbedded(depth=1)
+	private DefinedTerm kindOfUnit;
 
 	@XmlElement(name = "IndividualCount")
 	@Field(analyze = Analyze.NO)
@@ -143,6 +180,37 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @XmlAttribute(name = "publish")
     private boolean publish = true;
 
+
+// ********************** CONSTRUCTOR ******************************/
+	
+    //Constructor for hibernate use only
+	protected SpecimenOrObservationBase(){super();}
+
+	public SpecimenOrObservationBase(SpecimenOrObservationType recordBasis) {
+		super();
+		assert recordBasis != null : "RecordBasis must not be null";
+		this.recordBasis = recordBasis;
+	}
+	
+//************************* GETTER / SETTER ***********************/	
+
+	/**
+	 * @see #recordBasis
+	 * @return
+	 */
+	public SpecimenOrObservationType getRecordBasis() {
+		return recordBasis;
+	}
+
+	/**
+     * @see #recordBasis
+	 * @param recordBasis
+	 */
+	public void setRecordBasis(SpecimenOrObservationType recordBasis) {
+		this.recordBasis = recordBasis;
+	}
+	
+
 	/**
 	 * Returns the boolean value indicating if this specimen or observation should be withheld 
 	 * (<code>publish=false</code>) or not (<code>publish=true</code>) during any publication
@@ -162,14 +230,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setPublish(boolean publish) {
 		this.publish = publish;
 	}
-
-	/**
-	 * Constructor
-	 */
-	protected SpecimenOrObservationBase(){
-		super();
-	}
-
+	
 	/**
 	 * The descriptions this specimen or observation is part of.<BR>
 	 * A specimen can not only have it's own {@link SpecimenDescription specimen description }
@@ -309,6 +370,23 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setLifeStage(DefinedTerm lifeStage) {
 		this.lifeStage = lifeStage;
 	}
+	
+
+	/**
+	 * @see #kindOfUnit
+	 * @return
+	 */
+	public DefinedTerm getKindOfUnit() {
+		return kindOfUnit;
+	}
+
+	/**
+	 * @see #kindOfUnit
+	 * @param kindOfUnit
+	 */
+	public void setKindOfUnit(DefinedTerm kindOfUnit) {
+		this.kindOfUnit = kindOfUnit;
+	}
 
 	@Override
 	public String generateTitle(){
@@ -335,42 +413,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 *
 	 * @see    	   		#getDefinition()
 	 * @see    	   		#putDefinition(Language, String)
-	 * @deprecated 		should follow the put semantic of maps, this method will be removed in v4.0
-	 * 					Use the {@link #putDefinition(LanguageString) putDefinition} method instead
-	 */
-	@Deprecated
-	public void addDefinition(LanguageString description){
-		this.putDefinition(description);
-	}
-	/**
-	 * adds the {@link LanguageString description} to the {@link MultilanguageText multilanguage text}
-	 * used to define <i>this</i> specimen or observation.
-	 *
-	 * @param description	the languageString in with the title string and the given language
-	 *
-	 * @see    	   		#getDefinition()
-	 * @see    	   		#putDefinition(Language, String)
 	 */
 	public void putDefinition(LanguageString description){
 		this.definition.put(description.getLanguage(),description);
 	}
-	/**
-	 * Creates a {@link LanguageString language string} based on the given text string
-	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
-	 * used to define <i>this</i> specimen or observation.
-	 *
-	 * @param language	the language in which the title string is formulated
-	 * @param text		the definition in a particular language
-	 *
-	 * @see    	   		#getDefinition()
-	 * @see    	   		#putDefinition(LanguageString)
-	 * @deprecated		should follow the put semantic of maps, this method will be removed in v4.0
-	 * 					Use the {@link #putDefinition(Language String) putDefinition} method instead
-	 */
-	@Deprecated
-	public void addDefinition( String text, Language language){
-		this.putDefinition(language, text);
-	}
+
 	/**
 	 * Creates a {@link LanguageString language string} based on the given text string
 	 * and the given {@link Language language} and adds it to the {@link MultilanguageText multilanguage text}
@@ -446,4 +493,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		//no changes to: individualCount
 		return result;
 	}
+
+
 }

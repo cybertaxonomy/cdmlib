@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -96,7 +96,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
+		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
 		
 		if (getTransformer() == null){
 			IInputTransformer newTransformer = config.getTransformer();

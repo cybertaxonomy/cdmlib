@@ -27,7 +27,6 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
@@ -55,11 +54,12 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -85,7 +85,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     private IUserService userService;
 
 
-    Specimen specimen;
+    DerivedUnit specimen;
     DerivationEvent derivationEvent;
     FieldObservation fieldObservation;
     GatheringEvent gatheringEvent;
@@ -122,7 +122,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     DerivedUnitFacade specimenFacade;
 
-    Specimen collectionSpecimen;
+    DerivedUnit collectionSpecimen;
     GatheringEvent existingGatheringEvent;
     DerivationEvent firstDerivationEvent;
     FieldObservation firstFieldObject;
@@ -141,7 +141,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Before
     public void setUp() throws Exception {
 
-        specimen = Specimen.NewInstance();
+        specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
         derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         specimen.setDerivedFrom(derivationEvent);
@@ -178,8 +178,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
         // existing specimen with 2 derivation events in line
-        collectionSpecimen = Specimen.NewInstance();
-        Specimen middleSpecimen = Specimen.NewInstance();
+        collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+        DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
         firstFieldObject = FieldObservation.NewInstance();
 
 		//TODO maybe we should define concrete event types here
@@ -196,7 +196,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         firstFieldObject.setGatheringEvent(existingGatheringEvent);
 
         // empty facade
-        emptyFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        emptyFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 
     }
 
@@ -210,7 +210,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         UUID imageFeatureUuid = Feature.IMAGE().getUuid();
         Feature imageFeature = (Feature) termService.find(imageFeatureUuid);
 
-        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         facade.innerDerivedUnit().setUuid(UUID.fromString("77af784f-931b-4857-be9a-48ccf31ed3f1"));
         facade.setFieldNumber("12345");
         Media media = Media.NewInstance(URI.create("www.abc.de"), 200, null,"jpeg");
@@ -251,7 +251,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // UUID specimenUUID =
         // UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
         // Specimen specimen = (Specimen)service.find(specimenUUID);
-        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         Media media = Media.NewInstance(URI.create("www.derivedUnitImage.de"),200, null, "png");
 
         try {
@@ -288,23 +288,20 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     public void testGetFieldObjectImageGalleryBooleanPersisted() {
         UUID specimenUUID = UUID
                 .fromString("25383fc8-789b-4eff-92d3-a770d0622351");
-        Specimen specimen = (Specimen) service.load(specimenUUID);
+        DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
         Assert.assertNotNull("Specimen should exist (persisted)", specimen);
         try {
             DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
-            SpecimenDescription imageGallery = facade
-                    .getFieldObjectImageGallery(true);
+            SpecimenDescription imageGallery = facade.getFieldObjectImageGallery(true);
             Assert.assertNotNull("Image gallery should exist", imageGallery);
             Assert.assertEquals("UUID should be equal to the persisted uuid",
                     UUID.fromString("8cb772e9-1577-45c6-91ab-dbec1413c060"),
                     imageGallery.getUuid());
-            Assert.assertEquals("The image gallery should be flagged as such",
-                    true, imageGallery.isImageGallery());
+            Assert.assertEquals("The image gallery should be flagged as such",true, imageGallery.isImageGallery());
             Assert.assertEquals(
                     "There should be one TextData in image gallery", 1,
                     imageGallery.getElements().size());
-            List<Media> media = imageGallery.getElements().iterator().next()
-                    .getMedia();
+            List<Media> media = imageGallery.getElements().iterator().next().getMedia();
             Assert.assertEquals("There should be 1 media", 1, media.size());
         } catch (DerivedUnitFacadeNotSupportedException e) {
             e.printStackTrace();
@@ -317,7 +314,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 //	@Ignore // TODO generally works causes has id problems with following tests when running in suite
 	public void testGetDerivedUnitImageGalleryBooleanPersisted() {
 		UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
-		Specimen specimen = (Specimen) service.load(specimenUUID);
+		DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
 		Assert.assertNotNull("Specimen should exist (persisted)", specimen);
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
@@ -341,7 +338,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void testGetDerivedUnitImageGalleryBoolean() {
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
 			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
@@ -391,7 +388,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testGatheringEventIsConnectedToDerivedUnit() {
-        Specimen specimen = Specimen.NewInstance();
+    	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
@@ -409,7 +406,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testNoGatheringEventAndFieldObservation() {
-        Specimen specimen = Specimen.NewInstance();
+    	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
@@ -423,7 +420,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testInititializeTextDataWithSupportTest() {
         // TODO
-        Specimen specimen = Specimen.NewInstance();
+    	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
@@ -1371,8 +1368,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         } catch (MethodNotSupportedByDerivedUnitTypeException e) {
             Assert.fail("Method not supported should not be thrown for a specimen");
         }
-        specimenFacade = DerivedUnitFacade
-                .NewInstance(DerivedUnitType.Observation);
+        specimenFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.Observation);
         try {
             specimenFacade.setPreservationMethod(preservationMethod);
             Assert.fail("Method not supported should be thrown for an observation on set preservation method");
@@ -1380,8 +1376,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         } catch (MethodNotSupportedByDerivedUnitTypeException e) {
             // ok
         }
-        specimenFacade = DerivedUnitFacade
-                .NewInstance(DerivedUnitType.LivingBeing);
+        specimenFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.LivingSpecimen);
         try {
             specimenFacade.getPreservationMethod();
             Assert.fail("Method not supported should be thrown for a living being on get preservation method");
@@ -1502,10 +1497,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testAddGetRemoveDuplicate() {
         Assert.assertEquals("No duplicates should be available yet", 0,specimenFacade.getDuplicates().size());
-        Specimen newSpecimen1 = Specimen.NewInstance();
+        DerivedUnit newSpecimen1 = DerivedUnit.NewPreservedSpecimenInstance();
         specimenFacade.addDuplicate(newSpecimen1);
         Assert.assertEquals("There should be 1 duplicate now", 1,specimenFacade.getDuplicates().size());
-        Specimen newSpecimen2 = Specimen.NewInstance();
+        DerivedUnit newSpecimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         DerivationEvent newDerivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         newSpecimen2.setDerivedFrom(newDerivationEvent);
         Assert.assertSame(
@@ -1535,7 +1530,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         String collectorsNumber = "lkjewe";
         TaxonNameBase<?,?> storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
-        Specimen duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
+        DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
                 catalogNumber, accessionNumber, storedUnder,
                 method);
         Assert.assertEquals("There should be 2 duplicates now", 2,
@@ -1543,10 +1538,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.removeDuplicate(newSpecimen2);
         Assert.assertEquals("There should be 1 duplicates now", 1,
                 specimenFacade.getDuplicates().size());
-        Collection sameCollection = specimenFacade.getDuplicates().iterator()
-                .next().getCollection();
-        Assert.assertSame("Collections should be same", newCollection,
-                sameCollection);
+        Collection sameCollection = specimenFacade.getDuplicates().iterator().next().getCollection();
+        Assert.assertSame("Collections should be same", newCollection, sameCollection);
     }
 
     // ************************** Existing Specimen with multiple derivation
@@ -1640,7 +1633,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, password);
         SecurityContextHolder.getContext().setAuthentication(token);
 
-        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         facade.setLocality("testLocality");
         facade.getTitleCache();
 //		facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);

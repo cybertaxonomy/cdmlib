@@ -133,15 +133,10 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
@@ -427,15 +422,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				DerivationEvent.class, 
 				DerivationEventType.class, 
 				DerivedUnit.class, 
-				DerivedUnitBase.class, 
 				DeterminationEvent.class, 
 				FieldObservation.class, 
-				Fossil.class, 
 				GatheringEvent.class, 
-				LivingBeing.class, 
-				Observation.class, 
 				PreservationMethod.class, 
-				Specimen.class, 
 				SpecimenOrObservationBase.class, 
 				Reference.class, 
 				Synonym.class, 

@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -70,7 +70,7 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
+		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
 	}
 	
 	

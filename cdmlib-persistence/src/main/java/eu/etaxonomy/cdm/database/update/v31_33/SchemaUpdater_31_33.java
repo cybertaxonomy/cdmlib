@@ -177,7 +177,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO add columns abbrevTitle, abbrevTitleCache and protectedAbbrevTitleCache to Reference
 		
 		
-		//TODO add column startNumber (int) , default = 1 in PolytomousKey
 		//add start number to PolytomousKey
 		stepName = "Add start number column to PolytomousKey";
 		tableName = "PolytomousKey";
@@ -185,6 +184,17 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		Integer defaultValue = 1;
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  defaultValue, true); 
 		stepList.add(step);
+		
+		//TODO add specimenOrObservation basis of record to SpecimenOrObservationBase
+		
+		//add kindOfUnit to SpecimenOrObservationBase
+		stepName = "Add kindOfUnit column to SpecimenOrObservationBase";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "kindOfUnit";
+		String relatedTable = "DefinedTermBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
+		stepList.add(step);
+
 				
 		return stepList;
 	}

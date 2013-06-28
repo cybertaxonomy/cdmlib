@@ -26,7 +26,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:complexType name="DnaSample">
     <xs:complexContent>
-      <xs:extension base="occurrence:Specimen">
+      <xs:extension base="occurrence:DerivedUnit">
         <xs:sequence>
           <xs:element name="Sequences" minOccurs="0">
             <xs:complexType>

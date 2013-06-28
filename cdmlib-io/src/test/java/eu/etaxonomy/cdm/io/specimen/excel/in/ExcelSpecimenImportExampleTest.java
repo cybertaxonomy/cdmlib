@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -82,7 +82,7 @@ public class ExcelSpecimenImportExampleTest extends
 		 boolean result = defaultImport.invoke(configurator);
 		 assertTrue("Return value for import.invoke should be true", result);
 		 assertEquals("Number of specimen should be 3", 3,
-		 occurrenceService.count(DerivedUnitBase.class));
+		 occurrenceService.count(DerivedUnit.class));
 		 assertEquals("Number of field observations should be 3", 3,
 		 occurrenceService.count(FieldObservation.class));
 		
@@ -97,7 +97,7 @@ public class ExcelSpecimenImportExampleTest extends
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
+		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
 		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
 
 //		try {

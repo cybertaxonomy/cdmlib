@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -194,8 +194,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache() {
-        return dao.getDerivedUnitBaseUuidAndTitleCache();
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache() {
+        return dao.getDerivedUnitUuidAndTitleCache();
     }
 
     @Override
@@ -204,11 +204,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getDerivedUnitFacade(eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getDerivedUnitFacade(eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
      */
     @Override
-    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
-        derivedUnit = (DerivedUnitBase<?>)dao.load(derivedUnit.getUuid(), null);
+    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
+        derivedUnit = (DerivedUnit)dao.load(derivedUnit.getUuid(), null);
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
@@ -232,9 +232,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 tempIndividualsAssociation = (IndividualsAssociation)element;
                 if(tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null){
                     tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                    if(tempSpecimenOrObservationBase instanceof DerivedUnitBase){
+                    if(tempSpecimenOrObservationBase instanceof DerivedUnit){
                         try {
-                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance((DerivedUnitBase)tempSpecimenOrObservationBase));
+                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance((DerivedUnit)tempSpecimenOrObservationBase));
                         } catch (DerivedUnitFacadeNotSupportedException e) {
                             logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " +e.getMessage());
                         }

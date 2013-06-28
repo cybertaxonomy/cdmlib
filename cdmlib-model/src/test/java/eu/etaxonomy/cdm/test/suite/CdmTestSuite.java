@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
 import eu.etaxonomy.cdm.model.agent.InstitutionTypeTest;
 import eu.etaxonomy.cdm.model.common.*;
 import eu.etaxonomy.cdm.model.common.init.TermLoaderTest;
-import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBaseTest;
+//import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBaseTest;
 import eu.etaxonomy.cdm.model.description.TextDataTest;
 import eu.etaxonomy.cdm.model.name.*;
 import eu.etaxonomy.cdm.model.taxon.*;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 			TermLoaderTest.class,
 			TermVocabularyTest.class,
 			//description
-			PresenceAbsenceTermBaseTest.class,
+//			PresenceAbsenceTermBaseTest.class,
 			TextDataTest.class,
 			//name
 			BotanicalNameTest.class,
@@ -71,7 +71,7 @@ public class CdmTestSuite {
 				TermLoaderTest.class,
 				TermVocabularyTest.class,
 				//description
-				PresenceAbsenceTermBaseTest.class,
+//				PresenceAbsenceTermBaseTest.class,
 				TextDataTest.class,
 				//name
 				BotanicalNameTest.class,

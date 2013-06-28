@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- NOTE: It looks like this file is currently not in use. a.mueller (2013-06-28) -->
 <persistence xmlns="http://java.sun.com/xml/ns/persistence" version="1.0">
     <persistence-unit name="cdm">
         <provider>org.hibernate.ejb.HibernatePersistence</provider>
@@ -116,36 +117,13 @@
         <class>eu.etaxonomy.cdm.model.occurrence.DerivationEvent</class>
         <class>eu.etaxonomy.cdm.model.occurrence.DerivationEventType</class>
         <class>eu.etaxonomy.cdm.model.occurrence.DerivedUnit</class>
-        <class>eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase</class>
         <class>eu.etaxonomy.cdm.model.occurrence.DeterminationEvent</class>
         <class>eu.etaxonomy.cdm.model.occurrence.FieldObservation</class>
-        <class>eu.etaxonomy.cdm.model.occurrence.Fossil</class>
         <class>eu.etaxonomy.cdm.model.occurrence.GatheringEvent</class>
-        <class>eu.etaxonomy.cdm.model.occurrence.LivingBeing</class>
-        <class>eu.etaxonomy.cdm.model.occurrence.Observation</class>
         <class>eu.etaxonomy.cdm.model.occurrence.PreservationMethod</class>
-        <class>eu.etaxonomy.cdm.model.occurrence.Specimen</class>
         <class>eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase</class>
       <!-- Reference Package -->
-        <class>eu.etaxonomy.cdm.model.reference.Article</class>
-        <class>eu.etaxonomy.cdm.model.reference.Book</class>
-        <class>eu.etaxonomy.cdm.model.reference.BookSection</class>
-        <class>eu.etaxonomy.cdm.model.reference.CdDvd</class>
-        <class>eu.etaxonomy.cdm.model.reference.Database</class>
-        <class>eu.etaxonomy.cdm.model.reference.Generic</class>
-        <class>eu.etaxonomy.cdm.model.reference.InProceedings</class>
-        <class>eu.etaxonomy.cdm.model.reference.Journal</class>
-        <class>eu.etaxonomy.cdm.model.reference.Map</class>
-        <class>eu.etaxonomy.cdm.model.reference.Patent</class>
-        <class>eu.etaxonomy.cdm.model.reference.PersonalCommunication</class>
-        <class>eu.etaxonomy.cdm.model.reference.PrintedUnitBase</class>
-        <class>eu.etaxonomy.cdm.model.reference.PrintSeries</class>
-        <class>eu.etaxonomy.cdm.model.reference.Proceedings</class>
         <class>eu.etaxonomy.cdm.model.reference.Reference</class>
-        <class>eu.etaxonomy.cdm.model.reference.Report</class>
-        <class>eu.etaxonomy.cdm.model.reference.SectionBase</class>
-        <class>eu.etaxonomy.cdm.model.reference.Thesis</class>
-        <class>eu.etaxonomy.cdm.model.reference.WebPage</class>
       <!-- Taxon Package -->
         <class>eu.etaxonomy.cdm.model.taxon.Synonym</class>
         <class>eu.etaxonomy.cdm.model.taxon.SynonymRelationship</class>

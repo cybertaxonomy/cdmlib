@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -49,6 +48,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -484,7 +484,7 @@ public class IpniService  implements IIpniService{
 		name.addReplacedSynonym(replacedSynoynm, null, null, null);
 
 		//type information
-		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		
 		
 		//gathering period

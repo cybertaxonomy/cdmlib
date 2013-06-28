@@ -52,7 +52,7 @@
         </occurrence:Collection>
     </Collections>
     <Occurrences>
-        <occurrence:Specimen id="1" uuid="urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176">
+        <occurrence:DerivedUnit id="1" uuid="urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176">
             <common:TitleCache>Test Specimen</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <media:Media>
@@ -75,7 +75,7 @@
             <occurrence:CatalogNumber>1234</occurrence:CatalogNumber>
             <occurrence:StoredUnder>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</occurrence:StoredUnder>
             <occurrence:DerivedFrom>urn-uuid-a18f8610-0323-11de-87af-0800200c9a66</occurrence:DerivedFrom>
-        </occurrence:Specimen>
+        </occurrence:DerivedUnit>
         <occurrence:FieldObservation id="2" uuid="urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187">
             <common:TitleCache>Field Observation</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>

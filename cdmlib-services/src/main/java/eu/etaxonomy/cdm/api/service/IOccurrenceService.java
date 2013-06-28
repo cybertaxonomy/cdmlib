@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -138,9 +138,9 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
 
     public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache();
 
-    public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache();
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
 
-    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
+    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 
     public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, List<String> propertyPaths);
 
@@ -151,7 +151,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * ways, all these possible relations are taken into account:
      * <ul>
      * <li>The {@link IndividualsAssociation} elements in a
-     * {@link TaxonDescription} contain {@link DerivedUnitBase}s</li>
+     * {@link TaxonDescription} contain {@link DerivedUnit}s</li>
      * <li>{@link SpecimenTypeDesignation}s may be associated with any
      * {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
      * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent}

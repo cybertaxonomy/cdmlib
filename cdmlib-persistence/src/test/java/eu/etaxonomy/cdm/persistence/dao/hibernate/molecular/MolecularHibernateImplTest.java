@@ -53,7 +53,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 	private void createTestData(){
 		DnaSample sample = DnaSample.NewInstance();
 		Sequence sequence = Sequence.NewInstance("Meine Sequence");
-		sample.addSequences(sequence);
+		sample.addSequence(sequence);
 		sample.setUuid(uuidSample1);
 		
 		Locus locus = Locus.NewInstance("Locus", null);

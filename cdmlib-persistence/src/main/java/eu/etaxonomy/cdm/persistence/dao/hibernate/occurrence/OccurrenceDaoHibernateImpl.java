@@ -32,16 +32,10 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -78,11 +72,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		indexedClasses = new Class[7];
 		indexedClasses[0] = FieldObservation.class;
 		indexedClasses[1] = DerivedUnit.class;
-		indexedClasses[2] = LivingBeing.class;
-		indexedClasses[3] = Observation.class;
-		indexedClasses[4] = Specimen.class;
 		indexedClasses[5] = DnaSample.class;
-		indexedClasses[6] = Fossil.class;
 	}
 
 	/* (non-Javadoc)
@@ -253,8 +243,8 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 			    Hibernate.initialize(determination.getTaxon());
 			}
 			Hibernate.initialize(occurrence.getDefinition());
-			if(occurrence instanceof DerivedUnitBase) {
-				DerivedUnitBase derivedUnit = (DerivedUnitBase) occurrence;
+			if(occurrence instanceof DerivedUnit) {
+				DerivedUnit derivedUnit = (DerivedUnit) occurrence;
 				Hibernate.initialize(derivedUnit.getCollection());
 				if(derivedUnit.getCollection() != null) {
 					Hibernate.initialize(derivedUnit.getCollection().getSuperCollection());
@@ -324,11 +314,11 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 	}
 
 	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getDerivedUnitBaseUuidAndTitleCache()
+	 * @see eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao#getDerivedUnitUuidAndTitleCache()
 	 */
 	@Override
-	public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache() {
-		List<UuidAndTitleCache<DerivedUnitBase>> list = new ArrayList<UuidAndTitleCache<DerivedUnitBase>>();
+	public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache() {
+		List<UuidAndTitleCache<DerivedUnit>> list = new ArrayList<UuidAndTitleCache<DerivedUnit>>();
 		Session session = getSession();
 		
 		Query query = session.createQuery("select uuid, titleCache from " + type.getSimpleName() + " where NOT dtype = " + FieldObservation.class.getSimpleName());
@@ -336,7 +326,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		List<Object[]> result = query.list();
 		
 		for(Object[] object : result){
-			list.add(new UuidAndTitleCache<DerivedUnitBase>(DerivedUnitBase.class, (UUID) object[0], (String) object[1]));
+			list.add(new UuidAndTitleCache<DerivedUnit>(DerivedUnit.class, (UUID) object[0], (String) object[1]));
 		}
 		
 		return list;
@@ -374,7 +364,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		List<SpecimenOrObservationBase> byDetermination = list(type, associatedTaxon, null, 0, null, null);
 		setOfAll.addAll(byDetermination);
 		
-		// The IndividualsAssociation elements in a TaxonDescription contain DerivedUnitBases 
+		// The IndividualsAssociation elements in a TaxonDescription contain DerivedUnits 
 		List<IndividualsAssociation> byIndividualsAssociation = descriptionDao.getDescriptionElementForTaxon(
 				associatedTaxon, null, IndividualsAssociation.class, null, 0, null);
 		for(IndividualsAssociation individualsAssociation : byIndividualsAssociation){

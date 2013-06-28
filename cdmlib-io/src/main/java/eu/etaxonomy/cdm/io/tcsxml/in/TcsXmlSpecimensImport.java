@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 /**
  * @author a.mueller
@@ -67,7 +67,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 	public void doInvoke(TcsXmlImportState state){
 		logger.info("start make Specimens ...");
 		
-		MapWrapper<Specimen> specimenMap = (MapWrapper<Specimen>)state.getStore(ICdmIO.SPECIMEN_STORE);
+		MapWrapper<DerivedUnit> specimenMap = (MapWrapper<DerivedUnit>)state.getStore(ICdmIO.SPECIMEN_STORE);
 
 		boolean success = true;
 		String childName;
@@ -104,7 +104,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 			Element elSimple = doubleResult.getFirstResult();
 
 			String simple = elSimple.getTextNormalize();
-			Specimen specimen = Specimen.NewInstance();
+			DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 			specimen.setTitleCache(simple, true);
 			
 			
@@ -144,7 +144,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 
 	}
 	
-	private boolean makeInstitution(Specimen specimen, Element elInstitution){
+	private boolean makeInstitution(DerivedUnit specimen, Element elInstitution){
 		boolean success = true;
 		Institution institution = null;
 		if (specimen == null){
@@ -219,7 +219,7 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return success;
 	}
 	
-	private boolean makeCollection(Specimen specimen, Element elCollection){
+	private boolean makeCollection(DerivedUnit specimen, Element elCollection){
 		boolean success = true;
 		Collection  collection = null;
 		if (elCollection != null){
@@ -232,14 +232,14 @@ public class TcsXmlSpecimensImport extends TcsXmlImportBase implements ICdmIO<Tc
 		return success;
 	}
 	
-	private boolean makeSpecimenItem(Specimen specimen, Element elSpecimenItem){
+	private boolean makeSpecimenItem(DerivedUnit specimen, Element elSpecimenItem){
 		boolean success = true;
 		Namespace ns = elSpecimenItem.getNamespace();
 		if (specimen == null){
 			logger.warn("No specimen");
 			return false;
 		}else if (elSpecimenItem != null){
-			
+			logger.warn("not yet implemented");
 			//TODO specimenItem placeholder 
 			
 		}

@@ -14,8 +14,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.naming.NameParser;
-
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -38,12 +36,11 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -206,12 +203,12 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		}//elType
 		
 		//typeLoc
-		HashMap<Specimen, SpecimenTypeDesignationStatus> typeLocMap = null; 
+		HashMap<DerivedUnit, SpecimenTypeDesignationStatus> typeLocMap = null; 
 		if (elTypeLoc != null){
 			typeLocMap = doElTypeLoc(elTypeLoc, simpleSpecimen, taxonName, config);
 		}
 		if (typeLocMap != null && typeLocMap.size() >0){
-			for (Specimen specimen : typeLocMap.keySet()){
+			for (DerivedUnit specimen : typeLocMap.keySet()){
 				SpecimenTypeDesignationStatus status = typeLocMap.get(specimen);
 				taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
 			}
@@ -410,18 +407,18 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 	 * @param config
 	 * @return
 	 */
-	private HashMap<Specimen, SpecimenTypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
+	private HashMap<DerivedUnit, SpecimenTypeDesignationStatus> doElTypeLoc(Element elTypeLoc, 
 			SimpleSpecimen simpleSpecimen, 
 			TaxonNameBase<?,?> taxonName,
 			TaxonXImportConfigurator config){
 		
-		HashMap<Specimen, SpecimenTypeDesignationStatus> result = new HashMap<Specimen, SpecimenTypeDesignationStatus>();
+		HashMap<DerivedUnit, SpecimenTypeDesignationStatus> result = new HashMap<DerivedUnit, SpecimenTypeDesignationStatus>();
 
 		String typeLocFullString = elTypeLoc.getTextTrim();
 		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
 		String[] typeLocStatusList = typeLocFullString.split(";");
 		
-		Specimen originalSpecimen = simpleSpecimen.getSpecimen();
+		DerivedUnit originalSpecimen = simpleSpecimen.getSpecimen();
 		
 		
 		for (String typeLocStatus : typeLocStatusList){
@@ -440,8 +437,8 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 					if (tmpCollString.contains("typ")){
 						logger.warn("Is this really only a collection string? : "  + tmpCollString + getBracketSourceName(config));
 					}
-					Specimen specimen;
-					specimen = (Specimen)originalSpecimen.clone();
+					DerivedUnit specimen;
+					specimen = (DerivedUnit)originalSpecimen.clone();
 					String title = originalSpecimen.getTitleCache();
 					title = title + "(" + tmpCollString + ")";
 					specimen.setTitleCache(title, true );
@@ -499,7 +496,7 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 		typeLocFullString = typeLocFullString.replace("(", "").replace(")", "");
 		String[] typeLocStatusList = typeLocFullString.split(";");
 		
-		Specimen originalSpecimen = simpleSpecimen.getSpecimen();
+		DerivedUnit originalSpecimen = simpleSpecimen.getSpecimen();
 		
 		//TODO special character ?, �, ! 
 		
@@ -516,12 +513,12 @@ public class TaxonXNomenclatureImport extends CdmIoBase<TaxonXImportState> imple
 					if (taxonBase != null){
 						TaxonNameBase<?, ?> taxonName = taxonBase.getName();
 						if (taxonName != null){
-							Reference citation = null;
+							Reference<?> citation = null;
 							String citationMicroReference = null;
 							String originalNameString = null;
 							boolean isNotDesignated = true;
 							boolean addToAllHomotypicNames = true;
-							Specimen specimen = (Specimen)originalSpecimen.clone();
+							DerivedUnit specimen = (DerivedUnit)originalSpecimen.clone();
 							unlazyTypeDesignation(config, taxonName);
 							taxonName.addSpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString, isNotDesignated, addToAllHomotypicNames);
 							result = true;

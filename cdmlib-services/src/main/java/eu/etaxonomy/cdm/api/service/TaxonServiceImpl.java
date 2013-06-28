@@ -80,7 +80,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -829,9 +829,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
 
                 // Collection
-                if (occurrence instanceof DerivedUnitBase) {
-                    if (((DerivedUnitBase) occurrence).getCollection() != null){
-                        taxonMedia.addAll(((DerivedUnitBase) occurrence).getCollection().getMedia());
+                if (occurrence instanceof DerivedUnit) {
+                    if (((DerivedUnit) occurrence).getCollection() != null){
+                        taxonMedia.addAll(((DerivedUnit) occurrence).getCollection().getMedia());
                     }
                 }
 
@@ -971,7 +971,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //IIdentificationKeys (Media, Polytomous, MultiAccess)
                 if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
                     String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
                     throw new ReferencedObjectUndeletableException(message);
                 }
 

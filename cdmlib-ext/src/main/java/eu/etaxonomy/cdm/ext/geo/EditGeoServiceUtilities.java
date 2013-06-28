@@ -38,12 +38,7 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 
 /**
@@ -71,16 +66,17 @@ public class EditGeoServiceUtilities {
         EditGeoServiceUtilities.termDao= termDao;
     }
 
-    private static HashMap<Class<? extends SpecimenOrObservationBase>, Color> defaultSpecimenOrObservationTypeColors = null;
+    private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = null;
 
-    private static HashMap<Class<? extends SpecimenOrObservationBase>, Color> getDefaultSpecimenOrObservationTypeColors() {
+    private static HashMap<SpecimenOrObservationType, Color> getDefaultSpecimenOrObservationTypeColors() {
         if(defaultSpecimenOrObservationTypeColors == null){
-            defaultSpecimenOrObservationTypeColors = new HashMap<Class<? extends SpecimenOrObservationBase>, Color>();
-            defaultSpecimenOrObservationTypeColors.put(FieldObservation.class, Color.ORANGE);
-            defaultSpecimenOrObservationTypeColors.put(DerivedUnit.class, Color.RED);
-            defaultSpecimenOrObservationTypeColors.put(LivingBeing.class, Color.GREEN);
-            defaultSpecimenOrObservationTypeColors.put(Observation.class, Color.ORANGE);
-            defaultSpecimenOrObservationTypeColors.put(Specimen.class, Color.GRAY);
+            defaultSpecimenOrObservationTypeColors = new HashMap<SpecimenOrObservationType, Color>();
+            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.FieldUnit, Color.ORANGE);
+            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.DerivedUnit, Color.RED);
+            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.LivingSpecimen, Color.GREEN);
+            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.Observation, Color.ORANGE);
+            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.PreservedSpecimen, Color.GRAY);
+            defaultSpecimenOrObservationTypeColors.put(SpecimenOrObservationType.Media, Color.BLUE);
         }
         return defaultSpecimenOrObservationTypeColors;
     }
@@ -623,10 +619,10 @@ public class EditGeoServiceUtilities {
      *  &os=1%3Ac%2FFFD700%2F10%2FAporrectodea caliginosa
      */
     public static String getOccurrenceServiceRequestParameterString(
-            List<Point> fieldObservationPoints,
-            List<Point> derivedUnitPoints,
-            Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors,
-            Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
+            	List<Point> fieldObservationPoints,
+            	List<Point> derivedUnitPoints,
+            	Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
+            	Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
 
             specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
@@ -643,8 +639,8 @@ public class EditGeoServiceUtilities {
 
             Map<String, String> styleAndData = new HashMap<String, String>();
 
-            addToStyleAndData(fieldObservationPoints, FieldObservation.class, specimenOrObservationTypeColors, styleAndData);
-            addToStyleAndData(derivedUnitPoints, DerivedUnit.class, specimenOrObservationTypeColors, styleAndData);
+            addToStyleAndData(fieldObservationPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
+            addToStyleAndData(derivedUnitPoints, SpecimenOrObservationType.DerivedUnit, specimenOrObservationTypeColors, styleAndData);
 
             parameters.put("os", StringUtils.join(styleAndData.keySet().iterator(), "||"));
             parameters.put("od", StringUtils.join(styleAndData.values().iterator(), "||"));
@@ -674,8 +670,8 @@ public class EditGeoServiceUtilities {
 
     private static void addToStyleAndData(
             List<Point> points,
-            Class<? extends SpecimenOrObservationBase> specimenOrObservationType,
-            Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors, Map<String, String> styleAndData) {
+            SpecimenOrObservationType specimenOrObservationType,
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors, Map<String, String> styleAndData) {
 
         //TODO add markerShape and size and Label to specimenOrObservationTypeColors -> Map<Class<SpecimenOrObservationBase<?>>, MapStyle>
 

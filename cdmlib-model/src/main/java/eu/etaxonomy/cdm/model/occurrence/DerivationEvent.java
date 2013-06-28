@@ -69,7 +69,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	@XmlSchemaType(name = "IDREF")
 	@OneToMany(fetch=FetchType.LAZY, mappedBy="derivedFrom")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	protected Set<DerivedUnitBase> derivatives = new HashSet<DerivedUnitBase>();
+	protected Set<DerivedUnit> derivatives = new HashSet<DerivedUnit>();
 	
 	@XmlElement(name = "DerivationEventType")
     @XmlIDREF
@@ -102,7 +102,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * Factory method
 	 * @return
 	 */
-	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original, DerivedUnitBase derivative, DerivationEventType type){
+	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original, DerivedUnit derivative, DerivationEventType type){
 		DerivationEvent result = NewInstance(type);
 		result.addOriginal(original);
 		result.addDerivative(derivative);
@@ -151,7 +151,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * The specimen or observations that are the output for this derviation event.
 	 * @return
 	 */
-	public Set<DerivedUnitBase> getDerivatives() {
+	public Set<DerivedUnit> getDerivatives() {
 		return derivatives;
 	}
 	
@@ -161,7 +161,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * @see #getDerivatives()
 	 * @return
 	 */
-	public void addDerivative(DerivedUnitBase derivative) {
+	public void addDerivative(DerivedUnit derivative) {
 		if (derivative != null){
 			boolean notExisting = derivatives.add(derivative);
 			if (notExisting){
@@ -174,7 +174,7 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	 * @see #getDerivatives()
 	 * @return
 	 */
-	public void removeDerivative(DerivedUnitBase derivative) {
+	public void removeDerivative(DerivedUnit derivative) {
 		if (derivative != null){
 			derivative.setDerivedFrom(null);
 		}
@@ -211,8 +211,8 @@ public class DerivationEvent extends EventBase implements Cloneable{
 			//type
 			result.setType(this.getType());
 			//derivates
-			result.derivatives = new HashSet<DerivedUnitBase>();
-			for(DerivedUnitBase derivative : this.derivatives) {
+			result.derivatives = new HashSet<DerivedUnit>();
+			for(DerivedUnit derivative : this.derivatives) {
 				result.addDerivative(derivative);
 			}
 			//originals

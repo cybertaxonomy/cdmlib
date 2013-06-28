@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -332,7 +332,7 @@ public class DefaultMergeStrategyTest {
 		
 		//name relations
 		botName2.addBasionym(botName3, book1, "p.22", null);
-		Specimen specimen1 = Specimen.NewInstance();
+		DerivedUnit specimen1 = DerivedUnit.NewPreservedSpecimenInstance();
 		botName2.addSpecimenTypeDesignation(specimen1, SpecimenTypeDesignationStatus.HOLOTYPE(), book2, "p.56", "originalNameString", false, true);
 		
 		//descriptions

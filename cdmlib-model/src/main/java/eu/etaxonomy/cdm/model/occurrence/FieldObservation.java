@@ -38,7 +38,6 @@ import org.springframework.beans.factory.annotation.Configurable;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * In situ observation of a taxon in the field. If a specimen exists,
@@ -94,8 +93,10 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
     @Valid
 	private GatheringEvent gatheringEvent;
 
+// *************** FACTORY METHOD *************************/
+
 	/**
-	 * Factory method
+	 * Factory method.
 	 * @return
 	 */
 	public static FieldObservation NewInstance(){
@@ -108,7 +109,7 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	 * Constructor
 	 */
 	protected FieldObservation(){
-		super();
+		super(SpecimenOrObservationType.FieldUnit);
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldObservation>();
 	}
 

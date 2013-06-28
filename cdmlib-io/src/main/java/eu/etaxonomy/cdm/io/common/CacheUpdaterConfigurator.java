@@ -75,9 +75,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	//SpecimenOrObservationBase
 	private boolean doFieldObservation = true;
 	private boolean doDeriveUnit = true;
-	private boolean doLivingBeing = true;
-	private boolean doObservation = true;
-	private boolean doSpecimen = true;
+	private boolean doDnaSample = true;
 	
 	//Media
 	private boolean doMedia = true;
@@ -130,9 +128,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 			//SpecimenOrObservationBase
 			doFieldObservation = false;
 			doDeriveUnit = false;
-			doLivingBeing = false;
-			doObservation = false;
-			doSpecimen = false;
+			doDnaSample = false;
 			
 			//Media
 			doMedia = false;
@@ -238,23 +234,11 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	public boolean isDoDeriveUnit() {
 		return doDeriveUnit;
 	}
-	public void setDoLivingBeing(boolean doLivingBeing) {
-		this.doLivingBeing = doLivingBeing;
+	public void setDoDnaSample(boolean doDnaSample) {
+		this.doDnaSample = doDnaSample;
 	}
-	public boolean isDoLivingBeing() {
-		return doLivingBeing;
-	}
-	public void setDoObservation(boolean doObservation) {
-		this.doObservation = doObservation;
-	}
-	public boolean isDoObservation() {
-		return doObservation;
-	}
-	public void setDoSpecimen(boolean doSpecimen) {
-		this.doSpecimen = doSpecimen;
-	}
-	public boolean isDoSpecimen() {
-		return doSpecimen;
+	public boolean isDoDnaSample() {
+		return doDnaSample;
 	}
 	public void setDoMedia(boolean doMedia) {
 		this.doMedia = doMedia;

@@ -28,13 +28,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * The class representing a typification of one or several {@link TaxonNameBase taxon names} by a
- * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or a figure}. All {@link TaxonNameBase taxon names}
+ * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or a figure}. All {@link TaxonNameBase taxon names}
  * which have a {@link Rank rank} "species aggregate" or lower can only be typified
  * by specimens. Moreover each typification by a specimen (or by a figure) has a
  * {@link SpecimenTypeDesignationStatus status} like "holotype" or "isotype".
@@ -68,7 +67,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name="typeSpecimen_id")
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private DerivedUnitBase typeSpecimen;
+	private DerivedUnit typeSpecimen;
 	
 //	/**
 //	 * Creates a new specimen type designation instance
@@ -83,11 +82,11 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 //	 * @param citation				the reference source for the new designation
 //	 * @param citationMicroReference	the string with the details describing the exact localisation within the reference
 //	 * @param originalNameString	the taxon name string used originally in the reference source for the new designation
-//	 * @see							#SpecimenTypeDesignation(DerivedUnitBase, TypeDesignationStatus, Reference, String, String)
+//	 * @see							#SpecimenTypeDesignation(DerivedUnit, TypeDesignationStatus, Reference, String, String)
 //	 * @see							HomotypicalGroup#addSpecimenTypeDesignation(SpecimenTypeDesignation, boolean)
-//	 * @see							occurrence.DerivedUnitBase
+//	 * @see							occurrence.DerivedUnit
 //	 */
-//	protected static SpecimenTypeDesignation NewInstance2(DerivedUnitBase specimen, TypeDesignationStatus status,
+//	protected static SpecimenTypeDesignation NewInstance2(DerivedUnit specimen, TypeDesignationStatus status,
 //			Reference citation, String citationMicroReference, String originalNameString){
 //		SpecimenTypeDesignation specTypeDesig = new SpecimenTypeDesignation(specimen, status, citation, citationMicroReference, originalNameString);
 //		return specTypeDesig;
@@ -98,7 +97,7 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	/** 
 	 * Class constructor: creates a new empty specimen type designation.
 	 * 
-	 * @see	#SpecimenTypeDesignation(DerivedUnitBase, SpecimenTypeDesignationStatus,
+	 * @see	#SpecimenTypeDesignation(DerivedUnit, SpecimenTypeDesignationStatus,
 	 * Reference, String, String, boolean)
 	 */
 	protected SpecimenTypeDesignation(){
@@ -127,9 +126,9 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	 * @see							#SpecimenTypeDesignation()
 	 * @see							TaxonNameBase#addSpecimenTypeDesignation(Specimen, SpecimenTypeDesignationStatus, Reference, String, String, boolean, boolean)
 	 * @see							TypeDesignationBase#isNotDesignated()
-	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase
+	 * @see							eu.etaxonomy.cdm.model.occurrence.DerivedUnit
 	 */
-	protected SpecimenTypeDesignation(DerivedUnitBase specimen, SpecimenTypeDesignationStatus status, Reference citation, String citationMicroReference, 
+	protected SpecimenTypeDesignation(DerivedUnit specimen, SpecimenTypeDesignationStatus status, Reference citation, String citationMicroReference, 
 			String originalNameString, boolean isNotDesignated) {
 		super(citation, citationMicroReference, originalNameString, isNotDesignated);
 		this.setTypeSpecimen(specimen);
@@ -149,19 +148,19 @@ public class SpecimenTypeDesignation extends TypeDesignationBase<SpecimenTypeDes
 	}
 	
 	/** 
-	 * Returns the {@link occurrence.DerivedUnitBase derived unit} (specimen or figure) that is used
+	 * Returns the {@link DerivedUnit.DerivedUnit derived unit} (specimen or figure) that is used
 	 * in <i>this</i> specimen type designation to typify the {@link TaxonNameBase taxon name}.
 	 *  
 	 * @see   #getHomotypicalGroup()
 	 */
-	public DerivedUnitBase getTypeSpecimen(){
+	public DerivedUnit getTypeSpecimen(){
 		return this.typeSpecimen;
 	}
 	
 	/**
 	 * @see  #getTypeSpecimen()
 	 */
-	public void setTypeSpecimen(DerivedUnitBase typeSpecimen){
+	public void setTypeSpecimen(DerivedUnit typeSpecimen){
 		if (this.typeSpecimen == typeSpecimen){
 			return;
 		}

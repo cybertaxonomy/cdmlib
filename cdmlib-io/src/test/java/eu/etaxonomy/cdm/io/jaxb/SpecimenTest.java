@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.net.URI;
+import java.util.List;
 
 import org.junit.Test;
 
@@ -24,10 +25,11 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class SpecimenTest {
@@ -39,8 +41,9 @@ public class SpecimenTest {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
-			
-			Specimen specimen = (Specimen)dataSet.getOccurrences().get(0);	
+	        List<SpecimenOrObservationBase> occurrences = dataSet.getOccurrences();
+	        
+			DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);	
 			assertNotNull("Specimen must not be null",specimen);
 			
 			Institution institution = (Institution)dataSet.getAgents().get(0);

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITypeDesignationDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -192,7 +192,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		desig1.setUuid(UUID.fromString("6df85e4c-49fe-4eb5-acde-cf6c0c9fc3c5"));
 		name1.addTypeDesignation(desig1, true);
 
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setUuid(UUID.fromString("f1a7c3b9-169c-4845-9b21-e77f863a8bce"));
 		specimen.setTitleCache("Specimen to cascade", true);
 		desig1.setTypeSpecimen(specimen);
@@ -221,7 +221,7 @@ public class TypeDesignationDaoHibernateImplTest extends CdmTransactionalIntegra
 		desig1.setUuid(UUID.fromString("c0e03472-b9f9-4886-b3bd-c1c70dd21a5f"));
 		name1.addTypeDesignation(desig1, true);
 
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setUuid(UUID.fromString("4c3231a9-336e-4b21-acf2-129683627de4"));
 		specimen.setTitleCache("Specimen to cascade", true);
 		desig1.setTypeSpecimen(specimen);

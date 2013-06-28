@@ -29,9 +29,10 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
@@ -146,14 +147,14 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     public String getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
-            Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors,
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
             Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
 
         List<Point> fieldObservationPoints = new ArrayList<Point>();
         List<Point> derivedUnitPoints = new ArrayList<Point>();
 
         IndividualsAssociation individualsAssociation;
-        DerivedUnitBase derivedUnit;
+        DerivedUnit derivedUnit;
 
         for (SpecimenOrObservationBase specimenOrObservationBase : specimensOrObersvations) {
             SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao
@@ -163,8 +164,8 @@ public class EditGeoService implements IEditGeoService {
                 fieldObservationPoints.add(((FieldObservation) specimenOrObservation).getGatheringEvent()
                         .getExactLocation());
             }
-            if (specimenOrObservation instanceof DerivedUnitBase<?>) {
-                registerDerivedUnitLocations((DerivedUnitBase) specimenOrObservation, derivedUnitPoints);
+            if (specimenOrObservation instanceof DerivedUnit) {
+                registerDerivedUnitLocations((DerivedUnit) specimenOrObservation, derivedUnitPoints);
             }
         }
 
@@ -177,7 +178,7 @@ public class EditGeoService implements IEditGeoService {
      * @param derivedUnit
      * @param derivedUnitPoints
      */
-    private void registerDerivedUnitLocations(DerivedUnitBase<?> derivedUnit, List<Point> derivedUnitPoints) {
+    private void registerDerivedUnitLocations(DerivedUnit derivedUnit, List<Point> derivedUnitPoints) {
 
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null) {
@@ -195,7 +196,7 @@ public class EditGeoService implements IEditGeoService {
                         }
                     }
                 } else {
-                    registerDerivedUnitLocations((DerivedUnitBase) original, derivedUnitPoints);
+                    registerDerivedUnitLocations((DerivedUnit) original, derivedUnitPoints);
                 }
             }
         }

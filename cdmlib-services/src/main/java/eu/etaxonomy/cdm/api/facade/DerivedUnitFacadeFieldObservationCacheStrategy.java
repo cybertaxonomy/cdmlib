@@ -14,7 +14,6 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -27,6 +26,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -62,7 +62,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 		String result = "";
 		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
 		config.setFirePropertyChangeEvents(false);
-		facade = DerivedUnitFacade.NewInstance(DerivedUnitType.FieldObservation, fieldObservation, config);
+		facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldObservation, config);
 		result = getFieldData(facade);	
 		result = addPlantDescription(result, facade);
 		facade.close();

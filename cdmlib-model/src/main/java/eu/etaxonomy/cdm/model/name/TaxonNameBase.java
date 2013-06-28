@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -72,7 +72,6 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -1104,9 +1103,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see 			  				SpecimenTypeDesignation
      * @see 			  				TypeDesignationBase#isNotDesignated()
      */
-    public SpecimenTypeDesignation addSpecimenTypeDesignation(Specimen typeSpecimen,
+    public SpecimenTypeDesignation addSpecimenTypeDesignation(DerivedUnit typeSpecimen,
                 SpecimenTypeDesignationStatus status,
-                Reference citation,
+                Reference<?> citation,
                 String citationMicroReference,
                 String originalNameString,
                 boolean isNotDesignated,

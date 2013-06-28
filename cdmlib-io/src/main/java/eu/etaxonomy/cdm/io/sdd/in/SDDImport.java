@@ -82,7 +82,7 @@ import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -120,7 +120,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 	private Map<String,TaxonNode> taxonNodes = new HashMap<String,TaxonNode>();
 	private Map<String,NamedArea> namedAreas = new HashMap<String,NamedArea>();
-	private Map<String,Specimen> specimens = new HashMap<String,Specimen>();
+	private Map<String,DerivedUnit> specimens = new HashMap<String,DerivedUnit>();
 	private Map<String,DefinedTerm> modifiers = new HashMap<String,DefinedTerm>();
 	
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
@@ -652,7 +652,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		for (Classification classification : classifications) {
 			getClassificationService().save(classification);
 		}
-		for (Specimen specimen : specimens.values()) {
+		for (DerivedUnit specimen : specimens.values()) {
 			getOccurrenceService().save(specimen);
 		}
 		logger.info("end of persistence ...");
@@ -756,9 +756,9 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			List<Element> listSpecimens = elSpecimens.getChildren("Specimen", sddNamespace);
 			for (Element elSpecimen : listSpecimens) {
 				String id = elSpecimen.getAttributeValue("id");
-				Specimen specimen = null;
+				DerivedUnit specimen = null;
 				if (!id.equals("")) {
-					specimen = Specimen.NewInstance();
+					specimen = DerivedUnit.NewPreservedSpecimenInstance();
 					specimens.put(id,specimen);
 					importRepresentation(elSpecimen, sddNamespace, specimen, id, cdmState);
 				}

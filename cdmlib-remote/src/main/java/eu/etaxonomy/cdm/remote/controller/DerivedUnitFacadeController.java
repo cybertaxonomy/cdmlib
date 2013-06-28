@@ -30,7 +30,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
 
@@ -134,7 +134,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
     // public Collection getCollection() {
     // public AgentBase getCollector() {
-    // public DerivedUnitBase getDerivedUnit() {
+    // public DerivedUnit getDerivedUnit() {
     // public Map<Language, LanguageString> getDerivedUnitDefinitions(){
     // public List<Media> getDerivedUnitMedia() {
     // public Set<DeterminationEvent> getDeterminations() {
@@ -165,9 +165,9 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
             initStrategy.addAll(extendedInitStrategy);
         }
         SpecimenOrObservationBase<?> sob = service.load(occurrenceUuid, null);
-        if(sob instanceof DerivedUnitBase<?>){
+        if(sob instanceof DerivedUnit){
             try {
-                return service.getDerivedUnitFacade(((DerivedUnitBase)sob), initStrategy);
+                return service.getDerivedUnitFacade(((DerivedUnit)sob), initStrategy);
             } catch (DerivedUnitFacadeNotSupportedException e) {
                 logger.error(e); //TODO ...
             }

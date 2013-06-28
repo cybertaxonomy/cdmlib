@@ -19,7 +19,6 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
-import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -32,10 +31,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -47,7 +46,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
 
-	Specimen specimen;
+	DerivedUnit specimen;
 	DerivationEvent derivationEvent;
 	FieldObservation fieldObservation;
 	GatheringEvent gatheringEvent;
@@ -85,7 +84,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 
 	DerivedUnitFacade specimenFacade;
 
-	Specimen collectionSpecimen;
+	DerivedUnit collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
 	DerivationEvent firstDerivationEvent;
 	FieldObservation firstFieldObject;
@@ -109,7 +108,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		specimen = Specimen.NewInstance();
+		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
 		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		specimen.setDerivedFrom(derivationEvent);
@@ -155,8 +154,8 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
 		//existing specimen with 2 derivation events in line
-		collectionSpecimen = Specimen.NewInstance();
-		Specimen middleSpecimen = Specimen.NewInstance();
+		collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+		DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		firstFieldObject = FieldObservation.NewInstance();
 
 		//TODO maybe we should define concrete event types here

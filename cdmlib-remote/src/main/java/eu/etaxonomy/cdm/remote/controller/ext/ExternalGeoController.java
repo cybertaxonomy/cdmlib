@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -185,7 +186,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         String bbox = null;
         String backLayer = null;
         Boolean doReturnImage = null;
-        Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
+        Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
         ModelAndView mv = new ModelAndView();

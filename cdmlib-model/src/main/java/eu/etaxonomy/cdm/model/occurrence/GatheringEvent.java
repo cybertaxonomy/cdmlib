@@ -386,9 +386,9 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	 * Clones <i>this</i> gathering event. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> gathering event
 	 * by modifying only some of the attributes.<BR>
-	 * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+	 * This method overrides the clone method from {@link DerivedUnit DerivedUnit}.
 	 *
-	 * @see DerivedUnitBase#clone()
+	 * @see DerivedUnit#clone()
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */

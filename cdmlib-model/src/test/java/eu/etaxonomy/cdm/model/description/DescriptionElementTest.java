@@ -16,12 +16,8 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Assert;
-
-
-
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -84,7 +80,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		
 		indAssociation = IndividualsAssociation.NewInstance();
 		
-		Specimen associatedSpecimen = Specimen.NewInstance();
+		DerivedUnit associatedSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		associatedSpecimen.setIndividualCount(2);
 		
 		indAssociation.setAssociatedSpecimenOrObservation(associatedSpecimen);

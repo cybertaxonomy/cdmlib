@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -47,7 +47,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldObservationCacheStrategyTest.class);
 
-	Specimen specimen;
+	DerivedUnit specimen;
 	DerivationEvent derivationEvent;
 	FieldObservation fieldObservation;
 	GatheringEvent gatheringEvent;
@@ -85,7 +85,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 
 	DerivedUnitFacade specimenFacade;
 
-	Specimen collectionSpecimen;
+	DerivedUnit collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
 	DerivationEvent firstDerivationEvent;
 	FieldObservation firstFieldObject;
@@ -109,7 +109,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 	 */
 	@Before
 	public void setUp() throws Exception {
-		specimen = Specimen.NewInstance();
+		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
 		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		specimen.setDerivedFrom(derivationEvent);
@@ -155,8 +155,8 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
 		//existing specimen with 2 derivation events in line
-		collectionSpecimen = Specimen.NewInstance();
-		Specimen middleSpecimen = Specimen.NewInstance();
+		collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+		DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		firstFieldObject = FieldObservation.NewInstance();
 
 		//TODO maybe we should define concrete event types here

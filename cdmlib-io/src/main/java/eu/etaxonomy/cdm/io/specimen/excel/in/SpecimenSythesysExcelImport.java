@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -54,15 +53,11 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -109,7 +104,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     protected String gatheringAgent;
     protected String originalsource;
 
-    private DerivedUnitBase derivedUnitBase;
+    private DerivedUnit derivedUnit;
     private Reference<?> ref = null;
     private TransactionStatus tx;
     private Classification classification = null;
@@ -181,15 +176,15 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     /**
      * refresh the hibernate transaction :
      * - commit the current queries
-     * - get the reference and the classification and the derivedUnitBase back from the hibernate session
+     * - get the reference and the classification and the derivedUnit back from the hibernate session
      * */
     private void refreshTransaction(){
         commitTransaction(tx);
         tx = startTransaction();
         ref = getReferenceService().find(ref.getUuid());
         classification = getClassificationService().find(classification.getUuid());
-        if (derivedUnitBase != null){
-        	derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
+        if (derivedUnit != null){
+        	derivedUnit = (DerivedUnit) getOccurrenceService().find(derivedUnit.getUuid());
         }
     }
 
@@ -400,13 +395,13 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             determinationEvent.setTaxon(getTaxonService().find(taxon.getUuid()));
             determinationEvent.setPreferredFlag(preferredFlag);
 
-            determinationEvent.setIdentifiedUnit(derivedUnitBase);
+            determinationEvent.setIdentifiedUnit(derivedUnit);
 
-            derivedUnitBase.addDetermination(determinationEvent);
+            derivedUnit.addDetermination(determinationEvent);
 
             makeIndividualsAssociation(taxon,determinationEvent);
 
-            getOccurrenceService().saveOrUpdate(derivedUnitBase);
+            getOccurrenceService().saveOrUpdate(derivedUnit);
         }
 
     }
@@ -496,34 +491,34 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         /**
          * SPECIMEN OR OBSERVATION OR LIVING
          */
-        // DerivedUnitBase derivedThing = null;
-        DerivedUnitType type = null;
+        // DerivedUnit derivedThing = null;
+    	SpecimenOrObservationType type = null;
 
         // create specimen
         if (recordBasis != null) {
             String rec = recordBasis.toLowerCase();
             if (rec.contains("specimen") || rec.startsWith("s")) {// specimen
-                type = DerivedUnitType.Specimen;
+                type = SpecimenOrObservationType.PreservedSpecimen;
             }
             if (rec.contains("observat") || rec.startsWith("o")) {
-                type = DerivedUnitType.Observation;
+                type = SpecimenOrObservationType.Observation;
             }
             if (rec.contains("fossil") || rec.startsWith("f") ){
-                type = DerivedUnitType.Fossil;
+                type = SpecimenOrObservationType.Fossil;
             }
 
             if (rec.contains("living") || rec.startsWith("l")) {
-                type = DerivedUnitType.LivingBeing;
+                type = SpecimenOrObservationType.LivingSpecimen;
             }
             if (type == null) {
                 if(DEBUG) {
                     logger.info("The basis of record does not seem to be known: "   + recordBasis);
                 }
-                type = DerivedUnitType.DerivedUnit;
+                type = SpecimenOrObservationType.DerivedUnit;
             }
         } else {
             logger.info("The basis of record is null");
-            type = DerivedUnitType.DerivedUnit;
+            type = SpecimenOrObservationType.DerivedUnit;
         }
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
         return derivedUnitFacade;
@@ -542,7 +537,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
              * SPECIMEN OR OBSERVATION OR LIVING
              */
             DerivedUnitFacade derivedUnitFacade = getFacade();
-            derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            derivedUnit = derivedUnitFacade.innerDerivedUnit();
 
             //set catalogue number (unitID)
             derivedUnitFacade.setCatalogNumber(unitID);
@@ -551,7 +546,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             if (!originalsource.isEmpty()){
                 Reference<?> reference = ReferenceFactory.newGeneric();
                 reference.setTitleCache(originalsource, true);
-                derivedUnitBase.addSource(OriginalSourceType.Unknown, originalsource, "", reference, "");
+                derivedUnit.addSource(OriginalSourceType.Unknown, originalsource, "", reference, "");
             }
             /**
              * INSTITUTION & COLLECTION
@@ -637,7 +632,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
                 }
             }
 
-            getOccurrenceService().saveOrUpdate(derivedUnitBase);
+            getOccurrenceService().saveOrUpdate(derivedUnit);
 
             setTaxonNameBase(config);
 
@@ -659,16 +654,23 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
     }
 
 
-    private Feature makeFeature(SpecimenOrObservationBase unit) {
-        if (unit.isInstanceOf(DerivedUnit.class)) {
+    private Feature makeFeature(SpecimenOrObservationBase<?> unit) {
+        if (unit == null){
+        	return null;
+        }
+        SpecimenOrObservationType type = unit.getRecordBasis();
+    	
+    	if (type.isFeatureObservation()){
+        	return Feature.OBSERVATION();
+        }else if (type.isPreservedSpecimen() || 
+        		type == SpecimenOrObservationType.LivingSpecimen ||
+        	    type == SpecimenOrObservationType.OtherSpecimen
+        		){
+        	return Feature.SPECIMEN();
+        }else if (type == SpecimenOrObservationType.Unknown || 
+        		type == SpecimenOrObservationType.DerivedUnit 
+        		) {
             return Feature.INDIVIDUALS_ASSOCIATION();
-        } else if (unit.isInstanceOf(FieldObservation.class)
-                || unit.isInstanceOf(Observation.class)) {
-            return Feature.OBSERVATION();
-        } else if (unit.isInstanceOf(Fossil.class)
-                || unit.isInstanceOf(LivingBeing.class)
-                || unit.isInstanceOf(Specimen.class)) {
-            return Feature.SPECIMEN();
         }
         if (DEBUG) {
             logger.warn("No feature defined for derived unit class: "
@@ -698,8 +700,8 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         taxon.addDescription(taxonDescription);
 
         IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
-        Feature feature = makeFeature(derivedUnitBase);
-        indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
+        Feature feature = makeFeature(derivedUnit);
+        indAssociation.setAssociatedSpecimenOrObservation(derivedUnit);
         indAssociation.setFeature(feature);
 
         for (Reference<?> citation : determinationEvent.getReferences()) {

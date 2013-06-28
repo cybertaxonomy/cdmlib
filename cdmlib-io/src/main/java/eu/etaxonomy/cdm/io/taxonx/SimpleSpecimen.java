@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 /**
  * @author a.mueller
@@ -33,7 +33,7 @@ public class SimpleSpecimen {
 	private GatheringEvent gatheringEvent;
 	private FieldObservation fieldObservation;
 	private DerivationEvent derivationEvent;
-	private Specimen specimen;
+	private DerivedUnit specimen;
 	private Collection collection;
 	private TaxonNameBase<?, ?> storedUnderName;
 	private String titleCache;
@@ -55,7 +55,7 @@ public class SimpleSpecimen {
 		derivationEvent.addOriginal(fieldObservation);
 		
 		//derivedUnit
-		specimen = Specimen.NewInstance();
+		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		derivationEvent.addDerivative(specimen);
 	}
 	
@@ -135,14 +135,14 @@ public class SimpleSpecimen {
 	/**
 	 * @return the specimen
 	 */
-	public Specimen getSpecimen() {
+	public DerivedUnit getSpecimen() {
 		return specimen;
 	}
 
 	/**
 	 * @param specimen the specimen to set
 	 */
-	public void setSpecimen(Specimen specimen) {
+	public void setSpecimen(DerivedUnit specimen) {
 		this.specimen = specimen;
 	}
 

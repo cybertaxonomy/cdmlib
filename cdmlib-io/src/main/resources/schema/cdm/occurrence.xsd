@@ -37,9 +37,7 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
 
   <xs:element name="DerivationEventType" type="occurrence:DerivationEventType"/>
 
-  <xs:element name="DerivedUnit" type="occurrence:derivedUnit"/>
-
-  <xs:element name="DerivedUnitBase" type="occurrence:DerivedUnitBase"/>
+  <xs:element name="DerivedUnit" type="occurrence:DerivedUnit"/>
 
   <xs:element name="DeterminationEvent" type="occurrence:DeterminationEvent"/>
 
@@ -49,21 +47,13 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
 
   <xs:element name="FieldObservation" type="occurrence:FieldObservation"/>
 
-  <xs:element name="Fossil" type="occurrence:Fossil"/>
-
   <xs:element name="GatheringEvent" type="occurrence:GatheringEvent"/>
-
-  <xs:element name="LivingBeing" type="occurrence:LivingBeing"/>
-
-  <xs:element name="Observation" type="occurrence:Observation"/>
 
   <xs:element name="PreservationMethod" type="occurrence:PreservationMethod"/>
 
-  <xs:element name="Specimen" type="occurrence:Specimen"/>
-
   <xs:element name="SpecimenOrObservationBase" type="occurrence:SpecimenOrObservationBase"/>
 
-  <xs:complexType name="DerivedUnitBase" abstract="true">
+  <xs:complexType name="DerivedUnit" abstract="true">
     <xs:complexContent>
       <xs:extension base="occurrence:SpecimenOrObservationBase">
         <xs:sequence>
@@ -73,13 +63,15 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
           <xs:element name="DerivedFrom" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="AccessionNumber" type="xs:string" minOccurs="0"/>
           <xs:element name="CollectorsNumber" type="xs:string" minOccurs="0"/>
+          <xs:element name="Preservation" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Exsiccatum" type="xs:string" minOccurs="0"/>
           <xs:element name="SpecimenTypeDesignations" minOccurs="0">
-           <xs:complexType>
+          <xs:complexType>
               <xs:sequence>
                 <xs:element name="SpecimenTypeDesignation" type="name:SpecimenTypeDesignation" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
-            </xs:complexType>
-            </xs:element>
+          	</xs:complexType>
+          </xs:element>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
@@ -202,24 +194,6 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="derivedUnit">
-    <xs:complexContent>
-      <xs:extension base="occurrence:DerivedUnitBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Specimen">
-    <xs:complexContent>
-      <xs:extension base="occurrence:DerivedUnitBase">
-        <xs:sequence>
-          <xs:element name="Preservation" type="xs:IDREF" minOccurs="0"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
   <xs:complexType name="FieldObservation">
     <xs:complexContent>
       <xs:extension base="occurrence:SpecimenOrObservationBase">
@@ -254,29 +228,5 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
-
-  <xs:complexType name="Fossil">
-    <xs:complexContent>
-      <xs:extension base="occurrence:Specimen">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="LivingBeing">
-    <xs:complexContent>
-      <xs:extension base="occurrence:DerivedUnitBase">
-        <xs:all/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Observation">
-    <xs:complexContent>
-      <xs:extension base="occurrence:DerivedUnitBase">
-        <xs:sequence/>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-</xs:schema>
+</xs:schema> 
 
