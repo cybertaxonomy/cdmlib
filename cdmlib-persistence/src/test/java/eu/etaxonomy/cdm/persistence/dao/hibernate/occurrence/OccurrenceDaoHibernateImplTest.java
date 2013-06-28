@@ -76,7 +76,7 @@ public class OccurrenceDaoHibernateImplTest  extends CdmIntegrationTest {
 	}
 
 	@Test
-	public void testGetFieldObservationUuidAndTitleCache() {
+	public void testGetFieldUnitUuidAndTitleCache() {
 		logger.warn("Not yet implemented");
 	}
 

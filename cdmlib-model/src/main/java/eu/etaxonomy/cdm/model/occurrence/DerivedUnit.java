@@ -43,8 +43,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
- * A derived unit is regarded as derived from an field observation,
- * so locality and gathering related information is captured as a separate FieldObservation object
+ * A derived unit is regarded as derived from a field unit,
+ * so locality and gathering related information is captured as a separate FieldUnit object
  * related to a specimen via a derivation event
  * 
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
@@ -185,27 +185,27 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	
 	
 	/**
-	 * create new unit derived from an existing field observation
-	 * @param fieldObservation existing field observation from where this unit is derived
+	 * Create new unit derived from an existing field unit
+	 * @param fieldUnit existing field unit from where this unit is derived
 	 */
-	protected DerivedUnit(SpecimenOrObservationType recordBasis, FieldObservation fieldObservation) {
+	protected DerivedUnit(SpecimenOrObservationType recordBasis, FieldUnit fieldUnit) {
 		super(recordBasis);
 		DerivationEvent derivedFrom = new DerivationEvent();
 		// TODO: should be done in a more controlled way. Probably by making derivation event implement a general relationship interface (for bidirectional add/remove etc)
-		fieldObservation.addDerivationEvent(derivedFrom);
-		derivedFrom.getOriginals().add(fieldObservation);
+		fieldUnit.addDerivationEvent(derivedFrom);
+		derivedFrom.getOriginals().add(fieldUnit);
 		derivedFrom.getDerivatives().add(this);
 		this.setDerivedFrom(derivedFrom);
 	}
 	
 	/**
 	 * create new unit derived from an existing gathering event,
-	 * thereby creating a new empty field observation
+	 * thereby creating a new empty field unit
 	 * @param gatheringEvent the gathering event this unit was collected at
 	 */
 	protected DerivedUnit(SpecimenOrObservationType recordBasis, GatheringEvent gatheringEvent) {
-		this(recordBasis, new FieldObservation());
-		FieldObservation field = (FieldObservation)this.getOriginalUnit();
+		this(recordBasis, new FieldUnit());
+		FieldUnit field = (FieldUnit)this.getOriginalUnit();
 		field.setGatheringEvent(gatheringEvent);
 	}
 
@@ -273,7 +273,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	/**
 	 * Will be removed in future versions as semantics is not clear.
 	 * For accessing the collecting number use
-	 * {@link FieldObservation#getFieldNumber()} instead.
+	 * {@link FieldUnit#getFieldNumber()} instead.
 	 * @return
 	 */
 	@Deprecated
@@ -284,7 +284,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	/**
 	 * Will be removed in future versions as semantics is not clear.
 	 * For editing the collecting number use
-	 * {@link FieldObservation#getFieldNumber()} instead.
+	 * {@link FieldUnit#getFieldNumber()} instead.
 	 * @return
 	 */
 	@Deprecated

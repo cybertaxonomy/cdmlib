@@ -151,7 +151,7 @@ public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 		stepList.add(exsiccatumAdder);
 		
 		//add primary collector
-		stepName = "Add primary collector to field observation";
+		stepName = "Add primary collector to field unit";
 		ColumnAdder primaryCollectorAdder = ColumnAdder.NewIntegerInstance(stepName, "SpecimenOrObservationBase", "primaryCollector_id", INCLUDE_AUDIT, false, "AgentBase");
 		stepList.add(primaryCollectorAdder);
 

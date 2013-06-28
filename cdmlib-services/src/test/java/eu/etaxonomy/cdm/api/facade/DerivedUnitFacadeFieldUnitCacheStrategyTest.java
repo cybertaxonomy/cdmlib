@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -43,13 +43,13 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 
-public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmIntegrationTest {
+public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldObservationCacheStrategyTest.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategyTest.class);
 
 	DerivedUnit specimen;
 	DerivationEvent derivationEvent;
-	FieldObservation fieldObservation;
+	FieldUnit fieldUnit;
 	GatheringEvent gatheringEvent;
 	Integer absoluteElevation = 40;
 	Integer absoluteElevationError = 2;
@@ -88,7 +88,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 	DerivedUnit collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
 	DerivationEvent firstDerivationEvent;
-	FieldObservation firstFieldObject;
+	FieldUnit firstFieldObject;
 	Media media1 = Media.NewInstance();
 
 
@@ -113,10 +113,10 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 
 		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		specimen.setDerivedFrom(derivationEvent);
-		fieldObservation = FieldObservation.NewInstance();
-		fieldObservation.addDerivationEvent(derivationEvent);
+		fieldUnit = FieldUnit.NewInstance();
+		fieldUnit.addDerivationEvent(derivationEvent);
 		gatheringEvent = GatheringEvent.NewInstance();
-		fieldObservation.setGatheringEvent(gatheringEvent);
+		fieldUnit.setGatheringEvent(gatheringEvent);
 		gatheringEvent.setAbsoluteElevation(absoluteElevation);
 //		gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
 		gatheringEvent.setActor(collector);
@@ -130,11 +130,11 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		gatheringEvent.setLocality(locality);
 		gatheringEvent.setCountry(country);
 
-		fieldObservation.setFieldNumber(fieldNumber);
-		fieldObservation.setFieldNotes(fieldNotes);
-		fieldObservation.setIndividualCount(individualCount);
-		fieldObservation.setSex(sex);
-		fieldObservation.setLifeStage(lifeStage);
+		fieldUnit.setFieldNumber(fieldNumber);
+		fieldUnit.setFieldNotes(fieldNotes);
+		fieldUnit.setIndividualCount(individualCount);
+		fieldUnit.setSex(sex);
+		fieldUnit.setLifeStage(lifeStage);
 		primaryCollector = Person.NewTitledInstance("Kilian");
 		collector.addTeamMember(primaryCollector);
 		Person secondCollector = Person.NewInstance();
@@ -143,7 +143,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		collector.addTeamMember(secondCollector);
 		Person thirdCollector = Person.NewTitledInstance("Kohlbecker");
 		collector.addTeamMember(thirdCollector);
-		fieldObservation.setPrimaryCollector(primaryCollector);
+		fieldUnit.setPrimaryCollector(primaryCollector);
 
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
@@ -157,7 +157,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		//existing specimen with 2 derivation events in line
 		collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
-		firstFieldObject = FieldObservation.NewInstance();
+		firstFieldObject = FieldUnit.NewInstance();
 
 		//TODO maybe we should define concrete event types here
 		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(null);
@@ -182,12 +182,12 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		specimenFacade.setEcology(ecology);
 		specimenFacade.setPlantDescription(plantDescription);
 		collection.setCode("B");
-		Assert.assertEquals(correctCache, specimenFacade.innerFieldObservation().getTitleCache());
+		Assert.assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
 		
 		String altitudeText = "approx. 40";
 		specimenFacade.setAbsoluteElevationText(altitudeText);
 		correctCache = correctCache.replace("alt. 40 m", "alt. "+ altitudeText + " m");
-		Assert.assertEquals(correctCache, specimenFacade.innerFieldObservation().getTitleCache());
+		Assert.assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
 		
 	}
 

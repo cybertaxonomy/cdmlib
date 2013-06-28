@@ -71,7 +71,7 @@ public class DerivedUnitFacadeBeanProcessor extends AbstractBeanProcessor<Derive
 // FIXME: addJsonElement(json, jsonConfig, "plantDescription", bean.getPlantDescription(languages));
 		addJsonElement(json, jsonConfig, "plantDescription", bean.getPlantDescription());
 		
-		if(Hibernate.isInitialized(bean.innerFieldObservation())){
+		if(Hibernate.isInitialized(bean.innerFieldUnit())){
 			addJsonElement(json, jsonConfig, "fieldObjectMedia", bean.getFieldObjectMedia());
 			addJsonElement(json, jsonConfig, "fieldNumber", bean.getFieldNumber());			
 			addJsonElement(json, jsonConfig, "fieldNotes", bean.getFieldNotes());			

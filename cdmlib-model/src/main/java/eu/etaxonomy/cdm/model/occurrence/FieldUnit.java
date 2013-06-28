@@ -40,26 +40,29 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
+ * 
  * In situ observation of a taxon in the field. If a specimen exists,
- * in most cases a parallel field observation object should be instantiated and the specimen then is "derived" from the field unit
+ * in most cases a parallel field unit object should be instantiated and the specimen then 
+ * is "derived" from the field unit via derivation type "accessioning" or any other.
+ * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:40
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FieldObservation", propOrder = {
+@XmlType(name = "FieldUnit", propOrder = {
     "fieldNumber",
     "primaryCollector",
     "fieldNotes",
     "gatheringEvent"
 })
-@XmlRootElement(name = "FieldObservation")
+@XmlRootElement(name = "FieldUnit")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase")
 @Audited
 @Configurable
-public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldObservation>> implements Cloneable{
-	private static final Logger logger = Logger.getLogger(FieldObservation.class);
+public class FieldUnit extends SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy<FieldUnit>> implements Cloneable{
+	private static final long serialVersionUID = -7586670941559035171L;
+	private static final Logger logger = Logger.getLogger(FieldUnit.class);
 
 	@XmlElement(name = "FieldNumber")
 	@Field
@@ -99,8 +102,8 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	 * Factory method.
 	 * @return
 	 */
-	public static FieldObservation NewInstance(){
-		return new FieldObservation();
+	public static FieldUnit NewInstance(){
+		return new FieldUnit();
 	}
 
 //****************************** CONSTRUCTOR **************************************/
@@ -108,9 +111,9 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	/**
 	 * Constructor
 	 */
-	protected FieldObservation(){
+	protected FieldUnit(){
 		super(SpecimenOrObservationType.FieldUnit);
-		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldObservation>();
+		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<FieldUnit>();
 	}
 
 // ************************ GETTER / SETTER *******************************************
@@ -185,8 +188,8 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	//*********** CLONE **********************************/
 
 	/**
-	 * Clones <i>this</i> field observation. This is a shortcut that enables to
-	 * create a new instance that differs only slightly from <i>this</i> field observation
+	 * Clones <i>this</i> field unit. This is a shortcut that enables to
+	 * create a new instance that differs only slightly from <i>this</i> field unit
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link SpecimenOrObservationBase SpecimenOrObservationBase}.
 	 *
@@ -195,9 +198,9 @@ public class FieldObservation extends SpecimenOrObservationBase<IIdentifiableEnt
 	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public FieldObservation clone(){
+	public FieldUnit clone(){
 		try{
-			FieldObservation result = (FieldObservation)super.clone();
+			FieldUnit result = (FieldUnit)super.clone();
 			//no changes to: fieldNotes, fieldNumber
 			return result;
 		} catch (CloneNotSupportedException e) {

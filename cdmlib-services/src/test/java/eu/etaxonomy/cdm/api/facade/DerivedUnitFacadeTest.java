@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -87,7 +87,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     DerivedUnit specimen;
     DerivationEvent derivationEvent;
-    FieldObservation fieldObservation;
+    FieldUnit fieldUnit;
     GatheringEvent gatheringEvent;
     Integer absoluteElevation = 10;
     Integer absoluteElevationMaximum = 14;
@@ -125,7 +125,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     DerivedUnit collectionSpecimen;
     GatheringEvent existingGatheringEvent;
     DerivationEvent firstDerivationEvent;
-    FieldObservation firstFieldObject;
+    FieldUnit firstFieldObject;
     Media media1 = Media.NewInstance();
 
     DerivedUnitFacade emptyFacade;
@@ -145,10 +145,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         specimen.setDerivedFrom(derivationEvent);
-        fieldObservation = FieldObservation.NewInstance();
-        fieldObservation.addDerivationEvent(derivationEvent);
+        fieldUnit = FieldUnit.NewInstance();
+        fieldUnit.addDerivationEvent(derivationEvent);
         gatheringEvent = GatheringEvent.NewInstance();
-        fieldObservation.setGatheringEvent(gatheringEvent);
+        fieldUnit.setGatheringEvent(gatheringEvent);
         gatheringEvent.setAbsoluteElevation(absoluteElevation);
         gatheringEvent.setAbsoluteElevationMax(absoluteElevationMaximum);
         gatheringEvent.setActor(collector);
@@ -163,11 +163,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         gatheringEvent.setTimeperiod(gatheringPeriod);
         gatheringEvent.setLocality(locality);
 
-        fieldObservation.setFieldNumber(fieldNumber);
-        fieldObservation.setFieldNotes(fieldNotes);
-        fieldObservation.setIndividualCount(individualCount);
-        fieldObservation.setSex(sex);
-        fieldObservation.setLifeStage(lifeStage);
+        fieldUnit.setFieldNumber(fieldNumber);
+        fieldUnit.setFieldNotes(fieldNotes);
+        fieldUnit.setIndividualCount(individualCount);
+        fieldUnit.setSex(sex);
+        fieldUnit.setLifeStage(lifeStage);
 
         specimen.setAccessionNumber(accessionNumber);
         specimen.setCatalogNumber(catalogNumber);
@@ -180,7 +180,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // existing specimen with 2 derivation events in line
         collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
-        firstFieldObject = FieldObservation.NewInstance();
+        firstFieldObject = FieldUnit.NewInstance();
 
 		//TODO maybe we should define concrete event types here
         DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
@@ -217,7 +217,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         try {
             SpecimenDescription imageGallery = SpecimenDescription.NewInstance();
-            imageGallery.addDescribedSpecimenOrObservation(facade.innerFieldObservation());
+            imageGallery.addDescribedSpecimenOrObservation(facade.innerFieldUnit());
             imageGallery.setImageGallery(true);
             TextData textData = TextData.NewInstance();
             textData.setFeature(imageFeature);
@@ -362,8 +362,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // ???
         // Assert.assertNotNull("The derivation event should have been created",
         // specimenFacade.getSpecimen().getDerivedFrom());
-        // Assert.assertNotNull("The field observation should have been created",
-        // specimenFacade.getFieldObservation());
+        // Assert.assertNotNull("The field unit should have been created",
+        // specimenFacade.getFieldUnit());
         // Assert.assertNotNull("The gathering event should have been created",
         // specimenFacade.getGatheringEvent());
     }
@@ -379,8 +379,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade.innerDerivedUnit());
         Assert.assertSame("Derivation event should be same", derivationEvent,
                 specimenFacade.innerDerivedUnit().getDerivedFrom());
-        Assert.assertSame("Field observation should be same", fieldObservation,
-                specimenFacade.innerFieldObservation());
+        Assert.assertSame("Field unit should be same", fieldUnit,
+                specimenFacade.innerFieldUnit());
         Assert.assertSame("Gathering event should be same", gatheringEvent,
                 specimenFacade.innerGatheringEvent());
 
@@ -393,25 +393,24 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
             specimenFacade.setDistanceToGround(2.0);
-            FieldObservation specimenFieldObservation = (FieldObservation) specimen
-                    .getDerivedFrom().getOriginals().iterator().next();
+            FieldUnit specimenFieldUnit = (FieldUnit) specimen.getDerivedFrom().getOriginals().iterator().next();
             Assert.assertSame(
                     "Facade gathering event and specimen gathering event should be the same",
                     specimenFacade.innerGatheringEvent(),
-                    specimenFieldObservation.getGatheringEvent());
+                    specimenFieldUnit.getGatheringEvent());
         } catch (DerivedUnitFacadeNotSupportedException e) {
             Assert.fail("An error should not occur in NewInstance()");
         }
     }
 
     @Test
-    public void testNoGatheringEventAndFieldObservation() {
+    public void testNoGatheringEventAndFieldUnit() {
     	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-            Assert.assertNull("No field observation should exists",
-                    specimenFacade.innerFieldObservation());
+            Assert.assertNull("No field unit should exists",
+                    specimenFacade.innerFieldUnit());
         } catch (DerivedUnitFacadeNotSupportedException e) {
             Assert.fail("An error should not occur in NewInstance()");
         }
@@ -454,7 +453,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade
                 .getCollectingAreas().size());
         Assert.assertSame("Areas should be same", newCollectingArea,
-                specimenFacade.innerFieldObservation().getGatheringEvent()
+                specimenFacade.innerFieldUnit().getGatheringEvent()
                         .getCollectingAreas().iterator().next());
         specimenFacade.addCollectingArea(tdwgArea);
         Assert.assertEquals("Exactly 2 areas must exist", 2, specimenFacade
@@ -634,12 +633,12 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // empty facade tests
         Assert.assertNull("Empty facace must not have any gathering values", emptyFacade.getDistanceToWaterSurface());
         emptyFacade.setDistanceToWaterSurface(13.0);
-        Assert.assertNotNull("Field observation must exist if distance to water exists", emptyFacade.getFieldObservation(false));
+        Assert.assertNotNull("Field unit must exist if distance to water exists", emptyFacade.getFieldUnit(false));
         Assert.assertNotNull("Gathering event must exist if distance to water exists", emptyFacade.getGatheringEvent(false));
-        FieldObservation specimenFieldObservation = (FieldObservation) emptyFacade
+        FieldUnit specimenFieldUnit = (FieldUnit) emptyFacade
                 .innerDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
         Assert.assertSame("Gathering event of facade and of specimen must be the same",
-                specimenFieldObservation.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
+                specimenFieldUnit.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
     }
     
     @Test
@@ -745,23 +744,23 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
             IllegalAccessException {
         // this test depends on the current implementation of SpecimenFacade. In
         // future
-        // field observation may not be initialized from the beginning. Than the
+        // field unit may not be initialized from the beginning. Than the
         // following
         // assert should be set to assertNull
         Assert.assertTrue(
                 "field object should not be null (depends on specimen facade initialization !!)",
                 specimenFacade.hasFieldObject());
 
-        Field fieldObservationField = DerivedUnitFacade.class
-                .getDeclaredField("fieldObservation");
-        fieldObservationField.setAccessible(true);
-        fieldObservationField.set(specimenFacade, null);
-        Assert.assertFalse("The field observation should be null now",
+        Field fieldUnitField = DerivedUnitFacade.class
+                .getDeclaredField("fieldUnit");
+        fieldUnitField.setAccessible(true);
+        fieldUnitField.set(specimenFacade, null);
+        Assert.assertFalse("The field unit should be null now",
                 specimenFacade.hasFieldObject());
 
         specimenFacade.setDistanceToGround(33.0);
         Assert.assertTrue(
-                "The field observation should have been created again",
+                "The field unit should have been created again",
                 specimenFacade.hasFieldObject());
     }
 
@@ -1017,15 +1016,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 emptyFacade.getFieldNumber());
         emptyFacade.setFieldNumber("1256A");
         Assert.assertNotNull(
-                "Field observation must exist if field number exists",
-                emptyFacade.getFieldObservation(false));
-        FieldObservation specimenFieldObservation = (FieldObservation) emptyFacade
+                "Field unit must exist if field number exists",
+                emptyFacade.getFieldUnit(false));
+        FieldUnit specimenFieldUnit = (FieldUnit) emptyFacade
                 .innerDerivedUnit().getDerivedFrom().getOriginals().iterator()
                 .next();
         Assert.assertSame(
-                "Field observation of facade and of specimen must be the same",
-                specimenFieldObservation,
-                emptyFacade.getFieldObservation(false));
+                "Field unit of facade and of specimen must be the same",
+                specimenFieldUnit,
+                emptyFacade.getFieldUnit(false));
         Assert.assertEquals("1256A", emptyFacade.getFieldNumber());
     }
 
@@ -1072,8 +1071,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Gathering event must not be null",
                 specimenFacade.innerGatheringEvent());
         Assert.assertEquals(
-                "Gathering event must be field observations gathering event",
-                specimenFacade.innerFieldObservation().getGatheringEvent(),
+                "Gathering event must be field unit's gathering event",
+                specimenFacade.innerFieldUnit().getGatheringEvent(),
                 specimenFacade.innerGatheringEvent());
     }
 
@@ -1562,13 +1561,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testMultipleFieldObservationsNotSupported() {
+    public void testMultipleFieldUnitNotSupported() {
         specimenFacade = null;
-        FieldObservation secondFieldObject = FieldObservation.NewInstance();
+        FieldUnit secondFieldObject = FieldUnit.NewInstance();
         firstDerivationEvent.addOriginal(secondFieldObject);
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
-            Assert.fail("Multiple field observations for one specimen should no be supported by the facade");
+            Assert.fail("Multiple field units for one specimen should no be supported by the facade");
         } catch (DerivedUnitFacadeNotSupportedException e) {
             // ok
         }

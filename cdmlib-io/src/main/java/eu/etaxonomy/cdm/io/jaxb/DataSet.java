@@ -83,7 +83,7 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -217,7 +217,7 @@ public class DataSet {
     @XmlElements({
     	@XmlElement(name = "DerivedUnit", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DerivedUnit.class),
     	@XmlElement(name = "DnaSample", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = DnaSample.class),
-    	@XmlElement(name = "FieldObservation", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldObservation.class)
+    	@XmlElement(name = "FieldUnit", namespace = "http://etaxonomy.eu/cdm/model/occurrence/1.0", type = FieldUnit.class)
     })
     protected List<SpecimenOrObservationBase> occurrences = new ArrayList<SpecimenOrObservationBase>();
     

@@ -139,7 +139,7 @@ http://www.w3.org/2001/XMLSchema
             <xs:choice minOccurs="0" maxOccurs="unbounded">
               <xs:element ref="occurrence:DerivedUnit"/>
               <xs:element ref="occurrence:DnaSample"/>
-              <xs:element ref="occurrence:FieldObservation"/>
+              <xs:element ref="occurrence:FieldUnit"/>
             </xs:choice>
           </xs:sequence>
         </xs:complexType>

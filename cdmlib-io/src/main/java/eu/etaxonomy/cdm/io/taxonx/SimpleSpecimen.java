@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 
 /**
@@ -31,7 +31,7 @@ public class SimpleSpecimen {
 	private static final Logger logger = Logger.getLogger(SimpleSpecimen.class);
 	
 	private GatheringEvent gatheringEvent;
-	private FieldObservation fieldObservation;
+	private FieldUnit fieldUnit;
 	private DerivationEvent derivationEvent;
 	private DerivedUnit specimen;
 	private Collection collection;
@@ -47,12 +47,12 @@ public class SimpleSpecimen {
 		gatheringEvent = GatheringEvent.NewInstance();
 		
 		//observation
-		fieldObservation = FieldObservation.NewInstance();
-		fieldObservation.setGatheringEvent(gatheringEvent);
+		fieldUnit = FieldUnit.NewInstance();
+		fieldUnit.setGatheringEvent(gatheringEvent);
 		
 		//derivationEvent
 		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
-		derivationEvent.addOriginal(fieldObservation);
+		derivationEvent.addOriginal(fieldUnit);
 		
 		//derivedUnit
 		specimen = DerivedUnit.NewPreservedSpecimenInstance();

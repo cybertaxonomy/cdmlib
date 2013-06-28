@@ -50,7 +50,7 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 	 */
 	@Override
 	public String getTitleCache(DerivedUnit derivedUnit) {
-		DerivedUnitFacadeFieldObservationCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldObservationCacheStrategy();
+		DerivedUnitFacadeFieldUnitCacheStrategy fieldStrategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
 
 		String result = "";
 		

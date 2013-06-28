@@ -45,7 +45,7 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
 
   <xs:element name="DnaSample" type="molecular:DnaSample"/>
 
-  <xs:element name="FieldObservation" type="occurrence:FieldObservation"/>
+  <xs:element name="FieldUnit" type="occurrence:FieldUnit"/>
 
   <xs:element name="GatheringEvent" type="occurrence:GatheringEvent"/>
 
@@ -194,7 +194,7 @@ xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="FieldObservation">
+  <xs:complexType name="FieldUnit">
     <xs:complexContent>
       <xs:extension base="occurrence:SpecimenOrObservationBase">
         <xs:sequence>

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -119,7 +119,7 @@ public interface IOccurrenceDao extends IIdentifiableDao<SpecimenOrObservationBa
      */
 	public List<DerivationEvent> getDerivationEvents(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 	
-	public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache();
+	public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache();
 	
 	public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
 	

@@ -73,7 +73,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	private boolean doReferenceBase = true;
 	
 	//SpecimenOrObservationBase
-	private boolean doFieldObservation = true;
+	private boolean doFieldUnit = true;
 	private boolean doDeriveUnit = true;
 	private boolean doDnaSample = true;
 	
@@ -126,7 +126,7 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 			doReferenceBase = false;
 			
 			//SpecimenOrObservationBase
-			doFieldObservation = false;
+			doFieldUnit = false;
 			doDeriveUnit = false;
 			doDnaSample = false;
 			
@@ -222,11 +222,11 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	public boolean isDoReferenceBase() {
 		return doReferenceBase;
 	}
-	public void setDoFieldObservation(boolean doFieldObservation) {
-		this.doFieldObservation = doFieldObservation;
+	public void setDoFieldUnit(boolean doFieldUnit) {
+		this.doFieldUnit = doFieldUnit;
 	}
-	public boolean isDoFieldObservation() {
-		return doFieldObservation;
+	public boolean isDoFieldUnit() {
+		return doFieldUnit;
 	}
 	public void setDoDeriveUnit(boolean doDeriveUnit) {
 		this.doDeriveUnit = doDeriveUnit;

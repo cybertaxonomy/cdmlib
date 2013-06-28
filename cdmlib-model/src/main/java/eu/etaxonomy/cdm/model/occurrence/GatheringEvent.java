@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 
 /**
- * The event when gathering a specimen or recording a field observation only
+ * The event when gathering a specimen or recording a field unit only
  * @author m.doering
  *
  */

@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -128,11 +128,11 @@ public class TestSpecimen {
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id);
 		specimen.addSource(source);
 		
-		FieldObservation fieldObservation = FieldObservation.NewInstance();
+		FieldUnit fieldUnit = FieldUnit.NewInstance();
 		DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.GATHERING_IN_SITU());
 		derivationEvent.addDerivative(specimen);
-		fieldObservation.addDerivationEvent(derivationEvent);
-		fieldObservation.setGatheringEvent(gatheringEvent);
+		fieldUnit.addDerivationEvent(derivationEvent);
+		fieldUnit.setGatheringEvent(gatheringEvent);
 		
 		
 		//type information
@@ -145,10 +145,10 @@ public class TestSpecimen {
 		Set<SpecimenOrObservationBase> originals = dEvent.getOriginals();
 		logger.warn("Originals: " + originals);
 		for (SpecimenOrObservationBase original : originals){
-			if (original instanceof FieldObservation){
-				FieldObservation fieldObservation2 = (FieldObservation)original;
-				logger.warn("FieldObservation: " + fieldObservation2);
-				GatheringEvent gatheringEvent2= fieldObservation2.getGatheringEvent();
+			if (original instanceof FieldUnit){
+				FieldUnit fieldUnit2 = (FieldUnit)original;
+				logger.warn("FieldUnit: " + fieldUnit2);
+				GatheringEvent gatheringEvent2= fieldUnit2.getGatheringEvent();
 				logger.warn("GatheringEvent: " + gatheringEvent2);
 				AgentBase<?> gatherer2 = gatheringEvent2.getCollector();
 				logger.warn("Gatherer: "+  gatherer2);

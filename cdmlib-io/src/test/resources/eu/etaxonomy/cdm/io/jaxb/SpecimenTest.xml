@@ -76,15 +76,15 @@
             <occurrence:StoredUnder>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</occurrence:StoredUnder>
             <occurrence:DerivedFrom>urn-uuid-a18f8610-0323-11de-87af-0800200c9a66</occurrence:DerivedFrom>
         </occurrence:DerivedUnit>
-        <occurrence:FieldObservation id="2" uuid="urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187">
-            <common:TitleCache>Field Observation</common:TitleCache>
+        <occurrence:FieldUnit id="2" uuid="urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187">
+            <common:TitleCache>Field Unit</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <occurrence:DerivationEvents>
                 <occurrence:DerivationEvent>urn-uuid-a18f8610-0323-11de-87af-0800200c9a66</occurrence:DerivationEvent> 
             </occurrence:DerivationEvents>
             <occurrence:FieldNumber>5678</occurrence:FieldNumber>
             <occurrence:GatheringEvent>urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c</occurrence:GatheringEvent>
-        </occurrence:FieldObservation>
+        </occurrence:FieldUnit>
     </Occurrences>
     <EventBases>
       <occurrence:GatheringEvent id="1" uuid="urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c">

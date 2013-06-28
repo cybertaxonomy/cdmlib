@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * The specimen or observation type is used to define what a {@link SpecimenOrObservationBase specimen or observation} 
- * instance describes, may it be a {@link FieldObservation field unit} or a 
+ * instance describes, may it be a {@link FieldUnit field unit} or a 
  * {@link DerivedUnit derived unit}.<BR>
  * The vocabulary used derives mainly from the according vocabularies in ABCD, Darwin Core as well
  * as from the former (before v3.3) CDM subclasses of {@link SpecimenOrObservationBase}.
@@ -167,7 +167,7 @@ public enum SpecimenOrObservationType implements IDefinedTerm<SpecimenOrObservat
 	//14
 	/**
 	 * Type for all field data belonging to a particular object or observation or a set of these.
-	 * Derived from the former (before v3.3 CDM class "FieldObservation".
+	 * Derived from the former (before v3.3 CDM class "FieldUnit".
 	 */
 	//TODO do we really need an own type for FieldUnit or is this covered by any of the other 
 	//types (e.g. Observation)
@@ -303,7 +303,7 @@ public enum SpecimenOrObservationType implements IDefinedTerm<SpecimenOrObservat
 			return Observation;
 		} else if (type.equals("fossil")) {
 			return Fossil;
-		} else if (type.equals("fieldobservation")) {
+		} else if (type.equals("field(observation|unit)")) {
 			return FieldUnit;
 		} else if (type.equals("unknown")) {
 			return DerivedUnit;

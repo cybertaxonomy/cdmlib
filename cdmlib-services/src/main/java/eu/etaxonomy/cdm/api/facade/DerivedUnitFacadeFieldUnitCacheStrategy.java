@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -35,9 +35,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @date 03.06.2010
  *
  */
-public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<FieldObservation> {
+public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implements IIdentifiableEntityCacheStrategy<FieldUnit> {
 	private static final long serialVersionUID = 1578628591216605619L;
-	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldObservationCacheStrategy.class);
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeFieldUnitCacheStrategy.class);
 
 	private static final UUID uuid = UUID.fromString("df4672c1-ce5c-4724-af6d-91e2b326d4a4");
 	
@@ -57,12 +57,12 @@ public class DerivedUnitFacadeFieldObservationCacheStrategy extends StrategyBase
 	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
 	 */
 	@Override
-	public String getTitleCache(FieldObservation fieldObservation) {
+	public String getTitleCache(FieldUnit fieldUnit) {
 		DerivedUnitFacade facade;
 		String result = "";
 		DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
 		config.setFirePropertyChangeEvents(false);
-		facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldObservation, config);
+		facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldUnit, config);
 		result = getFieldData(facade);	
 		result = addPlantDescription(result, facade);
 		facade.close();

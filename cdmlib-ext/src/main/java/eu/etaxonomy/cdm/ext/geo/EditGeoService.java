@@ -30,7 +30,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -150,7 +150,7 @@ public class EditGeoService implements IEditGeoService {
             Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
             Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
 
-        List<Point> fieldObservationPoints = new ArrayList<Point>();
+        List<Point> fieldUnitPoints = new ArrayList<Point>();
         List<Point> derivedUnitPoints = new ArrayList<Point>();
 
         IndividualsAssociation individualsAssociation;
@@ -160,8 +160,8 @@ public class EditGeoService implements IEditGeoService {
             SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao
                     .load(specimenOrObservationBase.getUuid());
 
-            if (specimenOrObservation instanceof FieldObservation) {
-                fieldObservationPoints.add(((FieldObservation) specimenOrObservation).getGatheringEvent()
+            if (specimenOrObservation instanceof FieldUnit) {
+                fieldUnitPoints.add(((FieldUnit) specimenOrObservation).getGatheringEvent()
                         .getExactLocation());
             }
             if (specimenOrObservation instanceof DerivedUnit) {
@@ -169,7 +169,7 @@ public class EditGeoService implements IEditGeoService {
             }
         }
 
-        return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldObservationPoints,
+        return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
                 derivedUnitPoints, specimenOrObservationTypeColors, doReturnImage, width, height, bbox, backLayer);
 
     }
@@ -183,9 +183,9 @@ public class EditGeoService implements IEditGeoService {
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null) {
             for (SpecimenOrObservationBase original : originals) {
-                if (original instanceof FieldObservation) {
-                    if (((FieldObservation) original).getGatheringEvent() != null) {
-                        Point point = ((FieldObservation) original).getGatheringEvent().getExactLocation();
+                if (original instanceof FieldUnit) {
+                    if (((FieldUnit) original).getGatheringEvent() != null) {
+                        Point point = ((FieldUnit) original).getGatheringEvent().getExactLocation();
                         if (point != null) {
                             // FIXME: remove next statement after
                             // DerivedUnitFacade or ABCD import is fixed

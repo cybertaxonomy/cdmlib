@@ -451,7 +451,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				if (facade.innerDerivedUnit() != null){
 					specimen = facade.innerDerivedUnit();
 				}else{
-					specimen = facade.innerFieldObservation();
+					specimen = facade.innerFieldUnit();
 				}
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
@@ -563,10 +563,10 @@ private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUni
 	public String handleInLineGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit);
 		handleGathering(state, reader, parentEvent, facade);
-		SpecimenOrObservationBase<?> specimen  = facade.innerFieldObservation();
+		SpecimenOrObservationBase<?> specimen  = facade.innerFieldUnit();
 		if (specimen == null){
 			specimen = facade.innerDerivedUnit();
-			String message = "Inline gaterhing has no field observation";
+			String message = "Inline gaterhing has no field unit";
 			fireWarningEvent(message, parentEvent, 2);
 		}
 		

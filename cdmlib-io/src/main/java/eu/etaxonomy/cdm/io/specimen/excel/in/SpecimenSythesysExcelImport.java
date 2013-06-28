@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -575,7 +575,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
             // copy gathering event to facade
             GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
 
-            //join gatheringEvent to fieldObservation
+            //join gatheringEvent to fieldUnit
             derivedUnitFacade.setGatheringEvent(gatheringEvent);
 
             derivedUnitFacade.setLocality(gatheringEvent.getLocality());

@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -64,7 +64,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * a specimen based view. It does not support all functionality available in the
  * occurrence package.<BR>
  * The most significant restriction is that a specimen may derive only from one
- * direct derivation event and there must be only one field observation
+ * direct derivation event and there must be only one field unit
  * (gathering event) it derives from.<BR>
  * 
  * @author a.mueller
@@ -86,7 +86,7 @@ public class DerivedUnitFacade {
 	// private GatheringEvent gatheringEvent;
 	private SpecimenOrObservationType type; // needed?
 
-	private FieldObservation fieldObservation;
+	private FieldUnit fieldUnit;
 
 	private final DerivedUnit derivedUnit;
 
@@ -115,8 +115,8 @@ public class DerivedUnitFacade {
 	 * @param type
 	 * @return
 	 */
-	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldObservation fieldObservation) {
-		return new DerivedUnitFacade(type, fieldObservation, null);
+	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldUnit fieldUnit) {
+		return new DerivedUnitFacade(type, fieldUnit, null);
 	}
 
 	/**
@@ -124,13 +124,13 @@ public class DerivedUnitFacade {
 	 * <code>type</code>.
 	 * 
 	 * @param type
-	 * @param fieldObservation the field observation to use
+	 * @param fieldUnit the field unit to use
 	 * @param config the facade configurator to use
-	 * //TODO are there any ambiguities to solve with defining a field observation or a configurator 
+	 * //TODO are there any ambiguities to solve with defining a field unit or a configurator 
 	 * @return
 	 */
-	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldObservation fieldObservation, DerivedUnitFacadeConfigurator config) {
-		return new DerivedUnitFacade(type, fieldObservation, config);
+	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldUnit fieldUnit, DerivedUnitFacadeConfigurator config) {
+		return new DerivedUnitFacade(type, fieldUnit, config);
 	}
 
 	
@@ -155,7 +155,7 @@ public class DerivedUnitFacade {
 
 	// ****************** CONSTRUCTOR ******************************************
 
-	private DerivedUnitFacade(SpecimenOrObservationType type, FieldObservation fieldObservation, DerivedUnitFacadeConfigurator config) {
+	private DerivedUnitFacade(SpecimenOrObservationType type, FieldUnit fieldUnit, DerivedUnitFacadeConfigurator config) {
 		if (config == null){
 			config = DerivedUnitFacadeConfigurator.NewInstance();
 		}
@@ -163,11 +163,11 @@ public class DerivedUnitFacade {
 		this.type = type;
 		// derivedUnit
 		derivedUnit = getNewDerivedUnitInstance(type);
-		setFieldObservation(fieldObservation);
+		setFieldUnit(fieldUnit);
 		if (derivedUnit != null){
 			setCacheStrategy();
 		}else{
-			setFieldObservationCacheStrategy();
+			setFieldUnitCacheStrategy();
 		}
 	}
 
@@ -198,20 +198,20 @@ public class DerivedUnitFacade {
 		// derivation event
 		if (this.derivedUnit.getDerivedFrom() != null) {
 			DerivationEvent derivationEvent = getDerivationEvent(CREATE);
-			// fieldObservation
-			Set<FieldObservation> fieldOriginals = getFieldObservationsOriginals(
+			// fieldUnit
+			Set<FieldUnit> fieldOriginals = getFieldUnitOriginals(
 					derivationEvent, null);
 			if (fieldOriginals.size() > 1) {
 				throw new DerivedUnitFacadeNotSupportedException(
 						"Specimen must not have more than 1 derivation event");
 			} else if (fieldOriginals.size() == 0) {
-				// fieldObservation = FieldObservation.NewInstance();
+				// fieldUnit = FieldUnit.NewInstance();
 			} else if (fieldOriginals.size() == 1) {
-				fieldObservation = fieldOriginals.iterator().next();
-				// ###fieldObservation =
-				// getInitializedFieldObservation(fieldObservation);
+				fieldUnit = fieldOriginals.iterator().next();
+				// ###fieldUnit =
+				// getInitializedFieldUnit(fieldUnit);
 				if (config.isFirePropertyChangeEvents()){
-					addNewEventPropagationListener(fieldObservation);
+					addNewEventPropagationListener(fieldUnit);
 				}
 			} else {
 				throw new IllegalStateException("Illegal state");
@@ -239,12 +239,12 @@ public class DerivedUnitFacade {
 			}
 		}
 
-		// handle fieldObservation.getMedia()
-		if (fieldObservation != null && fieldObservation.getMedia() != null
-				&& fieldObservation.getMedia().size() > 0) {
+		// handle fieldUnit.getMedia()
+		if (fieldUnit != null && fieldUnit.getMedia() != null
+				&& fieldUnit.getMedia().size() > 0) {
 			// TODO better changed model here to allow only one place for images
 			if (this.config.isMoveFieldObjectMediaToGallery()) {
-				Set<Media> mediaSet = fieldObservation.getMedia();
+				Set<Media> mediaSet = fieldUnit.getMedia();
 				for (Media media : mediaSet) {
 					this.addFieldObjectMedia(media);
 				}
@@ -287,23 +287,22 @@ public class DerivedUnitFacade {
 	 * path. If the property path is <code>null</code> or no occurrence service
 	 * is given the returned object is the same as the input parameter.
 	 * 
-	 * @param fieldObservation2
+	 * @param fieldUnit
 	 * @return
 	 */
-	private FieldObservation getInitializedFieldObservation(
-			FieldObservation fieldObservation) {
+	private FieldUnit getInitializedFieldUnit(FieldUnit fieldUnit) {
 		IOccurrenceService occurrenceService = this.config
 				.getOccurrenceService();
 		if (occurrenceService == null) {
-			return fieldObservation;
+			return fieldUnit;
 		}
 		List<String> propertyPaths = this.config.getPropertyPaths();
 		if (propertyPaths == null) {
-			return fieldObservation;
+			return fieldUnit;
 		}
 		propertyPaths = getFieldObjectPropertyPaths(propertyPaths);
-		FieldObservation result = (FieldObservation) occurrenceService.load(
-				fieldObservation.getUuid(), propertyPaths);
+		FieldUnit result = (FieldUnit) occurrenceService.load(
+				fieldUnit.getUuid(), propertyPaths);
 		return result;
 	}
 
@@ -464,14 +463,14 @@ public class DerivedUnitFacade {
 					"Facade's derviedUnit must not be null to set cache strategy");
 		}else{
 			derivedUnit.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
-			setFieldObservationCacheStrategy();
+			setFieldUnitCacheStrategy();
 		}
 	}
 
-	private void setFieldObservationCacheStrategy() {
+	private void setFieldUnitCacheStrategy() {
 		if (this.hasFieldObject()){
-			DerivedUnitFacadeFieldObservationCacheStrategy strategy = new DerivedUnitFacadeFieldObservationCacheStrategy();
-			this.fieldObservation.setCacheStrategy(strategy);
+			DerivedUnitFacadeFieldUnitCacheStrategy strategy = new DerivedUnitFacadeFieldUnitCacheStrategy();
+			this.fieldUnit.setCacheStrategy(strategy);
 		}
 	}
 
@@ -486,7 +485,7 @@ public class DerivedUnitFacade {
 			Feature feature, boolean createIfNotExists, boolean isImageGallery)
 			throws DerivedUnitFacadeNotSupportedException {
 		// field object
-		FieldObservation fieldObject = getFieldObservation(createIfNotExists);
+		FieldUnit fieldObject = getFieldUnit(createIfNotExists);
 		if (fieldObject == null) {
 			return null;
 		}
@@ -616,8 +615,7 @@ public class DerivedUnitFacade {
 			boolean createIfNotExists)
 			throws DerivedUnitFacadeNotSupportedException {
 		if (this.fieldObjectMediaTextData == null && createIfNotExists) {
-			this.fieldObjectMediaTextData = getImageGalleryTextData(
-					fieldObservation, "Field observation");
+			this.fieldObjectMediaTextData = getImageGalleryTextData(fieldUnit, "Field unit");
 		}
 		return this.fieldObjectMediaTextData;
 	}
@@ -627,18 +625,18 @@ public class DerivedUnitFacade {
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
 	 */
-	private Set<FieldObservation> getFieldObservationsOriginals(
+	private Set<FieldUnit> getFieldUnitOriginals(
 			DerivationEvent derivationEvent,
 			Set<SpecimenOrObservationBase> recursionAvoidSet)
 			throws DerivedUnitFacadeNotSupportedException {
 		if (recursionAvoidSet == null) {
 			recursionAvoidSet = new HashSet<SpecimenOrObservationBase>();
 		}
-		Set<FieldObservation> result = new HashSet<FieldObservation>();
+		Set<FieldUnit> result = new HashSet<FieldUnit>();
 		Set<SpecimenOrObservationBase> originals = derivationEvent.getOriginals();
 		for (SpecimenOrObservationBase original : originals) {
-			if (original.isInstanceOf(FieldObservation.class)) {
-				result.add(CdmBase.deproxy(original, FieldObservation.class));
+			if (original.isInstanceOf(FieldUnit.class)) {
+				result.add(CdmBase.deproxy(original, FieldUnit.class));
 			} else if (original.isInstanceOf(DerivedUnit.class)) {
 				// if specimen has already been tested exclude it from further
 				// recursion
@@ -651,9 +649,9 @@ public class DerivedUnitFacade {
 				// Set<DerivationEvent> derivationEvents =
 				// original.getDerivationEvents();
 				// for (DerivationEvent originalDerivation : derivationEvents){
-				Set<FieldObservation> fieldObservations = getFieldObservationsOriginals(
+				Set<FieldUnit> fieldUnits = getFieldUnitOriginals(
 						originalDerivation, recursionAvoidSet);
-				result.addAll(fieldObservations);
+				result.addAll(fieldUnits);
 				// }
 			} else {
 				throw new DerivedUnitFacadeNotSupportedException(
@@ -885,7 +883,7 @@ public class DerivedUnitFacade {
 	// }
 	// if (specimen == this.derivedUnit){
 	// return getDerivedUnitImageGalleryMedia();
-	// }else if (specimen == this.fieldObservation){
+	// }else if (specimen == this.fieldUnit){
 	// return getObservationImageGalleryTextData();
 	// }else{
 	// return getImageGalleryMedia(specimen, "Undefined specimen ");
@@ -909,7 +907,7 @@ public class DerivedUnitFacade {
 		}
 		if (specimen == this.derivedUnit) {
 			return getDerivedUnitImageGalleryTextData(createIfNotExists);
-		} else if (specimen == this.fieldObservation) {
+		} else if (specimen == this.fieldUnit) {
 			return getObservationImageGalleryTextData(createIfNotExists);
 		} else {
 			return getImageGalleryTextData(specimen, "Undefined specimen ");
@@ -1355,7 +1353,7 @@ public class DerivedUnitFacade {
 	 * @param gatheringEvent
 	 */
 	public void setGatheringEvent(GatheringEvent gatheringEvent) {
-		getFieldObservation(true).setGatheringEvent(gatheringEvent);
+		getFieldUnit(true).setGatheringEvent(gatheringEvent);
 	}
 
 	public boolean hasGatheringEvent() {
@@ -1367,26 +1365,26 @@ public class DerivedUnitFacade {
 	}
 
 	public GatheringEvent getGatheringEvent(boolean createIfNotExists) {
-		if (!hasFieldObservation() && !createIfNotExists) {
+		if (!hasFieldUnit() && !createIfNotExists) {
 			return null;
 		}
-		if (createIfNotExists && getFieldObservation(true).getGatheringEvent() == null) {
+		if (createIfNotExists && getFieldUnit(true).getGatheringEvent() == null) {
 			GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-			getFieldObservation(true).setGatheringEvent(gatheringEvent);
+			getFieldUnit(true).setGatheringEvent(gatheringEvent);
 		}
-		return getFieldObservation(true).getGatheringEvent();
+		return getFieldUnit(true).getGatheringEvent();
 	}
 
 	// ****************** Field Object ************************************/
 
 	/**
-	 * Returns true if a field observation exists (even if all attributes are
+	 * Returns true if a field unit exists (even if all attributes are
 	 * empty or <code>null<code>.
 	 * 
 	 * @return
 	 */
 	public boolean hasFieldObject() {
-		return this.fieldObservation != null;
+		return this.fieldUnit != null;
 	}
 
 	// ecology
@@ -1536,15 +1534,15 @@ public class DerivedUnitFacade {
 
 	// field object definition
 	public void addFieldObjectDefinition(String text, Language language) {
-		getFieldObservation(true).putDefinition(language, text);
+		getFieldUnit(true).putDefinition(language, text);
 	}
 
 	@Transient
 	public Map<Language, LanguageString> getFieldObjectDefinition() {
-		if (!hasFieldObservation()) {
+		if (!hasFieldUnit()) {
 			return new HashMap<Language, LanguageString>();
 		} else {
-			return getFieldObservation(true).getDefinition();
+			return getFieldUnit(true).getDefinition();
 		}
 	}
 
@@ -1559,15 +1557,15 @@ public class DerivedUnitFacade {
 	}
 
 	public void removeFieldObjectDefinition(Language lang) {
-		if (hasFieldObservation()) {
-			getFieldObservation(true).removeDefinition(lang);
+		if (hasFieldUnit()) {
+			getFieldUnit(true).removeDefinition(lang);
 		}
 	}
 
 	// media
 	public boolean addFieldObjectMedia(Media media) {
 		try {
-			return addMedia(media, getFieldObservation(true));
+			return addMedia(media, getFieldUnit(true));
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -1583,7 +1581,7 @@ public class DerivedUnitFacade {
 		if (!hasFieldObject()) {
 			return false;
 		} else {
-			return (getImageGallery(fieldObservation, false) != null);
+			return (getImageGallery(fieldUnit, false) != null);
 		}
 	}
 
@@ -1592,8 +1590,8 @@ public class DerivedUnitFacade {
 		SpecimenDescription existingGallery = getFieldObjectImageGallery(false);
 
 		// test attached specimens contain this.derivedUnit
-		SpecimenOrObservationBase<?> facadeFieldObservation = innerFieldObservation();
-		testSpecimenInImageGallery(imageGallery, facadeFieldObservation);
+		SpecimenOrObservationBase<?> facadeFieldUnit = innerFieldUnit();
+		testSpecimenInImageGallery(imageGallery, facadeFieldUnit);
 
 		if (existingGallery != null) {
 			if (existingGallery != imageGallery) {
@@ -1641,7 +1639,7 @@ public class DerivedUnitFacade {
 	@Transient
 	public List<Media> getFieldObjectMedia() {
 		try {
-			List<Media> result = getMediaList(getFieldObservation(false), false);
+			List<Media> result = getMediaList(getFieldUnit(false), false);
 			return result == null ? new ArrayList<Media>() : result;
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
@@ -1650,7 +1648,7 @@ public class DerivedUnitFacade {
 
 	public boolean removeFieldObjectMedia(Media media) {
 		try {
-			return removeMedia(media, getFieldObservation(false));
+			return removeMedia(media, getFieldUnit(false));
 		} catch (DerivedUnitFacadeNotSupportedException e) {
 			throw new IllegalStateException(notSupportMessage, e);
 		}
@@ -1659,116 +1657,116 @@ public class DerivedUnitFacade {
 	// field number
 	@Transient
 	public String getFieldNumber() {
-		if (!hasFieldObservation()) {
+		if (!hasFieldUnit()) {
 			return null;
 		} else {
-			return getFieldObservation(true).getFieldNumber();
+			return getFieldUnit(true).getFieldNumber();
 		}
 	}
 
 	public void setFieldNumber(String fieldNumber) {
-		getFieldObservation(true).setFieldNumber(fieldNumber);
+		getFieldUnit(true).setFieldNumber(fieldNumber);
 	}
 
 	// primary collector
 	@Transient
 	public Person getPrimaryCollector() {
-		if (!hasFieldObservation()) {
+		if (!hasFieldUnit()) {
 			return null;
 		} else {
-			return getFieldObservation(true).getPrimaryCollector();
+			return getFieldUnit(true).getPrimaryCollector();
 		}
 	}
 
 	public void setPrimaryCollector(Person primaryCollector) {
-		getFieldObservation(true).setPrimaryCollector(primaryCollector);
+		getFieldUnit(true).setPrimaryCollector(primaryCollector);
 	}
 
 	// field notes
 	@Transient
 	public String getFieldNotes() {
-		if (!hasFieldObservation()) {
+		if (!hasFieldUnit()) {
 			return null;
 		} else {
-			return getFieldObservation(true).getFieldNotes();
+			return getFieldUnit(true).getFieldNotes();
 		}
 	}
 
 	public void setFieldNotes(String fieldNotes) {
-		getFieldObservation(true).setFieldNotes(fieldNotes);
+		getFieldUnit(true).setFieldNotes(fieldNotes);
 	}
 
 	// individual counts
 	@Transient
 	public Integer getIndividualCount() {
-		return (hasFieldObservation() ? getFieldObservation(true)
+		return (hasFieldUnit() ? getFieldUnit(true)
 				.getIndividualCount() : null);
 	}
 
 	public void setIndividualCount(Integer individualCount) {
-		getFieldObservation(true).setIndividualCount(individualCount);
+		getFieldUnit(true).setIndividualCount(individualCount);
 	}
 
 	// life stage
 	@Transient
 	public DefinedTerm getLifeStage() {
-		return (hasFieldObservation() ? getFieldObservation(true)
+		return (hasFieldUnit() ? getFieldUnit(true)
 				.getLifeStage() : null);
 	}
 
 	public void setLifeStage(DefinedTerm lifeStage) {
-		getFieldObservation(true).setLifeStage(lifeStage);
+		getFieldUnit(true).setLifeStage(lifeStage);
 	}
 
 	// sex
 	@Transient
 	public DefinedTerm getSex() {
-		return (hasFieldObservation() ? getFieldObservation(true).getSex()
+		return (hasFieldUnit() ? getFieldUnit(true).getSex()
 				: null);
 	}
 
 	public void setSex(DefinedTerm sex) {
-		getFieldObservation(true).setSex(sex);
+		getFieldUnit(true).setSex(sex);
 	}
 
-	// field observation
-	public boolean hasFieldObservation() {
-		return (getFieldObservation(false) != null);
-	}
-
-	/**
-	 * Returns the field observation as an object.
-	 * 
-	 * @return
-	 */
-	public FieldObservation innerFieldObservation() {
-		return getFieldObservation(false);
+	// field unit
+	public boolean hasFieldUnit() {
+		return (getFieldUnit(false) != null);
 	}
 
 	/**
-	 * Returns the field observation as an object.
+	 * Returns the field unit as an object.
 	 * 
 	 * @return
 	 */
-	public FieldObservation getFieldObservation(boolean createIfNotExists) {
-		if (fieldObservation == null && createIfNotExists) {
-			setFieldObservation(FieldObservation.NewInstance());
+	public FieldUnit innerFieldUnit() {
+		return getFieldUnit(false);
+	}
+
+	/**
+	 * Returns the field unit as an object.
+	 * 
+	 * @return
+	 */
+	public FieldUnit getFieldUnit(boolean createIfNotExists) {
+		if (fieldUnit == null && createIfNotExists) {
+			setFieldUnit(FieldUnit.NewInstance());
 		}
-		return this.fieldObservation;
+		return this.fieldUnit;
 	}
 	
 
-	private void setFieldObservation(FieldObservation fieldObservation) {
-		this.fieldObservation = fieldObservation;
-		if (fieldObservation != null){
+	private void setFieldUnit(FieldUnit fieldUnit) {
+		this.fieldUnit = fieldUnit;
+		if (fieldUnit != null){
 			if (config.isFirePropertyChangeEvents()){
-				addNewEventPropagationListener(fieldObservation);
+				addNewEventPropagationListener(fieldUnit);
 			}
 			if (derivedUnit != null){
 				DerivationEvent derivationEvent = getDerivationEvent(CREATE);
-				derivationEvent.addOriginal(fieldObservation);
+				derivationEvent.addOriginal(fieldUnit);
 			}
-			setFieldObservationCacheStrategy();
+			setFieldUnitCacheStrategy();
 		}
 	}
 
@@ -1942,7 +1940,7 @@ public class DerivedUnitFacade {
 		Set<SpecimenOrObservationBase> imageGallerySpecimens = imageGallery.getDescribedSpecimenOrObservations();
 		if (imageGallerySpecimens.size() < 1) {
 			throw new DerivedUnitFacadeNotSupportedException(
-					"Image Gallery has no Specimen attached. Please attache according specimen or field observation.");
+					"Image Gallery has no Specimen attached. Please attache according specimen or field unit.");
 		}
 		if (!imageGallerySpecimens.contains(specimen)) {
 			throw new DerivedUnitFacadeNotSupportedException(
@@ -2073,14 +2071,14 @@ public class DerivedUnitFacade {
 		if (!titledUnit.isProtectedTitleCache()) {
 			// always compute title cache anew as long as there are no property
 			// change listeners on
-			// field observation, gathering event etc
+			// field unit, gathering event etc
 			titledUnit.setTitleCache(null, false);
 		}
 		return titledUnit.getTitleCache();
 	}
 	
 	private SpecimenOrObservationBase<?> getTitledUnit(){
-		return (derivedUnit != null )? derivedUnit : fieldObservation;
+		return (derivedUnit != null )? derivedUnit : fieldUnit;
 	}
 
 	public boolean isProtectedTitleCache() {
@@ -2108,13 +2106,13 @@ public class DerivedUnitFacade {
 //	public DerivedUnit innerDerivedUnit(boolean createIfNotExists) {
 //		DerivedUnit result = this.derivedUnit; 
 //		if (result == null && createIfNotExists){
-//			if (this.fieldObservation == null){
-//				String message = "Field observation must exist to create derived unit.";
+//			if (this.fieldUnit == null){
+//				String message = "Field unit must exist to create derived unit.";
 //				throw new IllegalStateException(message);
 //			}else{
 //				DerivedUnit = 
 //				DerivationEvent derivationEvent = getDerivationEvent(true);
-//				derivationEvent.addOriginal(fieldObservation);
+//				derivationEvent.addOriginal(fieldUnit);
 //				return this.derivedUnit;
 //			}
 //		}
@@ -2266,7 +2264,7 @@ public class DerivedUnitFacade {
 
 	// ******************************* Events ***************************
 	
-	//set of events that were currently fired by this facades field observation
+	//set of events that were currently fired by this facades field unit
 	//to avoid recursive fireing of the same event
 	private Set<PropertyChangeEvent> fireingEvents = new HashSet<PropertyChangeEvent>();
 	
@@ -2287,9 +2285,9 @@ public class DerivedUnitFacade {
 				if (derivedUnit != null){
 					derivedUnit.firePropertyChange(event);
 				}else{
-					if (! event.getSource().equals(fieldObservation) && ! fireingEvents.contains(event)  ){
+					if (! event.getSource().equals(fieldUnit) && ! fireingEvents.contains(event)  ){
 						fireingEvents.add(event);
-						fieldObservation.firePropertyChange(event);
+						fieldUnit.firePropertyChange(event);
 						fireingEvents.remove(event);
 					}
 				}
@@ -2362,7 +2360,7 @@ public class DerivedUnitFacade {
 
 	private void testDerivedUnit() {
 		if (derivedUnit == null){
-			throw new IllegalStateException("This method is not allowed for this specimen or observation type. Probably you have tried to add specimen(derived unit) information to a field observation");
+			throw new IllegalStateException("This method is not allowed for this specimen or observation type. Probably you have tried to add specimen(derived unit) information to a field unit");
 		}
 	}
 

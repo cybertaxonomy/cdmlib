@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -199,8 +199,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache() {
-        return dao.getFieldObservationUuidAndTitleCache();
+    public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache() {
+        return dao.getFieldUnitUuidAndTitleCache();
     }
 
     /* (non-Javadoc)
@@ -338,7 +338,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), FieldObservation.class);
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), FieldUnit.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
         // --- criteria

@@ -129,7 +129,7 @@
 		@MetaValue(value = "eu.etaxonomy.cdm.model.name.ViralName", targetEntity = ViralName.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.name.ZoologicalName", targetEntity = ZoologicalName.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.Collection", targetEntity = Collection.class),
-		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.FieldObservation", targetEntity = FieldObservation.class),
+		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.FieldUnit", targetEntity = FieldUnit.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.occurrence.DerivedUnit", targetEntity = DerivedUnit.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Reference", targetEntity = Reference.class),
 		@MetaValue(value = "eu.etaxonomy.cdm.model.reference.Journal", targetEntity = Reference.class),
@@ -183,7 +183,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.ViralName;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;

@@ -142,7 +142,7 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
     // public Map<Language, LanguageString> getEcologyAll(){
     // public Map<Language, LanguageString> getFieldObjectDefinition() {
     // public List<Media> getFieldObjectMedia() {
-    // public FieldObservation getFieldObservation(){
+    // public FieldUnit getFieldUnit(){
     // public GatheringEvent getGatheringEvent() {
     // public String getGatheringEventDescription() {
     // public Map<Language, LanguageString> getPlantDescriptionAll(){ ==> representation !!

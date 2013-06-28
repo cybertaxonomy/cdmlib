@@ -118,7 +118,7 @@
         <class>eu.etaxonomy.cdm.model.occurrence.DerivationEventType</class>
         <class>eu.etaxonomy.cdm.model.occurrence.DerivedUnit</class>
         <class>eu.etaxonomy.cdm.model.occurrence.DeterminationEvent</class>
-        <class>eu.etaxonomy.cdm.model.occurrence.FieldObservation</class>
+        <class>eu.etaxonomy.cdm.model.occurrence.FieldUnit</class>
         <class>eu.etaxonomy.cdm.model.occurrence.GatheringEvent</class>
         <class>eu.etaxonomy.cdm.model.occurrence.PreservationMethod</class>
         <class>eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase</class>

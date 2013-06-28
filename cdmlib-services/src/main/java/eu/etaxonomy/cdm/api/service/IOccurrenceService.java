@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -136,7 +136,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     @Override
     public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
 
-    public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache();
+    public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache();
 
     public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
 

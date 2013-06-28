@@ -599,7 +599,7 @@ public class EditGeoServiceUtilities {
     }
 
     /**
-     * @param fieldObservationPoints
+     * @param fieldUnitPoints
      * @param derivedUnitPoints
      * @param specimenOrObservationTypeColors
      * @param doReturnImage TODO
@@ -619,7 +619,7 @@ public class EditGeoServiceUtilities {
      *  &os=1%3Ac%2FFFD700%2F10%2FAporrectodea caliginosa
      */
     public static String getOccurrenceServiceRequestParameterString(
-            	List<Point> fieldObservationPoints,
+            	List<Point> fieldUnitPoints,
             	List<Point> derivedUnitPoints,
             	Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
             	Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
@@ -639,7 +639,7 @@ public class EditGeoServiceUtilities {
 
             Map<String, String> styleAndData = new HashMap<String, String>();
 
-            addToStyleAndData(fieldObservationPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
+            addToStyleAndData(fieldUnitPoints, SpecimenOrObservationType.FieldUnit, specimenOrObservationTypeColors, styleAndData);
             addToStyleAndData(derivedUnitPoints, SpecimenOrObservationType.DerivedUnit, specimenOrObservationTypeColors, styleAndData);
 
             parameters.put("os", StringUtils.join(styleAndData.keySet().iterator(), "||"));
