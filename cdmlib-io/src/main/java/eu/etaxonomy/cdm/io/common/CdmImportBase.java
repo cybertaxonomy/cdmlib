@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -1138,7 +1137,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					representation.setSuffix(imageInfo.getSuffix());
 				}
 				representation.addRepresentationPart(imageFile);
-				Media media = isFigure ? Figure.NewInstance() : Media.NewInstance();
+				Media media = isFigure ? Media.NewInstance() : Media.NewInstance();  //TODO no difference any more since v3.3
 				media.addRepresentation(representation);
 				return media;
 			} catch (URISyntaxException e1) {

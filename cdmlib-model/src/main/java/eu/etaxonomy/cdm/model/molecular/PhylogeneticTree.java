@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
-import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
+import eu.etaxonomy.cdm.model.media.Media;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
@@ -31,7 +31,6 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:43
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -42,7 +41,7 @@ import javax.xml.bind.annotation.XmlType;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.Media")
 @Audited
-public class PhylogeneticTree extends ReferencedMediaBase implements Cloneable{
+public class PhylogeneticTree extends Media implements Cloneable{
 	private static final long serialVersionUID = -7020182117362324067L;
 	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
 	

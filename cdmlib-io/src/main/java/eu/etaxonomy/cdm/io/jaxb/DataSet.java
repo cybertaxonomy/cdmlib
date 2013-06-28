@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -263,7 +262,6 @@ public class DataSet {
     @XmlElements({
       @XmlElement(name = "Media", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = Media.class),
       @XmlElement(name = "MediaKey", namespace = "http://etaxonomy.eu/cdm/model/description/1.0", type = MediaKey.class),
-      @XmlElement(name = "Figure", namespace = "http://etaxonomy.eu/cdm/model/common/1.0", type = Figure.class),
       @XmlElement(name = "PhylogeneticTree", namespace = "http://etaxonomy.eu/cdm/model/molecular/1.0", type = PhylogeneticTree.class)
     })
     protected List<Media> media = new ArrayList<Media>();

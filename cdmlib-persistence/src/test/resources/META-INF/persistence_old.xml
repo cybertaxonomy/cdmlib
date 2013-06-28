@@ -22,7 +22,6 @@
         <class>eu.etaxonomy.cdm.model.common.DescriptionElementSource</class>
         <class>eu.etaxonomy.cdm.model.common.Extension</class>
         <class>eu.etaxonomy.cdm.model.common.ExtensionType</class>
-        <class>eu.etaxonomy.cdm.model.common.Figure</class>
         <class>eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl</class>
         <class>eu.etaxonomy.cdm.model.common.Group</class>
         <class>eu.etaxonomy.cdm.model.common.IdentifiableSource</class>

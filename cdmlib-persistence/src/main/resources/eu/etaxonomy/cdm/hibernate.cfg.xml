@@ -64,7 +64,6 @@
       <mapping class="eu.etaxonomy.cdm.model.common.DefinedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.Figure"/>
       <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
       <mapping class="eu.etaxonomy.cdm.model.common.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl"/>
@@ -128,7 +127,6 @@
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentation"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MediaRepresentationPart"/>
       <mapping class="eu.etaxonomy.cdm.model.media.MovieFile"/>
-      <mapping class="eu.etaxonomy.cdm.model.media.ReferencedMediaBase"/>
       <mapping class="eu.etaxonomy.cdm.model.media.Rights"/>
       <mapping class="eu.etaxonomy.cdm.model.media.RightsTerm"/>
       <!-- Molecular Package -->

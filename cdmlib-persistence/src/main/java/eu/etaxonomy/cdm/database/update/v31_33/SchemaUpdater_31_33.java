@@ -197,7 +197,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" WHERE sob.DTYPE = 'FieldObservation' ";
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
-
 		
 		//add kindOfUnit to SpecimenOrObservationBase
 		stepName = "Add kindOfUnit column to SpecimenOrObservationBase";
@@ -206,6 +205,10 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String relatedTable = "DefinedTermBase";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
 		stepList.add(step);
+
+		//TODO remove citation_id and citationmicroreference columns from Media table #2541
+		//first check if columns are always empty
+		
 		
 		return stepList;
 	}

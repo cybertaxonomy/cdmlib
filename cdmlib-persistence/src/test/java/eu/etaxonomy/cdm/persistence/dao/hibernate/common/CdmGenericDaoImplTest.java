@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -102,7 +101,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MovieFile;
-import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsTerm;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -336,7 +334,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				DefinedTermBase.class, 
 				Extension.class, 
 				ExtensionType.class, 
-				Figure.class, 
 				GrantedAuthorityImpl.class, 
 				Group.class, 
 				IdentifiableSource.class,
@@ -391,7 +388,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				MediaRepresentation.class, 
 				MediaRepresentationPart.class, 
 				MovieFile.class, 
-				ReferencedMediaBase.class, 
 				Rights.class, 
 				RightsTerm.class, 
 				DnaSample.class, 

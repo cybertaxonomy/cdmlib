@@ -80,7 +80,6 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	//Media
 	private boolean doMedia = true;
 	private boolean doMediaKey = true;
-	private boolean doFigure = true;
 	private boolean doPhylogenticTree = true;
 	
 	
@@ -133,7 +132,6 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 			//Media
 			doMedia = false;
 			doMediaKey = false;
-			doFigure = false;
 			doPhylogenticTree = false;
 			
 			
@@ -251,12 +249,6 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	}
 	public boolean isDoMediaKey() {
 		return doMediaKey;
-	}
-	public void setDoFigure(boolean doFigure) {
-		this.doFigure = doFigure;
-	}
-	public boolean isDoFigure() {
-		return doFigure;
 	}
 	public void setDoPhylogenticTree(boolean doPhylogenticTree) {
 		this.doPhylogenticTree = doPhylogenticTree;
