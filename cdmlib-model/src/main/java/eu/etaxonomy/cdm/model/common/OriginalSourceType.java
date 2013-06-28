@@ -40,7 +40,7 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	
 	//0
 	/**
-	 * Unknown Provenance is the type to be used if no information is available about the type
+	 * Unknown provenance is the type to be used if no information is available about the type
 	 * of activity that happened.
 	 *   
 	 */
@@ -102,6 +102,18 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	 */
 	@XmlEnumValue("Other")
 	Other(UUID.fromString("b7c4b7fe-0aef-428a-bb7b-9153a11bf845"), "Other"),
+
+	//1
+	/**
+	 * Primary Media Source describes the original source for any media file. 
+	 * E.g. a taxonomist may have used three books/articles/other references to gather information
+     *
+	 * This is a specification of PROV-O Primary Source 
+	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
+	 *   
+	 */
+	@XmlEnumValue("Primary Media Source")
+	PrimaryMediaSource(UUID.fromString("72be3615-a6da-4728-948a-b3c5797fa4bc"), "Primary Media Source"),
 
 	
 	;
