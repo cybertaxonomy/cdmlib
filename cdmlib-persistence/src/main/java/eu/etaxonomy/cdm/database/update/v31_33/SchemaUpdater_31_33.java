@@ -187,6 +187,18 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO add specimenOrObservation basis of record to SpecimenOrObservationBase
 		
+		//TODO update specimenOrObservationBase DTYPE with DefinedTerm where necessary
+
+
+		//TODO update DTYPE FieldObservation -> FieldUnit #3351
+		stepName = "Update FieldObservation -> FieldUnit";
+		query = " UPDATE SpecimenOrObservationBase sob " + 
+				" SET sob.DTYPE = 'FieldUnit' " +
+				" WHERE sob.DTYPE = 'FieldObservation' ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		
 		//add kindOfUnit to SpecimenOrObservationBase
 		stepName = "Add kindOfUnit column to SpecimenOrObservationBase";
 		tableName = "SpecimenOrObservationBase";
@@ -194,8 +206,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String relatedTable = "DefinedTermBase";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
 		stepList.add(step);
-
-				
+		
 		return stepList;
 	}
 
