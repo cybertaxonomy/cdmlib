@@ -703,7 +703,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Credit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTermBase.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DescriptionElementSource.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/EventBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Extension.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ExtensionType.java -text
@@ -767,6 +766,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CategoricalData.ja
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/CommonTaxonName.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionElementBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptionElementSource.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/DescriptiveSystemRole.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Feature.java -text

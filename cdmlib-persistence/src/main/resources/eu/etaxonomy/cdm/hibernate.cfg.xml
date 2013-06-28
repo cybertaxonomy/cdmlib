@@ -65,7 +65,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.Extension"/>
       <mapping class="eu.etaxonomy.cdm.model.common.ExtensionType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.IdentifiableSource"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.DescriptionElementSource"/>
+      <mapping class="eu.etaxonomy.cdm.model.description.DescriptionElementSource"/>
       <mapping class="eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Group"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Language"/>
