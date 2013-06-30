@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *  
  * @author a.mueller
  * @created 18.09.2009
- * @version 1.0
  */
 @XmlType(name = "DescriptionElementSource", propOrder = {
 	    "sourcedObj",
