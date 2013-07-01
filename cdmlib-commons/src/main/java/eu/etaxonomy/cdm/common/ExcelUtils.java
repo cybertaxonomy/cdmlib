@@ -64,7 +64,7 @@ public class ExcelUtils {
 	    		HSSFRow row;
 	    		HSSFCell cell;
 	
-	    		int rows; // No of rows
+	    		int rows; // Number of rows
 	    		rows = sheet.getPhysicalNumberOfRows();
 				if(logger.isDebugEnabled()) { logger.debug("Number of rows: " + rows); }
 	
@@ -131,7 +131,7 @@ public class ExcelUtils {
     }
 
 
-	private static String getCellValue(HSSFCell cell) {
+	public static String getCellValue(HSSFCell cell) {
 		try {
 			if (cell.getCellType() == HSSFCell.CELL_TYPE_STRING ){
 				return cell.getStringCellValue();
