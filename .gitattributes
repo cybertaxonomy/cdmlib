@@ -390,6 +390,12 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelRowBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelTaxonOrSpecimenImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelMapReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelRecordStream.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelToStreamConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitRow.java -text
