@@ -377,12 +377,6 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaVernacularRecord.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/DwcaZipExport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/IDwcaAreaRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/out/TermMapping.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelMapReader.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelRecordStream.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportConfigurator.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportState.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelToStreamConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportConfiguratorBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelImporterBase.java -text
@@ -550,7 +544,6 @@ cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMappingTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportIntegrationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
-cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
@@ -595,8 +588,6 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/description.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport-TestInput.xls -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
@@ -653,7 +644,6 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/varanusSDD_RatingExample3_c
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/varanusSDD_RatingExample_mod.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/sdd/wrongSDD.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
-cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/.~lock.ExcelSpecimenImportExampleTest-input.xls# -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest.testResultSet-result.xml -text
