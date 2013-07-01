@@ -596,6 +596,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport-TestInput.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportTest.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input-original.xls -text
