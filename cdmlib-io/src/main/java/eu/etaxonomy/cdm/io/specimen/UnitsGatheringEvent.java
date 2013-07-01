@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
-//import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
+import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -81,20 +81,6 @@ public class UnitsGatheringEvent {
         //            this.setTeam(team, config);
         //        }
     }
-
-//    public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
-//            Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
-//        if (!StringUtils.isEmpty(locality)) {
-//            this.setLocality(termService, locality, null);
-//        }
-//                this.setCoordinates(longitude, latitude);
-//        if (!StringUtils.isEmpty(collectorName)) {
-//            this.setCollector(collectorName, config, agentService);
-//        }
-//        //        if (!team.isEmpty()) {
-//        //            this.setTeam(team, config);
-//        //        }
-//    }
 
     /*
      * Constructor
@@ -255,24 +241,24 @@ public class UnitsGatheringEvent {
 
     }
 
-//    /*
-//     * Create a new collector or collector's team
-//     * @param: collectorNames: the list of names to add as collector/collectorTeam
-//     * USED - create each time a new Collector
-//     */
-//    public void setCollector(String collectorName, TaxonXImportConfigurator config, IAgentService agentService){
-//        //        System.out.println("collectors : "+collectorNames.toString());
-//        Person collector;
-//        collector = Person.NewInstance();
-//        collector.setTitleCache(collectorName, true);
-//        Person collector_db = config.getPersons().get(collector.getTitleCache());
-//        if (collector_db == null) {
-//            UUID uuid = agentService.saveOrUpdate(collector);
-//            collector_db=(Person) agentService.find(uuid);
-//        }
-//        this.gatheringEvent.setCollector(collector_db);
-//
-//    }
+    /*
+     * Create a new collector or collector's team
+     * @param: collectorNames: the list of names to add as collector/collectorTeam
+     * USED - create each time a new Collector
+     */
+    public void setCollector(String collectorName, TaxonXImportConfigurator config, IAgentService agentService){
+        //        System.out.println("collectors : "+collectorNames.toString());
+        Person collector;
+        collector = Person.NewInstance();
+        collector.setTitleCache(collectorName, true);
+        Person collector_db = config.getPersons().get(collector.getTitleCache());
+        if (collector_db == null) {
+            UUID uuid = agentService.saveOrUpdate(collector);
+            collector_db=(Person) agentService.find(uuid);
+        }
+        this.gatheringEvent.setCollector(collector_db);
+
+    }
 
 
     /*
