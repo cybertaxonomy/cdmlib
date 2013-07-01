@@ -26,6 +26,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -47,6 +48,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
 	IOccurrenceService occurrenceService;
+
+	@SpringBeanByType
+	ITermService termService;
 
 
 	private IImportConfigurator configurator;
@@ -95,6 +99,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
+		assertNotNull("term service should not be null", termService);
 	}
 
 //	@Test
@@ -140,7 +145,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //            // TODO Auto-generated catch block
 //            e.printStackTrace();
 //        }
-
 
 
     }

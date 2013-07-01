@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -47,10 +47,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 @Component
 public class DwcaTypesExport extends DwcaExportBase {
 	private static final Logger logger = Logger.getLogger(DwcaTypesExport.class);
-	
+
 	private static final String ROW_TYPE = "http://rs.gbif.org/terms/1.0/TypesAndSpecimen";
 	private static final String fileName = "typesAndSpecimen.txt";
-	
+
 	/**
 	 * Constructor
 	 */
@@ -62,7 +62,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 	/** Retrieves data from a CDM DB and serializes them CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -74,19 +74,19 @@ public class DwcaTypesExport extends DwcaExportBase {
 
 		PrintWriter writer = null;
 		try {
-			
+
 			writer = createPrintWriter(fileName, state);
 			DwcaMetaDataRecord metaRecord = new DwcaMetaDataRecord(! IS_CORE, fileName, ROW_TYPE);
 			state.addMetaRecord(metaRecord);
 
-			
+
 			List<TaxonNode> allNodes =  getAllNodes(null);
-			
+
 			for (TaxonNode node : allNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				
+
 				//TODO use API methods to retrieve all related specimen
-				
+
 				//individual associations
 				Set<TaxonDescription> descriptions = taxon.getDescriptions();
 				for (TaxonDescription description : descriptions){
@@ -101,20 +101,20 @@ public class DwcaTypesExport extends DwcaExportBase {
 						}
 					}
 				}
-				
-				//type specimen 
+
+				//type specimen
 				NonViralName<?> nvn = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				handleTypeName(writer, taxon, nvn, metaRecord, config);
 				for (Synonym synonym : taxon.getSynonyms()){
 					handleTypeName(writer, synonym, nvn, metaRecord, config);
 				}
-				
+
 				//FIXME
 				//Determinations
-				
-				
+
+
 				writer.flush();
-				
+
 			}
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
@@ -135,7 +135,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 	 * @param writer
 	 * @param taxon
 	 * @param nvn
-	 * @param config 
+	 * @param config
 	 * @return
 	 */
 	private Set<TypeDesignationBase> handleTypeName(PrintWriter writer, TaxonBase<?> taxonBase, NonViralName<?> nvn, DwcaMetaDataRecord metaRecord, DwcaTaxExportConfigurator config) {
@@ -149,7 +149,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 		}
 		return designations;
 	}
-	
+
 
 	private boolean handleSpecimen(DwcaTypesRecord record, IndividualsAssociation individualsAssociation, TypeDesignationBase<?> designation, TaxonBase<?> taxonBase, DwcaTaxExportConfigurator config) {
 		TypeDesignationStatusBase<?> status = null;
@@ -163,19 +163,19 @@ public class DwcaTypesExport extends DwcaExportBase {
 		if (facade == null){
 			return false;
 		}
-		
+
 		record.setId(taxonBase.getId());
 		record.setUuid(taxonBase.getUuid());
 		record.setBibliographicCitation(facade.getTitleCache());
 		record.setTypeStatus(status);
 		record.setTypeDesignatedBy( (designation == null || designation.getCitation()==null)? null: designation.getCitation().getTitleCache());
-		
+
 		TaxonNameBase<?,?> scientificName = getScientificName(facade);
 		if (scientificName != null){
 			record.setScientificName(scientificName.getTitleCache());
 			record.setTaxonRank(scientificName.getRank());
 		}
-		
+
 		record.setOccurrenceId(facade.innerDerivedUnit());
 		Collection collection = facade.getCollection();
 		if (collection != null){
@@ -189,25 +189,41 @@ public class DwcaTypesExport extends DwcaExportBase {
 		record.setSex(facade.getSex());
 		record.setRecordedBy(facade.getCollector());
 		//TODO ???
-		record.setSource(getSources(facade.innerDerivedUnit(), config));
+
+		String source2 = "";
+		if (individualsAssociation!=null) {
+            source2 = getSources2(individualsAssociation.getSources(), config);
+        }
+
+		record.setSource(getSources3(facade.innerDerivedUnit(), config));
+		record.setDescriptionSource(source2);
+
 		record.setEventDate(facade.getGatheringPeriod());
 		//TODO missing
 		record.setVerbatimLabel(null);
 		if (facade.getExactLocation() != null){
 			if (facade.getExactLocation().getLongitude() != null){
-				record.setVerbatimLongitude(facade.getExactLocation().getLongitudeSexagesimal().toString());
+//				record.setVerbatimLongitude(facade.getExactLocation().getLongitudeSexagesimal().toString());
+			    record.setVerbatimLongitude(facade.getExactLocation().getLongitude().toString());
 			}
 			if (facade.getExactLocation().getLatitude() != null){
-				record.setVerbatimLatitude(facade.getExactLocation().getLatitudeSexagesimal().toString());
+//				record.setVerbatimLatitude(facade.getExactLocation().getLatitudeSexagesimal().toString());
+			    record.setVerbatimLatitude(facade.getExactLocation().getLatitude().toString());
 			}
+			if(facade.getExactLocation().getErrorRadius() != null) {
+                record.setCoordinatesPrecisionOrError(facade.getExactLocation().getErrorRadius().toString());
+            }
+			if(facade.getExactLocation().getReferenceSystem() != null) {
+                record.setCoordinatesSystem(facade.getExactLocation().getReferenceSystem().toString());
+            }
 		}
 		return true;
 	}
-	
+
 	private TaxonNameBase<?,?> getScientificName(DerivedUnitFacade facade) {
 		Set<DeterminationEvent> detEvents = facade.getDeterminations();
 		for (DeterminationEvent detEvent : detEvents){
-			if (detEvent.getPreferredFlag()== true){
+			if (detEvent.getPreferredFlag()== true || detEvents.size()==1){
 				return detEvent.getTaxon().getName();
 			}
 		}
@@ -229,7 +245,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 				String message = "DerivedUnit is too complex to be handled by facade based darwin core archive export";
 				logger.warn(message);
 				//TODO handle empty records
-				return null; 
+				return null;
 			}
 		}else{
 			return null;
@@ -243,7 +259,7 @@ public class DwcaTypesExport extends DwcaExportBase {
 			String message = "Non DerivedUnit specimen can not yet be handled by this export";
 			logger.warn(message);
 			//TODO handle empty records
-			return null; 
+			return null;
 		}else{
 			DerivedUnitBase<?> derivedUnit = CdmBase.deproxy(specimen, DerivedUnitBase.class);
 			try {
@@ -252,9 +268,9 @@ public class DwcaTypesExport extends DwcaExportBase {
 				String message = "DerivedUnit is too complex to be handled by facade based darwin core archive export";
 				logger.warn(message);
 				//TODO handle empty records
-				return null; 
+				return null;
 			}
-			
+
 		}
 		return facade;
 	}
@@ -271,5 +287,5 @@ public class DwcaTypesExport extends DwcaExportBase {
 	protected boolean isIgnore(DwcaTaxExportState state) {
 		return ! state.getConfig().isDoTypesAndSpecimen();
 	}
-	
+
 }

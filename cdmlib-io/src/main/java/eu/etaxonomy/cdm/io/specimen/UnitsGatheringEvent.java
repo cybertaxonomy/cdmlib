@@ -67,6 +67,20 @@ public class UnitsGatheringEvent {
             this.setTeam(team, config);
         }
     }
+//
+    public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
+            Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
+        if (!StringUtils.isEmpty(locality)) {
+            this.setLocality(termService, locality, null);
+        }
+                this.setCoordinates(longitude, latitude);
+        if (!StringUtils.isEmpty(collectorName)) {
+            this.setCollector(collectorName, config, agentService);
+        }
+        //        if (!team.isEmpty()) {
+        //            this.setTeam(team, config);
+        //        }
+    }
 
 //    public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
 //            Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
