@@ -67,7 +67,7 @@ public class AlgaTerraSiteImagesImport  extends AlgaTerraImageImportBase {
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery =    
 						
-				" SELECT si.*, si.Comment as FigurePhrase, si.PictureFile as fileName, si.Path as filePath " +
+				" SELECT si.*, si.Comment as FigurePhrase, si.Picture as fileName, si.Path as filePath " +
 	            " FROM SiteImages si  " 
 	            + 	" WHERE (si.SiteID IN (" + ID_LIST_TOKEN + ")  )"  
 	            + " ORDER BY EcoFactFk ";

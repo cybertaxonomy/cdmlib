@@ -115,7 +115,7 @@ public class AlgaTerraTypeImagesImport  extends AlgaTerraImageImportBase {
 					//source ref
 					Reference<?> sourceRef = state.getTransactionalSourceReference();
 				
-					DerivedUnitBase derivedUnit = typeSpecimenMap.get(String.valueOf(typeSpecimenFk));
+					DerivedUnitBase<?> derivedUnit = typeSpecimenMap.get(String.valueOf(typeSpecimenFk));
 					
 					if (derivedUnit == null){
 						logger.warn("Could not find type specimen (" + typeSpecimenFk +") for specimen figure " +  figureId);

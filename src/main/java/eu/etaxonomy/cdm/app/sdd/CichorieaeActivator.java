@@ -73,7 +73,7 @@ public class CichorieaeActivator {
 			sddImportConfigurator.setCheck(check);
 			sddImportConfigurator.setDbSchemaValidation(hbm2dll);
 			
-			sddImportConfigurator.setDoMatchTaxa(doMatchTaxa);
+			sddImportConfigurator.setReuseExistingTaxaWhenPossible(doMatchTaxa);
 			
 	
 			// invoke import

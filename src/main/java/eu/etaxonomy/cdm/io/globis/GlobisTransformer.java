@@ -22,8 +22,8 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
-import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 
 /**
  * @author a.mueller
@@ -34,49 +34,14 @@ public final class GlobisTransformer extends InputTransformerBase {
 	private static final Logger logger = Logger.getLogger(GlobisTransformer.class);
 	
 
+	//marker types
+	public static final UUID uuidCheckedMarkerType = UUID.fromString("f2a7926f-def1-49a6-b642-9b81e6b1e35c");
+	public static final UUID uuidOldRecordMarkerType = UUID.fromString("8616edc5-00d4-40ca-aca4-d48ec32231e9");
+	public static final UUID uuidNotAvailableMarkerType = UUID.fromString("6931e584-6fc2-44ab-9084-e6452f8cd5d1");
+	
 	//extension types
-//	public static final UUID uuidEditor = UUID.fromString("07752659-3018-4880-bf26-41bb396fbf37");
+	public static final UUID uuidExtTypeNotAvailableReason = UUID.fromString("d7dd5632-8c65-4058-b804-d1291560ac4c");
 	
-	
-	//language uuids
-	
-	
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNameTypeDesignationStatusByKey(java.lang.String)
-	 */
-	@Override
-	public NameTypeDesignationStatus getNameTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
-		if (key == null){
-			return null;
-		}
-		Integer intDesignationId = Integer.valueOf(key);
-		switch (intDesignationId){
-			case 1: return NameTypeDesignationStatus.ORIGINAL_DESIGNATION();
-			case 2: return NameTypeDesignationStatus.SUBSEQUENT_DESIGNATION();
-			case 3: return NameTypeDesignationStatus.MONOTYPY();
-			default: 
-				String warning = "Unknown name type designation status id " + key;
-				logger.warn(warning);
-				return null;
-		}
-	}
-
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getNameTypeDesignationStatusUuid(java.lang.String)
-	 */
-	@Override
-	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException {
-		//nott needed
-		return super.getNameTypeDesignationStatusUuid(key);
-	}
-
-
 	public NamedArea getNamedAreaByKey(String area)  {
 		Set<String> unhandledCountries = new HashSet<String>();
 		
@@ -222,24 +187,17 @@ public final class GlobisTransformer extends InputTransformerBase {
 		}else if (area.equals("Dominica")){return WaterbodyOrCountry.DOMINICACOMMONWEALTHOF();
 		}else if (area.equals("Liechtenstein")){return WaterbodyOrCountry.LIECHTENSTEINPRINCIPALITYOF();
 		}else if (area.matches("B(y)?elarus")){return WaterbodyOrCountry.BELARUS();
-		
-		
-		
-		
+		}else if (area.matches("United States: Alaska")){ return TdwgArea.getAreaByTdwgAbbreviation("ASK");
 		
 		}else{	
 			if (unhandledCountries.contains(area)){
-//				logger.warn("Unhandled country '" + area + "' replaced by null" );
+				logger.warn("Unhandled country '" + area + "' replaced by null" );
 				return null;
 			}
-//			String warning = "New language abbreviation " + area;
-//			logger.warn(warning);
 			return null;
-//			throw new IllegalArgumentException(warning);
+
 		}
-		
-		
-		
+
 	}
 	
 	/* (non-Javadoc)
@@ -273,9 +231,24 @@ public final class GlobisTransformer extends InputTransformerBase {
 	public UUID getExtensionTypeUuid(String key)
 			throws UndefinedTransformerMethodException {
 		if (key == null){return null;
-//		}else if (key.equalsIgnoreCase("recent only")){return uuidRecentOnly;
+		}else if (key.equalsIgnoreCase("not available reason")){return uuidExtTypeNotAvailableReason;
 //		}else if (key.equalsIgnoreCase("recent + fossil")){return uuidRecentAndFossil;
 //		}else if (key.equalsIgnoreCase("fossil only")){return uuidFossilOnly;
+		}
+		return null;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getExtensionTypeUuid(java.lang.String)
+	 */
+	@Override
+	public UUID getMarkerTypeUuid(String key)
+			throws UndefinedTransformerMethodException {
+		if (key == null){return null;
+		}else if (key.equalsIgnoreCase("old record")){return uuidOldRecordMarkerType;
+		}else if (key.equalsIgnoreCase("checked")){return uuidCheckedMarkerType;
+		}else if (key.equalsIgnoreCase("not available")){return uuidNotAvailableMarkerType;
+		
 		}
 		return null;
 	}

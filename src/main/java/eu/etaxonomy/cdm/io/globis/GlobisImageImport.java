@@ -36,10 +36,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
@@ -48,7 +44,6 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 /**
@@ -60,14 +55,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 	private static final Logger logger = Logger.getLogger(GlobisImageImport.class);
 	
-	private int modCount = 10000;
+	private int modCount = 1000;
 
 	private UUID uuidArtNonSpecTaxMarkerType = UUID.fromString("be362085-0f5b-4314-96d1-78b9b129ef6d") ;
 	private static final String pluralString = "images";
 	private static final String dbTableName = "Einzelbilder";
 	private static final Class cdmTargetClass = Media.class;  //not needed
 	
-	private static final String IMAGE_NAMESPACE = "Einzelbilder";
 	private static UUID uuidGartRef = UUID.fromString("af85470f-6e54-4304-9d29-fd117cd56161"); 
 	
 	public GlobisImageImport(){
@@ -116,10 +110,10 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 		
 		Set<Media> objectsToSave = new HashSet<Media>();
 		
-		Map<String, Specimen> typeMap = (Map<String, Specimen>) partitioner.getObjectMap(GlobisSpecTaxImport.TYPE_NAMESPACE);
+		Map<String, Specimen> typeMap = (Map<String, Specimen>) partitioner.getObjectMap(TYPE_NAMESPACE);
 		
 		Map<String, Taxon> taxonMap = (Map<String, Taxon>) partitioner.getObjectMap(TAXON_NAMESPACE);
-		Map<String, ZoologicalName> specTaxNameMap = (Map<String, ZoologicalName>) partitioner.getObjectMap(GlobisSpecTaxImport.SPEC_TAX_NAMESPACE);
+		Map<String, ZoologicalName> specTaxNameMap = (Map<String, ZoologicalName>) partitioner.getObjectMap(SPEC_TAX_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 		
@@ -192,7 +186,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 					
 					//GART id (specimenID)
 					if (isNotBlank(specimenId)){
-						specimen.addSource(specimenId, "", refGart, null);
+						specimen.addSource(specimenId, "specimenId", refGart, null);
 					}
 					//bemerkungen
 					if (isNotBlank(bemerkungen)){
@@ -294,7 +288,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 
 	private String getNameFromFileOs(ResultSet rs) throws SQLException {
 		String fileOS = rs.getString("file OS");
-		Pattern pattern = Pattern.compile("(.+)(_...._..\\.jpg)");
+		Pattern pattern = Pattern.compile("(.+)(_.{4}(-.{1,3})?(_Nr\\d{3,4})?_.{2,3}\\.jpg)");
 		Matcher matcher = pattern.matcher(fileOS);
 		if (matcher.matches()){
 			String match = matcher.group(1);
@@ -433,22 +427,23 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 			
 			while (rs.next()){
 				handleForeignKey(rs, currSpecIdSet, "SpecCurrspecID");
+				handleForeignKey(rs, specTaxIdSet, "spectaxID");
 				handleTypeKey(rs, typeIdSet, "spectaxID", "copyright");
 			}
 			
 			//specTax map
-			nameSpace = GlobisSpecTaxImport.SPEC_TAX_NAMESPACE;
-			cdmClass = TaxonBase.class;
+			nameSpace = SPEC_TAX_NAMESPACE;
+			cdmClass = ZoologicalName.class;
 			idSet = specTaxIdSet;
-			Map<String, TaxonBase> specTaxMap = (Map<String, TaxonBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, specTaxMap);
+			Map<String, ZoologicalName> specTaxNameMap = (Map<String, ZoologicalName>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, specTaxNameMap);
 
-			//taxon map
-			nameSpace = TAXON_NAMESPACE;
-			cdmClass = Taxon.class;
-			idSet = currSpecIdSet;
-			Map<String, Taxon> taxonMap = (Map<String, Taxon>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, taxonMap);
+//			//taxon map
+//			nameSpace = TAXON_NAMESPACE;
+//			cdmClass = Taxon.class;
+//			idSet = currSpecIdSet;
+//			Map<String, Taxon> taxonMap = (Map<String, Taxon>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+//			result.put(nameSpace, taxonMap);
 
 			
 			//type map
@@ -465,8 +460,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 		return result;
 	}
 	
-	private void handleTypeKey(ResultSet rs, Set<String> idSet, String specTaxIdAttr, String copyrightAttr)
-			throws SQLException {
+	private void handleTypeKey(ResultSet rs, Set<String> idSet, String specTaxIdAttr, String copyrightAttr) throws SQLException {
 		Integer specTaxId = nullSafeInt(rs, specTaxIdAttr);
 		if (specTaxId != null){
 			String copyright = rs.getString(copyrightAttr);

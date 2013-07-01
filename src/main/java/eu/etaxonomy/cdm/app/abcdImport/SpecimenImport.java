@@ -30,7 +30,8 @@ public class SpecimenImport {
     //final static String xmlSource = "D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\specimen\\Picris pauciflora\\B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
 //    final static String xmlSource = "/home/pkelbert/workspace/proibiosphere/cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 
-    final static String xmlSource = "/home/pkelbert/Bureau/CLD33-a.xml";
+    final static String xmlSource = "/home/pkelbert/Documents/Proibiosphere/Presentations/Demo/ABCD/calvum.xml";
+//    final static String xmlSource = "/home/pkelbert/workspacetrunk/cdmlib/cdmlib-io/target/test-classes/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 
 
     static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
@@ -45,7 +46,6 @@ public class SpecimenImport {
 
         URI source;
         try {
-   //         org.h2.tools.Server.createWebServer(new String[]{}).start();
             URI uri = new File(xmlSource).toURI();
             source = new URI(uri.toString());
             System.out.println(source.toString());
@@ -54,17 +54,19 @@ public class SpecimenImport {
             ICdmDataSource destination = cdmDestination;
             Abcd206ImportConfigurator specimenImportConfigurator = Abcd206ImportConfigurator.NewInstance(source,  destination);
 
-            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
+//            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
             specimenImportConfigurator.setSourceSecId("specimen");
             specimenImportConfigurator.setCheck(check);
             specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
-            specimenImportConfigurator.setDoAutomaticParsing(true);
-            specimenImportConfigurator.setReUseExistingMetadata(true);
+            specimenImportConfigurator.setParseNameAutomatically(false);
+            specimenImportConfigurator.setReuseExistingMetadata(true);
+            specimenImportConfigurator.reuseExistingDescriptiveGroups(false);
 
-            specimenImportConfigurator.setDoMatchTaxa(true);
-            specimenImportConfigurator.setReUseTaxon(true);
+            specimenImportConfigurator.setReuseExistingTaxaWhenPossible(true);
 
-            specimenImportConfigurator.setDoCreateIndividualsAssociations(true);
+            specimenImportConfigurator.setAddIndividualsAssociationsSuchAsSpecimenAndObservations(true);
+            specimenImportConfigurator.setUseClassification(true);
+            specimenImportConfigurator.setInteractWithUser(true);
 
             specimenImportConfigurator.setSourceReference(null);
             specimenImportConfigurator.setTaxonReference(null);

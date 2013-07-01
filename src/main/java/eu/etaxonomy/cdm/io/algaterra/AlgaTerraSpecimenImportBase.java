@@ -53,7 +53,7 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	public static final String ECO_FACT_DERIVED_UNIT_NAMESPACE = "EcoFact_DerivedUnit";
 	public static final String TYPE_SPECIMEN_FIELD_OBSERVATION_NAMESPACE = "TypeSpecimen_FieldObservation";
 	public static final String TYPE_SPECIMEN_DERIVED_UNIT_NAMESPACE = "TypeSpecimen_DerivedUnit";
-	public static final String FACT_ECOLOGY_NAMESPACE = "Fact(Ecology)";
+	public static final String FACT_ECOLOGY_NAMESPACE = "Fact (Ecology)";
 	
 	
 	public static final String TERMS_NAMESPACE = "ALGA_TERRA_TERMS";

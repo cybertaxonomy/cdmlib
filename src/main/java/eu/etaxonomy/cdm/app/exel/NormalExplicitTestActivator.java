@@ -66,7 +66,7 @@ public class NormalExplicitTestActivator {
 		config.setClassificationUuid(treeUuid);
 		config.setSourceSecId(sourceSecId);
 		
-		config.setDoMatchTaxa(doMatchTaxa);
+		config.setReuseExistingTaxaWhenPossible(doMatchTaxa);
 		
 		config.setCheck(check);
 		config.setDbSchemaValidation(hbm2dll);

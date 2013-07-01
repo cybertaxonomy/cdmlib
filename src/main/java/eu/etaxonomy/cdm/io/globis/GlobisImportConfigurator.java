@@ -60,6 +60,7 @@ public class GlobisImportConfigurator extends DbImportConfiguratorBase<GlobisImp
 	//			, ErmsReferenceImport.class
 				, GlobisCurrentSpeciesImport.class
 				, GlobisSpecTaxImport.class
+				, GlobisCommonNameImport.class
 				, GlobisImageImport.class
 		};	
 	}
@@ -161,8 +162,5 @@ public class GlobisImportConfigurator extends DbImportConfiguratorBase<GlobisImp
 	public boolean isDoReadMediaData() {
 		return doReadMediaData;
 	}
-
-
-	
 
 }

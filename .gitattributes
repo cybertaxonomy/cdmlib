@@ -30,6 +30,8 @@ src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/NormalExplicitActivator.java
 src/main/java/eu/etaxonomy/cdm/app/excelImport/taxa/UseSummaryActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/exel/NormalExplicitTestActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/globis/GlobisActivator.java -text
+src/main/java/eu/etaxonomy/cdm/app/i4life/col/ColDwcaExportActivator.java -text
+src/main/java/eu/etaxonomy/cdm/app/i4life/col/ColDwcaImportActivator.java -text
 src/main/java/eu/etaxonomy/cdm/app/images/AbstractImageImporter.java -text
 src/main/java/eu/etaxonomy/cdm/app/images/ImageImportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/app/images/ImageImportState.java -text
@@ -127,13 +129,13 @@ src/main/java/eu/etaxonomy/cdm/io/cyprus/CyprusImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/cyprus/CyprusRow.java -text
 src/main/java/eu/etaxonomy/cdm/io/cyprus/CyprusTransformer.java -text
 src/main/java/eu/etaxonomy/cdm/io/cyprus/CyprusUserImport.java -text
+src/main/java/eu/etaxonomy/cdm/io/globis/GlobisCommonNameImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisCurrentSpeciesImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImageImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisReferenceImport.java -text
-src/main/java/eu/etaxonomy/cdm/io/globis/GlobisReferenceImport_Mapping_OLD.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisSpecTaxImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/GlobisTransformer.java -text
 src/main/java/eu/etaxonomy/cdm/io/globis/validation/GlobisCurrentSpeciesImportValidator.java -text

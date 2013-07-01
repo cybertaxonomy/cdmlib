@@ -191,6 +191,7 @@ public class AlgaTerraPictureImport  extends AlgaTerraImageImportBase {
 			
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "RIdentifier");
+				handleForeignKey(rs, specimenIdSet, "FactFk");
 			}
 			
 			//taxon map

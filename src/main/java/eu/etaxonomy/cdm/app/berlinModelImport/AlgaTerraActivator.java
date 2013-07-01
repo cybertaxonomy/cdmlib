@@ -51,7 +51,8 @@ public class AlgaTerraActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql();
 
-//	static final ICdmDataSource cdmDestination s= CdmDestinations.cdm_algaterra_preview();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_algaterra_preview();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_algaterra_production();
 	
 	
 	static final UUID treeUuid = UUID.fromString("1f617402-78dc-4bf1-ac77-d260600a8879");

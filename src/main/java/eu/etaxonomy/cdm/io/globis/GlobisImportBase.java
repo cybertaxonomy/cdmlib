@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
@@ -46,7 +47,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImportBase<GlobisImportConfigurator, GlobisImportState> implements ICdmIO<GlobisImportState>, IPartitionedIO<GlobisImportState> {
 	private static final Logger logger = Logger.getLogger(GlobisImportBase.class);
@@ -58,6 +58,9 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	protected static final String REFERENCE_NAMESPACE = "Literatur";
 	protected static final String TAXON_NAMESPACE = "current_species";
 	protected static final String COLLECTION_NAMESPACE = "Collection";
+	protected static final String IMAGE_NAMESPACE = "Einzelbilder";
+	protected static final String SPEC_TAX_NAMESPACE = "specTax";
+	protected static final String TYPE_NAMESPACE = "specTax.SpecTypeDepository";
 	
 	private String pluralString;
 	private String dbTableName;
@@ -87,7 +90,7 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 
 		int recordsPerTransaction = config.getRecordsPerTransaction();
 		try{
-			ResultSetPartitioner partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
+			ResultSetPartitioner<GlobisImportState> partitioner = ResultSetPartitioner.NewInstance(source, strIdQuery, strRecordQuery, recordsPerTransaction);
 			while (partitioner.nextPartition()){
 				partitioner.doPartition(this, state);
 			}
@@ -104,7 +107,7 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	 * @param authorAndYear
 	 * @param zooName
 	 */
-	protected void handleAuthorAndYear(String authorAndYear, ZoologicalName zooName) {
+	protected void handleAuthorAndYear(String authorAndYear, ZoologicalName zooName, Integer id) {
 		if (isBlank(authorAndYear)){
 			return;
 		}
@@ -117,6 +120,9 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 			if (authorAndYear.contains("?")){
 				authorAndYear = authorAndYear.replace("H?bner", "H\u00fcbner");
 				authorAndYear = authorAndYear.replace("Oberth?r", "Oberth\u00fcr");
+				authorAndYear = authorAndYear.replace("M?n?tri?s","M\u00E9n\u00E9tri\u00E9s");
+				authorAndYear = authorAndYear.replace("Schifferm?ller","Schifferm\u00fcller");
+				
 				//TODO remove
 				authorAndYear = authorAndYear.replace("?", "");
 				
@@ -128,7 +134,7 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 			}
 			
 		} catch (StringNotParsableException e) {
-			logger.warn("Author could not be parsed: " + authorAndYear);
+			logger.warn("Author could not be parsed: " + authorAndYear + " for id "  +id);
 			zooName.setAuthorshipCache(authorAndYear, true);
 		}
 	}
@@ -139,11 +145,11 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	 * @param countryStr
 	 * @return
 	 */
-	protected WaterbodyOrCountry getCountry(GlobisImportState state, String countryStr) {
-		WaterbodyOrCountry country = WaterbodyOrCountry.getWaterbodyOrCountryByLabel(countryStr);
+	protected NamedArea getCountry(GlobisImportState state, String countryStr) {
+		NamedArea country = WaterbodyOrCountry.getWaterbodyOrCountryByLabel(countryStr);
 		if (country == null){
 			try {
-				country = (WaterbodyOrCountry)state.getTransformer().getNamedAreaByKey(countryStr);
+				country = (NamedArea)state.getTransformer().getNamedAreaByKey(countryStr);
 			} catch (UndefinedTransformerMethodException e) {
 				e.printStackTrace();
 			}

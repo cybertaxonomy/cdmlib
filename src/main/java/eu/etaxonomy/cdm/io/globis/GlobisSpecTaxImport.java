@@ -29,13 +29,15 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.globis.validation.GlobisSpecTaxaImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -67,8 +69,6 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	private static final String pluralString = "taxa";
 	private static final String dbTableName = "specTax";
 	private static final Class cdmTargetClass = Reference.class;
-	public static final String SPEC_TAX_NAMESPACE = dbTableName;
-	public static final String TYPE_NAMESPACE = dbTableName + ".SpecTypeDepository";
 	
 	private static UUID uuidCitedTypeLocality = UUID.fromString("ca431e0a-84ec-4828-935f-df4c8f5cf880");
 	private static UUID uuidCitedTypeMaterial = UUID.fromString("8395021a-e596-4a55-9794-8c03aaad9e16");
@@ -137,6 +137,8 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
         		Integer acceptedTaxonId = nullSafeInt(rs, "SpecCurrspecID");
         		String specSystaxRank = rs.getString("SpecSystaxRank");
         		
+        		//ignore: CountryDummy, currentSpecies, DepositoryDisplay, DepositoryDummy, ReferenceDisplay, SpecDescriptionImageFile, all *Valid*
+        		
 				try {
 					
 					//source ref
@@ -189,20 +191,26 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 						objectsToSave.add(acceptedTaxon); 
 					}
 					
+					//makeMarker1(state, rs, name);   //ignore!
+					
+					makeNotAvailable(state, rs, name);
+					
 					//SpecCitedTypeLocality
 					String citedTypeLocality = rs.getString("SpecCitedTypeLocality");
 					if (isNotBlank(citedTypeLocality)){
-						ExtensionType exTypeCitedTypeLoc = getExtensionType(state, uuidCitedTypeLocality, "Type locality as cited in original description", "Type locality as cited in original description", null, ExtensionType.DOI().getVocabulary());
-						name.addExtension(citedTypeLocality, exTypeCitedTypeLoc);
+//						ExtensionType exTypeCitedTypeLoc = getExtensionType(state, uuidCitedTypeLocality, "Type locality as cited in original description", "Type locality as cited in original description", null, ExtensionType.DOI().getVocabulary());
+//						name.addExtension(citedTypeLocality, exTypeCitedTypeLoc);
+						addNameDescription(state, name, uuidCitedTypeLocality, citedTypeLocality, "Type locality as cited in original description");
 					}
 
 					//SpecCitedTypeMaterial
 					String citedTypeMaterial = rs.getString("SpecCitedTypeMaterial");
 					if (isNotBlank(citedTypeMaterial)){
-						ExtensionType exTypeCitedTypeLoc = getExtensionType(state, uuidCitedTypeMaterial, "Type material as cited in original description", "Type locality as cited in original description", null, ExtensionType.DOI().getVocabulary());
+						ExtensionType exTypeCitedTypeLoc = getExtensionType(state, uuidCitedTypeMaterial, "Type material as cited in original description", "Type material as cited in original description", null, ExtensionType.DOI().getVocabulary());
 						name.addExtension(citedTypeLocality, exTypeCitedTypeLoc);
 					}
 
+					name.addSource(String.valueOf(specTaxId), SPEC_TAX_NAMESPACE, state.getTransactionalSourceReference(), null);
 					
 					namesToSave.add(name);
 					
@@ -223,6 +231,80 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 			logger.error("Exception: " +  e);
 			return false;
 		}
+	}
+
+
+	private void makeNotAvailable(GlobisImportState state, ResultSet rs, ZoologicalName name) throws SQLException {
+		String notAvailableStr = rs.getString("SpecNotAvailable");
+		try {
+			if (isNotBlank(notAvailableStr)){
+				if (notAvailableStr.contains("not available") ){ 
+					UUID uuidNotAvailableMarkerType = state.getTransformer().getMarkerTypeUuid("not available");
+					
+					MarkerType markerType = getMarkerType(state, uuidNotAvailableMarkerType, "not available", "not available", null);
+					name.addMarker(Marker.NewInstance(markerType, true));
+				}
+			}
+		} catch (UndefinedTransformerMethodException e) {
+			e.printStackTrace();
+		}
+		//Not available reason
+		//TODO make it a vocabulary
+		String notAvailableReason = rs.getString("SpecNotAvailableReason");
+		if (isNotBlank(notAvailableReason)){
+			UUID uuidNotAvailableReason;
+			try {
+				uuidNotAvailableReason = state.getTransformer().getExtensionTypeUuid("not available reason");
+				ExtensionType notAvailableReasonExtType = getExtensionType(state, uuidNotAvailableReason, "Not available reason", "Not available reason", null, null);
+				name.addExtension(notAvailableReason, notAvailableReasonExtType);
+			} catch (UndefinedTransformerMethodException e) {
+				e.printStackTrace();
+			} 
+		}
+		
+	}
+
+
+
+
+	
+	/**
+	 * This method is not used anymore as according to Alexander Marker1 should be ignored.
+	 * @param state
+	 * @param rs
+	 * @param name
+	 * @throws SQLException
+	 */
+	private void makeMarker1(GlobisImportState state, ResultSet rs, ZoologicalName name) throws SQLException {
+		String marker1Str = rs.getString("Marker1");
+		try {
+			if (isNotBlank(marker1Str)){
+				marker1Str = marker1Str.trim();
+				if (marker1Str.contains("checked") || marker1Str.contains("berpr") ){ //überprüft
+					UUID uuidCheckedMarkerType;
+						uuidCheckedMarkerType = state.getTransformer().getMarkerTypeUuid("checked");
+					
+					MarkerType markerType = getMarkerType(state, uuidCheckedMarkerType, "checked", "checked", null);
+					name.addMarker(Marker.NewInstance(markerType, true));
+				}
+				if (marker1Str.contains("old record") || marker1Str.contains("alte Angabe") ){
+					UUID uuidOldRecordMarkerType = state.getTransformer().getMarkerTypeUuid("old record");
+					MarkerType markerType = getMarkerType(state, uuidOldRecordMarkerType, "checked", "checked", null);
+					name.addMarker(Marker.NewInstance(markerType, true));
+				}
+			}
+		} catch (UndefinedTransformerMethodException e) {
+			e.printStackTrace();
+		}
+		
+	}
+
+
+	private void addNameDescription(GlobisImportState state, ZoologicalName name, UUID featureUuid,
+			String citedTypeLocality, String featureLabel) {
+		Feature feature = getFeature(state, featureUuid,featureLabel,featureLabel, null, null);
+		getTaxonNameDescription(name, false, true);
+		
 	}
 
 
@@ -248,7 +330,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 		//TODO several issues
 		if (specTypeDepositories.length == 0){
 			Specimen specimen = makeSingleTypeSpecimen(fieldObservation);
-			makeTypeDesignation(name, rs, specimen);
+			makeTypeDesignation(name, rs, specimen, specTaxId);
 			makeTypeIdInSource(state, specimen, "null", specTaxId);
 		}
 		for (String specTypeDepositoryStr : specTypeDepositories){
@@ -278,7 +360,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 			}
 			
 			//type Designation
-			makeTypeDesignation(name, rs, specimen);
+			makeTypeDesignation(name, rs, specimen, specTaxId);
 		}
 
 		
@@ -470,7 +552,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 		DerivedUnitType unitType = DerivedUnitType.Specimen;
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(unitType);
 		
-		WaterbodyOrCountry typeCountry = getCountry(state, countryString);
+		NamedArea typeCountry = getCountry(state, countryString);
 		facade.setCountry(typeCountry);
 		FieldObservation fieldObservation = facade.innerFieldObservation();
 		return fieldObservation;
@@ -484,12 +566,13 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	 * @param rs 
 	 * @param status
 	 * @param specimen
+	 * @param specTaxId 
 	 * @throws SQLException 
 	 */
-	protected void makeTypeDesignation(ZoologicalName name, ResultSet rs, Specimen specimen) throws SQLException {
+	protected void makeTypeDesignation(ZoologicalName name, ResultSet rs, Specimen specimen, Integer specTaxId) throws SQLException {
 		//type
 		String specType = rs.getString("SpecType");
-		SpecimenTypeDesignationStatus status = getTypeDesigType(specType);
+		SpecimenTypeDesignationStatus status = getTypeDesigType(specType, specTaxId);
 
 		SpecimenTypeDesignation typeDesignation = SpecimenTypeDesignation.NewInstance();
 		typeDesignation.setTypeStatus(status);
@@ -501,10 +584,10 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 
 
 
-	private SpecimenTypeDesignationStatus getTypeDesigType(String specType) {
+	private SpecimenTypeDesignationStatus getTypeDesigType(String specType, Integer specTaxId) {
 		if (isBlank(specType) ){
 			return null;
-		}else if (specType.matches("Holotype(Holotypus)?")){
+		}else if (specType.matches("Holotype(.*Holotypus)?")){
 			return SpecimenTypeDesignationStatus.HOLOTYPE();
 		}else if (specType.matches("Neotype")){
 			return SpecimenTypeDesignationStatus.NEOTYPE();
@@ -513,7 +596,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 		}else if (specType.matches("Lectotype")){
 			return SpecimenTypeDesignationStatus.LECTOTYPE();
 		}else{
-			logger.warn("SpecimenTypeDesignationStatus does not match: " + specType);
+			logger.warn("SpecimenTypeDesignationStatus does not match: " + specType + " in specTaxId "  + specTaxId);
 			return null;
 		}
 	}
@@ -613,9 +696,8 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 		String authorStr = rs.getString("SpecAuthor");
 		String yearStr = rs.getString("SpecYear");
 		String authorAndYearStr = CdmUtils.concat(", ", authorStr, yearStr);
-		handleAuthorAndYear(authorAndYearStr, name);
+		handleAuthorAndYear(authorAndYearStr, name, specTaxId);
 		
-		name.addSource(String.valueOf(specTaxId), SPEC_TAX_NAMESPACE, state.getTransactionalSourceReference(), null);
 		return name;
 	}
 
@@ -717,14 +799,10 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 
 
 	@Override
-	public Reference createObject(ResultSet rs, GlobisImportState state)
+	public Reference<?> createObject(ResultSet rs, GlobisImportState state)
 			throws SQLException {
 		// not needed
 		return null;
 	}
-
-
-
-
 
 }

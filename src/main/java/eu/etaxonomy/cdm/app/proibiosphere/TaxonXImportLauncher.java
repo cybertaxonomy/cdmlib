@@ -8,6 +8,7 @@
  */
 
 package eu.etaxonomy.cdm.app.proibiosphere;
+import java.awt.Dimension;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileWriter;
@@ -26,6 +27,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
 
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -49,8 +53,8 @@ public class TaxonXImportLauncher {
     //    private static final Logger log = Logger.getLogger(CdmEntityDaoBase.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
 
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
@@ -72,7 +76,14 @@ public class TaxonXImportLauncher {
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
 //        plaziUrl=plaziUrl+"Chenopodium";
-        plaziUrl=plaziUrlDoc+"0910-2878-5652";
+       plaziUrl=plaziUrlDoc+"0910-2878-5652";
+
+        /*HOW TO HANDLE SECUNDUM REFERENCE*/
+        boolean reuseSecundum = askIfReuseSecundum();
+        Reference<?> secundum = null;
+        if (!reuseSecundum) {
+            secundum = askForSecundum();
+        }
 
         String tnomenclature = "ICBN";
         URL plaziURL;
@@ -142,7 +153,7 @@ public class TaxonXImportLauncher {
         for (String docId : documents.keySet()){
             /*remove documents bad quality*/
             log.info(docId);
-            if (!docId.equalsIgnoreCase("3891-7797-6564")){
+//            if (!docId.equalsIgnoreCase("3891-7797-6564")){
                             log.info("document "+docId);
                 List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
 
@@ -203,7 +214,7 @@ public class TaxonXImportLauncher {
                         }
                     }
                 }
-            }
+//            }
         }
         log.info("NB SOURCES : "+sourcesStr.size());
 //        sourcesStr = new ArrayList<String>();
@@ -237,15 +248,18 @@ public class TaxonXImportLauncher {
         // invoke import
         CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
 
+        taxonxImportConfigurator.setKeepOriginalSecundum(reuseSecundum);
+        if (!reuseSecundum) {
+            taxonxImportConfigurator.setSecundum(secundum);
+        }
+
+
+//        taxonxImportConfigurator.setDoMatchTaxa(true);
+//        taxonxImportConfigurator.setReUseTaxon(true);
 
         for (URI source:sources){
             log.info("START : "+source.getPath());
             taxonxImportConfigurator.setSource(source);
-            // taxonxImportConfigurator.setDoMatchTaxa(true);
-            // taxonxImportConfigurator.setReUseTaxon(true);
-
-            // taxonxImportConfigurator.setDoCreateIndividualsAssociations(true);
-
 
             Reference<?> reference = ReferenceFactory.newGeneric();
             //            String tref = askQuestion("Import source? (ie Plazi document ID)");
@@ -285,5 +299,56 @@ public class TaxonXImportLauncher {
 
 
     }
+
+
+
+    /**
+     * @return
+     */
+    private static boolean askIfReuseSecundum() {
+            //        logger.info("getFullReference for "+ name);
+            JTextArea textArea = new JTextArea("Reuse the secundum present in the current classification? " +
+            		"\n Click Yes to reuse it, click No or Cancel to create a new one.");
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
+
+            //        JFrame frame = new JFrame("I have a question");
+            //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            int s = JOptionPane.showConfirmDialog(null, scrollPane);
+           if (s==0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    /**
+     * @return
+     */
+    private static Reference<?> askForSecundum() {
+            //        logger.info("getFullReference for "+ name);
+            JTextArea textArea = new JTextArea("Enter the secundum name");
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
+
+            //        JFrame frame = new JFrame("I have a question");
+            //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+            String s = (String) JOptionPane.showInputDialog(
+                    null,
+                    scrollPane,
+                    "",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    null);
+            Reference<?> ref = ReferenceFactory.newGeneric();
+            ref.setTitle(s);
+            return ref;
+    }
+
 
 }

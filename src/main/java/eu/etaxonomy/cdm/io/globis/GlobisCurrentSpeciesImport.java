@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -116,7 +116,6 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 				
         		Integer taxonId = rs.getInt("IDcurrentspec");
         		
-        		
         		//String dtSpcJahr -> ignore !
         		//empty: fiSpcLiteratur
         		
@@ -134,7 +133,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 					boolean hasNewParent = false; //true if any parent is new
 					
 					//species
-					Taxon species = createObject(rs, state);
+					Taxon species = createObject(rs, state, taxonId);
 					
 					
 					String familyStr = rs.getString("dtSpcFamakt");
@@ -142,10 +141,10 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 					String tribeStr = rs.getString("dtSpcTribakt");
 					
 					//family
-					Taxon family = getTaxon(state, rs, familyStr, null, Rank.FAMILY(), null, taxonMap);
+					Taxon family = getTaxon(state, rs, familyStr, null, Rank.FAMILY(), null, taxonMap, taxonId);
 					
 					//subfamily
-					Taxon subFamily = getTaxon(state, rs, subFamilyStr, null, Rank.SUBFAMILY(), null, taxonMap);
+					Taxon subFamily = getTaxon(state, rs, subFamilyStr, null, Rank.SUBFAMILY(), null, taxonMap, taxonId);
 					Taxon subFamilyParent = getParent(subFamily, classification);
 					if (subFamilyParent != null){
 						if (! compareTaxa(family, subFamilyParent)){
@@ -157,7 +156,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 					nextHigherTaxon = subFamily;
 					
 					//tribe
-					Taxon tribe = getTaxon(state, rs, tribeStr, null, Rank.TRIBE(), null, taxonMap);
+					Taxon tribe = getTaxon(state, rs, tribeStr, null, Rank.TRIBE(), null, taxonMap, taxonId);
 					if (tribe != null){
 						Taxon tribeParent = getParent(tribe, classification);
 						if (tribeParent != null){
@@ -174,7 +173,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 					//genus
 					String genusStr = rs.getString("dtSpcGenusakt");
 					String genusAuthorStr = rs.getString("dtSpcGenusaktauthor");
-					Taxon genus = getTaxon(state, rs, genusStr, null, Rank.GENUS(), genusAuthorStr, taxonMap);
+					Taxon genus = getTaxon(state, rs, genusStr, null, Rank.GENUS(), genusAuthorStr, taxonMap, taxonId);
 					Taxon genusParent = getParent(genus, classification);
 					
 					if (genusParent != null){
@@ -191,7 +190,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 					String subGenusAuthorStr = rs.getString("dtSpcSubgenaktauthor");
 					boolean hasSubgenus = StringUtils.isNotBlank(subGenusStr) || StringUtils.isNotBlank(subGenusAuthorStr);
 					if (hasSubgenus){
-						Taxon subGenus = getTaxon(state, rs, genusStr, subGenusStr, Rank.SUBGENUS(), subGenusAuthorStr, taxonMap);
+						Taxon subGenus = getTaxon(state, rs, genusStr, subGenusStr, Rank.SUBGENUS(), subGenusAuthorStr, taxonMap, taxonId);
 						classification.addParentChild(nextHigherTaxon, subGenus, sourceRef, null);
 						nextHigherTaxon = subGenus;
 					}
@@ -256,7 +255,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 			
 			countryStr = normalizeCountry(countryStr);
 			
-			WaterbodyOrCountry country = getCountry(state, countryStr);
+			NamedArea country = getCountry(state, countryStr);
 			
 			PresenceTerm status;
 			if (isDoubtful){
@@ -348,7 +347,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 
 
 
-	private Taxon getTaxon(GlobisImportState state, ResultSet rs, String uninomial, String infraGenericEpi, Rank rank, String author, Map<String, Taxon> taxonMap) {
+	private Taxon getTaxon(GlobisImportState state, ResultSet rs, String uninomial, String infraGenericEpi, Rank rank, String author, Map<String, Taxon> taxonMap, Integer taxonId) {
 		if (isBlank(uninomial)){
 			return null;
 		}
@@ -366,7 +365,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 			taxon = Taxon.NewInstance(name, state.getTransactionalSourceReference());
 			
 			taxonMap.put(key, taxon);
-			handleAuthorAndYear(author, name);
+			handleAuthorAndYear(author, name, taxonId);
 			getTaxonService().save(taxon);
 		}
 		
@@ -392,7 +391,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet, eu.etaxonomy.cdm.io.common.ImportStateBase)
 	 */
-	public Taxon createObject(ResultSet rs, GlobisImportState state)
+	public Taxon createObject(ResultSet rs, GlobisImportState state, Integer taxonId)
 			throws SQLException {
 		String speciesEpi = rs.getString("dtSpcSpcakt");
 		String subGenusEpi = rs.getString("dtSpcSubgenakt");
@@ -406,7 +405,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 			zooName.setInfraGenericEpithet(subGenusEpi);
 		}
 		zooName.setGenusOrUninomial(genusEpi);
-		handleAuthorAndYear(author, zooName);
+		handleAuthorAndYear(author, zooName, taxonId);
 		
 		Taxon taxon = Taxon.NewInstance(zooName, state.getTransactionalSourceReference());
 		
