@@ -98,7 +98,7 @@ public class ExcelStreamImportTest extends CdmTransactionalIntegrationTest{
 	@Before
 	public void setUp() throws URISyntaxException {
 		//TODO create own test file
-		String inputFile = "/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImport-TestInput.xls";
+		String inputFile = "/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls";
 		URL url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		configurator = ExcelStreamImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICBN, null);
