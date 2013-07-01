@@ -8,21 +8,27 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.excel.stream;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.dwca.in.DwcaDataImportStateBase;
+import eu.etaxonomy.cdm.io.dwca.in.DwcaImportState;
+
 /**
- * @author a.mueller
- * @created 23.11.2011
+ * 
+ * @author a.oppermann
+ * @date 08.05.2013
+ *
+ *
+ *<ROW extends ExcelRowBase>
  */
-public class DwcaImportState extends DwcaDataImportStateBase<DwcaImportConfigurator>{
+public class ExcelStreamImportState extends DwcaDataImportStateBase<ExcelStreamImportConfigurator>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
 
-	public DwcaImportState(DwcaImportConfigurator config) {
+	public ExcelStreamImportState(ExcelStreamImportConfigurator config) {
 		super(config);
 	}
-
-
+	
 }

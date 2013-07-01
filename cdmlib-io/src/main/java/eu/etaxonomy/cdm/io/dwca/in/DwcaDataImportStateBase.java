@@ -12,15 +12,18 @@ package eu.etaxonomy.cdm.io.dwca.in;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.stream.StreamImportBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
+
 /**
  * @author a.mueller
  * @created 23.11.2011
  */
-public class DwcaImportState extends DwcaDataImportStateBase<DwcaImportConfigurator>{
+public abstract class DwcaDataImportStateBase<CONFIG extends DwcaDataImportConfiguratorBase> extends StreamImportStateBase<CONFIG, StreamImportBase>{
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(DwcaImportState.class);
+	private static final Logger logger = Logger.getLogger(DwcaDataImportStateBase.class);
 
-	public DwcaImportState(DwcaImportConfigurator config) {
+	public DwcaDataImportStateBase(CONFIG config) {
 		super(config);
 	}
 

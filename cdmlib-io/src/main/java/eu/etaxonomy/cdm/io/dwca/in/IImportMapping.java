@@ -108,6 +108,14 @@ public interface IImportMapping {
 			this.id = object.getId();
 		}
 		
+		public Class<CLASS> getClazz(){
+			return clazz;
+		}
+		public int getId(){
+			return id;
+		}
+		
+		
 		@Override
 		public String toString(){
 			return id + "@" + clazz.getSimpleName();

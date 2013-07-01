@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -34,12 +35,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-/**
- * @author pesiimport
- *
- */
-public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
-						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifDescriptionCsv2CdmConverter.class);
@@ -49,11 +46,11 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	/**
 	 * @param state
 	 */
-	public GbifDescriptionCsv2CdmConverter(DwcaImportState state) {
+	public GbifDescriptionCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(CsvStreamItem item ){
+	public IReader<MappedCdmBase> map(StreamItem item ){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
@@ -91,7 +88,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	}
 
 	
-	private Language getLanguage(CsvStreamItem item) {
+	private Language getLanguage(StreamItem item) {
 		//TODO
 		
 		Language language = Language.DEFAULT();
@@ -105,7 +102,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	 * @param resultList 
 	 * @return
 	 */
-	private Feature getFeatureByDcType(CsvStreamItem item, List<MappedCdmBase> resultList) {
+	private Feature getFeatureByDcType(StreamItem item, List<MappedCdmBase> resultList) {
 		String descriptionType = item.get(TermUri.DC_TYPE);
 		item.remove(TermUri.DC_TYPE);
 		
@@ -141,7 +138,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 	}
 
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
 		return id;
 	}
@@ -150,7 +147,7 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 //********************** PARTITIONABLE **************************************/
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
 		if ( hasValue(value = item.get(CORE_ID))){

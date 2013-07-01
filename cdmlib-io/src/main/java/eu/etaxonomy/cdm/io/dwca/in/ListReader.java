@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.dwca.in;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -34,6 +35,7 @@ public class ListReader<TYPE extends Object> implements IReader<TYPE> {
 		this.list = new ArrayList<TYPE>();
 		this.list.addAll(list);
 	}
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.dwca.in.IReader#read()

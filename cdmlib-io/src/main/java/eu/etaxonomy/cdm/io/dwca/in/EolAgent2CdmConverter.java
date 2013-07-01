@@ -16,27 +16,23 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
  * @date 22.11.2011
  *
  */
-public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String> {
+public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>> 
+				implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EolAgent2CdmConverter.class);
 	private static final String CORE_ID = "coreId";
@@ -44,12 +40,12 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImport
 	/**
 	 * @param state
 	 */
-	public EolAgent2CdmConverter(DwcaImportState state) {
+	public EolAgent2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 
 
-	public IReader<MappedCdmBase> map(CsvStreamItem item ){
+	public IReader<MappedCdmBase> map(StreamItem item ){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
@@ -114,7 +110,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImport
 	}
 	
 	
-	private boolean isPerson(CsvStreamItem item) {
+	private boolean isPerson(StreamItem item) {
 		String firstName = item.get(TermUri.FOAF_FIRST_NAME);
 		String familyName = item.get(TermUri.FOAF_FAMILY_NAME);
 		String accountName = item.get(TermUri.FOAF_ACCOUNT_NAME);
@@ -128,7 +124,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImport
 
 
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
 		return id;
 	}
@@ -136,7 +132,7 @@ public class EolAgent2CdmConverter extends PartitionableConverterBase<DwcaImport
 //**************************** PARTITIONABLE ************************************************
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
 		if ( hasValue(value = item.get(CORE_ID))){

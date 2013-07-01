@@ -24,13 +24,15 @@ import eu.etaxonomy.cdm.io.dwca.jaxb.ArchiveEntryBase;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Core;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Extension;
 import eu.etaxonomy.cdm.io.dwca.jaxb.Field;
+import eu.etaxonomy.cdm.io.stream.IItemStream;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 
 /**
  * @author a.mueller
  * @date 17.10.2011
  *
  */
-public class CsvStream extends ObservableBase implements INamespaceReader<CsvStreamItem>, IIoObservable{
+public class CsvStream extends ObservableBase implements IIoObservable,IItemStream{
 	@SuppressWarnings("unused")
 	private static Logger logger = Logger.getLogger(CsvStream.class);
 
@@ -39,7 +41,7 @@ public class CsvStream extends ObservableBase implements INamespaceReader<CsvStr
 	private TermUri term;
 	private int line = 0;
 	
-	private CsvStreamItem next;
+	private StreamItem next;
 	
 	public CsvStream (CSVReader csvReader, ArchiveEntryBase archiveEntry, int startLine){
 		this.csvReader = csvReader;
@@ -60,13 +62,18 @@ public class CsvStream extends ObservableBase implements INamespaceReader<CsvStr
 		}
 	}
 	
-	public CsvStreamItem read(){
+	public StreamItem read(){
 //		line++;
 		return readMe();
 	}
 	
-	private CsvStreamItem readMe(){
-		CsvStreamItem resultItem;
+	
+	public String getItemLocation() {
+		return CdmUtils.concat("/", this.getStreamLocation() ,String.valueOf(line));
+	}
+	
+	private StreamItem readMe(){
+		StreamItem resultItem;
 		Map<String, String> resultMap;
 		if (next != null){
 			resultItem = next;
@@ -77,7 +84,7 @@ public class CsvStream extends ObservableBase implements INamespaceReader<CsvStr
 			try {
 				String[] next = csvReader.readNext();
 				line++;
-				resultItem = new CsvStreamItem(term, null, this, line);
+				resultItem = new StreamItem(term, null, getItemLocation());
 				if (next == null){
 					return null;
 				}
@@ -146,11 +153,13 @@ public class CsvStream extends ObservableBase implements INamespaceReader<CsvStr
 	/**
 	 * @return the term
 	 */
+	@Override
 	public TermUri getTerm() {
 		return term;
 	}
 
-	public String getFilesLocation() {
+	@Override
+	public String getStreamLocation() {
 		return this.archiveEntry.getFiles().getLocation();
 	}
 	
