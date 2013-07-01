@@ -551,6 +551,7 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMappingTest.java -te
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportIntegrationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/bfn/ExcelStreamImportTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
