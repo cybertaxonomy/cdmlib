@@ -57,7 +57,7 @@ public class MolecularTest {
 		
 		locus= Locus.NewInstance("Test", "test locus");
 		
-		phyloTree =new PhylogeneticTree();
+		phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(seq);
 		phyloTree.addUsedSequences(otherSeq);
 	}

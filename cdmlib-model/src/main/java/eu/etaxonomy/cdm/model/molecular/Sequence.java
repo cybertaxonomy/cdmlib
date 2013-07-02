@@ -120,12 +120,6 @@ public class Sequence extends IdentifiableEntity<IIdentifiableEntityCacheStrateg
     @OneToMany(fetch = FetchType.LAZY)
 	private Set<Reference> citations = new HashSet<Reference>();
 	
-//	@XmlElementWrapper(name = "GenBankAccessions")
-//	@XmlElement(name = "GenBankAccession")
-//    @OneToMany(fetch = FetchType.LAZY)
-//	@Cascade(CascadeType.SAVE_UPDATE)
-//    private Set<GenBankAccession> genBankAccession = new HashSet<GenBankAccession>();
-	
 	@XmlElement(name = "GenBankAccessionNumber")
 	@Size(max=20)
 	private String genBankAccessionNumber;

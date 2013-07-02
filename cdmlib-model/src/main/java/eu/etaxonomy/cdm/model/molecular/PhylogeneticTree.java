@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import java.net.URI;
 import java.util.*;
 
 import javax.persistence.*;
@@ -45,13 +46,35 @@ public class PhylogeneticTree extends Media implements Cloneable{
 	private static final long serialVersionUID = -7020182117362324067L;
 	private static final  Logger logger = Logger.getLogger(PhylogeneticTree.class);
 	
+	
 	@XmlElementWrapper(name = "UsedSequences")
 	@XmlElement(name = "UsedSequence")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(fetch = FetchType.LAZY)// FIXME surely should be ManyToMany - you can use a sequence to construct several different phylogenetic trees
+    @ManyToMany(fetch = FetchType.LAZY)
     @NotNull
 	private Set<Sequence> usedSequences = new HashSet<Sequence>();
+	
+//********************** Factory Method **********************************/
+	
+    /**
+     * Factory method
+     * @return
+     */
+    public static PhylogeneticTree NewInstance(){
+        return new PhylogeneticTree();
+    }
+
+    
+//***************** Constructor ****************************/
+    
+    private PhylogeneticTree(){
+    	super();
+    }
+	
+
+    
+// ********************** GETTER / SETTER **************************/
 	
 	public Set<Sequence> getUsedSequences() {
 		if(usedSequences == null) {
