@@ -855,7 +855,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         // test for success
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
-        TaxonNode childNode = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null, null);
+        TaxonNode childNode = acherontia_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 
         try{
             taxonNodeService.saveOrUpdate(acherontia_node);
@@ -887,7 +887,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         securityException = null;
         TaxonNode acherontiini_node = taxonNodeService.load(ACHERONTIINI_NODE_UUID);
         int numOfChildNodes = acherontiini_node.getCountChildren();
-        acherontiini_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null, null);
+        acherontiini_node.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);
 
         try{
             logger.debug("==============================");

@@ -90,7 +90,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableMediaEntity<S> implements IMultiLanguageTextHolder{
-
+	private static final long serialVersionUID = 6932680139334408031L;
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 
 	/**

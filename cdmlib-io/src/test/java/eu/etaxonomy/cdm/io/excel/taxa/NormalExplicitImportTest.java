@@ -115,7 +115,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		List<Classification> treeList = classificationService.list(null, null,null,null,null);
 		assertEquals("Number of classifications should be 1", 1, treeList.size());
 		Classification tree = treeList.get(0);
-		Set<TaxonNode> rootNodes = tree.getChildNodes();
+		List<TaxonNode> rootNodes = tree.getChildNodes();
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
 		TaxonNode rootNode = rootNodes.iterator().next();
 		assertEquals("Root taxon name should be Animalia", "Animalia", rootNode.getTaxon().getName().getTitleCache());

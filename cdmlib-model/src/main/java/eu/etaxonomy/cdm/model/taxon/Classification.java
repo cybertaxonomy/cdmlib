@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
@@ -79,7 +80,7 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
 //    @NotNull // avoids creating a UNIQUE key for this field
-	private Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
+	private List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
 
 	@XmlElement(name = "reference")
 	@XmlIDREF
@@ -128,33 +129,25 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
-	 */
-	public TaxonNode addChildNode(TaxonNode childNode, Reference citation,
-			String microCitation, Synonym synonymToBeUsed) {
+	@Override
+	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation) {
 		
 		childNode.setParentTreeNode(this);
 		
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
-		childNode.setSynonymToBeUsed(synonymToBeUsed);
+//		childNode.setSynonymToBeUsed(synonymToBeUsed);
 		
 		return childNode;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
-	 */
-	public TaxonNode addChildTaxon(Taxon taxon, Reference citation,
-			String microCitation, Synonym synonymToBeUsed) {
-		return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
+	@Override
+	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
+		return addChildNode(new TaxonNode(taxon), citation, microCitation);
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
-	 */
+	@Override
 	public boolean deleteChildNode(TaxonNode node) {
 		boolean result = removeChildNode(node);
 		
@@ -211,7 +204,7 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 		if (otherNode.equals(topmostNode)){
 			throw new IllegalArgumentException("root node and other node must not be the same");
 		}
-		otherNode.addChildNode(topmostNode, ref, microReference, null);
+		otherNode.addChildNode(topmostNode, ref, microReference);
 		//getRootNodes().remove(root);
 	}
 	
@@ -337,12 +330,12 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 			
 			//add parent node if not exist
 			if (parentNode == null){
-				parentNode = this.addChildTaxon(parent, null, null, null);
+				parentNode = this.addChildTaxon(parent, null, null);
 			}
 			
 			//add child if not exists
 			if (childNode == null){
-				childNode = parentNode.addChildTaxon(child, citation, microCitation, null);
+				childNode = parentNode.addChildTaxon(child, citation, microCitation);
 			}else{
 				//child is still topmost node
 				//TODO test if child is topmostNode otherwise throw IllegalStateException
@@ -392,14 +385,16 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 		return allNodes;
 	}	
 	
-	public Set<TaxonNode> getChildNodes() {
+	@Override
+	public List<TaxonNode> getChildNodes() {
 		return rootNodes;
 	}
 
-	private void setRootNodes(Set<TaxonNode> rootNodes) {
+	private void setRootNodes(List<TaxonNode> rootNodes) {
 		this.rootNodes = rootNodes;
 	}
 
+	@Override
 	public Reference getReference() {
 		return reference;
 	}
@@ -409,9 +404,7 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 	}
 	
 
-	/**
-	 * @return the microReference
-	 */
+	@Override
 	public String getMicroReference() {
 		return microReference;
 	}
@@ -435,9 +428,8 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 		return 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#hasChildNodes()
-	 */
+
+	@Override
 	public boolean hasChildNodes() {
 		return getChildNodes().size() > 0;
 	}
@@ -456,8 +448,8 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 		Classification result;
 		try{
 			result = (Classification)super.clone();
-			result.rootNodes = new HashSet<TaxonNode>();
-			Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
+			result.rootNodes = new ArrayList<TaxonNode>();
+			List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
 			TaxonNode rootNodeClone;
 			rootNodes = this.rootNodes;
 			TaxonNode rootNode;
@@ -467,8 +459,8 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 				rootNode = iterator.next();
 				rootNodeClone = rootNode.cloneDescendants();
 				rootNodeClone.setClassification(result);
-				result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
-				
+				result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference());
+				rootNodeClone.setSynonymToBeUsed(rootNode.getSynonymToBeUsed());
 			}
 			
 			return result;

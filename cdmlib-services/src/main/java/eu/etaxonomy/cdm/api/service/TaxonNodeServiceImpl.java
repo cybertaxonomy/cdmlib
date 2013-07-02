@@ -131,7 +131,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		// CHILD NODES
 		if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
 			for(TaxonNode childNode : oldTaxonNode.getChildNodes()){
-				newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
+				newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference()); // childNode.getSynonymToBeUsed()
 			}
 		}
 		

@@ -1869,7 +1869,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 						Classification classification =  Classification.NewInstance(label);
 						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", cdmState);
 					
-						Set<TaxonNode> root = classification.getChildNodes();
+						List<TaxonNode> root = classification.getChildNodes();
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 						
@@ -1886,12 +1886,14 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 									String refP = elParent.getAttributeValue("ref");
 									if (!refP.equals("")) {
 										TaxonNode parent = taxonNodes.get(refP);
-										TaxonNode child = parent.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec));
+										TaxonNode child = parent.addChildTaxon(taxon, sec, null);
+										child.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec)); //TODO is this required??
 										taxonNodes.put(idN,child);
 									}
 								}
 								else {
-									TaxonNode tn = classification.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
+									TaxonNode tn = classification.addChildTaxon(taxon, sec, null); // if no parent found or the reference is broken, add the node to the root of the tree
+									tn.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec));  //TODO is this required??
 									taxonNodes.put(idN,tn);
 								}
 							}

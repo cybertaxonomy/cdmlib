@@ -424,7 +424,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
         }
         if (!exist){
             taxon = (Taxon) getTaxonService().find(taxon.getUuid());
-            classification.addChildTaxon(taxon, ref, "", null);
+            classification.addChildTaxon(taxon, ref, null);
             getClassificationService().saveOrUpdate(classification);
             //            refreshTransaction();
         }

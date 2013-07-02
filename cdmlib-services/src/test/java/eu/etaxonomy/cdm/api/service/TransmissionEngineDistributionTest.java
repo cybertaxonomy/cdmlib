@@ -326,11 +326,11 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         Classification classification = Classification.NewInstance("TestClassification");
         classification.setUuid(CLASSIFICATION_UUID);
         classificationService.save(classification);
-        TaxonNode node_lapsana = classification.addChildTaxon(t_lapsana, sec, null, null);
-        TaxonNode node_lapsana_communis = node_lapsana.addChildTaxon(t_lapsana_communis, sec, null, null);
-        node_lapsana_communis.addChildTaxon(t_lapsana_communis_communis, sec, null, null);
-        node_lapsana_communis.addChildTaxon(t_lapsana_communis_adenophora, sec, null, null);
-        node_lapsana_communis.addChildTaxon(t_lapsana_communis_alpina, sec, null, null);
+        TaxonNode node_lapsana = classification.addChildTaxon(t_lapsana, sec, null);
+        TaxonNode node_lapsana_communis = node_lapsana.addChildTaxon(t_lapsana_communis, sec, null);
+        node_lapsana_communis.addChildTaxon(t_lapsana_communis_communis, sec, null);
+        node_lapsana_communis.addChildTaxon(t_lapsana_communis_adenophora, sec, null);
+        node_lapsana_communis.addChildTaxon(t_lapsana_communis_alpina, sec, null);
         classificationService.saveOrUpdate(classification);
 
         // --- Distributions --- //

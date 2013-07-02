@@ -92,10 +92,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
 
         for (TaxonNode rootNode : rootNodes){
-            classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
+            classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference()); //, rootNode.getSynonymToBeUsed()
         }
 
-        taxNode.addChildNode(taxNode2, null, null,null);
+        taxNode.addChildNode(taxNode2, null, null);
 
         Taxon taxon2 = taxNode2.getTaxon();
         Taxon taxon = taxNode.getTaxon();

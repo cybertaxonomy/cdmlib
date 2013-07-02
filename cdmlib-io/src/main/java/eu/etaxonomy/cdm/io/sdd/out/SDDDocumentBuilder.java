@@ -1205,21 +1205,16 @@ public class SDDDocumentBuilder {
 							.iterator(); tn.hasNext();) {
 						TaxonNode taxonnode = tn.next();
 						if (taxonnode.isTopmostNode()) {
-							ElementImpl elNode = new ElementImpl(document,
-									"Node");
+							ElementImpl elNode = new ElementImpl(document, "Node");
 							taxonNodesCount = buildReference(taxonnode,
-									taxonNodes, ID, elNode, "tn",
-									taxonNodesCount);
-							ElementImpl elTaxonName = new ElementImpl(document,
-									TAXON_NAME);
-							taxonNamesCount = buildReference(taxonnode
-									.getTaxon().getName(), taxonNames, REF,
-									elTaxonName, "t", taxonNamesCount);
+									taxonNodes, ID, elNode, "tn", taxonNodesCount);
+							ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
+							taxonNamesCount = buildReference(taxonnode.getTaxon().getName(), 
+									taxonNames, REF, elTaxonName, "t", taxonNamesCount);
 							elNode.appendChild(elTaxonName);
 							elTaxonHierarchy.appendChild(elNode);
-							if (taxonnode.hasChildNodes()) {
-								buildTaxonBranches(taxonnode.getChildNodes(),
-										taxonnode, elTaxonHierarchy);
+							if (taxonnode.hasChildNodes()) {buildTaxonBranches(
+									taxonnode.getChildNodes(), taxonnode, elTaxonHierarchy);
 							}
 						}
 					}
@@ -1230,7 +1225,7 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	private void buildTaxonBranches(Set<TaxonNode> children, TaxonNode parent,
+	private void buildTaxonBranches(List<TaxonNode> children, TaxonNode parent,
 			ElementImpl elTaxonHierarchy) {
 		if (children != null) {
 			for (Iterator<TaxonNode> tn = children.iterator(); tn.hasNext();) {

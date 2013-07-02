@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.model.taxon;
 
+import java.util.List;
 import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
@@ -19,7 +20,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author n.hoffmann
  * @created Sep 18, 2009
- * @version 1.0
  */
 public interface ITreeNode extends IAnnotatableEntity {
 
@@ -32,7 +32,7 @@ public interface ITreeNode extends IAnnotatableEntity {
 	 * @param synonymToBeUsed
 	 * @return the child node 
 	 */
-	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation, Synonym synonymToBeUsed);
+	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation);
 	
 	/**
 	 * Adds a taxon as a child of the ITreeNode
@@ -43,7 +43,7 @@ public interface ITreeNode extends IAnnotatableEntity {
 	 * @param synonymToBeUsed
 	 * @return the child node
 	 */
-	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation, Synonym synonymToBeUsed);
+	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation);
 	
 	/**
 	 * Whether this TreeNode has child nodes attached
@@ -61,17 +61,22 @@ public interface ITreeNode extends IAnnotatableEntity {
 	 * @return true on success
 	 */
 	public boolean deleteChildNode(TaxonNode node);
+
+	/**
+	 * Returns the list of direct child nodes of <code>this</code> ITreeNode.
+	 * @return
+	 */
+	public List<TaxonNode> getChildNodes();
 	
 	/**
 	 * @return the citation for the parent child relationship or the tree itself
 	 */
 	public Reference getReference();
 	
-	public Set<TaxonNode> getChildNodes();
-	
 	/**
 	 * 
 	 * @return the microCitation for the parent child relationship or the tree itself
 	 */
-	public abstract String getMicroReference();
+	public abstract String getMicroReference();	
+
 }

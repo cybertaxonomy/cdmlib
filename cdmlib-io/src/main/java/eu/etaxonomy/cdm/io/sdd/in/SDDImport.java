@@ -1884,12 +1884,14 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 									String refP = elParent.getAttributeValue("ref");
 									if (!refP.equals("")) {
 										TaxonNode parent = taxonNodes.get(refP);
-										TaxonNode child = parent.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec));
+										TaxonNode child = parent.addChildTaxon(taxon, sec, null);
+										child.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec)); //TODO is this required??
 										taxonNodes.put(idN,child);
 									}
 								}
 								else {
-									TaxonNode tn = classification.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
+									TaxonNode tn = classification.addChildTaxon(taxon, sec, null); // if no parent found or the reference is broken, add the node to the root of the tree
+									tn.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec));  //TODO is this required??
 									taxonNodes.put(idN,tn);
 								}
 							}

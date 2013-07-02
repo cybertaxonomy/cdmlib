@@ -668,7 +668,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("expecting default classification", childNode.getClassification().getUuid().toString(), CLASSIFICATION_UUID);
 
         // moving the taxon around
-        alternateClassification.addChildNode(childNode, null, null, null);
+        alternateClassification.addChildNode(childNode, null, null);
         classificationService.saveOrUpdate(alternateClassification);
         commitAndStartNewTransaction(null);
 
@@ -981,8 +981,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxonService.save(t_abies_lasiocarpa);
 
         // add taxa to classifications
-        classification.addChildTaxon(t_abies_balsamea, null, null, null);
-        alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null, null);
+        classification.addChildTaxon(t_abies_balsamea, null, null);
+        alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
         classificationService.saveOrUpdate(classification);
         classificationService.saveOrUpdate(alternativeClassification);
 

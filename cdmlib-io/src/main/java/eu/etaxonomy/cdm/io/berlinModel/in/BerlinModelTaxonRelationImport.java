@@ -394,7 +394,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 			return;
 		}else{
 			Classification classification = getClassificationTree(state, classificationMap, secRefFk);
-			classification.addChildTaxon(taxon, null, null, null);
+			classification.addChildTaxon(taxon, null, null);
 		}
 		
 
@@ -445,7 +445,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 				Classification classification = getClassificationTree(state, classificationMap, treeRefFk);
 				TaxonBase<?> taxon = taxonMap.get(taxonId);
 				if (taxon.isInstanceOf(Taxon.class)){
-					classification.addChildTaxon(CdmBase.deproxy(taxon, Taxon.class), null, null, null);
+					classification.addChildTaxon(CdmBase.deproxy(taxon, Taxon.class), null, null);
 				}else{
 					String message = "TaxonBase for taxon is not of class Taxon but %s (RIdentifier %s)";
 					logger.warn(String.format(message, taxon.getClass(), taxonId));
