@@ -1504,10 +1504,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        textQuery.add(queryFactory.newDefinedTermQuery("states.state", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        textQuery.add(queryFactory.newDefinedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
+        textQuery.add(queryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
 
         // area field from Distribution
         textQuery.add(queryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
