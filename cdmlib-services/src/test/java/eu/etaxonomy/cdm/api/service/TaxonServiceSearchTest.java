@@ -702,7 +702,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         StateData statedata = StateData.NewInstance(state);
         statedata.putModifyingText(Language.ENGLISH(), "always, even during winter");
-        cdata.addState(statedata);
+        cdata.addStateData(statedata);
         d_abies_balsamea.addElement(cdata);
 
         termService.save(state);

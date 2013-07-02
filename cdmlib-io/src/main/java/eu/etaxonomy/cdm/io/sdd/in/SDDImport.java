@@ -1405,7 +1405,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 							stateData.addModifier(modifier);
 						}
 					}
-					categoricalData.addState(stateData);
+					categoricalData.addStateData(stateData);
 				}
 				taxonDescription.addElement(categoricalData);
 			}

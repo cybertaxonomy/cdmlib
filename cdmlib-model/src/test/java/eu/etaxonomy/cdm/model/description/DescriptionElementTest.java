@@ -75,7 +75,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		source.setCitation(citation);
 		categorialData.addSource(source );
 		StateData state = StateData.NewInstance();
-		categorialData.addState(state);
+		categorialData.addStateData(state);
 		
 		indAssociation = IndividualsAssociation.NewInstance();
 		
@@ -109,8 +109,8 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 	@Test
 	public void testCloneCategorialData(){
 		CategoricalData clone = (CategoricalData)categorialData.clone();
-		assertEquals(clone.getStates().size(),categorialData.getStates().size() );
-		assertSame(clone.getStates().get(0), categorialData.getStates().get(0));
+		assertEquals(clone.getStateData().size(),categorialData.getStateData().size() );
+		assertSame(clone.getStateData().get(0), categorialData.getStateData().get(0));
 		assertNotSame(clone, categorialData);
 			
 	}
@@ -144,7 +144,7 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		CategoricalData data = CategoricalData.NewInstance();
 		desc.addElement(data);
 		StateData stateData = StateData.NewInstance();
-		data.addState(stateData);
+		data.addStateData(stateData);
 		
 		TermType modifierType = TermType.Modifier;
 		TermVocabulary<DefinedTerm> plantPartVoc = TermVocabulary.NewInstance(modifierType,"plant parts", "plant parts", "parts", null);

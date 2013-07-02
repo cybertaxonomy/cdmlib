@@ -51,5 +51,11 @@ public interface IPublicationBase extends IReference {
 	 */
 	public void setPublisher(String publisher, String placePublished);
 
+	/**
+	 * @return
+	 */
+	public String getDoi();
 
+	public void setDoi(String doi);
+	
 }

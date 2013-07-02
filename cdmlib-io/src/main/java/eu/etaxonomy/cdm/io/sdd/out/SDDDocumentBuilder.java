@@ -920,7 +920,7 @@ public class SDDDocumentBuilder {
 		Feature feature = categoricalData.getFeature();
 		buildReference(feature, characters, REF, categorical, "c",
 				charactersCount);
-		List<StateData> states = categoricalData.getStates();
+		List<StateData> states = categoricalData.getStateData();
 		for (Iterator<StateData> sd = states.iterator(); sd.hasNext();) {
 			StateData stateData = sd.next();
 			State s = stateData.getState();

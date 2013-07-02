@@ -98,6 +98,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "edition",
     "isbn",
     "issn",
+    "doi",
     "seriesPart",
     "datePublished",
     "publisher",
@@ -206,6 +207,14 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Length(max = 255)
 	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}")
 	protected String isbn;
+
+    @XmlElement(name = "Doi")
+    @Field
+    @NullOrNotEmpty
+	@Length(max = 255)
+//	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.doi.message}")
+	protected String doi;
+
 
 	@XmlElement(name = "ISSN")
     @Field
@@ -472,6 +481,16 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Override
     public void setIssn(String issn) {
 		this.issn = issn;
+	}
+	
+    @Override
+	public String getDoi() {
+		return doi;
+	}
+
+    @Override
+	public void setDoi(String doi) {
+		this.doi = doi;
 	}
 
 	@Override

@@ -436,7 +436,7 @@ public class PolytomousKeyGenerator {
 	private Map<Set<TaxonDescription>,List<State>> determineCategoricalStates(List<State> statesDone, CategoricalData categoricalData, Feature feature, Set<TaxonDescription> taxaCovered){
 		Map<Set<TaxonDescription>,List<State>> childrenStatesMap = new HashMap<Set<TaxonDescription>,List<State>>();
 
-		List<StateData> stateDatas = categoricalData.getStates();
+		List<StateData> stateDatas = categoricalData.getStateData();
 
 		List<State> states = new ArrayList<State>();
 		for (StateData sd : stateDatas){
@@ -474,7 +474,7 @@ public class PolytomousKeyGenerator {
 			for (DescriptionElementBase deb : elements){
 				if (deb.isInstanceOf(CategoricalData.class)) {
 					if (deb.getFeature().equals(feature)) {
-						List<StateData> stateDatas = ((CategoricalData)deb).getStates();
+						List<StateData> stateDatas = ((CategoricalData)deb).getStateData();
 						for (StateData sd : stateDatas) {
 							if (sd.getState().equals(featureState)){
 								newCoveredTaxa.add(td);
@@ -535,7 +535,7 @@ public class PolytomousKeyGenerator {
 							if (deb.isInstanceOf(CategoricalData.class)) {
 								CategoricalData catdat = (CategoricalData)deb;
 								if (catdat.getFeature().equals(feature)) {
-									List<StateData> stateDatas = catdat.getStates();
+									List<StateData> stateDatas = catdat.getStateData();
 									for (StateData sd : stateDatas) {
 										differentStates.add(sd.getState());
 									}
@@ -838,12 +838,12 @@ public class PolytomousKeyGenerator {
 				{
 					CategoricalData cat1 = (CategoricalData)deb1;
 					CategoricalData cat2 = (CategoricalData)deb2;
-					for (StateData statedata1 : cat1.getStates()){
+					for (StateData statedata1 : cat1.getStateData()){
 						State state1 = statedata1.getState();
 						if (!exclusions.containsKey(state1)){
 							exclusions.put(state1, new HashSet<State>());
 						}
-						for (StateData statedata2 : cat2.getStates()){
+						for (StateData statedata2 : cat2.getStateData()){
 							State state2 = statedata2.getState();
 							if (!exclusions.containsKey(state2)){
 								exclusions.put(state2, new HashSet<State>());
@@ -886,8 +886,8 @@ public class PolytomousKeyGenerator {
 	 * @return
 	 */
 	private float defaultCategoricalPower(CategoricalData deb1, CategoricalData deb2){
-		List<StateData> states1 = deb1.getStates();
-		List<StateData> states2 = deb2.getStates();
+		List<StateData> states1 = deb1.getStateData();
+		List<StateData> states2 = deb2.getStateData();
 		boolean bool = false;
 		Iterator<StateData> stateData1Iterator = states1.iterator() ;
 		//		while (!bool && stateData1Iterator.hasNext()) {

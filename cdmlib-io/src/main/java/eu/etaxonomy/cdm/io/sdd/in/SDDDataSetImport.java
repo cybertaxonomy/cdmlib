@@ -1412,7 +1412,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 							stateData.addModifier(modifier);
 						}
 					}
-					categoricalData.addState(stateData);
+					categoricalData.addStateData(stateData);
 				}
 				taxonDescription.addElement(categoricalData);
 			}

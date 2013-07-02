@@ -79,7 +79,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE,CascadeType.DELETE_ORPHAN })
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
-    private List<StateData> states = new ArrayList<StateData>();
+    private List<StateData> stateData = new ArrayList<StateData>();
 
 //****************************** FACTORY METHOD *******************************/
 
@@ -112,7 +112,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     protected CategoricalData(List<State> states, Feature feature) {
         super(feature);
         for (State state : states){
-        	addState(state);
+        	addStateData(state);
         }
         
     }
@@ -124,48 +124,48 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * corresponding to <i>this</i> categorical data.
      */
 
-    public List<StateData> getStates(){
-        return this.states;
+    public List<StateData> getStateData(){
+        return this.stateData;
     }
 
     protected void setStates(List<StateData> stateData){
-        this.states = stateData;
+        this.stateData = stateData;
     }
 
 
     /**
-     * Adds a {@link State state} to the list of {@link #getStates() states}
+     * Adds a {@link State state} to the list of {@link #getStateData() states}
      * describing the {@link Feature feature} corresponding to <i>this</i> categorical data.
      *
      * @param state	the state to be added to <i>this</i> categorical data
-     * @see    	   	#getStates()
+     * @see    	   	#getStateData()
      */
-    public void addState(StateData state){
-        this.states.add(state);
+    public void addStateData(StateData stateData){
+        this.stateData.add(stateData);
     }
 
     /**
      * Convenience method which creates a state data from a given state with no modifiers
      * and adds it to the list of state data
-     * @see #addState(StateData)
+     * @see #addStateData(StateData)
      * @param state
      */
-    public void addState(State state){
+    public void addStateData(State state){
         StateData stateData = StateData.NewInstance(state);
-        this.states.add(stateData);
+        this.stateData.add(stateData);
     }
 
 
     /**
-     * Removes one element from the set of {@link #getStates() states}
+     * Removes one element from the set of {@link #getStateData() states}
      * describing the {@link Feature feature} corresponding to <i>this</i> categorical data.
      *
      * @param  state	the state which should be removed
-     * @see     		#getStates()
-     * @see     		#addState(State)
+     * @see     		#getStateData()
+     * @see     		#addStateData(State)
      */
-    public void removeState(StateData state){
-        this.states.remove(state);
+    public void removeStateData(StateData stateData){
+        this.stateData.remove(stateData);
     }
 
     //rename to isStateSequenceIntentional ??
@@ -196,7 +196,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @Transient
     public List<State> getStatesOnly(){
         List<State> result = new ArrayList<State>();
-        for (StateData stateData : getStates()){
+        for (StateData stateData : getStateData()){
             State state = stateData.getState();
             result.add(state);
         }
@@ -209,13 +209,13 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
      * @return
      */
     @Transient
-    public List<StateData> setStatesOnly(List<State> states){
-        this.states.clear();
+    public List<StateData> setStateDataOnly(List<State> states){
+        this.stateData.clear();
         for (State state : states){
             StateData stateDate = StateData.NewInstance(state);
-            this.states.add(stateDate);
+            this.stateData.add(stateDate);
         }
-        return this.states;
+        return this.stateData;
     }
 
 
@@ -236,11 +236,11 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
             CategoricalData result = (CategoricalData)super.clone();
 
             //states
-            result.states = new ArrayList<StateData>();
-            for (StateData stateData : getStates()){
+            result.stateData = new ArrayList<StateData>();
+            for (StateData stateData : getStateData()){
                 //TODO do we need to clone here?
                 //StateData newState = (StateData)stateData.clone();
-                result.states.add(stateData);
+                result.stateData.add(stateData);
             }
 
             return result;

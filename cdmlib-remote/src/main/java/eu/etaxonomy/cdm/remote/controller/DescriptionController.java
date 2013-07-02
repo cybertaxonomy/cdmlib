@@ -177,7 +177,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         if(descriptionElement instanceof CategoricalData){
 
         }
-        List<StateData> states = ((CategoricalData)descriptionElement).getStates();
+        List<StateData> states = ((CategoricalData)descriptionElement).getStateData();
         mv.addObject(states);
         return mv;
     }

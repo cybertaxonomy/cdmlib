@@ -209,6 +209,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO remove citation_id and citationmicroreference columns from Media table #2541
 		//first check if columns are always empty
 		
+		//TODO update length of all title caches and full title cache in names
+		//https://dev.e-taxonomy.eu/trac/ticket/1592
+		
 		
 		return stepList;
 	}

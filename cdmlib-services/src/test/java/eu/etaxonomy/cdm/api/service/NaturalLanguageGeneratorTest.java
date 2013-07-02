@@ -69,7 +69,7 @@ public class NaturalLanguageGeneratorTest extends CdmIntegrationTest {
 			State state = State.NewInstance(null, feature.getLabel()+"state", null);
 			StateData stateData = StateData.NewInstance();
 			stateData.setState(state);
-			cg.addState(stateData);
+			cg.addStateData(stateData);
 			description.addElement(cg);
 		}
 		Feature qFeature = Feature.NewInstance(null, "c", null);

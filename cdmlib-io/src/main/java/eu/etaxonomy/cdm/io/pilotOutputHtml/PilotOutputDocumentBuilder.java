@@ -132,7 +132,7 @@ public class PilotOutputDocumentBuilder {
 					Feature feature = categorical.getFeature();
 					Representation representation = (Representation) feature.getRepresentations().toArray()[0];
 					texte += "<li>Categorical data associated with feature: <b>" + representation.getLabel() + "</b><br/>\nStates: ";
-					for (Iterator<? extends StateData> sd = categorical.getStates().iterator() ; sd.hasNext() ;){
+					for (Iterator<? extends StateData> sd = categorical.getStateData().iterator() ; sd.hasNext() ;){
 						StateData stateData = (StateData) sd.next();
 						texte += ((Representation) stateData.getState().getRepresentations().toArray()[0]).getLabel();
 						if (sd.hasNext()) texte += "; "; else texte += ".<br/>\n";
