@@ -212,6 +212,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO update length of all title caches and full title cache in names
 		//https://dev.e-taxonomy.eu/trac/ticket/1592
 		
+		//TODO rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
 		
 		return stepList;
 	}
