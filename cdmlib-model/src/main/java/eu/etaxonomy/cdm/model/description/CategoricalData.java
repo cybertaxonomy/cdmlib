@@ -52,13 +52,12 @@ import eu.etaxonomy.cdm.validation.Level2;
  * the SDD schema.
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:15
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CategoricalData", propOrder = {
     "orderRelevant",
-    "states"
+    "stateData"
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity
