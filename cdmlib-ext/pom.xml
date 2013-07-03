@@ -6,7 +6,7 @@
 	<parent>
 		<groupId>eu.etaxonomy</groupId>
 		<artifactId>cdmlib-parent</artifactId>
-	    <version>3.1.4-SNAPSHOT</version>
+	    <version>3.2.3-SNAPSHOT</version>
 		<relativePath>../pom.xml</relativePath>
 	</parent>
 
@@ -37,9 +37,16 @@
       <artifactId>unitils-core</artifactId>
       <scope>test</scope>
     </dependency>
+<!--     probably most unitis dependencies can be deleted from here -->
     <dependency>
       <groupId>org.unitils</groupId>
       <artifactId>unitils-database</artifactId>
+      <exclusions>
+      	<exclusion>
+      		<groupId>commons-dbcp</groupId>
+      		<artifactId>commons-dbcp</artifactId>
+      	</exclusion>
+      </exclusions>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -69,18 +76,13 @@
     </dependency>
      <dependency>
       <groupId>org.unitils</groupId>
-      <artifactId>unitils-orm</artifactId>
-      <scope>test</scope>
-    </dependency>
-     <dependency>
-      <groupId>org.unitils</groupId>
       <artifactId>unitils-spring</artifactId>
       <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.dbunit</groupId>
       <artifactId>dbunit</artifactId>
-    </dependency>
+    </dependency> 
     <dependency>
       <groupId>xmlunit</groupId>
       <artifactId>xmlunit</artifactId>

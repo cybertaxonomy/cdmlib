@@ -9,15 +9,13 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -33,6 +31,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -79,7 +78,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
 	String catalogNumber = "UU879873590";
-	TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
+	TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies", null, null, null, null, null, null, null);
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 
@@ -113,7 +112,7 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 	public void setUp() throws Exception {
 		specimen = Specimen.NewInstance();
 
-		derivationEvent = DerivationEvent.NewInstance();
+		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		specimen.setDerivedFrom(derivationEvent);
 		fieldObservation = FieldObservation.NewInstance();
 		fieldObservation.addDerivationEvent(derivationEvent);
@@ -161,9 +160,10 @@ public class DerivedUnitFacadeFieldObservationCacheStrategyTest extends CdmInteg
 		Specimen middleSpecimen = Specimen.NewInstance();
 		firstFieldObject = FieldObservation.NewInstance();
 
-		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
-		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance();
-		firstDerivationEvent = DerivationEvent.NewInstance();
+		//TODO maybe we should define concrete event types here
+		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(null);
+		DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance(null);
+		firstDerivationEvent = DerivationEvent.NewInstance(null);
 
 		collectionSpecimen.setDerivedFrom(lastDerivationEvent);
 

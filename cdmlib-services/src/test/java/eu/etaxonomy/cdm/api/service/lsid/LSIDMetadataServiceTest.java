@@ -12,18 +12,23 @@ package eu.etaxonomy.cdm.api.service.lsid;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
-public class LSIDMetadataServiceTest extends CdmIntegrationTest {
+public class LSIDMetadataServiceTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	private LSIDMetadataService lsidMetadataService;
@@ -31,10 +36,14 @@ public class LSIDMetadataServiceTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private LSIDRegistry lsidRegistry;
 	
+	@SpringBeanByType
+	private INameService nameService;
+	
 	private LSID lsid;
 	
 	@Before	
 	public void setUp() throws Exception {
+		
 		lsid = new LSID("example.org", "taxonconcepts", "1", null);
 	    ((LsidRegistryImpl)lsidRegistry).init();
 	}

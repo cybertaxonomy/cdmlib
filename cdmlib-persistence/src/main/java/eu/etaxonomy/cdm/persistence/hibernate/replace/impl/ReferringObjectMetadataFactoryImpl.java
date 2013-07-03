@@ -10,7 +10,7 @@ import javax.persistence.OneToMany;
 
 import org.hibernate.MappingException;
 import org.hibernate.SessionFactory;
-import org.hibernate.impl.SessionFactoryImpl;
+import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.metadata.ClassMetadata;
 import org.hibernate.type.AssociationType;
 import org.hibernate.type.BagType;
@@ -36,7 +36,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 	public Set<ReferringObjectMetadata> get(Class<? extends CdmBase> toClass) {
 		if(!referringObjectMap.containsKey(toClass)) {
 			ClassMetadata toClassMetadata = sessionFactory.getClassMetadata(toClass);
-			Map<Class,Set<String>> bidirectionalRelationships = new HashMap<Class,Set<String>>();
+			Map<Class<?>,Set<String>> bidirectionalRelationships = new HashMap<Class<?>,Set<String>>();
 			for(String propertyName : toClassMetadata.getPropertyNames()) {
 				Type propertyType = toClassMetadata.getPropertyType(propertyName);
 				if(propertyType.isAssociationType() && !propertyType.isAnyType()) {
@@ -46,7 +46,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 					try {
 					    field = toClass.getDeclaredField(propertyName);
 					} catch(NoSuchFieldException nsfe) {
-						Class superClass = toClass.getSuperclass();
+						Class<?> superClass = toClass.getSuperclass();
 						while(!superClass.equals(CdmBase.class)) {
 							try{
 								field = superClass.getDeclaredField(propertyName);
@@ -64,7 +64,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 					        OneToMany oneToMany = field.getAnnotation(OneToMany.class);
 					        if(oneToMany.mappedBy() != null && oneToMany.mappedBy().length() > 0) {
 					        	String associatedEntityName = associationType.getAssociatedEntityName((SessionFactoryImpl) sessionFactory.getCurrentSession().getSessionFactory());
-					        	Class associatedEntity;
+					        	Class<?> associatedEntity;
 								try {
 									associatedEntity = Class.forName(associatedEntityName);
 									if(!bidirectionalRelationships.containsKey(associatedEntity)) {
@@ -82,15 +82,14 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 				}
 			}
 			
-            Map<Object,ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
+            Map<String,ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
             Set<ReferringObjectMetadata> referringObjectMetadata = new HashSet<ReferringObjectMetadata>();
 
-            for(Object fromClass : allClassMetadata.keySet()) {
-            	String entityName = (String) fromClass;
+            for(String entityName : allClassMetadata.keySet()) {
             	if(!entityName.endsWith("_AUD")) {
             		try {
 //            			System.out.println(entityName);
-						Class entityClass = Class.forName(entityName);
+						Class<?> entityClass = Class.forName(entityName);
 						ClassMetadata classMetadata = allClassMetadata.get(entityName);
 						
 						for(String propertyName : classMetadata.getPropertyNames()) {
@@ -105,7 +104,7 @@ public class ReferringObjectMetadataFactoryImpl implements	ReferringObjectMetada
 									if(!propertyType.isAnyType()) {
 										try {
 											String associatedEntityName = associationType.getAssociatedEntityName((SessionFactoryImpl) sessionFactory.getCurrentSession().getSessionFactory());
-											Class associatedClass = Class.forName(associatedEntityName);
+											Class<?> associatedClass = Class.forName(associatedEntityName);
 											if (associatedClass.isAssignableFrom(toClass)){
 
 												try {

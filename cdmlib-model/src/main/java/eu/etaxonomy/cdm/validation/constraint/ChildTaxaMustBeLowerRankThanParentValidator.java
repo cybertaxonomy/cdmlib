@@ -24,6 +24,7 @@ public class ChildTaxaMustBeLowerRankThanParentValidator implements
 
 	public boolean isValid(TaxonRelationship taxonRelationship, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
+		//FIXME Replace by TaxonNode relationship
 		if(taxonRelationship.getType().equals(TaxonRelationshipType.TAXONOMICALLY_INCLUDED_IN())) {
 			Taxon parent = taxonRelationship.getToTaxon();
 			Taxon child = taxonRelationship.getFromTaxon();
@@ -31,7 +32,7 @@ public class ChildTaxaMustBeLowerRankThanParentValidator implements
 			
 			if(parent.getName().getRank().equals(child.getName().getRank()) || parent.getName().getRank().isLower(child.getName().getRank())) {
 				valid = false;
-				constraintContext.buildErrorWithMessageTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}").addSubNode("fromTaxon").addSubNode("name").addSubNode("rank").addError();				
+				constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustBeLowerRankThanParent.message}").addNode("fromTaxon").addNode("name").addNode("rank").addConstraintViolation();				
 			}
 		}
 		

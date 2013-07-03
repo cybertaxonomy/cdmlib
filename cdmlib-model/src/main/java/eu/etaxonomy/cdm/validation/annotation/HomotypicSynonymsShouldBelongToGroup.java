@@ -18,7 +18,10 @@ import eu.etaxonomy.cdm.validation.constraint.HomotypicSynonymsShouldBelongToGro
 @Constraint(validatedBy = HomotypicSynonymsShouldBelongToGroupValidator.class)
 @Documented
 public @interface HomotypicSynonymsShouldBelongToGroup {
+	
 	String message() default "{eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGroup.message}";
+	
 	Class<? extends Payload>[] payload() default {};
+	
 	Class<?>[] groups() default {};
 }

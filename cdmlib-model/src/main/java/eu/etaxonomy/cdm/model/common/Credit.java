@@ -46,7 +46,7 @@ public class Credit extends LanguageStringBase implements Cloneable{
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private AgentBase agent;
+	private AgentBase<?> agent;
 	
 	@XmlElement(name = "AbbreviatedText")
 	private String abbreviatedText;

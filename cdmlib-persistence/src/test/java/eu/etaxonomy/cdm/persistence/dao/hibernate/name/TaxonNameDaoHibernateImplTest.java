@@ -170,7 +170,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testCountNames() {
-		System.out.println("count");
 		int count = taxonNameDao.countNames("Atropos", null, null, null, Rank.GENUS());
 		
 		assertEquals("countNames should return 3",3,count);
@@ -185,7 +184,6 @@ public class TaxonNameDaoHibernateImplTest extends CdmIntegrationTest {
 		includedProperties.add("specificEpithet");
 		includedProperties.add("infraSpecificEpithet");
 		includedProperties.add("rank");
-		System.out.println("countByExample");
 		int count = taxonNameDao.count(zoologicalName,includedProperties);
 		
 		assertEquals("countNames should return 3",3,count);

@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -160,7 +161,7 @@ public class InputTransformerBase implements IInputTransformer {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermByKey(java.lang.String)
 	 */
-	public PresenceTerm getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
+	public PresenceAbsenceTermBase getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}

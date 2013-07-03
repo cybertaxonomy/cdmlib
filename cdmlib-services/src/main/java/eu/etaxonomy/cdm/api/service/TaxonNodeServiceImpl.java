@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
  * @version 1.0
  */
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITaxonNodeDao> implements ITaxonNodeService{
 	private static final Logger logger = Logger.getLogger(TaxonNodeServiceImpl.class);
 
@@ -109,10 +109,22 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		}
 		SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
 		
-		//Move Synonym Relations to new Taxon
+		// Move Synonym Relations to new Taxon
+		// From ticket 3163 we can move taxon with accepted name having homotypic synonyms		
 		for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
-			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), synRelation.getType(), 
-					synRelation.getCitation(), synRelation.getCitationMicroReference());
+			SynonymRelationshipType srt;
+			if(synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
+				srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+			} else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
+				srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+			} else {
+				srt = synRelation.getType();
+				
+			}
+			newAcceptedTaxon.addSynonym(synRelation.getSynonym(), 
+					srt, 
+					synRelation.getCitation(), 
+					synRelation.getCitationMicroReference());
 		}
 
 		
@@ -142,7 +154,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			// Remove old relationships
 			taxonRelationship.setToTaxon(null);
 			taxonRelationship.setFromTaxon(null);
+			
+			
 		}
+
 		
 		//Move descriptions to new taxon
 		List<TaxonDescription> descriptions = new ArrayList<TaxonDescription>( oldTaxon.getDescriptions()); //to avoid concurrent modification errors (newAcceptedTaxon.addDescription() modifies also oldtaxon.descritpions()) 
@@ -153,8 +168,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			newAcceptedTaxon.addDescription(description);
 		}
 				
-		oldTaxonNode.delete();
-		
+		oldTaxonNode.delete();		
 		return synonmyRelationship.getSynonym();
 	}
 }

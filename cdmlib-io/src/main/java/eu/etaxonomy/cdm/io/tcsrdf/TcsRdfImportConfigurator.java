@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -33,15 +33,15 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  */
 public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImportState, URI> implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportConfigurator.class);
-	
-	
+
+
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
 
-	
+
 	//if false references in this rdf file are not published in the bibliography list
 	private boolean isPublishReferences = true;
-	
+
 //	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 //	//names
@@ -51,7 +51,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
 	private boolean doFacts = true;
-	
+
 	//rdfNamespace
 	private Namespace rdfNamespace;
 	//TaxonConcept namespace
@@ -66,8 +66,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	private Namespace publicationNamespace;
 	//palmNamespace
 	private Namespace palmNamespace;
-	
-//TODO	
+
+//TODO
 	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
 	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
 	protected static Namespace nsTgeo = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/GeographicRegion#");
@@ -75,7 +75,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
 
-	protected void makeIoClassList(){
+	@Override
+    protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			TcsRdfReferenceImport.class
 			, TcsRdfTaxonNameImport.class
@@ -84,18 +85,18 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 			, TcsRdfTaxonRelationsImport.class
 		};
 	};
-	
+
 	public static TcsRdfImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new TcsRdfImportConfigurator(uri, destination);
 	}
-	
-	//TODO for spring use only 
+
+	//TODO for spring use only
 	private TcsRdfImportConfigurator(){
 		super(defaultTransformer);
-		
+
 	}
-	
-	
+
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -128,7 +129,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		}
 		return null;
 	}
-	
+
 	private boolean makeNamespaces(Element root){
 		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
 		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
@@ -145,12 +146,12 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		geoNamespace = root.getNamespace(prefix);
 		prefix = "tpub";
 		publicationNamespace = root.getNamespace(prefix);
-		
+
 		prefix = "tpalm";
 		palmNamespace = root.getNamespace(prefix);
-		
+
 		if (rdfNamespace == null || tcNamespace == null || tnNamespace == null ||
-				commonNamespace == null ||	geoNamespace == null || publicationNamespace == null 
+				commonNamespace == null ||	geoNamespace == null || publicationNamespace == null
 				|| palmNamespace == null){
 			logger.warn("At least one Namespace is NULL");
 		}
@@ -166,8 +167,7 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		//TODO
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
-			ReferenceFactory refFactory = ReferenceFactory.newInstance();
-			sourceReference = refFactory.newDatabase();
+			sourceReference = ReferenceFactory.newDatabase();
 			sourceReference.setTitleCache("XXX", true);
 		}
 		return sourceReference;
@@ -177,14 +177,15 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
 			return this.getSource().toString();
 		}
 	}
-	
+
 	public Namespace getRdfNamespace() {
 		return rdfNamespace;
 	}
@@ -260,15 +261,15 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	public void setPublishReferences(boolean isPublishReferences) {
 		this.isPublishReferences = isPublishReferences;
 	}
-	
-	
+
+
 	public boolean isDoFacts() {
 		return doFacts;
 	}
 	public void setDoFacts(boolean doFacts) {
 		this.doFacts = doFacts;
 	}
-	
+
 	/**
 	 * Import name relationships yes/no?.
 	 * @return
@@ -283,19 +284,20 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public TcsRdfImportState getNewState() {
+	@Override
+    public TcsRdfImportState getNewState() {
 		return new TcsRdfImportState(this);
 	}
-	
-	
-	
+
+
+
 	public DO_REFERENCES getDoReferences() {
 		return doReferences;
 	}
 	public void setDoReferences(DO_REFERENCES doReferences) {
 		this.doReferences = doReferences;
 	}
-	
+
 	public boolean isDoTaxonNames() {
 		return doTaxonNames;
 	}
@@ -317,8 +319,8 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		this.doRelTaxa = doRelTaxa;
 	}
 
-	
 
-	
-	
+
+
+
 }

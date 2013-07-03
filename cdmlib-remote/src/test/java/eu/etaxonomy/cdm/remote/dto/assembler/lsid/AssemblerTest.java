@@ -26,8 +26,8 @@ import org.dozer.Mapper;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.LazyInitializationException;
-import org.hibernate.collection.PersistentCollection;
-import org.hibernate.engine.SessionImplementor;
+import org.hibernate.collection.spi.PersistentCollection;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.proxy.HibernateProxy;
 import org.hibernate.proxy.LazyInitializer;
 import org.joda.time.DateTime;
@@ -83,12 +83,11 @@ public class AssemblerTest extends UnitilsJUnit4 {
     private Taxon taxon;
     private IBook sec;
     private IBook book;
-    private Reference bookSection;
-    private TeamOrPersonBase authorTeam;
-    private NonViralName name;
+    private Reference<?> bookSection;
+    private TeamOrPersonBase<?> authorTeam;
+    private NonViralName<?> name;
     private LSID lsid;
     private TaxonDescription taxonDescription;
-    ReferenceFactory refFactory = ReferenceFactory.newInstance();
 
     @BeforeClass
     public static void onSetUp() {
@@ -106,14 +105,14 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         name = BotanicalName.NewInstance(null);
         name.setNameCache("nameCache");
-        INomenclaturalReference nomenclaturalReference = refFactory.newArticle();
+        INomenclaturalReference nomenclaturalReference = ReferenceFactory.newArticle();
         nomenclaturalReference.setTitleCache("nomenclaturalReference", true);
         name.setNomenclaturalReference(nomenclaturalReference);
         name.setNomenclaturalMicroReference("1");
         name.setAuthorshipCache("authorshipCache");
         name.setRank(Rank.SPECIES());
 
-        sec = refFactory.newBook();
+        sec = ReferenceFactory.newBook();
         sec.setAuthorTeam(authorTeam);
         sec.setTitleCache("sec.titleCache", true);
         sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
@@ -153,7 +152,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         // ------------------------------------------------------
 
-        book = refFactory.newBook();
+        book = ReferenceFactory.newBook();
         book.setTitle("Book.title");
         book.setAuthorTeam(authorTeam);
         book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
@@ -169,7 +168,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.setVolume("Volume 1");
         book.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/1"));
 
-        bookSection = refFactory.newBookSection();
+        bookSection = ReferenceFactory.newBookSection();
         bookSection.setInReference((Reference)book);
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
@@ -196,7 +195,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
+        TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
 
         assertNotNull("map() should return an object", taxonConcept);
         assertTrue("map() should return a TaxonConcept",taxonConcept instanceof TaxonConcept);
@@ -230,7 +229,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         secField.setAccessible(true);
         secField.set(taxon, proxy);
 
-        TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
+        TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
         assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.publishedInCitation should be null",taxonConcept.getPublishedInCitation());
         assertNull("TaxonBase.sec was uninitialized, so TaxonConcept.accordingTo should be null",taxonConcept.getAccordingTo());
     }
@@ -244,13 +243,13 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        Set<TaxonRelationship> proxy = (Set<TaxonRelationship>)getUninitializedPersistentCollection(HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
+        Set<TaxonRelationship> proxy = getUninitializedPersistentCollection(HashSet.class,(HashSet<TaxonRelationship>)taxon.getRelationsToThisTaxon());
         assert !Hibernate.isInitialized(proxy);
         Field relationsToThisTaxonField = Taxon.class.getDeclaredField("relationsToThisTaxon");
         relationsToThisTaxonField.setAccessible(true);
         relationsToThisTaxonField.set(taxon, proxy);
 
-        TaxonConcept taxonConcept = (TaxonConcept)mapper.map(taxon, TaxonConcept.class);
+        TaxonConcept taxonConcept = mapper.map(taxon, TaxonConcept.class);
         assertTrue("TaxonBase.relationsToThisTaxon was uninitialized, so TaxonConcept.hasRelationship should be null",taxonConcept.getHasRelationship().isEmpty());
     }
 
@@ -263,7 +262,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        SpeciesProfileModel speciesProfileModel = (SpeciesProfileModel)mapper.map(taxonDescription, SpeciesProfileModel.class);
+        SpeciesProfileModel speciesProfileModel = mapper.map(taxonDescription, SpeciesProfileModel.class);
         assertEquals(speciesProfileModel.getHasInformation().size(),2);
     }
 
@@ -277,7 +276,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         }
 
         SimpleDarwinRecord simpleDarwinRecord = mapper.map(taxon, SimpleDarwinRecord.class);
-        mapper.map((NonViralName)taxon.getName(), simpleDarwinRecord);
+        mapper.map(taxon.getName(), simpleDarwinRecord);
 
         assertNotNull(simpleDarwinRecord.getModified());
         assertEquals(taxon.getName().getTitleCache(), simpleDarwinRecord.getScientificName());
@@ -311,6 +310,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         enhancer.setSuperclass(clazz);
         enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         enhancer.setCallback( new MethodInterceptor() {
+            @Override
             public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
                 if("wasInitialized".equals(method.getName())) {
                   return false;
@@ -346,6 +346,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         enhancer.setSuperclass(clazz);
         enhancer.setInterfaces(interfaces.toArray(new Class[interfaces.size()]));
         enhancer.setCallback( new MethodInterceptor() {
+            @Override
             public Object intercept(Object obj, Method method, Object[] args, MethodProxy proxy) throws Throwable {
                 if("getHibernateLazyInitializer".equals(method.getName())) {
                   return new UninitializedLazyInitializer();
@@ -374,71 +375,110 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
     class UninitializedLazyInitializer implements LazyInitializer {
 
+        @Override
         public  boolean isUninitialized() {
             return true;
         }
 
+        @Override
         public String getEntityName() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public Serializable getIdentifier() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public Object getImplementation() {
             // TODO Auto-generated method stub
             return null;
         }
 
-        public Object getImplementation(SessionImplementor arg0)
-                throws HibernateException {
-            // TODO Auto-generated method stub
-            return null;
-        }
-
+        @Override
         public Class getPersistentClass() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public SessionImplementor getSession() {
             // TODO Auto-generated method stub
             return null;
         }
 
+        @Override
         public void initialize() throws HibernateException {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public boolean isUnwrap() {
             // TODO Auto-generated method stub
             return false;
         }
 
+        @Override
         public void setIdentifier(Serializable arg0) {
             // TODO Auto-generated method stub
 
         }
 
+        @Override
         public void setImplementation(Object arg0) {
             // TODO Auto-generated method stub
 
         }
 
-        public void setSession(SessionImplementor arg0)
-                throws HibernateException {
-            // TODO Auto-generated method stub
-
-        }
-
+        @Override
         public void setUnwrap(boolean arg0) {
             // TODO Auto-generated method stub
 
         }
+
+		@Override
+		public Object getImplementation(
+				org.hibernate.engine.spi.SessionImplementor session)
+				throws HibernateException {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		@Override
+		public boolean isReadOnlySettingAvailable() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public boolean isReadOnly() {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		@Override
+		public void setReadOnly(boolean readOnly) {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void setSession(
+				org.hibernate.engine.spi.SessionImplementor session)
+				throws HibernateException {
+			// TODO Auto-generated method stub
+
+		}
+
+		@Override
+		public void unsetSession() {
+			// TODO Auto-generated method stub
+
+		}
 
     }
 

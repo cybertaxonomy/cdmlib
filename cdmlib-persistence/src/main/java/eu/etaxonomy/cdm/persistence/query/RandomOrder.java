@@ -7,7 +7,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.criterion.CriteriaQuery;
 import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditQuery;
-import org.hibernate.util.StringHelper;
+import org.hibernate.internal.util.StringHelper;
 
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
 
@@ -25,6 +25,8 @@ public class RandomOrder extends OrderHint {
 	}
     
 	public class RandomHibernateOrder extends Order {
+		private static final long serialVersionUID = 8231534219451938847L;
+
 
 		protected RandomHibernateOrder() {
 			super(RandomOrder.PROPERTY_NAME, true);
@@ -40,6 +42,7 @@ public class RandomOrder extends OrderHint {
 		criteriaQuery.getSQLAlias(criteria));
 		} 
 	}
+	
 	@Override
 	public void add(AuditQuery query) {
 			throw new OperationNotSupportedInPriorViewException("You cannot sort in a random order in the history view");

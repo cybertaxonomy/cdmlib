@@ -12,6 +12,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.io.common.events.IIoObserver;
 
@@ -99,4 +100,12 @@ public interface IIoConfigurator extends IIoObservable{
 	
 	public void setAuthentication(String login, String password);
 	
+	/**
+	 * Creates the UsernamePasswordAuthenticationToken for the default admin.
+	 * 
+	 * @see Configuration#adminLogin
+	 * @see Configuration#adminPassword
+	 */
+	public void authenticateAsDefaultAdmin();
+		
 }

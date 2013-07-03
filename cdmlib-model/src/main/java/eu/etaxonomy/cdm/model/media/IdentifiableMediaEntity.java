@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
     "media"
 })
 @MappedSuperclass
+@Audited
 public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements IMediaDocumented, IMediaEntity{
 
 	private static final long serialVersionUID = 4038647011021908313L;
@@ -51,7 +53,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	@Cascade({CascadeType.SAVE_UPDATE})
 	//TODO
 	@Merge(MergeMode.ADD_CLONE)
-	private Set<Media> media = new HashSet<Media>();
+    private Set<Media> media = new HashSet<Media>();
 	
 	
 	/* (non-Javadoc)

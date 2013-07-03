@@ -44,11 +44,13 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      * @return
      * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
+    @Deprecated
     public TermVocabulary<Feature> getDefaultFeatureVocabulary();
 
     /**
      * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
+    @Deprecated
     public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid);
 
     /**
@@ -121,34 +123,123 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public int count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
 
     /**
-     * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
+     * Returns description elements of type <TYPE>, belonging to a given
+     * description, optionally filtered by one or more features
      *
-     * @param description The description which these description elements belong to (can be null to count all description elements)
-     * @param features Restrict the results to those description elements which are scoped by one of the Features passed (can be null or empty)
-     * @param type The type of description
-     * @param class
-     * @param pageSize The maximum number of description elements returned (can be null for all description elements)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
+     * @param description
+     *            The description which these description elements belong to
+     *            (can be null to count all description elements)
+     * @param descriptionType
+     *            A filter DescriptionElements which belong to of a specific
+     *            class of Descriptions
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter for DescriptionElements of a specific class
+     * @param pageSize
+     *            The maximum number of description elements returned (can be
+     *            null for all description elements)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager containing DescriptionElementBase instances
-     *
-     * FIXME candidate for harmonization - rename to pageDescriptionElements
+
+     * @deprecated use
+     *             {@link #pageDescriptionElements(DescriptionBase, Set, Class, Integer, Integer, List)}
+     *             instead
      */
+    @Deprecated
     public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
+
     /**
-     * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
+     * Returns description elements of type <TYPE>, belonging to a given
+     * description, optionally filtered by one or more features
      *
-     * @param description The description which these description elements belong to (can be null to count all description elements)
-     * @param features Restrict the results to those description elements which are scoped by one of the Features passed (can be null or empty)
-     * @param type The type of description
-     * @param class
-     * @param pageSize The maximum number of description elements returned (can be null for all description elements)
-     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-     * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
-     * @return a List containing DescriptionElementBase instances
+     * @param description
+     *            The description which these description elements belong to
+     *            (can be null to count all description elements)
+     * @param descriptionType
+     *            A filter DescriptionElements which belong to of a specific
+     *            class of Descriptions
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter for DescriptionElements of a specific class
+     * @param pageSize
+     *            The maximum number of description elements returned (can be
+     *            null for all description elements)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     *
+     * @return a Pager containing DescriptionElementBase instances
      */
+    public Pager<DescriptionElementBase> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Returns description elements of type <TYPE>, belonging to a given
+     * description, optionally filtered by one or more features
+     *
+     * @param description
+     *            The description which these description elements belong to
+     *            (can be null to count all description elements)
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter for DescriptionElements of a specific class
+     * @param pageSize
+     *            The maximum number of description elements returned (can be
+     *            null for all description elements)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a List of DescriptionElementBase instances
+     * @deprecated use {@link #listDescriptionElements(DescriptionBase, Class, Set, Class, Integer, Integer, List)} instead
+     */
+    @Deprecated
     public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Returns description elements of type <TYPE>, belonging to a given
+     * description, optionally filtered by one or more features
+     *
+     * @param description
+     *            The description which these description elements belong to
+     *            (can be null to count all description elements)
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter DescriptionElements of a for specific class
+     * @param pageSize
+     *            The maximum number of description elements returned (can be
+     *            null for all description elements)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a List of DescriptionElementBase instances
+     */
+    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Return a Pager containing Annotation entities belonging to the DescriptionElementBase instance supplied, optionally filtered by MarkerType
@@ -301,7 +392,85 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
-    public <T extends DescriptionElementBase> List<T>  getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<? extends T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    /**
+     * Provides access to all DescriptionElements associated with the given Taxon
+     * via a TaxonDescrition.
+     *
+     * @param taxon
+     *            The Taxon to return Description elements for
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter for DescriptionElements of a specific class
+     * @param pageSize
+     *            The maximum number of description elements returned (can be
+     *            null for all description elements)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a List containing all matching DescriptionElementBase instances
+     *
+     * @deprecated use {@link #listDescriptionElementsForTaxon(Taxon, Set, Class, Integer, Integer, List)} instead
+     */
+    @Deprecated
+    public <T extends DescriptionElementBase> List<T>  getDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Provides access to all DescriptionElements associated with the given Taxon
+     * via a TaxonDescrition.
+     *
+     * @param taxon
+     *            The Taxon to return Description elements for
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter for DescriptionElements of a specific class
+     * @param pageSize
+     *            The maximum number of description elements returned (can be
+     *            null for all description elements)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a List containing all matching DescriptionElementBase instances
+     *
+     */
+    public <T extends DescriptionElementBase> List<T>  listDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
+    /**
+     * Provides access to all DescriptionElements associated with the given Taxon
+     * via a TaxonDescrition.
+     *
+     * @param taxon
+     *            The Taxon to return Description elements for
+     * @param features
+     *            Restrict the results to those description elements which are
+     *            scoped by one of the Features passed (can be null or empty)
+     * @param type
+     *            A filter for DescriptionElements of a specific class
+     * @param pageSize
+     *            The maximum number of description elements returned
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a Pager for all matching DescriptionElementBase instances
+     *
+     */
+    public <T extends DescriptionElementBase> Pager<T>  pageDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+
 
     public DistributionTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
 

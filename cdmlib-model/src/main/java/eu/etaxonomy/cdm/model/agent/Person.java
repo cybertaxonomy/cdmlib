@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.model.agent;
 
 import java.util.HashSet;
 import java.util.Set;
+
+import javassist.compiler.ast.Keyword;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -29,14 +31,12 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.strategy.cache.agent.PersonDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -57,7 +57,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
  * <li> AgentName (partially) according to the TCS
  * <li> Person (PersonName partially) according to the ABCD schema
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:42
@@ -81,42 +81,47 @@ public class Person extends TeamOrPersonBase<Person>{
 	public static final Logger logger = Logger.getLogger(Person.class);
 
     @XmlElement(name = "Prefix")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String prefix;
-    
+
     @XmlElement(name = "FirstName")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String firstname;
-	
+
     @XmlElement(name = "LastName")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String lastname;
-	
+
     @XmlElement(name = "Suffix")
-    @Field(index=Index.TOKENIZED)
-    @NullOrNotEmpty
+    @Field
+  //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
 	private String suffix;
-	
+
     @XmlElement(name = "Lifespan")
     @IndexedEmbedded
     @Match(value=MatchMode.EQUAL_OR_ONE_NULL)
-    @NotNull
+  //TODO Val #3379    check carefully what the condition is that lifespan is really null in legacy data
+//    @NotNull
 	private TimePeriod lifespan = TimePeriod.NewInstance();
-	
+
     @XmlElementWrapper(name = "InstitutionalMemberships", nillable = true)
     @XmlElement(name = "InstitutionalMembership")
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "person")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	protected Set<InstitutionalMembership> institutionalMemberships;
 
-	/** 
+	/**
 	 * Creates a new empty instance for a person whose existence is all what is known.
 	 * This can be a provisional solution until more information about <i>this</i> person
 	 * can be gathered, for instance in case a member of a nomenclatural author team
@@ -126,24 +131,24 @@ public class Person extends TeamOrPersonBase<Person>{
 	public static Person NewInstance(){
 		return new Person();
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new instance for a person for whom an "identification" string
 	 * is all what is known. This string is generally a short or a complete name.
 	 * As this string is kept in the {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#getTitleCache() titleCache}
 	 * attribute and should not be overwritten by the {@link #generateTitle() generateTitle} method
-	 * the {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on. 
+	 * the {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#isProtectedTitleCache() protectedTitleCache} flag will be turned on.
 	 */
 	public static Person NewTitledInstance(String titleCache){
 		Person result = new Person();
 		result.setTitleCache(titleCache, true);
 		return result;
 	}
-	
-	
-	/** 
+
+
+	/**
 	 * Class constructor.
-	 * 
+	 *
 	 * @see #Person(String, String, String)
 	 */
 	protected Person() {
@@ -151,8 +156,8 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.cacheStrategy = PersonDefaultCacheStrategy.NewInstance();
 
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor using a "forenames" string (including initials),
 	 * a surname (family name) and an abbreviated name as used in nomenclature.
 	 * For the abbreviated name the inherited attribute {@link TeamOrPersonBase#getNomenclaturalTitle() nomenclaturalTitle}
@@ -171,10 +176,10 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.setNomenclaturalTitle(nomenclaturalTitel);
 		logger.debug("after - Set nomenclatural Title");
 	}
-	
-	
-	/** 
-	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person. 
+
+
+	/**
+	 * Returns the set of {@link InstitutionalMembership institution memberships} corresponding to <i>this</i> person.
 	 *
 	 * @see     InstitutionalMembership
 	 */
@@ -191,11 +196,11 @@ public class Person extends TeamOrPersonBase<Person>{
 			logger.warn("Institutional membership's person has to be changed for adding it to person: " + this);
 			ims.getPerson().removeInstitutionalMembership(ims);
 			ims.setPerson(this);
-			
+
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Adds a new {@link InstitutionalMembership membership} of <i>this</i> person in an {@link Institution institution}
 	 * to the set of his institution memberships.
 	 * This method also creates a new institutional membership instance.
@@ -211,8 +216,8 @@ public class Person extends TeamOrPersonBase<Person>{
 	public InstitutionalMembership addInstitutionalMembership(Institution institution, TimePeriod period, String department, String role){
 		return new InstitutionalMembership(institution, this, period, department, role);
 	}
-	
-	/** 
+
+	/**
 	 * Removes one element from the set of institutional memberships of <i>this</i> person.
 	 * Institute and person attributes of the institutional membership object
 	 * will be nullified.
@@ -243,10 +248,10 @@ public class Person extends TeamOrPersonBase<Person>{
 
 	/**
 	 * Returns the string representing the given name or forename
-	 * (for instance "John") of <i>this</i> person. 
+	 * (for instance "John") of <i>this</i> person.
 	 * This is the part of his name which is not shared with other
 	 * family members. Actually it may be just initials (for instance "G.&nbsp;Jr."),
-	 * all forenames in full or a combination of expanded names and initials. 
+	 * all forenames in full or a combination of expanded names and initials.
 	 */
 	public String getFirstname(){
 		return this.firstname;
@@ -258,12 +263,12 @@ public class Person extends TeamOrPersonBase<Person>{
 		this.firstname = firstname;
 	}
 
-	
+
 	/**
 	 * Returns the string representing the hereditary name (surname or family name)
-	 * (for instance "Smith") of <i>this</i> person. 
+	 * (for instance "Smith") of <i>this</i> person.
 	 * This is the part of his name which is common to (all) other
-	 * members of his family, as distinct from the given name or forename. 
+	 * members of his family, as distinct from the given name or forename.
 	 */
 	public String getLastname(){
 		return this.lastname;
@@ -291,7 +296,7 @@ public class Person extends TeamOrPersonBase<Person>{
 	}
 
 
-	/** 
+	/**
 	 * Returns the {@link eu.etaxonomy.cdm.model.common.TimePeriod period of time}
 	 * in which <i>this</i> person was alive (life span).
 	 * The general form is birth date - death date
@@ -311,6 +316,9 @@ public class Person extends TeamOrPersonBase<Person>{
 	 * @see  #getLifespan()
 	 */
 	public void setLifespan(TimePeriod lifespan){
+		if (lifespan == null){
+			this.lifespan = TimePeriod.NewInstance(new Partial(), new Partial());
+		}
 		this.lifespan = lifespan;
 	}
 
@@ -322,7 +330,7 @@ public class Person extends TeamOrPersonBase<Person>{
 //	 * This method overrides {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle() generateTitle}.
 //	 * The result might be kept as {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#setTitleCache(String) titleCache} if the
 //	 * flag {@link eu.etaxonomy.cdm.model.common.IdentifiableEntity#protectedTitleCache protectedTitleCache} is not set.
-//	 * 
+//	 *
 //	 * @return  the string with the full name of <i>this</i> person
 //	 */
 //	@Override
@@ -330,16 +338,16 @@ public class Person extends TeamOrPersonBase<Person>{
 //		String title = null;
 //		if (cacheStrategy != null) {
 //		title = cacheStrategy.getTitleCache(this);
-//		} 
+//		}
 //        return title;
 //	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> Person. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Person.
-	 *  
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -354,8 +362,8 @@ public class Person extends TeamOrPersonBase<Person>{
 			e.printStackTrace();
 			return null;
 		}
-		
-		
+
+
 	}
 
 }

@@ -41,9 +41,9 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -122,12 +122,13 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private static final Logger logger = Logger.getLogger(NonViralName.class);
 
     @XmlElement(name = "NameCache")
-    @Fields({@Field(name = "nameCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
-         @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    @Fields({
+        @Field(name = "nameCache_tokenized"),
+        @Field(analyze = Analyze.NO)
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
-    @NotEmpty(groups = Level2.class) // implictly NotNull
+    @NotEmpty(groups = Level2.class) // implicitly NotNull
     @Size(max = 255)
     private String nameCache;
 
@@ -136,35 +137,38 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     protected boolean protectedNameCache;
 
     @XmlElement(name = "GenusOrUninomial")
-    @Field(index=Index.TOKENIZED)
+    @Field
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[A-Z][a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForUninomial.message}")
-    @NotEmpty(groups = Level3.class)
+    @NullOrNotEmpty 
+    @NotEmpty(groups = Level3.class)  //TODO shouldn't this be only @NotNull as @NullOrNotEmpty already checks for not being empty.
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")
-    @Field(index=Index.TOKENIZED)
+    @Field
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class,message="{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraGenericEpithet;
 
     @XmlElement(name = "SpecificEpithet")
-    @Field(index=Index.TOKENIZED)
+    @Field
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String specificEpithet;
 
     @XmlElement(name = "InfraSpecificEpithet")
-    @Field(index=Index.TOKENIZED)
+    @Field
     @CacheUpdate("nameCache")
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NullOrNotEmpty
     @Size(max = 255)
     @Pattern(regexp = "[a-z\\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForEpithet.message}")
     private String infraSpecificEpithet;
@@ -210,12 +214,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private INomenclaturalAuthor exBasionymAuthorTeam;
 
     @XmlElement(name = "AuthorshipCache")
-    @Fields({@Field(name = "authorshipCache_tokenized",index = org.hibernate.search.annotations.Index.TOKENIZED),
-             @Field(index = org.hibernate.search.annotations.Index.UN_TOKENIZED)
+    @Fields({
+        @Field(name = "authorshipCache_tokenized"),
+        @Field(analyze = Analyze.NO)
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"combinationAuthorTeam", "basionymAuthorTeam", "exCombinationAuthorTeam", "exBasionymAuthorTeam"} )
-    @NullOrNotEmpty
+    //TODO Val #3379
+//    @NotNull
     @Size(max = 255)
     @Pattern(regexp = "[A-Za-z0-9 \\u00E4\\u00EB\\u00EF\\u00F6\\u00FC\\-\\&\\,\\(\\)\\.]+", groups=Level2.class, message = "{eu.etaxonomy.cdm.model.name.NonViralName.allowedCharactersForAuthority.message}")
     private String authorshipCache;
@@ -226,16 +232,16 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
 
     @XmlElementWrapper(name = "HybridRelationsFromThisName")
     @XmlElement(name = "HybridRelationsFromThisName")
-    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE_ORPHAN })
+    @OneToMany(mappedBy="relatedFrom", fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridParentRelations = new HashSet<HybridRelationship>();
 
     @XmlElementWrapper(name = "HybridRelationsToThisName")
     @XmlElement(name = "HybridRelationsToThisName")
-    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })  //a hybrid relation can be deleted automatically if the child is deleted.
+    @OneToMany(mappedBy="relatedTo", fetch = FetchType.LAZY, orphanRemoval=true) //a hybrid relation can be deleted automatically if the child is deleted.
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})  
     @Merge(MergeMode.RELATION)
     @NotNull
     private Set<HybridRelationship> hybridChildRelations = new HashSet<HybridRelationship>();
@@ -377,7 +383,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         setSpecificEpithet(specificEpithet);
         setInfraSpecificEpithet(infraSpecificEpithet);
         setCombinationAuthorTeam(combinationAuthorTeam);
-        setNomenclaturalReference((Reference)nomenclaturalReference);
+        setNomenclaturalReference(nomenclaturalReference);
         this.setNomenclaturalMicroReference(nomenclMicroRef);
     }
 
@@ -392,8 +398,10 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         }
     }
 
+    @Override
     protected void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
             public void propertyChange(PropertyChangeEvent e) {
                 boolean protectedByLowerCache = false;
                 //authorship cache
@@ -850,7 +858,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         if (protectedAuthorshipCache == false){
             String oldCache = this.authorshipCache;
             String newCache = this.getAuthorshipCache();
-            if ( (oldCache == null && newCache != null)  ||  ! oldCache.equals(newCache)){
+            if ( (oldCache == null && newCache != null)  ||  CdmUtils.nullSafeEqual(oldCache,newCache)){
                 this.setAuthorshipCache(this.getAuthorshipCache(), false);
             }
         }
@@ -867,12 +875,14 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         setAuthorshipCache(authorshipCache, true);
     }
 
+    @Override
     @Transient
     public String getFullTitleCache(){
         updateAuthorshipCache();
         return super.getFullTitleCache();
     }
 
+    @Override
     public String getTitleCache(){
         if(!protectedTitleCache) {
             updateAuthorshipCache();
@@ -895,6 +905,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         this.setProtectedAuthorshipCache(protectedAuthorshipCache);
     }
 
+    @Override
     public void setTitleCache(String titleCache, boolean protectCache){
         super.setTitleCache(titleCache, protectCache);
     }
@@ -1111,6 +1122,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * @see    	HybridRelationshipType
      * @deprecated use {@link #getHybridParentRelations()} instead. Will be removed in higher versions.
      */
+    @Deprecated
     @Transient
     public Set<HybridRelationship> getParentRelationships() {
         return getHybridParentRelations();

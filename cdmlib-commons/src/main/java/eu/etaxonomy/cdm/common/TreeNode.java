@@ -5,6 +5,7 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
+ * TODO move this class to another package. 
  * Represents a node of the Tree<T> class. The TreeNode<T> is also a container, and
  * can be thought of as instrumentation to determine the location of the type T
  * in the Tree<T>.

@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotSame;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Iterator;
@@ -45,23 +44,19 @@ public class MolecularTest {
 		seq.setBarcode(true);
 		seq.setSequence("ATTGCCATCG");
 		
-		GenBankAccession genBankAccession = new GenBankAccession();
-		genBankAccession.setAccessionNumber("12393247");
+		GenBankAccession genBankAccession = GenBankAccession.NewInstance("12393247");
 		seq.addGenBankAccession(genBankAccession );
 		Media chromatogram = Media.NewInstance();
 		chromatogram.putTitle(LanguageString.NewInstance("chromatogram", Language.ENGLISH()));
 		seq.addChromatogram(chromatogram);
 		
-		Sequence otherSeq = new Sequence();
+		Sequence otherSeq = Sequence.NewInstance("CATCGAGTTGC");
 		
 		otherSeq.setBarcode(true);
-		otherSeq.setSequence("CATCGAGTTGC");
 		dnaSample.addSequences(seq);
 		dnaSample.addSequences(otherSeq);
 		
-		locus= new Locus();
-		locus.setName("Test");
-		locus.setDescription("test locus");
+		locus= Locus.NewInstance("Test", "test locus");
 		
 		phyloTree =new PhylogeneticTree();
 		phyloTree.addUsedSequences(seq);

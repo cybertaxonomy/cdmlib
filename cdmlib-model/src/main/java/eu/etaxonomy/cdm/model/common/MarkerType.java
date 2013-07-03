@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,8 +22,8 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
-import org.hibernate.search.annotations.Index;
 import org.hibernate.search.annotations.Indexed;
 
 /**
@@ -51,22 +51,23 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	private static final UUID uuidEndemic = UUID.fromString("efe95ade-8a6c-4a0e-800e-437c8b50c45e");
 	private static final UUID uuidModifiable = UUID.fromString("c21bc83f-c8ae-4126-adee-10dfe817e96a");
 	private static final UUID uuidUse = UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039");
-	
-	protected static Map<UUID, MarkerType> termMap = null;		
+	private static final UUID uuidComputed = UUID.fromString("5cc15a73-2947-44e3-9319-85dd20736e55");
+
+	protected static Map<UUID, MarkerType> termMap = null;
 
 	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
 		return new MarkerType(term, label, labelAbbrev);
 	}
-	
-	
-	
+
+
+
     @XmlAttribute(name = "isTechnical")
-    @Field(index=Index.UN_TOKENIZED)
+    @Field(analyze = Analyze.NO)
     private boolean isTechnical=false;
-    
 
 
-	
+
+
 	/**
 	 * Constructor
 	 * @param term
@@ -80,8 +81,8 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	 * to be used by applications only. E.g. a FeatureTree may have a marker that defines
 	 * the role of this FeatureTree ("for ordering") whereas a {@link eu.etaxonomy.cdm.model.taxon.Taxon taxon}
 	 * may have a user defined marker "completed" that indicates that this taxon does not
-	 * need further investigation. The earlier will be flagged isTechnical=true whereas 
-	 * the later will be flagged as isTechnical=false 
+	 * need further investigation. The earlier will be flagged isTechnical=true whereas
+	 * the later will be flagged as isTechnical=false
 	 * @return the isTechnical
 	 */
 	public boolean isTechnical() {
@@ -94,8 +95,8 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	public void setTechnical(boolean isTechnical) {
 		this.isTechnical = isTechnical;
 	}
-	
-//***************************** CONSTRUCTOR **************************************/	
+
+//***************************** CONSTRUCTOR **************************************/
 
 	/**
 	 * Constructor
@@ -107,8 +108,8 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	}
 
 //***************************** TERMS **************************************/
-    
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */
@@ -117,15 +118,15 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 		termMap = null;
 	}
 
-	
+
 	protected static MarkerType getTermByUuid(UUID uuid){
 		if (termMap == null){
 			DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 			vocabularyStore.initialize();
 		}
-		return (MarkerType)termMap.get(uuid);
+		return termMap.get(uuid);
 	}
-	
+
 	public static final MarkerType IMPORTED(){
 		return getTermByUuid(uuidImported);
 	}
@@ -145,7 +146,7 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	public static final MarkerType PUBLISH(){
 		return getTermByUuid(uuidPublish);
 	}
-	
+
 	public static final MarkerType IN_BIBLIOGRAPHY(){
 		return getTermByUuid(uuidInBibliography);
 	}
@@ -153,19 +154,22 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 	public static final MarkerType ENDEMIC(){
 		return getTermByUuid(uuidEndemic);
 	}
-	
+
 	public static final MarkerType MODIFIABLE(){
 		return getTermByUuid(uuidModifiable);
 	}
 	public static final MarkerType USE(){
 		return getTermByUuid(uuidUse);
 	}
-	
+    public static final MarkerType COMPUTED(){
+        return getTermByUuid(uuidComputed);
+    }
+
 	@Override
 	protected void setDefaultTerms(TermVocabulary<MarkerType> termVocabulary) {
 		termMap = new HashMap<UUID, MarkerType>();
 		for (MarkerType term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), (MarkerType)term);
+			termMap.put(term.getUuid(), term);
 		}
 	}
 

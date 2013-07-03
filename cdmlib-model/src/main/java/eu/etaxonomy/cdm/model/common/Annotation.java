@@ -1,16 +1,16 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.model.common;
 
-import java.net.MalformedURLException;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -44,15 +44,16 @@ import eu.etaxonomy.cdm.model.agent.Person;
     "commentator",
     "annotatedObj",
     "annotationType",
-    "linkbackUrl"
+    "linkbackUri"
 })
 @Entity
 @Audited
 public class Annotation extends LanguageStringBase implements Cloneable {
 	private static final long serialVersionUID = -4484677078599520233L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Annotation.class);
-	
-	
+
+
 	/**
 	 * Factory method.
 	 * @param text
@@ -62,13 +63,13 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public static Annotation NewInstance(String text, Language lang){
 		return new Annotation(text, lang);
 	}
-	
+
 	public static Annotation NewInstance(String text, AnnotationType annotationType, Language lang){
 		Annotation annotation = new Annotation(text, lang);
 		annotation.setAnnotationType(annotationType);
 		return annotation;
 	}
-	
+
 	/**
 	 * Factory method. Using default language.
 	 * @param text
@@ -77,11 +78,11 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public static Annotation NewDefaultLanguageInstance(String text){
 		return new Annotation(text, Language.DEFAULT());
 	}
-	
+
 	protected Annotation(){
 		super();
 	}
-	
+
 	/**
 	 * Constructor
 	 * @param text
@@ -90,8 +91,8 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	protected Annotation(String text, Language language) {
 		super(text, language);
 	}
-	
-	
+
+
 	//Human annotation
 	@XmlElement(name = "Commentator")
     @XmlIDREF
@@ -99,7 +100,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
 	private Person commentator;
-	
+
 	@XmlElement(name = "AnnotatedObject")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -110,19 +111,20 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@JoinColumn(name = "annotatedObj_id")
 	@NotAudited
 	private AnnotatableEntity annotatedObj;
-	
+
     @XmlElement(name = "AnnotationType")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	private AnnotationType annotationType;
-	
+
 	// for external annotations/comments the URL of these can be set.
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
-	@XmlElement(name = "LinkbackURL")
-	private URL linkbackUrl;
-	
+	@XmlElement(name = "LinkbackURL") // TODO tell JAXB to use the new field name: linkbackUri
+	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri
+	private URI linkbackUri;
+
 	/**
 	 * Currently envers does not support @Any
 	 * @return
@@ -130,10 +132,10 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-	
+
 	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
 	/**
-	 * 
+	 *
 	 * @param newAnnotatedObj
 	 * @deprecated should not be used, is only public for internal reasons
 	 */
@@ -156,41 +158,41 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public void setCommentator(Person commentator){
 		this.commentator = commentator;
 	}
-	
-	
-	public URL getLinkbackUrl() {
-		return linkbackUrl;
+
+
+	public URI getLinkbackUri() {
+		return linkbackUri;
 	}
-	public void setLinkbackUrl(URL linkbackUrl) {
-		this.linkbackUrl = linkbackUrl;
+	public void setLinkbackUri(URI linkbackUri) {
+		this.linkbackUri = linkbackUri;
 	}
-	
+
 	/**
 	 * private get/set methods for Hibernate that allows us to save the URL as strings
 	 * @return
 	 */
-	private String getLinkbackUrlStr() {
-		if (linkbackUrl == null){
+	private String getLinkbackUriStr() {
+		if (linkbackUri == null){
 			return null;
 		}
-		return linkbackUrl.toString();
+		return linkbackUri.toString();
 	}
-	private void setLinkbackUrlStr(String linkbackUrlString) {
-		if (linkbackUrlString == null){
-			this.linkbackUrl = null;
+	private void setLinkbackUriStr(String linkbackUriString) {
+		if (linkbackUriString == null){
+			this.linkbackUri = null;
 		}else{
 			try {
-				this.linkbackUrl = new URL(linkbackUrlString);
-			} catch (MalformedURLException e) { //can't be thrown as otherwise Hibernate throws PropertyAccessExceptioin
-				logger.warn("Runtime error occurred in setLinkbackUrlStr");
-				e.printStackTrace();
-			}
+				this.linkbackUri = new URI(linkbackUriString);
+			} catch (URISyntaxException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
 		}
 	}
-	
+
 // ***************************** TO STRING ***********************************
-	
-	
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
 	 */
@@ -202,11 +204,11 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 			return super.toString();
 		}
 	}
-	
-	
-	
+
+
+
 //****************** CLONE ************************************************/
-	 
+
 	/* (non-Javadoc)
 	 * @see java.lang.Object#clone()
 	 */
@@ -215,7 +217,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		Annotation result = (Annotation)super.clone();
 		result.setCommentator(this.getCommentator());
 		result.setAnnotationType(this.getAnnotationType());
-		result.setLinkbackUrl(this.linkbackUrl);
+		result.setLinkbackUri(this.linkbackUri);
 		return result;
 	}
 

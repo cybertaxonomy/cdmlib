@@ -31,6 +31,6 @@ public interface IPolytomousKeyService extends IIdentifiableEntityService<Polyto
 	public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths);
 	
 	public Pager<PolytomousKey> findByTaxonomicScope(TaxonBase taxon, Integer pageSize,
-			Integer pageNumber, List<String> propertyPaths);
+			Integer pageNumber, List<String> propertyPaths, List<String> nodePaths);
 	
 }

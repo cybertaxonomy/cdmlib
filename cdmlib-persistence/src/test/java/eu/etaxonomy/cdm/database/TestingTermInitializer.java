@@ -38,45 +38,45 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 public class TestingTermInitializer extends PersistentTermInitializer {
     private static final Logger logger = Logger.getLogger(TestingTermInitializer.class);
 
-	private DataSource dataSource;
+    private DataSource dataSource;
 
-	private Resource termsDataSet;
+    private Resource termsDataSet;
 
-	private Resource termsDtd;
+    private Resource termsDtd;
 
-	public void setTermsDataSet(Resource termsDataSet) {
-		this.termsDataSet = termsDataSet;
-	}
+    public void setTermsDataSet(Resource termsDataSet) {
+        this.termsDataSet = termsDataSet;
+    }
 
-	public void setTermsDtd(Resource termsDtd) {
-		this.termsDtd = termsDtd;
-	}
+    public void setTermsDtd(Resource termsDtd) {
+        this.termsDtd = termsDtd;
+    }
 
-	@Autowired
-	public void setDataSource(DataSource dataSource) {
-		this.dataSource = dataSource;
-	}
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+        this.dataSource = dataSource;
+    }
 
 
     @PostConstruct
-	@Override
-	public void initialize() {
-		super.initialize();
-	}
+    @Override
+    public void initialize() {
+        super.initialize();
+    }
 
     @Override
-	public void doInitialize(){
-    	logger.info("TestingTermInitializer initialize start ...");
-		if (isOmit()){
-			logger.info("TestingTermInitializer.omit == true, returning without initializing terms");
-			return;
-		} else {
-			TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-			IDatabaseConnection connection = null;
+    public void doInitialize(){
+        logger.info("TestingTermInitializer initialize start ...");
+        if (isOmit()){
+            logger.info("TestingTermInitializer.omit == true, returning without initializing terms");
+            return;
+        } else {
+            TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+            IDatabaseConnection connection = null;
 
-			try {
+            try {
 
-				connection = getConnection();
+                connection = getConnection();
 
 //				MultiSchemaXmlDataSetFactory dataSetFactory = new MultiSchemaXmlDataSetFactory();
 //		    	MultiSchemaDataSet multiSchemaDataset = dataSetFactory.createDataSet(termsDataSet.getFile());
@@ -88,52 +88,54 @@ public class TestingTermInitializer extends PersistentTermInitializer {
 //			    	}
 //		    	}
 
-				IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
+//                logger.info("loading data base schema from " + termsDtd.getFile().getAbsolutePath());
+//                logger.info("loading data set from " + termsDataSet.getFile().getAbsolutePath());
+                IDataSet dataSet = new FlatXmlDataSet(new InputStreamReader(termsDataSet.getInputStream()),new InputStreamReader(termsDtd.getInputStream()));
 //				ITable definedTermBase = dataSet.getTable("DEFINEDTERMBASE");
 //				for(int rowId = 0; rowId < definedTermBase.getRowCount(); rowId++) {
 //					System.err.println(rowId + " : " + definedTermBase.getValue(rowId, "CREATEDBY_ID"));
 //				}
-				DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
+                DatabaseOperation.CLEAN_INSERT.execute(connection, dataSet);
 
-			} catch (Exception e) {
-				logger.error(e);
-				for(StackTraceElement ste : e.getStackTrace()) {
-					logger.error(ste);
-				}
-			} finally {
-				try {
-					connection.close();
-				} catch (SQLException sqle) {
-					logger.error(sqle);
-				}
-			}
+            } catch (Exception e) {
+                logger.error(e);
+                for(StackTraceElement ste : e.getStackTrace()) {
+                    logger.error(ste);
+                }
+            } finally {
+                try {
+                    connection.close();
+                } catch (SQLException sqle) {
+                    logger.error(sqle);
+                }
+            }
 
-			transactionManager.commit(txStatus);
+            transactionManager.commit(txStatus);
 
-			txStatus = transactionManager.getTransaction(txDefinition);
+            txStatus = transactionManager.getTransaction(txDefinition);
 
-			for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
-				Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
-				UUID vocabularyUuid = vocabularyType.getUuid();
-				secondPass(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>());
-			}
-			transactionManager.commit(txStatus);
-			//txStatus = transactionManager.getTransaction(txDefinition);
-		}
-		logger.info("TestingTermInitializer initialize end ...");
-	}
+            for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
+                Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
+                UUID vocabularyUuid = vocabularyType.getUuid();
+                secondPass(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>());
+            }
+            transactionManager.commit(txStatus);
+            //txStatus = transactionManager.getTransaction(txDefinition);
+        }
+        logger.info("TestingTermInitializer initialize end ...");
+    }
 
-	protected IDatabaseConnection getConnection() throws SQLException {
-		IDatabaseConnection connection = null;
-		try {
-			connection = new DatabaseConnection(dataSource.getConnection());
+    protected IDatabaseConnection getConnection() throws SQLException {
+        IDatabaseConnection connection = null;
+        try {
+            connection = new DatabaseConnection(dataSource.getConnection());
 
-			DatabaseConfig config = connection.getConfig();
-			//FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
-			config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,new H2DataTypeFactory());
-		} catch (Exception e) {
-			logger.error(e);
-		}
-		return connection;
-	}
+            DatabaseConfig config = connection.getConfig();
+            //FIXME must use unitils.properties: org.unitils.core.dbsupport.DbSupport.implClassName & database.dialect to find configured DataTypeFactory
+            config.setProperty(DatabaseConfig.PROPERTY_DATATYPE_FACTORY,new H2DataTypeFactory());
+        } catch (Exception e) {
+            logger.error(e);
+        }
+        return connection;
+    }
 }

@@ -18,10 +18,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.hibernate.Hibernate;
-import org.hibernate.collection.PersistentCollection;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
-import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
-import org.hibernate.proxy.HibernateProxy;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -37,7 +33,6 @@ import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet

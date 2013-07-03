@@ -35,6 +35,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
@@ -174,4 +175,14 @@ public class CsvExportController extends AbstractController{
         config.setNamedAreas(selectedAreas);
 		return config;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
+	 */
+	@Override
+	public void setService(IService service) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

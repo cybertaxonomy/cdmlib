@@ -27,7 +27,10 @@ import eu.etaxonomy.cdm.validation.constraint.TaxonNameCannotBeAcceptedAndSynony
 @Constraint(validatedBy = TaxonNameCannotBeAcceptedAndSynonymValidator.class)
 @Documented
 public @interface TaxonNameCannotBeAcceptedAndSynonym {
-String message() default "{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}";
-Class<? extends Payload>[] payload() default {};
-Class<?>[] groups() default {};
+	
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynonym.synonymAndTaxonNotAllowed.message}";
+	
+	Class<? extends Payload>[] payload() default {};
+	
+	Class<?>[] groups() default {};
 }

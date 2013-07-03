@@ -114,7 +114,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
             }
 			
             criteria.setProjection(Projections.rowCount());
-			return (Integer)criteria.uniqueResult();
+    		return ((Number)criteria.uniqueResult()).intValue();
 		} else {
 			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(DeterminationEvent.class,auditEvent.getRevisionNumber());
 			
@@ -290,7 +290,7 @@ public class OccurrenceDaoHibernateImpl extends IdentifiableDaoBase<SpecimenOrOb
 		
 		criteria.createCriteria("determinations").add(Restrictions.eq("taxon", determinedAs));
 		criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
-		return (Integer) criteria.uniqueResult();
+		return ((Number)criteria.uniqueResult()).intValue();
 	}
 
 	/* (non-Javadoc)

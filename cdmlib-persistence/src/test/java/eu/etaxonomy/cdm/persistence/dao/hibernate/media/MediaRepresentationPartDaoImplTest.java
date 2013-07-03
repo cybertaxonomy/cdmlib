@@ -10,9 +10,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.media;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -30,11 +27,10 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaRepresentationPartDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
-//import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet
-public class MediaRepresentationPartDaoImplTest extends /*CdmTransactionalIntegrationTest*/CdmIntegrationTest {
+public class MediaRepresentationPartDaoImplTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByType
 	IMediaRepresentationPartDao dao;
@@ -73,7 +69,7 @@ public class MediaRepresentationPartDaoImplTest extends /*CdmTransactionalIntegr
 		
 		try {
 			MediaRepresentationPart part3 = dao.findByUuid(UUID.fromString("b48a0f26-2f42-3ce3-8a04-dd98feaa8e98"));
-//			Assert.assertEquals("part URI should be http://www.test2.de", new URI("http://www.test2.de"), part3.getUri());
+			Assert.assertEquals("part URI should be http://www.test2.de", new URI("http://www.test2.de"), part3.getUri());
 			Assert.fail("A TypeMismatchException should occurr for http://www.fail.de");
 		} catch (Exception e) {
 			if (e instanceof TypeMismatchException){
@@ -96,18 +92,7 @@ public class MediaRepresentationPartDaoImplTest extends /*CdmTransactionalIntegr
 			MediaRepresentation representation = MediaRepresentation.NewInstance();
 			representation.addRepresentationPart(part1);
 			dao.save(part1);
-		
-//			TaxonNameBase name = nameService.find(UUID.fromString("5d74500b-9fd5-4d18-b9cd-cc1c8a372fec"));
-//			System.out.println(name.getRank().getLabel());
-//			setComplete();
-//			endTransaction();
-//			try {
-//				printDataSet(System.out, new String[]{"MediaRepresentationPart"});
-//			} catch(Exception e) { 
-//				logger.warn(e);
-//			} 
-			
-			
+			commit();
 			
 		} catch (URISyntaxException e) {
 			Assert.fail("URI should be ok");

@@ -59,6 +59,9 @@ public enum MatchMode {
                 queryString = appendWildcard(queryString);
                 queryString = prependWildcard(queryString);
                 break;
+        default:
+            // Fall through for EXACT - Nothing to do //
+            break;
         }
         return queryString;
     }

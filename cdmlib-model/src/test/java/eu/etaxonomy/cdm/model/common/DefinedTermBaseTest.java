@@ -9,8 +9,6 @@
 
 package eu.etaxonomy.cdm.model.common;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
 import org.junit.Test;
 

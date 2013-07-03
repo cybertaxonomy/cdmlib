@@ -43,13 +43,14 @@ public class NameSearch implements RemoteResponse {
         return this.request;
     }
 
-    public void addToResponseList(String title, String name, String nameUuid, Set<TaxonBase> taxonBases,Set<TaxonBase> accTaxonBases) {
+    public void addToResponseList(String title, String name, float score, String nameUuid, Set<TaxonBase> taxonBases,Set<TaxonBase> accTaxonBases) {
 
         NameSearch.NameSearchResponse res = responseWithtitle(title);
         if (res == null) {
             res = new NameSearch.NameSearchResponse();
             res.setTitle(title);
             res.setName(name);
+            res.setScore(score);
             response.add(res);
         }
         res.addToNameUuids(nameUuid);
@@ -92,13 +93,15 @@ public class NameSearch implements RemoteResponse {
     public class NameSearchResponse {
         private String title;
         private String name;
-        private Set<String> nameUuids;
+        private float score;
+		private Set<String> nameUuids;
         private Set<String> taxonConceptUuids;
         private Set<String> acceptedTaxontUuids;
 
         public NameSearchResponse() {
             title = "";
             name = "";
+            score = 0;
             nameUuids = new HashSet<String>();
             taxonConceptUuids = new HashSet<String>();
             acceptedTaxontUuids = new HashSet<String>();
@@ -120,6 +123,14 @@ public class NameSearch implements RemoteResponse {
             return this.name;
         }
 
+        public float getScore() {
+			return score;
+		}
+
+		public void setScore(float score) {
+			this.score = score;
+		}
+		
         public void addToNameUuids(String nameUuid) {
             nameUuids.add(nameUuid);
         }

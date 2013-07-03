@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.test.integration;
 import org.apache.log4j.Logger;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.BeforeClass;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionDefinition;
@@ -118,6 +119,11 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      */
     protected void setTransactionDefinition(final TransactionDefinition customDefinition) {
         this.transactionDefinition = customDefinition;
+    }
+
+    @BeforeClass
+    public static void beforeClass() {
+        logger.debug("before test class");
     }
 
     /**
@@ -271,6 +277,7 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
             throw new IllegalStateException("No transaction manager set");
         }
         this.complete = true;
+        logger.debug("set complete = true");
     }
 
     /**
@@ -362,12 +369,14 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
         commit();
         if(logger.isDebugEnabled()){
             printDataSet(System.out, tableNames);
+            //careful, this will overwrite existing files
+//          writeDbUnitDataSetFile(tableNames);
         }
         startNewTransaction();
     }
 
     /**
-     *
+     * Commit and end transaction
      */
     protected void commit() {
         setComplete();

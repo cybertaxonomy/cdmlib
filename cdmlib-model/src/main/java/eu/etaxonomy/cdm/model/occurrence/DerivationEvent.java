@@ -80,9 +80,33 @@ public class DerivationEvent extends EventBase implements Cloneable{
 	/**
 	 * Factory method
 	 * @return
+	 * @deprecated Use {@link #NewInstance(DerivationEventType)} or any other factory method instead to make sure,
+	 * the derivation event type is always set.
 	 */
+	@Deprecated
 	public static DerivationEvent NewInstance(){
 		return new DerivationEvent();
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DerivationEvent NewInstance(DerivationEventType type){
+		DerivationEvent result = new DerivationEvent();
+		result.setType(type);
+		return result;
+	}
+	
+	/**
+	 * Factory method
+	 * @return
+	 */
+	public static DerivationEvent NewSimpleInstance(SpecimenOrObservationBase original, DerivedUnitBase derivative, DerivationEventType type){
+		DerivationEvent result = NewInstance(type);
+		result.addOriginal(original);
+		result.addDerivative(derivative);
+		return result;
 	}
 	
 	/**

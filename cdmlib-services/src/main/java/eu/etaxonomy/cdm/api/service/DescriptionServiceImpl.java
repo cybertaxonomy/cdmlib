@@ -21,11 +21,11 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -64,7 +65,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @version 1.0
  */
 @Service
-@Transactional(readOnly = true, propagation = Propagation.SUPPORTS)
+@Transactional(readOnly = true)
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao> implements IDescriptionService {
 
     private static final Logger logger = Logger.getLogger(DescriptionServiceImpl.class);
@@ -141,43 +142,66 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
+    @Override
     public TermVocabulary<Feature> getDefaultFeatureVocabulary(){
         String uuidFeature = "b187d555-f06f-4d65-9e53-da7c93f8eaa8";
         UUID featureUuid = UUID.fromString(uuidFeature);
-        return (TermVocabulary)vocabularyDao.findByUuid(featureUuid);
+        return vocabularyDao.findByUuid(featureUuid);
     }
 
+    @Override
     @Autowired
     protected void setDao(IDescriptionDao dao) {
         this.dao = dao;
     }
 
+    @Override
     public int count(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText,Set<Feature> feature) {
         return dao.countDescriptions(type, hasImages, hasText, feature);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * rename -> getElements
-     */
-    public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
+    @Override
+    public Pager<DescriptionElementBase> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        List<DescriptionElementBase> results = listDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
+        List<DescriptionElementBase> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, results.size(), pageSize, results);
     }
 
-    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getDescriptionElements(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.Set, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    @Deprecated
+    public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
             Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDescriptionElements(description, features, type);
+        return pageDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
+    }
 
+    @Override
+    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        Integer numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
         List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
+            results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         }
         return results;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#listDescriptionElements(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.Set, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    @Deprecated
+    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
+            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        return listDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
+    }
+
+    @Override
     public Pager<Annotation> getDescriptionElementAnnotations(DescriptionElementBase annotatedObj, MarkerType status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Integer numberOfResults = descriptionElementDao.countAnnotations(annotatedObj, status);
 
@@ -191,6 +215,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 
 
+    @Override
     public Pager<Media> getMedia(DescriptionElementBase descriptionElement,	Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.countMedia(descriptionElement);
 
@@ -202,11 +227,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    @Override
     public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Set<MarkerType> markerTypes = null;
         return pageTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
     }
 
+    @Override
     public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Set<MarkerType> markerTypes = null;
         return listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
@@ -216,6 +243,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IDescriptionService#pageMarkedTaxonDescriptions(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.Set, java.util.Set, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
      */
+    @Override
     public Pager<TaxonDescription> pageTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes);
 
@@ -227,6 +255,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return new DefaultPagerImpl<TaxonDescription>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    @Override
     public List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         List<TaxonDescription> results = dao.listTaxonDescriptions(taxon, scopes, geographicalScope, markerTypes, pageSize, pageNumber, propertyPaths);
         return results;
@@ -252,6 +281,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
 
 
+    @Override
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,
             Set<NamedAreaLevel> omitLevels,
@@ -273,12 +303,18 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
         }
 
-        //ordering the areas
+        // filter distributions
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList);
+        distList.clear();
+        distList.addAll(filteredDistributions);
+
+        //order by areas
         tree.orderAsTree(distList, omitLevels);
         tree.sortChildren();
         return tree;
     }
 
+    @Override
     public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countTaxonNameDescriptions(name);
 
@@ -291,6 +327,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
+    @Override
     public Pager<DescriptionBase> page(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptions(type, hasImages, hasText, feature);
 
@@ -306,6 +343,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * Rename: searchByDistribution
      */
+    @Override
     public Pager<TaxonDescription> searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase presence,	Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDescriptionByDistribution(namedAreas, presence);
 
@@ -321,6 +359,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * move: descriptionElementService.search
      */
+    @Override
     public Pager<DescriptionElementBase> searchElements(Class<? extends DescriptionElementBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         Integer numberOfResults = descriptionElementDao.count(clazz, queryString);
 
@@ -336,6 +375,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.find
      */
+    @Override
     public DescriptionElementBase getDescriptionElementByUuid(UUID uuid) {
         return descriptionElementDao.findByUuid(uuid);
     }
@@ -344,6 +384,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.load
      */
+    @Override
     public DescriptionElementBase loadDescriptionElement(UUID uuid,	List<String> propertyPaths) {
         return descriptionElementDao.load(uuid, propertyPaths);
     }
@@ -352,6 +393,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.save
      */
+    @Override
     @Transactional(readOnly = false)
     public UUID saveDescriptionElement(DescriptionElementBase descriptionElement) {
         return descriptionElementDao.save(descriptionElement);
@@ -361,6 +403,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.save
      */
+    @Override
     @Transactional(readOnly = false)
     public Map<UUID, DescriptionElementBase> saveDescriptionElement(Collection<DescriptionElementBase> descriptionElements) {
         return descriptionElementDao.saveAll(descriptionElements);
@@ -370,29 +413,48 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * FIXME Candidate for harmonization
      * descriptionElementService.delete
      */
+    @Override
     public UUID deleteDescriptionElement(DescriptionElementBase descriptionElement) {
         return descriptionElementDao.delete(descriptionElement);
     }
 
+    @Override
     public TermVocabulary<Feature> getFeatureVocabulary(UUID uuid) {
-        return (TermVocabulary)vocabularyDao.findByUuid(uuid);
+        return vocabularyDao.findByUuid(uuid);
     }
 
+    @Override
+    @Deprecated
     public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
-            Class<? extends T> type, Integer pageSize,
+            Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-        //FIXME remove cast
-        return (List<T>) dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+        return listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
     }
 
-    public List<DescriptionElementBase> getDescriptionElementsForTaxon(
-            Taxon taxon, FeatureTree featureTree,
-            Class<? extends DescriptionElementBase> type, Integer pageSize,
+    @Override
+    public <T extends DescriptionElementBase> List<T> listDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features,
+            Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-         //FIXME remove cast
-         return (List<DescriptionElementBase>) dao.getDescriptionElementForTaxon(taxon, featureTree.getDistinctFeatures(), type, pageSize, pageNumber, propertyPaths);
+        return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
     }
+
+    @Override
+    public <T extends DescriptionElementBase> Pager<T> pageDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features,
+            Class<T> type, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+        Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
+        List<T> descriptionElements;
+        if(count > (pageSize * pageNumber + 1)){ // no point checking again
+            descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+        } else {
+            descriptionElements = new ArrayList<T>(0);
+        }
+        return new DefaultPagerImpl<T>(pageNumber, count.intValue(), pageSize, descriptionElements);
+    }
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IDescriptionService#generateNaturalLanguageDescription(eu.etaxonomy.cdm.model.description.FeatureTree, eu.etaxonomy.cdm.model.description.TaxonDescription, eu.etaxonomy.cdm.model.common.Language, java.util.List)
@@ -435,13 +497,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
                 MicroFormatQuantitativeDescriptionBuilder micro = new MicroFormatQuantitativeDescriptionBuilder();
                 naturalLanguageGenerator.setQuantitativeDescriptionBuilder(micro);
-                naturalLanguageDescriptionText = naturalLanguageGenerator.generateSingleTextData(featureTree, ((TaxonDescription)description), lang);
+                naturalLanguageDescriptionText = naturalLanguageGenerator.generateSingleTextData(featureTree, (description), lang);
 
             } else {
 
                 naturalLanguageDescriptionText = naturalLanguageGenerator.generateSingleTextData(
                         featureTree,
-                        ((TaxonDescription)description),
+                        (description),
                         lang);
             }
 
@@ -544,6 +606,12 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             }
 
         }
+    }
+
+    public void aggregateDistributions(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank) {
+
+//        transmissionEngineDistribution engine = new transmissionEngineDistribution(superAreas, lowerRank, upperRank);
+
     }
 
 }

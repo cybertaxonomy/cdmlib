@@ -10,14 +10,12 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.List;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -63,7 +61,7 @@ public class NameListController extends IdentifiableListController<TaxonNameBase
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        return (Pager<TaxonNameBase>) service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
+        return service.findTitleCache(null, query, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, matchMode);
 
     }
 
@@ -78,7 +76,7 @@ public class NameListController extends IdentifiableListController<TaxonNameBase
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageNumber);
         pagerParameters.normalizeAndValidate(response);
 
-        return (Pager<TaxonNameBase>) service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
+        return service.findByTitle(TaxonNameBase.class, query, matchMode, null, pageSize, pageNumber, null, getInitializationStrategy());
     }
 
 }

@@ -52,8 +52,9 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelationshipType> {
-	
-	static Logger logger = Logger.getLogger(SynonymRelationshipType.class);
+	private static final long serialVersionUID = -3775216614202923889L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(SynonymRelationshipType.class);
 
 	protected static Map<UUID, SynonymRelationshipType> termMap = null;		
 

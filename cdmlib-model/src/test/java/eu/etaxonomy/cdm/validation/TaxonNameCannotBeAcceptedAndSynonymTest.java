@@ -20,9 +20,7 @@ import javax.validation.ValidatorFactory;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -44,6 +42,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 //@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 public class TaxonNameCannotBeAcceptedAndSynonymTest{
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNameCannotBeAcceptedAndSynonymTest.class);
 	
 	
@@ -55,8 +54,8 @@ public class TaxonNameCannotBeAcceptedAndSynonymTest{
     private Taxon taxon1;
     private Taxon taxon2;
     private Synonym synonym;
-    private Reference sec1;
-    private Reference sec2;
+    private Reference<?> sec1;
+    private Reference<?> sec2;
 	
 	@Before
 	public void setUp() {

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -42,90 +42,90 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 public class ClassificationController extends BaseController<Classification,IClassificationService> {
 
 
-	private ITermService termService;
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Override
-	@Autowired
-	public void setService(IClassificationService service) {
-		this.service = service;
-	}
-	
-	@Autowired
-	public void setTermService(ITermService termService) {
-		this.termService = termService;
-	}
-	
-	
-	@InitBinder
-	@Override
+    private ITermService termService;
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Override
+    @Autowired
+    public void setService(IClassificationService service) {
+        this.service = service;
+    }
+
+    @Autowired
+    public void setTermService(ITermService termService) {
+        this.termService = termService;
+    }
+
+
+    @InitBinder
+    @Override
     public void initBinder(WebDataBinder binder) {
-		super.initBinder(binder);
-		binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
-	}
-	
-	private List<String> NODE_INIT_STRATEGY(){
-		return Arrays.asList(new String[]{
-			"taxon.sec", 
-			"taxon.name",
-			"classification"
-	});}
-	
-	/**
-	 * @param classificationUuid
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(
-			value = {"childNodes"},
-			method = RequestMethod.GET)
-	public List<TaxonNode> getChildNodes(
-			@PathVariable("uuid") UUID classificationUuid,
-			HttpServletResponse response
-			) throws IOException {
-		
-		return getChildNodesAtRank(classificationUuid, null, response);
-	}
-	
-	@RequestMapping(
-			value = {"childNodesAt/{rankUuid}"},
-			method = RequestMethod.GET)
-	public List<TaxonNode> getChildNodesAtRank(
-			@PathVariable("uuid") UUID classificationUuid,
-			@PathVariable("rankUuid") UUID rankUuid,
-			HttpServletResponse response
-			) throws IOException {
-		
-		logger.info("getChildNodesAtRank()");
-		Classification tree = null;
-		Rank rank = null;
-		if(classificationUuid != null){
-			// get view and rank
-			tree = service.find(classificationUuid);
-			
-			if(tree == null) {
-				response.sendError(404 , "Classification not found using " + classificationUuid );
-				return null;
-			}
-		}
-		rank = findRank(rankUuid);
-		
-		return service.loadRankSpecificRootNodes(tree, rank, NODE_INIT_STRATEGY());
-	}
-	
-	private Rank findRank(UUID rankUuid) {
-		Rank rank = null;
-		if(rankUuid != null){
-			DefinedTermBase definedTermBase =  termService.find(rankUuid);
-			if(definedTermBase instanceof Rank){
-				rank = (Rank) definedTermBase;
-			} else {
-			   new IllegalArgumentException("DefinedTermBase is not a Rank");
-			}
-		}
-		return rank;
-	}
+        super.initBinder(binder);
+        binder.registerCustomEditor(Rank.class, new RankPropertyEditor());
+    }
+
+    private List<String> NODE_INIT_STRATEGY(){
+        return Arrays.asList(new String[]{
+            "taxon.sec",
+            "taxon.name",
+            "classification"
+    });}
+
+    /**
+     * @param classificationUuid
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"childNodes"},
+            method = RequestMethod.GET)
+    public List<TaxonNode> getChildNodes(
+            @PathVariable("uuid") UUID classificationUuid,
+            HttpServletResponse response
+            ) throws IOException {
+
+        return getChildNodesAtRank(classificationUuid, null, response);
+    }
+
+    @RequestMapping(
+            value = {"childNodesAt/{rankUuid}"},
+            method = RequestMethod.GET)
+    public List<TaxonNode> getChildNodesAtRank(
+            @PathVariable("uuid") UUID classificationUuid,
+            @PathVariable("rankUuid") UUID rankUuid,
+            HttpServletResponse response
+            ) throws IOException {
+
+        logger.info("getChildNodesAtRank()");
+        Classification tree = null;
+        Rank rank = null;
+        if(classificationUuid != null){
+            // get view and rank
+            tree = service.find(classificationUuid);
+
+            if(tree == null) {
+                response.sendError(404 , "Classification not found using " + classificationUuid );
+                return null;
+            }
+        }
+        rank = findRank(rankUuid);
+
+        return service.loadRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY());
+    }
+
+    private Rank findRank(UUID rankUuid) {
+        Rank rank = null;
+        if(rankUuid != null){
+            DefinedTermBase definedTermBase =  termService.find(rankUuid);
+            if(definedTermBase instanceof Rank){
+                rank = (Rank) definedTermBase;
+            } else {
+               new IllegalArgumentException("DefinedTermBase is not a Rank");
+            }
+        }
+        return rank;
+    }
 }

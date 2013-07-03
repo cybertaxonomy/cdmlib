@@ -9,9 +9,11 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Stack;
 import java.util.UUID;
@@ -27,48 +29,179 @@ import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang.WordUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.ext.geo.GeoServiceArea;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.CdmImportBase.TermMatchMode;
-import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.io.common.events.IIoEvent;
 import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
+import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
  * @created 04.08.2008
- * @version 1.0
  */
 public abstract class MarkupImportBase  {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
-	
+
+	//Base
+	protected static final String ALTITUDE = "altitude";
+	protected static final String ANNOTATION = "annotation";
+	protected static final String BOLD = "bold";
+	protected static final String BR = "br";
+	protected static final String CITATION = "citation";
 	protected static final String CLASS = "class";
+	protected static final String COORDINATES = "coordinates";
+	protected static final String DATES = "dates";
+	protected static final String GATHERING = "gathering";
+	protected static final String GENUS_ABBREVIATION = "genus abbreviation";
+	protected static final String FOOTNOTE = "footnote";
+	protected static final String FOOTNOTE_REF = "footnoteRef";
+	protected static final String FULL_NAME = "fullName";
+	protected static final String ITALICS = "italics";
+	protected static final String NUM = "num";
+	protected static final String NOTES = "notes";
+	protected static final String PUBLICATION = "publication";
+	protected static final String SPECIMEN_TYPE = "specimenType";
+	protected static final String STATUS = "status";
+	protected static final String SUB_HEADING = "subHeading";
+	protected static final String TYPE = "type";
+	protected static final String TYPE_STATUS = "typeStatus";
+
+	protected static final boolean CREATE_NEW = true;
+	protected static final boolean NO_IMAGE_GALLERY = false;
+	protected static final boolean IMAGE_GALLERY = true;
+
+	protected static final String ADDENDA = "addenda";
+	protected static final String BIBLIOGRAPHY = "bibliography";
+	protected static final String BIOGRAPHIES = "biographies";
+	protected static final String CHAR = "char";
+	protected static final String DEDICATION = "dedication";
+	protected static final String DEFAULT_MEDIA_URL = "defaultMediaUrl";
+	protected static final String DISTRIBUTION_LIST = "distributionList";
+	protected static final String DISTRIBUTION_LOCALITY = "distributionLocality";
+	protected static final String FEATURE = "feature";
+	protected static final String FIGURE = "figure";
+	protected static final String FIGURE_LEGEND = "figureLegend";
+	protected static final String FIGURE_PART = "figurePart";
+	protected static final String FIGURE_REF = "figureRef";
+	protected static final String FIGURE_TITLE = "figureTitle";
+	protected static final String FOOTNOTE_STRING = "footnoteString";
+	protected static final String FREQUENCY = "frequency";
+	protected static final String HEADING = "heading";
+	protected static final String HABITAT = "habitat";
+	protected static final String HABITAT_LIST = "habitatList";
+	protected static final String IS_FREETEXT = "isFreetext";
+	protected static final String ID = "id";
+	protected static final String KEY = "key";
+	protected static final String LIFE_CYCLE_PERIODS = "lifeCyclePeriods";
+	protected static final String META_DATA = "metaData";
+	protected static final String MODS = "mods";
+
+	protected static final String NOMENCLATURE = "nomenclature";
+	protected static final String QUOTE = "quote";
+	protected static final String RANK = "rank";
+	protected static final String REF = "ref";
+	protected static final String REF_NUM = "refNum";
+	protected static final String REFERENCE = "reference";
+	protected static final String REFERENCES = "references";
+	protected static final String SUB_CHAR = "subChar";
+	protected static final String TAXON = "taxon";
+	protected static final String TAXONTITLE = "taxontitle";
+	protected static final String TAXONTYPE = "taxontype";
+	protected static final String TEXT_SECTION = "textSection";
+	protected static final String TREATMENT = "treatment";
+	protected static final String SERIALS_ABBREVIATIONS = "serialsAbbreviations";
+	protected static final String STRING = "string";
+	protected static final String URL = "url";
+	protected static final String VERNACULAR_NAMES = "vernacularNames";
+	protected static final String WRITER = "writer";
+	
+	
+	//Nomenclature
+	protected static final String ACCEPTED = "accepted";
+	protected static final String ACCEPTED_NAME = "acceptedName";
+	protected static final String ALTERNATEPUBTITLE = "alternatepubtitle";
+	protected static final String AUTHOR = "author";
+	protected static final String DETAILS = "details";
+	protected static final String EDITION = "edition";
+	protected static final String EDITORS = "editors";
+	protected static final String HOMONYM = "homonym";
+	protected static final String HOMOTYPES = "homotypes";
+	protected static final String INFRANK = "infrank";
+	protected static final String INFRAUT = "infraut";
+	protected static final String INFRPARAUT = "infrparaut";
+	protected static final String ISSUE = "issue";
+	protected static final String NAME = "name";
+	protected static final String NAME_TYPE = "nameType";
+	protected static final String NOM = "nom";
+	protected static final String PAGES = "pages";
+	protected static final String PARAUT = "paraut";
+	protected static final String PUBFULLNAME = "pubfullname";
+	protected static final String PUBNAME = "pubname";
+	protected static final String PUBTITLE = "pubtitle";
+	protected static final String PUBTYPE = "pubtype";
+	protected static final String REF_PART = "refPart";
+	protected static final String SYNONYM = "synonym";
+	protected static final String USAGE = "usage";
+	protected static final String VOLUME = "volume";
+	protected static final String YEAR = "year";
+
+	
+	//keys
+	protected static final String COUPLET = "couplet";
+	protected static final String IS_SPOTCHARACTERS = "isSpotcharacters";
+	protected static final String ONLY_NUMBERED_TAXA_EXIST = "onlyNumberedTaxaExist";
+	protected static final String EXISTS = "exists";
+	protected static final String KEYNOTES = "keynotes";
+	protected static final String KEY_TITLE = "keyTitle";
+	protected static final String QUESTION = "question";
+	protected static final String TEXT = "text";
+	protected static final String TO_COUPLET = "toCouplet";
+	protected static final String TO_KEY = "toKey";
+	protected static final String TO_TAXON = "toTaxon";
+
+
 
 	protected MarkupDocumentImport docImport;
-	
+	private IEditGeoService editGeoService;
+
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
+		this.editGeoService = docImport.getEditGeoService();
 	}
 
 	private Stack<QName> unhandledElements = new Stack<QName>();
@@ -98,22 +231,32 @@ public abstract class MarkupImportBase  {
 	
 
 
+	//TODO move to service layer for all IdentifiableEntities	
 	protected void save(CdmBase cdmBase, MarkupImportState state) {
 		if (state.isCheck()){
 			return;
 		}
-		if (cdmBase.isInstanceOf(TaxonBase.class)){
-			TaxonBase<?> taxonBase = CdmBase.deproxy(cdmBase, TaxonBase.class);
-			docImport.getTaxonService().saveOrUpdate(taxonBase);
+		cdmBase = CdmBase.deproxy(cdmBase, CdmBase.class);
+		if (cdmBase == null){
+			String message = "Tried to save a null object.";
+			fireWarningEvent(message, "--location ?? --", 6,1);
+		} else if (cdmBase.isInstanceOf(TaxonBase.class)){
+			docImport.getTaxonService().saveOrUpdate((TaxonBase<?>)cdmBase);
 		}else if (cdmBase.isInstanceOf(Classification.class)){
-			Classification classification = CdmBase.deproxy(cdmBase, Classification.class);
-			docImport.getClassificationService().saveOrUpdate(classification);
+			docImport.getClassificationService().saveOrUpdate((Classification)cdmBase);
 		}else if (cdmBase.isInstanceOf(PolytomousKey.class)){
-			PolytomousKey key = CdmBase.deproxy(cdmBase, PolytomousKey.class);
-			docImport.getPolytomousKeyService().saveOrUpdate(key);
+			docImport.getPolytomousKeyService().saveOrUpdate((PolytomousKey)cdmBase);
 		}else if (cdmBase.isInstanceOf(DefinedTermBase.class)){
-			DefinedTermBase<?> term = CdmBase.deproxy(cdmBase, DefinedTermBase.class);
-			docImport.getTermService().saveOrUpdate(term);
+			docImport.getTermService().saveOrUpdate((DefinedTermBase<?>)cdmBase);
+		}else if (cdmBase.isInstanceOf(Media.class)){
+			docImport.getMediaService().saveOrUpdate((Media)cdmBase);
+		}else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
+			docImport.getOccurrenceService().saveOrUpdate((SpecimenOrObservationBase<?>)cdmBase);
+		}else if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
+			docImport.getDescriptionService().saveDescriptionElement((DescriptionElementBase)cdmBase);
+		}else{
+			String message = "Unknown cdmBase type to save: " + cdmBase.getClass();
+			fireWarningEvent(message, "Unknown location", 8);
 		}
 		//logger.warn("Saved " +  cdmBase);
 	}
@@ -211,7 +354,7 @@ public abstract class MarkupImportBase  {
 
 
 	/**
-	 * Returns the value of a given attribute name and returns the attribute from the attributes map. 
+	 * Returns the value of a given attribute name and removes the attribute from the attributes map. 
 	 * @param attributes
 	 * @param attrName
 	 * @return
@@ -219,6 +362,33 @@ public abstract class MarkupImportBase  {
 	protected String getAndRemoveAttributeValue(Map<String, Attribute> attributes, String attrName) {
 		return getAndRemoveAttributeValue(null, attributes, attrName, false, 1);
 	}
+	
+	/**
+	 * Returns the value of a boolean attribute with the given name and removes the attribute from the attributes map. 
+	 * Returns <code>defaultValue</code> if the attribute does not exist. ALso returns <code>defaultValue</code> and throws a warning if the
+	 * attribute has no boolean value (true, false).
+	 * @param 
+	 * @param attributes the 
+	 * @param attrName the name of the attribute
+	 * @param defaultValue the default value to return if attribute does not exist or can not be defined
+	 * @return
+	 */
+	protected Boolean getAndRemoveBooleanAttributeValue(XMLEvent event, Map<String, Attribute> attributes, String attrName, Boolean defaultValue) {
+		String value = getAndRemoveAttributeValue(null, attributes, attrName, false, 1);
+		Boolean result = defaultValue;
+		if (value != null){
+			if (value.equalsIgnoreCase("true")){
+				result = true;
+			}else if (value.equalsIgnoreCase("false")){
+				result = false;
+			}else{
+				String message = "Boolean attribute has no boolean value ('true', 'false') but '%s'";
+				fireWarningEvent(String.format(message, value), makeLocationStr(event.getLocation()), 6, 1);
+			}
+		}
+		return result;
+	}
+
 	
 	/**
 	 * Returns the value of a given attribute name and returns the attribute from the attributes map.
@@ -403,32 +573,46 @@ public abstract class MarkupImportBase  {
 		return locationStr;
 	}
 	
-	
+
 	/**
 	 * Fires an unexpected element event if the unhandled elements stack is empty.
 	 * Otherwise adds the element to the stack.
 	 * @param event
 	 */
 	protected void handleUnexpectedStartElement(XMLEvent event) {
+		handleUnexpectedStartElement(event, 1);
+	}
+	
+	/**
+	 * Fires an unexpected element event if the unhandled elements stack is empty.
+	 * Otherwise adds the element to the stack.
+	 * @param event
+	 */
+	protected void handleUnexpectedStartElement(XMLEvent event, int stackDepth) {
 		QName qName = event.asStartElement().getName();
 		if (! unhandledElements.empty()){
 			unhandledElements.push(qName);
 		}else{
-			fireUnexpectedStartElement(event.getLocation(), event.asStartElement(), 1);
+			fireUnexpectedStartElement(event.getLocation(), event.asStartElement(), stackDepth + 1);
 		}	
 	}
 
+	
+	protected void handleUnexpectedEndElement(EndElement event) {
+		handleUnexpectedEndElement(event, 1);
+	}
+	
 	/**
 	 * Fires an unexpected element event if the event is not the last on the stack.
 	 * Otherwise removes last stack element.
 	 * @param event
 	 */
-	protected void handleUnexpectedEndElement(EndElement event) {
+	protected void handleUnexpectedEndElement(EndElement event, int stackDepth) {
 		QName qName = event.asEndElement().getName();
 		if (!unhandledElements.isEmpty() && unhandledElements.peek().equals(qName)){
 			unhandledElements.pop();
 		}else{
-			fireUnexpectedEndElement(event.getLocation(), event.asEndElement(), 1);
+			fireUnexpectedEndElement(event.getLocation(), event.asEndElement(), stackDepth + 1);
 		}
 	}
 	
@@ -474,7 +658,7 @@ public abstract class MarkupImportBase  {
 	 */
 	protected void handleNotYetImplementedElement(XMLEvent event) {
 		QName qName = event.asStartElement().getName();
-		boolean isTopLevel = unhandledElements.size() == 0;
+		boolean isTopLevel = unhandledElements.isEmpty();
 		unhandledElements.push(qName);
 		if (isTopLevel){
 			fireNotYetImplementedElement(event.getLocation(), qName, 1);
@@ -569,6 +753,98 @@ public abstract class MarkupImportBase  {
 	}
 	
 
+
+	/**
+	 * Removes whitespaces at beginning and end and makes the first letter
+	 * a capital letter and all other letters small letters.
+	 * @param value
+	 * @return
+	 */
+	protected String toFirstCapital(String value) {
+		if (StringUtils.isBlank(value)){
+			return value;
+		}else{
+			String result = "";
+			value = value.trim();
+			result += value.trim().substring(0,1).toUpperCase();
+			if (value.length()>1){
+				result += value.substring(1).toLowerCase();
+			}
+			return result;
+		}
+	}
+	
+	/**
+	 * Currently not used.
+	 * @param str
+	 * @param allowedNumberOfCharacters
+	 * @param onlyFirstCapital
+	 * @return
+	 */
+	protected boolean isAbbreviation(String str, int allowedNumberOfCharacters, boolean onlyFirstCapital){
+		if (isBlank(str)){
+			return false;
+		}
+		str = str.trim();
+		if (! str.endsWith(".")){
+			return false;
+		}
+		str = str.substring(0, str.length() -1);
+		if (str.length() > allowedNumberOfCharacters){
+			return false;
+		}
+		final String re = "^\\p{javaUpperCase}\\p{javaLowerCase}*$";
+		if (str.matches(re)){
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+	/**
+	 * Checks if <code>abbrev</code> is the short form for the genus name (strGenusName).
+	 * Usually this is the case if <code>abbrev</code> is the first letter (optional with ".") 
+	 * of strGenusName. But in older floras it may also be the first 2 or 3 letters (optional with dot).
+	 * However, we allow only a maximum of 2 letters to be anambigous. In cases with 3 letters better 
+	 * change the original markup data.
+	 * @param single
+	 * @param strGenusName
+	 * @return
+	 */
+	protected boolean isGenusAbbrev(String abbrev, String strGenusName) {
+		if (! abbrev.matches("[A-Z][a-z]?\\.?")) {
+			return false;
+		}else if (abbrev.length() == 0 || strGenusName == null || strGenusName.length() == 0){
+			return false; 
+		}else{
+			abbrev = abbrev.replace(".", "");
+			return strGenusName.startsWith(abbrev);
+//			boolean result = true;
+//			for (int i = 0 ; i < abbrev.length(); i++){
+//				result &= ( abbrev.charAt(i) == strGenusName.charAt(i));
+//			}
+//			return result;
+		}
+	}
+
+	
+	/**
+	 * Checks if all words in the given string start with a capital letter but do not have any further capital letter.
+	 * @param word the string to be checekd. Usually should be a single word.
+	 * @return true if the above is the case, false otherwise
+	 */
+	protected boolean isFirstCapitalWord(String word) {
+		if (WordUtils.capitalizeFully(word).equals(word)){
+			return true;
+		}else if (WordUtils.capitalizeFully(word,new char[]{'-'}).equals(word)){
+			//for words like Le-Testui (which is a species epithet)
+			return true;
+		}else{
+			return false;
+		}
+	}
+	
+
 	/**
 	 * Read next event. Ignore whitespace events.
 	 * @param reader
@@ -628,9 +904,8 @@ public abstract class MarkupImportBase  {
 	}
 
 	
-
-	protected void fireWarningEvent(String message, String makeLocationStr, int severity) {
-		docImport.fireWarningEvent(message, makeLocationStr, severity);	
+	protected void fireWarningEvent(String message, String locationStr, int severity) {
+		docImport.fireWarningEvent(message, locationStr, severity, 1);	
 	}
 	
 	protected void fire(IIoEvent event) {
@@ -645,9 +920,25 @@ public abstract class MarkupImportBase  {
 		return StringUtils.isBlank(str);
 	}
 
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	public TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);	
 	}	
+	
+
+	/**
+	 * Returns the default language defined in the state. If no default language is defined in the state,
+	 * the CDM default language is returned.
+	 * @param state
+	 * @return
+	 */
+	protected Language getDefaultLanguage(MarkupImportState state) {
+		Language result = state.getDefaultLanguage();
+		if (result == null){
+			result = Language.DEFAULT();
+		}
+		return result;
+	}
+
 
 //*********************** FROM XML IMPORT BASE ****************************************
 	protected boolean isEndingElement(XMLEvent event, String elName) throws XMLStreamException {
@@ -683,10 +974,297 @@ public abstract class MarkupImportBase  {
 		return docImport.getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode);
 	}
 	
-	protected Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary voc){
+	protected Language getLanguage(MarkupImportState state, UUID uuid, String label, String text, String labelAbbrev, TermVocabulary<?> voc){
 		return docImport.getLanguage(state, uuid, label, text, labelAbbrev, voc);
 	}
 	
+// *************************************** Concrete methods **********************************************/
+
+
+	/**
+	 * @param state
+	 * @param classValue
+	 * @param byAbbrev
+	 * @return
+	 */
+	protected Rank makeRank(MarkupImportState state, String value, boolean byAbbrev) {
+		Rank rank = null;
+		if (StringUtils.isBlank(value)) {
+			return null;
+		}
+		try {
+			boolean useUnknown = true;
+			NomenclaturalCode nc = makeNomenclaturalCode(state);
+			if (value.equals(GENUS_ABBREVIATION)){
+				rank = Rank.GENUS();
+			}else if (byAbbrev) {
+				rank = Rank.getRankByAbbreviation(value, nc, useUnknown);
+			} else {
+				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
+			}
+			if (rank.equals(Rank.UNKNOWN_RANK())) {
+				rank = null;
+			}
+		} catch (UnknownCdmTypeException e) {
+			// doNothing
+		}
+		return rank;
+	}
+
+
+
+	protected TeamOrPersonBase<?> createAuthor(String authorTitle) {
+		// TODO atomize and also use by name creation
+		TeamOrPersonBase<?> result = Team.NewTitledInstance(authorTitle, authorTitle);
+		return result;
+	}
+	
+	protected String getAndRemoveMapKey(Map<String, String> map, String key) {
+		String result = map.get(key);
+		map.remove(key);
+		if (result != null) {
+			result = normalize(result);
+		}
+		return StringUtils.stripToNull(result);
+	}
+
+
+	/**
+	 * Creates a {@link NonViralName} object depending on the defined {@link NomenclaturalCode}
+	 * and the given parameters.
+	 * @param state
+	 * @param rank
+	 * @return
+	 */
+	protected NonViralName<?> createNameByCode(MarkupImportState state, Rank rank) {
+		NonViralName<?> name;
+		NomenclaturalCode nc = makeNomenclaturalCode(state);
+		name = (NonViralName<?>) nc.getNewTaxonNameInstance(rank);
+		return name;
+	}
+	
+
+	/**
+	 * Returns the {@link NomenclaturalCode} for this import. Default is {@link NomenclaturalCode#ICBN} if
+	 * no code is defined.
+	 * @param state
+	 * @return
+	 */
+	protected NomenclaturalCode makeNomenclaturalCode(MarkupImportState state) {
+		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+		if (nc == null) {
+			nc = NomenclaturalCode.ICBN; // default;
+		}
+		return nc;
+	}
+
+
+	/**
+	 * @param state
+	 * @param levelString
+	 * @param next
+	 * @return
+	 */
+	protected NamedAreaLevel makeNamedAreaLevel(MarkupImportState state,
+			String levelString, XMLEvent next) {
+		NamedAreaLevel level;
+		try {
+			level = state.getTransformer().getNamedAreaLevelByKey(levelString);
+			if (level == null) {
+				UUID levelUuid = state.getTransformer().getNamedAreaLevelUuid(levelString);
+				if (levelUuid == null) {
+					String message = "Unknown distribution locality class (named area level): %s. Create new level instead.";
+					message = String.format(message, levelString);
+					fireWarningEvent(message, next, 6);
+				}
+				level = getNamedAreaLevel(state, levelUuid, levelString, levelString, levelString, null);
+			}
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		return level;
+	}
+	
+
+	/**
+	 * @param state
+	 * @param areaName
+	 * @param level
+	 * @return 
+	 */
+	protected NamedArea makeArea(MarkupImportState state, String areaName, NamedAreaLevel level) {
+		
+		//TODO FM vocabulary
+		TermVocabulary<NamedArea> voc = null; 
+		NamedAreaType areaType = null;
+		
+		NamedArea area = null;
+		try {
+			area = state.getTransformer().getNamedAreaByKey(areaName);
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		if (area == null){
+			boolean isNewInState = false;
+			UUID uuid = state.getAreaUuid(areaName);
+			if (uuid == null){
+				isNewInState = true;
+				
+				
+				try {
+					uuid = state.getTransformer().getNamedAreaUuid(areaName);
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+				}
+			}
+			
+			CdmImportBase.TermMatchMode matchMode = CdmImportBase.TermMatchMode.UUID_LABEL;
+			area = getNamedArea(state, uuid, areaName, areaName, areaName, areaType, level, voc, matchMode);
+			if (isNewInState){
+				state.putAreaUuid(areaName, area.getUuid());
+				
+				//TODO just for testing -> make generic and move to better place
+				String geoServiceLayer="vmap0_as_bnd_political_boundary_a";
+				String layerFieldName ="nam";
+				
+				if ("Bangka".equals(areaName)){
+					String areaValue = "PULAU BANGKA#SUMATERA SELATAN";
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Luzon".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("HERMANA MAYOR ISLAND#CENTRAL LUZON",
+							"HERMANA MENOR ISLAND#CENTRAL LUZON",
+							"CENTRAL LUZON");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Mindanao".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("NORTHERN MINDANAO",
+							"SOUTHERN MINDANAO",
+							"WESTERN MINDANAO");
+					//TODO to be continued
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+				if ("Palawan".equals(areaName)){
+					GeoServiceArea geoServiceArea = new GeoServiceArea();
+					
+					List<String> list = Arrays.asList("PALAWAN#SOUTHERN TAGALOG");
+					for (String areaValue : list){
+						geoServiceArea.add(geoServiceLayer, layerFieldName, areaValue);
+					}
+					
+					this.editGeoService.setMapping(area, geoServiceArea);
+//					save(area, state);
+				}
+
+			}
+		}
+		return area;
+	}
+
+	
+	
+	/**
+	 * Reads character data. Any element other than character data or the ending
+	 * tag will fire an unexpected element event.
+     *
+	 * @see #getCData(MarkupImportState, XMLEventReader, XMLEvent, boolean)
+	 * @param state
+	 * @param reader
+	 * @param next
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent next) throws XMLStreamException {
+		return getCData(state, reader, next, true);
+	}
+		
+	/**
+	 * Reads character data. Any element other than character data or the ending
+	 * tag will fire an unexpected element event.
+	 * 
+	 * @param state
+	 * @param reader
+	 * @param next
+	 * @param inlineMarkup map for inline markup, this is used for e.g. the locality markup within a subheading
+	 * The map will be filled by the markup element name as key. The value may be a String, a CdmBase or any other object.
+	 * If null any markup text will be neglected but a warning will be fired if they exist.
+	 * @param removeInlineMarkupText if true the markedup text will be removed from the returned String 
+	 * @param checkAttributes
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected String getCData(MarkupImportState state, XMLEventReader reader, XMLEvent parent, /*Map<String, Object> inlineMarkup, *boolean removeInlineMarkupText,*/ boolean checkAttributes) throws XMLStreamException {
+		if (checkAttributes){
+			checkNoAttributes(parent);
+		}
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parent)) {
+				return text;
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else if (isStartingElement(next, FOOTNOTE_REF)){
+				handleNotYetImplementedElement(next);
+//			} else if (isStartingElement(next, LOCALITY)){
+//				handleCDataLocality(state, reader, parent);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("Event has no closing tag");
+
+	}
+	
+//	private void handleCDataLocality(MarkupImportState state, XMLEventReader reader, XMLEvent parent) {
+//		checkAndRemoveAttributeValue(attributes, attrName, value)
+//		
+//	}
+
+
+
+	/**
+	 * For it returns a pure CData annotation string. This behaviour may change in future. More complex annotations
+	 * should be handled differently.
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected String handleSimpleAnnotation(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		String annotation = getCData(state, reader, parentEvent);
+		return annotation;
+	}
+	
+	/**
+	 * True if text is single "." oder "," or ";" or ":"
+	 * @param text
+	 * @return
+	 */
+	protected boolean isPunctuation(String text) {
+		return text == null ? false : text.trim().matches("^[\\.,;:]$");
+	}
+
+
 	
 //********************************************** OLD *************************************	
 

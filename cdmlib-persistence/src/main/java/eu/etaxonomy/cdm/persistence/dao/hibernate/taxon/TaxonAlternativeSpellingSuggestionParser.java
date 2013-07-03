@@ -20,7 +20,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.AlternativeSpellingSuggestionParser;
 
-@Component
+//spelling support currently disabled in appcontext, see spelling.xml ... " 
+//@Component
 public class TaxonAlternativeSpellingSuggestionParser extends AlternativeSpellingSuggestionParser<TaxonBase> {
 
 	public TaxonAlternativeSpellingSuggestionParser() {

@@ -23,9 +23,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -67,7 +66,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 	private static final Logger logger = Logger.getLogger(NormalExplicitImportTest.class);
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport defaultImport;
+	CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
 	INameService nameService;
@@ -144,7 +143,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		Set<Synonym> synonyms = noctuaPronubaTaxon.getSynonyms();
 		assertEquals("Number of synonyms should be 1", 1, synonyms.size());
 		Synonym synonym = synonyms.iterator().next();
-		assertEquals("Synonym name should be ", "Noctua atlantica", ((NonViralName)synonym.getName()).getNameCache());
+		assertEquals("Synonym name should be ", "Noctua atlantica", ((NonViralName<?>)synonym.getName()).getNameCache());
 		Set<TaxonDescription> descriptions = noctuaPronubaTaxon.getDescriptions();
 		Assert.assertEquals("Number of descriptions should be 1", 1, descriptions.size());
 		TaxonDescription taxonDescription = descriptions.iterator().next();
@@ -202,13 +201,13 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		assertEquals("Unexpected description text", expectedText, text);
 		assertEquals("Number of source elements should be 1", 1, textData.getSources().size());
 		DescriptionElementSource source = textData.getSources().iterator().next();
-		Reference ref = source.getCitation();
+		Reference<?> ref = source.getCitation();
 		assertNotNull("Citation should not be null", ref);
 		assertNotNull("AuthorTeam should not be null", ref.getAuthorTeam());
 		assertEquals("Source author should be 'Meyer et. al.'", "Meyer et. al.",ref.getAuthorTeam().getTitleCache());
 		assertEquals("Publication title should be 'My first book'", "My first book", ref.getTitle());
 		assertEquals("Publication year should be '1987'", "1987", ref.getYear());
-		TaxonNameBase nameUsedInSource = source.getNameUsedInSource();
+		TaxonNameBase<?,?> nameUsedInSource = source.getNameUsedInSource();
 		assertNotNull("Name used in source should not be null", nameUsedInSource);
 		assertEquals("Name used in source title should be ", "Abies", nameUsedInSource.getTitleCache());
 		

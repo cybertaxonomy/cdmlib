@@ -11,11 +11,9 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.event.SaveOrUpdateEvent;
-import org.hibernate.event.SaveOrUpdateEventListener;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
+import org.hibernate.event.spi.SaveOrUpdateEventListener;
 import org.joda.time.DateTime;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 

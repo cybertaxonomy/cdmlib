@@ -25,9 +25,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 
@@ -56,8 +54,9 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshipType> {
-	
-	static Logger logger = Logger.getLogger(TaxonRelationshipType.class);
+	private static final long serialVersionUID = 6575652105931691670L;
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonRelationshipType.class);
 
 	protected static Map<UUID, TaxonRelationshipType> termMap = null;		
 	

@@ -84,6 +84,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return The List<Taxon> of root taxa.
      * @deprecated obsolete when using classification
      */
+    @Deprecated
     public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, boolean onlyWithChildren);
 
     /**
@@ -101,6 +102,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return The List<Taxon> of root taxa.
      * @deprecated obsolete when using classification
      */
+    @Deprecated
     public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren, boolean withMisapplications, List<String> propertyPaths);
 
     /**
@@ -117,6 +119,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return
      * @deprecated use TermService#getVocabulary(VocabularyType) instead
      */
+    @Deprecated
     public OrderedTermVocabulary<TaxonRelationshipType> getTaxonRelationshipTypeVocabulary();
 
     /**
@@ -339,7 +342,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param propertyPaths
      * @return
      */
-    public List<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
+    public Set<Taxon> listRelatedTaxa(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, Integer maxDepth,
             Integer limit, Integer start, List<String> propertyPaths);
 
     /**
@@ -430,6 +433,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return a Pager Taxon instances
      * @see <a href="http://lucene.apache.org/java/2_4_0/queryparsersyntax.html">Apache Lucene - Query Parser Syntax</a>
      */
+    @Override
     public Pager<TaxonBase> search(Class<? extends TaxonBase> clazz, String queryString, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
@@ -521,21 +525,54 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param mimeTypes
      * @return
      *
-     * FIXME candidate for harmonization - rename to listMedia()
+     * @deprecated use {@link #listMedia(Taxon, Set, boolean, boolean, List)} instead
      */
+    @Deprecated
     public List<MediaRepresentation> getAllMedia(Taxon taxon, int size, int height, int widthOrDuration, String[] mimeTypes);
 
 
     /**
-     * Lists all Media found in an any TaxonDescription associated with this taxon.
+     * Lists all Media found in an any TaxonDescription associated with this
+     * taxon.
+     *
      * @param taxon
-     * @param includeRelationships the given list of TaxonRelationshipEdges will be taken into
-     *    account when retrieving media associated with the given taxon. Can be NULL.
-     * @param limitToGalleries whether to take only TaxonDescription into account which are marked as gallery
+     * @param includeRelationships
+     *            the given list of TaxonRelationshipEdges will be taken into
+     *            account when retrieving media associated with the given taxon.
+     *            Can be NULL.
+     * @param limitToGalleries
+     *            whether to take only TaxonDescription into account which are
+     *            marked as gallery
      * @return
+     * @deprecated use {@link #listMedia(Taxon, Set, boolean, boolean, List)} instead
      */
+    @Deprecated
     public List<Media> listTaxonDescriptionMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships, boolean limitToGalleries, List<String> propertyPath);
 
+    /**
+     * Lists all Media found in an any TaxonDescription, NameDescription,
+     * SpecimenOrObservationBase, DnaSample Chromatograms, etc. associated with this taxon.
+     *
+     * @param taxon
+     * @param includeRelationships
+     *            the given list of TaxonRelationshipEdges will be taken into
+     *            account when retrieving media associated with the given taxon.
+     *            Can be NULL.
+     * @param limitToGalleries
+     *            whether to take only descriptions into account which are
+     *            marked as gallery, can be NULL
+     * @param includeTaxonDescriptions
+     *            whether to take TaxonDescriptions into account, can be NULL
+     * @param includeOccurrences
+     *          whether to take TaxonDescriptions into account, can be NULL
+     * @param includeTaxonNameDescriptions
+     *       whether to take TaxonNameDescriptions into account, can be NULL
+     * @param propertyPath
+     * @return
+     */
+    public List<Media> listMedia(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
+            Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
+            Boolean includeTaxonNameDescriptions, List<String> propertyPath);
 
     public List<TaxonBase> findTaxaByID(Set<Integer> listOfIDs);
 

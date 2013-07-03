@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.MarkerDaoImpl;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+@Transactional(readOnly = true)
 public class MarkerServiceImpl extends	VersionableServiceBase<Marker, MarkerDaoImpl> implements IMarkerService {
 
 	@Autowired

@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.persistence.dao.description.IFeatureTreeDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @Service
-@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+@Transactional(readOnly = false)
 public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree, IFeatureTreeDao> implements IFeatureTreeService {
 
 	private IFeatureNodeDao featureNodeDao;

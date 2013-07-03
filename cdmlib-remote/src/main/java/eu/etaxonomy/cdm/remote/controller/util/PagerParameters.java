@@ -37,7 +37,7 @@ public class PagerParameters {
 
     private Integer pageIndex;
 
-    public static final Integer DEFAULT_PAGESIZE = 20;
+    public static final Integer DEFAULT_PAGESIZE = 30;
 
     public void setPageSize(Integer pageSize) {
         this.pageSize = pageSize;
@@ -68,6 +68,17 @@ public class PagerParameters {
         this.pageIndex = pageIndex;
     }
 
+    /**
+     * Normalizes this <code>PagerParameters</code> according to the following
+     * rules and responds with an HTTP error in case of invalid parameters.
+     * <ul>
+     * <li>pageIndex defaults to 0 if set to <code>NULL</code>.</li>
+     * <li>pageSize defaults to {@link #DEFAULT_PAGESIZE} if set to <code>NULL</code>.</li>
+     * <li>Sends {@link HTTP_BAD_REQUEST} if <code>pageIndex</code> or <code>pageSize</code> are smaller than 0.
+     * </ul>
+     * @param response
+     * @throws IOException
+     */
     public void normalizeAndValidate(HttpServletResponse response) throws IOException{
 
         if(pageIndex == null){
@@ -79,7 +90,7 @@ public class PagerParameters {
         if(pageIndex < 0){
             HttpStatusMessage.fromString("The query parameter 'pageIndex' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
-        if(pageSize != null && pageSize < 0){
+        if(pageSize < 0){
             HttpStatusMessage.fromString("The query parameter 'pageSize' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
     }

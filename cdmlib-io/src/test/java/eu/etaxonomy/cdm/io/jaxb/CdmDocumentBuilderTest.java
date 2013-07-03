@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.io.jaxb;
 import java.io.InputStreamReader;
 import java.net.URI;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;

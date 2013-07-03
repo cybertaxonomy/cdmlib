@@ -39,5 +39,22 @@ public interface ISearchResultBuilder {
      */
     public abstract <T extends CdmBase> List<SearchResult<T>> createResultSet(TopGroupsWithMaxScore topGroupsResultSet,
             String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
+    
+    /**
+     * Creates a <code>List</code> of <code>SearchResult</code> entities from the supplied <code>TopDocs</code>.
+     * The first Cdm enitity id found in the specified <code>idFields</code> of the Lucene documents will be used to load
+     * the referenced Cdm entities into the <code>SearchResult</code>s.
+     *
+     * @param topDocs
+     * @param highlightFields
+     * @param dao
+     * @param idFields a map of class names as key and entity id fields as values
+     * @param propertyPaths
+     * @return
+     * @throws CorruptIndexException
+     * @throws IOException
+     */
+    public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocs,
+            String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
 
 }

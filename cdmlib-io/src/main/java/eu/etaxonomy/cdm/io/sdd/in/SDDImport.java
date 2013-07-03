@@ -25,7 +25,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpException;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
@@ -79,6 +78,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -884,7 +884,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 
 				NonViralName<?> tnb = null;
 				if (!id.equals("")) {
-					tnb = NonViralName.NewInstance(null);
+					tnb = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
 					IdentifiableSource source = null;
 					if (uri != null) {
 						if (!uri.equals("")) {
@@ -1189,12 +1189,12 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 	 */
 	private Taxon handleCDNoScope(Namespace sddNamespace, SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
-		NonViralName<?> nonViralName = NonViralName.NewInstance(null);
+		NonViralName<?> nonViralName = NonViralName.NewInstance(Rank.UNKNOWN_RANK());
 		String id = new String("" + taxonNamesCount);
 		IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
 		
-		if(cdmState.getConfig().isDoMatchTaxa()){
+		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
 		
@@ -1228,7 +1228,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 		String ref = elTaxonName.getAttributeValue("ref");
 		NonViralName<?> nonViralName = taxonNameBases.get(ref);
 		
-		if(cdmState.getConfig().isDoMatchTaxa()){
+		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
 		

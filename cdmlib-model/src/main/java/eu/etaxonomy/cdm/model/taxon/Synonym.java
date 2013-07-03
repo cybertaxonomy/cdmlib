@@ -64,16 +64,18 @@ import javax.xml.bind.annotation.XmlType;
 @Audited
 @Configurable
 public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>> implements IRelated<SynonymRelationship>{
-	
-	static Logger logger = Logger.getLogger(Synonym.class);
+	private static final long serialVersionUID = -454067515022159757L;
+
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(Synonym.class);
 
 	// Don't need the synonym relations here since they are stored at taxon side?
 	@XmlElementWrapper(name = "SynonymRelations")
 	@XmlElement(name = "SynonymRelationship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@NotNull
 	@NotEmpty(groups = Level2.class,message="{eu.etaxonomy.cdm.model.taxon.Synonym.noOrphanedSynonyms.message}")
 	@Valid
@@ -240,6 +242,10 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		return getAcceptedTaxa().contains(taxon);
 	}
 
+	@Transient
+	public boolean isOrphaned() {
+		return false;
+	}
 	/** 
 	 * Returns the set of {@link SynonymRelationshipType synonym relationship types} of the
 	 * {@link SynonymRelationship synonym relationships} where the {@link SynonymRelationship#getSynonym() synonym}

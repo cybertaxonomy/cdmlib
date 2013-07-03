@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToOne;
+import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -65,13 +66,13 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 @Indexed(index = "eu.etaxonomy.cdm.model.description.DescriptionElementBase")
 public class IndividualsAssociation extends DescriptionElementBase implements IMultiLanguageTextHolder, Cloneable{
 	private static final long serialVersionUID = -4117554860254531809L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IndividualsAssociation.class);
 	
 	@XmlElement(name = "Description")
 	@XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
-	@OneToMany(fetch = FetchType.LAZY)
-	@Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN })
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@MapKeyJoinColumn(name="description_mapkey_id")
+    @Cascade({CascadeType.SAVE_UPDATE,CascadeType.MERGE, CascadeType.DELETE })
 	@JoinTable(name = "IndividualAssociation_LanguageString")
 	private Map<Language,LanguageString> description = new HashMap<Language,LanguageString>();
 	
@@ -93,8 +94,16 @@ public class IndividualsAssociation extends DescriptionElementBase implements IM
 	 * Creates a new empty individuals association instance.
 	 */
 	public static IndividualsAssociation NewInstance(){
+		return NewInstance(null);
+	}
+	
+	/** 
+	 * Creates a new empty individuals association instance.
+	 */
+	public static IndividualsAssociation NewInstance(SpecimenOrObservationBase specimen){
 		IndividualsAssociation result =  new IndividualsAssociation();
 		result.setFeature(Feature.INDIVIDUALS_ASSOCIATION());
+		result.setAssociatedSpecimenOrObservation(specimen);
 		return result;
 	}
 	

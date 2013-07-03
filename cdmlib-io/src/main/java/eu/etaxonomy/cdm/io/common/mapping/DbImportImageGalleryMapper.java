@@ -16,8 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
-import javax.mail.MethodNotSupportedException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -87,7 +85,7 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 			}else{
 				ignore = true;
 			}
-		} catch (MethodNotSupportedException e) {
+		} catch (NoSuchMethodException e) {
 			//do nothing
 		}
 	}

@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 @Controller
 @RequestMapping(value = {"/derivedUnitFacade/{uuid}"})
-public class DerivedUnitFacadeController extends AbstractController{
+public class DerivedUnitFacadeController extends AbstractController<SpecimenOrObservationBase, IOccurrenceService>{
 
 
     private IOccurrenceService service;
@@ -62,7 +62,7 @@ public class DerivedUnitFacadeController extends AbstractController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("getGet() - " + request.getServletPath());
+        logger.info("getGet() - " + request.getRequestURI());
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response, null);
         return duf;
     }
@@ -73,7 +73,7 @@ public class DerivedUnitFacadeController extends AbstractController{
         HttpServletRequest request,
         HttpServletResponse response) throws IOException {
 
-        logger.info("doGetDerivedUnitMedia() - " + request.getServletPath());
+        logger.info("doGetDerivedUnitMedia() - " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
                 "derivedUnitMedia", "derivedUnitMedia.title"}));
@@ -89,7 +89,7 @@ public class DerivedUnitFacadeController extends AbstractController{
         HttpServletRequest request,
         HttpServletResponse response) throws IOException {
 
-        logger.info("doGetFieldObjectMedia() - " + request.getServletPath());
+        logger.info("doGetFieldObjectMedia() - " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid, response,Arrays.asList(new String []{
                 "fieldObjectMedia", "fieldObjectMedia.title"}));
@@ -107,7 +107,7 @@ public class DerivedUnitFacadeController extends AbstractController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetCollectingAreas() - " + request.getServletPath());
+        logger.info("doGetCollectingAreas() - " + request.getRequestURI());
         DerivedUnitFacade duf = newFacadeFrom(occurrenceUuid,
                 response,
                 Arrays.asList(new String []{"ecology"}));
@@ -120,7 +120,7 @@ public class DerivedUnitFacadeController extends AbstractController{
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
 
-        logger.info("doGetCollection() - " + request.getServletPath());
+        logger.info("doGetCollection() - " + request.getRequestURI());
         DerivedUnitFacade duf = newFacadeFrom(uuid,
                 response,
                 Arrays.asList(new String []{"collection"}));

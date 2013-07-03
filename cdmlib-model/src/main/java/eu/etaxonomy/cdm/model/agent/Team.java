@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
  * <li> AgentNames (partially) according to the TCS
  * <li> MicroAgent (partially) according to the ABCD schema
  * </ul>
- * 
+ *
  * @author m.doering
  * @version 1.0
  * @created 08-Nov-2007 13:06:58
@@ -71,7 +71,7 @@ import eu.etaxonomy.cdm.strategy.match.MatchMode;
 public class Team extends TeamOrPersonBase<Team> {
 	private static final long serialVersionUID = 97640416905934622L;
 	public static final Logger logger = Logger.getLogger(Team.class);
-	
+
     @XmlElement(name = "ProtectedNomenclaturalTitleCache")
 	private boolean protectedNomenclaturalTitleCache = false;
 
@@ -86,16 +86,16 @@ public class Team extends TeamOrPersonBase<Team> {
 	@Cascade(CascadeType.SAVE_UPDATE)
 	@Match(MatchMode.MATCH)
 	private List<Person> teamMembers;
-	
-	
-	/** 
+
+
+	/**
 	 * Creates a new team instance without any concrete {@link Person members}.
 	 */
 	static public Team NewInstance(){
 		return new Team();
 	}
-	
-	/** 
+
+	/**
 	 * Creates a new team instance with a bibliographic and nomenclatural title
 	 * but without any {@link Person members}. The caches are set to protected.
 	 */
@@ -105,8 +105,8 @@ public class Team extends TeamOrPersonBase<Team> {
 		result.setNomenclaturalTitle(nomTitle, true);
 		return result;
 	}
-	
-	/** 
+
+	/**
 	 * Class constructor (including the cache strategy defined in
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}).
 	 */
@@ -131,21 +131,24 @@ public class Team extends TeamOrPersonBase<Team> {
 	 */
 	private void addListenerForTeamMember(Person member) {
 		PropertyChangeListener listener = new PropertyChangeListener() {
-			public void propertyChange(PropertyChangeEvent e) {
-				if (! isProtectedTitleCache()){
-					titleCache = titleCache;
-				}
-				if (! isProtectedNomenclaturalTitleCache()){
-					nomenclaturalTitle = nomenclaturalTitle;
-				}
+			@Override
+            public void propertyChange(PropertyChangeEvent e) {
+
+// 			   ---- code with no effect below -----
+//				if (! isProtectedTitleCache()){
+//					titleCache = titleCache;
+//				}
+//				if (! isProtectedNomenclaturalTitleCache()){
+//					nomenclaturalTitle = nomenclaturalTitle;
+//				}
 			}
 		};
 		member.addPropertyChangeListener(listener);
 	}
 
-	/** 
-	 * Returns the list of {@link Person members} belonging to <i>this</i> team. 
-	 * A person may be a member of several distinct teams. 
+	/**
+	 * Returns the list of {@link Person members} belonging to <i>this</i> team.
+	 * A person may be a member of several distinct teams.
 	 */
 	public List<Person> getTeamMembers(){
 		if(teamMembers == null) {
@@ -153,14 +156,14 @@ public class Team extends TeamOrPersonBase<Team> {
 		}
 		return this.teamMembers;
 	}
-	
+
 	protected void setTeamMembers(List<Person> teamMembers) {
 		this.teamMembers = teamMembers;
 		addListenersToMembers();
 	}
-	
-	/** 
-	 * Adds a new {@link Person person} to <i>this</i> team at the end of the members' list. 
+
+	/**
+	 * Adds a new {@link Person person} to <i>this</i> team at the end of the members' list.
 	 *
 	 * @param  person  the person who should be added to the other team members
 	 * @see     	   #getTeamMembers()
@@ -173,11 +176,11 @@ public class Team extends TeamOrPersonBase<Team> {
 			addListenerForTeamMember(person);
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Adds a new {@link Person person} to <i>this</i> team
 	 * at the given index place of the members' list. If the person is already
-	 * a member of the list he will be moved to the given index place. 
+	 * a member of the list he will be moved to the given index place.
 	 * The index must be an integer (>=0). If the index is larger than
 	 * the present number of members the person will be added at the end of the list.
 	 *
@@ -200,8 +203,8 @@ public class Team extends TeamOrPersonBase<Team> {
 			firePropertyChange("teamMember", null, person);
 		}
 	}
-	
-	/** 
+
+	/**
 	 * Removes one person from the list of members of <i>this</i> team.
 	 *
 	 * @param  person  the person who should be deleted from <i>this</i> team
@@ -212,10 +215,10 @@ public class Team extends TeamOrPersonBase<Team> {
 		if (wasMember){
 			firePropertyChange("teamMember", person, null);
 		}
-		
+
 	}
 
-	
+
 	/**
 	 * Generates or returns the {@link TeamOrPersonBase#getnomenclaturalTitle() nomenclatural identification} string for <i>this</i> team.
 	 * This method overrides {@link TeamOrPersonBase#getNomenclaturalTitle() getNomenclaturalTitle}.
@@ -227,7 +230,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	 * {@link eu.etaxonomy.cdm.strategy.cache.agent.TeamDefaultCacheStrategy TeamDefaultCacheStrategy}.
 	 * The result might be kept as nomenclatural abbreviation
 	 * by using the {@link #setNomenclaturalTitle(String) setNomenclaturalTitle} method.
-	 * 
+	 *
 	 * @return  a string which identifies <i>this</i> team for nomenclature
 	 */
 	@Override
@@ -242,14 +245,14 @@ public class Team extends TeamOrPersonBase<Team> {
 			//as long as team members to not inform the team about changes the cache must be created new each time
 			nomenclaturalTitle = cacheStrategy.getNomenclaturalTitle(this);
 		}
-		return nomenclaturalTitle;	
+		return nomenclaturalTitle;
 	}
-	
+
 	/**
 	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and protects it from overwriting.
 	 * This method overrides {@link TeamOrPersonBase#setNomenclaturalTitle(String) setNomenclaturalTitle}.
-	 * 
+	 *
 	 * @see  #getNomenclaturalTitle()
 	 * @see  #setNomenclaturalTitle(String, boolean)
 	 */
@@ -261,7 +264,7 @@ public class Team extends TeamOrPersonBase<Team> {
 	/**
 	 * Assigns a {@link TeamOrPersonBase#nomenclaturalTitle nomenclatural identification} string to <i>this</i> team
 	 * and a protection flag status to this string.
-	 * 
+	 *
 	 * @see  #getNomenclaturalTitle()
 	 */
 	public void setNomenclaturalTitle(String nomenclaturalTitle, boolean protectedNomenclaturalTitleCache) {
@@ -269,7 +272,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		this.nomenclaturalTitle = nomenclaturalTitle;
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.agent.TeamOrPersonBase#getTitleCache()
 	 */
@@ -279,7 +282,7 @@ public class Team extends TeamOrPersonBase<Team> {
 		isGeneratingTitleCache = true;
 		String result = "";
 		if (isProtectedTitleCache()){
-			result = this.titleCache;			
+			result = this.titleCache;
 		}else{
 			result = generateTitle();
 			result = replaceEmptyTitleByNomTitle(result);
@@ -298,14 +301,14 @@ public class Team extends TeamOrPersonBase<Team> {
 			boolean protectedNomenclaturalTitleCache) {
 		this.protectedNomenclaturalTitleCache = protectedNomenclaturalTitleCache;
 	}
-	
+
 //*********************** CLONE ********************************************************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> Team. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> Team.
-	 * The corresponding person is cloned. 
-	 * 
+	 * The corresponding person is cloned.
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -324,9 +327,9 @@ public class Team extends TeamOrPersonBase<Team> {
 			e.printStackTrace();
 			return null;
 		}
-		
-		
+
+
 	}
-	
-	
+
+
 }

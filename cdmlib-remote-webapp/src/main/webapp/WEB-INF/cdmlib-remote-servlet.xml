@@ -68,20 +68,6 @@
     class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" /> -->
   <bean id="localeContextHandlerInterceptor"
     class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor" />
-  <!--
-     === no longer needed, replaced by ContentNegotiatingViewResolver ==
-  <bean id="contentNegociationHandlerInterceptor"
-    class="eu.etaxonomy.cdm.remote.controller.interceptor.ContentNegociationHandlerInterceptor">
-    <property name="mapping">
-      <map>
-        <entry key="text/json" value="json" />
-        <entry key="application/json" value="json" />
-        <entry key="application/xml" value="xml" />
-      </map>
-    </property>
-    <property name="defaultExtension" value="xml" />
-  </bean>
-   -->
 
   <!--
    ======= ViewControllers =======

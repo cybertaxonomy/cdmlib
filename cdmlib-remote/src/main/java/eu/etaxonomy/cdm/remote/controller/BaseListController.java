@@ -12,14 +12,13 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import static java.net.HttpURLConnection.*;
 import java.util.List;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.http.protocol.HTTP;
+import org.apache.log4j.Logger;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -44,6 +43,8 @@ import eu.etaxonomy.cdm.remote.editor.UUIDPropertyEditor;
  */
 public abstract class BaseListController <T extends CdmBase, SERVICE extends IService<T>> extends AbstractListController<T, SERVICE> {
 
+    public static final Logger logger = Logger.getLogger(BaseListController.class);
+
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UUID.class, new UUIDPropertyEditor());
@@ -56,44 +57,45 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
      *
      * @param pageIndex
      *            the index of the page to be returned, the first page has the
-     *            pageIndex = 0 - <i>optional parameter</i>
+     *            pageIndex = 0 - <i>optional parameter</i>. Defaults to 0 if
+     *            set to <code>NULL</code>.
      * @param pageSize
-     *            the maximum number of entities returned per page (can be null
-     *            to return all entities in a single page) - <i>optional
-     *            parameter</i>
+     *            the maximum number of entities returned per page.
+     *            The {@link #DEFAULT_PAGE_SIZE} will be used if pageSize is set to
+     *            <code>null</code> - <i>optional parameter</i>
      * @param type
      *            Further restricts the type of entities to be returned.
      *            If null the base type <code>&lt;T&gt;</code> is being used. - <i>optional parameter</i>
      * @return
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, params = "pageNumber")
+    @RequestMapping(method = RequestMethod.GET)
     public Pager<T> doPage(
-            @RequestParam(value = "pageNumber") Integer pageIndex,
+            @RequestParam(value = "pageNumber", required = false) Integer pageIndex,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "class", required = false) Class<T> type,
+            @RequestParam(value = "class", required = false) Class type,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException
             {
 
-        logger.info("doGet() " + request.getServletPath());
+        logger.info("doPage() " + requestPathAndQuery(request));
         PagerParameters pagerParameters = new PagerParameters(pageSize, pageIndex);
         pagerParameters.normalizeAndValidate(response);
 
-        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, DEFAULT_INIT_STRATEGY);
+        return service.page(type, pagerParameters.getPageSize(), pagerParameters.getPageIndex(), null, getInitializationStrategy());
     }
 
-    /**
-     * Parameter less method to be used as default when request without parameter are made. Otherwise
-     * the nameless methods {@link #doPage(Integer, Integer, Class)} and {@link #doList(Integer, Integer, Class)}
-     * are ambigous.
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(method = RequestMethod.GET)
-    public Pager<T> doPage(HttpServletRequest request, HttpServletResponse response) throws IOException{
-        return doPage(null, null, null, request, response);
-    }
+//    /**
+//     * Parameter less method to be used as default when request without parameter are made. Otherwise
+//     * the nameless methods {@link #doPage(Integer, Integer, Class)} and {@link #doList(Integer, Integer, Class)}
+//     * are ambigous.
+//     * @return
+//     * @throws IOException
+//     */
+//    @RequestMapping(method = RequestMethod.GET)
+//    public Pager<T> doPage(HttpServletRequest request, HttpServletResponse response) throws IOException{
+//        return doPage(null, null, null, request, response);
+//    }
 
     /**
      * @param start
@@ -114,16 +116,16 @@ public abstract class BaseListController <T extends CdmBase, SERVICE extends ISe
             @RequestParam(value = "class", required = false) Class<T> type,
             HttpServletRequest request,
             HttpServletResponse response) {
-        
+
         if (request != null)
         {
-            logger.info("doGet() " + request.getServletPath());
+            logger.info("doList() " + requestPathAndQuery(request));
         }
 
         //if(start == null){ start = 0;}
         if(limit == null){ limit = PagerParameters.DEFAULT_PAGESIZE;}
         if(limit < 1){ limit = null;}
-        return service.list(type, limit, start, null, DEFAULT_INIT_STRATEGY);
+        return service.list(type, limit, start, null, getInitializationStrategy());
     }
 
   /* TODO

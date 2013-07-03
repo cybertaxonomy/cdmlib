@@ -100,8 +100,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     // all related synonyms
     @XmlElementWrapper(name = "SynonymRelations")
     @XmlElement(name = "SynonymRelationship")
-    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @Valid
     private Set<SynonymRelationship> synonymRelations = new HashSet<SynonymRelationship>();
@@ -109,8 +109,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     // all taxa relations with rel.fromTaxon==this
     @XmlElementWrapper(name = "RelationsFromThisTaxon")
     @XmlElement(name = "FromThisTaxonRelationship")
-    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedFrom", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @Valid
     private Set<TaxonRelationship> relationsFromThisTaxon = new HashSet<TaxonRelationship>();
@@ -120,8 +120,8 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlElement(name = "ToThisTaxonRelationship")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN})
+    @OneToMany(mappedBy="relatedTo", fetch=FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @Valid
     private Set<TaxonRelationship> relationsToThisTaxon = new HashSet<TaxonRelationship>();
@@ -1525,6 +1525,17 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return unplaced;
     }
 
+    @Transient
+    public boolean isOrphaned() {
+    	
+    	if(taxonNodes == null || taxonNodes.isEmpty()) {
+    		if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
+				return true;
+	    	}
+    	}
+    	return false;
+    }
+    
     public void setUnplaced(boolean unplaced) {
         this.unplaced = unplaced;
     }

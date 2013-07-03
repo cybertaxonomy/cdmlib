@@ -23,7 +23,7 @@ import javax.validation.Validator;
 import javax.validation.ValidatorFactory;
 import javax.validation.groups.Default;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -76,7 +76,6 @@ public class ValidationTest extends CdmTransactionalIntegrationTest {
 
 	@Before
 	public void setUp() {
-
 
 		//Rank speciesRank = (Rank)termService.find(Rank.uuidSpecies);
 		name = BotanicalName.NewInstance(Rank.SPECIES());

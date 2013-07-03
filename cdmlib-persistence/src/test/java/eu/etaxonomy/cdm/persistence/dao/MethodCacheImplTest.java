@@ -15,20 +15,20 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class MethodCacheImplTest {
-    private static final Logger logger = Logger
-            .getLogger(MethodCacheImplTest.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(MethodCacheImplTest.class);
     private Taxon taxon;
     private BotanicalName botanicalName;
 
     IMethodCache methodCache;
-    private Reference nomenclaturalReference;
+    private Reference<?> nomenclaturalReference;
 
     @Before
     public void setUp() throws Exception {
         methodCache = new MethodCacheImpl();
         taxon = Taxon.NewInstance(null, null);
         botanicalName = BotanicalName.NewInstance(null);
-        nomenclaturalReference = ReferenceFactory.newInstance().newBook();
+        nomenclaturalReference = ReferenceFactory.newBook();
     }
 
     /**

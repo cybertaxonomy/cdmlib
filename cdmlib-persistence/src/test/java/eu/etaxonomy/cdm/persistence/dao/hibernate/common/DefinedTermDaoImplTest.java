@@ -91,12 +91,14 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	@Test
 	public void getLanguageByIso2() {
 		Language lang = dao.getLanguageByIso("arm");
+		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 
 	@Test
 	public void getLanguageByIso1() {
 		Language lang = dao.getLanguageByIso("hy");
+		assertNotNull(lang);
 		assertEquals("getLanguageByIso should return the correct Language instance",lang.getUuid(), armUuid);
 	}
 

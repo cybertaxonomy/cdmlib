@@ -1,6 +1,5 @@
 package eu.etaxonomy.cdm.remote.view;
 
-import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -9,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
 import org.custommonkey.xmlunit.XMLUnit;
 import org.dozer.Mapper;
 import org.hibernate.envers.RevisionType;
@@ -23,28 +23,26 @@ import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import common.Logger;
-
+import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
 import eu.etaxonomy.cdm.model.view.AuditEventRecordImpl;
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.DeletedRecord;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.Granularity;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.MetadataPrefix;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.ResumptionToken;
 import eu.etaxonomy.cdm.remote.dto.oaipmh.SetSpec;
-import eu.etaxonomy.cdm.remote.view.oaipmh.dc.GetRecordView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.IdentifyView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.ListIdentifiersView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.ListMetadataFormatsView;
-import eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView;
 import eu.etaxonomy.cdm.remote.view.oaipmh.ListSetsView;
+import eu.etaxonomy.cdm.remote.view.oaipmh.dc.GetRecordView;
+import eu.etaxonomy.cdm.remote.view.oaipmh.dc.ListRecordsView;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class OaiPmhViewTest extends UnitilsJUnit4 {

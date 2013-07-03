@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.media;
 
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
@@ -87,10 +86,11 @@ public class MediaRepresentation extends VersionableEntity implements Cloneable{
         @XmlElement(name = "ImageFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = ImageFile.class),
         @XmlElement(name = "MovieFile", namespace = "http://etaxonomy.eu/cdm/model/media/1.0", type = MovieFile.class)
     })
-    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY)
+	//TODO why do we have cascade defined here and below
+    @OneToMany (cascade = {javax.persistence.CascadeType.ALL}, fetch= FetchType.LAZY, orphanRemoval=true)
 	@IndexColumn(name="sortIndex", base = 0)
 	@JoinColumn (name = "representation_id",  nullable=false)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.DELETE_ORPHAN, CascadeType.REFRESH})
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH})
 	private List<MediaRepresentationPart> mediaRepresentationParts = new ArrayList<MediaRepresentationPart>();
 		
 	

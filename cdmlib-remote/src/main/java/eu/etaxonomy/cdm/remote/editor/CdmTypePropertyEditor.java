@@ -13,23 +13,19 @@ package eu.etaxonomy.cdm.remote.editor;
 import java.beans.PropertyEditorSupport;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
-
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.kohlbecker
  * @date 30.06.2009
- * TODO only TDWG areas supported for now
  */
-@Component
 public class CdmTypePropertyEditor extends PropertyEditorSupport  {
 
     public static final Logger logger = Logger.getLogger(CdmTypePropertyEditor.class);
 
+    @Override
     public void setAsText(String text) {
 
-            Class clazz = null;
+            Class<?> clazz = null;
             try {
                 clazz = Class.forName(text);
             } catch (ClassNotFoundException e) { /* IGNORE */ }

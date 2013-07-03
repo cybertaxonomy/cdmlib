@@ -14,7 +14,7 @@ import static org.junit.Assert.assertEquals;
 import java.util.Set;
 import java.util.UUID;
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  *
  */
 public class CommonServiceImplTest extends CdmIntegrationTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImplTest.class);
 
 	@SpringBeanByType
@@ -50,12 +51,12 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 
 	@SpringBeanByType
 	private IReferenceService referenceService;
-
-	@SpringBeanByType
-	private IAgentService agentService;
-
-	@SpringBeanByType
-	private IUserService userService;
+//
+//	@SpringBeanByType
+//	private IAgentService agentService;
+//
+//	@SpringBeanByType
+//	private IUserService userService;
 
 	@SpringBeanByType
 	private IOccurrenceService occurrenceService;
@@ -77,10 +78,9 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	@DataSet
 	@Ignore
 	public final void testGetReferencingObjects() {
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 		name.setTitleCache("A name", true);
-		Reference ref1 = refFactory.newArticle();
+		Reference<?> ref1 = ReferenceFactory.newArticle();
 		Taxon taxon = Taxon.NewInstance(name, ref1);
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
@@ -138,7 +138,7 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 //		occurrenceService.save(spec1);
 
 		UUID uuidSpec = UUID.fromString("41539e9c-3764-4f14-9712-2d07d00c8e4c");
-		SpecimenOrObservationBase spec1 = occurrenceService.find(uuidSpec);
+		SpecimenOrObservationBase<?> spec1 = occurrenceService.find(uuidSpec);
 
 
 		Set<CdmBase> referencedObjects = service.getReferencingObjects(spec1);
@@ -152,19 +152,12 @@ public class CommonServiceImplTest extends CdmIntegrationTest {
 	}
 
 
-//	@Test
-	public final void printDataSet() {
-		printDataSet(System.out);
-	}
-
-
 	@Test
 	@DataSet
 	public final void testLoadCacheStrategyForReference(){
-		Reference ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
+		Reference<?> ref = referenceService.load(UUID.fromString("613980ac-9bd5-43b9-a374-d71e1794688f"));
 		ref.setType(ReferenceType.Article);
 		referenceService.update(ref);
 		referenceService.updateTitleCache();
-
 	}
 }

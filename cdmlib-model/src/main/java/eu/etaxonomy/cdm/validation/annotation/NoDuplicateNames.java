@@ -26,7 +26,10 @@ import eu.etaxonomy.cdm.validation.constraint.StubValidator;
 @Constraint(validatedBy = StubValidator.class)
 @Documented
 public @interface NoDuplicateNames {
-String message() default "{eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames.message}";
-Class<? extends Payload>[] payload() default {};
-Class<?>[] groups() default {};
+	
+	String message() default "{eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames.message}";
+	
+	Class<? extends Payload>[] payload() default {};
+	
+	Class<?>[] groups() default {};
 }

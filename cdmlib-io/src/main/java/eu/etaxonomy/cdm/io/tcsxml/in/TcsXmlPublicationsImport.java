@@ -93,7 +93,6 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		
 		int i = 0;
 		//for each taxonName
-		ReferenceFactory refFactory = ReferenceFactory.newInstance();
 		for (Element elPublication : elPublicationList){
 			if ((++i % modCount) == 0){ logger.info("publications handled: " + (i-1));}
 			
@@ -108,7 +107,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 
 			String simple = elSimple.getTextNormalize();
 			
-			Reference reference = refFactory.newGeneric();
+			Reference<?> reference = ReferenceFactory.newGeneric();
 			reference.setTitleCache(simple, true);
 
 			childName = "PublicationDetailed";

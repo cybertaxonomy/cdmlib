@@ -16,20 +16,38 @@ import javax.servlet.http.HttpServletRequest;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+
 /**
  * @author a.kohlbecker
  * @date 23.06.2009
  *
+ * @param <T>
+ * @param <SERVICE>
  */
-public abstract class AbstractController {
+public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
 
     public static final Logger logger = Logger.getLogger(AbstractController.class);
 
-    protected static final Integer DEFAULT_PAGE_SIZE = 30;
+    protected SERVICE service;
+
+    public abstract void setService(SERVICE service);
+
+    protected static final Integer DEFAULT_PAGE_SIZE = PagerParameters.DEFAULT_PAGESIZE;
+
+    /**
+     * Default thread priority for long term processes which are running in
+     * separate threads. These batch processes are usually monitored with the
+     * {@link ProgressMonitorController}. This value must be lower than
+     * {@link Thread#NORM_PRIORITY}
+     */
+    public static final int DEFAULT_BATCH_THREAD_PRIORITY = 3;
 
     protected List<String> initializationStrategy = DEFAULT_INIT_STRATEGY;
 
@@ -38,8 +56,21 @@ public abstract class AbstractController {
      *
      * @param initializationStrategy
      */
-    public void setInitializationStrategy(List<String> initializationStrategy) {
+    public final void setInitializationStrategy(List<String> initializationStrategy) {
         this.initializationStrategy = initializationStrategy;
+    }
+
+    /**
+     * Provides access to the default initialization strategy.
+     * The default initialization strategy is predefined for all controllers in
+     * {@link #DEFAULT_INIT_STRATEGY} but can be altered by
+     * concrete implementations by utilizing {@link #setInitializationStrategy(List)}
+     * in the constructor of the specific controller.
+     *
+     * @return the default initialization strategy
+     */
+    public final List<String> getInitializationStrategy() {
+        return this.initializationStrategy;
     }
 
     /**
@@ -49,8 +80,11 @@ public abstract class AbstractController {
      * @return request path and query parameters as string.
      */
     protected String requestPathAndQuery(HttpServletRequest request) {
+        if(request == null) {
+            return "";
+        }
         StringBuilder b = new StringBuilder();
-        b.append(request.getServletPath());
+        b.append(request.getRequestURI());
         String query = request.getQueryString();
         if(query != null) {
             b.append("?").append(query);

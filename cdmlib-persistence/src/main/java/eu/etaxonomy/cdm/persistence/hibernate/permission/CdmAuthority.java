@@ -17,10 +17,9 @@ import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 import org.springframework.security.core.GrantedAuthority;
 
+import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
-
-import sun.security.provider.PolicyParser.ParsingException;
 
 /**
  * A <code>CdmAuthority</code> consists basically of two parts which are separated
@@ -56,6 +55,7 @@ import sun.security.provider.PolicyParser.ParsingException;
  *
  *
  * @author k.luther
+ * @author Andreas Kohlbecker
  */
 public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGrantedAuthorityConverter {
 
@@ -121,6 +121,10 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         return operation;
     }
 
+    public void setOperation(EnumSet<CRUD> operation) {
+    	this.operation = operation;
+    }
+
     public UUID getTargetUUID(){
         return targetUuid;
     }
@@ -155,7 +159,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         //  \\.?               -> .
         //  (?:(\\w*))(?:\\{([\\da-z\\-]+)\\})? -> Permmission and targetUuid
         //
-        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:(\\w*))(?:\\{([\\da-z\\-]+)\\})?";
+        String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
         Pattern pattern = Pattern.compile(regex);
         String[] tokens = new String[4];
         logger.debug("parsing '" + authority + "'");

@@ -119,10 +119,10 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
                 if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("occurrence sources handled: " + (i-1));}
                 
                 Integer occurrenceSourceId = rs.getInt("OccurrenceSourceId");
-                Integer occurrenceFk = (Integer)rs.getObject("OccurrenceFk");
+                Integer occurrenceFk =nullSafeInt(rs, "OccurrenceFk");
     			String sourceNumber = rs.getString("SourceNumber");
     			String oldName = rs.getString("OldName");
-    			Integer oldNameFk = (Integer)rs.getObject("OldNameFk");
+    			Integer oldNameFk = nullSafeInt(rs, "OldNameFk");
     			
     			Distribution distribution = (Distribution)state.getRelatedObject(BerlinModelOccurrenceImport.NAMESPACE, String.valueOf(occurrenceFk));
                 

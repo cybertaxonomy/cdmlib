@@ -26,11 +26,13 @@ import javax.wsdl.xml.WSDLLocator;
 import javax.wsdl.xml.WSDLReader;
 import javax.wsdl.xml.WSDLWriter;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
+import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
+import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
+import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 
 import com.ibm.wsdl.factory.WSDLFactoryImpl;
 
@@ -46,9 +48,9 @@ import eu.etaxonomy.cdm.model.common.LSIDWSDLLocator;
  * @see org.hibernate.usertype.UserType UserType
  * @see javax.wsdl.Definition Definition
  */
-public class WSDLDefinitionUserType implements UserType {
-	private static Log log = LogFactory.getLog(WSDLDefinitionUserType.class);
-	private static final int[] TYPES = { Types.CLOB };
+public class WSDLDefinitionUserType extends AbstractUserType implements UserType {
+	
+	private static final int[] SQL_TYPES = { Types.CLOB };
 
 	public Object deepCopy(Object o) throws HibernateException {
 		
@@ -73,6 +75,9 @@ public class WSDLDefinitionUserType implements UserType {
 		}
 	}
 
+	
+	//not tested if this works with jadira.usertype
+	@Override
 	public Object assemble(Serializable cached, Object owner) throws HibernateException {
 		try {
 			WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
@@ -86,6 +91,8 @@ public class WSDLDefinitionUserType implements UserType {
 		}
 	}
 	
+	//not tested if this works with jadira.usertype
+	@Override
 	public Serializable disassemble(Object value) throws HibernateException {
 		try {
 			WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
@@ -99,21 +106,13 @@ public class WSDLDefinitionUserType implements UserType {
 		}
 	}
 
-	public boolean equals(Object x, Object y) throws HibernateException {
-		return (x == y) || (x != null && y != null && (x.equals(y)));
-	}
 
-	public int hashCode(Object x) throws HibernateException {
-		return x.hashCode();
-	}
 
-	public boolean isMutable() {
-		return true;
-	}
-
-	public Object nullSafeGet(ResultSet resultSet, String[] names, Object o)
+	@Override
+	public Definition nullSafeGet(ResultSet rs, String[]names, SessionImplementor session, Object o)
 			throws HibernateException, SQLException {
-		Clob val = (Clob) resultSet.getClob(names[0]);
+		Clob val = (Clob)StandardBasicTypes.CLOB.nullSafeGet(rs, names, session, o);
+//		Clob val = (Clob) rs.getClob(names[0]);
 		if(val == null) {
 			return null;
 		} else {
@@ -130,18 +129,23 @@ public class WSDLDefinitionUserType implements UserType {
 		}
 	}
 
-	public void nullSafeSet(PreparedStatement preparedStatement, Object o, int index)
+	
+
+	@Override
+	public void nullSafeSet(PreparedStatement statement, Object value, int index, SessionImplementor session) 
 			throws HibernateException, SQLException {
-		if (null == o) { 
-            preparedStatement.setNull(index, Types.CLOB); 
+		if (value == null) { 
+//            statement.setNull(index, Types.CLOB);   //old version
+            StandardBasicTypes.CLOB.nullSafeSet(statement, value, index, session);
         } else { 
 			try {
-				Definition definition = (Definition) o;
+				Definition definition = (Definition) value;
 				WSDLFactory wsdlFactory = WSDLFactoryImpl.newInstance();
 				StringWriter stringWriter = new StringWriter();
 	    		WSDLWriter writer = wsdlFactory.newWSDLWriter();
 	    	    writer.writeWSDL(definition, stringWriter);
-	        	preparedStatement.setClob(index, Hibernate.createClob(stringWriter.getBuffer().toString()));
+//	    	    statement.setClob(index, Hibernate.createClob(stringWriter.getBuffer().toString()));  //old version
+	        	StandardBasicTypes.CLOB.nullSafeSet(statement, stringWriter.getBuffer().toString(), index, session);
 			} catch (WSDLException e) {
 				throw new HibernateException(e);
 			}
@@ -149,17 +153,15 @@ public class WSDLDefinitionUserType implements UserType {
         }
 	}
 
-	public Object replace(Object original, Object target, Object owner)
-			throws HibernateException {
-		return original;
-	}
-
+	
 	public Class returnedClass() {
 		return Definition.class;
 	}
 
+
+	@Override
 	public int[] sqlTypes() {
-		return TYPES;
+		return SQL_TYPES;
 	}
 
 }

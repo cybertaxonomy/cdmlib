@@ -40,7 +40,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
         implements ICdmIO<STATE>, IIoObservable {
     private static final Logger logger = Logger.getLogger(CdmIoBase.class);
 
-    private Set<IIoObserver> observers = new HashSet<IIoObserver>();
+    private final Set<IIoObserver> observers = new HashSet<IIoObserver>();
     protected String ioName = null;
 
 
@@ -90,6 +90,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
      */
+    @Override
     public boolean removeObserver(IIoObserver observer){
         return observers.remove(observer);
     }
@@ -97,6 +98,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObservers()
      */
+    @Override
     public void removeObservers(){
         observers.removeAll(observers);
     }
@@ -105,6 +107,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.events.IIoEvent)
      */
+    @Override
     public void fire(IIoEvent event){
         for (IIoObserver observer: observers){
             observer.handleEvent(event);
@@ -123,6 +126,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.ICdmExport#invoke(eu.etaxonomy.cdm.io.common.ExportStateBase)
      */
+    @Override
     public boolean invoke(STATE state) {
         if (isIgnore( state)){
             logger.info("No invoke for " + ioName + " (ignored)");
@@ -141,13 +145,13 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
      */
     protected abstract void doInvoke(STATE state);
 
-
     @Autowired
-    SessionFactory sessionFactory;
+    private SessionFactory sessionFactory;
 
     /**
      * flush the current session
      */
+    //TODO move into super class CdmApplicationDefaultConfiguration#flush() ?
     public void flush() {
         sessionFactory.getCurrentSession().flush();
     }
@@ -155,6 +159,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction()
      */
+    @Override
+    //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(), remove duplicate
     public TransactionStatus startTransaction() {
         return startTransaction(false);
     }
@@ -162,6 +168,8 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
      */
+    @Override
+    //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
     public TransactionStatus startTransaction(Boolean readOnly) {
 
         DefaultTransactionDefinition defaultTxDef = new DefaultTransactionDefinition();
@@ -176,7 +184,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
             logger.debug("Isolation level = " + txDef.getIsolationLevel());
             logger.debug("Timeout = " + txDef.getTimeout());
             logger.debug("Read Only = " + txDef.isReadOnly());
-            // org.springframework.orm.hibernate3.HibernateTransactionManager
+            // org.springframework.orm.hibernate4.HibernateTransactionManager
             // provides more transaction/session-related debug information.
         }
 
@@ -184,12 +192,15 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
         return txStatus;
     }
 
+    @Override
+    //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean), remove duplicate?
     public void commitTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.commit(txStatus);
         return;
     }
 
+    //TODO move into super class CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
     public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.rollback(txStatus);
@@ -199,6 +210,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
      */
+    @Override
     public boolean check(STATE state) {
         if (isIgnore(state)){
             logger.info("No check for " + ioName + " (ignored)");
@@ -275,7 +287,7 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     @Override
     public void updateProgress(STATE state, String message) {
         updateProgress(state, message, 1);
-    };
+    }
 
     @Override
     public void updateProgress(STATE state, String message, int worked) {

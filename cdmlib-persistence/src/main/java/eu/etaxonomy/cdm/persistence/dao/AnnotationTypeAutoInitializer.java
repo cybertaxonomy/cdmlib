@@ -9,11 +9,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-
 import eu.etaxonomy.cdm.model.common.Annotation;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 
 /**
  * @author a.kohlbecker

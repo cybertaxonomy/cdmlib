@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public abstract class VersionableDaoBase<T extends VersionableEntity> extends CdmEntityDaoBase<T> implements IVersionableDao<T> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VersionableDaoBase.class);
 
 	protected AuditReader getAuditReader() {

@@ -15,15 +15,7 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.agent.Team;
-import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
@@ -68,41 +60,6 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			config.setFirePropertyChangeEvents(false);
 			facade = DerivedUnitFacade.NewInstance(derivedUnit, config);
 			result += fieldStrategy.getFieldData(facade);
-//			//country
-//			String strCountry = null;
-//			NamedArea country = facade.getCountry();
-//			Representation repCountry = country == null ? null : country.getRepresentation(Language.DEFAULT());
-//			//TODO currently the label is the 3 digit representation of the country and text is the full text.
-//			//this is against the common way of handling text, label and labelabbrev in defined terms
-//			strCountry = repCountry == null ? null: repCountry.getText();
-//			result = CdmUtils.concat(", ", result, strCountry);
-//			
-//			//locality
-//			result = CdmUtils.concat(", ", result, facade.getLocalityText());
-//			
-//			//elevation
-//			if (facade.getAbsoluteElevation() != null){
-//				result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
-//				result += facade.getAbsoluteElevation() + ALTITUDE_POSTFIX;
-//			}
-//			
-//			//exact locality
-//			if (facade.getExactLocation() != null){
-//				String exactLocation = facade.getExactLocation().toSexagesimalString(this.includeEmptySeconds, this.includeReferenceSystem);
-//				result = CdmUtils.concat(", ", result, exactLocation);
-//			}
-//			
-//			//ecology
-//			result = CdmUtils.concat(", ", result, facade.getEcology());
-//			
-//			//gathering period
-//			//TODO period.toString ??
-//			TimePeriod gatheringPeriod = facade.getGatheringPeriod();
-//			result = CdmUtils.concat(", ", result, (gatheringPeriod == null? null : gatheringPeriod.toString()));
-//			
-//			//collector (team) and field number
-//			String collectorAndFieldNumber = getCollectorAndFieldNumber(facade);
-//			result = CdmUtils.concat(", ", result, collectorAndFieldNumber);
 			
 			//Exsiccatum
 			String exsiccatum = null;
@@ -116,10 +73,11 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 			//Herbarium & accession number
 			String code = getCode(facade);
 			String collectionData = CdmUtils.concat(" ", code, facade.getAccessionNumber());
-			if (CdmUtils.isNotEmpty(collectionData)) {
+			if (StringUtils.isNotBlank(collectionData)) {
 				result = (result + " (" +  collectionData + ")").trim();
 			}
 			
+			//result
 			result = fieldStrategy.addPlantDescription(result, facade);
 
 			
@@ -139,12 +97,12 @@ public class DerivedUnitFacadeCacheStrategy extends StrategyBase implements IIde
 		String code = "";
 		if(facade.getCollection() != null){			
 			code = facade.getCollection().getCode();
-			if (CdmUtils.isEmpty(code)){
+			if (StringUtils.isBlank(code)){
 				Institution institution = facade.getCollection().getInstitute();
 				if (institution != null){
 					code = institution.getCode();
 				}
-				if (CdmUtils.isEmpty(code)){
+				if (StringUtils.isBlank(code)){
 					Collection superCollection = facade.getCollection().getSuperCollection();
 					if (superCollection != null){
 						code = superCollection.getCode();

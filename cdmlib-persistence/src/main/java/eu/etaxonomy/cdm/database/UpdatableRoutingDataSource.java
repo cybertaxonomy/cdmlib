@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.database;
 
 import java.sql.Connection;
 import java.sql.SQLException;
-import java.sql.SQLFeatureNotSupportedException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.logging.Logger;

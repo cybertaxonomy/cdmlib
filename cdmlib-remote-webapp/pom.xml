@@ -4,15 +4,19 @@
   <parent>
     <artifactId>cdmlib-parent</artifactId>
     <groupId>eu.etaxonomy</groupId>
-    <version>3.1.4-SNAPSHOT</version>
+    <version>3.2.3-SNAPSHOT</version>
 	<relativePath>../pom.xml</relativePath>
   </parent>
-  
+
   <groupId>eu.etaxonomy</groupId>
   <artifactId>cdmlib-remote-webapp</artifactId>
   <name>CDM Remote Webapp</name>
   <packaging>war</packaging>
-  
+
+  <properties>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+  </properties>
+
   <scm>
     <connection>
       scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib/cdmlib-remote/
@@ -24,72 +28,19 @@
       http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib/cdmlib-remote/
     </url>
   </scm>
-  
+
   <dependencies>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-ext</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-persistence</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-model</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-services</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>eu.etaxonomy</groupId>
-        <artifactId>cdmlib-io</artifactId>
-      </dependency>
     <dependency>
       <groupId>eu.etaxonomy</groupId>
       <artifactId>cdmlib-remote</artifactId>
     </dependency>
       <dependency>
+      	<!-- TODO this is also offered by cdmlib-remote, can it be removed? What does provided mean? -->
         <groupId>javax.servlet</groupId>
         <artifactId>servlet-api</artifactId>
         <scope>provided</scope>
       </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.web</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.context.support</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.web.servlet</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.springmodules</groupId>
-        <artifactId>spring-modules-cache</artifactId>
-        <version>0.7</version>
-        <exclusions>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring</artifactId>
-          </exclusion>
-          <exclusion>
-            <groupId>org.springframework</groupId>
-            <artifactId>spring-mock</artifactId>
-          </exclusion>
-        </exclusions>
-      </dependency>
-      <dependency>
-        <groupId>com.ibm.lsid</groupId>
-        <artifactId>lsid-server</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>com.ibm.lsid</groupId>
-        <artifactId>lsid-client</artifactId>
-      </dependency>
+
       <dependency>
         <groupId>org.easymock</groupId>
         <artifactId>easymock</artifactId>
@@ -98,41 +49,20 @@
         <groupId>xmlunit</groupId>
         <artifactId>xmlunit</artifactId>
       </dependency>
-      <dependency>
-        <groupId>org.springframework</groupId>
-        <artifactId>org.springframework.test</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>net.sf.dozer</groupId>
-        <artifactId>dozer</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>joda-time</groupId>
-        <artifactId>joda-time</artifactId>    
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-cglib-repack</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-core</artifactId>
-      </dependency>
-      <dependency>
-        <groupId>org.hibernate</groupId>
-        <artifactId>hibernate-ehcache</artifactId>
-      </dependency>
+
       <dependency>
         <groupId>commons-io</groupId>
         <artifactId>commons-io</artifactId>
       </dependency>
       <!-- JsonView -->
       <dependency>
+        <!--  TODO can this be removed, it already exists in cdmlib-remote -->
         <groupId>net.sf.json-lib</groupId>
         <artifactId>json-lib</artifactId>
-        <version>2.2.3</version>
-        <classifier>jdk15</classifier>   
+        <classifier>jdk15</classifier>
       </dependency>
+
+      <!-- Profiling -->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>org.springframework.oxm</artifactId>
@@ -215,16 +145,17 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
-  
+    <dependency>
+        <groupId>com.yourkit</groupId>
+        <artifactId>yjp-controller-api-redist</artifactId>
+        <scope>test</scope>
+    </dependency>
+
   </dependencies>
-  
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-  </properties>
-    
+
     <build>
       <!-- Configure the webapp -->
-      <finalName>cdmserver</finalName> 
+      <finalName>cdmserver</finalName>
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

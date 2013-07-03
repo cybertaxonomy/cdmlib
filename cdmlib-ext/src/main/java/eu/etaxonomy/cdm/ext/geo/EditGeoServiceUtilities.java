@@ -14,6 +14,7 @@ import java.awt.Color;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -26,6 +27,7 @@ import javax.persistence.Transient;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
@@ -48,9 +50,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 /**
  * Class implementing the business logic for creating the map service string for
  * a given set of distributions. See {@link EditGeoService} as API for the given functionality.
- * 
- * @see EditGeoService 
- * 
+ *
+ * @see EditGeoService
+ *
  * @author a.mueller
  * @created 17.11.2008
  * @version 1.0
@@ -61,9 +63,9 @@ public class EditGeoServiceUtilities {
     private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
 
     private static IDefinedTermDao termDao;
-   
-    
-    
+
+
+
     /**
      * @param termDao
      */
@@ -230,12 +232,13 @@ public class EditGeoServiceUtilities {
 		if(distributions == null || distributions.size() == 0){
 			return "";
 		}
-		
+
+		Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions);
+
 		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
 		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
-		
-		groupStylesAndLayers(distributions, layerMap, statusList, mapping);
 
+		groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
@@ -335,13 +338,15 @@ public class EditGeoServiceUtilities {
         return queryString;
     }
 
-	/**
+
+    /**
 	 * Fills the layerMap and the statusList
+	 *
 	 * @param distributions
-	 * @param layerMap
+	 * @param layerMap see {@link #addAreaToLayerMap(Map, List, Distribution, NamedArea, IGeoServiceAreaMapping)}
 	 * @param statusList
 	 */
-	private static void groupStylesAndLayers(Set<Distribution> distributions,
+	private static void groupStylesAndLayers(Collection<Distribution> distributions,
 			Map<String, Map<Integer,Set<Distribution>>> layerMap,
 			List<PresenceAbsenceTermBase<?>> statusList,
 			IGeoServiceAreaMapping mapping) {
@@ -361,21 +366,34 @@ public class EditGeoServiceUtilities {
 			//group areas by layers and styles
 			NamedArea area = distribution.getArea();
 
-
-            addArea(layerMap, statusList, distribution, area, mapping);
+            addAreaToLayerMap(layerMap, statusList, distribution, area, mapping);
         }
     }
 
 	/**
+	 * A layer map holds the following information:
+	 *
+	 * <ul>
+	 *   <li><b>String</b>: the WMSLayerName which matches the level of the
+	 *   contained distributions areas</li>
+	 *   <li><b>StyleMap</b>:</li>
+	 *   <ul>
+	 *     <li><b>Integer</b>: the index of the status in the
+	 *     <code>statusList</code></li>
+	 *     <li><b>Set{@code<Distribution>}</b>: the set of distributions having the
+	 *     same Status, the status list is populated in {@link #groupStylesAndLayers(Set, Map, List, IGeoServiceAreaMapping)}</li>
+	 *   </ul>
+	 * </ul>
+	 *
 	 * @param layerMap
 	 * @param statusList
 	 * @param distribution
 	 * @param area
 	 */
-	private static void addArea(Map<String, Map<Integer, 
-			Set<Distribution>>> layerMap, 
+	private static void addAreaToLayerMap(Map<String, Map<Integer,
+			Set<Distribution>>> layerMap,
 			List<PresenceAbsenceTermBase<?>> statusList,
-			Distribution distribution, 
+			Distribution distribution,
 			NamedArea area,
 			IGeoServiceAreaMapping mapping) {
 
@@ -387,7 +405,7 @@ public class EditGeoServiceUtilities {
                 // if no layer is mapped this area descend into sub areas in order to project
                 // the distribution to those
                 for(NamedArea subArea : area.getIncludes()){
-                    addArea(layerMap, statusList, distribution, subArea, mapping);
+                    addAreaToLayerMap(layerMap, statusList, distribution, subArea, mapping);
                 }
 
             } else {
@@ -397,7 +415,7 @@ public class EditGeoServiceUtilities {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
                     layerMap.put(geoLayerString, styleMap);
                 }
-                addDistributionToMap(distribution, styleMap, statusList);
+                addDistributionToStyleMap(distribution, styleMap, statusList);
 
             }
         }
@@ -469,7 +487,7 @@ public class EditGeoServiceUtilities {
 			if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
 				result = result.replace("-", "");
 			}
-			
+
 		}else{
 			GeoServiceArea areas =mapping.valueOf(area);
 			if ((areas != null) && areas.size()>0){
@@ -479,10 +497,10 @@ public class EditGeoServiceUtilities {
 					result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
 				}
 			}
-			
+
 		}
 		return CdmUtils.Nz(result, "-");
-		
+
 	}
 
 
@@ -557,7 +575,7 @@ public class EditGeoServiceUtilities {
 		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
 			return "cyprusdivs:bdcode";
 		}
-		
+
 		GeoServiceArea areas = mapping.valueOf(area);
 		if (areas != null && areas.getAreasMap().size() > 0){
 			//FIXME multiple layers
@@ -566,12 +584,12 @@ public class EditGeoServiceUtilities {
 			String field = fields.keySet().iterator().next();
 			return layer + ":" + field;
 		}
-		
+
 		return null;
 	}
 
 
-    private static void addDistributionToMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
+    private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
             List<PresenceAbsenceTermBase<?>> statusList) {
         PresenceAbsenceTermBase<?> status = distribution.getStatus();
         if (status == null) {

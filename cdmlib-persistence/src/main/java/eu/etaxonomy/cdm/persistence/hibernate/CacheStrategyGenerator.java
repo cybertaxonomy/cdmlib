@@ -11,8 +11,8 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.apache.log4j.Logger;
 import org.hibernate.HibernateException;
-import org.hibernate.event.SaveOrUpdateEvent;
-import org.hibernate.event.SaveOrUpdateEventListener;
+import org.hibernate.event.spi.SaveOrUpdateEvent;
+import org.hibernate.event.spi.SaveOrUpdateEventListener;
 import org.joda.time.DateTime;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -64,7 +64,7 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
         		nonViralName.getFullTitleCache();
         	//team-or-person caches
             }else if(TeamOrPersonBase.class.isAssignableFrom(entityClazz)){
-            	TeamOrPersonBase teamOrPerson = (TeamOrPersonBase)entity;
+            	TeamOrPersonBase<?> teamOrPerson = (TeamOrPersonBase<?>)entity;
             	String nomTitle = teamOrPerson.getNomenclaturalTitle();
             	if (teamOrPerson instanceof Team){
             		Team team =CdmBase.deproxy(teamOrPerson, Team.class); 
@@ -79,7 +79,7 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
  
             //title cache
             }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
-        		IdentifiableEntity identifiableEntity = (IdentifiableEntity)entity;
+        		IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;
         		identifiableEntity.getTitleCache();
             }
         	

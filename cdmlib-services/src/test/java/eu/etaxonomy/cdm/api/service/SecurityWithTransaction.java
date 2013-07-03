@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecu
 //@RunWith(UnitilsJUnit4TestClassRunner.class)
 //@SpringApplicationContext({"/eu/etaxonomy/cdm/applicationContextSecurity.xml"})
 //@Transactional
-//@Ignore
+@Ignore // should be ignored
 @DataSet("SecurityTest.xml")
 public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWithSecurity {
 

@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.strategy.cache.agent;
 
 import java.util.UUID;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -58,17 +60,17 @@ public class PersonDefaultCacheStrategy extends StrategyBase implements
 	 */
 	public String getTitleCache(Person person) {
 		String result = "";
-		if (CdmUtils.isNotEmpty(person.getLastname() ) ){
+		if (StringUtils.isNotBlank(person.getLastname() ) ){
 			result = person.getLastname();
 			result = addFirstNamePrefixSuffix(result, person);
 			return result;
 		}else{
 			result = person.getNomenclaturalTitle();
-			if (CdmUtils.isNotEmpty(result)){
+			if (StringUtils.isNotBlank(result)){
 				return result;
 			}
 			result = addFirstNamePrefixSuffix("", person);
-			if (CdmUtils.isNotEmpty(result)){
+			if (StringUtils.isNotBlank(result)){
 				return result;
 			}
 		}

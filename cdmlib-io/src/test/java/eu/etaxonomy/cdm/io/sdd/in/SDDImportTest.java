@@ -9,14 +9,11 @@
 
 package eu.etaxonomy.cdm.io.sdd.in;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-
-import junit.framework.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -52,7 +49,7 @@ public class SDDImportTest extends CdmTransactionalIntegrationTest {
         URL url = this.getClass().getResource("/eu/etaxonomy/cdm/io/sdd/SDD-Test-Simple.xml");
 		URI uri = url.toURI();
 //		URI	uri = URI.create("file:///C:/localCopy/Data/xper/Cichorieae-DA2.sdd.xml");
-        Assert.assertNotNull(url);
+		assertNotNull(url);
 		configurator = SDDImportConfigurator.NewInstance(uri, null);
     }
 

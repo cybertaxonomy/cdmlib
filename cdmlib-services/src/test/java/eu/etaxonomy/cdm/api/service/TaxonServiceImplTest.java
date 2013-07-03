@@ -54,7 +54,8 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 
 public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
 
     @SpringBeanByType
     private ITaxonService service;
@@ -113,33 +114,13 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public final void testRemoveTaxon() {
-        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(null), null);
+        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.UNKNOWN_RANK()), null);
         UUID uuid = service.save(taxon);
         service.delete(taxon);
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertNull(actualTaxon);
     }
 
-//    @Test
-//    @DataSet("ClearDBDataSet.xml")
-//    public final void clearDataBase() {
-//
-//    	setComplete();
-//    	commitAndStartNewTransaction(null);
-//
-//    	logger.info("DataBase tables cleared");
-//    }
-
-
-//    @Test
-    public final void testPrintDataSet() {
-//
-//        printDataSet(System.out);
-//        printDataSet(System.err, new String[] {"TAXONNODE", "AgentBase"});
-//    	printTableNames(System.err, "<%1$s />");
-//        System.exit(0);
-
-    }
 
     @Test
     public final void testMakeTaxonSynonym() {
@@ -160,7 +141,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(groupTest, groupTest2);
     }
 
-   //@Test
+    @Test
+    @Ignore
     public final void testChangeSynonymToAcceptedTaxon(){
         Rank rank = Rank.SPECIES();
         //HomotypicalGroup group = HomotypicalGroup.NewInstance();
@@ -333,19 +315,19 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
             Assert.fail("Move of single heterotypic synonym should not throw exception: " + e.getMessage());
         }
         //Asserts
-        //FIXME thows exception
+        //FIXME throws exception
         commitAndStartNewTransaction(tableNames);
 
 //        printDataSet(System.err, new String[]{"AgentBase", "TaxonBase"});
 //
 //      printDataSet(System.err, new String[]{"TaxonBase"});
 
-      heterotypicSynonym = (Synonym)service.load(uuidSyn5);
+        heterotypicSynonym = (Synonym)service.load(uuidSyn5);
 
 //      printDataSet(System.err, new String[]{"TaxonBase"});
 //      System.exit(0);
 
-      Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
+        Assert.assertNotNull("Synonym should still exist", heterotypicSynonym);
         Assert.assertEquals("Synonym should still have 1 relation", 1, heterotypicSynonym.getSynonymRelations().size());
         rel = heterotypicSynonym.getSynonymRelations().iterator().next();
         Assert.assertEquals("Accepted taxon of single relation should be new taxon", newTaxon, rel.getAcceptedTaxon());
@@ -781,26 +763,28 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet("TaxonServiceImplTest.testInferredSynonyms.xml")
-
     public void testCreateInferredSynonymy(){
 
         UUID classificationUuid = UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9");
         Classification tree = classificationService.find(classificationUuid);
         UUID taxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
-        TaxonBase taxonBase =  service.find(taxonUuid);
+        TaxonBase<?> taxonBase =  service.find(taxonUuid);
         List <TaxonBase> synonyms = service.list(Synonym.class, null, null, null, null);
         assertEquals("Number of synonyms should be 2",2,synonyms.size());
         Taxon taxon = (Taxon)taxonBase;
+        
         //synonyms = taxonDao.getAllSynonyms(null, null);
         //assertEquals("Number of synonyms should be 2",2,synonyms.size());
         List<Synonym> inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_EPITHET_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
 //        System.err.println(inferredSynonyms.size());
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus lachesis sec. ");
+       
         inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.INFERRED_GENUS_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
 //        System.err.println(inferredSynonyms.get(0).getTitleCache());
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "Acherontia ciprosus sec. ");
+        
         inferredSynonyms = service.createInferredSynonyms(taxon, tree, SynonymRelationshipType.POTENTIAL_COMBINATION_OF(), true);
         assertNotNull("there should be a new synonym ", inferredSynonyms);
         assertEquals ("the name of inferred epithet should be SynGenus lachesis", inferredSynonyms.get(0).getTitleCache(), "SynGenus ciprosus sec. ");

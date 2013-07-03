@@ -10,7 +10,7 @@
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
 
-import junit.framework.Assert;
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;

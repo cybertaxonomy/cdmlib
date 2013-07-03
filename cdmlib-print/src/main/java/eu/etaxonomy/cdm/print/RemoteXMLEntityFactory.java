@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -74,8 +75,8 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	private static final String TAXON_SYNONYMY = "portal/taxon/" + UUID + "/synonymy";
 	private static final String TAXON_DESCRIPTIONS = "portal/taxon/" + UUID + "/descriptions";
 
-
-
+	private static final String POLYTOMOUS_KEY = "dto/polytomousKey/linkedStyle?findByTaxonomicScope=" + UUID;
+	//dto/polytomousKey/linkedStyle.json?findByTaxonomicScope=f820f533-06f2-4116-87e9-c9319c0c1cbf
 	
 	
 	/**
@@ -250,8 +251,8 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 			
 			Map<String, String> requestHeaders = new HashMap<String, String>();
 			requestHeaders.put("Accept", "application/xml");
+			//requestHeaders.put("Accept", "application/json");
 			requestHeaders.put("Accept-Charset", "UTF-8");
-			
 			
 			HttpResponse response = UriUtils.getResponse(newUri, requestHeaders);
 			
@@ -303,5 +304,20 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	 */
 	public void setServiceUrl(URL serviceUrl) {
 		this.serviceUrl = serviceUrl;
+	}
+
+	//dto/polytomousKey/linkedStyle.json?findByTaxonomicScope=f820f533-06f2-4116-87e9-c9319c0c1cbf
+	/* (non-Javadoc)
+	 * TODO: Implement this method.
+	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getPolytomousKey(org.jdom.Element)
+	 */
+	@Override
+	//public List<Element> getPolytomousKey(Element taxonElement) {
+		public Element getPolytomousKey(Element taxonElement) {
+		
+		Element result = queryService(taxonElement, POLYTOMOUS_KEY);
+		return result;
+		// TODO Auto-generated method stub
+		//return null;
 	}
 }

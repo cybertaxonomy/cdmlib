@@ -242,11 +242,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			}
 			for (T entity: entitiesToUpdate){
 				if (entity.getTitleCache() != null){
-					System.err.println(entity.getTitleCache());
+					//System.err.println(entity.getTitleCache());
 				}else{
-					System.err.println("no titleCache" + ((NonViralName)entity).getNameCache());
+					//System.err.println("no titleCache" + ((NonViralName)entity).getNameCache());
 				}
-				
 			}
 			saveOrUpdate(entitiesToUpdate);
 			monitor.worked(list.size());
@@ -263,18 +262,27 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @param entitiesToUpdate
 	 * @param entity
 	 */
+	/**
+	 * @param cacheStrategy
+	 * @param entitiesToUpdate
+	 * @param entity
+	 */
 	private void updateTitleCacheForSingleEntity(
 			IIdentifiableEntityCacheStrategy<T> cacheStrategy,
 			List<T> entitiesToUpdate, T entity) {
+		
+		assert (entity.isProtectedTitleCache() == false );
+		
 		//exclude recursive inreferences
 		if (entity.isInstanceOf(Reference.class)){
-			Reference ref = CdmBase.deproxy(entity, Reference.class);
+			Reference<?> ref = CdmBase.deproxy(entity, Reference.class);
 			if (ref.getInReference() != null && ref.getInReference().equals(ref)){
 				return;
 			}
 		}
 		
 		
+		//define the correct cache strategy
 		IIdentifiableEntityCacheStrategy entityCacheStrategy = cacheStrategy;
 		if (entityCacheStrategy == null){
 			entityCacheStrategy = entity.getCacheStrategy();
@@ -284,34 +292,48 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			}
 		}
 		entity.setCacheStrategy(entityCacheStrategy);
+		
+		
+		//old titleCache
 		entity.setProtectedTitleCache(true);
-		String titleCache = entity.getTitleCache();
+		String oldTitleCache = entity.getTitleCache();
 		entity.setProtectedTitleCache(false);
-		String nameCache = null;
+		
+		//NonViralNames have more caches //TODO handle in NameService
+		String oldNameCache = null;
+		String oldFullTitleCache = null;
 		if (entity instanceof NonViralName ){
-			NonViralName nvn = (NonViralName) entity;
+			NonViralName<?> nvn = (NonViralName) entity;
 			if (!nvn.isProtectedNameCache()){
 				nvn.setProtectedNameCache(true);
-				nameCache = nvn.getNameCache();
+				oldNameCache = nvn.getNameCache();
 				nvn.setProtectedNameCache(false);
 			}
-			
-			
+			if (!nvn.isProtectedFullTitleCache()){
+				nvn.setProtectedFullTitleCache(true);
+				oldFullTitleCache = nvn.getFullTitleCache();
+				nvn.setProtectedFullTitleCache(false);
+			}
 		}
 		setOtherCachesNull(entity); //TODO find better solution
+		
 		String newTitleCache = entityCacheStrategy.getTitleCache(entity);
-		if (titleCache == null || titleCache != null && ! titleCache.equals(newTitleCache) ){
+		if (oldTitleCache == null || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			entity.getTitleCache();
 			if (entity instanceof NonViralName){
-				NonViralName nvn = (NonViralName) entity;
-				String newnameCache = nvn.getNameCache();
+				NonViralName<?> nvn = (NonViralName) entity;
+				nvn.getNameCache();
+				nvn.getFullTitleCache();
 			}
 			entitiesToUpdate.add(entity);
 		}else if (entity instanceof NonViralName){
-			NonViralName nvn = (NonViralName) entity;
+			NonViralName<?> nvn = (NonViralName) entity;
 			String newnameCache = nvn.getNameCache();
-			if (nameCache == null || (nameCache != null && !nameCache.equals(newnameCache))){
+			String newFullTitleCache = nvn.getFullTitleCache();
+			if (oldNameCache == null || (oldNameCache != null && !oldNameCache.equals(newnameCache))){
+				entitiesToUpdate.add(entity);
+			}else if (oldFullTitleCache == null || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
 		}
@@ -342,7 +364,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#deduplicate(java.lang.Class, eu.etaxonomy.cdm.strategy.match.IMatchStrategy, eu.etaxonomy.cdm.strategy.merge.IMergeStrategy)
 	 */
 	@Override
-	@Transactional(propagation = Propagation.SUPPORTS, readOnly = false)
+	@Transactional(readOnly = false)
 	public int deduplicate(Class<? extends T> clazz, IMatchStrategy matchStrategy, IMergeStrategy mergeStrategy) {
 		DeduplicateState dedupState = new DeduplicateState();
 		

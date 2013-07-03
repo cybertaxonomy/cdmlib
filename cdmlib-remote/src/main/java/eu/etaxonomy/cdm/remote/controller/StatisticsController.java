@@ -71,7 +71,7 @@ public class StatisticsController {
 		createConfigurator(part, type);
 		// service.getStatistics(configurator);
 		Statistics statistics = service.getCountStatistics(configurator);
-		logger.info("doStatistics() - " + request.getServletPath());
+		logger.info("doStatistics() - " + request.getRequestURI());
 
 		mv.addObject(statistics);
 		return mv;
