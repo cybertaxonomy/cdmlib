@@ -177,6 +177,10 @@
       </dependency>
       <dependency>
 	<groupId>com.vaadin</groupId>
+      	<artifactId>vaadin-shared</artifactId>	
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
 	<artifactId>vaadin-client-compiled</artifactId>
       </dependency>
       <dependency>
@@ -189,9 +193,13 @@
 	<artifactId>vaadin-themes</artifactId>
       </dependency>
       <dependency>
+	<groupId>com.vaadin</groupId>
+      	<artifactId>vaadin-client-compiler</artifactId>	
+      </dependency>
+
+      <dependency>
 	<groupId>ru.xpoft.vaadin</groupId>
 	<artifactId>spring-vaadin-integration</artifactId>
-<!-- 	<version>1.7.3</version> -->
       </dependency>
 
       <!--  SQL Profiling  -->

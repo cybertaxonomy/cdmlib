@@ -206,23 +206,26 @@
             <artifactId>hibernate-c3p0</artifactId>
      </dependency>
      <dependency>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-server</artifactId>
-                 
-                </dependency>
-                <dependency>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-client-compiled</artifactId>
-                </dependency>
-                <dependency>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-client</artifactId>
-                        <scope>provided</scope>
-                </dependency>
-                <dependency>
-                        <groupId>com.vaadin</groupId>
-                        <artifactId>vaadin-themes</artifactId>
-                </dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-server</artifactId>              
+      </dependency>
+      <dependency>
+        <groupId>com.vaadin</groupId>
+        <artifactId>vaadin-shared</artifactId>     
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-client-compiled</artifactId>
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-client</artifactId>
+	<scope>provided</scope>
+      </dependency>
+      <dependency>
+	<groupId>com.vaadin</groupId>
+	<artifactId>vaadin-themes</artifactId>
+      </dependency>
 	
     <!--  SQL Debugging  -->
     <dependency>
