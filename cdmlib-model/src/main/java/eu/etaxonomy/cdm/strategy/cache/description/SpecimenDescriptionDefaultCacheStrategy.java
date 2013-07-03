@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.strategy.cache.description;
 import java.util.Set;
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
@@ -32,15 +31,12 @@ public class SpecimenDescriptionDefaultCacheStrategy extends StrategyBase implem
 
 	public String getTitleCache(SpecimenDescription specimenDescription) {
 		String title;
-		Set<SpecimenOrObservationBase> specimens = specimenDescription.getDescribedSpecimenOrObservations(); 
-		if (specimens.isEmpty()){
+		SpecimenOrObservationBase specimen = specimenDescription.getDescribedSpecimenOrObservation(); 
+		if (specimen == null){
 			title = getFirstPart(specimenDescription);
 			title = title.replace(" for ", "");
 		}else{
-			title = null;
-			for (SpecimenOrObservationBase specimen : specimens){
-				title = CdmUtils.concat(",", title, specimen.getTitleCache());
-			}
+			title = specimen.getTitleCache();
 			title = getFirstPart(specimenDescription) + title;
 		}
 		return title;

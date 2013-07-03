@@ -956,7 +956,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             //FIXME check if description is ALWAYS deletable
                             descriptionService.delete(desc);
                         }else{
-                            if (desc.getDescribedSpecimenOrObservations().size()>0){
+                            if (desc.getDescribedSpecimenOrObservation() != null){
                                 String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
                                         " which also describes specimens or abservations";
                                     throw new ReferencedObjectUndeletableException(message);

@@ -85,6 +85,84 @@ public class SpecimenTest {
 	}
 	
 	@Test
+	public void testBidirectionalSpecimenDescription(){
+		Assert.assertNotNull("Specimen should exist", specimen);
+		
+		SpecimenDescription desc = SpecimenDescription.NewInstance(specimen);
+		Assert.assertNotNull("Description should exist.", desc);
+		Assert.assertSame("Descriptions specimen should be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertTrue("Specimen should contain description", specimen.getDescriptions().contains(desc));
+		
+		SpecimenDescription desc2 = SpecimenDescription.NewInstance();
+		Assert.assertNotNull("Description should exist.", desc2);
+		specimen.addDescription(desc2);
+		Assert.assertSame("Description2 specimen should be set correctly", desc2.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertTrue("Specimen should contain description2", specimen.getDescriptions().contains(desc2));
+		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		
+		SpecimenDescription desc3 = SpecimenDescription.NewInstance();
+		Assert.assertNotNull("Description should exist.", desc3);
+		desc3.setDescribedSpecimenOrObservation(specimen);
+		Assert.assertSame("Description3 specimen should be set correctly", desc3.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertSame("Descriptions2 specimen should still be set correctly", desc2.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertTrue("Specimen should contain description3", specimen.getDescriptions().contains(desc3));
+		Assert.assertTrue("Specimen should still contain description2", specimen.getDescriptions().contains(desc2));
+		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+
+		
+		//change specimen of a given description
+		DerivedUnit specimen2 = DerivedUnit.NewPreservedSpecimenInstance();
+		Assert.assertNotNull("Specimen should exist.", specimen2);
+		desc3.setDescribedSpecimenOrObservation(specimen2);
+		Assert.assertSame("Description3 new specimen should be set correctly", desc3.getDescribedSpecimenOrObservation(),specimen2);
+		Assert.assertSame("Descriptions2 specimen should still be set correctly", desc2.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertTrue("Specimen2 should contain description3", specimen2.getDescriptions().contains(desc3));
+		Assert.assertEquals("Specimen2 should contain exactly 1 description", 1, specimen2.getDescriptions().size());
+		Assert.assertFalse("Specimen should no longer contain description3", specimen.getDescriptions().contains(desc3));
+		Assert.assertTrue("Specimen should still contain description2", specimen.getDescriptions().contains(desc2));
+		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+
+		//remove description which is not contained
+		specimen.removeDescription(desc3);
+		Assert.assertSame("Nothing should have changed", desc3.getDescribedSpecimenOrObservation(),specimen2);
+		Assert.assertSame("Nothing should have changed", desc2.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertSame("Nothing should have changed", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertTrue("Nothing should have changed", specimen2.getDescriptions().contains(desc3));
+		Assert.assertEquals("Nothing should have changed", 1, specimen2.getDescriptions().size());
+		Assert.assertFalse("Nothing should have changed", specimen.getDescriptions().contains(desc3));
+		Assert.assertTrue("Nothing should have changed", specimen.getDescriptions().contains(desc2));
+		Assert.assertTrue("Nothing should have changed", specimen.getDescriptions().contains(desc));
+		
+		//remove description
+		specimen.removeDescription(desc2);
+		Assert.assertNull("Descriptions2 specimen should not exist anymore", desc2.getDescribedSpecimenOrObservation());
+		Assert.assertSame("Description3 specimen should still be set correctly", desc3.getDescribedSpecimenOrObservation(),specimen2);
+		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertTrue("Specimen2 should still contain description3", specimen2.getDescriptions().contains(desc3));
+		Assert.assertEquals("Specimen2 should still contain exactly 1 description", 1, specimen2.getDescriptions().size());
+		Assert.assertFalse("Specimen should not contain description2 anymore", specimen.getDescriptions().contains(desc2));
+		Assert.assertFalse("Specimen should still no longer contain description3", specimen.getDescriptions().contains(desc3));
+		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+
+		//remove description by setting null specimen
+		desc3.setDescribedSpecimenOrObservation(null);
+		Assert.assertNull("Description3 specimen should not exist anymore", desc3.getDescribedSpecimenOrObservation());
+		Assert.assertNull("Descriptions2 specimen should still not exist anymore", desc2.getDescribedSpecimenOrObservation());
+		Assert.assertSame("Descriptions specimen should still be set correctly", desc.getDescribedSpecimenOrObservation(),specimen);
+		Assert.assertFalse("Specimen2 should not contain description3 anymore", specimen2.getDescriptions().contains(desc3));
+		Assert.assertEquals("Specimen2 should contain no description now", 0, specimen2.getDescriptions().size());
+		Assert.assertFalse("Specimen should still no longer contain description2", specimen.getDescriptions().contains(desc2));
+		Assert.assertFalse("Specimen should still no longer contain description3", specimen.getDescriptions().contains(desc3));
+		Assert.assertTrue("Specimen should still contain description", specimen.getDescriptions().contains(desc));
+		
+		
+	}
+
+	
+	@Test
 	public void testBidirectionalTypeDesignation(){
 		SpecimenTypeDesignation desig1 = SpecimenTypeDesignation.NewInstance();
 		SpecimenTypeDesignation desig2 = SpecimenTypeDesignation.NewInstance();

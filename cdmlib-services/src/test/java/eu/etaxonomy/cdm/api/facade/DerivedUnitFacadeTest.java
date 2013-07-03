@@ -217,7 +217,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         try {
             SpecimenDescription imageGallery = SpecimenDescription.NewInstance();
-            imageGallery.addDescribedSpecimenOrObservation(facade.innerFieldUnit());
+            imageGallery.setDescribedSpecimenOrObservation(facade.innerFieldUnit());
             imageGallery.setImageGallery(true);
             TextData textData = TextData.NewInstance();
             textData.setFeature(imageFeature);
@@ -232,12 +232,12 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         this.service.save(facade.innerDerivedUnit());
 
          setComplete(); endTransaction();
-         try {if (true){printDataSet(System.out, new
-         String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
-         ,"DERIVATIONEVENT",
-         "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA","DESCRIPTIONBASE_SPECIMENOROBSERVATIONBASE",
-         "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
-         } catch(Exception e) { logger.warn(e);}
+//         try {if (true){printDataSet(System.out, new
+//         String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
+//         ,"DERIVATIONEVENT",
+//         "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA",
+//         "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
+//         } catch(Exception e) { logger.warn(e);}
 
     }
 
@@ -257,8 +257,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         try {
             SpecimenDescription imageGallery = SpecimenDescription
                     .NewInstance();
-            imageGallery.addDescribedSpecimenOrObservation(facade
-                    .innerDerivedUnit());
+            imageGallery.setDescribedSpecimenOrObservation(facade.innerDerivedUnit());
             imageGallery.setImageGallery(true);
             TextData textData = TextData.NewInstance();
             imageGallery.addElement(textData);
@@ -275,7 +274,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // try {if (true){printDataSet(System.out, new
         // String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
         // ,"DERIVATIONEVENT",
-        // "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA","DESCRIPTIONBASE_SPECIMENOROBSERVATIONBASE",
+        // "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA",
         // "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
         // } catch(Exception e) { logger.warn(e);}
 

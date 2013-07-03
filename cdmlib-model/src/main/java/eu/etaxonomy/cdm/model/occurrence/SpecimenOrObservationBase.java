@@ -45,19 +45,17 @@ import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -112,11 +110,13 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
-	@ManyToMany(fetch = FetchType.LAZY,mappedBy="describedSpecimenOrObservations",targetEntity=DescriptionBase.class)
+	@OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
-	@NotNull
+    @ContainedIn
+    @NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
-
+	
+	
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
 	@OneToMany(mappedBy="identifiedUnit", orphanRemoval=true)
@@ -275,7 +275,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		return specimenDescriptions;
 	}
 	/**
-	 * Returns the {@link SpecimenDescription specimen descriptions} this specimen is part of.
+	 * Returns the {@link SpecimenDescription specimen descriptions} which act as an image gallery
+	 * and which this specimen is part of.
 	 * @see #getDescriptions()
 	 * @return
 	 */
@@ -292,18 +293,17 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		return specimenDescriptions;
 	}
 
+	
 	/**
 	 * Adds a new description to this specimen or observation
 	 * @param description
 	 */
 	public void addDescription(DescriptionBase description) {
-		this.descriptions.add(description);
-		if (! description.getDescribedSpecimenOrObservations().contains(this)){
-			description.addDescribedSpecimenOrObservation(this);
+		if (description.getDescribedSpecimenOrObservation() != null){
+			description.getDescribedSpecimenOrObservation().removeDescription(description);
 		}
-//		Method method = ReflectionUtils.findMethod(SpecimenDescription.class, "addDescribedSpecimenOrObservation", new Class[] {SpecimenOrObservationBase.class});
-//		ReflectionUtils.makeAccessible(method);
-//		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
+		descriptions.add(description);
+		description.setDescribedSpecimenOrObservation(this);
 	}
 
 	/**
@@ -311,13 +311,10 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * @param description
 	 */
 	public void removeDescription(DescriptionBase description) {
-		this.descriptions.remove(description);
-		if (description.getDescribedSpecimenOrObservations().contains(this)){
-			description.removeDescribedSpecimenOrObservation(this);
-		}
-//		Method method = ReflectionUtils.findMethod(SpecimenDescription.class, "removeDescribedSpecimenOrObservations", new Class[] {SpecimenOrObservationBase.class});
-//		ReflectionUtils.makeAccessible(method);
-//		ReflectionUtils.invokeMethod(method, description, new Object[] {this});
+        boolean existed = descriptions.remove(description);
+        if (existed){
+        	description.setDescribedSpecimenOrObservation(null);
+        }
 	}
 
 	public Set<DerivationEvent> getDerivationEvents() {

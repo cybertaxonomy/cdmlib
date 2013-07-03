@@ -12,12 +12,15 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
+import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,15 +39,17 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.search.DescriptionBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
@@ -65,7 +70,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionBase", propOrder = {
-    "describedSpecimenOrObservations",
+    "describedSpecimenOrObservation",
     "descriptionSources",
     "descriptiveSystem",
     "workingSets",
@@ -83,14 +88,25 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 
-    @XmlElementWrapper(name = "DescribedSpecimenOrObservations")
-    @XmlElement(name = "DescribedSpecimenOrObservation")
+//    @XmlElementWrapper(name = "DescribedSpecimenOrObservations")
+//    @XmlElement(name = "DescribedSpecimenOrObservation")
+//    @XmlIDREF
+//    @XmlSchemaType(name="IDREF")
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @Cascade(CascadeType.SAVE_UPDATE)
+//    private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
+
+    @XmlElement( name = "DescribedSpecimenOrObservation")
+    @ManyToOne(fetch = FetchType.LAZY)
     @XmlIDREF
     @XmlSchemaType(name="IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
-    private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
-
+    @JoinColumn(name="specimen_id")
+    @IndexedEmbedded
+    //TODO maybe move down to specific classes SpecimenDescription (with Cascade.Delete) and TaxonDescription (without Cascade)
+    private SpecimenOrObservationBase describedSpecimenOrObservation;
+    
+    
     @XmlElementWrapper(name = "DescriptionSources")
     @XmlElement(name = "DescriptionSource")
     @XmlIDREF
@@ -135,60 +151,37 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlElement(name = "ImageGallery")
     private boolean imageGallery;
 
-
+    
     /**
-     * Returns the set of {@link SpecimenOrObservationBase specimens or observations} involved in
+     * Returns a {@link SpecimenOrObservationBase specimen or observation} involved in
      * <i>this</i> description as a whole. {@link TaxonDescription Taxon descriptions} are also often based
      * on concrete specimens or observations. For {@link TaxonNameDescription taxon name descriptions}
-     * this set should be empty.
-     *
-     * @see    #addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
-     * @see    #removeDescribedSpecimenOrObservations(SpecimenOrObservationBase)
+     * this attribute should be empty.
+     * To handle sets of specimen or observations one may first group them by a derivation event of type
+     * "Grouping" and then use the grouped unit here.
+     * @return
      */
-    public Set<SpecimenOrObservationBase> getDescribedSpecimenOrObservations() {
-        return describedSpecimenOrObservations;
-    }
+    public SpecimenOrObservationBase getDescribedSpecimenOrObservation() {
+		return describedSpecimenOrObservation;
+	}
 
-    /**
-     * Adds an existing {@link SpecimenOrObservationBase specimen or observation} to the set of
-     * {@link #getDescribedSpecimenOrObservations() specimens or observations} described in <i>this</i>
-     * description or which <i>this</i> description is based on.<BR>
-     * Due to bidirectionality if <i>this</i> description is a {@link SpecimenDescription specimen description},
-     * <i>this</i> description will also be added to the set of specimen
-     * descriptions corresponding to the given additional specimen or observation.
-     *
-     * @param describedSpecimenOrObservation	the specimen or observation to be added to <i>this</i> description
-     * @see    	   								#getDescribedSpecimenOrObservations()
-     * @see    	   								SpecimenOrObservationBase#addDescription(DescriptionBase)
-     */
-    public void addDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
-        logger.debug("addDescribedSpecimenOrObservations");
-        this.describedSpecimenOrObservations.add(describedSpecimenOrObservation);
-        if (! describedSpecimenOrObservation.getDescriptions().contains(this)){
-            describedSpecimenOrObservation.addDescription(this);
-        }
-    }
 
-    /**
-     * Removes one element from the set of {@link #getDescribedSpecimenOrObservations() specimens or observations} involved
-     * in <i>this</i> description.<BR>
-     * Due to bidirectionality if <i>this</i> description is a {@link SpecimenDescription specimen description},
-     * <i>this</i> description will also be removed from the set of specimen
-     * descriptions corresponding to the given specimen or observation.
-     *
-     * @param  describedSpecimenOrObservation   the specimen or observation which should be removed
-     * @see     		  						#getDescribedSpecimenOrObservations()
-     * @see     		  						#addDescribedSpecimenOrObservations(SpecimenOrObservationBase)
-     * @see     		  						SpecimenOrObservationBase#removeDescription(DescriptionBase)
-     */
-    public void removeDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
-        this.describedSpecimenOrObservations.remove(describedSpecimenOrObservation);
-        if (describedSpecimenOrObservation.getDescriptions().contains(this)){
-            describedSpecimenOrObservation.removeDescription(this);
-        }
-    }
+	/**
+	 * @see #getDescribedSpecimenOrObservation()
+	 * @param describedSpecimenOrObservation
+	 */
+	//TODO bidirectional method should maybe removed as a description should belong to its specimen or taxon
+    public void setDescribedSpecimenOrObservation(SpecimenOrObservationBase describedSpecimenOrObservation) {
+		if (describedSpecimenOrObservation == null ){
+			this.describedSpecimenOrObservation.removeDescription(this);
+		}else if (! describedSpecimenOrObservation.getDescriptions().contains(this)){
+			describedSpecimenOrObservation.addDescription(this);
+		}
+		this.describedSpecimenOrObservation = describedSpecimenOrObservation;
+	}
 
-    /**
+
+	/**
      * Returns the set of {@link Reference references} used as sources for <i>this</i> description as a
      * whole. More than one source can be used for a general description without
      * assigning for each data element of the description one of those sources.
@@ -423,12 +416,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             for (DescriptionElementBase element : getElements()){
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 result.addElement(newElement);
-            }
-
-            //specimen or observations
-            result.describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
-            for (SpecimenOrObservationBase specimenOrObservation : getDescribedSpecimenOrObservations()){
-                specimenOrObservation.addDescription(result);
             }
 
             //no changes to: imageGallery

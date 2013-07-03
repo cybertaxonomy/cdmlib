@@ -67,9 +67,9 @@ public class SpecimenDescription extends DescriptionBase<IIdentifiableEntityCach
 	 * Creates a new empty specimen description instance.
 	 */
 	public static SpecimenDescription NewInstance(SpecimenOrObservationBase specimen){
-		SpecimenDescription result =  new SpecimenDescription();
-		result.addDescribedSpecimenOrObservation(specimen);
-		return result;
+		SpecimenDescription description =  new SpecimenDescription();
+		description.setDescribedSpecimenOrObservation(specimen);
+		return description;
 	}
 	
 //*********************** CLONE ********************************************************/

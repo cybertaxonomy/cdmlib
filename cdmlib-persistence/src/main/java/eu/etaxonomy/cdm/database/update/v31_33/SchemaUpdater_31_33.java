@@ -214,8 +214,16 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
 		
-		//add sortIndex column to TaxonNode and fill with values (compare with FeatureNode filling, however, this
+		//TODO add sortIndex column to TaxonNode and fill with values (compare with FeatureNode filling, however, this
 //		had a bad performance
+		
+		//specimen descriptions #
+		//TODO add column DescriptionBase.Specimen_ID
+		
+		//TODO updated DescriptionBase.Specimen_ID data
+		
+		//TODO remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)
+		
 		
 		return stepList;
 	}

@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 /**
  * @author a.mueller
  * @date 03.06.2010
- *
  */
 
 public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationTest {

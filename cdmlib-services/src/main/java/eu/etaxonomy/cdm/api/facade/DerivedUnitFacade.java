@@ -1937,14 +1937,15 @@ public class DerivedUnitFacade {
 	 */
 	private void testSpecimenInImageGallery(SpecimenDescription imageGallery, SpecimenOrObservationBase specimen)
 				throws DerivedUnitFacadeNotSupportedException {
-		Set<SpecimenOrObservationBase> imageGallerySpecimens = imageGallery.getDescribedSpecimenOrObservations();
-		if (imageGallerySpecimens.size() < 1) {
+		SpecimenOrObservationBase imageGallerySpecimen = imageGallery.getDescribedSpecimenOrObservation();
+		if (imageGallerySpecimen == null) {
 			throw new DerivedUnitFacadeNotSupportedException(
 					"Image Gallery has no Specimen attached. Please attache according specimen or field unit.");
 		}
-		if (!imageGallerySpecimens.contains(specimen)) {
+		if (! imageGallerySpecimen.equals(specimen)) {
 			throw new DerivedUnitFacadeNotSupportedException(
-					"Image Gallery has not the facade's field object attached. Please add field object first to image gallery specimenOrObservation list.");
+					"Image Gallery has not the facade's field object attached. Please add field object first " +
+					"to image gallery specimenOrObservation list.");
 		}
 	}
 

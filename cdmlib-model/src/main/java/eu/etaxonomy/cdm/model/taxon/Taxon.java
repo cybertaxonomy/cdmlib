@@ -144,7 +144,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     private Taxon taxonomicParentCache;
 
 
-
     @XmlElementWrapper(name = "taxonNodes")
     @XmlElement(name = "taxonNode")
     @XmlIDREF
@@ -158,31 +157,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlElement(name = "TaxonomicChildrenCount")
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
     private int taxonomicChildrenCount;
-
-// ************* CONSTRUCTORS *************/
-
-    //TODO should be private, but still produces Spring init errors
-    @Deprecated
-    public Taxon(){
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
-    }
-
-    /**
-     * Class constructor: creates a new (accepted/correct) taxon instance with
-     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
-     * using it.
-     *
-     * @param  taxonNameBase	the taxon name used
-     * @param  sec				the reference using the taxon name
-     * @see    					TaxonBase#TaxonBase(TaxonNameBase, Reference)
-     */
-    public Taxon(TaxonNameBase taxonNameBase, Reference sec){
-        super(taxonNameBase, sec);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
-    }
-
-//********* METHODS **************************************/
-
+    
+// ************************* FACTORY METHODS ********************************/
+    
     /**
      * Creates a new (accepted/correct) taxon instance with
      * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
@@ -211,6 +188,31 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         result.setTaxonStatusUnknown(true);
         return result;
     }
+// ************* CONSTRUCTORS *************/
+
+    //TODO should be private, but still produces Spring init errors
+    @Deprecated
+    public Taxon(){
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
+    }
+
+    /**
+     * Class constructor: creates a new (accepted/correct) taxon instance with
+     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * using it.
+     *
+     * @param  taxonNameBase	the taxon name used
+     * @param  sec				the reference using the taxon name
+     * @see    					TaxonBase#TaxonBase(TaxonNameBase, Reference)
+     */
+    public Taxon(TaxonNameBase taxonNameBase, Reference sec){
+        super(taxonNameBase, sec);
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
+    }
+
+//********* METHODS **************************************/
+
+
 
     /**
      * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}

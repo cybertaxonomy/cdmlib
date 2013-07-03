@@ -98,9 +98,6 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     private Taxon taxon;
 
 
-    public void setTaxon(Taxon taxon) {
-        this.taxon = taxon;
-    }
 
     /**
      * Creates a new empty taxon description instance.
@@ -157,6 +154,10 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
         return taxon;
     }
 
+
+    public void setTaxon(Taxon taxon) {
+        this.taxon = taxon;
+    }
 
     /**
      * Returns the set of {@link NamedArea named areas} indicating the geospatial
