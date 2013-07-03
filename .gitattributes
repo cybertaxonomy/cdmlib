@@ -699,6 +699,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmMetaData.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmPreferences.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Credit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTerm.java -text
@@ -1074,6 +1075,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/TeamTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmMetaDataTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmPreferencesTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/ExtensionTypeTest.java -text

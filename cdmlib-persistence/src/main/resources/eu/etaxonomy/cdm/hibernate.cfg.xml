@@ -59,6 +59,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.Annotation"/>
       <mapping class="eu.etaxonomy.cdm.model.common.AnnotationType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.CdmMetaData"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.CdmPreferences"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Credit"/>
       <mapping class="eu.etaxonomy.cdm.model.common.DefinedTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.common.DefinedTermBase"/>

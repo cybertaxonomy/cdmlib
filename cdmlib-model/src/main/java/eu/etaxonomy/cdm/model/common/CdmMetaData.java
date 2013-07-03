@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 /**
  * @author a.mueller
  * @created 07.09.2009
- * @version 1.0
  */
 @Entity
 public class CdmMetaData extends CdmBase{
