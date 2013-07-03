@@ -224,6 +224,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)
 		
+		//TODO create table CdmPreferences  #3555
+		
+		//TODO fill CdmPreferences with default values
 		
 		return stepList;
 	}
