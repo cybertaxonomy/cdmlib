@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_314_315;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
@@ -117,6 +118,25 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 		stepName = "Add 'comb. nov.' status to nom. status types";
 		termType = TermType.NomenclaturalStatusType;
 		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
+
+		// original spelling, #2874
+		uuidTerm = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
+		description = "Namerelationship type 'original spelling for'";
+		label = "original spelling for";
+		abbrev = null;
+		String reverseDescription = "has original spelling";
+		String reverseLabel = "has original spelling";
+		String reverseAbbrev = null;
+		dtype = NameRelationshipType.class.getSimpleName();
+		isOrdered = true;
+		uuidVocabulary = UUID.fromString("6878cb82-c1a4-4613-b012-7e73b413c8cd");
+		uuidAfterTerm = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'original spelling for' name relationship name relationship types";
+		termType = TermType.NameRelationshipType;
+		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, 
+				label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm)
+				.setReverseRepresentation(reverseDescription, reverseLabel, reverseAbbrev));
 
 		
 		return list;

@@ -21,6 +21,7 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
@@ -455,7 +456,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		NameRelationshipType result = super.readCsvLine(termClass, csvLine, terms);
 		String kindOfString = csvLine.get(10).trim();
-		if (CdmUtils.isNotEmpty(kindOfString)){
+		if (StringUtils.isNotBlank(kindOfString)){
 			UUID uuidKindOf = UUID.fromString(kindOfString);
 			DefinedTermBase kindOf = terms.get(uuidKindOf);
 			result.setKindOf((NameRelationshipType)kindOf);
