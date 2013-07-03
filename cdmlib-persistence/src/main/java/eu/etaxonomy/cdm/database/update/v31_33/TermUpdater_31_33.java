@@ -130,14 +130,41 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 		dtype = NameRelationshipType.class.getSimpleName();
 		isOrdered = true;
 		uuidVocabulary = UUID.fromString("6878cb82-c1a4-4613-b012-7e73b413c8cd");
-		uuidAfterTerm = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
+		uuidAfterTerm = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
 		uuidLang = Language.uuidEnglish;
 		stepName = "Add 'original spelling for' name relationship name relationship types";
 		termType = TermType.NameRelationshipType;
+		boolean symmetric = false;
+		boolean transitive = false;
 		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, 
 				label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm)
-				.setReverseRepresentation(reverseDescription, reverseLabel, reverseAbbrev));
+				.setReverseRepresentation(reverseDescription, reverseLabel, reverseAbbrev)
+				.setSymmetricTransitiv(symmetric, transitive));
 
+		
+		// later isnonym, #2874
+		uuidTerm = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
+		description = "Namerelationship type 'later isonym for'";
+		label = "later isonym for";
+		abbrev = null;
+		reverseDescription = "has earlier isonym";
+		reverseLabel = "has earlier isonym";
+		reverseAbbrev = null;
+		dtype = NameRelationshipType.class.getSimpleName();
+		isOrdered = true;
+		uuidVocabulary = UUID.fromString("6878cb82-c1a4-4613-b012-7e73b413c8cd");
+		uuidAfterTerm = UUID.fromString("2990a884-3302-4c8b-90b2-dfd31aaa2778");
+		uuidLang = Language.uuidEnglish;
+		stepName = "Add 'later isonym for' name relationship name relationship types";
+		termType = TermType.NameRelationshipType;
+		symmetric = false;
+		transitive = true;
+		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, 
+				label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm)
+				.setReverseRepresentation(reverseDescription, reverseLabel, reverseAbbrev)
+				.setSymmetricTransitiv(symmetric, transitive));
+
+		
 		
 		return list;
 	}

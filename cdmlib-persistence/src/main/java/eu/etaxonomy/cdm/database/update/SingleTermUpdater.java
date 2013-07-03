@@ -60,6 +60,8 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	private RankClass rankClass;
 	private TermType termType;
 	private String idInVocabulary;
+	private boolean symmetric = false;
+	private boolean transitiv = false;
 	
 	
 
@@ -131,6 +133,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		datasource.executeUpdate(sqlInsertTerm);
 		
 		updateFeatureTerms(termId, datasource, monitor);
+		updateRelationshipTerms(termId, datasource, monitor);
 		updateRanks(termId, datasource, monitor);
 		
 //
@@ -204,6 +207,16 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 	}
 
+	private void updateRelationshipTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		if (dtype.contains("Relationship")){
+			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
+				" symmetrical = " + getBoolean(symmetric, datasource) + ", " + 
+				" transitiv = " + getBoolean(transitiv, datasource) + ", " + 
+				" WHERE id = " + termId;
+			datasource.executeUpdate(sqlUpdate);
+		}
+	}
+	
 	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Rank.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
@@ -276,6 +289,12 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		this.reverseLabel = reverseLabel;
 		this.reverseDescription = reverseDescription;
 		this.reverseAbbrev = reverseAbbrev;
+		return this;
+	}
+	
+	public SingleTermUpdater setSymmetricTransitiv(boolean symmetric, boolean transitiv){
+		this.symmetric = symmetric;
+		this.transitiv = transitiv;
 		return this;
 	}
 
