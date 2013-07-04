@@ -37,7 +37,12 @@ import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
-
+/**
+ * 
+ * @author a.oppermann
+ * @date 04.07.2013
+ *
+ */
 @Component("bfnXmlTaxonNameIO")
 public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<BfnXmlImportState> {
 	private static final Logger logger = Logger.getLogger(BfnXmlTaxonNameImport.class);
