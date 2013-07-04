@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author n.hoffmann
  * @created Sep 21, 2009
- * @version 1.0
  */
 public interface IClassificationService extends IIdentifiableEntityService<Classification> {
 
