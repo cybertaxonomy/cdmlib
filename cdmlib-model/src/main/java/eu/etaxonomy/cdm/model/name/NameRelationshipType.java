@@ -26,7 +26,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -78,6 +77,9 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidValidatedByName = UUID.fromString("a176c9ad-b4c2-4c57-addd-90373f8270eb");
 	private static final UUID uuidLaterValidatedByName = UUID.fromString("a25ee4c1-863a-4dab-9499-290bf9b89639");
 	private static final UUID uuidBlockingNameFor = UUID.fromString("1dab357f-2e12-4511-97a4-e5153589e6a6");
+	private static final UUID uuidLaterIsonym = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
+	private static final UUID uuidOriginalSpellingFor = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
+	
 	
 	protected static Map<UUID, NameRelationshipType> termMap = null;		
 	
@@ -236,10 +238,26 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * <i>Angelica sylvestris</i> L.<BR>
 	 * This type is symmetric and transitive but usually orthographic variant relationships should be organized
 	 * in a star schema with the correct variant in the middle and other variants pointing to it.
+	 * @see #ORIGINAL_SPELLING()()
 	 */
 	public static final NameRelationshipType ORTHOGRAPHIC_VARIANT(){
 		  return findTermByUuid(uuidOrthographicVariant);
 	}
+	
+	/**
+	 * Returns the {@link TaxonNameBase taxon name} as it is spelled in the original 
+	 * publication of the given name. The first (left) name in the relationship takes the role 
+	 * of the original spelling whereas the second (right) name takes the role of the 
+	 * current/correct spelling.<BR>
+	 * Original spelling is a specification of {@link #ORTHOGRAPHIC_VARIANT()}.
+	 * <BR>
+	 * @see #ORTHOGRAPHIC_VARIANT()
+	 * @see #MISSPELLING()
+	 */
+	public static final NameRelationshipType ORIGINAL_SPELLING(){
+		return findTermByUuid(uuidOriginalSpellingFor);
+	}
+	
 	/**
 	 * Returns the "misspelling" name relationship type. The first
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is a 
@@ -254,6 +272,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * emendations. A misspelling is always an {@link #ORTHOGRAPHIC_VARIANT orthographic variant}, too.
 	 * This type is symmetric and transitive but usually the misspelling relationships should be organized
 	 * in a star schema with the correct variant in the middle and the misspellings pointing to it.
+	 * @see #ORTHOGRAPHIC_VARIANT()
+	 * @see #ORIGINAL_SPELLING()
 	 */
 	public static final NameRelationshipType MISSPELLING(){
 		  return findTermByUuid(uuidMisspelling);
@@ -298,6 +318,8 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType LATER_HOMONYM(){
 	  return findTermByUuid(uuidLaterHomonym);
 	}
+
+	
 	/**
 	 * Returns the "treated as later homonym" name relationship type. The first
 	 * {@link TaxonNameBase taxon name} involved in such a relationship is
@@ -317,6 +339,30 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	public static final NameRelationshipType TREATED_AS_LATER_HOMONYM(){
 	  return findTermByUuid(uuidTreatedAsLaterHomonym);
 	}
+	
+	/**
+	 * Returns the "later isonym" name relationship type where the first
+	 * {@link TaxonNameBase taxon name} involved has been published after the second taxon name.<BR>
+	 * In contrast to the {@link #LATER_HOMONYM() later homonym} relationship the two 
+	 * {@link TaxonNameBase taxon names} involved have the type(s) so they belong to the
+	 * same {@link HomotypicalGroup homotypical groups}. As later homonyms they have in general
+	 * different {@link NonViralName#getAuthorshipCache() authorship} and their name parts
+	 * must be (almost) identical, so one could be mistaken for the other one.<BR>
+	 * Later isonyms are validly published names but with a wrong citation. So there are rather errors
+	 * then independent names.<BR>
+	 * Isonyms are handled in Article 6, Note 2 of the ICNAFP (Melbourne Code): 
+	 * <code>When the same name, based on the same type, has been published independently at different
+	 *  times perhaps by different authors, then only the earliest of these “isonyms” has 
+	 *  nomenclatural status. The name is always to be cited from its original 
+	 *  place of valid publication, and later isonyms may be disregarded (but see Art. 14.15).</code>
+	 * <BR><BR>
+	 * See discussion at: <a href=http://dev.e-taxonomy.eu/trac/ticket/2901>#2901</a>
+	 * 
+	 */
+	public static final NameRelationshipType LATER_ISONYM(){
+		return findTermByUuid(uuidLaterIsonym);
+	}
+	
 	/**
 	 * Returns the "alternative name" name relationship type. Both {@link TaxonNameBase taxon names}
 	 * involved in such a relationship are family names. The first one is a
