@@ -90,7 +90,7 @@ http://www.w3.org/2001/XMLSchema
               <xs:element ref="occurrence:PreservationMethod"/>
               <xs:element ref="name:Rank"/>
               <xs:element ref="location:ReferenceSystem"/>
-              <xs:element ref="media:RightsTerm"/>
+              <xs:element ref="media:RightsType"/>
               <xs:element ref="description:Scope"/>
               <xs:element ref="description:Sex"/>
               <xs:element ref="name:SpecimenTypeDesignationStatus"/>

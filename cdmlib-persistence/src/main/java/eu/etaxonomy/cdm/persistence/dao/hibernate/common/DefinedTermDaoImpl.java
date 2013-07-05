@@ -50,7 +50,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.RightsTerm;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -96,7 +96,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		indexedClasses[18] = NamedAreaType.class;
 		indexedClasses[19] = ReferenceSystem.class;
 		indexedClasses[21] = WaterbodyOrCountry.class;
-		indexedClasses[22] = RightsTerm.class;
+		indexedClasses[22] = RightsType.class;
 		indexedClasses[23] = HybridRelationshipType.class;
 		indexedClasses[24] = NameRelationshipType.class;
 		indexedClasses[25] = NameTypeDesignationStatus.class;

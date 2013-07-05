@@ -228,6 +228,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO fill CdmPreferences with default values
 		
+		//update RightsTerm to RightsType #1306
+		stepName = "Update RightsTerm -> RightsType";
+		String updateSql = "UPDATE DefinedTermBase SET DTYPE = 'RightsType'  WHERE DTYPE = 'RightsTerm'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateSql);
+		stepList.add(step);
+		
 		return stepList;
 	}
 

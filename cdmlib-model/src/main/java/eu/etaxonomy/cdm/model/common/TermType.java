@@ -135,8 +135,8 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
 	NamedAreaLevel(UUID.fromString("62c16c74-dc79-4970-9031-bb1504be46f5"), "Named area level", "NAL"),
 
 	//20
-	@XmlEnumValue("RightsTerm")
-	RightsTerm(UUID.fromString("80e06b04-8d0d-4bd5-bcd6-d35f73c24d55"), "Rights term", "RT"),
+	@XmlEnumValue("RightsType")
+	RightsType(UUID.fromString("80e06b04-8d0d-4bd5-bcd6-d35f73c24d55"), "Rights type", "RT"),
 	
 	//21
 	@XmlEnumValue("MeasurementUnit")

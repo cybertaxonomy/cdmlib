@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.description.TextFormat;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.RightsTerm;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -86,7 +86,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
     NomenclaturalCode.class,
     PreservationMethod.class,
     ReferenceSystem.class,
-    RightsTerm.class,
+    RightsType.class,
     StatisticalMeasure.class,
     TextFormat.class
 })
