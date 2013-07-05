@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonNameImportValidator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -247,7 +248,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					boolean colExists = true;
 					try {
 						colExists = state.getConfig().getSource().checkColumnExists("Name", "Source_Acc");
-					} catch (NoSuchMethodException e) {
+					} catch (DatabaseTypeNotSupportedException e) {
 						logger.debug("Source does not support 'checkColumnExists'");
 					}
 					if (colExists){

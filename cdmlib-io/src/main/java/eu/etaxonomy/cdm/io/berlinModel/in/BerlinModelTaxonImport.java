@@ -28,6 +28,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
@@ -293,7 +294,7 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		} catch (SQLException e) {
 			logger.error("SQLException:" +  e);
 			return false;
-		} catch (NoSuchMethodException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			logger.error("MethodNotSupportedException:" +  e);
 			return false;
 		}

@@ -27,6 +27,7 @@ import org.apache.http.MethodNotSupportedException;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 
 
 /**
@@ -447,7 +448,7 @@ public class Source {
      * @return
      * @throws MethodNotSupportedException
      */
-    public boolean checkColumnExists(String tableName, String dbAttribute) throws NoSuchMethodException{
+    public boolean checkColumnExists(String tableName, String dbAttribute) throws DatabaseTypeNotSupportedException{
     	if (mDbms.equalsIgnoreCase(SQL_SERVER_2005)|| mDbms.equalsIgnoreCase(SQL_SERVER_2008) ){
     		String strQuery = "SELECT  Count(t.id) as n " +
 				" FROM sysobjects AS t " +
@@ -466,7 +467,7 @@ public class Source {
 				return false;
 			}
     	}else{
-    		throw new RuntimeException("Check column exist is not supported by the database system");
+    		throw new DatabaseTypeNotSupportedException("Check column exist is not supported by the database system");
     	}
     }
 

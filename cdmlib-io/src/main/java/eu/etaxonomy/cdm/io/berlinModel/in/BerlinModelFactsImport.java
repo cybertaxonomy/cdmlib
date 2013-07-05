@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelFactsImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
@@ -202,7 +203,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			}else{
 				result = " ORDER By Fact.FactId";
 			}
-		} catch (NoSuchMethodException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			logger.info("checkColumnExists not supported");
 			result = " ORDER By Fact.FactId";
 		}
