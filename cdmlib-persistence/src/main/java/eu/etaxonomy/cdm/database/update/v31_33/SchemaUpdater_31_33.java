@@ -60,7 +60,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
-		//TODO still needed? Does it throw exception if table does not exist?
+		//TODO Does it throw exception if table does not exist?
+		//Was in Schemaupdater_301_31 which was never used and later deleted (r18331).
 		//drop TypeDesignationBase_TaxonNameBase   //from schemaUpdater 301_31
 		String stepName = "Drop duplicate TypeDesignation-TaxonName table";
 		String tableName = "TypeDesignationBase_TaxonNameBase";

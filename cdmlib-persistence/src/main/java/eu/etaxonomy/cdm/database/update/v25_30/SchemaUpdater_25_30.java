@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.v24_25.SchemaUpdater_24_25;
-import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_301_31;
+import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
 
 
 /**
@@ -315,7 +315,7 @@ public class SchemaUpdater_25_30 extends SchemaUpdaterBase {
 	 */
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return SchemaUpdater_301_31.NewInstance();
+		return SchemaUpdater_30_301.NewInstance();
 	}
 
 	/* (non-Javadoc)

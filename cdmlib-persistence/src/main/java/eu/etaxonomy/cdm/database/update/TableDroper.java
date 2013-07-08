@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TableDroper.class);
 	
 	private String tableName;
