@@ -80,6 +80,7 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 //	@Autowired
 //	TcsXmlTaxonRelationsImport tcsXmlTaxonRelationsIO;
 	
+	@SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 //		ioBeans = new String[]{
 //				"tcsXmlMetaDataImport"
@@ -95,7 +96,7 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 //			TcsXmlMetaDataImport.class
 //			, TcsXmlSpecimensImport.class
 //			, TcsXmlPublicationsImport.class
-//			, BfnXmlTaxonNameImport.class
+			BfnXmlTaxonNameImport.class
 //			, TcsXmlTaxonNameRelationsImport.class
 //			, BfnXmlTaxonImport.class
 //			, TcsXmlTaxonRelationsImport.class

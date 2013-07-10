@@ -205,16 +205,3 @@ src/main/resources/specimen/SynthesysSpecimenExample.xls -text
 src/main/resources/specimenABCD/multiABCD.xml -text
 src/main/resources/tcs/Cichorium_tcs.xml -text
 src/main/resources/tcs/tcsXmlTest.xml -text
-src/test/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlImportConfiguratorTest.java -text
-src/test/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlImportTest.java -text
-src/test/resources/dbscripts/001-cdm.h2.sql -text
-src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
-src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd -text
-src/test/resources/eu/etaxonomy/cdm/ext/dataset.xsd -text
-src/test/resources/eu/etaxonomy/cdm/io/BlankDataSet.xml -text
-src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd -text
-src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd -text
-src/test/resources/eu/etaxonomy/cdm/io/redlist/bfnXml/bfnXmlTest-input.xml -text
-src/test/resources/spy.properties -text
-src/test/resources/termCodeCreator.xls -text
-src/test/resources/unitils.properties -text
