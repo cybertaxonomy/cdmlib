@@ -61,7 +61,7 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 	private ITcsXmlPlaceholderClass placeholderClass;
 	
 	//	rdfNamespace
-	Namespace tcsXmlNamespace;
+	Namespace bfnXmlNamespace;
 
 	protected static Namespace nsTcsXml = Namespace.getNamespace("http://www.tdwg.org/schemas/tcs/1.01");
 	
@@ -175,8 +175,8 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 	}
 	
 	private boolean makeNamespaces(Element root){
-		tcsXmlNamespace = root.getNamespace();
-		if (tcsXmlNamespace == null 
+		bfnXmlNamespace = root.getNamespace();
+		if (bfnXmlNamespace == null 
 				/**|| tcNamespace == null 
 				 * || tnNamespace == null 
 				 * || commonNamespace == null 
@@ -214,12 +214,12 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 		}
 	}
 	
-	public Namespace getTcsXmlNamespace() {
-		return tcsXmlNamespace;
+	public Namespace getBfnXmlNamespace() {
+		return bfnXmlNamespace;
 	}
 
-	public void setTcsXmlNamespace(Namespace tcsXmlNamespace) {
-		this.tcsXmlNamespace = tcsXmlNamespace;
+	public void setBfnXmlNamespace(Namespace bfnXmlNamespace) {
+		this.bfnXmlNamespace = bfnXmlNamespace;
 	}
 	
 

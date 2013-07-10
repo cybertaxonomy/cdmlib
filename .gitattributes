@@ -153,6 +153,7 @@ src/main/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlMetaDataImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlTaxonImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlTaxonNameImport.java -text
+src/main/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlTransformer.java -text
 src/main/java/eu/etaxonomy/cdm/io/redlist/validation/RoteListeDbTaxonImportValidator.java -text
 src/main/java/eu/etaxonomy/cdm/io/wp6/CichorieaeCommonNameImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/wp6/CichorieaeImageImport.java -text

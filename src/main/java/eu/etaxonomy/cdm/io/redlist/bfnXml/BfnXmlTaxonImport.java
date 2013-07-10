@@ -140,18 +140,18 @@ public class BfnXmlTaxonImport  extends BfnXmlImportBase implements ICdmIO<BfnXm
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
 		boolean obligatory;
-		String idNamespace = "TaxonConcept";
+		String idNamespace = "TAXONYM";
 
 		BfnXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = getDataSetElement(config);
-		Namespace tcsNamespace = config.getTcsXmlNamespace();
+		Namespace bfnNamespace = config.getBfnXmlNamespace();
 		
-		childName = "TaxonConcepts";
+		childName = "TAXONYME";
 		obligatory = false;
-		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, bfnNamespace, obligatory);
 		
-		String tcsElementName = "TaxonConcept";
-		List<Element> elTaxonConceptList = elTaxonConcepts.getChildren(tcsElementName, tcsNamespace);
+		String bfnElementName = "TaxonConcept";
+		List<Element> elTaxonConceptList = elTaxonConcepts.getChildren(bfnElementName, bfnNamespace);
 		
 		Set<String> synonymIdSet = makeSynonymIds(elTaxonConceptList, success);
 		//TODO make the same for the Assertions
@@ -172,7 +172,7 @@ public class BfnXmlTaxonImport  extends BfnXmlImportBase implements ICdmIO<BfnXm
 			
 			childName = "Name";
 			obligatory = true;
-			Element elName = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+			Element elName = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 			if (isVernacular(success, elName)){
 				handleVernacularName(success, strId, elName, commonNameMap);
 			}else{
@@ -182,8 +182,9 @@ public class BfnXmlTaxonImport  extends BfnXmlImportBase implements ICdmIO<BfnXm
 				//TODO how to handle
 				childName = "Rank";
 				obligatory = false;
-				Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
-				Rank rank = BfnXmlTaxonNameImport.makeRank(elRank);
+				Element elRank = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
+				//FIXME makeRank fix (Alex)
+				Rank rank = BfnXmlTaxonNameImport.makeRank(""+elRank);
 				if (rank != null){
 					logger.warn("Rank in TaxonIO not yet implemented");
 				}
@@ -191,7 +192,7 @@ public class BfnXmlTaxonImport  extends BfnXmlImportBase implements ICdmIO<BfnXm
 				
 				childName = "AccordingTo";
 				obligatory = false;
-				Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Element elAccordingTo = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 				Reference<?> sec = makeAccordingTo(elAccordingTo, referenceMap, success);
 				elementList.add(childName.toString());
 				// TODO may sec be null?
@@ -208,32 +209,32 @@ public class BfnXmlTaxonImport  extends BfnXmlImportBase implements ICdmIO<BfnXm
 				
 				childName = "TaxonRelationships";
 				obligatory = false;
-				Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Element elTaxonRelationships = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 				makeTaxonRelationships(taxonBase, elTaxonRelationships, success);
 				elementList.add(childName.toString());
 	
 				childName = "SpecimenCircumscription";
 				obligatory = false;
-				Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Element elSpecimenCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 				makeSpecimenCircumscription(taxonBase, elSpecimenCircumscription, success);
 				elementList.add(childName.toString());
 	
 				childName = "CharacterCircumscription";
 				obligatory = false;
-				Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Element elCharacterCircumscription = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 				makeCharacterCircumscription(taxonBase, elCharacterCircumscription, success);
 				elementList.add(childName.toString());
 	
 				
 				childName = "ProviderLink";
 				obligatory = false;
-				Element elProviderLink = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Element elProviderLink = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 				makeProviderLink(taxonBase, elProviderLink, success);
 				elementList.add(childName.toString());
 				
 				childName = "ProviderSpecificData";
 				obligatory = false;
-				Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, tcsNamespace, obligatory);
+				Element elProviderSpecificData = XmlHelp.getSingleChildElement(success, elTaxonConcept, childName, bfnNamespace, obligatory);
 				makeProviderSpecificData(taxonBase, elProviderSpecificData, success);
 				elementList.add(childName.toString());
 	

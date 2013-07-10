@@ -56,7 +56,8 @@ public abstract class BfnXmlImportBase  extends CdmImportBase<BfnXmlImportConfig
 	protected abstract void doInvoke(BfnXmlImportState state);
 	
 //	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
+//	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, 
+//	 *  eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
 //	 */
 //	@Override
 //	protected boolean doInvoke(IImportConfigurator config, 
@@ -67,7 +68,8 @@ public abstract class BfnXmlImportBase  extends CdmImportBase<BfnXmlImportConfig
 //	}
 	
 	
-	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
+	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, 
+			CdmSingleAttributeXmlMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
@@ -99,7 +101,8 @@ public abstract class BfnXmlImportBase  extends CdmImportBase<BfnXmlImportConfig
 		return value;
 	}
 	
-	protected boolean checkAdditionalContents(Element parentElement, CdmSingleAttributeXmlMapperBase[] classMappers, CdmSingleAttributeXmlMapperBase[] operationalMappers, CdmSingleAttributeXmlMapperBase[] unclearMappers){
+	protected boolean checkAdditionalContents(Element parentElement, CdmSingleAttributeXmlMapperBase[] classMappers,
+			CdmSingleAttributeXmlMapperBase[] operationalMappers, CdmSingleAttributeXmlMapperBase[] unclearMappers){
 		List<Content> additionalContentList = new ArrayList<Content>();
 		List<Content> contentList = parentElement.getContent();
 		List<CdmSingleAttributeXmlMapperBase> mapperList = new ArrayList<CdmSingleAttributeXmlMapperBase>();
@@ -140,16 +143,16 @@ public abstract class BfnXmlImportBase  extends CdmImportBase<BfnXmlImportConfig
 	protected Element getDataSetElement(BfnXmlImportConfigurator bfnConfig){
 		Element root = bfnConfig.getSourceRoot();
 		
-		if (! "DataSet".equals(root.getName())){
-			logger.error("Root element is not 'DataSet'");
+		if (! "ROTELISTENDATEN".equals(root.getName())){//"DataSet"
+			logger.error("Root element is not 'ROTELISTENDATEN'");
 			return null;
 		}
-		if (bfnConfig.getTcsXmlNamespace() == null){
-			logger.error("No namespace defined for tcs");
+		if (bfnConfig.getBfnXmlNamespace() == null){
+			logger.error("No namespace defined for bfnXML");
 			return null;
 		}
-		if (! bfnConfig.getTcsXmlNamespace().equals(root.getNamespace())){
-			logger.error("Wrong namespace for element 'DataSet'");
+		if (! bfnConfig.getBfnXmlNamespace().equals(root.getNamespace())){
+			logger.error("Wrong namespace for element 'ROTELISTENDATEN'");
 			return null;
 		}
 		//TODO prevent multiple elements
