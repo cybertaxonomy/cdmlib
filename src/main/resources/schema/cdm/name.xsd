@@ -1,0 +1,365 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" targetNamespace="http://etaxonomy.eu/cdm/model/name/1.0" xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0" xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0" xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0" xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0">
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/taxon/1.0" schemaLocation="taxon.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+
+  <xs:element name="BacterialName">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="name:NonViralName">
+          <xs:sequence>
+            <xs:element name="SubGenusAuthorship" type="xs:string" minOccurs="0"/>
+            <xs:element name="NameApprobation" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="BotanicalName" type="name:BotanicalName"/>
+
+  <xs:element name="CultivarPlantName">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="name:BotanicalName">
+          <xs:sequence>
+            <xs:element name="CultivarName" type="xs:string"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="HomotypicalGroup" type="name:HomotypicalGroup"/>
+
+  <xs:element name="HybridRelationshipType" type="name:HybridRelationshipType"/>
+
+  <xs:element name="NameRelationshipType" type="name:NameRelationshipType"/>
+
+  <xs:element name="NameTypeDesignation" type="name:NameTypeDesignation"/>
+
+  <xs:element name="NameTypeDesignationStatus" type="name:NameTypeDesignationStatus"/>
+
+  <xs:element name="NomenclaturalCode" type="name:NomenclaturalCode"/>
+
+  <xs:element name="NomenclaturalStatusType" type="name:NomenclaturalStatusType"/>
+
+  <xs:element name="NonViralName" type="name:NonViralName"/>
+
+  <xs:element name="Rank" type="name:Rank"/>
+
+  <xs:element name="SpecimenTypeDesignation" type="name:SpecimenTypeDesignation"/>
+
+  <xs:element name="SpecimenTypeDesignationStatus" type="name:SpecimenTypeDesignationStatus"/>
+
+  <xs:element name="TaxonNameBase" type="name:TaxonNameBase"/>
+
+  <xs:element name="TypeDesignationBase" type="name:TypeDesignationBase"/>
+
+  <xs:element name="ViralName">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="name:TaxonNameBase">
+          <xs:sequence>
+            <xs:element name="Acronym" type="xs:string" minOccurs="0"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ZoologicalName" type="name:ZoologicalName"/>
+
+  <xs:complexType name="HybridRelationshipType">
+    <xs:complexContent>
+      <xs:extension base="common:RelationshipTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NameRelationshipType">
+    <xs:complexContent>
+      <xs:extension base="common:RelationshipTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TaxonNameBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:IdentifiableEntity">
+        <xs:sequence>
+          <xs:element name="AppendedPhrase" type="xs:string" minOccurs="0"/>
+          <xs:element name="NomenclaturalMicroReference" type="xs:string" minOccurs="0"/>
+          <xs:element name="NomenclaturalReference" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Rank" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="FullTitleCache" type="xs:string" minOccurs="0"/>
+          <xs:element name="ProtectedFullTitleCache" type="xs:boolean"/>
+          <xs:element name="HomotypicalGroup" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="TypeDesignations" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TypeDesignation" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="RelationsFromThisName" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RelationFromThisName" type="name:NameRelationship" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="RelationsToThisName" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="RelationToThisName" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="NomenclaturalStatuses" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="NomenclaturalStatus" type="name:NomenclaturalStatus" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="Descriptions" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="Description" type="description:TaxonNameDescription" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="TaxonBases" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TaxonBase" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+        <xs:attribute name="parsingProblem" type="xs:int" use="required"/>
+        <xs:attribute name="problemStarts" type="xs:int" use="required"/>
+        <xs:attribute name="problemEnds" type="xs:int" use="required"/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="Rank">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HomotypicalGroup">
+    <xs:complexContent>
+      <xs:extension base="common:AnnotatableEntity">
+        <xs:sequence>
+          <xs:element name="TypifiedNames" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TypifiedName" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TypeDesignationBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:ReferencedEntityBase">
+        <xs:sequence>
+          <xs:element name="TypifiedNames" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="TypifiedName" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="HomotypicalGroup" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="IsNotDesignated" type="xs:boolean"/>
+          <xs:element name="TypeStatus" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="TypeDesignationStatusBase" abstract="true">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NameTypeDesignationStatus">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationStatusBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SpecimenTypeDesignationStatus">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationStatusBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NameTypeDesignation">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationBase">
+        <xs:sequence>
+          <xs:element name="IsRejectedType" type="xs:boolean"/>
+          <xs:element name="IsConservedType" type="xs:boolean"/>
+          <xs:element name="TypeName" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="SpecimenTypeDesignation">
+    <xs:complexContent>
+      <xs:extension base="name:TypeDesignationBase">
+        <xs:sequence>
+          <xs:element name="TypeSpecimen" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NameRelationship">
+    <xs:complexContent>
+      <xs:extension base="common:RelationshipBase">
+        <xs:sequence>
+          <xs:element name="RelatedFrom" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="RelatedTo" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Type" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="RuleConsidered" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NomenclaturalStatus">
+    <xs:complexContent>
+      <xs:extension base="common:ReferencedEntityBase">
+        <xs:sequence>
+          <xs:element name="RuleConsidered" type="xs:string" minOccurs="0"/>
+          <xs:element name="NomenclaturalStatusType" type="xs:IDREF" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NomenclaturalStatusType">
+    <xs:complexContent>
+      <xs:extension base="common:OrderedTermBase">
+        <xs:sequence/>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="NonViralName">
+    <xs:complexContent>
+      <xs:extension base="name:TaxonNameBase">
+        <xs:sequence>
+          <xs:element name="NameCache" type="xs:string" minOccurs="0"/>
+          <xs:element name="GenusOrUninomial" type="xs:string" minOccurs="0"/>
+          <xs:element name="InfraGenericEpithet" type="xs:string" minOccurs="0"/>
+          <xs:element name="SpecificEpithet" type="xs:string" minOccurs="0"/>
+          <xs:element name="InfraSpecificEpithet" type="xs:string" minOccurs="0"/>
+          <xs:element name="CombinationAuthorTeam" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="ExCombinationAuthorTeam" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="BasionymAuthorTeam" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="ExBasionymAuthorTeam" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="AuthorshipCache" type="xs:string" minOccurs="0"/>
+          <xs:element name="ProtectedAuthorshipCache" type="xs:boolean"/>
+          <xs:element name="ProtectedNameCache" type="xs:boolean"/>
+          <xs:element name="HybridRelationsFromThisName" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="HybridRelationsFromThisName" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="HybridRelationsToThisName" minOccurs="0">
+            <xs:complexType>
+              <xs:sequence>
+                <xs:element name="HybridRelationsToThisName" type="name:HybridRelationship" minOccurs="0" maxOccurs="unbounded"/>
+              </xs:sequence>
+            </xs:complexType>
+          </xs:element>
+          <xs:element name="IsHybridFormula" type="xs:boolean"/>
+          <xs:element name="IsMonomHybrid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="IsBinomHybrid" type="xs:boolean" minOccurs="0"/>
+          <xs:element name="IsTrinomHybrid" type="xs:boolean" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="HybridRelationship">
+    <xs:complexContent>
+      <xs:extension base="common:RelationshipBase">
+        <xs:sequence>
+          <xs:element name="RelatedFrom" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="RelatedTo" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="Type" type="xs:IDREF" minOccurs="0"/>
+          <xs:element name="RuleConsidered" type="xs:string" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="BotanicalName">
+    <xs:complexContent>
+      <xs:extension base="name:NonViralName">
+        <xs:sequence>
+          <xs:element name="IsAnamorphic" type="xs:boolean"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:complexType name="ZoologicalName">
+    <xs:complexContent>
+      <xs:extension base="name:NonViralName">
+        <xs:sequence>
+          <xs:element name="Breed" type="xs:string" minOccurs="0"/>
+          <xs:element name="PublicationYear" type="xs:int" minOccurs="0"/>
+          <xs:element name="OriginalPublicationYear" type="xs:int" minOccurs="0"/>
+        </xs:sequence>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+
+  <xs:simpleType name="NomenclaturalCode">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="ICNB"/>
+      <xs:enumeration value="ICBN"/>
+      <xs:enumeration value="ICNCP"/>
+      <xs:enumeration value="ICZN"/>
+      <xs:enumeration value="ICVCN"/>
+    </xs:restriction>
+  </xs:simpleType>
+</xs:schema>
+

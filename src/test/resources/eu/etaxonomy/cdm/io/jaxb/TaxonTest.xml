@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSet 
+    xmlns="http://etaxonomy.eu/cdm/model/1.0"
+    xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
+    xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
+    xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+    xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+    xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
+    xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0"
+    xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
+    xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
+                             ../../../../../../classes/schema/cdm/cdm.xsd">
+    <Terms>
+        <common:Language id="1" uuid="urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5"/>
+        <taxon:TaxonRelationshipType id="2" uuid="urn-uuid-5c9fe670-1678-4f29-8bf6-5ac96d1a6bee">      
+            <common:Representations>
+              <common:Representation id="1" uuid="urn-uuid-f90974d0-fc2c-11dd-87af-0800200c9a66">
+                <common:Text>is parent taxon of</common:Text>
+                <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+              </common:Representation>
+            </common:Representations> 
+            <common:TermVocabulary>urn-uuid-605e1c0c-2c23-4a78-acc3-fa114b25871c</common:TermVocabulary>
+            <common:OrderIndex>1</common:OrderIndex>
+            <common:Symmetric>true</common:Symmetric>
+            <common:Transitive>false</common:Transitive>
+        </taxon:TaxonRelationshipType>
+    </Terms>
+    <TermVocabularies>
+        <common:TermVocabulary id="1" uuid="urn-uuid-605e1c0c-2c23-4a78-acc3-fa114b25871c">
+            <common:TermSourceURI>http://rs.tdwg.org/ontology/voc/TaxonConcept#TaxonRelationshipTerm</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-5c9fe670-1678-4f29-8bf6-5ac96d1a6bee</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+    </TermVocabularies>
+    <Agents>
+        <agent:Person id="1" uuid="urn-uuid-73b1c67a-b61a-4e6a-96fc-b6568c08542f">
+            <common:TitleCache>Laspeyres</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+        </agent:Person>
+    </Agents>
+    <References>
+        <reference:Generic id="1" uuid="urn-uuid-2106b156-1336-4912-a709-54c180b61e5f" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Laspeyres, 1809</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
+            <reference:AuthorTeam>urn-uuid-73b1c67a-b61a-4e6a-96fc-b6568c08542f</reference:AuthorTeam>
+            <reference:Title>Jena. allg. Lit.-Ztg</reference:Title>
+            <reference:DatePublished>
+                <common:Start>1809</common:Start>
+                <common:End>1809</common:End>
+            </reference:DatePublished>
+        </reference:Generic>
+    </References>
+    <TaxonomicNames>
+        <name:ZoologicalName id="1" uuid="urn-uuid-5cd1a686-d647-49ed-8c4b-501134b5eb66" hasProblem="false" problemStarts="-1" problemEnds="-1">
+          <common:TitleCache>Acherontia Laspeyres, 1809</common:TitleCache>
+          <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+          <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+          <name:NameCache>Acherontia</name:NameCache>
+          <name:AuthorshipCache>Laspeyres, 1809</name:AuthorshipCache>
+          <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+          <name:ProtectedNameCache>false</name:ProtectedNameCache>                  
+        </name:ZoologicalName>
+        <name:ZoologicalName id="2" uuid="urn-uuid-b1e3894b-4339-44f8-8ee6-d1828a8857be"  hasProblem="false" problemStarts="-1" problemEnds="-1">
+          <common:TitleCache>Acherontia atropos (Linnaeus, 1758)</common:TitleCache>
+          <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+          <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+          <name:NameCache>Acherontia atropos</name:NameCache>
+          <name:AuthorshipCache>(Linnaeus, 1758)</name:AuthorshipCache>
+          <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+          <name:ProtectedNameCache>false</name:ProtectedNameCache>      
+        </name:ZoologicalName>
+        <name:ZoologicalName hasProblem="false" problemStarts="-1" problemEnds="-1" id="0" uuid="urn-uuid-838fafd3-25a1-4aae-8b50-ecbcbad3c915">
+            <common:TitleCache>Acherontia atropos charon (Closs, 1910</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+        </name:ZoologicalName>
+    </TaxonomicNames>
+    <TaxonBases>
+        <taxon:Taxon id="1" uuid="urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df" isDoubtful="false">            
+            <common:LSID>urn:lsid:example.org:taxonconcept:1</common:LSID>
+            <common:TitleCache><i xmlns="http://www.w3.org/1999/xhtml">Acherontia</i> Laspeyres, 1809</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <taxon:Name>urn-uuid-5cd1a686-d647-49ed-8c4b-501134b5eb66</taxon:Name>
+            <taxon:Sec>urn-uuid-2106b156-1336-4912-a709-54c180b61e5f</taxon:Sec>
+            <taxon:TaxonomicChildrenCount>1</taxon:TaxonomicChildrenCount>
+            <taxon:SynonymRelations>
+                <taxon:SynonymRelationship id="0" uuid="urn-uuid-29e493e0-11e7-4892-848b-43cf193b68d6">
+                    <taxon:RelatedFrom>urn-uuid-406dbfb0-2f5a-11de-8c30-0800200c9a66</taxon:RelatedFrom>
+                    <taxon:RelatedTo>urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df</taxon:RelatedTo>
+                    <taxon:IsProParte>false</taxon:IsProParte>
+                    <taxon:IsPartial>false</taxon:IsPartial>
+                </taxon:SynonymRelationship>
+            </taxon:SynonymRelations>
+            <taxon:RelationsFromThisTaxon>
+                <taxon:FromThisTaxonRelationship id="1" uuid="urn-uuid-71d6b608-d13d-492c-870a-9536be49239e">
+                    <common:Citation>urn-uuid-2106b156-1336-4912-a709-54c180b61e5f</common:Citation>
+                    <taxon:RelatedFrom>urn-uuid-2deca426-359b-43fa-be96-fd530a28b0df</taxon:RelatedFrom>
+                    <taxon:RelatedTo>urn-uuid-5ded5fee-b816-46cf-b4ae-0931d564cd54</taxon:RelatedTo>
+                    <taxon:Type>urn-uuid-5c9fe670-1678-4f29-8bf6-5ac96d1a6bee</taxon:Type>
+                </taxon:FromThisTaxonRelationship>
+            </taxon:RelationsFromThisTaxon>
+        </taxon:Taxon>
+        <taxon:Taxon id="2" uuid="urn-uuid-5ded5fee-b816-46cf-b4ae-0931d564cd54" isDoubtful="false">
+            <common:TitleCache>Acherontia atropos (Linnaeus, 1758) sec Laspeyres 1809</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <taxon:Name>urn-uuid-b1e3894b-4339-44f8-8ee6-d1828a8857be</taxon:Name>
+            <taxon:Sec>urn-uuid-2106b156-1336-4912-a709-54c180b61e5f</taxon:Sec>
+            <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
+            <taxon:RelationsToThisTaxon>
+              <taxon:ToThisTaxonRelationship>urn-uuid-71d6b608-d13d-492c-870a-9536be49239e</taxon:ToThisTaxonRelationship>
+            </taxon:RelationsToThisTaxon>
+        </taxon:Taxon>
+        <taxon:Synonym isDoubtful="false" id="0" uuid="urn-uuid-406dbfb0-2f5a-11de-8c30-0800200c9a66">
+            <common:TitleCache>Acherontia atropos charon (Closs, 1910)</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <taxon:Name>urn-uuid-838fafd3-25a1-4aae-8b50-ecbcbad3c915</taxon:Name>
+            <taxon:SynonymRelations>
+                <taxon:SynonymRelationship>urn-uuid-29e493e0-11e7-4892-848b-43cf193b68d6</taxon:SynonymRelationship>
+            </taxon:SynonymRelations>
+        </taxon:Synonym>
+    </TaxonBases>
+</DataSet>
