@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.ImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
+import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -191,7 +192,7 @@ public class UnitsGatheringArea {
                 UUID areaUUID = null;
                 areaUUID = getNamedAreaDecision(fullName,config);
 
-                if (areaUUID == null && matchingTerms.keySet().size()>0){
+                if ((areaUUID == null) && (matchingTerms.keySet().size()>0)){
                     areaUUID = askForArea(fullName, matchingTerms);
                     logger.info("selected area: "+areaUUID);
                 }
@@ -219,9 +220,9 @@ public class UnitsGatheringArea {
         if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
             ((Abcd206ImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
         }
-        //        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
-        //            ((TaxonXImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
-        //        }
+        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
+            ((TaxonXImportConfigurator) config).putNamedAreaDecision(fullName, uuid);
+        }
 
     }
 
@@ -231,16 +232,16 @@ public class UnitsGatheringArea {
      */
     private UUID getNamedAreaDecision(String fullName, ImportConfiguratorBase<?, ?> config) {
         UUID areaUUID = null;
-        System.out.println("getNamedAreaDecision "+config);
+//        System.out.println("getNamedAreaDecision "+config);
         if (config.getClass().equals(SpecimenSynthesysExcelImportConfigurator.class)) {
             areaUUID = ((SpecimenSynthesysExcelImportConfigurator) config).getNamedAreaDecision(fullName);
         }
         if (config.getClass().equals(Abcd206ImportConfigurator.class)) {
             areaUUID = ((Abcd206ImportConfigurator) config).getNamedAreaDecision(fullName);
         }
-        //        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
-        //            areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
-        //        }
+        if (config.getClass().equals(TaxonXImportConfigurator.class)) {
+            areaUUID = ((TaxonXImportConfigurator) config).getNamedAreaDecision(fullName);
+        }
         return areaUUID;
     }
 
