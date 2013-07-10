@@ -39,14 +39,14 @@ public class SynthesysCacheActivator {
 
     //database validation status (create, update, validate ...)
 
-//    final static String xmlSource = "/home/pkelbert/workspace/proibiosphere/cdmlib-io/target/test-classes/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls";
+    //    final static String xmlSource = "/home/pkelbert/workspace/proibiosphere/cdmlib-io/target/test-classes/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls";
     final static String xmlSource = "/home/pkelbert/Documents/Proibiosphere/ChenopodiumQuentin/dca UK records.xls";
 
 
     static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
     static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-//    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
-//    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+    //    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
+    //    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
     /**
@@ -70,7 +70,7 @@ public class SynthesysCacheActivator {
             specimenImportConfigurator.setReUseExistingMetadata(true);
             specimenImportConfigurator.setAskForDate(true);
             specimenImportConfigurator.setDefaultAuthor("L.");
-          //  specimenImportConfigurator.setClassificationName("Chenopodium");
+            //  specimenImportConfigurator.setClassificationName("Chenopodium");
 
             specimenImportConfigurator.setReUseTaxon(true);
 

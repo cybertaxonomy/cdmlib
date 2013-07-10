@@ -53,8 +53,8 @@ public class TaxonXImportLauncher {
     //    private static final Logger log = Logger.getLogger(CdmEntityDaoBase.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
 
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
@@ -75,8 +75,8 @@ public class TaxonXImportLauncher {
         boolean plaziNotServer=false;
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
-//        plaziUrl=plaziUrl+"Chenopodium";
-       plaziUrl=plaziUrlDoc+"0910-2878-5652";
+//        plaziUrl=plaziUrl+"Anochetus grandidieri";
+       plaziUrl=plaziUrlDoc+"21401";
 
         /*HOW TO HANDLE SECUNDUM REFERENCE*/
         boolean reuseSecundum = askIfReuseSecundum();
@@ -85,7 +85,7 @@ public class TaxonXImportLauncher {
             secundum = askForSecundum();
         }
 
-        String tnomenclature = "ICBN";
+        String tnomenclature = "ICZN";
         URL plaziURL;
         try {
             plaziURL = new URL(plaziUrl);
@@ -153,72 +153,72 @@ public class TaxonXImportLauncher {
         for (String docId : documents.keySet()){
             /*remove documents bad quality*/
             log.info(docId);
-//            if (!docId.equalsIgnoreCase("3891-7797-6564")){
-                            log.info("document "+docId);
-                List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
+            //            if (!docId.equalsIgnoreCase("3891-7797-6564")){
+            log.info("document "+docId);
+            List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
 
-                Map<Integer, List<String>> startPages = new HashMap<Integer, List<String>>();
-                for (String treatment:treatments) {
-                    List<String>tmplist = startPages.get(Integer.valueOf(treatment.split("---")[0]));
-                    if (tmplist == null) {
-                        tmplist = new ArrayList<String>();
-                    }
-                    tmplist.add(treatment.split("---")[3]);
-                    startPages.put(Integer.valueOf(treatment.split("---")[0]),tmplist);
+            Map<Integer, List<String>> startPages = new HashMap<Integer, List<String>>();
+            for (String treatment:treatments) {
+                List<String>tmplist = startPages.get(Integer.valueOf(treatment.split("---")[0]));
+                if (tmplist == null) {
+                    tmplist = new ArrayList<String>();
                 }
-                List<Integer> pages = new ArrayList<Integer>();
-                pages.addAll(startPages.keySet());
+                tmplist.add(treatment.split("---")[3]);
+                startPages.put(Integer.valueOf(treatment.split("---")[0]),tmplist);
+            }
+            List<Integer> pages = new ArrayList<Integer>();
+            pages.addAll(startPages.keySet());
 
-                Collections.sort(pages);
-                //            log.info(pages);
+            Collections.sort(pages);
+            //            log.info(pages);
 
-                log.info("Document "+docId+" should have "+treatments.size()+" treatments");
-                int cnt=0;
-                for (String source:treatments){
-                    DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-                    DocumentBuilder builder;
-                    URL url;
+            log.info("Document "+docId+" should have "+treatments.size()+" treatments");
+            int cnt=0;
+            for (String source:treatments){
+                DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+                DocumentBuilder builder;
+                URL url;
 
-                    try {
-                        builder = factory.newDocumentBuilder();
-                        url = new URL(source.split("---")[3]);
-                        Object o = url.getContent();
-                        InputStream is = (InputStream) o;
-                        Document document = builder.parse(is);
-                        cnt++;
-                    }catch(Exception e){
-                        //  e.printStackTrace();
-                        log.warn(e);
+                try {
+                    builder = factory.newDocumentBuilder();
+                    url = new URL(source.split("---")[3]);
+                    Object o = url.getContent();
+                    InputStream is = (InputStream) o;
+                    Document document = builder.parse(is);
+                    cnt++;
+                }catch(Exception e){
+                    //  e.printStackTrace();
+                    log.warn(e);
+                }
+            }
+            log.info("Document "+docId+" has "+cnt+" treatments available");
+            if(treatments.size() != cnt)
+            {
+                File file = new File("/home/pkelbert/Bureau/urlTaxonXToDoLater.txt");
+                FileWriter writer;
+                try {
+                    writer = new FileWriter(file ,true);
+                    writer.write(docId+"\n");
+                    writer.flush();
+                    writer.close();
+                } catch (IOException e1) {
+                    // TODO Auto-generated catch block
+                    e1.printStackTrace();
+                }
+
+            }
+            else{
+                for (int page:pages) {
+                    for (String treatment: startPages.get(page)) {
+                        sourcesStr.add(treatment);
                     }
                 }
-                log.info("Document "+docId+" has "+cnt+" treatments available");
-                if(treatments.size() != cnt)
-                {
-                    File file = new File("/home/pkelbert/Bureau/urlTaxonXToDoLater.txt");
-                    FileWriter writer;
-                    try {
-                        writer = new FileWriter(file ,true);
-                        writer.write(docId+"\n");
-                        writer.flush();
-                        writer.close();
-                    } catch (IOException e1) {
-                        // TODO Auto-generated catch block
-                        e1.printStackTrace();
-                    }
-
-                }
-                else{
-                    for (int page:pages) {
-                        for (String treatment: startPages.get(page)) {
-                            sourcesStr.add(treatment);
-                        }
-                    }
-                }
-//            }
+            }
+            //            }
         }
         log.info("NB SOURCES : "+sourcesStr.size());
-//        sourcesStr = new ArrayList<String>();
-//        sourcesStr.add("http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/4E7390346C05780D32283CCF6F5E4431_tx.xml");
+        //        sourcesStr = new ArrayList<String>();
+        //        sourcesStr.add("http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/4E7390346C05780D32283CCF6F5E4431_tx.xml");
 
         List<URI> sources = new ArrayList<URI>();
         for (String src: sourcesStr){
@@ -254,11 +254,11 @@ public class TaxonXImportLauncher {
         }
 
 
-//        taxonxImportConfigurator.setDoMatchTaxa(true);
-//        taxonxImportConfigurator.setReUseTaxon(true);
+        //        taxonxImportConfigurator.setDoMatchTaxa(true);
+        //        taxonxImportConfigurator.setReUseTaxon(true);
 
         for (URI source:sources){
-            log.info("START : "+source.getPath());
+            System.out.println("START : "+source.getPath());
             taxonxImportConfigurator.setSource(source);
 
             Reference<?> reference = ReferenceFactory.newGeneric();
@@ -269,7 +269,7 @@ public class TaxonXImportLauncher {
             reference.generateTitle();
 
             taxonxImportConfigurator.setSourceReference(reference);
-            taxonxImportConfigurator.setSourceRef(reference);
+            TaxonXImportConfigurator.setSourceRef(reference);
 
             //            String tnomenclature = askQuestion("ICBN or ICZN ?");
 
@@ -306,18 +306,18 @@ public class TaxonXImportLauncher {
      * @return
      */
     private static boolean askIfReuseSecundum() {
-            //        logger.info("getFullReference for "+ name);
-            JTextArea textArea = new JTextArea("Reuse the secundum present in the current classification? " +
-            		"\n Click Yes to reuse it, click No or Cancel to create a new one.");
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
+        //        logger.info("getFullReference for "+ name);
+        JTextArea textArea = new JTextArea("Reuse the secundum present in the current classification? " +
+                "\n Click Yes to reuse it, click No or Cancel to create a new one.\nA default secundum will be created if needed.");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 70 ) );
 
-            //        JFrame frame = new JFrame("I have a question");
-            //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            int s = JOptionPane.showConfirmDialog(null, scrollPane);
-           if (s==0) {
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int s = JOptionPane.showConfirmDialog(null, scrollPane);
+        if (s==0) {
             return true;
         } else {
             return false;
@@ -328,26 +328,26 @@ public class TaxonXImportLauncher {
      * @return
      */
     private static Reference<?> askForSecundum() {
-            //        logger.info("getFullReference for "+ name);
-            JTextArea textArea = new JTextArea("Enter the secundum name");
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
+        //        logger.info("getFullReference for "+ name);
+        JTextArea textArea = new JTextArea("Enter the secundum name");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
 
-            //        JFrame frame = new JFrame("I have a question");
-            //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            String s = (String) JOptionPane.showInputDialog(
-                    null,
-                    scrollPane,
-                    "",
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    null,
-                    null);
-            Reference<?> ref = ReferenceFactory.newGeneric();
-            ref.setTitle(s);
-            return ref;
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        String s = (String) JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                null);
+        Reference<?> ref = ReferenceFactory.newGeneric();
+        ref.setTitle(s);
+        return ref;
     }
 
 
