@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+   -->
+  <modelVersion>4.0.0</modelVersion>
+  
+  
+<!--   <parent> -->
+<!--     <relativePath>../cdmapps-parent/pom.xml</relativePath> -->
+<!--   </parent> -->
+  
+  <groupId>eu.etaxonomy.cdm</groupId>
+  <artifactId>cdm-pesi</artifactId>
+  <version>3.2.3-SNAPSHOT</version>
+  
+  <name>CDM PESI</name>
+  <description>The PESI package for EDIT's CdmLibrary</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/cdm-pesi/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/cdm-pesi/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib-apps/cdm-pesi/</url>
+  </scm>
+  <build>
+    <plugins>
+    </plugins>
+  </build>
+  <dependencies>   
+  <dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-persistence</artifactId>
+  		<type>test-jar</type>
+<!--   		<scope>test</scope>  -->
+  		<version>${project.version}</version>
+  	</dependency>
+   	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-io</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+
+  	
+  	
+<!--   	<dependency> -->
+<!--         <groupId>org.unitils</groupId> -->
+<!--         <artifactId>unitils-core</artifactId> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>org.dbunit</groupId> -->
+<!--       <artifactId>dbunit</artifactId> -->
+<!--     </dependency> -->
+<!--     <dependency> -->
+<!--       <groupId>xmlunit</groupId> -->
+<!--       <artifactId>xmlunit</artifactId> -->
+<!--   	</dependency> -->
+
+		<!-- Profiling -->
+		<dependency>
+			<groupId>com.yourkit</groupId>
+			<artifactId>yjp-controller-api-redist</artifactId>
+			<version>9.0.8</version>
+<!--			<scope>test</scope> -->
+		</dependency>
+  </dependencies>
+</project>
+

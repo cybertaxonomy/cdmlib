@@ -1,0 +1,302 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>eu.etaxonomy.cdm</groupId>
+    <artifactId>app-parent</artifactId>
+	<version>3.2.0-SNAPSHOT</version>
+    <name>CDM Applications Parent</name>
+    <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
+    <url>http://wp5.e-taxonomy.eu/cdmlib/</url>
+    <inceptionYear>2007</inceptionYear>
+    <packaging>pom</packaging>
+    <modules>
+        <module>cdmlib-commons</module>
+        <module>cdmlib-model</module>
+        <module>cdmlib-persistence</module>
+        <module>cdmlib-services</module>
+        <module>cdmlib-ext</module>
+        <module>cdmlib-io</module>
+        <module>cdmlib-remote</module>
+        <module>cdmlib-print</module>
+        <module>cdmlib-remote-webapp</module>
+    </modules>
+    <properties>
+		<java.codelevel>1.6</java.codelevel>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+    <licenses>
+        <license>
+            <name>Mozilla Public License Version 1.1</name>
+            <url>http://www.mozilla.org/MPL/MPL-1.1.html</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+    <organization>
+        <name>EDIT</name>
+        <url>http://www.e-taxonomy.eu/</url>
+    </organization>
+    <issueManagement>
+        <system>Trac</system>
+        <url>http://dev.e-taxonomy.eu/trac/</url>
+    </issueManagement>
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://160.45.63.201/jenkins</url>
+    </ciManagement>
+    <!-- **** REPOSITORIES **** -->
+    <repositories>
+        <!-- sun repository -->
+        <repository>
+            <id>java.net</id>
+            <url>http://download.java.net/maven/1/</url>
+        </repository>
+        <!-- the cdm internal repository -->
+        <repository>
+            <id>EditRepository</id>
+            <url>http://wp5.e-taxonomy.eu/mavenrepo/</url>
+        </repository>
+        <!-- apache incubating repository -->
+        <repository>
+            <id>ApacheIncubating</id>
+            <url>http://people.apache.org/repo/m2-incubating-repository/</url>
+        </repository>
+        <!-- Neccessary for hibernate-envers -->
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+                <checksumPolicy>warn</checksumPolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
+                <checksumPolicy>fail</checksumPolicy>
+            </snapshots>
+            <id>jboss-repository</id>
+            <name>JBoss Repository</name>
+            <url>http://repository.jboss.com</url>
+        </repository>
+        <!-- codehaus mule repository needed for yourkit  -->
+        <repository>
+            <id>CodehausMuleRepository</id>
+            <url>http://dist.codehaus.org/mule/dependencies/maven2/</url>
+        </repository>
+        <!-- current spring source repositories -->
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - External Bundle Milestones</id>
+            <url>http://repository.springsource.com/maven/bundles/milestone</url>
+        </repository>
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - SpringSource Bundle Releases</id>
+            <url>http://repository.springsource.com/maven/bundles/release</url>
+        </repository>
+        <repository>
+            <id>SpringSource Enterprise Bundle Repository - External Bundle Releases</id>
+            <url>http://repository.springsource.com/maven/bundles/external</url>
+        </repository>
+	    <!-- for ikey-plus -->
+		<repository>
+        	<id>itextpdf.com</id>
+            <name>Maven Repository for iText</name>
+            <url>http://maven.itextpdf.com/</url>
+        </repository>
+    </repositories>
+    <!-- **** PLUGINS **** -->
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>${java.codelevel}</source>
+                    <target>${java.codelevel}</target>
+                    <encoding>UTF-8</encoding>
+                </configuration>
+                <version>2.3.2</version>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <argLine>-Xmx512M -XX:MaxPermSize=128M</argLine>
+                    <runOrder>alphabetical</runOrder>
+					<includes>
+                        <include>**/*Test.java</include>
+                    </includes>
+                </configuration>
+                <version>2.12</version>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>buildnumber-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <executions>
+                    <execution>
+                        <!--<phase>deploy</phase>-->
+                        <goals>
+                            <goal>create</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <doCheck>false</doCheck>
+                    <!-- Only create the build number if there are no local modifications -->
+                    <doUpdate>false</doUpdate>
+                    <!-- automatically update the local svn copy -->
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>3.0</version>
+                <configuration>
+                    <locales>en</locales>
+		    <outputEncoding>UTF-8</outputEncoding>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <version>2.1.2</version>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.7</version>
+                <configuration>
+                    <stylesheet>maven</stylesheet>
+                    <quiet>true</quiet>
+                    <detectLinks>true</detectLinks>
+                    <failOnError>false</failOnError>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>aggregate</id>
+                        <goals>
+                            <goal>aggregate</goal>
+                        </goals>
+                        <phase>site</phase>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <downloadSources>true</downloadSources>
+                    <downloadJavadocs>true</downloadJavadocs>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>com.agilejava.docbkx</groupId>
+                <artifactId>docbkx-maven-plugin</artifactId>
+                <version>2.0.9</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate-html</goal>
+                            <goal>generate-pdf</goal>
+                        </goals>
+                        <phase>pre-site</phase>
+                    </execution>
+                </executions>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.docbook</groupId>
+                        <artifactId>docbook-xml</artifactId>
+                        <version>4.4</version>
+                        <scope>runtime</scope>
+                    </dependency>
+                </dependencies>
+                <configuration>
+                    <includes>ReferenceDocumentation.xml</includes>
+                    <chunkedOutput>true</chunkedOutput>
+                    <htmlStylesheet>resources/css/html.css</htmlStylesheet>
+                    <xincludeSupported>true</xincludeSupported>
+                    <!--<htmlCustomization>src/docbkx/resources/xsl/html_chunk.xsl</htmlCustomization>-->
+                    <!-- if anyone can get the xsl-fo customization to work properly, then by all
+                        means use it
+                        <foCustomization>src/docbkx/resources/xsl/fopdf.xsl</foCustomization>
+                    -->
+                    <entities>
+                        <entity>
+                            <name>version</name>
+                            <value>${project.version}</value>
+                        </entity>
+                    </entities>
+                    <!--We want the final documentation and the required resources to end up in
+              the right place-->
+                    <postProcess>
+                        <copy todir="target/site/reference">
+                            <fileset dir="target/docbkx">
+                                <include name="**/*.html" />
+                                <include name="**/*.pdf" />
+                            </fileset>
+                        </copy>
+                        <copy todir="target/site/reference/html">
+                            <fileset dir="src/docbkx">
+                                <include name="**/*.css" />
+                                <include name="**/*.png" />
+                                <include name="**/*.gif" />
+                                <include name="**/*.jpg" />
+                            </fileset>
+                        </copy>
+                    </postProcess>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>wagon-maven-plugin</artifactId>
+                <version>1.0-beta-3</version>
+                <configuration>
+                    <fromDir>${project.build.directory}/docbkx/</fromDir>
+                    <includes>**/*</includes>
+                    <excludes />
+                    <url>scpexe://wp5.e-taxonomy.eu</url>
+                    <serverId>wp5.e-taxonomy.eu</serverId>
+                    <toDir>var/www/wp5.e-taxonomy.eu/cdmlib/reference/${project.version}</toDir>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>upload-reference-documentation</id>
+                        <phase>site-deploy</phase>
+                        <goals>
+                            <goal>upload</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+		</plugins>
+	</build>
+    <!-- **** DEPENDENCIES **** -->
+ <!--  <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+    </dependencies>  -->
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>eu.etaxonomy</groupId>
+                <artifactId>cdmlib-io</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+		</dependencies>
+	</dependencyManagement>
+
+</project>

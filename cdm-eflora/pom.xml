@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" 
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <!-- 
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd"
+   -->
+  
+  <modelVersion>4.0.0</modelVersion>
+  
+  <groupId>eu.etaxonomy.cdm</groupId>
+  <artifactId>cdm-eflora</artifactId>
+  <version>3.2.3-SNAPSHOT</version>
+  
+  <name>CDM e-Flora</name>
+  <description>The e-Flora package for e-FLora imports to the EDIT CDM Platform</description>
+  <scm>
+    <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/cdmlib-eflora/</connection>
+    <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/cdmlib-eflora/</developerConnection>
+    <url>http://dev.e-taxonomy.eu/trac/browser/trunk/cdmlib-apps/cdmlib-eflora/</url>
+  </scm>
+  <build>
+    <plugins>
+    </plugins>
+  </build>
+  <dependencies>   
+  <dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-persistence</artifactId>
+  		<type>test-jar</type>
+  		<scope>test</scope> 
+  		<version>${project.version}</version>
+  	</dependency>
+   	<dependency>
+  		<groupId>eu.etaxonomy</groupId>
+  		<artifactId>cdmlib-io</artifactId>
+  		<version>${project.version}</version>
+  	</dependency>
+  </dependencies>
+</project>
+
