@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.tdwg.org/schemas/tcs/1.01" xmlns:tcs="http://www.tdwg.org/schemas/tcs/1.01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xs:import namespace="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="xsi.xsd"/>
+  <xs:element name="DataSet">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:MetaData"/>
+        <xs:element ref="tcs:Specimens"/>
+        <xs:element ref="tcs:Publications"/>
+        <xs:element ref="tcs:TaxonNames"/>
+        <xs:element ref="tcs:TaxonConcepts"/>
+      </xs:sequence>
+      <xs:attribute ref="xsi:schemaLocation" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MetaData" type="tcs:Simple"/>
+  <xs:element name="Specimens">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:Specimen"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Specimen">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element ref="tcs:Institution"/>
+            <xs:element ref="tcs:Collection"/>
+            <xs:element ref="tcs:SpecimenItem"/>
+          </xs:sequence>
+          <xs:attribute name="id" use="required" type="xs:integer"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Institution">
+    <xs:complexType>
+      <xs:attribute name="identifier" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Collection">
+    <xs:complexType>
+      <xs:attribute name="identifier" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SpecimenItem">
+    <xs:complexType>
+      <xs:attribute name="identifier" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Publications">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="tcs:Publication"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Publication">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:attribute name="id" use="required" type="xs:integer"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TaxonNames">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="tcs:TaxonName"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TaxonName">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element minOccurs="0" ref="tcs:Rank"/>
+            <xs:sequence minOccurs="0">
+              <xs:element ref="tcs:CanonicalName"/>
+              <xs:element ref="tcs:CanonicalAuthorship"/>
+              <xs:element ref="tcs:PublishedIn"/>
+            </xs:sequence>
+            <xs:element minOccurs="0" ref="tcs:MicroReference"/>
+            <xs:element minOccurs="0" ref="tcs:Typification"/>
+            <xs:element minOccurs="0" ref="tcs:Basionym"/>
+          </xs:sequence>
+          <xs:attribute name="id" use="required" type="xs:integer"/>
+          <xs:attribute name="nomenclaturalCode" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CanonicalName">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element ref="tcs:Genus"/>
+            <xs:element minOccurs="0" ref="tcs:SpecificEpithet"/>
+            <xs:choice minOccurs="0">
+              <xs:element ref="tcs:InfragenericEpithet"/>
+              <xs:element ref="tcs:InfraspecificEpithet"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Genus">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:NCName">
+          <xs:attribute name="ref" type="xs:integer"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SpecificEpithet" type="xs:NCName"/>
+  <xs:element name="InfragenericEpithet" type="xs:NCName"/>
+  <xs:element name="InfraspecificEpithet" type="xs:NCName"/>
+  <xs:element name="CanonicalAuthorship">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element minOccurs="0" ref="tcs:BasionymAuthorship"/>
+            <xs:element minOccurs="0" ref="tcs:CombinationAuthorship"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BasionymAuthorship">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element minOccurs="0" ref="tcs:Authors"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="CombinationAuthorship">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element minOccurs="0" ref="tcs:Authors"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Typification">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:choice>
+            <xs:element ref="tcs:TypeName"/>
+            <xs:element ref="tcs:TypeVouchers"/>
+          </xs:choice>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeName">
+    <xs:complexType>
+      <xs:sequence minOccurs="0">
+        <xs:element ref="tcs:NameReference"/>
+        <xs:element ref="tcs:LectotypePublication"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NameReference">
+    <xs:complexType mixed="true">
+      <xs:attribute name="linkType" use="required" type="xs:NCName"/>
+      <xs:attribute name="ref" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeVouchers">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="tcs:TypeVoucher"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TypeVoucher">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:VoucherReference"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="tcs:LectotypePublication"/>
+          <xs:element ref="tcs:LectotypeMicroReference"/>
+        </xs:sequence>
+      </xs:sequence>
+      <xs:attribute name="typeOfType" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="VoucherReference">
+    <xs:complexType mixed="true">
+      <xs:attribute name="linkType" type="xs:NCName"/>
+      <xs:attribute name="ref" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LectotypeMicroReference" type="xs:string"/>
+  <xs:element name="Basionym">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:RelatedName"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RelatedName">
+    <xs:complexType mixed="true">
+      <xs:attribute name="ref" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TaxonConcepts">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="tcs:TaxonConcept"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TaxonConcept">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:Name"/>
+        <xs:element minOccurs="0" ref="tcs:Rank"/>
+        <xs:sequence minOccurs="0">
+          <xs:element ref="tcs:AccordingTo"/>
+          <xs:element ref="tcs:TaxonRelationships"/>
+        </xs:sequence>
+      </xs:sequence>
+      <xs:attribute name="id" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Name">
+    <xs:complexType mixed="true">
+      <xs:attribute name="linkType" type="xs:NCName"/>
+      <xs:attribute name="ref" type="xs:integer"/>
+      <xs:attribute name="scientific" use="required" type="xs:boolean"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AccordingTo">
+    <xs:complexType>
+      <xs:complexContent>
+        <xs:extension base="tcs:Simple">
+          <xs:sequence>
+            <xs:element minOccurs="0" ref="tcs:AccordingToDetailed"/>
+          </xs:sequence>
+        </xs:extension>
+      </xs:complexContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AccordingToDetailed">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:PublishedIn"/>
+        <xs:element ref="tcs:MicroReference"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TaxonRelationships">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="tcs:TaxonRelationship"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TaxonRelationship">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:ToTaxonConcept"/>
+      </xs:sequence>
+      <xs:attribute name="type" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="ToTaxonConcept">
+    <xs:complexType mixed="true">
+      <xs:attribute name="linkType" type="xs:NCName"/>
+      <xs:attribute name="ref" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:complexType name="Simple">
+    <xs:sequence>
+      <xs:element ref="tcs:Simple"/>
+    </xs:sequence>
+  </xs:complexType>
+  <xs:element name="Simple" type="xs:string"/>
+  <xs:element name="Rank">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:NCName">
+          <xs:attribute name="code" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="Authors">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="tcs:AgentName"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="AgentName" type="xs:string"/>
+  <xs:element name="PublishedIn">
+    <xs:complexType mixed="true">
+      <xs:attribute name="linkType" type="xs:NCName"/>
+      <xs:attribute name="ref" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MicroReference" type="xs:string"/>
+  <xs:element name="LectotypePublication">
+    <xs:complexType mixed="true">
+      <xs:attribute name="ref" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

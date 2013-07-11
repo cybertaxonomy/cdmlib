@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified" targetNamespace="http://www.w3.org/2001/XMLSchema-instance" xmlns:tcs="http://www.tdwg.org/schemas/tcs/1.01" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <xs:import namespace="http://www.tdwg.org/schemas/tcs/1.01" schemaLocation="TcsXmlImportConfiguratorTest-input.xsd"/>
+  <xs:attribute name="schemaLocation"/>
+</xs:schema>

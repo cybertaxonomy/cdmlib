@@ -47,7 +47,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<BfnXmlImportState> {
 	private static final Logger logger = Logger.getLogger(BfnXmlTaxonNameImport.class);
 
-	private static final String strNomenclaturalCode = NomenclaturalCode.ICBN.toString();
+	private static final String strNomenclaturalCode = null;//NomenclaturalCode.ICBN.toString();
 
 	private static int modCount = 5000;
 	
@@ -90,21 +90,24 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 
 		String bfnElementName = "TAXONYM";
 		List<Element> elTaxonNameList = (List<Element>)elTaxonNames.getChildren(bfnElementName, bfnNamespace);
-
-		int i = 0;
+		
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNameList){
-			//			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			if(elTaxonName.getName().equalsIgnoreCase("WISSNAME")){
-				String childElementName = "WISSNAME";
-				makeTaxonBase(taxonNameMap, success, idNamespace, config, bfnNamespace, elTaxonName, childElementName);
+			if(elTaxonName.getChild("WISSNAME").toString().equalsIgnoreCase("WISSNAME")){
+				childName = "WISSNAME";
+				Element elWissName = XmlHelp.getSingleChildElement(success, elTaxonName, childName, bfnNamespace, obligatory);
+
+				String childElementName = "NANTEIL";
+				makeTaxonBase(taxonNameMap, success, idNamespace, config, bfnNamespace, elWissName, childElementName);
 			}
+			//for each synonym
 			if(elTaxonName.getName().equalsIgnoreCase("SYNONYME")){
-				//TODO create method according to xml scheme
+				childName = "SYNONYME";
+				Element elSynonms = XmlHelp.getSingleChildElement(success, elTaxonName, childName, bfnNamespace, obligatory);
+				
 			}
 
 		}
-		logger.info(i + " names handled");
 		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
 		getNameService().save((Collection)col);
 
@@ -130,17 +133,20 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 			ResultWrapper<Boolean> success, String idNamespace,
 			BfnXmlImportConfigurator config, Namespace bfnNamespace,
 			Element elTaxonName, String childElementName) {
+		
 		List<Element> elWissNameList = (List<Element>)elTaxonName.getChildren(childElementName, bfnNamespace);
-
+		Rank rank = null;
+		String strId = null;
+		String strAuthor = null;
 		for(Element elWissName:elWissNameList){
-			Rank rank = null;
-			String strId = null;
-			String strAuthor;
 
+			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Autoren")){
+				strAuthor = elWissName.getTextNormalize();
+			}
 			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Eindeutiger Code")){
 				strId = elWissName.getTextNormalize();
 			}
-			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Rank")){
+			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Rang")){
 				String strRank = elWissName.getTextNormalize();
 				rank = makeRank(strRank);
 			}
@@ -164,10 +170,7 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 					logger.warn("Name with id " + strId + " has unknown nomenclatural code.");
 					success.setValue(false); 
 				}
-
-
 			}
-
 		}
 	}
 	

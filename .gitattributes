@@ -165,7 +165,7 @@ src/main/resources/Asteraceae[!!-~]Specimen[!!-~]Images[!!-~]Vienna.xls -text
 src/main/resources/AsteraceaeSpecimenImagesVienna.mdb -text
 src/main/resources/collections/Acronyms.tab -text
 src/main/resources/distribution/distribution_cich.xls -text
-src/main/resources/eu/etaxonomy/cdm/appimportTestApplicationContext.xml -text
+src/main/resources/eu/etaxonomy/cdm/defaultIoApplicationContext.xml -text
 src/main/resources/excel/NormalExplicit.xls -text
 src/main/resources/globis.rdf.xml -text
 src/main/resources/globis_valid.rdf.xml -text
@@ -205,3 +205,18 @@ src/main/resources/specimen/SynthesysSpecimenExample.xls -text
 src/main/resources/specimenABCD/multiABCD.xml -text
 src/main/resources/tcs/Cichorium_tcs.xml -text
 src/main/resources/tcs/tcsXmlTest.xml -text
+src/test/java/eu/etaxonomy/cdm/io/redlist/bfnXml/BfnXmlImportConfiguratorTest.java -text
+src/test/resources/dbscripts/001-cdm.h2.sql -text
+src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
+src/test/resources/eu/etaxonomy/cdm/io/BlankDataSet.xml -text
+src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd -text
+src/test/resources/eu/etaxonomy/cdm/io/bfnXml/TcsXmlImportConfiguratorTest-input.xml -text
+src/test/resources/eu/etaxonomy/cdm/io/bfnXml/TcsXmlImportConfiguratorTest-input.xsd -text
+src/test/resources/eu/etaxonomy/cdm/io/bfnXml/bfnXmlTest-input.xml -text
+src/test/resources/eu/etaxonomy/cdm/io/bfnXml/xsi.xsd -text
+src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd -text
+src/test/resources/main/resources/conf.properties -text
+src/test/resources/main/resources/confOverridable.properties -text
+src/test/resources/spy.properties -text
+src/test/resources/termCodeCreator.xls -text
+src/test/resources/unitils.properties -text
