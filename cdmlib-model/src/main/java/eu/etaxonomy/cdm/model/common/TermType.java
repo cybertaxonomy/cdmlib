@@ -487,6 +487,8 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
 	}
 
 
+	
+	
 	@Override
     public Set<TermType> getGeneralizationOf() {
 		return Collections.unmodifiableSet( children );
@@ -517,7 +519,7 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
 
 	@Override
 	public void setIdInVocabulary(String idInVocabulary) {
-		//not applicable
+		throw new RuntimeException("id can't be set for termtype");
 	}
 
 }
