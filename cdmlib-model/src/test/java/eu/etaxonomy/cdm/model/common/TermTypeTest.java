@@ -19,7 +19,24 @@ public class TermTypeTest {
 	public void test() {
 		TermType languageType = TermType.Language;
 		assertEquals(TermType.byKey("LA"), languageType);
-		
 	}
+	
+	@Test
+	public void testKindOf(){
+		assertSame(TermType.Modifier, TermType.DeterminationModifier.getKindOf());
+		assertSame(TermType.Modifier, TermType.Scope.getKindOf());
+		assertSame(TermType.Scope, TermType.Sex.getKindOf());
+		assertSame(TermType.Scope, TermType.Stage.getKindOf());
+	}
+	
+	@Test
+	public void testGeneralisationOf(){
+		assertTrue(TermType.Modifier.getGeneralizationOf().contains(TermType.DeterminationModifier));
+		assertTrue(TermType.Modifier.getGeneralizationOf().contains(TermType.Scope));
+		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Sex));
+		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Stage));		
+	}
+	
+	
 
 }
