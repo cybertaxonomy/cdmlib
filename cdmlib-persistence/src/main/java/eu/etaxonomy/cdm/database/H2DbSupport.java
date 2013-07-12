@@ -1,4 +1,5 @@
 package eu.etaxonomy.cdm.database;
+
 /**
  * based on from http://code.google.com/p/java-tester/source/browse/trunk/src/main/java/org/jtester/unitils/database/H2DbSupport.java
  */
@@ -75,22 +76,22 @@ public class H2DbSupport extends DbSupport {
 
         @Override
         public void incrementSequenceToValue(String sequenceName, long newSequenceValue) {
-                getSQLHandler()
-                                .executeUpdate("alter sequence " + qualified(sequenceName) + " restart with " + newSequenceValue);
+                getSQLHandler().executeUpdate(
+                	"alter sequence " + qualified(sequenceName) + " restart with " + newSequenceValue);
         }
 
         @Override
         public void incrementIdentityColumnToValue(String tableName, String identityColumnName, long identityValue) {
                 getSQLHandler().executeUpdate(
-                                "alter table " + qualified(tableName) + " alter column " + quoted(identityColumnName)
-                                                + " RESTART WITH " + identityValue);
+                      "alter table " + qualified(tableName) + " alter column " + quoted(identityColumnName)
+                           + " RESTART WITH " + identityValue);
         }
 
         @Override
         public void disableReferentialConstraints() {
                 Set<String> tableNames = getTableNames();
                 for (String tableName : tableNames) {
-                        disableReferentialConstraints(tableName);
+                	disableReferentialConstraints(tableName);
                 }
         }
 
@@ -105,7 +106,7 @@ public class H2DbSupport extends DbSupport {
         private void disableReferentialConstraints(String tableName) {
                 Set<String> constraintNames = this.getForeignKeyConstraintNames(tableName);
                 for (String constraintName : constraintNames) {
-                        this.removeForeignKeyConstraint(tableName, constraintName);
+                	this.removeForeignKeyConstraint(tableName, constraintName);
                 }
         }
 
@@ -114,10 +115,10 @@ public class H2DbSupport extends DbSupport {
 
                 Set<String> notNullColumnNames = this.getNotNullColummnNames(tableName);
                 for (String notNullColumnName : notNullColumnNames) {
-                        if (primaryKeyColumnNames.contains(notNullColumnName)) {
-                                continue;
-                        }
-                        this.removeNotNullConstraint(tableName, notNullColumnName);
+                    if (primaryKeyColumnNames.contains(notNullColumnName)) {
+                            continue;
+                    }
+                    this.removeNotNullConstraint(tableName, notNullColumnName);
                 }
         }
 
