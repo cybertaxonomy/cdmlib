@@ -79,19 +79,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		return new Annotation(text, Language.DEFAULT());
 	}
 
-	protected Annotation(){
-		super();
-	}
-
-	/**
-	 * Constructor
-	 * @param text
-	 * @param lang
-	 */
-	protected Annotation(String text, Language language) {
-		super(text, language);
-	}
-
 
 	//Human annotation
 	@XmlElement(name = "Commentator")
@@ -125,6 +112,25 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri
 	private URI linkbackUri;
 
+	
+// *********** CONSTRUCTOR **************************************/
+	
+	protected Annotation(){
+		super();
+	}
+
+	/**
+	 * Constructor
+	 * @param text
+	 * @param lang
+	 */
+	protected Annotation(String text, Language language) {
+		super(text, language);
+	}
+
+//******************** GETTER /SETTER *************************/	
+	
+
 	/**
 	 * Currently envers does not support @Any
 	 * @return
@@ -132,7 +138,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-
+	
 	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
 	/**
 	 *
