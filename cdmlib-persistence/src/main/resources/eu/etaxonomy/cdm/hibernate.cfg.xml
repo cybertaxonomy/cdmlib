@@ -167,6 +167,7 @@
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEventType"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.MediaSpecimen"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DeterminationEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.FieldUnit"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"/>

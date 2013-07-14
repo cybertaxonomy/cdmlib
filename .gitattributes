@@ -868,6 +868,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivedUnit.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/FieldUnit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/GatheringEvent.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/MediaSpecimen.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/PreservationMethod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservationType.java -text
