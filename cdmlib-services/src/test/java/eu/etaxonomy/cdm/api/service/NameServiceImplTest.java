@@ -96,37 +96,6 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         logger.warn("Not yet implemented");
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTaxonNameByUuid(java.util.UUID)}.
-     */
-    @Test
-    public void testGetTaxonNameByUuid() {
-        logger.warn("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#saveTaxonName(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
-     */
-    @Test
-    public void testSaveTaxonName() {
-        logger.warn("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#saveTaxonNameAll(java.util.Collection)}.
-     */
-    @Test
-    public void testSaveTaxonNameAll() {
-        logger.warn("Not yet implemented");
-    }
-
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#removeTaxon(eu.etaxonomy.cdm.model.name.TaxonNameBase)}.
-     */
-    @Test
-    public void testRemoveTaxon() {
-        logger.warn("Not yet implemented");
-    }
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getAllNames(int, int)}.
