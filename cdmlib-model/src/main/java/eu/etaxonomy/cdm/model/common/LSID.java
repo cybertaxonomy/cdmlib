@@ -28,6 +28,7 @@ import com.ibm.lsid.MalformedLSIDException;
  */
 @Embeddable
 public class LSID implements Serializable {
+	private static final long serialVersionUID = -3568951541851092269L;
 
 	private String lsid;
 	
