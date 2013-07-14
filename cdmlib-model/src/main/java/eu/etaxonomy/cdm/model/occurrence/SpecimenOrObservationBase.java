@@ -61,13 +61,11 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * type figures are observations with at least a figure object in media
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:41
  */
 @XmlAccessorType(XmlAccessType.FIELD)
