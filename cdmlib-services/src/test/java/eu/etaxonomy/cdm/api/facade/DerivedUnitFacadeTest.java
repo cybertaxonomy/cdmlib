@@ -728,13 +728,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetTimeperiod() {
-        Assert.assertNotNull("Gathering period must not be null",
-                specimenFacade.getGatheringPeriod());
-        Assert.assertEquals("Gathering period must be same", gatheringPeriod,
-                specimenFacade.getGatheringPeriod());
+        Assert.assertNotNull("Gathering period must not be null", specimenFacade.getGatheringPeriod());
+        Assert.assertFalse("Gathering period must not be empty", specimenFacade.getGatheringPeriod().isEmpty());
+        Assert.assertEquals("Gathering period must be same", gatheringPeriod, specimenFacade.getGatheringPeriod());
         specimenFacade.setGatheringPeriod(null);
-        Assert.assertNull("Gathering period must be null",
-                specimenFacade.getGatheringPeriod());
+        Assert.assertTrue("Gathering period must be null", specimenFacade.getGatheringPeriod().isEmpty());
     }
 
     @Test
@@ -746,8 +744,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // field unit may not be initialized from the beginning. Than the
         // following
         // assert should be set to assertNull
-        Assert.assertTrue(
-                "field object should not be null (depends on specimen facade initialization !!)",
+        Assert.assertTrue("field object should not be null (depends on specimen facade initialization !!)",
                 specimenFacade.hasFieldObject());
 
         Field fieldUnitField = DerivedUnitFacade.class

@@ -26,6 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.Analyze;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.jaxb.PartialAdapter;
 @XmlRootElement(name = "TimePeriod")
 @Embeddable
 public class TimePeriod implements Cloneable, Serializable {
+	private static final long serialVersionUID = 3405969418194981401L;
 	private static final Logger logger = Logger.getLogger(TimePeriod.class);
 	public static final DateTimeFieldType MONTH_TYPE = DateTimeFieldType.monthOfYear();
 	public static final DateTimeFieldType YEAR_TYPE = DateTimeFieldType.year();
@@ -81,6 +83,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	@XmlElement(name = "FreeText")
 	private String freeText;
 
+// ********************** FACTORY METHODS **************************/
 
 	/**
 	 * Factory method
@@ -205,9 +208,10 @@ public class TimePeriod implements Cloneable, Serializable {
 		return new TimePeriod(startDate, endDate);
 	}
 
+//****************** CONVERTERS ******************/	
 
 	/**
-	 * Transforms a <code>Calendar</code> into a <code>Partial</code>
+	 * Transforms a {@link Calendar} into a <code>Partial</code>
 	 * @param calendar
 	 * @return
 	 */
@@ -218,7 +222,7 @@ public class TimePeriod implements Cloneable, Serializable {
 	}
 
 	/**
-	 * Transforms a <code>Calendar</code> into a <code>Partial</code>
+	 * Transforms a {@link ReadableInstant} into a <code>Partial</code>
 	 * @param calendar
 	 * @return
 	 */
@@ -229,6 +233,19 @@ public class TimePeriod implements Cloneable, Serializable {
 		return partial;
 	}
 
+
+	public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
+		if (partial == null || ! partial.isSupported(type)){
+			return null;
+		}else{
+			return partial.get(type);
+		}
+	}
+
+
+	
+//*********************** CONSTRUCTOR *********************************/	
+	
 	/**
 	 * Constructor
 	 */
@@ -243,34 +260,7 @@ public class TimePeriod implements Cloneable, Serializable {
 		end=endDate;
 	}
 
-	/**
-	 * True, if this time period represents a period not a single point in time.
-	 * This is by definition, that the time period has a start and an end value,
-	 * and both have a year value that is not null
-	 * @return
-	 */
-	@Transient
-	public boolean isPeriod(){
-		if (getStartYear() != null && getEndYear() != null ){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
-	/**
-	 * True, if there is no start date and no end date and no freetext representation exists.
-	 * @return
-	 */
-	@Transient
-	public boolean isEmpty(){
-		if (CdmUtils.isEmpty(this.getFreeText()) && start == null  && end == null ){
-			return true;
-		}else{
-			return false;
-		}
-	}
-
+//******************* GETTER / SETTER ************************************/
 
 	public Partial getStart() {
 		return start;
@@ -308,6 +298,38 @@ public class TimePeriod implements Cloneable, Serializable {
 	public void setFreeText(String freeText) {
 		this.freeText = freeText;
 	}
+
+	
+//******************* Transient METHODS ************************************/
+
+	/**
+	 * True, if this time period represents a period not a single point in time.
+	 * This is by definition, that the time period has a start and an end value,
+	 * and both have a year value that is not null
+	 * @return
+	 */
+	@Transient
+	public boolean isPeriod(){
+		if (getStartYear() != null && getEndYear() != null ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	/**
+	 * True, if there is no start date and no end date and no freetext representation exists.
+	 * @return
+	 */
+	@Transient
+	public boolean isEmpty(){
+		if (StringUtils.isBlank(this.getFreeText()) && start == null  && end == null ){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
 
 
 	@Transient
@@ -356,15 +378,6 @@ public class TimePeriod implements Cloneable, Serializable {
 		return getPartialValue(end, DAY_TYPE);
 	}
 
-	public static Integer getPartialValue(Partial partial, DateTimeFieldType type){
-		if (partial == null || ! partial.isSupported(type)){
-			return null;
-		}else{
-			return partial.get(type);
-		}
-
-	}
-
 	public TimePeriod setStartYear(Integer year){
 		return setStartField(year, YEAR_TYPE);
 	}
@@ -402,18 +415,22 @@ public class TimePeriod implements Cloneable, Serializable {
 		}
 	}
 
+	@Transient
 	private TimePeriod setStartField(Integer value, DateTimeFieldType type)
 			throws IndexOutOfBoundsException{
 		start = setPartialField(start, value, type);
 		return this;
 	}
 
+	@Transient
 	private TimePeriod setEndField(Integer value, DateTimeFieldType type)
 			throws IndexOutOfBoundsException{
 		end = setPartialField(end, value, type);
 		return this;
 	}
 
+// ******************************** internal methods *******************************/	
+	
 	/**
 	 * Throws an IndexOutOfBoundsException if the value does not have a valid value
 	 * (e.g. month > 12, month < 1, day > 31, etc.)
@@ -458,7 +475,9 @@ public class TimePeriod implements Cloneable, Serializable {
 		}
 	}
 
-
+//***************************** PARSING *********************************************/
+	//TODO should be moved to separate class //
+	
 	//patter for first year in string;
 	private static final Pattern firstYearPattern =  Pattern.compile("\\d{4}");
 	//case "1806"[1807];

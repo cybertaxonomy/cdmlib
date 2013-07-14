@@ -83,7 +83,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @XmlType(name = "DescriptionElementBase", propOrder = {
         "feature",
         "inDescription",
-        "timePeriod",
+        "timeperiod",
         "modifiers",
         "modifyingText",
         "media",
