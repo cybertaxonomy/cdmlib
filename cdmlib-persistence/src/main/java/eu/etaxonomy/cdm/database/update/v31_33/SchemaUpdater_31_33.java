@@ -237,7 +237,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO update molecular data #3340
 		
-		//TODO add MediaSpecimen column #3614
+		//add MediaSpecimen column #3614
+		stepName = "Add MediaSpecimen column to SpecimenOrObservationBase";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "mediaSpecimen_id";
+		boolean notNull = false;
+		String referencedTable = "Media";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
 		
 		//remove DescriptionBase_Feature  #2202
 		stepName = "Remove table DescriptionBase_Feature";
