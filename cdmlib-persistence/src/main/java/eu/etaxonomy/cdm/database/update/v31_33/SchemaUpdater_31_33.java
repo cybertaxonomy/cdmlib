@@ -134,10 +134,11 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO add column for DistanceToWaterSurfaceMax/Text und DistanceToGroundMax/Text
 		
-		//TODO update datatype of sequence.sequence (keeping data not necessary #3325)
+		//TODO update datatype of sequence.sequence => CLOB (keeping data not necessary #3325)
+		//NOTE: column has been changed: #3360
 
 		//TODO update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference
-		//Rights, MediaRepresentationPart, GenBankAccession, ) #3345
+		//Rights, MediaRepresentationPart ) #3345
 				
 		//update Sicilia -> Sicily
 		//#3540
