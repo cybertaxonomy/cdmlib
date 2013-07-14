@@ -235,6 +235,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateSql);
 		stepList.add(step);
 		
+		//TODO update molecular data #3340
+		
+		//TODO add MediaSpecimen column #3614
+		
+		//remove DescriptionBase_Feature  #2202
+		stepName = "Remove table DescriptionBase_Feature";
+		TableDroper.NewInstance(stepName, "DescriptionBase_Feature", INCLUDE_AUDIT);
+		stepList.add(step);
+		
 		return stepList;
 	}
 

@@ -72,7 +72,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlType(name = "DescriptionBase", propOrder = {
     "describedSpecimenOrObservation",
     "descriptionSources",
-    "descriptiveSystem",
     "workingSets",
     "descriptionElements",
     "imageGallery"
@@ -113,17 +112,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)  //FIXME what is the difference between this and IdentifiableEntity.sources
     private Set<Reference> descriptionSources = new HashSet<Reference>();
-
-    @XmlElementWrapper(name = "DescriptiveSystem")
-    @XmlElement(name = "Feature")
-    @XmlIDREF
-    @XmlSchemaType(name="IDREF")
-    @ManyToMany(fetch = FetchType.LAZY)  //FIXME
-    //@Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE })
-    @JoinTable(name = "DescriptionBase_Feature")
-    @Deprecated //will probably be removed in future versions due to #2240
-    //fortunately never worked well due to missing cascade #1846
-    private Set<Feature> descriptiveSystem = new HashSet<Feature>();
 
     @XmlElementWrapper(name = "WorkingSets")
     @XmlElement(name = "WorkingSet")
@@ -218,49 +206,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @Deprecated //will probably be removed in future versions due to #2240
     public void removeDescriptionSource(Reference descriptionSource) {
         this.descriptionSources.remove(descriptionSource);
-    }
-
-    /**
-     * Returns the set of {@link Feature feature} used as
-     * features/characters/descriptors for <i>this</i> description.
-     *
-     * @see    #addFeature(Feature)
-     * @see    #removeFeature(Feature)
-     */
-    public Set<Feature> getDescriptiveSystem() {
-        return this.descriptiveSystem;
-    }
-
-    /**
-     * @see    #getDescriptiveSystem()
-     * @see    #addDescriptiveSystem(Feature)
-     */
-    public void setDescriptiveSystem(Set<Feature> descriptiveSystem) {
-        this.descriptiveSystem = descriptiveSystem;
-    }
-
-    /**
-     * Adds an existing {@link Feature feature} to the set of
-     * {@link #getDescriptiveSystem() descriptiveSystem} used as features for
-     * <i>this</i> description.
-     *
-     * @param feature	the feature to be added to the descriptive system
-     * @see     #getDescriptiveSystem()
-     */
-    public void addFeature(Feature feature) {
-        this.descriptiveSystem.add(feature);
-    }
-
-    /**
-     * Removes one element from the set of {@link #getDescriptiveSystem() features} used as
-     * features for <i>this</i> description.
-     *
-     * @param  feature	the feature which should be deleted
-     * @see     #getDescriptiveSystem()
-     * @see     addFeature(Feature)
-     */
-    public void removeFeature(Feature feature) {
-        this.descriptiveSystem.remove(feature);
     }
 
     /**
@@ -392,12 +337,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         DescriptionBase result;
         try{
             result = (DescriptionBase)super.clone();
-
-            //descriptive system
-            result.descriptiveSystem = new HashSet<Feature>();
-            for (Feature feature : getDescriptiveSystem()){
-                result.descriptiveSystem.add(feature);
-            }
 
             //working set
             result.workingSets = new HashSet<WorkingSet>();
