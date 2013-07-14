@@ -274,6 +274,39 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		//add timeperiod to columns to description element base #3312
+		addTimeperiodToDescriptionElement(stepList);
+
+
+		//TODO add Marker vocabulary and terms #3591 => TermUpdater
+		
+		//remove SpecimenOrObservationBase_Media #3597
+		  //TODO check if SpecimenOrObservationBase_Media has data => move to first position, don't run update if data exists
+		if (true){
+			throw new RuntimeException("Required check for SpecimenOrObservationBase_Media");
+		}
+		
+		  //SpecimenOrObservationBase_Media #3597
+		stepName = "Remove table SpecimenOrObservationBase_Media";
+		tableName = "SpecimenOrObservationBase_Media";
+		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		
+		
+		
+		return stepList;
+	}
+
+	/**
+	 * @param stepList
+	 * @return
+	 */
+	private void addTimeperiodToDescriptionElement(
+			List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		String columnName;
 		//start  #3312
 		stepName = "Create time period start column in description element base";
 		tableName = "DescriptionElementBase";
@@ -294,9 +327,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		columnName = "timeperiod_freetext";
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
-
 		
-		return stepList;
+		return;
 	}
 
 	private void updateElevationMax(List<ISchemaUpdaterStep> stepList) {

@@ -282,7 +282,7 @@ public class SpecimenTest {
 		specimen.addDetermination(determination);
 		specimen.addExtension(extension);
 		specimen.addMarker(marker);
-		specimen.addMedia(media);
+//		specimen.addMedia(media);    #3597
 		specimen.addRights(right);
 		specimen.addSource(source);
 
@@ -345,7 +345,7 @@ public class SpecimenTest {
 		assertNotSame(marker, specimenClone.getMarkers().iterator().next());
 		assertEquals(1, specimenClone.getMarkers().size());
 		
-		assertEquals(media, specimenClone.getMedia().iterator().next());
+//		assertEquals(media, specimenClone.getMedia().iterator().next());  #3597
 		assertEquals(right, specimenClone.getRights().iterator().next());
 		
 		assertFalse(source.equals(specimenClone.getSources().iterator().next()));

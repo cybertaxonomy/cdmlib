@@ -121,7 +121,7 @@ public class TestSpecimen {
 		
 		MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(uri, size);
 		mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
-		specimen.addMedia(media);
+//		specimen.addMedia(media);    #3597
 
 		//Original ID
 		String id = "22";

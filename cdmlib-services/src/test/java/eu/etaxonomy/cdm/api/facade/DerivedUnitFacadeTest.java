@@ -1571,19 +1571,20 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade);
     }
 
-    @Test // #######DerivationEvent
-    public void testOnlyImageGallerySupported() {
-        specimenFacade = null;
-        firstFieldObject.addMedia(media1);
-        try {
-            specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
-            Assert.fail("Only image galleries are supported by the facade but not direct media");
-        } catch (DerivedUnitFacadeNotSupportedException e) {
-            // ok
-        }
-        Assert.assertNull("Specimen facade should not be initialized",
-                specimenFacade);
-    }
+// 	not required anymore #3597   
+//    @Test // #######DerivationEvent
+//    public void testOnlyImageGallerySupported() {
+//        specimenFacade = null;
+//        firstFieldObject.addMedia(media1);
+//        try {
+//            specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
+//            Assert.fail("Only image galleries are supported by the facade but not direct media");
+//        } catch (DerivedUnitFacadeNotSupportedException e) {
+//            // ok
+//        }
+//        Assert.assertNull("Specimen facade should not be initialized",
+//                specimenFacade);
+//    }
 
     @Test // #######DerivationEvent
     public void testEventPropagation() {

@@ -815,7 +815,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             for (SpecimenOrObservationBase occurrence : specimensOrObservations) {
 
-                taxonMedia.addAll(occurrence.getMedia());
+//            	direct media removed from specimen #3597
+//              taxonMedia.addAll(occurrence.getMedia());
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();

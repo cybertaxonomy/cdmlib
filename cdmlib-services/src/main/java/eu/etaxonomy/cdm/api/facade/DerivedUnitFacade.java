@@ -199,8 +199,7 @@ public class DerivedUnitFacade {
 		if (this.derivedUnit.getDerivedFrom() != null) {
 			DerivationEvent derivationEvent = getDerivationEvent(CREATE);
 			// fieldUnit
-			Set<FieldUnit> fieldOriginals = getFieldUnitOriginals(
-					derivationEvent, null);
+			Set<FieldUnit> fieldOriginals = getFieldUnitOriginals(derivationEvent, null);
 			if (fieldOriginals.size() > 1) {
 				throw new DerivedUnitFacadeNotSupportedException(
 						"Specimen must not have more than 1 derivation event");
@@ -218,42 +217,42 @@ public class DerivedUnitFacade {
 			}
 		}
 		
-		this.derivedUnitMediaTextData = inititializeTextDataWithSupportTest(
-				Feature.IMAGE(), this.derivedUnit, false, true);
+		this.derivedUnitMediaTextData = inititializeTextDataWithSupportTest(Feature.IMAGE(), this.derivedUnit, false, true);
 
-		fieldObjectMediaTextData = initializeFieldObjectTextDataWithSupportTest(
-				Feature.IMAGE(), false, true);
+		fieldObjectMediaTextData = initializeFieldObjectTextDataWithSupportTest(Feature.IMAGE(), false, true);
 
-		// handle derivedUnit.getMedia()
-		if (derivedUnit.getMedia().size() > 0) {
-			// TODO better changed model here to allow only one place for images
-			if (this.config.isMoveDerivedUnitMediaToGallery()) {
-				Set<Media> mediaSet = derivedUnit.getMedia();
-				for (Media media : mediaSet) {
-					this.addDerivedUnitMedia(media);
-				}
-				mediaSet.removeAll(getDerivedUnitMedia());
-			} else {
-				throw new DerivedUnitFacadeNotSupportedException(
-						"Specimen may not have direct media. Only (one) image gallery is allowed");
-			}
-		}
-
-		// handle fieldUnit.getMedia()
-		if (fieldUnit != null && fieldUnit.getMedia() != null
-				&& fieldUnit.getMedia().size() > 0) {
-			// TODO better changed model here to allow only one place for images
-			if (this.config.isMoveFieldObjectMediaToGallery()) {
-				Set<Media> mediaSet = fieldUnit.getMedia();
-				for (Media media : mediaSet) {
-					this.addFieldObjectMedia(media);
-				}
-				mediaSet.removeAll(getFieldObjectMedia());
-			} else {
-				throw new DerivedUnitFacadeNotSupportedException(
-						"Field object may not have direct media. Only (one) image gallery is allowed");
-			}
-		}
+		
+//direct media have been removed from specimenorobservationbase #3597
+//		// handle derivedUnit.getMedia()
+//		if (derivedUnit.getMedia().size() > 0) {
+//			// TODO better changed model here to allow only one place for images
+//			if (this.config.isMoveDerivedUnitMediaToGallery()) {
+//				Set<Media> mediaSet = derivedUnit.getMedia();
+//				for (Media media : mediaSet) {
+//					this.addDerivedUnitMedia(media);
+//				}
+//				mediaSet.removeAll(getDerivedUnitMedia());
+//			} else {
+//				throw new DerivedUnitFacadeNotSupportedException(
+//						"Specimen may not have direct media. Only (one) image gallery is allowed");
+//			}
+//		}
+//
+//		// handle fieldUnit.getMedia()
+//		if (fieldUnit != null && fieldUnit.getMedia() != null
+//				&& fieldUnit.getMedia().size() > 0) {
+//			// TODO better changed model here to allow only one place for images
+//			if (this.config.isMoveFieldObjectMediaToGallery()) {
+//				Set<Media> mediaSet = fieldUnit.getMedia();
+//				for (Media media : mediaSet) {
+//					this.addFieldObjectMedia(media);
+//				}
+//				mediaSet.removeAll(getFieldObjectMedia());
+//			} else {
+//				throw new DerivedUnitFacadeNotSupportedException(
+//						"Field object may not have direct media. Only (one) image gallery is allowed");
+//			}
+//		}
 
 		// test if descriptions are supported
 		ecology = initializeFieldObjectTextDataWithSupportTest(

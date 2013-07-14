@@ -30,6 +30,9 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -215,7 +218,7 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 	}
 
 	
-	private static boolean makeFigures(Map<Integer, DerivedUnit> typeMap, Source source){
+	private boolean makeFigures(Map<Integer, DerivedUnit> typeMap, Source source){
 		boolean success = true;
 		try {
 			//get data from database
@@ -247,7 +250,13 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 				}
 				DerivedUnit typeSpecimen = typeMap.get(typeDesignationFk);
 				if (typeSpecimen != null) {
-					typeSpecimen.addMedia(media);
+					SpecimenDescription desc = this.getSpecimenDescription(typeSpecimen, IMAGE_GALLERY, CREATE);
+					if (desc.getElements().isEmpty()){
+						desc.addElement(TextData.NewInstance(Feature.IMAGE()));
+					}
+					TextData textData = (TextData)CdmBase.deproxy(desc.getElements().iterator().next(), TextData.class);
+					textData.addMedia(media);
+//					typeSpecimen.addMedia(media);  #3597
 				}
 				
 				//mimeType + suffix
