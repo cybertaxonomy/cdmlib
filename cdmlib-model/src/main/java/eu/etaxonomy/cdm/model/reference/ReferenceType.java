@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.reference;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -22,11 +21,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
+import eu.etaxonomy.cdm.model.common.ISimpleTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy;
@@ -48,7 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  * @version 1.0
  */
 @XmlEnum
-public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
+public enum ReferenceType implements ISimpleTerm<ReferenceType>, Serializable{
 	//0
 	@XmlEnumValue("Article")
 	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", ArticleDefaultCacheStrategy.class),
@@ -96,8 +92,10 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 	Thesis(UUID.fromString("cd054393-4f5e-4842-b820-b820e5732d72"), "Thesis", ThesisDefaultCacheStrategy.class),
 	//15
 	@XmlEnumValue("Web Page")
-	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", ReferenceBaseDefaultCacheStrategy.class);
+	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", ReferenceBaseDefaultCacheStrategy.class)
+	;
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceType.class);
 
 	private String readableString;
@@ -178,20 +176,6 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 
 
 	@Override
-    public ReferenceType readCsvLine(Class<ReferenceType> termClass,
-			List<String> csvLine, java.util.Map<UUID, DefinedTermBase> terms) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-    public void writeCsvLine(CSVWriter writer, ReferenceType term) {
-		logger.warn("write csvLine not yet implemented");
-	}
-
-
-	@Override
     public UUID getUuid() {
 		return this.uuid;
 	}
@@ -217,34 +201,6 @@ public enum ReferenceType implements IDefinedTerm<ReferenceType>, Serializable{
 	@Override
     public Set<ReferenceType> getGeneralizationOf() {
 		return new HashSet<ReferenceType>();
-	}
-
-
-	@Override
-    public ReferenceType getPartOf() {
-		return null;
-	}
-
-
-	@Override
-    public Set<ReferenceType> getIncludes() {
-		return new HashSet<ReferenceType>();
-	}
-
-
-	@Override
-    public Set<Media> getMedia() {
-		return new HashSet<Media>();
-	}
-	
-	@Override
-	public String getIdInVocabulary() {
-		return this.toString();
-	}
-
-	@Override
-	public void setIdInVocabulary(String idInVocabulary) {
-		//not applicable
 	}
 
 }

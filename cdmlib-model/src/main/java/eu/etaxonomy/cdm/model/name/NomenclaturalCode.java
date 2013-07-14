@@ -11,8 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
 import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,10 +21,7 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
-import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.common.ISimpleTerm;
 
 /**
  * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
@@ -49,7 +44,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
-public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serializable {
+public enum NomenclaturalCode implements ISimpleTerm<NomenclaturalCode>, Serializable {
 	//0
 	/**
 	 * International Code of Nomenclature of Bacteria
@@ -132,6 +127,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
 	 */
+	@Override
 	public NomenclaturalCode getByUuid(UUID uuid) {
 		for (NomenclaturalCode nomCode : NomenclaturalCode.values()){
 			if (nomCode.getUuid().equals(uuid)){
@@ -141,57 +137,15 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
-	 */
+	@Override
 	public Set<NomenclaturalCode> getGeneralizationOf() {
 		return new HashSet<NomenclaturalCode>();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
-	 */
-	public Set<NomenclaturalCode> getIncludes() {
-		return new HashSet<NomenclaturalCode>();
-	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
-	 */
+	@Override
 	public NomenclaturalCode getKindOf() {
 		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
-	 */
-	public NomenclaturalCode getPartOf() {
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
-	 */
-	public Set<Media> getMedia() {
-		// TODO add links to codes
-		return new HashSet<Media>();
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.lang.Class, java.util.List, java.util.Map)
-	 */
-	public NomenclaturalCode readCsvLine(Class<NomenclaturalCode> termClass,
-			List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-		throw new UnsupportedOperationException("readCsvLine not supported by enum class");
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter, eu.etaxonomy.cdm.model.common.IDefinedTerm)
-	 */
-	public void writeCsvLine(CSVWriter writer, NomenclaturalCode term) {
-		throw new UnsupportedOperationException("writeCsvLine not supported by enum class");
 	}
 
 	/**
@@ -301,15 +255,5 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 			return "synonym";
 		}
 	}
-
-	@Override
-	public String getIdInVocabulary() {
-		return this.toString();
-	}
-
-	@Override
-	public void setIdInVocabulary(String idInVocabulary) {
-		//not applicable
-	}	
+	
 }
-

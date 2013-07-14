@@ -10,33 +10,14 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.Set;
-import java.util.UUID;
-
-import javax.persistence.Transient;
-
 
 import eu.etaxonomy.cdm.model.media.Media;
 
-public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
+public interface IDefinedTerm<T extends IDefinedTerm> extends ISimpleTerm<T>, ILoadableTerm<T> {
 
-	@Transient
-	public UUID getUuid();
-	
-	public T getByUuid(UUID uuid);
-
-	/**
-	 * Returns the defined term this term is a kind of.
-	 * Therefore the returned term is a generalization of <code>this</code> term
-	 */
-	public T getKindOf();
 
 //	public void setKindOf(T kindOf);
 
-	/**
-	 * Returns all defined terms this term is a generalization for.
-	 * Therefore the returned terms are kind of <code>this</code> term
-	 */
-	public Set<T> getGeneralizationOf();
 
 //	public void setGeneralizationOf(Set<T> generalizationOf);
 //
@@ -47,7 +28,10 @@ public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
 	/**
 	 * Returns the defined term this term is a part of.
 	 * Therefore the returned term includes <code>this</code> term
+	 * Discuss: move to {@link ISimpleTerm}?
+	 * @see #getIncludes()
 	 */
+	//Discuss: move to ISimpleTerm
 	public T getPartOf();
 
 //	public void setPartOf(T partOf);
@@ -55,6 +39,8 @@ public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
 	/**
 	 * Returns all defined terms this term includes.
 	 * Therefore the returned terms are part of <code>this</code> term
+	 * Discuss: move to {@link ISimpleTerm}?
+	 * @see #getPartOf()
 	 */
 	public Set<T> getIncludes();
 
@@ -64,6 +50,10 @@ public interface IDefinedTerm<T extends IDefinedTerm> extends ILoadableTerm<T> {
 //
 //	public void removeIncludes(T includes);
 
+	/**
+	 * Returns the media attached to this {@link IDefinedTerm term}
+	 * @return
+	 */
 	public Set<Media> getMedia();
 
 //	public void setMedia(Set<Media> media);

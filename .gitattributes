@@ -721,6 +721,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IOriginalSource.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISimpleTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IVersionableEntity.java -text svneol=unset#text/plain
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text

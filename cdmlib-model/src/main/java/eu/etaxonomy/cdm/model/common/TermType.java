@@ -70,7 +70,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @created 11.06.2013
  */
 @XmlEnum
-public enum TermType implements IDefinedTerm<TermType>, Serializable{
+public enum TermType implements ISimpleTerm<TermType>, Serializable{
 	
 	//0
 	/**
@@ -438,30 +438,6 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-	@Override
-    public TermType readCsvLine(Class<TermType> termClass,
-			List<String> csvLine, java.util.Map<UUID, DefinedTermBase> terms) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-    public void writeCsvLine(CSVWriter writer, TermType term) {
-		logger.warn("write csvLine not yet implemented");
-	}
 
 
 	@Override
@@ -485,42 +461,12 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
     public TermType getKindOf() {
 		return parent;
 	}
-
-
 	
 	
 	@Override
     public Set<TermType> getGeneralizationOf() {
 //		return Collections.unmodifiableSet( children );   //TODO creates stack overflow
 		return new HashSet<TermType>(children);
-	}
-
-
-	@Override
-    public TermType getPartOf() {
-		return null;
-	}
-
-
-	@Override
-    public Set<TermType> getIncludes() {
-		return new HashSet<TermType>();
-	}
-
-
-	@Override
-    public Set<Media> getMedia() {
-		return new HashSet<Media>();
-	}
-	
-	@Override
-	public String getIdInVocabulary() {
-		return this.toString();
-	}
-
-	@Override
-	public void setIdInVocabulary(String idInVocabulary) {
-		throw new RuntimeException("id can't be set for termtype");
 	}
 
 }

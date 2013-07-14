@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @created 15.05.2013
  */
 @XmlEnum
-public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Serializable{
+public enum OriginalSourceType implements ISimpleTerm<OriginalSourceType>, Serializable{
 	
 	//0
 	/**
@@ -119,6 +119,7 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	;
 	
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(OriginalSourceType.class);
 
 	private String readableString;
@@ -136,20 +137,6 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	public String getMessage(Language language){
 		//TODO make multi-lingual
 		return readableString;
-	}
-	
-
-	@Override
-    public OriginalSourceType readCsvLine(Class<OriginalSourceType> termClass,
-			List<String> csvLine, java.util.Map<UUID, DefinedTermBase> terms) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-
-	@Override
-    public void writeCsvLine(CSVWriter writer, OriginalSourceType term) {
-		logger.warn("write csvLine not yet implemented");
 	}
 
 
@@ -169,7 +156,6 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 		return null;
 	}
 
-
 	@Override
     public OriginalSourceType getKindOf() {
 		return null;
@@ -179,34 +165,6 @@ public enum OriginalSourceType implements IDefinedTerm<OriginalSourceType>, Seri
 	@Override
     public Set<OriginalSourceType> getGeneralizationOf() {
 		return new HashSet<OriginalSourceType>();
-	}
-
-
-	@Override
-    public OriginalSourceType getPartOf() {
-		return null;
-	}
-
-
-	@Override
-    public Set<OriginalSourceType> getIncludes() {
-		return new HashSet<OriginalSourceType>();
-	}
-
-
-	@Override
-    public Set<Media> getMedia() {
-		return new HashSet<Media>();
-	}
-	
-	@Override
-	public String getIdInVocabulary() {
-		return this.toString();
-	}
-
-	@Override
-	public void setIdInVocabulary(String idInVocabulary) {
-		//not applicable
 	}
 
 }

@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.occurrence;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -24,11 +23,8 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
+import eu.etaxonomy.cdm.model.common.ISimpleTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.media.Media;
 
 
 /**
@@ -45,7 +41,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @created 27.06.2013
  */
 @XmlEnum
-public enum SpecimenOrObservationType implements IDefinedTerm<SpecimenOrObservationType>, Serializable{
+public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservationType>, Serializable{
 	
 	//0
 	/**
@@ -173,10 +169,9 @@ public enum SpecimenOrObservationType implements IDefinedTerm<SpecimenOrObservat
 	//types (e.g. Observation)
 	@XmlEnumValue("FieldUnit")
 	FieldUnit(UUID.fromString("d38d22db-17f9-45ba-a32f-32393788726f"), "Field Unit", "FU"),	
-
 	;
 	
-	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationType.class);
 
 	private String readableString;
@@ -312,19 +307,6 @@ public enum SpecimenOrObservationType implements IDefinedTerm<SpecimenOrObservat
 		}
 		return null;
 	}
-	
-
-	@Override
-	public SpecimenOrObservationType readCsvLine(Class<SpecimenOrObservationType> termClass,
-			List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-		String message = "readCsvLine not implemented";
-		throw new RuntimeException(message);
-	}	
-	
-	@Override
-    public void writeCsvLine(CSVWriter writer, SpecimenOrObservationType term) {
-		logger.warn("write csvLine not yet implemented");
-	}
 
 
 	@Override
@@ -354,36 +336,4 @@ public enum SpecimenOrObservationType implements IDefinedTerm<SpecimenOrObservat
     public Set<SpecimenOrObservationType> getGeneralizationOf() {
 		return new HashSet<SpecimenOrObservationType>();
 	}
-
-
-	@Override
-    public SpecimenOrObservationType getPartOf() {
-		return null;
-	}
-
-
-	@Override
-    public Set<SpecimenOrObservationType> getIncludes() {
-		return new HashSet<SpecimenOrObservationType>();
-	}
-
-
-	@Override
-    public Set<Media> getMedia() {
-		return new HashSet<Media>();
-	}
-	
-	@Override
-	public String getIdInVocabulary() {
-		return this.toString();
-	}
-
-	@Override
-	public void setIdInVocabulary(String idInVocabulary) {
-		//not applicable
-	}
-
-
-
-
 }

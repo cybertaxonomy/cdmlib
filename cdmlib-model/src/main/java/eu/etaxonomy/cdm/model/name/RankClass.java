@@ -13,7 +13,6 @@ package eu.etaxonomy.cdm.model.name;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
@@ -24,10 +23,7 @@ import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
-import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.common.ISimpleTerm;
 
 /**
  * The rank class defines the category of ranks a certain rank belongs to. This information is
@@ -40,7 +36,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @created 11.06.2013
  */
 @XmlEnum
-public enum RankClass implements IDefinedTerm<RankClass>, Serializable{
+public enum RankClass implements ISimpleTerm<RankClass>, Serializable{
 	
 	//0
 	/**
@@ -78,6 +74,7 @@ public enum RankClass implements IDefinedTerm<RankClass>, Serializable{
 	;
 	
 	
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RankClass.class);
 
 	private String readableString;
@@ -117,21 +114,6 @@ public enum RankClass implements IDefinedTerm<RankClass>, Serializable{
 		//TODO make multi-lingual
 		return readableString;
 	}
-	
-	
-	
-	
-	@Override
-	public RankClass readCsvLine(Class<RankClass> termClass, List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-	
-
-	@Override
-    public void writeCsvLine(CSVWriter writer, RankClass term) {
-		logger.warn("write csvLine not yet implemented");
-	}
 
 
 	@Override
@@ -161,34 +143,4 @@ public enum RankClass implements IDefinedTerm<RankClass>, Serializable{
     public Set<RankClass> getGeneralizationOf() {
 		return new HashSet<RankClass>();
 	}
-
-
-	@Override
-    public RankClass getPartOf() {
-		return null;
-	}
-
-
-	@Override
-    public Set<RankClass> getIncludes() {
-		return new HashSet<RankClass>();
-	}
-
-
-	@Override
-    public Set<Media> getMedia() {
-		return new HashSet<Media>();
-	}
-	
-	@Override
-	public String getIdInVocabulary() {
-		return this.toString();
-	}
-
-	@Override
-	public void setIdInVocabulary(String idInVocabulary) {
-		//not applicable
-	}
-
-
 }
