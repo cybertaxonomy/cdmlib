@@ -273,6 +273,29 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//add timeperiod to columns to description element base #3312
+		//start  #3312
+		stepName = "Create time period start column in description element base";
+		tableName = "DescriptionElementBase";
+		columnName = "timeperiod_start";
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//end #3312
+		stepName = "Create time period end column in description element base";
+		tableName = "DescriptionElementBase";
+		columnName = "timeperiod_end";
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//freetext #3312
+		stepName = "Create time period freetext column in description element base";
+		tableName = "DescriptionElementBase";
+		columnName = "timeperiod_freetext";
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		
 		return stepList;
 	}
 

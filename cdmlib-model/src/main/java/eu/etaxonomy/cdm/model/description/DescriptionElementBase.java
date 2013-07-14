@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -76,16 +77,16 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionElementBase", propOrder = {
         "feature",
+        "inDescription",
+        "timePeriod",
         "modifiers",
         "modifyingText",
         "media",
-        "inDescription",
         "sources"
 })
 @Entity
@@ -140,6 +141,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @Cascade(CascadeType.SAVE_UPDATE)
     @IndexedEmbedded
     private DescriptionBase inDescription;
+    
+	@XmlElement(name = "TimePeriod")
+    private TimePeriod timeperiod = TimePeriod.NewInstance();;
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
@@ -236,6 +240,24 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
     /**
+	 * The point in time, the time period or the season for which this description element 
+	 * is valid. A season may be expressed by not filling the year part(s) of the time period. 
+	 */
+	public TimePeriod getTimeperiod() {
+		return timeperiod;
+	}
+
+	/**
+	 * @see #getTimeperiod()
+	 */
+	public void setTimeperiod(TimePeriod timeperiod) {
+		if (timeperiod == null){
+			timeperiod = TimePeriod.NewInstance();
+		}
+		this.timeperiod = timeperiod;
+	}
+
+	/**
      * Returns the set of {@link Modifier modifiers} used to qualify the validity of
      * <i>this</i> description element. This is only metainformation.
      */
