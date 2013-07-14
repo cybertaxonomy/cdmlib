@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -304,7 +305,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				return result;
 			} else if (isStartingElement(next, FULL_DATE)) {
 				String fullDate = getCData(state, reader, next, true);
-				result = TimePeriod.parseString(fullDate);
+				result = TimePeriodParser.parseString(fullDate);
 				if (result.getFreeText() != null){
 					fireWarningEvent(String.format(parseMessage, FULL_DATE, fullDate), parent, 1);
 				}

@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -225,7 +226,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	
 
 	private TimePeriod handleDate(String strDate) {
-		TimePeriod tp = TimePeriod.parseString(strDate);
+		TimePeriod tp = TimePeriodParser.parseString(strDate);
 		return tp;
 	}
 

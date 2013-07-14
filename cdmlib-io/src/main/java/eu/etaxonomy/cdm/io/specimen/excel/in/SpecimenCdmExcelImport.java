@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -694,7 +695,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		event.setTaxon(taxon);
 		
 		//date
-		TimePeriod date = TimePeriod.parseString(determination.determinedWhen);
+		TimePeriod date = TimePeriodParser.parseString(determination.determinedWhen);
 		event.setTimeperiod(date);
 		//by
 		//FIXME bracketAuthors and teams not yet implemented!!!

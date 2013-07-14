@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -72,7 +73,7 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 
 			childName = "DatePublished";
 			if (element.getName().equalsIgnoreCase(childName) && element.getNamespace().equals(tcsNs)){
-				TimePeriod datePublished = TimePeriod.parseString(value);
+				TimePeriod datePublished = TimePeriodParser.parseString(value);
 				publication.setDatePublished(datePublished);
 				continue;
 			}
@@ -94,7 +95,7 @@ public class DefaultTcsXmlPlaceholders implements ITcsXmlPlaceholderClass {
 //		Element elDatePublished = XmlHelp.getSingleChildElement(success, elPublicationDetailed, childName, ns, obligatory);
 //		if (elDatePublished != null){
 //			String strDatePublished = elDatePublished.getTextNormalize();
-//			TimePeriod datePublished = TimePeriod.parseString(strDatePublished);
+//			TimePeriod datePublished = TimePeriodParser.parseString(strDatePublished);
 //			publication.setDatePublished(datePublished);
 //		}
 		

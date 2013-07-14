@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
@@ -609,7 +610,7 @@ public class SpecimenSythesysExcelImport  extends CdmImportBase<SpecimenSynthesy
 
             }else{
                 if (!gatheringDate.isEmpty()){
-                    TimePeriod tp = TimePeriod.parseString(gatheringDate);
+                    TimePeriod tp = TimePeriodParser.parseString(gatheringDate);
                     unitsGatheringEvent.setGatheringDate(tp);
                 }
             }

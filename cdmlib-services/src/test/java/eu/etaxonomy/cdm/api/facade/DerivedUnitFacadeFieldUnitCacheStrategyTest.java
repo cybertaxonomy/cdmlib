@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -59,7 +60,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationT
 	ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
 	Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
 	String gatheringEventDescription = "A nice gathering description";
-	TimePeriod gatheringPeriod = TimePeriod.parseString("03.05.2005");
+	TimePeriod gatheringPeriod = TimePeriodParser.parseString("03.05.2005");
 	String ecology = "sand dunes";
 	String plantDescription = "flowers blue";
 

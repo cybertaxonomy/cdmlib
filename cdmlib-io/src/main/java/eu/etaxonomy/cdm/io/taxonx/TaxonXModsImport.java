@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IPublicationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -128,7 +129,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			String dateIssued = elDateIssued.getTextNormalize();
 			contentList.remove(elDateIssued);
 			
-			TimePeriod datePublished = TimePeriod.parseString(dateIssued);
+			TimePeriod datePublished = TimePeriodParser.parseString(dateIssued);
 			if (ref.getType().isPublication()){
 				((IPublicationBase)ref).setDatePublished(datePublished );
 			}else{

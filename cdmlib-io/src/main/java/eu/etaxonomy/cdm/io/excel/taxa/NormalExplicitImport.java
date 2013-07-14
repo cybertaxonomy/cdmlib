@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -60,6 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.babadshanjan
@@ -386,7 +386,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
 						}else if (type.equals(SourceType.Year)) {
-							ref.setDatePublished(TimePeriod.parseString(value));
+							ref.setDatePublished(TimePeriodParser.parseString(value));
 						}else if (type.equals(SourceType.RefExtension)) {
 							ExtensionType extensionType = getExtensionType(state, uuidRefExtension, "RefExtension", "Reference Extension", "RefExt.");
 							Extension extension = Extension.NewInstance(ref, value, extensionType);

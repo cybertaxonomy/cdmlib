@@ -466,7 +466,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				//continue
 			}else{
 				ref = makeDetailYearUnparsable(nameToBeFilled,strReference);
-				ref.setDatePublished(TimePeriod.parseString(yearPart));
+				ref.setDatePublished(TimePeriodParser.parseString(yearPart));
 				return;
 			}
 		}
@@ -610,7 +610,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if ("".equals(year.trim())){
 			return true;
 		}
-		TimePeriod datePublished = TimePeriod.parseString(year);
+		TimePeriod datePublished = TimePeriodParser.parseString(year);
 		
 		if (nomRef.getType().equals(ReferenceType.BookSection)){
 			handleBookSectionYear((IBookSection)nomRef, datePublished);

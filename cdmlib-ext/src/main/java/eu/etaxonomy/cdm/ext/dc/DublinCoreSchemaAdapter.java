@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 
@@ -168,7 +169,7 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 					reference.setTitleCache(text, true);
 				}
 				if(dcFieldName.equals(DC_DATE)){
-					reference.setDatePublished(TimePeriod.parseString(text));
+					reference.setDatePublished(TimePeriodParser.parseString(text));
 				}
 				if(dcFieldName.equals(DC_PUBLISHER)){
 					reference.setPublisher(text);

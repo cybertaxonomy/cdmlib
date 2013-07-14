@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -372,7 +373,7 @@ public class IpniService  implements IIpniService{
 
 		
 		//dates
-		TimePeriod date = TimePeriod.parseString(valueMap.get(DATE));
+		TimePeriod date = TimePeriodParser.parseString(valueMap.get(DATE));
 		ref.setDatePublished(date);
 
 
@@ -452,7 +453,7 @@ public class IpniService  implements IIpniService{
 		//publication
 		Reference ref = ReferenceFactory.newGeneric();
 		ref.setTitleCache(valueMap.get(PUBLICATION));
-		TimePeriod datePublished = TimePeriod.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
+		TimePeriod datePublished = TimePeriodParser.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
 		name.setNomenclaturalReference(ref);
 		
 		//name status
@@ -489,7 +490,7 @@ public class IpniService  implements IIpniService{
 		
 		//gathering period
 		String collectionDateAsText = valueMap.get(COLLECTION_DATE_AS_TEXT);
-		TimePeriod gatheringPeriod = TimePeriod.parseString(collectionDateAsText);
+		TimePeriod gatheringPeriod = TimePeriodParser.parseString(collectionDateAsText);
 		
 		try {
 			gatheringPeriod.setStartDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY1));
@@ -678,7 +679,7 @@ public class IpniService  implements IIpniService{
 		person.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
 		
 		//dates
-		TimePeriod lifespan = TimePeriod.parseString(valueMap.get(DATES));
+		TimePeriod lifespan = TimePeriodParser.parseString(valueMap.get(DATES));
 		person.setLifespan(lifespan);
 		
 		//alternative_names

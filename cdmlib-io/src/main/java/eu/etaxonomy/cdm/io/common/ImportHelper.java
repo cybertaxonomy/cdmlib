@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  *
@@ -300,7 +301,7 @@ public class ImportHelper {
 	public static TimePeriod getDatePublished(String refYear){
 		TimePeriod resultNew;
 		try {
-			resultNew = TimePeriod.parseString(refYear);
+			resultNew = TimePeriodParser.parseString(refYear);
 		} catch (IllegalArgumentException e) {
 			logger.warn("RefYear could not be parsed: " + refYear);
 			resultNew = null;

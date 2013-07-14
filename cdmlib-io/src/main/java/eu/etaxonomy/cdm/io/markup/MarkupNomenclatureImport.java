@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NameTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -814,7 +815,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			}
 		}
 		reference.setVolume(volume);
-		reference.setDatePublished(TimePeriod.parseString(year));
+		reference.setDatePublished(TimePeriodParser.parseString(year));
 		// TODO check if this is handled correctly in FM markup
 		reference.setPages(pages);
 

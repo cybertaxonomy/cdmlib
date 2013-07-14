@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.babadshanjan
@@ -184,7 +185,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	 */
 	protected TimePeriod getTimePeriod(String start, String end) {
 		String strPeriod = CdmUtils.concat(" - ", start, end);
-		TimePeriod result = TimePeriod.parseString(strPeriod);
+		TimePeriod result = TimePeriodParser.parseString(strPeriod);
 		return result;
 	}
 
