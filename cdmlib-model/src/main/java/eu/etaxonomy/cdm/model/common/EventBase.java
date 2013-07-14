@@ -71,6 +71,9 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	 */
 	@Override
     public void setTimeperiod(TimePeriod timeperiod) {
+		if (timeperiod == null){
+			timeperiod = TimePeriod.NewInstance();
+		}
 		this.timeperiod = timeperiod;
 	}
 
