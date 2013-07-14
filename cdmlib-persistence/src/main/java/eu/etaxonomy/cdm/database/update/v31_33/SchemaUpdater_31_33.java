@@ -219,11 +219,22 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 //		had a bad performance
 		
 		//specimen descriptions #3571
-		//TODO add column DescriptionBase.Specimen_ID
+		//TODO add column DescriptionBase.Specimen_ID  #3571
+		stepName = "Add specimen_id column to DescriptionBase";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "specimen_id";
+		boolean notNull = false;
+		String referencedTable = "SpecimenOrObservationBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
 		
-		//TODO update DescriptionBase.Specimen_ID data
-		
-		//TODO remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)
+		//TODO update DescriptionBase.Specimen_ID data  #3571
+
+		//TODO remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)  #3571
+		stepName = "Remove table DescriptionBase_SpecimenOrObservationBase";
+		tableName = "DescriptionBase_SpecimenOrObservationBase";
+		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
 		
 		//TODO create table CdmPreferences  #3555
 		
@@ -238,11 +249,11 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO update molecular data #3340
 		
 		//add MediaSpecimen column #3614
-		stepName = "Add MediaSpecimen column to SpecimenOrObservationBase";
+		stepName = "Add mediaSpecimen column to SpecimenOrObservationBase";
 		tableName = "SpecimenOrObservationBase";
 		columnName = "mediaSpecimen_id";
-		boolean notNull = false;
-		String referencedTable = "Media";
+		notNull = false;
+		referencedTable = "Media";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
