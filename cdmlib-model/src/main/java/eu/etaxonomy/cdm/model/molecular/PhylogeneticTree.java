@@ -10,16 +10,12 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
-import eu.etaxonomy.cdm.model.media.Media;
+import java.util.HashSet;
+import java.util.Set;
 
-import org.apache.log4j.Logger;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
-
-import java.net.URI;
-import java.util.*;
-
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToMany;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -29,6 +25,12 @@ import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
+
+import org.apache.log4j.Logger;
+import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * @author m.doering

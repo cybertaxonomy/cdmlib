@@ -733,6 +733,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LanguageString.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LanguageStringBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Marker.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MarkerType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MaterialAndMethod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageTextHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/NoDefinedTermClassException.java -text
@@ -822,10 +823,15 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/MovieFile.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/Rights.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/RightsType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/package-info.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Amplification.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Cloning.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaSample.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Locus.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/PhylogeneticTree.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Primer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceDirection.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceString.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleSequence.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text
@@ -1032,6 +1038,7 @@ cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
+cdmlib-model/src/main/resources/terms/Marker.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/MeasurementUnit.csv -text
 cdmlib-model/src/main/resources/terms/Modifier.csv -text
@@ -1482,6 +1489,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailI
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_2.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/suite/TestsShouldNotFailInSuite_3.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/CleanSweepInsertLoadStrategy.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/DdlCreator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/unitils/FlatFullXmlWriter.java -text
 cdmlib-persistence/src/test/resources/META-INF/persistence_old.xml -text
 cdmlib-persistence/src/test/resources/c3p0-config.xml -text
@@ -1538,6 +1546,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaRepresentationPartDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/media/OregonScientificDS6639-DSC_0307-small.tif -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/molecular/MolecularHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/Blank.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.testSaveTypeDesignations-result.xml -text

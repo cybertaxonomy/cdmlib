@@ -104,7 +104,6 @@ import eu.etaxonomy.cdm.model.media.MovieFile;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -391,7 +390,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Rights.class, 
 				RightsType.class, 
 				DnaSample.class, 
-				Locus.class, 
 				PhylogeneticTree.class, 
 				Sequence.class, 
 				BacterialName.class, 

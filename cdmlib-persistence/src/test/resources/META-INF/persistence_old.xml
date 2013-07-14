@@ -85,10 +85,13 @@
         <class>eu.etaxonomy.cdm.model.media.Rights</class>
         <class>eu.etaxonomy.cdm.model.media.RightsType</class>
       <!-- Molecular Package -->
-        <class>eu.etaxonomy.cdm.model.molecular.DnaSample</class>
-        <class>eu.etaxonomy.cdm.model.molecular.Locus</class>
-        <class>eu.etaxonomy.cdm.model.molecular.PhylogeneticTree</class>
-        <class>eu.etaxonomy.cdm.model.molecular.Sequence</class>
+     	<class>eu.etaxonomy.cdm.model.molecular.DnaSample"</class>
+     	<class>eu.etaxonomy.cdm.model.molecular.Amplification"</class>
+      	<class>eu.etaxonomy.cdm.model.molecular.SingleSequence"</class>
+      	<class>eu.etaxonomy.cdm.model.molecular.Sequencing"</class>
+      	<class>eu.etaxonomy.cdm.model.molecular.Primer"</class>
+      	<class>eu.etaxonomy.cdm.model.molecular.PhylogeneticTree"</class>
+      	<class>eu.etaxonomy.cdm.model.molecular.Sequence"</class>
       <!-- Name Package -->
         <class>eu.etaxonomy.cdm.model.name.BacterialName</class>
         <class>eu.etaxonomy.cdm.model.name.BotanicalName</class>

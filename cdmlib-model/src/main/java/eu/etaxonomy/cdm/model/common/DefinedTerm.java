@@ -45,7 +45,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	private static final UUID uuidFemale = UUID.fromString("b4cfe0cb-b35c-4f97-9b6b-2b3c096ea2c0");
 	private static final UUID uuidHermaphrodite = UUID.fromString("0deddc65-2505-4c77-91a7-17d0de24afcc");
 	private static final UUID uuidUnknown = UUID.fromString("4f5e4c51-a664-48ad-8238-2e9f49eaf8dd");
-
+	
+	//Marker
+	private static final UUID uuidIts1 = UUID.fromString("3f2de4f6-d1a2-4c3a-be70-3c997ef92543");
+	
 	protected static Map<UUID, DefinedTerm> termMap = null;		
 	
 	
@@ -55,6 +58,11 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 		}else{
 			return (DefinedTerm)termMap.get(uuid);
 		}
+	}
+
+	
+	public static DefinedTerm NewInstance(TermType termType, String description, String label, String labelAbbrev){
+		return new DefinedTerm(termType, description, label, labelAbbrev);
 	}
 
 	
@@ -69,6 +77,15 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	public static DefinedTerm NewSexInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.Sex, description, label, labelAbbrev);
 	}
+	
+	public static DefinedTerm NewScopeInstance(String description, String label, String labelAbbrev){
+		return new DefinedTerm(TermType.Scope, description, label, labelAbbrev);
+	}
+
+	public static DefinedTerm NewDnaMarkerInstance(String description, String label, String labelAbbrev){
+		return new DefinedTerm(TermType.DnaMarker, description, label, labelAbbrev);
+	}
+	
 		
 //******************* CONSTRUCTOR ***********************************/
 
@@ -104,6 +121,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	
 	public static DefinedTerm SEX_UNKNOWN(){
 		return getTermByUuid(uuidUnknown);
+	}
+
+	public static DefinedTerm ITS1_MARKER(){
+		return getTermByUuid(uuidIts1);
 	}
 	
 	

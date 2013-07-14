@@ -7,19 +7,24 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest {
 
-   
+	private static final String MARKER_LABEL = "ITS1";
+
+	@SpringBeanByType
+    private IDefinedTermDao termDao;
     
 	@SpringBeanByType
     private IOccurrenceDao occurrenceDao;
@@ -41,23 +46,26 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 
 //**************** TESTS ************************************************	
 	
-	//Test if DnaSample can be loaded and if Sequence and Locus data can 
+	//Test if DnaSample can be loaded and if Sequence and Marker data can 
 	//be lazy loaded from database
 	//#3340
 	@Test
-	public void testLazyLoadSequenceLocus() {
+	@DataSet
+	public void testLazyLoadSequenceMarker() {
 		createTestData();
 		DnaSample sample1 = (DnaSample)occurrenceDao.findByUuid(uuidSample1);
 		Set<Sequence> sequences = sample1.getSequences();
 		
 		Sequence sequence = sequences.iterator().next();
-		Locus locus = sequence.getLocus();
-		Assert.assertEquals("Locus", locus.getName());
+		DefinedTerm marker = sequence.getMarker();
+		Assert.assertNotNull("Marker should not be null", marker);
+		Assert.assertEquals("Markers label should be 'Marker'",MARKER_LABEL, marker.getLabel());
 		
 		commit();
 	}
 	
 	@Test
+	@DataSet
 	public void testLoadUsedSequences() {
 		createTestData();
 		PhylogeneticTree phyloTree = (PhylogeneticTree)mediaDao.findByUuid(phyloTreeUuid);
@@ -78,17 +86,18 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 		sample.addSequence(sequence);
 		uuidSample1 = sample.getUuid();
 		
-		Locus locus = Locus.NewInstance("Locus", null);
-		sequence.setLocus(locus);
+		DefinedTerm marker = DefinedTerm.ITS1_MARKER();
+		Assert.assertNotNull("ITS1 marker must not be null", marker);
+		sequence.setMarker(marker);
 		
 		occurrenceDao.save(sample);
 		
 		PhylogeneticTree phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(sequence);
-		mediaDao.save(phyloTree);
+		mediaDao.saveOrUpdate(phyloTree);
 		phyloTreeUuid = phyloTree.getUuid();
 		
-		commitAndStartNewTransaction(new String[]{"DnaSample", "SpecimenOrObservationBase", "Locus"});
+		commitAndStartNewTransaction(new String[]{"SpecimenOrObservationBase"});
 	}
 	
 

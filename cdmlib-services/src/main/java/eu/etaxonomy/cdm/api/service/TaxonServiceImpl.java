@@ -74,8 +74,10 @@ import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleSequence;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -829,17 +831,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
 
                 // Collection
-                if (occurrence instanceof DerivedUnit) {
-                    if (((DerivedUnit) occurrence).getCollection() != null){
-                        taxonMedia.addAll(((DerivedUnit) occurrence).getCollection().getMedia());
+                //TODO why may collections have media attached? #
+                if (occurrence.isInstanceOf(DerivedUnit.class)) {
+                	DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    if (derivedUnit.getCollection() != null){
+                        taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
                 }
 
-                // Chromatograms
-                if (occurrence instanceof DnaSample) {
-                    Set<Sequence> sequences = ((DnaSample) occurrence).getSequences();
-                    for (Sequence sequence : sequences) {
-                        taxonMedia.addAll(sequence.getChromatograms());
+                // pherograms & gelPhotos
+                if (occurrence.isInstanceOf(DnaSample.class)) {
+                	DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
+                	Set<Sequence> sequences = dnaSample.getSequences();
+                	//we do show only those gelPhotos which lead to a consensus sequence
+                	for (Sequence sequence : sequences) {
+                		Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                    	for (SingleSequence singleSequence : sequence.getSingleSequences()){
+                    		Amplification amplification = singleSequence.getAmplification();
+                    		dnaRelatedMedia.add(amplification.getGelPhoto());
+                    		dnaRelatedMedia.add(singleSequence.getPherogram());
+                    		dnaRelatedMedia.remove(null);
+                    	}
+                    	taxonMedia.addAll(dnaRelatedMedia);
                     }
                 }
 

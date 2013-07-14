@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
-import eu.etaxonomy.cdm.model.molecular.Sequencing;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -368,7 +368,7 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
 	@XmlEnumValue("DeterminationModifier")
 	DeterminationModifier(UUID.fromString("ce910516-bc5d-4ac5-be4d-f3c14c27dd85"), "Determination modifier", "DMO", Modifier),
 
-	//34
+	//33
 	/**
 	 * A marker is a region on a DNA which is adressed in an {@link Amplification amplification process}.
 	 * It is very similar to a locus, a term which is often used as a synonym. However, a locus is correctly
@@ -491,7 +491,8 @@ public enum TermType implements IDefinedTerm<TermType>, Serializable{
 	
 	@Override
     public Set<TermType> getGeneralizationOf() {
-		return Collections.unmodifiableSet( children );
+//		return Collections.unmodifiableSet( children );   //TODO creates stack overflow
+		return new HashSet<TermType>(children);
 	}
 
 

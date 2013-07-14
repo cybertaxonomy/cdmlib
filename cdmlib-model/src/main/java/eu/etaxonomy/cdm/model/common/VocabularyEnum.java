@@ -88,7 +88,8 @@ public enum VocabularyEnum {
 	TextFormat("ac3926d2-5f6b-45a5-9cf9-be2a5a43f9b3", TextFormat.class),
 //	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
 	NaturalLanguageTerm("fdaba4b0-5c14-11df-a08a-0800200c9a66", NaturalLanguageTerm.class),
-	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", DefinedTerm.class)
+	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", DefinedTerm.class),
+	Marker("d219a463-1cc9-4800-b82f-3146d0afe31e", DefinedTerm.class)
 	;
 	
 	
