@@ -138,13 +138,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		//TODO update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference
 		//Rights, MediaRepresentationPart, GenBankAccession, ) #3345
-		
-		//TODO remove table Sequence_GenBankAccession
-		
-		//TODO remove table GenBankAccession
-		
-		//TODO add columns GenBankAccessionNumber(String) and GenBankUri (URI) to Sequence
-		
+				
 		//update Sicilia -> Sicily
 		//#3540
 		stepName = "Update Sicilia -> Sicily";
@@ -246,7 +240,22 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateSql);
 		stepList.add(step);
 		
-		//TODO update molecular data #3340
+		//remove table Sequence_GenBankAccession #3552
+		stepName = "Remove table Sequence_GenBankAccession";
+		tableName = "Sequence_GenBankAccession";
+		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//remove table GenBankAccession #3552
+		stepName = "Remove table GenBankAccession";
+		tableName = "GenBankAccession";
+		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//TODO (read first #3360) add columns GeneticAccessionNumber(String) to Sequence 
+
+		//TODO update molecular data #3360
+		
 		
 		//add MediaSpecimen column #3614
 		stepName = "Add mediaSpecimen column to SpecimenOrObservationBase";
@@ -259,7 +268,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//remove DescriptionBase_Feature  #2202
 		stepName = "Remove table DescriptionBase_Feature";
-		TableDroper.NewInstance(stepName, "DescriptionBase_Feature", INCLUDE_AUDIT);
+		tableName = "DescriptionBase_Feature";
+		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		return stepList;
