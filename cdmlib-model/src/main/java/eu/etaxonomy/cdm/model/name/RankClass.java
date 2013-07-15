@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * The rank class defines the category of ranks a certain rank belongs to. This information is
@@ -47,26 +46,47 @@ public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	@Deprecated Unknown(UUID.fromString("8c99ba63-2904-4dbb-87cb-3d3d7467e95d"), "Unknown rank class","UN", null),
 
 	//1
+	/**
+	 * Class of ranks higher than {@link Rank#GENUS()}
+	 */
 	@XmlEnumValue("Suprageneric")
 	Suprageneric(UUID.fromString("439a7897-9e0d-4560-b238-459d827f8a70"), "Suprageneric", "SG", null),
 	
 	//2
+	/**
+	 * Class of ranks equal to {@link Rank#GENUS()}. It is expected that there is only 1 such rank.
+	 */
 	@XmlEnumValue("Genus")
 	Genus(UUID.fromString("86de25dc-3594-462f-a716-6d008caf2662"), "Genus", "GE", null),
 
 	//3
+	/**
+	 * Class of ranks below {@link Rank#GENUS()} and above {@link Rank#SPECIES()}.
+	 * This class includes {@link #SpeciesGroup species groups}
+	 */
 	@XmlEnumValue("Infrageneric")
 	Infrageneric(UUID.fromString("37d5b535-3bf9-4749-af66-1a1c089dc0ae"), "Rank", "IG", null),	
 	
 	//4
+	/**
+	 * Class of ranks directly above {@link Rank#SPECIES()} which are used to group certain species
+	 * e.g. for better usability.
+	 * This class is part of the {@link #Infrageneric} class but different nomenclatural rules are applied.
+	 */
 	@XmlEnumValue("SpeciesGroup")
-	SpeciesGroup(UUID.fromString("702edcb7-ee53-45b7-8635-efcbbfd69bca"), "Species group or aggr.", "AG", null),
+	SpeciesGroup(UUID.fromString("702edcb7-ee53-45b7-8635-efcbbfd69bca"), "Species group or aggr.", "AG", Infrageneric),
 	
 	//5
+	/**
+	 * Class of ranks equal to {@link Rank#SPECIES()}. It is expected that there is only 1 such rank.
+	 */
 	@XmlEnumValue("Species")
 	Species(UUID.fromString("74cc173b-788e-4b01-9d70-a988498458b7"), "Species", "SP", null),
 	
 	//6
+	/**
+	 * Class of ranks lower than {@link Rank#SPECIES()}
+	 */
 	@XmlEnumValue("Infraspecific")
 	Infraspecific(UUID.fromString("25915b4c-7f07-442f-bdaa-9d0223f6be42"), "Infraspecific", "IS", null),
 

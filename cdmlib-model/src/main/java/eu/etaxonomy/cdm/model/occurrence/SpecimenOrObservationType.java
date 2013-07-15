@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 
 /**

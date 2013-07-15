@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  */
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
+	
 	//0
 	@XmlEnumValue("Article")
 	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", "ART", null, ArticleDefaultCacheStrategy.class),

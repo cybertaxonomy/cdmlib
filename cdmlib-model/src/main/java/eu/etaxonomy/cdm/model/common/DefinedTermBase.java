@@ -56,6 +56,7 @@ import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 
 
 /**
@@ -201,9 +202,8 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           this.kindOf = kindOf;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
-       */
+
+      @Override
       public Set<T> getGeneralizationOf(){
           return this.generalizationOf;
       }
@@ -212,9 +212,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           this.generalizationOf = value;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addGeneralizationOf(T)
-       */
       public void addGeneralizationOf(T generalization) {
           generalization.setKindOf(this);
           this.generalizationOf.add(generalization);
@@ -230,40 +227,40 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           }
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
-       */
+      @Override
       public T getPartOf(){
           return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setPartOf(T)
-       */
+      /**
+       * @see #getPartOf()
+      */
       public void setPartOf(T partOf){
           this.partOf = partOf;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
-       */
+      @Override
       public Set<T> getIncludes(){
           return this.includes;
       }
 
+      /**
+       * @see #getIncludes()
+      */
       protected void setIncludes(Set<T> includes) {
           this.includes = includes;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addIncludes(T)
+      /**
+       * @see #getIncludes()
        */
       public void addIncludes(T includes) {
           includes.setPartOf(this);
           this.includes.add(includes);
       }
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeIncludes(T)
+      
+      /**
+       * @see #getIncludes()
        */
       public void removeIncludes(T includes) {
           if(this.includes.contains(includes)) {
@@ -272,16 +269,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           }
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
-       */
+      @Override
       public Set<Media> getMedia(){
           return this.media;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#addMedia(eu.etaxonomy.cdm.model.media.Media)
-       */
       public void addMedia(Media media) {
           this.media.add(media);
       }
@@ -302,10 +294,35 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
        */
       protected void setVocabulary(TermVocabulary<T> newVocabulary) {
           this.vocabulary = newVocabulary;
-      }
+    }
 
 //******************************* METHODS ******************************************************/
    
+
+  	@Override
+  	public boolean isKindOf(T ancestor) {
+  		if (kindOf == null || ancestor == null){
+			return false;
+		}else if (kindOf.equals(ancestor)){
+			return true;
+		}else{
+			return kindOf.isKindOf(ancestor);
+		}
+  	}
+
+  	@Override
+  	public Set<T> getGeneralizationOf(boolean recursive) {
+  		Set<T> result = new HashSet<T>();
+		result.addAll(this.generalizationOf);
+		if (recursive){
+			for (T child : this.generalizationOf){
+				result.addAll(child.getGeneralizationOf());
+			}
+		}
+		return result;
+  	}
+  
+      
     
     public abstract void resetTerms();
 
