@@ -9,10 +9,34 @@
 */
 package eu.etaxonomy.cdm.api.application;
 
+import static org.junit.Assert.*;
+
+import java.util.Set;
+import java.util.UUID;
+
+
+import org.apache.log4j.Logger;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
+import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.INameService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.TaxonServiceImplTest;
+import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -27,6 +51,24 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
     private final String[] tableNames = new String[]{"USERACCOUNT", "USERACCOUNT_GRANTEDAUTHORITYIMPL", "GRANTEDAUTHORITYIMPL", "CDMMETADATA"};
 
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
+
+    @SpringBeanByType
+    private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private INameService nameService;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
+
+    @SpringBeanByType
+    private IClassificationService classificationService;
+    
+    @SpringBeanByType
+    private IDescriptionService descriptionService;
+    
     @Test
     @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
     @ExpectedDataSet(value="FirstDataInserterTest.testBlankDB-result.xml")
@@ -34,6 +76,30 @@ public class FirstDataInserterTest extends CdmTransactionalIntegrationTest {
 
         commitAndStartNewTransaction(null);
 //        printDataSet(System.err, tableNames);
+    }
+    
+    @Test
+    @DataSet(value="FirstDataInserterTest.testBlankDB.xml")
+    public void testInsertData(){
+    	commitAndStartNewTransaction(null);
+    	TaxonGenerator.getTestTaxon();
+    	Taxon newTaxon = 	TaxonGenerator.getTestTaxon();
+    	UUID taxonUUID = taxonService.save(newTaxon);
+    	
+    	
+    	TaxonDescription description = TaxonGenerator.getTestDescription();
+    	newTaxon.addDescription(description);
+    	Set<TaxonDescription> descriptions = newTaxon.getDescriptions();
+    	descriptionService.save(description);
+    	newTaxon = null;
+    	newTaxon = (Taxon)taxonService.find(taxonUUID);
+    	descriptions = newTaxon.getDescriptions();
+    	assertEquals(2, descriptions.size());
+    	
+    	
+    	
+    	
+    	
     }
 
 }

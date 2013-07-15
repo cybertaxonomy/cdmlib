@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -304,8 +305,18 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     protected void addTaxonNode(TaxonNode taxonNode){
         taxonNodes.add(taxonNode);
     }
-    protected void removeTaxonNode(TaxonNode taxonNode){
+    public void removeTaxonNode(TaxonNode taxonNode){
         taxonNodes.remove(taxonNode);
+    }
+    
+    public void removeTaxonNodes(){
+    	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
+    	TaxonNode node;
+    	while (nodesIterator.hasNext()){
+    		node = nodesIterator.next();
+    		node.setTaxon(null);
+    	}
+    	taxonNodes = null;
     }
 
 
@@ -420,6 +431,22 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return relationsToThisTaxon;
     }
     /**
+	 * Returns the set of all {@link TaxonRelationship taxon relationships}
+	 * between two taxa in which <i>this</i> taxon is involved either as a source or
+	 * as a target.
+	 *
+	 * @see    #getRelationsFromThisTaxon()
+	 * @see    #getRelationsToThisTaxon()
+	 */
+	@Transient
+	public Set<TaxonRelationship> getTaxonRelations() {
+	    Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
+	    rels.addAll(getRelationsToThisTaxon());
+	    rels.addAll(getRelationsFromThisTaxon());
+	    return rels;
+	}
+
+	/**
      * @see    #getRelationsToThisTaxon()
      */
     protected void setRelationsToThisTaxon(Set<TaxonRelationship> relationsToThisTaxon) {
@@ -431,22 +458,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
      */
     protected void setRelationsFromThisTaxon(Set<TaxonRelationship> relationsFromThisTaxon) {
         this.relationsFromThisTaxon = relationsFromThisTaxon;
-    }
-
-    /**
-     * Returns the set of all {@link TaxonRelationship taxon relationships}
-     * between two taxa in which <i>this</i> taxon is involved either as a source or
-     * as a target.
-     *
-     * @see    #getRelationsFromThisTaxon()
-     * @see    #getRelationsToThisTaxon()
-     */
-    @Transient
-    public Set<TaxonRelationship> getTaxonRelations() {
-        Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
-        rels.addAll(getRelationsToThisTaxon());
-        rels.addAll(getRelationsFromThisTaxon());
-        return rels;
     }
 
     /**

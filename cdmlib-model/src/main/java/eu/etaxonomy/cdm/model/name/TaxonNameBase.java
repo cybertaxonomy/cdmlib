@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -437,7 +438,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    				  #addNameRelationship(NameRelationship)
      */
     public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
-        fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
+        //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
+        NameRelationship rel = this.addRelationshipFromName(fromName, type, null, null, ruleConsidered);
+        
 //		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
     }
     /**
@@ -455,8 +458,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
-    public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
-        fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
+    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
+        return fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
     }
 
     /**
@@ -1300,7 +1303,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
         ReflectionUtils.makeAccessible(method);
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
-        taxonBases.remove(taxonBase);
+        Boolean test = null;
+        
+        if (taxonBases.contains(taxonBase)){
+        	 test = taxonBases.remove(taxonBase);
+        }
+        if (test != null){
+	       if (!test && !taxonBases.isEmpty()){
+		       HashSet<TaxonBase> copyTaxonBase = new HashSet<TaxonBase>();
+		       Iterator<TaxonBase> iterator = taxonBases.iterator();
+		       while (iterator.hasNext()){
+		    	   TaxonBase taxonBaseTest = iterator.next();
+		    	   if (taxonBaseTest.equals(taxonBase)){
+		    		   test = taxonBases.remove(taxonBaseTest);
+		    	   }
+		    	   
+		    	   
+		        }
+	       }
+        }
+        
+        
+       
+        
+        
+       
     }
 
     /**

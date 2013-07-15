@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
  * @date 09.11.2011
  *
  */
-public class TaxonDeletionConfigurator extends DeleteConfiguratorBase {
+public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDeletionConfigurator.class);
 
@@ -34,47 +34,37 @@ public class TaxonDeletionConfigurator extends DeleteConfiguratorBase {
 	
 	private boolean deleteSynonymsIfPossible = true;
 	
-	private boolean deleteNameIfPossible = true;
 	
-	private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
+	
+	private TaxonNodeDeletionConfigurator taxonNodeConfig = new TaxonNodeDeletionConfigurator();
 
-	private boolean deleteTaxonNodes = false;
 	
-	private boolean deleteTaxonRelationships = false; 
+	private boolean deleteTaxonNodes = true;
+	
+	private boolean deleteTaxonRelationships = true; 
 	
 	private boolean deleteDescriptions = true;
 	
 
+	
+
+
+	
 	/**
-	 * If true the taxons name will be deleted if this is possible.
-	 * It is possible if the name is not linked in a way that it can not be deleted.
-	 * This depends also on the {@link NameDeletionConfigurator}
-	 * @see #getNameDeletionConfig()
-	 * @return
-	 */
-	public boolean isDeleteNameIfPossible() {
-		return deleteNameIfPossible;
-	}
-
-	public void setDeleteNameIfPossible(boolean deleteNameIfPossible) {
-		this.deleteNameIfPossible = deleteNameIfPossible;
-	}
-
-
-	/**
-	 * The configurator for name deletion. Only evaluated if {@link #isDeleteNameIfPossible()}
+	 * The configurator for node deletion. Only evaluated if {@link #isDeleteNode()}
 	 * is <code>true</code>.
-	 * @see NameDeletionConfigurator
-	 * @see #isDeleteNameIfPossible()
+	 * @see TaxonNodeDeletionConfigurator
+	 * @see #isDeleteNode()
 	 * @see #isDeleteSynonymsIfPossible()
 	 * @return
 	 */
-	public NameDeletionConfigurator getNameDeletionConfig() {
-		return nameDeletionConfig;
+	
+	public TaxonNodeDeletionConfigurator getTaxonNodeConfig() {
+		return taxonNodeConfig;
 	}
 
-	public void setNameDeletionConfig(NameDeletionConfigurator nameDeletionConfig) {
-		this.nameDeletionConfig = nameDeletionConfig;
+	public void setTaxonNodeConfig(TaxonNodeDeletionConfigurator taxonNodeConfig) {
+		this.taxonNodeConfig = taxonNodeConfig;
 	}
 
 

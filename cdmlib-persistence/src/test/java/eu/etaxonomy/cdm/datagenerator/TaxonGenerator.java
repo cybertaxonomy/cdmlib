@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.datagenerator;
 
 import java.util.Random;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -23,14 +24,25 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public class TaxonGenerator {
 	private static String[] genera = {"Carex", "Abies", "Belladonna", "Dracula", "Maria", "Calendula", "Polygala", "Vincia"};
 	private static String[] epitheta = {"vulgaris", "magdalena", "officinalis", "alba", "negra", "communa", "alpina", "rotundifolia", "greutheriana", "helventica", "allemania", "franca"};
 	private static String[] ranks = {"subsp", "var", "f"}; 
+	
+	public static UUID GENUS_NAME_UUID = UUID.fromString("8d761fc4-b509-42f4-9568-244161934336");
+	public static UUID BASIONYM_UUID = UUID.fromString("7911c51d-ccb7-4708-8992-639eae58a0e3");
+	public static UUID SPECIES1_NAME_UUID = UUID.fromString("f0eb77d9-76e0-47f4-813f-9b5605b78685");
+	public static UUID SPECIES4_NAME_UUID = UUID.fromString("b9cbaa74-dbe0-4930-8050-b7754ce85dc0");
+	public static UUID SPECIES2_NAME_UUID = UUID.fromString("0267ab67-483e-4da5-b654-11013b242c22");
+	public static UUID SPECIES3_NAME_UUID = UUID.fromString("7c17c811-4201-454b-8108-7be7c91c0938");
+	public static UUID SPECIES5_NAME_UUID = UUID.fromString("0c6ecaac-804d-49e5-a33f-1b7ee77439e3");
+	
 	
 	private Random rnd = new Random();
 
@@ -48,13 +60,16 @@ public class TaxonGenerator {
         botName.setGenusOrUninomial("Hieracium"); 
         botName.setCombinationAuthorTeam(Person.NewInstance()); 
         botName.getCombinationAuthorTeam().setNomenclaturalTitle("L."); 
+        botName.setUuid(GENUS_NAME_UUID);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec); 
+        genusTaxon.setUuid(UUID.fromString("bf4298a8-1735-4353-a210-244442e1bd62"));
                         
         //a name that is the basionym of genusTaxon's name
         BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS()); 
         basionym.setTitleCache("Hieracilla DC.", true); 
         basionym.setGenusOrUninomial("Hieracilla"); 
         basionym.setCombinationAuthorTeam(deCandolle); 
+        basionym.setUuid(BASIONYM_UUID);
         botName.addBasionym(basionym, null, null,"216");
         
         //species taxon that is the child of genus taxon
@@ -64,8 +79,12 @@ public class TaxonGenerator {
         botSpecies.setSpecificEpithet("asturianum"); 
         botSpecies.setCombinationAuthorTeam(Person.NewInstance()); 
         botSpecies.getCombinationAuthorTeam().setNomenclaturalTitle("Pau"); 
+        botSpecies.setUuid(UUID.fromString("efd78713-126f-42e1-9070-a1ff83f12abf"));
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec); 
-        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456"); 
+        childTaxon.setUuid(SPECIES1_NAME_UUID);
+        Classification classification = getTestClassification("TestClassification");
+        classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
+//        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456"); 
  
         //homotypic synonym of childTaxon1
         BotanicalName botSpecies4= BotanicalName.NewInstance(Rank.SPECIES()); 
@@ -73,6 +92,7 @@ public class TaxonGenerator {
         botSpecies4.setGenusOrUninomial("Hieracium"); 
         botSpecies4.setSpecificEpithet("gueri"); 
         botSpecies4.setCombinationAuthorTeam(deCandolle); 
+        botSpecies4.setUuid(SPECIES4_NAME_UUID);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec); 
         childTaxon.addSynonym(homoSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 
@@ -84,8 +104,11 @@ public class TaxonGenerator {
         botSpecies2.setSpecificEpithet("wolffii"); 
         botSpecies2.setCombinationAuthorTeam(Person.NewInstance()); 
         botSpecies2.getCombinationAuthorTeam().setNomenclaturalTitle("Zahn"); 
+        botSpecies2.setUuid(SPECIES2_NAME_UUID);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec); 
-        childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499"); 
+        childTaxon2.setUuid(UUID.fromString("e20eb549-ced6-4e79-9d74-44f0792a4929"));
+        classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
+        //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499"); 
         
         //heterotypic synonym of childTaxon2
         BotanicalName botSpecies3= BotanicalName.NewInstance(Rank.SPECIES()); 
@@ -93,6 +116,7 @@ public class TaxonGenerator {
         botSpecies3.setGenusOrUninomial("Hieracium"); 
         botSpecies3.setSpecificEpithet("lupium"); 
         botSpecies3.setCombinationAuthorTeam(deCandolle); 
+        botSpecies3.setUuid(SPECIES3_NAME_UUID);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec); 
         childTaxon2.addSynonym(heteroSynonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 
@@ -102,6 +126,7 @@ public class TaxonGenerator {
         missName.setGenusOrUninomial("Hieracium"); 
         missName.setSpecificEpithet("lupium"); 
         missName.setCombinationAuthorTeam(deCandolle); 
+        missName.setUuid(SPECIES5_NAME_UUID);
         Taxon misappliedName = Taxon.NewInstance(missName, sec); 
         childTaxon2.addMisappliedName(misappliedName, citationRef, "125");
        
@@ -122,10 +147,15 @@ public class TaxonGenerator {
 		taxonDescription.addElement(textData);
 		
 		//commonName
+		
 		String commonNameString = "Schönveilchen";
 		CommonTaxonName commonName = CommonTaxonName.NewInstance(commonNameString, language);
 		taxonDescription.addElement(commonName);
 		
 		return taxonDescription;
+	}
+	
+	public static Classification getTestClassification(String name){
+		return Classification.NewInstance(name);
 	}
 }

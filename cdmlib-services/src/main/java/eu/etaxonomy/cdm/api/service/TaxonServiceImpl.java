@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +34,8 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonBaseDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -258,6 +261,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Transactional(readOnly = false)
     public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException{
 
+    	
+    	//TODO, check whether the synonym is related to the accepted taxon or not (see java doc)
         TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
         TaxonNameBase<?,?> synonymName = synonym.getName();
         HomotypicalGroup synonymHomotypicGroup = synonymName.getHomotypicalGroup();
@@ -288,7 +293,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 //			deleteSynonym(synonym, taxon, false);
             try {
                 this.dao.flush();
-                this.delete(synonym);
+                this.deleteSynonym(synonym, new SynonymDeletionConfigurator());
 
             } catch (Exception e) {
                 logger.info("Can't delete old synonym from database");
@@ -907,7 +912,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
      */
     @Override
-    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException {
+    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws ReferencedObjectUndeletableException {
         if (config == null){
             config = new TaxonDeletionConfigurator();
         }
@@ -918,6 +923,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion.";
                     throw new ReferencedObjectUndeletableException(message);
                 }
+            }else{
+            	Set<TaxonNode> nodes = taxon.getTaxonNodes();
+            	Iterator<TaxonNode> iterator = nodes.iterator();
+            	TaxonNode node;
+            	if (config.getTaxonNodeConfig().isDeleteInAllClassifications()){
+	            	taxon.removeTaxonNodes();
+            	}else {
+            		while (iterator.hasNext()){
+	            		node = iterator.next();
+	            		if (node.getClassification().equals(classification)){
+	            			node.delete();
+	            			return;
+	            		}
+	            	}
+            	}
+            	
+            	
             }
 
 
@@ -930,7 +952,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if (config.isDeleteSynonymsIfPossible()){
                         //TODO which value
                         boolean newHomotypicGroupIfNeeded = true;
-                        deleteSynonym(synonym, taxon, config.isDeleteNameIfPossible(), newHomotypicGroupIfNeeded);
+                        SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
+                        
+                        deleteSynonym(synonym, taxon, synConfig);
                     }else{
                         deleteSynonymRelationships(synonym, taxon);
                     }
@@ -946,22 +970,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
 
 
-            //    	TaxonDescription
-                    Set<TaxonDescription> descriptions = taxon.getDescriptions();
-
-                    for (TaxonDescription desc: descriptions){
-                        if (config.isDeleteDescriptions()){
-                            //TODO use description delete configurator ?
-                            //FIXME check if description is ALWAYS deletable
-                            descriptionService.delete(desc);
-                        }else{
-                            if (desc.getDescribedSpecimenOrObservations().size()>0){
-                                String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-                                        " which also describes specimens or abservations";
-                                    throw new ReferencedObjectUndeletableException(message);
-                                }
-                            }
-                        }
+            
+                   
 
 
                 //check references with only reverse mapping
@@ -992,21 +1002,55 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
                 try {
+                	TaxonNameBase name = nameService.find(taxon.getName().getUuid());
+                	               	
+                	nameService.save(name);
                     nameService.delete(taxon.getName(), config.getNameDeletionConfig());
                 } catch (ReferencedObjectUndeletableException e) {
                     //do nothing
                     if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
                 }
             }
+            
+//        	TaxonDescription
+            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+
+            for (TaxonDescription desc: descriptions){
+                if (config.isDeleteDescriptions()){
+                    //TODO use description delete configurator ?
+                    //FIXME check if description is ALWAYS deletable
+                	taxon.removeDescription(desc);
+                    descriptionService.delete(desc);
+                }else{
+                    if (desc.getDescribedSpecimenOrObservations().size()>0){
+                        String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
+                                " which also describes specimens or abservations";
+                            throw new ReferencedObjectUndeletableException(message);
+                        }
+                    }
+                }
+            dao.delete(taxon);
+            
 
     }
 
-    /* (non-Javadoc)
+	/* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
      */
     @Transactional(readOnly = false)
     @Override
-    public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible,boolean newHomotypicGroupIfNeeded) {
+	public void deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config) {
+		deleteSynonym(synonym, null, config);
+		
+	}
+    
+
+	/* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public void deleteSynonym(Synonym synonym, Taxon taxon, SynonymDeletionConfigurator config) {
         if (synonym == null){
             return;
         }
@@ -1021,22 +1065,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         for (Taxon relatedTaxon : taxonSet){
 //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
-            relatedTaxon.removeSynonym(synonym, newHomotypicGroupIfNeeded);
+            relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
         }
         this.saveOrUpdate(synonym);
 
         //TODO remove name from homotypical group?
 
         //remove synonym (if necessary)
+        
+        
         if (synonym.getSynonymRelations().isEmpty()){
             TaxonNameBase<?,?> name = synonym.getName();
             synonym.setName(null);
             dao.delete(synonym);
 
             //remove name if possible (and required)
-            if (name != null && removeNameIfPossible){
+            if (name != null && config.isDeleteNameIfPossible()){
                 try{
-                    nameService.delete(name, new NameDeletionConfigurator());
+                    nameService.delete(name, config.getNameDeletionConfig());
                 }catch (DataChangeNoRollbackException ex){
                     if (logger.isDebugEnabled()) {
                         logger.debug("Name wasn't deleted as it is referenced");
@@ -2224,6 +2270,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         list.addAll(classifications);
         return list;
     }
+
+	
 
 
 
