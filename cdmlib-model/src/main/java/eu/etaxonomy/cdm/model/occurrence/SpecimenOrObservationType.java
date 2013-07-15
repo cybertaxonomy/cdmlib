@@ -11,19 +11,16 @@
 package eu.etaxonomy.cdm.model.occurrence;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.ISimpleTerm;
+import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 
 
@@ -41,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @created 27.06.2013
  */
 @XmlEnum
-public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservationType>, Serializable{
+public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservationType>, Serializable{
 	
 	//0
 	/**
@@ -50,7 +47,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * use "DerivedUnit", "Observation" or "OtherSpecimen" instead.
 	 */
 	@XmlEnumValue("Unknown")
-	Unknown(UUID.fromString("971a0c72-d4d2-4e41-8520-c9a87df34f48"), "Unknown term type","UN"),
+	Unknown(UUID.fromString("971a0c72-d4d2-4e41-8520-c9a87df34f48"), "Unknown term type","UN", null),
 
 	//1
 	/**
@@ -65,7 +62,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * from a fossil.
 	 */
 	@XmlEnumValue("FossilSpecimen")
-	Fossil(UUID.fromString("1b0f8534-35eb-4c64-8e53-69e734043bd6"), "Fossil Specimen", "FS"),
+	Fossil(UUID.fromString("1b0f8534-35eb-4c64-8e53-69e734043bd6"), "Fossil Specimen", "FS", PreservedSpecimen),
 
 	//3
 	/**
@@ -90,7 +87,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * Derived from the former (before v3.3.) CDM class "DerivedUnit".  
 	 */
 	@XmlEnumValue("DerivedUnit")
-	DerivedUnit(UUID.fromString("da80443a-360b-4861-abeb-21e13beb5186"), "Derived Unit", "DU"),
+	DerivedUnit(UUID.fromString("da80443a-360b-4861-abeb-21e13beb5186"), "Derived Unit", "DU", null),
 
 	//6
 	/**
@@ -98,7 +95,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * Derived from the former (before v3.3) CDM class "Observation".
 	 */
 	@XmlEnumValue("Observation")
-	Observation(UUID.fromString("a8a254f1-7bed-47ec-bbee-86a794819c3b"), "Observation", "OB"),
+	Observation(UUID.fromString("a8a254f1-7bed-47ec-bbee-86a794819c3b"), "Observation", "OB", DerivedUnit),
 
 	//7
 	/**
@@ -106,7 +103,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * Specification of "Observation".
 	 */
 	@XmlEnumValue("HumanObservation")
-	HumanObservation(UUID.fromString("b960c06d-4bfc-4bea-bc53-aec0600409b1"), "HumanObservation", "HO"),
+	HumanObservation(UUID.fromString("b960c06d-4bfc-4bea-bc53-aec0600409b1"), "HumanObservation", "HO", Observation),
 
 	//8
 	/**
@@ -114,7 +111,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * Specification of "Observation".
 	 */
 	@XmlEnumValue("MachineObservation")
-	MachineObservation(UUID.fromString("b12a13fc-0f61-4055-b9b7-4eabd417c54c"), "MachineObservation", "MO"),
+	MachineObservation(UUID.fromString("b12a13fc-0f61-4055-b9b7-4eabd417c54c"), "MachineObservation", "MO", Observation),
 
 //	
 //	//10
@@ -128,7 +125,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * One should try to use a specification instead of using the general type Media.
 	 */
 	@XmlEnumValue("Media")
-	Media(UUID.fromString("0efa6b3e-e67a-49d4-a758-f3fc688901a7"), "Media", "ME"),
+	Media(UUID.fromString("0efa6b3e-e67a-49d4-a758-f3fc688901a7"), "Media", "ME", null),
 
 	
 	//10
@@ -136,7 +133,7 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * A photograph, drawing, painting or similar.
 	 */
 	@XmlEnumValue("StillImage")
-	StillImage(UUID.fromString("a8d9ada5-7f22-4fcf-8693-ae68d527289b"), "Still Image", "SI"),
+	StillImage(UUID.fromString("a8d9ada5-7f22-4fcf-8693-ae68d527289b"), "Still Image", "SI", Media),
 
 	//11
 	/**
@@ -144,21 +141,21 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	 * may include sound.
 	 */
 	@XmlEnumValue("MovingImage")
-	MovingImage(UUID.fromString("56722418-9398-4367-afa1-46982fb93959"), "Moving Image", "MI"),
+	MovingImage(UUID.fromString("56722418-9398-4367-afa1-46982fb93959"), "Moving Image", "MI", Media),
 
 	//12
 	/**
 	 * An audio recording.
 	 */
 	@XmlEnumValue("SoundRecording")
-	SoundRecording(UUID.fromString("2a39ec19-4aae-4b74-bc5c-578c5dc94e7d"), "Moving Image", "SR"),
+	SoundRecording(UUID.fromString("2a39ec19-4aae-4b74-bc5c-578c5dc94e7d"), "Moving Image", "SR", Media),
 
 	//13
 	/**
 	 * Any multi media object which is not covered by DrawingOrPhoto, MovingImage or SoundRecording.
 	 */
 	@XmlEnumValue("Multimedia")
-	Multimedia(UUID.fromString("bfe3fef8-d294-4554-847a-c9d8a6b74313"), "Multimedia Object", "MM"),
+	Multimedia(UUID.fromString("bfe3fef8-d294-4554-847a-c9d8a6b74313"), "Multimedia Object", "MM", Media),
 	
 	//14
 	/**
@@ -168,41 +165,23 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 	//TODO do we really need an own type for FieldUnit or is this covered by any of the other 
 	//types (e.g. Observation)
 	@XmlEnumValue("FieldUnit")
-	FieldUnit(UUID.fromString("d38d22db-17f9-45ba-a32f-32393788726f"), "Field Unit", "FU"),	
+	FieldUnit(UUID.fromString("d38d22db-17f9-45ba-a32f-32393788726f"), "Field Unit", "FU", null),	
 	;
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationType.class);
 
-	private String readableString;
-	private UUID uuid;
-	private String key;
-	private static final Map<String,SpecimenOrObservationType> lookup = new HashMap<String, SpecimenOrObservationType>();
-
-	static {
-		for (SpecimenOrObservationType t : SpecimenOrObservationType.values()){
-			if (lookup.containsKey(t.key)){
-				String message = "Key must be unique in %s but was not for %s";
-				throw new RuntimeException(String.format(message, Unknown.getClass().getName(), t.key));
-			}
-			lookup.put(t.key, t);
-		}
-	}
 	
 	private SpecimenOrObservationType(UUID uuid, String defaultString, String key){
-		this.uuid = uuid;
-		readableString = defaultString;
-		this.key = key;
-	}
-
-	public String getKey(){
-		return key;
+		this(uuid, defaultString, key, null);
+		System.out.println("SpecimenOrObservationType hierarchie not yet fully implemented");
 	}
 	
-	public static SpecimenOrObservationType byKey(String key){
-		return lookup.get(key);
+	private SpecimenOrObservationType(UUID uuid, String defaultString, String key, SpecimenOrObservationType parent){
+		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
+	
 	public boolean isFeatureObservation() {
 		if (this == Observation || this == HumanObservation || this == MachineObservation 
 			){
@@ -265,18 +244,6 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 		}
 	}	
 
-	
-	
-	@Transient
-	public String getMessage(){
-		return getMessage(Language.DEFAULT());
-	}
-	public String getMessage(Language language){
-		//TODO make multi-lingual
-		return readableString;
-	}
-	
-
 	/**
 	 * This method was initially created in the former class
 	 * "DerivedUnitFacade.DerivedUnitType" for some specimen imports .
@@ -307,33 +274,41 @@ public enum SpecimenOrObservationType implements ISimpleTerm<SpecimenOrObservati
 		}
 		return null;
 	}
+	
+	// *************************** DELEGATE **************************************/	
+	
+		private static EnumeratedTermVoc<SpecimenOrObservationType> delegateVoc;
+		private IEnumTerm<SpecimenOrObservationType> delegateVocTerm;
 
-
-	@Override
-    public UUID getUuid() {
-		return this.uuid;
-	}
-
-
-	@Override
-    public SpecimenOrObservationType getByUuid(UUID uuid) {
-		for (SpecimenOrObservationType type : SpecimenOrObservationType.values()){
-			if (type.getUuid().equals(uuid)){
-				return type;
-			}
+		static {
+			delegateVoc = EnumeratedTermVoc.getVoc(SpecimenOrObservationType.class);
 		}
-		return null;
-	}
+		
+		@Override
+		public String getKey(){return delegateVocTerm.getKey();}
+		
+		@Override
+	    public String getMessage(){return delegateVocTerm.getMessage();}
+
+		@Override
+	    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+
+		@Override
+		public String getReadableString() {return delegateVocTerm.getReadableString();}
+			
+		@Override
+	    public UUID getUuid() {return delegateVocTerm.getUuid();}
+
+		@Override
+	    public SpecimenOrObservationType getKindOf() {return delegateVocTerm.getKindOf();}
+		
+		@Override
+	    public Set<SpecimenOrObservationType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+		public static SpecimenOrObservationType getByKey(String key){return delegateVoc.getByKey(key);}
+	    public static SpecimenOrObservationType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 
-	@Override
-    public SpecimenOrObservationType getKindOf() {
-		return null;
-	}
 
 
-	@Override
-    public Set<SpecimenOrObservationType> getGeneralizationOf() {
-		return new HashSet<SpecimenOrObservationType>();
-	}
 }

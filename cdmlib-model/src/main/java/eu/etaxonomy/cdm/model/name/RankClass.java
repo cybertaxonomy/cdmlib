@@ -11,19 +11,17 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlEnum;
 import javax.xml.bind.annotation.XmlEnumValue;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.ISimpleTerm;
+import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.common.IEnumTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * The rank class defines the category of ranks a certain rank belongs to. This information is
@@ -36,7 +34,7 @@ import eu.etaxonomy.cdm.model.common.ISimpleTerm;
  * @created 11.06.2013
  */
 @XmlEnum
-public enum RankClass implements ISimpleTerm<RankClass>, Serializable{
+public enum RankClass implements IEnumTerm<RankClass>, Serializable{
 	
 	//0
 	/**
@@ -45,31 +43,31 @@ public enum RankClass implements ISimpleTerm<RankClass>, Serializable{
 	 * we find an appropriate usage in future and in case one needs a short term dummy.
 	 */
 	@XmlEnumValue("Unknown")
-	@Deprecated Unknown(UUID.fromString("8c99ba63-2904-4dbb-87cb-3d3d7467e95d"), "Unknown rank class","UN"),
+	@Deprecated Unknown(UUID.fromString("8c99ba63-2904-4dbb-87cb-3d3d7467e95d"), "Unknown rank class","UN", null),
 
 	//1
 	@XmlEnumValue("Suprageneric")
-	Suprageneric(UUID.fromString("439a7897-9e0d-4560-b238-459d827f8a70"), "Suprageneric", "SG"),
+	Suprageneric(UUID.fromString("439a7897-9e0d-4560-b238-459d827f8a70"), "Suprageneric", "SG", null),
 	
 	//2
 	@XmlEnumValue("Genus")
-	Genus(UUID.fromString("86de25dc-3594-462f-a716-6d008caf2662"), "Genus", "GE"),
+	Genus(UUID.fromString("86de25dc-3594-462f-a716-6d008caf2662"), "Genus", "GE", null),
 
 	//3
 	@XmlEnumValue("Infrageneric")
-	Infrageneric(UUID.fromString("37d5b535-3bf9-4749-af66-1a1c089dc0ae"), "Rank", "IG"),	
+	Infrageneric(UUID.fromString("37d5b535-3bf9-4749-af66-1a1c089dc0ae"), "Rank", "IG", null),	
 	
 	//4
 	@XmlEnumValue("SpeciesGroup")
-	SpeciesGroup(UUID.fromString("702edcb7-ee53-45b7-8635-efcbbfd69bca"), "Species group or aggr.", "AG"),
+	SpeciesGroup(UUID.fromString("702edcb7-ee53-45b7-8635-efcbbfd69bca"), "Species group or aggr.", "AG", null),
 	
 	//5
 	@XmlEnumValue("Species")
-	Species(UUID.fromString("74cc173b-788e-4b01-9d70-a988498458b7"), "Species", "SP"),
+	Species(UUID.fromString("74cc173b-788e-4b01-9d70-a988498458b7"), "Species", "SP", null),
 	
 	//6
 	@XmlEnumValue("Infraspecific")
-	Infraspecific(UUID.fromString("25915b4c-7f07-442f-bdaa-9d0223f6be42"), "Infraspecific", "IS"),
+	Infraspecific(UUID.fromString("25915b4c-7f07-442f-bdaa-9d0223f6be42"), "Infraspecific", "IS", null),
 
 	;
 	
@@ -77,70 +75,44 @@ public enum RankClass implements ISimpleTerm<RankClass>, Serializable{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RankClass.class);
 
-	private String readableString;
-	private UUID uuid;
-	private String key;
-	private static final Map<String,RankClass> lookup = new HashMap<String, RankClass>();
+
+	
+	private RankClass(UUID uuid, String defaultString, String key, RankClass parent){
+		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
+	}
+	
+// *************************** DELEGATE **************************************/	
+
+	private static EnumeratedTermVoc<RankClass> delegateVoc;
+	private IEnumTerm<RankClass> delegateVocTerm;
 
 	static {
-		for (RankClass t : RankClass.values()){
-			if (lookup.containsKey(t.key)){
-				throw new RuntimeException("Key must be unique in rank class but was not for " + t.key);
-			}
-			lookup.put(t.key, t);
-		}
+		delegateVoc = EnumeratedTermVoc.getVoc(RankClass.class);
 	}
 	
-	private RankClass(UUID uuid, String defaultString, String key){
-		this.uuid = uuid;
-		readableString = defaultString;
-		this.key = key;
-	}
-
-	public String getKey(){
-		return key;
-	}
+	@Override
+	public String getKey(){return delegateVocTerm.getKey();}
 	
-	public static RankClass byKey(String key){
-		return lookup.get(key);
-	}
+	@Override
+    public String getMessage(){return delegateVocTerm.getMessage();}
+
+	@Override
+    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+
+	@Override
+	public String getReadableString() {return delegateVocTerm.getReadableString();}
+		
+	@Override
+    public UUID getUuid() {return delegateVocTerm.getUuid();}
+
+	@Override
+    public RankClass getKindOf() {return delegateVocTerm.getKindOf();}
 	
-	
-	@Transient
-	public String getMessage(){
-		return getMessage(eu.etaxonomy.cdm.model.common.Language.DEFAULT());
-	}
-	public String getMessage(eu.etaxonomy.cdm.model.common.Language language){
-		//TODO make multi-lingual
-		return readableString;
-	}
-
-
 	@Override
-    public UUID getUuid() {
-		return this.uuid;
-	}
+    public Set<RankClass> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+	public static RankClass getByKey(String key){return delegateVoc.getByKey(key);}
+    public static RankClass getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 
-	@Override
-    public RankClass getByUuid(UUID uuid) {
-		for (RankClass type : RankClass.values()){
-			if (type.getUuid().equals(uuid)){
-				return type;
-			}
-		}
-		return null;
-	}
-
-
-	@Override
-    public RankClass getKindOf() {
-		return null;
-	}
-
-
-	@Override
-    public Set<RankClass> getGeneralizationOf() {
-		return new HashSet<RankClass>();
-	}
 }

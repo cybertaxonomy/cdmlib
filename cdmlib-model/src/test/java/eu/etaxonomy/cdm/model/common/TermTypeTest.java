@@ -18,7 +18,7 @@ public class TermTypeTest {
 	@Test
 	public void test() {
 		TermType languageType = TermType.Language;
-		assertEquals(TermType.byKey("LA"), languageType);
+		assertEquals(TermType.getByKey("LA"), languageType);
 	}
 	
 	@Test

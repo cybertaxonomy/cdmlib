@@ -21,7 +21,11 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.ISimpleTerm;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
@@ -44,7 +48,7 @@ import eu.etaxonomy.cdm.model.common.ISimpleTerm;
 
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
-public enum NomenclaturalCode implements ISimpleTerm<NomenclaturalCode>, Serializable {
+public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializable {
 	//0
 	/**
 	 * International Code of Nomenclature of Bacteria
@@ -82,34 +86,22 @@ public enum NomenclaturalCode implements ISimpleTerm<NomenclaturalCode>, Seriali
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 	
-	private UUID uuid;
-
-	private String titleCache;
-	
 	public String getTitleCache() {
-		return titleCache;
+		return getReadableString();
 	}
 	
 	private NomenclaturalCode(UUID uuid, String titleCache){
-		this.uuid = uuid;
-		this.titleCache = titleCache;
+		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
 	}
 	
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getUuid()
-	 */
-	public UUID getUuid(){
-		return this.uuid;
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Enum#toString()
 	 */
 	@Override
 	public String toString() {
-		return "NomenclaturalCode" + " <" + uuid + "> " + this.name();
+		return "NomenclaturalCode" + " <" + getUuid() + "> " + this.name();
 	}
 
 	public static NomenclaturalCode fromString(String string){
@@ -121,30 +113,6 @@ public enum NomenclaturalCode implements ISimpleTerm<NomenclaturalCode>, Seriali
 		if ("ICBN".equals(string)){ //former name of the ICNAFP
 			return ICNAFP;
 		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
-	 */
-	@Override
-	public NomenclaturalCode getByUuid(UUID uuid) {
-		for (NomenclaturalCode nomCode : NomenclaturalCode.values()){
-			if (nomCode.getUuid().equals(uuid)){
-				return nomCode;
-			}
-		}
-		return null;
-	}
-
-	@Override
-	public Set<NomenclaturalCode> getGeneralizationOf() {
-		return new HashSet<NomenclaturalCode>();
-	}
-
-
-	@Override
-	public NomenclaturalCode getKindOf() {
 		return null;
 	}
 
@@ -255,5 +223,39 @@ public enum NomenclaturalCode implements ISimpleTerm<NomenclaturalCode>, Seriali
 			return "synonym";
 		}
 	}
+
+// *************************** DELEGATE **************************************/	
+	
+	private static EnumeratedTermVoc<NomenclaturalCode> delegateVoc;
+	private IEnumTerm<NomenclaturalCode> delegateVocTerm;
+
+	static {
+		delegateVoc = EnumeratedTermVoc.getVoc(NomenclaturalCode.class);
+	}
+	
+	@Override
+	public String getKey(){return delegateVocTerm.getKey();}
+	
+	@Override
+    public String getMessage(){return delegateVocTerm.getMessage();}
+
+	@Override
+    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+
+	@Override
+	public String getReadableString() {return delegateVocTerm.getReadableString();}
+		
+	@Override
+    public UUID getUuid() {return delegateVocTerm.getUuid();}
+
+	@Override
+    public NomenclaturalCode getKindOf() {return delegateVocTerm.getKindOf();}
+	
+	@Override
+    public Set<NomenclaturalCode> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+	public static NomenclaturalCode getByKey(String key){return delegateVoc.getByKey(key);}
+    public static NomenclaturalCode getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+	
 	
 }

@@ -20,7 +20,8 @@ public interface ISimpleTerm<T extends ISimpleTerm> {
 	@Transient
 	public UUID getUuid();
 	
-	public T getByUuid(UUID uuid);
+	//is static !!
+//	public T getByUuid(UUID uuid);
 
 
 	/**

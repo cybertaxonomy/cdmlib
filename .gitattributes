@@ -704,6 +704,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Credit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTermBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/EnumeratedTermVoc.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/EventBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Extension.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ExtensionType.java -text
@@ -712,6 +713,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Group.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IAnnotatableEntity.java -text svneol=unset#text/plain
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ICdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IDefinedTerm.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEnumTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IIdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ILoadableTerm.java -text

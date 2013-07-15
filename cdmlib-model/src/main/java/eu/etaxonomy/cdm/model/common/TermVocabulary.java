@@ -183,7 +183,7 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		//preliminary until above is solved
 		this.setTitleCache(label, true);
 		
-		this.setTermType(TermType.byKey(csvLine.get(4)));
+		this.setTermType(TermType.getByKey(csvLine.get(4)));
 		
 		return this;
 	}
