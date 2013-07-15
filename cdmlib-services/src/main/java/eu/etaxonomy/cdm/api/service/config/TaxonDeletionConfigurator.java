@@ -45,6 +45,19 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 	
 	private boolean deleteDescriptions = true;
 	
+	private boolean deleteInAllClassifications = true;
+
+
+	public boolean isDeleteInAllClassifications() {
+		return deleteInAllClassifications;
+	}
+
+
+	public void setDeleteInAllClassifications(boolean deleteInAllClassifications) {
+		this.deleteInAllClassifications = deleteInAllClassifications;
+	}
+
+	
 
 	
 

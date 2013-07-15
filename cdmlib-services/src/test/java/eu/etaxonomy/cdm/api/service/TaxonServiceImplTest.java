@@ -29,6 +29,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
@@ -1057,7 +1058,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		assertNull(tax);
 		Taxon childTaxon = (Taxon)service.find(childUUID);
 		assertNull(tax);
-		
+		commitAndStartNewTransaction(null);
 		
 		
 		
@@ -1069,31 +1070,109 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 	@DataSet(value="BlankDataSet.xml")
 	public final void testDeleteTaxonNameUsedInTwoClassificationsDoNotDeleteAllNodes(){
 		// delete the taxon only in second classification, this should delete only the nodes, not the taxa
-				Taxon testTaxon = TaxonGenerator.getTestTaxon();
-				UUID uuid = service.save(testTaxon);
-				Classification secondClassification = TaxonGenerator.getTestClassification("secondClassification");
-				Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
-				TaxonNode node = nodes.iterator().next();
-				Set<TaxonNode> childNodes = node.getChildNodes();
-				TaxonNode childNode = childNodes.iterator().next();
-				UUID childUUID = childNode.getTaxon().getUuid();
-				secondClassification.addChildTaxon(testTaxon, null, null, null);
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		UUID uuid = service.save(testTaxon);
+		Classification secondClassification = TaxonGenerator.getTestClassification("secondClassification");
+		Set<TaxonNode> nodes = testTaxon.getTaxonNodes();
+		TaxonNode node = nodes.iterator().next();
+		Set<TaxonNode> childNodes = node.getChildNodes();
+		TaxonNode childNode = childNodes.iterator().next();
+		UUID childUUID = childNode.getTaxon().getUuid();
+		secondClassification.addChildTaxon(testTaxon, null, null, null);
 				
-				TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
-				config.getTaxonNodeConfig().setDeleteInAllClassifications(false);
-				try {
-					service.deleteTaxon(testTaxon, config, secondClassification);
-				} catch (ReferencedObjectUndeletableException e) {
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
+		config.setDeleteInAllClassifications(false);
+			try {
+				service.deleteTaxon(testTaxon, config, secondClassification);
+			} catch (ReferencedObjectUndeletableException e) {
 					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				e.printStackTrace();
+			}
 				
-				commitAndStartNewTransaction(null);
-				Taxon tax = (Taxon)service.find(uuid);
-				assertNotNull(tax);
-				Taxon childTaxon = (Taxon)service.find(childUUID);
-				assertNotNull(tax);
+		commitAndStartNewTransaction(null);
+		Taxon tax = (Taxon)service.find(uuid);
+		assertNotNull(tax);
+		Taxon childTaxon = (Taxon)service.find(childUUID);
+		assertNotNull(tax);
 	}
+	
+	@Test
+	@DataSet(value="BlankDataSet.xml")
+	public final void testTaxonNodeDeletionConfiguratorMoveToParent(){
+		//test childHandling MOVE_TO_PARENT:
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		UUID uuid = service.save(testTaxon);
+			
+		Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
+				
+		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+		TaxonNode node =nodes.next();
+		Classification classification = node.getClassification();
+		classification.addParentChild(topMost, testTaxon, null, null);
+		UUID topMostUUID = service.save(topMost);
+				
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
+		config.getTaxonNodeConfig().setChildHandling(ChildHandling.MOVE_TO_PARENT);
+				
+		try {
+			service.deleteTaxon(testTaxon, config, null);
+		} catch (ReferencedObjectUndeletableException e) {
+			Assert.fail();
+		}
+				
+		commitAndStartNewTransaction(null);
+		Taxon tax = (Taxon)service.find(uuid);
+		assertNull(tax);
+		tax = (Taxon)service.find(topMostUUID);
+		Set<TaxonNode> topMostNodes = tax.getTaxonNodes();
+		assertNotNull(topMostNodes);
+		assertEquals("there should be one taxon node", 1, topMostNodes.size());
+		nodes = topMostNodes.iterator();
+		TaxonNode topMostNode = nodes.next();
+		int size = topMostNode.getChildNodes().size();
+				
+		assertEquals(2, size);
+	}
+	
+	@Test
+	@DataSet(value="BlankDataSet.xml")
+	public final void testTaxonNodeDeletionConfiguratorDeleteChildren(){
+		//test childHandling DELETE:
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		UUID uuid = service.save(testTaxon);
+			
+		Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
+				
+		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+		TaxonNode node =nodes.next();
+		Classification classification = node.getClassification();
+		classification.addParentChild(topMost, testTaxon, null, null);
+		UUID topMostUUID = service.save(topMost);
+				
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
+		config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
+				
+		try {
+			service.deleteTaxon(testTaxon, config, null);
+		} catch (ReferencedObjectUndeletableException e) {
+			Assert.fail();
+		}
+				
+		commitAndStartNewTransaction(null);
+		Taxon tax = (Taxon)service.find(uuid);
+		assertNull(tax);
+		tax = (Taxon)service.find(topMostUUID);
+		Set<TaxonNode> topMostNodes = tax.getTaxonNodes();
+		assertNotNull(topMostNodes);
+		assertEquals("there should be one taxon node", 1, topMostNodes.size());
+		nodes = topMostNodes.iterator();
+		TaxonNode topMostNode = nodes.next();
+		int size = topMostNode.getChildNodes().size();
+				
+		assertEquals(0, size);
+	}
+	
+	
 
 
 }

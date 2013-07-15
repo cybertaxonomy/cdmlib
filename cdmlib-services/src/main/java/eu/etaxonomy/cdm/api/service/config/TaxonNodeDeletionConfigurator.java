@@ -34,18 +34,7 @@ public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 	
 
 	private ChildHandling childHandling = ChildHandling.DELETE;
-	private boolean deleteInAllClassifications = true;
-
-
-	public boolean isDeleteInAllClassifications() {
-		return deleteInAllClassifications;
-	}
-
-
-	public void setDeleteInAllClassifications(boolean deleteInAllClassifications) {
-		this.deleteInAllClassifications = deleteInAllClassifications;
-	}
-
+	
 
 	public void setChildHandling(ChildHandling childHandling) {
 		this.childHandling = childHandling;

@@ -309,12 +309,30 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         taxonNodes.remove(taxonNode);
     }
     
-    public void removeTaxonNodes(){
+    public void removeTaxonNodes(boolean deleteChildren){
     	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
     	TaxonNode node;
     	while (nodesIterator.hasNext()){
     		node = nodesIterator.next();
-    		node.setTaxon(null);
+    		TaxonNode parent = node.getParent();
+    		if ((!node.getChildNodes().isEmpty() && deleteChildren) || (node.getChildNodes().isEmpty())){
+    			node.setTaxon(null);
+    		} else if (!node.isTopmostNode()){
+    			Set<TaxonNode> children = node.getChildNodes();
+    			Iterator<TaxonNode> childrenIterator = children.iterator();
+    			while (childrenIterator.hasNext()){
+    				TaxonNode childNode = childrenIterator.next();
+    				childrenIterator.remove();
+    				parent.addChildNode(childNode, null, null, null);
+    				node.setTaxon(null);
+    				
+    			}
+    		} else {
+    			//what to do if the node is topmost node??
+    		}
+    		if (!node.isTopmostNode()){
+    			parent.removeChildNode(node);
+    		}
     	}
     	taxonNodes = null;
     }

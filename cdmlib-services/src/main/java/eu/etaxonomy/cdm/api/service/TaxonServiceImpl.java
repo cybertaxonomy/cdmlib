@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonBaseDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
@@ -927,8 +928,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	Set<TaxonNode> nodes = taxon.getTaxonNodes();
             	Iterator<TaxonNode> iterator = nodes.iterator();
             	TaxonNode node;
-            	if (config.getTaxonNodeConfig().isDeleteInAllClassifications()){
-	            	taxon.removeTaxonNodes();
+            	if (config.isDeleteInAllClassifications()){
+            		boolean deleteChildren;
+            		if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
+            			deleteChildren = true;
+            		}else {
+            			deleteChildren = false;
+            		}
+            	
+	            	taxon.removeTaxonNodes(deleteChildren);
             	}else {
             		while (iterator.hasNext()){
 	            		node = iterator.next();
@@ -1003,12 +1011,14 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (config.isDeleteNameIfPossible()){
                 try {
                 	TaxonNameBase name = nameService.find(taxon.getName().getUuid());
-                	               	
+                	name.removeTaxonBase(taxon);
                 	nameService.save(name);
+                	
                     nameService.delete(taxon.getName(), config.getNameDeletionConfig());
                 } catch (ReferencedObjectUndeletableException e) {
                     //do nothing
                     if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
+                    
                 }
             }
             
