@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -407,9 +408,6 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 
 	@Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-
-	@Override
-	public String getReadableString() {return delegateVocTerm.getReadableString();}
 		
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
@@ -419,6 +417,12 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	
 	@Override
     public Set<TermType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+	@Override
+	public boolean isKindOf(TermType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+	@Override
+    public Set<TermType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
 	public static TermType getByKey(String key){return delegateVoc.getByKey(key);}
     public static TermType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}

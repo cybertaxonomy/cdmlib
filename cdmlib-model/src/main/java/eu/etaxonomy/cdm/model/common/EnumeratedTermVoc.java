@@ -20,9 +20,9 @@ import java.util.UUID;
  * @author a.mueller
  *
  */
-public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
+public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 
-	private static Map<Class<? extends ISimpleTerm<?>>,EnumeratedTermVoc<ISimpleTerm>> vocsMap= new HashMap<Class<? extends ISimpleTerm<?>>, EnumeratedTermVoc<ISimpleTerm>>();
+	private static Map<Class<? extends IEnumTerm<?>>,EnumeratedTermVoc<?>> vocsMap= new HashMap<Class<? extends IEnumTerm<?>>, EnumeratedTermVoc<?>>();
 	
 	private final Map<T,SingleEnumTerm<T>> lookup = new HashMap<T, SingleEnumTerm<T>>();
 	
@@ -32,17 +32,17 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 	
 	private class SingleEnumTerm<S extends T> implements IEnumTerm<T>{
 		private S term;
-		private String readableString;
+		private String label;
 		private UUID uuid;
 		private String key;
-		private Set<T> children = new HashSet<T>();
+		private Set<S> children = new HashSet<S>();
 		private S parent;
 
 
 		
 		private	SingleEnumTerm(S term, UUID uuid, String defaultString, String key, S parent){
 			this.term = term;
-			this.readableString = defaultString;
+			this.label = defaultString;
 			this.key = key;
 			this.uuid = uuid;
 			this.parent = parent;
@@ -59,8 +59,6 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 		public T getTerm() {return term;}
 		@Override
 		public String getKey() {return key;	}
-		@Override
-		public String getReadableString() {return readableString;}
 
 		@Override
 		public String getMessage() {return getMessage(Language.DEFAULT());}
@@ -68,7 +66,7 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 		@Override
 		public String getMessage(Language language) {
 			//TODO make multi-lingual
-			return getReadableString();
+			return label;
 		}
 		
 		@Override
@@ -77,11 +75,32 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 			return new HashSet<T>(children);
 		}
 
+		@Override
+		public boolean isKindOf(T ancestor) {
+			if (parent == null || ancestor == null){
+				return false;
+			}else if (parent.equals(ancestor)){
+				return true;
+			}else{
+				return parent.isKindOf(ancestor);
+			}
+		}
+
+		@Override
+		public Set<T> getGeneralizationOf(boolean recursive) {
+			Set<T> result = new HashSet<T>();
+			result.addAll(this.children);
+			if (recursive){
+				for (T child : this.children){
+					result.addAll(child.getGeneralizationOf());
+				}
+			}
+			return result;
+		}
+
 	} //end of inner class
 
 //******************* DELEGATE NETHODS ************************
-	
-	public String getReadableString(T term) {return lookup.get(term).getReadableString();}
 
 	public String getKey(T term) {return lookup.get(term).getKey();}
 
@@ -94,7 +113,7 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 //******************* DELEGATE CLASS NETHODS ************************
 
 	
-	public static <S extends ISimpleTerm<?>> IEnumTerm addTerm(Class<? extends ISimpleTerm<?>> clazz, S term, UUID uuid, String defaultString, String key, S parent){
+	public static <S extends IEnumTerm<?>> IEnumTerm addTerm(Class<? extends IEnumTerm<?>> clazz, S term, UUID uuid, String defaultString, String key, S parent){
 		if (vocsMap.get(clazz) == null){
 			vocsMap.put(clazz, new EnumeratedTermVoc());
 		}
@@ -132,12 +151,12 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 		return false;
 	}
 
-	public static <R extends ISimpleTerm<?>> R byKey(Class<R> clazz, String key) {
+	public static <R extends IEnumTerm<R>> R byKey(Class<R> clazz, String key) {
 		EnumeratedTermVoc<R> voc = getVoc(clazz);
 		return voc == null? null:voc.getByKey(key);
 	}
 
-	public static <R extends ISimpleTerm<?>> R byUuid(Class<R> clazz, UUID uuid) {
+	public static <R extends IEnumTerm<R>> R byUuid(Class<R> clazz, UUID uuid) {
 		EnumeratedTermVoc<R> voc = getVoc(clazz);
 		return voc == null? null:voc.getByUuid(uuid);
 	}
@@ -161,7 +180,7 @@ public class EnumeratedTermVoc<T extends ISimpleTerm<?>> {
 		return null;
 	}
 
-	public static <R extends ISimpleTerm<?>> EnumeratedTermVoc<R> getVoc(Class<R> clazz) {
+	public static <R extends IEnumTerm<R>> EnumeratedTermVoc<R> getVoc(Class<R> clazz) {
 		return (EnumeratedTermVoc<R>)vocsMap.get(clazz);
 	}
 

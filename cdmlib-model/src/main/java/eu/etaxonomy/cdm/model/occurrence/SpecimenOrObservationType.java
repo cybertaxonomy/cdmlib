@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 
 
 /**
@@ -293,8 +294,6 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 		@Override
 	    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
-		@Override
-		public String getReadableString() {return delegateVocTerm.getReadableString();}
 			
 		@Override
 	    public UUID getUuid() {return delegateVocTerm.getUuid();}
@@ -304,6 +303,12 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 		
 		@Override
 	    public Set<SpecimenOrObservationType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+		@Override
+		public boolean isKindOf(SpecimenOrObservationType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+		@Override
+	    public Set<SpecimenOrObservationType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
 		public static SpecimenOrObservationType getByKey(String key){return delegateVoc.getByKey(key);}
 	    public static SpecimenOrObservationType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}

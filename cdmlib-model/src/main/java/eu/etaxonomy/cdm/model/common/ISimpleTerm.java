@@ -32,8 +32,8 @@ public interface ISimpleTerm<T extends ISimpleTerm> {
 	
 
 	/**
-	 * Returns all defined terms this term is a generalization for.
-	 * Therefore the returned terms are kind of <code>this</code> term
+	 * Returns all defined terms this term is a direct generalization for.
+	 * Therefore the returned terms are kind of <code>this</code> term.
 	 */
 	public Set<T> getGeneralizationOf();
 

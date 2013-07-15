@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,9 +22,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
-import eu.etaxonomy.cdm.model.common.ISimpleTerm;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
@@ -87,7 +84,7 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 	
 	public String getTitleCache() {
-		return getReadableString();
+		return getMessage();
 	}
 	
 	private NomenclaturalCode(UUID uuid, String titleCache){
@@ -242,8 +239,6 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 	@Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
-	@Override
-	public String getReadableString() {return delegateVocTerm.getReadableString();}
 		
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
@@ -254,6 +249,13 @@ public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializa
 	@Override
     public Set<NomenclaturalCode> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
+	@Override
+	public boolean isKindOf(NomenclaturalCode ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+	@Override
+    public Set<NomenclaturalCode> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+
+	
 	public static NomenclaturalCode getByKey(String key){return delegateVoc.getByKey(key);}
     public static NomenclaturalCode getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 	

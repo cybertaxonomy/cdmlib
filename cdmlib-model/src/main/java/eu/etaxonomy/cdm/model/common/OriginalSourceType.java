@@ -143,9 +143,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 
 	@Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-
-	@Override
-	public String getReadableString() {return delegateVocTerm.getReadableString();}
 		
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
@@ -155,7 +152,14 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	
 	@Override
     public Set<OriginalSourceType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+	
+	@Override
+	public boolean isKindOf(OriginalSourceType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
 
+	@Override
+    public Set<OriginalSourceType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+
+	
 	public static OriginalSourceType getByKey(String key){return delegateVoc.getByKey(key);}
     public static OriginalSourceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 

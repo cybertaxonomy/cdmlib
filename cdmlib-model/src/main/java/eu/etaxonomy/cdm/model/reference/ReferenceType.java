@@ -179,9 +179,6 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 
 	@Override
     public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
-
-	@Override
-	public String getReadableString() {return delegateVocTerm.getReadableString();}
 		
 	@Override
     public UUID getUuid() {return delegateVocTerm.getUuid();}
@@ -191,6 +188,12 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	
 	@Override
     public Set<ReferenceType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+	@Override
+	public boolean isKindOf(ReferenceType ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+	@Override
+    public Set<ReferenceType> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
 	public static ReferenceType getByKey(String key){return delegateVoc.getByKey(key);}
     public static ReferenceType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}

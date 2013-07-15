@@ -34,9 +34,19 @@ public class TermTypeTest {
 		assertTrue(TermType.Modifier.getGeneralizationOf().contains(TermType.DeterminationModifier));
 		assertTrue(TermType.Modifier.getGeneralizationOf().contains(TermType.Scope));
 		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Sex));
-		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Stage));		
+		assertTrue(TermType.Scope.getGeneralizationOf().contains(TermType.Stage));
+		assertFalse("generalisationOf may contain only contain only direct children, but stage is a grandchild", TermType.Modifier.getGeneralizationOf().contains(TermType.Stage));	
 	}
 	
+	@Test
+	public void testGeneralisationOfRecursive(){
+		boolean recursive = true;
+		assertTrue(TermType.Modifier.getGeneralizationOf(recursive).contains(TermType.Scope));
+		assertTrue(TermType.Modifier.getGeneralizationOf(! recursive).contains(TermType.Scope));
+		assertTrue(TermType.Scope.getGeneralizationOf(recursive).contains(TermType.Sex));
+		assertTrue(TermType.Modifier.getGeneralizationOf(recursive).contains(TermType.Stage));		
+		assertFalse(TermType.Modifier.getGeneralizationOf(!recursive).contains(TermType.Stage));		
+	}
 	
 
 }
