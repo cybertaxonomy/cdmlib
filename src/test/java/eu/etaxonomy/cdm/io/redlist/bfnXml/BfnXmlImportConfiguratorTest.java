@@ -15,7 +15,10 @@ import static org.junit.Assert.assertTrue;
 
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -23,13 +26,18 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.tcsxml.in.TcsXmlImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -48,6 +56,9 @@ public class BfnXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	@SpringBeanByType
 	ITaxonService taxonService;
 
+	@SpringBeanByType
+	IClassificationService classificationService;
+	
 	private IImportConfigurator configurator;
 	
 	@Before
@@ -70,13 +81,30 @@ public class BfnXmlImportConfiguratorTest extends CdmTransactionalIntegrationTes
 	public void testDoInvoke() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		List<TaxonNameBase> taxonList = nameService.list(TaxonNameBase.class, null, null, null, null);
-		logger.info("test");
-		for(TaxonNameBase taxon:taxonList){
-			logger.info("TaxonNameBase: "+taxon.getTitleCache());
-			Taxon taxa = new Taxon(taxon, null);
+		List<Classification> classificationList = classificationService.list(Classification.class, null, null, null, null);
+		logger.info("Test");
+		if(classificationList != null && !classificationList.isEmpty()){
+			for(Classification classification:classificationList){
+				logger.info("Classification: "+classification.getId());
+				Set<TaxonNode> tnSet = classification.getAllNodes();
+				for(TaxonNode tn:tnSet){
+					logger.info(tn.getTaxon().getTitleCache());
+				}
+			}
+		}else{
+			logger.info("classification is empty");
 		}
-		assertEquals("Number of TaxonNames should be 10", 10, nameService.count(null));
+		List<TaxonBase> taxonBaseList = taxonService.list(TaxonBase.class, null, null, null, null);
+		for(TaxonBase taxon:taxonBaseList){
+			
+			if(taxon instanceof Taxon){
+			logger.info("Taxon: "+taxon.getTitleCache());
+			}
+			if(taxon instanceof Synonym){
+				logger.info("Synonym: "+taxon.getTitleCache());
+			}
+		}
+		assertEquals("Number of TaxonBase should be 11", 11, nameService.count(null));
 	}
 
 }

@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.io.redlist.bfnXml;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -19,6 +21,9 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.lsid.impl.TaxonMetadataMapper;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -36,7 +41,15 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * 
  * @author a.oppermann
@@ -47,7 +60,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<BfnXmlImportState> {
 	private static final Logger logger = Logger.getLogger(BfnXmlTaxonNameImport.class);
 
-	private static final String strNomenclaturalCode = null;//NomenclaturalCode.ICBN.toString();
+	private static final String strNomenclaturalCode = "Botanical";//NomenclaturalCode.ICBN.toString();
 
 	private static int modCount = 5000;
 	
@@ -67,14 +80,18 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 	}
 
 	//@SuppressWarnings("unchecked")
+	@SuppressWarnings("unchecked")
 	@Override
 	public void doInvoke(BfnXmlImportState state){
+		ITaxonService taxonService = getTaxonService();
+
 
 		logger.info("start make TaxonNames ...");
 		MapWrapper<Person> authorMap = (MapWrapper<Person>)state.getStore(ICdmIO.TEAM_STORE);
+		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap =  (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
-
+		
 		ResultWrapper<Boolean> success = ResultWrapper.NewInstance(true);
 		String childName;
 		boolean obligatory;
@@ -83,34 +100,44 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 		BfnXmlImportConfigurator config = state.getConfig();
 		Element elDataSet = getDataSetElement(config);
 		Namespace bfnNamespace = config.getBfnXmlNamespace();
+		Classification classification = Classification.NewInstance(config.getClassificationName(), config.getSourceReference());
 
+		
+		
 		childName = "TAXONYME";
 		obligatory = false;
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, bfnNamespace, obligatory);
 
 		String bfnElementName = "TAXONYM";
-		List<Element> elTaxonNameList = (List<Element>)elTaxonNames.getChildren(bfnElementName, bfnNamespace);
+		List<Element> elTaxonList = (List<Element>)elTaxonNames.getChildren(bfnElementName, bfnNamespace);
 		
 		//for each taxonName
-		for (Element elTaxonName : elTaxonNameList){
-			if(elTaxonName.getChild("WISSNAME").toString().equalsIgnoreCase("WISSNAME")){
-				childName = "WISSNAME";
-				Element elWissName = XmlHelp.getSingleChildElement(success, elTaxonName, childName, bfnNamespace, obligatory);
+		for (Element elTaxon : elTaxonList){
 
-				String childElementName = "NANTEIL";
-				makeTaxonBase(taxonNameMap, success, idNamespace, config, bfnNamespace, elWissName, childElementName);
-			}
+			String taxonId = elTaxon.getAttributeValue("reihenfolge");
+			childName = "WISSNAME";
+			Element elWissName = XmlHelp.getSingleChildElement(success, elTaxon, childName, bfnNamespace, obligatory);
+			String childElementName = "NANTEIL";
+			makeTaxon(taxonMap, success, idNamespace, config, bfnNamespace, elWissName, childElementName, taxonId);
+			
 			//for each synonym
-			if(elTaxonName.getName().equalsIgnoreCase("SYNONYME")){
-				childName = "SYNONYME";
-				Element elSynonms = XmlHelp.getSingleChildElement(success, elTaxonName, childName, bfnNamespace, obligatory);
-				
+			childName = "SYNONYME";
+			Element elSynonyms = XmlHelp.getSingleChildElement(success, elTaxon, childName, bfnNamespace, obligatory);
+			if(elSynonyms != null){
+				childElementName = "SYNONYM";
+				makeSynonym(taxonMap, success, obligatory, bfnNamespace, childElementName,elSynonyms, taxonId, config);
 			}
+			
+			//for each information concerning the taxon element
+			//TODO Information block
 
 		}
-		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
-		getNameService().save((Collection)col);
-
+//		Collection<? extends TaxonNameBase> col = taxonNameMap.objects();
+//		getNameService().save((Collection)col);
+		taxonService.save(taxonMap.objects());
+		
+		createClassification(classification, taxonService);
+		
 		logger.info("end makeTaxonNames ...");
 		if (!success.getValue()){
 			state.setUnsuccessfull();
@@ -121,6 +148,94 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 	}
 
 	/**
+	 * @param classification
+	 * @param taxonService 
+	 * @param config 
+	 */
+	private void createClassification(Classification classification, ITaxonService taxonService) {
+		ArrayList<TaxonBase> taxonBaseList = (ArrayList<TaxonBase>) taxonService.list(TaxonBase.class, null, null, null, VOC_CLASSIFICATION_INIT_STRATEGY);
+		for(TaxonBase tb:taxonBaseList){
+			if(tb instanceof Taxon){
+				Taxon taxon = (Taxon) tb;
+//				TaxonNode tn = new TaxonNode(taxon);
+				classification.addChildTaxon(taxon, null, null, null);
+//				classification.addParentChild(taxon, taxon, null, null);
+			}
+		}
+		IClassificationService classificationService = getClassificationService();
+		classificationService.saveOrUpdate(classification);
+	}
+
+	/**
+	 * @param taxonMap 
+	 * @param success
+	 * @param obligatory
+	 * @param bfnNamespace
+	 * @param childElementName
+	 * @param elSynonyms
+	 * @param taxon 
+	 */
+	private void makeSynonym(MapWrapper<TaxonBase> taxonMap, ResultWrapper<Boolean> success, boolean obligatory, Namespace bfnNamespace, 
+			     String childElementName, Element elSynonyms, String taxonId, BfnXmlImportConfigurator config) {
+		
+		
+		TaxonNameBase<?, ?> taxonNameBase = null;
+		String childName;
+		List<Element> elSynonymList = (List<Element>)elSynonyms.getChildren(childElementName, bfnNamespace);
+
+		//Element elSynonm = XmlHelp.getSingleChildElement(success, elSynonms, childName, bfnNamespace, obligatory);
+		
+		for(Element elSyn:elSynonymList){
+			Rank rank = null;
+			String strAuthor = null;
+			childName = "WISSNAME";
+			Element elSynScientificName = XmlHelp.getSingleChildElement(success, elSyn, childName, bfnNamespace, obligatory);
+
+			childElementName = "NANTEIL";
+			List<Element> elSynDetails = (List<Element>)elSynScientificName.getChildren(childElementName, bfnNamespace);
+
+			for(Element elSynDetail:elSynDetails){
+				if(elSynDetail.getAttributeValue("bereich").equalsIgnoreCase("Rang")){
+					String strRank = elSynDetail.getTextNormalize();
+					rank = makeRank(strRank);
+				}
+				if(elSynDetail.getAttributeValue("bereich").equalsIgnoreCase("Autoren")){
+					strAuthor = elSynDetail.getTextNormalize();
+				}	
+				//TODO save Synonym
+				if(elSynDetail.getAttributeValue("bereich").equalsIgnoreCase("wissName")){
+					try{
+						TaxonNameBase<?, ?> nameBase = createTaxonOrSynonym(rank,strAuthor, elSynDetail);
+
+						TaxonBase<?> taxonBase = null;
+						String titlecache = elSynDetail.getTextNormalize();
+						Taxon taxon = (Taxon)taxonMap.get(taxonId);
+						
+						taxonBase = getTaxonService().findBestMatchingSynonym(titlecache);
+						//find best matching Synonym:
+						if(taxonBase != null){
+							taxon.addSynonym((Synonym)taxonBase, SynonymRelationshipType.SYNONYM_OF());
+							taxonBase = taxon;
+							logger.info("found existing Synonym and updated record" + titlecache);
+						}else{
+							Synonym synonym = Synonym.NewInstance(nameBase, config.getSourceReference());
+							taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+							taxonBase = taxon;
+						}
+						taxonMap.put(taxonId, taxonBase);
+						
+					} catch (UnknownCdmTypeException e) {
+						logger.warn("Name with id " + taxonId + " has unknown nomenclatural code.");
+						success.setValue(false); 
+					}
+				
+				}
+				
+			}
+		}
+	}
+
+	/**
 	 * @param taxonNameMap
 	 * @param success
 	 * @param idNamespace
@@ -128,11 +243,12 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 	 * @param bfnNamespace
 	 * @param elTaxonName
 	 * @param childElementName
+	 * @param taxonId 
 	 */
-	private void makeTaxonBase(MapWrapper<TaxonNameBase> taxonNameMap,
+	private void makeTaxon(MapWrapper<TaxonBase> taxonMap,
 			ResultWrapper<Boolean> success, String idNamespace,
 			BfnXmlImportConfigurator config, Namespace bfnNamespace,
-			Element elTaxonName, String childElementName) {
+			Element elTaxonName, String childElementName, String taxonId) {
 		
 		List<Element> elWissNameList = (List<Element>)elTaxonName.getChildren(childElementName, bfnNamespace);
 		Rank rank = null;
@@ -152,26 +268,70 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 			}
 			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("wissName")){
 				try{
-
-					TaxonNameBase<?,?> nameBase;
-					NomenclaturalCode nomCode = BfnXmlTransformer.nomCodeString2NomCode(strNomenclaturalCode);
-					if (nomCode != null){
-						nameBase = nomCode.getNewTaxonNameInstance(rank);
-					}else{
-						nameBase = NonViralName.NewInstance(rank);
-					}
-					String strScientificName = elWissName.getTextNormalize();
-					nameBase.setTitleCache(strScientificName, false);
+					TaxonNameBase<?, ?> nameBase = createTaxonOrSynonym(rank,strAuthor, elWissName);
+					//nameBase.setTitleCache(strScientificName, false);
 
 					ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), strId, idNamespace);
-					taxonNameMap.put(strId, nameBase);
-
+					
+					
+					TaxonBase<?> taxonBase = null;
+					//find best matching Taxa
+					String titlecache = elWissName.getTextNormalize();
+					taxonBase = getTaxonService().findBestMatchingTaxon(titlecache);
+					
+					if(taxonBase != null){
+						logger.info("Found Taxon in Database and updated it..." + titlecache);
+					}else{
+						taxonBase = Taxon.NewInstance(nameBase, config.getSourceReference());
+					}
+					taxonMap.put(taxonId, taxonBase);
+					//TODO Check if taxonNameMap is necessary
+				//	taxonNameMap.put(strId, nameBase);
+										
 				} catch (UnknownCdmTypeException e) {
 					logger.warn("Name with id " + strId + " has unknown nomenclatural code.");
 					success.setValue(false); 
 				}
 			}
 		}
+		if(strId == null){
+			logger.warn("TaxonID could not be retrieved...");
+		}
+	}
+
+	/**
+	 * @param rank
+	 * @param strAuthor
+	 * @param elWissName
+	 * @return
+	 * @throws UnknownCdmTypeException
+	 */
+	private TaxonNameBase<?, ?> createTaxonOrSynonym(Rank rank, String strAuthor, Element elWissName)
+			throws UnknownCdmTypeException {
+		TaxonNameBase<?,?> nameBase = null;
+
+		NomenclaturalCode nomCode = BfnXmlTransformer.nomCodeString2NomCode(strNomenclaturalCode);
+		if (nomCode != null){
+			nameBase = nomCode.getNewTaxonNameInstance(rank);
+		}else{
+			nameBase = NonViralName.NewInstance(rank);
+		}
+		String strScientificName = elWissName.getTextNormalize();
+		strScientificName = StringUtils.remove(strScientificName, strAuthor);					
+
+		NonViralName<?> nonViralName = null;
+
+		NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
+		nonViralName = parser.parseFullName(strScientificName, nomCode, rank);
+		try {
+			parser.parseAuthors(nonViralName, strAuthor);
+		} catch (StringNotParsableException e) {
+			nonViralName.setAuthorshipCache(strAuthor); 
+		}
+		nonViralName.setNameCache(strScientificName);
+		nameBase = nonViralName;
+
+		return nameBase;
 	}
 	
 	/**
@@ -207,313 +367,6 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 		return result;
 	}
 
-	private void makeCanonicalName(TaxonNameBase name, Element elCanonicalName, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
-		boolean cacheProtected = false;
-		
-		if (elCanonicalName == null){
-			return;
-		}
-		Namespace ns = elCanonicalName.getNamespace();
-		
-		String childName = "Simple";
-		boolean obligatory = true;
-		Element elSimple = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-		String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-		name.setFullTitleCache(simple, cacheProtected);
-		
-		if (name instanceof NonViralName<?>){
-			NonViralName<?> nonViralName = (NonViralName<?>)name;
-			childName = "Uninomial";
-			obligatory = false;
-			Element elUninomial = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-			String uninomial = (elUninomial == null)? "" : elUninomial.getTextNormalize();
-			if (StringUtils.isNotBlank(uninomial)){
-				nonViralName.setGenusOrUninomial(uninomial);
-				if (nonViralName.getRank() != null && nonViralName.getRank().isLower(Rank.GENUS())){  // TODO check
-					logger.warn("Name " + simple + " lower then 'genus' but has a canonical name part 'Uninomial'.");
-				}
-			}
-			testNoMoreElements();
-			
-			childName = "Genus";
-			obligatory = false;
-			Element elGenus = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-			if (elGenus != null){
-				//TODO do Attributes reference
-				makeGenusReferenceType(name, elGenus, taxonNameMap, success);
-				String genus = elGenus.getTextNormalize();
-				if (StringUtils.isNotBlank(genus)){
-					nonViralName.setGenusOrUninomial(genus);
-					if (nonViralName.getRank() != null &&  ! nonViralName.getRank().isLower(Rank.GENUS() )){  // TODO check
-						logger.warn("Name " + simple + " is not lower then 'genus' but has canonical name part 'Genus'.");
-					}
-				}
-			}
-			
-			childName = "InfragenericEpithet";
-			obligatory = false;
-			Element elInfrageneric = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-			String infraGenericEpithet = (elInfrageneric == null)? "" : elInfrageneric.getTextNormalize();
-			if (! infraGenericEpithet.trim().equals("")){
-				nonViralName.setInfraGenericEpithet(infraGenericEpithet);
-				if (nonViralName.getRank() != null && ! name.getRank().isInfraGeneric()){
-					logger.warn("Name " + simple + " is not infra generic but has canonical name part 'InfragenericEpithet'.");
-				}
-			}
-			testNoMoreElements();
-			
-			childName = "SpecificEpithet";
-			obligatory = false;
-			Element elSpecificEpithet = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-			String specificEpithet = (elSpecificEpithet == null)? "" : elSpecificEpithet.getTextNormalize();
-			if (! specificEpithet.trim().equals("")){
-				nonViralName.setSpecificEpithet(specificEpithet);
-				if (nonViralName.getRank() != null && name.getRank().isHigher(Rank.SPECIES()) ){
-					logger.warn("Name " + simple + " is not species or below but has canonical name part 'SpecificEpithet'.");
-				}
-			}
-			testNoMoreElements();
-			
-			childName = "InfraspecificEpithet";
-			obligatory = false;
-			Element elInfraspecificEpithet = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-			String infraspecificEpithet = (elInfraspecificEpithet == null)? "" : elInfraspecificEpithet.getTextNormalize();
-			if (! infraspecificEpithet.trim().equals("")){
-				nonViralName.setInfraSpecificEpithet(infraspecificEpithet);
-				if (nonViralName.getRank() != null && ! name.isInfraSpecific() ){
-					logger.warn("Name " + simple + " is not infraspecific but has canonical name part 'InfraspecificEpithet'.");
-				}
-			}
-			testNoMoreElements();
-			
-	
-		}else{ //ViralName
-			//logger.warn("Non NonViralNames not yet supported by makeCanonicalName");
-		}
-				
-
-		childName = "CultivarNameGroup";
-		obligatory = false;
-		Element elCultivarNameGroup = XmlHelp.getSingleChildElement(success, elCanonicalName, childName, ns, obligatory);
-		String cultivarNameGroup = (elCultivarNameGroup == null)? "" : elCultivarNameGroup.getTextNormalize();
-		if (! "".equals(cultivarNameGroup.trim())){
-			if (name instanceof CultivarPlantName){
-				makeCultivarName();
-			}else{
-				logger.warn("Non cultivar name has 'cultivar name group' element. Omitted");
-			}
-		}
-		return;
-	}
-	
-	protected void testNoMoreElements(){
-		//TODO
-		//logger.info("testNoMoreElements Not yet implemented");
-	}
-	
-	private void makeCultivarName(){
-		//TODO
-		//logger.warn("'makeCultivarName' Not yet implemented");
-	}
-	
-	private void makeGenusReferenceType(TaxonNameBase name, Element elGenus, MapWrapper<TaxonNameBase> taxonNameMap, ResultWrapper<Boolean> success){
-		if(name instanceof NonViralName){
-			NonViralName nonViralName = (NonViralName)name;
-			if (elGenus != null && name != null){
-				TaxonNameBase genusReferenceName;
-				//TODO code
-				Class<? extends NonViralName> clazz = NonViralName.class;
-				genusReferenceName = makeReferenceType(elGenus, clazz, taxonNameMap, success);
-				NonViralName nvGenusReference = (NonViralName)genusReferenceName;
-				//Genus is stored either in Genus part (if ref) or in titleCache (if plain text)
-				String genus = nvGenusReference.getGenusOrUninomial()!= null ? nvGenusReference.getGenusOrUninomial(): genusReferenceName.getTitleCache();
-				nonViralName.setGenusOrUninomial(genus); 
-			}else{
-				logger.warn("Missing Genus information");
-			}	
-		}else{
-			//TODO   (can be changed if Viral Name also has Genus in future
-			//logger.warn("Genus ref type for Viral Name not implemented yet");
-		}
-		
-	}
-	
-	
-	@SuppressWarnings("unchecked")
-	private INomenclaturalAuthor makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		INomenclaturalAuthor result = null; 
-		String childName;
-		boolean obligatory;
-		if (elNameCitation != null){
-			Namespace ns = elNameCitation.getNamespace();
-			
-			childName = "Authors";
-			obligatory = false;
-			Element elAuthors = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
-			testNoMoreElements();
-
-			if (elAuthors != null){
-				childName = "AgentName";
-				List<Element> elAgentList = elAuthors.getChildren(childName, ns);
-				Team team = Team.NewInstance();
-				result = team;
-				if (elAgentList.size() > 1){
-					for(Element elAgent : elAgentList){
-						Person teamMember = makeAgent(elAgent, ns, authorMap, success);
-						team.addTeamMember(teamMember);
-					}
-				}else if(elAgentList.size() == 1){
-					result = makeAgent(elAgentList.get(0), ns, authorMap, success);
-				}
-			}else{
-				childName = "Simple";
-				obligatory = true;
-				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
-				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				result = Team.NewInstance();
-				result.setNomenclaturalTitle(simple);
-			}
-		}
-		return result;
-	}
-
-	private Person makeAgent(Element elAgentName, Namespace ns, MapWrapper<Person> agentMap, ResultWrapper<Boolean> success){
-		Person result = null;
-		if (elAgentName != null){
-			String authorTitle = elAgentName.getTextNormalize();
-			result = Person.NewTitledInstance(authorTitle);
-			Class<? extends Person> clazz = Person.class;
-			result = makeReferenceType(elAgentName, clazz, agentMap, success);
-			return result;
-		}else{
-			return null;
-		}
-	}
-	
-	private void makeCanonicalAuthorship(TaxonNameBase name, Element elCanonicalAuthorship, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		if (elCanonicalAuthorship != null){
-			Namespace ns = elCanonicalAuthorship.getNamespace();
-			
-			if (name instanceof NonViralName){
-				NonViralName nonViralName = (NonViralName)name;
-				
-				String childName = "Simple";
-				boolean obligatory = true;
-				Element elSimple = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
-				//TODO
-				//logger.warn("authorship cache cache protected not yet implemented");
-				//nonViralName.setAuthorshipCache(simple, cacheProtected);
-
-				childName = "Authorship";
-				obligatory = false;
-				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor author = makeNameCitation(elAuthorship, authorMap, success); 
-				nonViralName.setCombinationAuthorTeam(author);
-				testNoMoreElements();
-				
-				childName = "BasionymAuthorship";
-				obligatory = false;
-				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
-				nonViralName.setBasionymAuthorTeam(basionymAuthor);
-				testNoMoreElements();
-				
-				childName = "CombinationAuthorship";
-				obligatory = false;
-				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
-				if (combinationAuthor != null){
-					nonViralName.setCombinationAuthorTeam(combinationAuthor);
-				}
-				testNoMoreElements();
-				
-				if (elAuthorship != null && (elBasionymAuthorship != null || elCombinationAuthorship != null) ){
-					logger.warn("Authorship and (BasionymAuthorship or CombinationAuthorship) must not exist at the same time in CanonicalAuthorship");
-					success.setValue(false);
-				}
-			}	
-		}
-	}
-
-	
-	private void makePublishedIn(TaxonNameBase name, Element elPublishedIn, MapWrapper<Reference> referenceMap, ResultWrapper<Boolean> success){
-		if (elPublishedIn != null && name != null){
-			Class<? extends Reference> clazz = Reference.class;
-			Reference ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
-			if (ref instanceof INomenclaturalReference){
-				name.setNomenclaturalReference(ref);
-			}else{
-				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
-			}
-		}else if (name == null){
-			logger.warn("TaxonName must not be 'null'");
-			success.setValue(false);
-		}
-	}
-
-	
-	private void makeYear(TaxonNameBase name, Element elYear, ResultWrapper<Boolean> success){
-		if (elYear != null){
-			String year = elYear.getTextNormalize();
-			if (name instanceof ZoologicalName){
-				((ZoologicalName)name).setPublicationYear(getIntegerYear(year));
-			}else{
-				logger.warn("Year can be set only for a zoological name");
-			}
-		}
-	}
-	
-	private Integer getIntegerYear(String year){
-		try {
-			Integer result = Integer.valueOf(year);
-			return result;
-		} catch (NumberFormatException e) {
-			logger.warn("Year string could not be parsed. Set = 9999 instead");
-			return 9999;
-		}
-	}
-
-	
-	private void makeMicroReference(TaxonNameBase name, Element elMicroReference, ResultWrapper<Boolean> success){
-		if (elMicroReference != null){
-			String microReference = elMicroReference.getTextNormalize();
-			name.setNomenclaturalMicroReference(microReference);
-		}
-	}
-
-	
-	private void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
-		if (elTypifiacation != null){
-			//logger.warn("makeTypification not yet implemented");
-			//success.setValue(false);
-		}
-	}
-
-	
-	private void makePublicationStatus(TaxonNameBase name, Element elPublicationStatus, ResultWrapper<Boolean> success){
-		//Status
-			
-		if (elPublicationStatus != null){
-			//logger.warn("makePublicationStatus not yet implemented");
-			//success.setValue(false);
-		}
-	}
-	
-	private void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
-		if (elProviderLink != null){
-			//logger.warn("makeProviderLink not yet implemented");
-			//success.setValue(false);
-		}
-	}
-	
-
-	private void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
-		if (elProviderSpecificData != null){
-			//logger.warn("makeProviderSpecificData not yet implemented");
-			//success.setValue(false);
-		}
-	}
 	
 	
 	/* (non-Javadoc)
@@ -522,5 +375,20 @@ public class BfnXmlTaxonNameImport extends BfnXmlImportBase implements ICdmIO<Bf
 	protected boolean isIgnore(BfnXmlImportState state){
 		return ! state.getConfig().isDoTaxonNames();
 	}
+    /** Hibernate classification vocabulary initialisation strategy */
+    private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {		
+            "classification.$",
+    		"classification.rootNodes",
+    		"childNodes",
+    		"childNodes.taxon",
+            "childNodes.taxon.name",
+            "taxonNodes",
+            "taxonNodes.taxon",
+            "taxon.*",
+            "taxon.sec",
+            "taxon.name.*",
+            "taxon.synonymRelations"
+    });
+
 
 }
