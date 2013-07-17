@@ -36,12 +36,16 @@ public class TaxonGenerator {
 	private static String[] ranks = {"subsp", "var", "f"}; 
 	
 	public static UUID GENUS_NAME_UUID = UUID.fromString("8d761fc4-b509-42f4-9568-244161934336");
+	public static UUID GENUS_UUID = UUID.fromString("bf4298a8-1735-4353-a210-244442e1bd62");
 	public static UUID BASIONYM_UUID = UUID.fromString("7911c51d-ccb7-4708-8992-639eae58a0e3");
-	public static UUID SPECIES1_NAME_UUID = UUID.fromString("f0eb77d9-76e0-47f4-813f-9b5605b78685");
-	public static UUID SPECIES4_NAME_UUID = UUID.fromString("b9cbaa74-dbe0-4930-8050-b7754ce85dc0");
+	public static UUID SPECIES1_UUID = UUID.fromString("f0eb77d9-76e0-47f4-813f-9b5605b78685");
+	public static UUID SPECIES1_NAME_UUID = UUID.fromString("efd78713-126f-42e1-9070-a1ff83f12abf");
+	public static UUID SYNONYM_NAME_UUID = UUID.fromString("b9cbaa74-dbe0-4930-8050-b7754ce85dc0");
 	public static UUID SPECIES2_NAME_UUID = UUID.fromString("0267ab67-483e-4da5-b654-11013b242c22");
-	public static UUID SPECIES3_NAME_UUID = UUID.fromString("7c17c811-4201-454b-8108-7be7c91c0938");
+	public static UUID SPECIES2_UUID = UUID.fromString("e20eb549-ced6-4e79-9d74-44f0792a4929");
+	public static UUID SYNONYM2_NAME_UUID = UUID.fromString("7c17c811-4201-454b-8108-7be7c91c0938");
 	public static UUID SPECIES5_NAME_UUID = UUID.fromString("0c6ecaac-804d-49e5-a33f-1b7ee77439e3");
+	
 	
 	
 	private Random rnd = new Random();
@@ -62,7 +66,7 @@ public class TaxonGenerator {
         botName.getCombinationAuthorTeam().setNomenclaturalTitle("L."); 
         botName.setUuid(GENUS_NAME_UUID);
         Taxon genusTaxon = Taxon.NewInstance(botName, sec); 
-        genusTaxon.setUuid(UUID.fromString("bf4298a8-1735-4353-a210-244442e1bd62"));
+        genusTaxon.setUuid(GENUS_UUID);
                         
         //a name that is the basionym of genusTaxon's name
         BotanicalName basionym = BotanicalName.NewInstance(Rank.GENUS()); 
@@ -79,9 +83,9 @@ public class TaxonGenerator {
         botSpecies.setSpecificEpithet("asturianum"); 
         botSpecies.setCombinationAuthorTeam(Person.NewInstance()); 
         botSpecies.getCombinationAuthorTeam().setNomenclaturalTitle("Pau"); 
-        botSpecies.setUuid(UUID.fromString("efd78713-126f-42e1-9070-a1ff83f12abf"));
+        botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec); 
-        childTaxon.setUuid(SPECIES1_NAME_UUID);
+        childTaxon.setUuid(SPECIES1_UUID);
         Classification classification = getTestClassification("TestClassification");
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
 //        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456"); 
@@ -92,7 +96,7 @@ public class TaxonGenerator {
         botSpecies4.setGenusOrUninomial("Hieracium"); 
         botSpecies4.setSpecificEpithet("gueri"); 
         botSpecies4.setCombinationAuthorTeam(deCandolle); 
-        botSpecies4.setUuid(SPECIES4_NAME_UUID);
+        botSpecies4.setUuid(SYNONYM_NAME_UUID);
         Synonym homoSynonym = Synonym.NewInstance(botSpecies4, sec); 
         childTaxon.addSynonym(homoSynonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
 
@@ -106,7 +110,7 @@ public class TaxonGenerator {
         botSpecies2.getCombinationAuthorTeam().setNomenclaturalTitle("Zahn"); 
         botSpecies2.setUuid(SPECIES2_NAME_UUID);
         Taxon childTaxon2 = Taxon.NewInstance(botSpecies2, sec); 
-        childTaxon2.setUuid(UUID.fromString("e20eb549-ced6-4e79-9d74-44f0792a4929"));
+        childTaxon2.setUuid(SPECIES2_UUID);
         classification.addParentChild(genusTaxon, childTaxon2, citationRef, "499");
         //childTaxon2.setTaxonomicParent(genusTaxon, citationRef, "499"); 
         
@@ -116,7 +120,7 @@ public class TaxonGenerator {
         botSpecies3.setGenusOrUninomial("Hieracium"); 
         botSpecies3.setSpecificEpithet("lupium"); 
         botSpecies3.setCombinationAuthorTeam(deCandolle); 
-        botSpecies3.setUuid(SPECIES3_NAME_UUID);
+        botSpecies3.setUuid(SYNONYM2_NAME_UUID);
         Synonym heteroSynonym = Synonym.NewInstance(botSpecies3, sec); 
         childTaxon2.addSynonym(heteroSynonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
 

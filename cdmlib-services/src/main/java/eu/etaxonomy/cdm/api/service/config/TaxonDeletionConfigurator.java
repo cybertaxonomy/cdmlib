@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 /**
  * This class is used to configure taxon node deletion.
  * 
- * @see ITaxonNodeService#delete(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+ * @see ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon)
  * 
  * @author a.mueller
  * @date 09.11.2011
@@ -34,6 +34,9 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 	
 	private boolean deleteSynonymsIfPossible = true;
 	
+	private boolean deleteNameIfPossible = true;
+	
+	private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
 	
 	
 	private TaxonNodeDeletionConfigurator taxonNodeConfig = new TaxonNodeDeletionConfigurator();
@@ -55,6 +58,38 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 
 	public void setDeleteInAllClassifications(boolean deleteInAllClassifications) {
 		this.deleteInAllClassifications = deleteInAllClassifications;
+	}
+
+	/**
+	 * If true the taxons name will be deleted if this is possible.
+	 * It is possible if the name is not linked in a way that it can not be deleted.
+	 * This depends also on the {@link NameDeletionConfigurator}
+	 * @see #getNameDeletionConfig()
+	 * @return
+	 */
+	public boolean isDeleteNameIfPossible() {
+		return deleteNameIfPossible;
+	}
+
+	public void setDeleteNameIfPossible(boolean deleteNameIfPossible) {
+		this.deleteNameIfPossible = deleteNameIfPossible;
+	}
+
+
+	/**
+	 * The configurator for name deletion. Only evaluated if {@link #isDeleteNameIfPossible()}
+	 * is <code>true</code>.
+	 * @see NameDeletionConfigurator
+	 * @see #isDeleteNameIfPossible()
+	 * @see #isDeleteSynonymsIfPossible()
+	 * @return
+	 */
+	public NameDeletionConfigurator getNameDeletionConfig() {
+		return nameDeletionConfig;
+	}
+
+	public void setNameDeletionConfig(NameDeletionConfigurator nameDeletionConfig) {
+		this.nameDeletionConfig = nameDeletionConfig;
 	}
 
 	

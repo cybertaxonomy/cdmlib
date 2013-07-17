@@ -77,6 +77,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @SpringBeanByType
     private IClassificationService classificationService;
 
+    @SpringBeanByType
+    private ITaxonNodeService nodeService;
+
+
 
 /****************** TESTS *****************************/
 
@@ -926,9 +930,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet("TaxonServiceImplTest.testDeleteTaxonConfig.xml")
-    @Ignore  //not fully working yet
-    public final void testDeleteTaxonConfig(){
+    @DataSet("BlankDataSet.xml")
+    public final void testTaxonDeletionConfig(){
         final String[]tableNames = {
                 "Classification", "Classification_AUD",
                 "TaxonBase","TaxonBase_AUD",
@@ -947,12 +950,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
         UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
-
+        
+        Taxon testTaxon = TaxonGenerator.getTestTaxon();
+        service.save(testTaxon);
         int nTaxa = service.count(Taxon.class);
-        Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
-        Taxon parent = (Taxon)service.find(uuidParent);
+        Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
+        Taxon parent = (Taxon)service.find(TaxonGenerator.GENUS_UUID);
         Assert.assertNotNull("Parent taxon should exist", parent);
-        Taxon child1 = (Taxon)service.find(uuidChild1);
+        Taxon child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
         Assert.assertNotNull("Child taxon should exist", child1);
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
     	config.setDeleteTaxonNodes(false);
@@ -960,7 +965,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         try {
 //			commitAndStartNewTransaction(tableNames);
         	
-            service.deleteTaxon(child1, new TaxonDeletionConfigurator(), null);
+            service.deleteTaxon(child1, config, null);
             Assert.fail("Delete should throw an error as long as name is used in classification.");
         } catch (ReferencedObjectUndeletableException e) {
             if (e.getMessage().contains("Taxon can't be deleted as it is used in a classification node")){
@@ -972,25 +977,40 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         }
 
         nTaxa = service.count(Taxon.class);
-        Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
-        child1 = (Taxon)service.find(uuidChild1);
+        Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
+        child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
         Assert.assertNotNull("Child taxon should exist", child1);
         Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
 
         TaxonNode node = child1.getTaxonNodes().iterator().next();
-        node.getParent().deleteChildNode(node);
-        service.save(node.getTaxon());
+        TaxonNode parentNode = node.getParent();
+        parentNode =CdmBase.deproxy(parentNode, TaxonNode.class);
+        parentNode.deleteChildNode(node);
+        nodeService.save(parentNode);
         commitAndStartNewTransaction(tableNames);
 
-        child1 = (Taxon)service.find(uuidChild1);
+        child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
         try {
         	
             service.deleteTaxon(child1, config, null);
         } catch (ReferencedObjectUndeletableException e) {
             Assert.fail("Delete should not throw an exception anymore");
         }
+        nTaxa = service.count(Taxon.class);
+        Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
+        
+        config.setDeleteTaxonNodes(true);
+        Taxon child2 =(Taxon) service.find(TaxonGenerator.SPECIES2_UUID);
+        
+        try {
+			service.deleteTaxon(child2, config, null);
+		} catch (ReferencedObjectUndeletableException e) {
+			Assert.fail("Delete should not throw an exception");
+		}
 
-
+        
+        nTaxa = service.count(Taxon.class);
+        Assert.assertEquals("There should be 2 taxa in the database",2, nTaxa);
 //		nNames = nameService.count(TaxonNameBase.class);
 //		Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
 //		int nRelations = service.countAllRelationships();
@@ -1007,10 +1027,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 		UUID uuid = service.save(testTaxon);
 		
-		Taxon speciesTaxon = (Taxon)service.find(uuid);
-		BotanicalName name = (BotanicalName)speciesTaxon.getName();
-				
+		Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+		
+		BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+		assertNotNull(taxonName);
 		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
+		config.setDeleteNameIfPossible(false);
 		try {
 			service.deleteTaxon(speciesTaxon, config, null);
 		} catch (ReferencedObjectUndeletableException e) {
@@ -1020,11 +1042,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 		commitAndStartNewTransaction(null);
 		
-		BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.GENUS_NAME_UUID);
-		Taxon taxon = (Taxon)service.find(uuid);
+		taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+		Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+		
 		
 		//assertNull(synName);
-		//assertNull(taxonName);
+		assertNotNull(taxonName);
 		assertNull(taxon);
 	
 	}
