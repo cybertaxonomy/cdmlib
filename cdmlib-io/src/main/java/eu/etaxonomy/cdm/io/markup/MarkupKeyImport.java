@@ -129,11 +129,12 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 				completeCouplet(state, parentEvent, parentNode, num, childList);
 				return;
 			} else if (next.isCharacters()){
-				handleNotYetImplementedElement(next);
-				String mainQuestion = next.asCharacters().getData();
-				mainQuestion = mainQuestion.replaceAll("\\s+", " ").trim();
-				KeyStatement question = KeyStatement.NewInstance(mainQuestion);
-				if (parentNode != null){ parentNode.setStatement(question);}  //work in progress
+				handleNotYetImplementedCharacters(next);
+				//work in progress from pesiimport2, not sure if this works
+//				String mainQuestion = next.asCharacters().getData();
+//				mainQuestion = mainQuestion.replaceAll("\\s+", " ").trim();
+//				KeyStatement question = KeyStatement.NewInstance(mainQuestion);
+//				if (parentNode != null){ parentNode.setStatement(question);}  //work in progress
 			} else if (isStartingElement(next, QUESTION)) {
 				handleQuestion(state, reader, next, childList);
 			} else if (isStartingElement(next, KEYNOTES)) {
