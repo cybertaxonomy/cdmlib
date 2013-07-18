@@ -74,7 +74,10 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 	@XmlAttribute(name ="TermType")
 //	@Column(name="termType")
 //	@NotNull
-	@Enumerated  //TODO use UserType 
+//	@Enumerated  //TODO use UserType
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+            parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
+        )
 	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")
