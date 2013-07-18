@@ -60,7 +60,7 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 	@OneToMany(fetch=FetchType.LAZY, orphanRemoval=true)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
 	@Merge(MergeMode.ADD_CLONE)
-	protected Set<Annotation> annotations;
+	protected Set<Annotation> annotations = new HashSet<Annotation>();;
 	
 	protected AnnotatableEntity() {
 		super();
@@ -105,10 +105,7 @@ public abstract class AnnotatableEntity extends VersionableEntity implements IAn
 
 //*************** ANNOTATIONS **********************************************
 	
-	public Set<Annotation> getAnnotations(){
-		if(annotations == null) {
-			this.annotations = new HashSet<Annotation>();
-		}
+	public Set<Annotation> getAnnotations(){		
 		return this.annotations;
 	}
 	public void addAnnotation(Annotation annotation){

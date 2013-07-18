@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -106,6 +107,27 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			
 			return (TermVocabulary<T>)query.getSingleResult();
 		}
+	}
+
+//	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
+//
+//		Query query = getSession().createQuery("select vocabulary from TermVocabulary vocabulary where vocabulary.termType= :termType");
+//		query.setParameter("termType", termType);
+//
+//		return (List<TermVocabulary<T>>)query.list();
+//
+//	}
+	
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
+		
+		Criteria criteria = getSession().createCriteria(type);
+		criteria.add(Restrictions.eq("termType", termType));		
+				
+		//this.addOrder(criteria, orderHints);
+		
+		List<TermVocabulary<T>> result = (List<TermVocabulary<T>>)criteria.list();
+	    defaultBeanInitializer.initializeAll(result, null);
+		return result;
 	}
 
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize,	Integer pageNumber) {

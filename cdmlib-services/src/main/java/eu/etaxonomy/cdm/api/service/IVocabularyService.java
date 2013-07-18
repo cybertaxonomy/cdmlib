@@ -14,6 +14,7 @@ import java.util.List;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -82,5 +83,13 @@ public interface IVocabularyService extends IIdentifiableEntityService<TermVocab
 	 */
 	//TODO candidate for harmonization: rename to getTerms(...
 	public Pager<DefinedTermBase> getTerms(TermVocabulary vocabulary, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	
+	/**
+	 * Returns a list of term vocabularies corresponding to a term type
+	 *
+	 * @param termType The term type for which the list of vocabularies is desired
+	 * @return a list of vocabularies
+	 */
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType);
 
 }

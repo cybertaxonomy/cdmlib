@@ -425,6 +425,39 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 
 	public static TermType getByKey(String key){return delegateVoc.getByKey(key);}
     public static TermType getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+    
+	/**
+	 * Returns a defined term base object corresoponding to this term type object
+	 * 	 
+	 * @return a defined term base object
+	 */
+    public DefinedTermBase getEmptyDefinedTermBase() {
+    	switch(this) {
+    		case DeterminationModifier:
+    		case Modifier:
+    		case Scope:
+    		case Sex:
+    		case Stage:
+    		case DnaMarker:
+    			return DefinedTerm.NewInstance(this, null, "Untitled", null);    	
+    		case Feature:
+    			return eu.etaxonomy.cdm.model.description.Feature.NewInstance(null, "Untitled", null);
+    		case State:
+    			return eu.etaxonomy.cdm.model.description.State.NewInstance(null, "Untitled", null);
+    		case MarkerType:
+    			return eu.etaxonomy.cdm.model.common.MarkerType.NewInstance(null, "Untitled", null);
+    		case ExtensionType:
+    			return eu.etaxonomy.cdm.model.common.ExtensionType.NewInstance(null, "Untitled", null);  
+    		case NamedArea:
+    			return eu.etaxonomy.cdm.model.location.NamedArea.NewInstance(null, "Untitled", null);    	
+    		case NamedAreaLevel:
+    			return eu.etaxonomy.cdm.model.location.NamedAreaLevel.NewInstance(null, "Untitled", null);   
+    		case NamedAreaType:
+    			return eu.etaxonomy.cdm.model.location.NamedAreaType.NewInstance(null, "Untitled", null);     			
+    		default: 
+    			return null;    			
+    	}        	
+    }
 
 
 }
