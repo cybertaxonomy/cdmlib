@@ -194,10 +194,9 @@ public abstract class MarkupImportBase  {
 	protected static final String TO_TAXON = "toTaxon";
 
 
-
 	protected MarkupDocumentImport docImport;
 	private IEditGeoService editGeoService;
-
+	
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
@@ -558,7 +557,14 @@ public abstract class MarkupImportBase  {
 		int lineNumber = stackTrace[stackDepth].getLineNumber();
 		String methodName = stackTrace[stackDepth].getMethodName();
 		String locationStr = makeLocationStr(location);
-		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, 
+		String className = stackTrace[stackDepth].getClassName();
+		Class<?> declaringClass;
+		try {
+			declaringClass = Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			declaringClass = this.getClass();
+		}
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, 
 				locationStr, lineNumber, severity, methodName);
 		return event;
 	}
@@ -1065,8 +1071,7 @@ public abstract class MarkupImportBase  {
 	 * @param next
 	 * @return
 	 */
-	protected NamedAreaLevel makeNamedAreaLevel(MarkupImportState state,
-			String levelString, XMLEvent next) {
+	protected NamedAreaLevel makeNamedAreaLevel(MarkupImportState state, String levelString, XMLEvent next) {
 		NamedAreaLevel level;
 		try {
 			level = state.getTransformer().getNamedAreaLevelByKey(levelString);
