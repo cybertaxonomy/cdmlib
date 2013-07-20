@@ -111,6 +111,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//            TermVocabulary v = vocabularyDao.findByUuid(UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"));
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
                 //Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
                 UUID vocabularyUuid = firstPass(vocabularyType,terms);

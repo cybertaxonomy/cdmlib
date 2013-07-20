@@ -86,13 +86,6 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
     /**
      * @throws java.lang.Exception
      */
-    @AfterClass
-    public static void tearDownAfterClass() throws Exception {
-    }
-
-    /**
-     * @throws java.lang.Exception
-     */
     @Before
     public void setUp() throws Exception {
         EditGeoServiceUtilities.setTermDao(termDao);
@@ -100,12 +93,6 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
         editMapServiceUri = new URI(EDIT_MAPSERVICE_URI_STING);
     }
 
-    /**
-     * @throws java.lang.Exception
-     */
-    @After
-    public void tearDown() throws Exception {
-    }
 
 //******************************************** TESTS**************
     @Test

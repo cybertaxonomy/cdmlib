@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
@@ -175,6 +176,9 @@ public class Rank extends OrderedTermBase<Rank> {
 	@XmlAttribute(name ="RankClass")
 	@NotNull
 	@Enumerated  //TODO use UserType 
+	    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+		parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
+	)
 	private RankClass rankClass;
 
 
