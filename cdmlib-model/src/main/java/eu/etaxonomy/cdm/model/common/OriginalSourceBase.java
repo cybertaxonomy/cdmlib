@@ -25,6 +25,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.springframework.util.Assert;
 
@@ -63,6 +64,9 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@XmlAttribute(name ="type")
 	@Column(name="sourceType")
 	@NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+    	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.common.OriginalSourceType")}
+    )
 	private OriginalSourceType type;
 	
 	//The object's ID in the source, where the alternative string comes from
@@ -84,7 +88,9 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	 * @param type2 
 	 */
 	protected OriginalSourceBase(OriginalSourceType type){
-		Assert.notNull(type, "OriginalSourceType must not be null");
+		if (type == null){
+			throw new IllegalArgumentException("OriginalSourceType must not be null");
+		}
 		this.type = type;
 	}
 
