@@ -43,6 +43,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.ContainedIn;
@@ -103,7 +104,10 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlAttribute(name ="RecordBasis")
 	@Column(name="recordBasis")
 	@NotNull
-	@Enumerated  //TODO use UserType 
+//	@Enumerated
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+    parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType")}
+    		)
 	private SpecimenOrObservationType recordBasis;
 
 	
