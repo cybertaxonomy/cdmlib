@@ -71,7 +71,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//create original source type column
 		stepName = "Create original source type column";
 		tableName = "OriginalSourceBase";
-		String columnName = "type";
+		String columnName = "sourceType";
 		//TODO NOT NULL unclear
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true, null);
 		stepList.add(step);
@@ -121,14 +121,38 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
-		//TODO update idInVocabulary for DefinedTerms
+		//idInVocabulary for DefinedTerms
+		stepName = "Create idInVocabulary column in DefinedTermBase";
+		tableName = "DefinedTermBase";
+		columnName = "idInVocabulary";
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
+		//TODO update idInVocabulary
 		
+		
+		//termType for DefinedTerms and TermVocabulary, no type must be null
+		stepName = "Create termType column in DefinedTermBase";
+		tableName = "DefinedTermBase";
+		columnName = "termType";
+		//TODO NOT NULL unclear
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
 		//TODO update termType for DefinedTerms and TermVocabulary, no type must be null
+		
 		
 		//TODO update DTYPE for modifiers (Stage, Scope, Sex, DeterminationModifier, Modifier -> DefinedTerm)
 		
 		
+		//rankClass (#3521)
+		stepName = "Create rankClass column in DefinedTermBase";
+		tableName = "DefinedTermBase";
+		columnName = "rankClass";
+		//TODO NOT NULL unclear
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
 		//TODO update rankClass (#3521)
+
+		
 		
 		//TODO change column type for DistanceToWaterSurface und DistanceToGround
 		
