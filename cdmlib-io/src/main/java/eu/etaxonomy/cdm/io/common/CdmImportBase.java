@@ -391,7 +391,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				namedArea.setType(areaType);
 				namedArea.setLevel(level);
 				namedArea.setUuid(uuid);
-				getTermService().save(namedArea);
+				getTermService().saveOrUpdate(namedArea);
 			}
 			state.putNamedArea(namedArea);
 		}

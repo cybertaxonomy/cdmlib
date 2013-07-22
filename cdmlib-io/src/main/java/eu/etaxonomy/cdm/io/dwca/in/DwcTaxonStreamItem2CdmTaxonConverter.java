@@ -22,10 +22,20 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamImportBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -47,9 +57,9 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  * @date 22.11.2011
  *
  */
-public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<DwcaImportState> implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>  extends PartitionableConverterBase<CONFIG, STATE> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(DwcTaxonCsv2CdmTaxonConverter.class);
+	private static Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
 	// temporary key for the case that no dataset information is supplied, TODO use something better
@@ -60,12 +70,12 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	/**
 	 * @param state
 	 */
-	public DwcTaxonCsv2CdmTaxonConverter(DwcaImportState state) {
+	public DwcTaxonStreamItem2CdmTaxonConverter(STATE state) {
 		super(state);
 	}
 
 
-	public IReader<MappedCdmBase> map(CsvStreamItem csvTaxonRecord){
+	public IReader<MappedCdmBase> map(StreamItem csvTaxonRecord){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		//TODO what if not transactional? 
@@ -79,7 +89,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		
 		//original source
 		String id = csvTaxonRecord.get(ID);
-		IdentifiableSource source = taxonBase.addImportSource(id, "Taxon", sourceReference, sourceReferenceDetail);
+		IdentifiableSource source = taxonBase.addSource(OriginalSourceType.Import, id, "Taxon", sourceReference, sourceReferenceDetail);
 		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
 		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
@@ -108,7 +118,18 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	    //term="http://purl.org/dc/terms/identifier"
 		//currently only LSIDs
 		handleIdentifier(csvTaxonRecord, taxonBase); 
+		
+		//TaxonRemarks
+		handleTaxonRemarks(csvTaxonRecord, taxonBase);
+		
+		//TDWG_1
+		handleTdwgArea(csvTaxonRecord, taxonBase);
+		
+		//VernecularName
+		handleCommonNames(csvTaxonRecord, taxonBase);
 
+		//External Sources, ID's and References
+		handleIdentifiableObjects(csvTaxonRecord, taxonBase);
 		
 		
 		//		    <!-- Top level group; listed as kingdom but may be interpreted as domain or superkingdom
@@ -161,9 +182,108 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 
 
 	
+	/**
+	 * @param item
+	 * @param taxonBase
+	 */
+	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+		//TODO: Finish properly
+		String id = item.get(TermUri.CDM_SOURCE_IDINSOURCE);
+		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
+		String reference = item.get(TermUri.CDM_SOURCE_REFERENCE);
+		if(StringUtils.isNotBlank(id) && StringUtils.isNotBlank(idNamespace) && StringUtils.isNotBlank(reference)){
+			Reference<?> ref = ReferenceFactory.newGeneric();
+			ref.setTitle(reference);
+			Taxon taxon = (Taxon) taxonBase;
+			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
+		}
+	}
+
+
+	/**
+	 * @param item
+	 * @param taxonBase
+	 */
+	private void handleCommonNames(StreamItem item,TaxonBase<?> taxonBase) {
+		//TODO: handle comma separated values
+		String commonName = item.get(TermUri.DWC_VERNACULAR_NAME);
+		Language language = getLanguage(item);	
+		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonName, language);
+		if(taxonBase instanceof Taxon){
+			Taxon taxon = (Taxon) taxonBase;
+			TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+			taxonDescription.addElement(commonTaxonName);
+			logger.info("Common name " + commonName + " added to " + taxon.getTitleCache());
+		}
+	}
+
+
+
+	/**
+	 * @param csvTaxonRecord
+	 * @param taxonBase
+	 */
+	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
+		// TODO Auto-generated method stub
+		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
+		if(taxonBase instanceof Synonym){
+			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+			Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
+			if(acceptedTaxaList.size()>1){
+				String message = "Synonym is related to more than one accepted Taxa";
+				fireWarningEvent(message, item, 4);
+			}else{
+				for(Taxon taxon : acceptedTaxaList){
+					TaxonDescription td = getTaxonDescription(taxon, false);
+					NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
+
+					if (area == null){
+						area = NamedArea.getAreaByTdwgLabel(tdwg_area);
+					}
+					if (area != null){
+						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+						td.addElement(distribution);
+					}
+				}
+			}
+		}
+		if(!(taxonBase instanceof Synonym)){
+			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+			TaxonDescription td = getTaxonDescription(taxon, false);
+			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
+
+			if (area == null){
+				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
+			}
+			if (area != null){
+				Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+				td.addElement(distribution);
+			}
+		}
+	}
+
+
+	/**
+	 * @param item
+	 * @param taxonBase
+	 */
+	private void handleTaxonRemarks(StreamItem item,TaxonBase<?> taxonBase) {
+		String comment = item.get(TermUri.DWC_TAXON_REMARKS);
+		Language language = getLanguage(item);	
+		if(StringUtils.isNotBlank(comment)){
+				Annotation annotation = Annotation.NewInstance(comment, language);
+				taxonBase.addAnnotation(annotation);
+		}else{
+			String message = "Comment is empty or some error appeared while saving: %s";
+//			message = String.format(message);
+			fireWarningEvent(message, item, 1);
+		}
+	}
+
+
 	//TODO handle non LSIDs
 	//TODO handle LSIDs for names
-	private void handleIdentifier(CsvStreamItem csvTaxonRecord, TaxonBase<?> taxonBase) {
+	private void handleIdentifier(StreamItem csvTaxonRecord, TaxonBase<?> taxonBase) {
 		String identifier = csvTaxonRecord.get(TermUri.DC_IDENTIFIER);
 		if (StringUtils.isNotBlank(identifier)){
 			if (identifier.trim().startsWith("urn:lsid")){
@@ -185,7 +305,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
-	private void handleDataset(CsvStreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
+	private void handleDataset(StreamItem item, TaxonBase<?> taxonBase, List<MappedCdmBase> resultList, Reference<?> sourceReference, String sourceReferecenDetail) {
 		TermUri idTerm = TermUri.DWC_DATASET_ID;
 		TermUri strTerm = TermUri.DWC_DATASET_NAME;
 		
@@ -214,7 +334,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
 				Classification classification = Classification.NewInstance(classificationName);
 				//source
-				IdentifiableSource source = classification.addSource(OriginalSourceType.Lineage, classificationId, "Dataset", sourceReference, sourceReferecenDetail);
+				IdentifiableSource source = classification.addSource(OriginalSourceType.Import, classificationId, "Dataset", sourceReference, sourceReferecenDetail);
 				//add to result
 				resultList.add(new MappedCdmBase(idTerm, datasetId, classification));
 				resultList.add(new MappedCdmBase(strTerm, datasetName, classification));
@@ -232,7 +352,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 					taxonBase.setSec(ref);
 				}else{
 					//dataset as original source
-					taxonBase.addSource(OriginalSourceType.Lineage, null, null, ref, null);
+					taxonBase.addSource(OriginalSourceType.Import, null, null, ref, null);
 				}
 			}
 		}else{
@@ -248,12 +368,12 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 
 	
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(ID);
 		return id;
 	}
 
-	private MappedCdmBase<Reference> getNameAccordingTo(CsvStreamItem item, List<MappedCdmBase> resultList) {
+	private MappedCdmBase<Reference> getNameAccordingTo(StreamItem item, List<MappedCdmBase> resultList) {
 		if (config.isDatasetsAsSecundumReference()){
 			//TODO store nameAccordingTo info some where else or let the user define where to store it.
 			return null;
@@ -265,7 +385,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		}
 	}
 
-	private NomenclaturalCode getNomCode(CsvStreamItem item) {
+	private NomenclaturalCode getNomCode(StreamItem item) {
 		String strNomCode = getValue(item, TermUri.DWC_NOMENCLATURAL_CODE);
 		NomenclaturalCode nomCode = null;
 		// by Nomcenclatural Code
@@ -304,7 +424,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
-	private TaxonNameBase<?,?> getScientificName(CsvStreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
+	private TaxonNameBase<?,?> getScientificName(StreamItem item, NomenclaturalCode nomCode, Rank rank, List<MappedCdmBase> resultList, Reference sourceReference) {
 		TaxonNameBase<?,?> name = null;
 		String strScientificName = getValue(item, TermUri.DWC_SCIENTIFIC_NAME);
 		//Name
@@ -325,8 +445,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 		if (strScientificNameId != null){
 			if (config.isScientificNameIdAsOriginalSourceId()){
 				if (name != null){
-					IdentifiableSource source = IdentifiableSource.NewDataImportInstance(strScientificNameId, 
-							TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference);
+					IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, strScientificNameId, TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference, null);
 					name.addSource(source);
 				}
 			}else{
@@ -364,7 +483,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	 * @param idIsInternal
 	 * @return
 	 */
-	private MappedCdmBase<Reference> getReference(CsvStreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
+	private MappedCdmBase<Reference> getReference(StreamItem item, List<MappedCdmBase> resultList, TermUri idTerm, TermUri strTerm, boolean idIsInternal) {
 		Reference<?> newRef = null;
 		Reference<?> sourceCitation = null;
 		
@@ -381,7 +500,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 						fireWarningEvent(message, item, 4);
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
-						newRef.addImportSource(refId, idTerm.toString(), sourceCitation, null);
+						newRef.addSource(OriginalSourceType.Import, refId, idTerm.toString(), sourceCitation, null);
 						MappedCdmBase<Reference> idResult = new MappedCdmBase<Reference>(idTerm, refId, newRef);
 						resultList.add(idResult);
 					}
@@ -412,7 +531,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 
 
 	//TODO we may configure in configuration that scientific name never includes Authorship
-	private void checkAuthorship(TaxonNameBase nameBase, CsvStreamItem item) {
+	private void checkAuthorship(TaxonNameBase nameBase, StreamItem item) {
 		if (!nameBase.isInstanceOf(NonViralName.class)){
 			return;
 		}
@@ -438,7 +557,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	}
 
 
-	private Rank getRank(CsvStreamItem csvTaxonRecord, NomenclaturalCode nomCode) {
+	private Rank getRank(StreamItem csvTaxonRecord, NomenclaturalCode nomCode) {
 		boolean USE_UNKNOWN = true;
 		Rank rank = null;
 		String strRank = getValue(csvTaxonRecord,TermUri.DWC_TAXON_RANK);
@@ -481,7 +600,7 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	 * @param item
 	 * @return
 	 */
-	private TaxonBase<?> getTaxonBase(CsvStreamItem item) {
+	private TaxonBase<?> getTaxonBase(StreamItem item) {
 		TaxonNameBase<?,?> name = null;
 		Reference<?> sec = null;
 		TaxonBase<?> result;
@@ -525,11 +644,30 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 
 	}
 	
+
+	/**
+	 * @param item
+	 * @return
+	 */
+	private Language getLanguage(StreamItem item) {
+		String langItem = item.get(TermUri.DC_LANGUAGE);
+		Language language = null;
+
+		if(StringUtils.equalsIgnoreCase(langItem, "de")){
+			language = Language.GERMAN();
+		}else if(StringUtils.equalsIgnoreCase(langItem, "en")){
+			language = Language.ENGLISH();
+		}else{
+			language = Language.DEFAULT();
+		}
+		return language;
+	}
+
 // ********************** PARTITIONABLE ****************************************/
 
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
 		
@@ -583,6 +721,9 @@ public class DwcTaxonCsv2CdmTaxonConverter extends PartitionableConverterBase<Dw
 	 	result.add(TermUri.DWC_DATASET_NAME.toString());
 	 	return result;
 	}
+	
+	
+	
 	
 //** ***************************** TO STRING *********************************************/
 	

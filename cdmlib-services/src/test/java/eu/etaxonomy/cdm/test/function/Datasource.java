@@ -25,12 +25,14 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.AccountStore;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -56,11 +58,17 @@ public class Datasource {
 		System.out.println(lsDataSources);
 //		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		
 		String server = "localhost";
 		String database = "cdm_test";
 		String username = "edit";
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-//		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+		
+		CdmUpdater updater = new CdmUpdater();
+		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+		
+		
+		//		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		appCtr.close();

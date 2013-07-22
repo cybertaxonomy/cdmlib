@@ -8,7 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
  * @author a.mueller
@@ -32,7 +31,23 @@ public class MappingEntry<SOURCE_NS extends Object, SOURCE_KEY extends Object,
 		this.destinationId = destinationKey;
 	}
 	
+	public DEST_NS getDestinationNamespace() {
+		return destinationNamespace;
+	}
+
+
+	public DEST_KEY getDestinationId() {
+		return destinationId;
+	}
 	
+	public SOURCE_NS getNamespace() {
+		return namespace;
+	}
+
+	public SOURCE_KEY getSourceKey() {
+		return sourceKey;
+	}
+
 	@Override
 	public String toString(){
 		return "[" + String.valueOf(namespace) + "." + String.valueOf(sourceKey) + "->" +  

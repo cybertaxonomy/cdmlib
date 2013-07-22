@@ -1203,6 +1203,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         } catch (Exception e){
             logger.error(e);
+            e.printStackTrace();
         }
 
         return bestCandidate;

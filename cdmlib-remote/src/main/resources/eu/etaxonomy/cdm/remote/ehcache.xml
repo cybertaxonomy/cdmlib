@@ -39,7 +39,7 @@ used with JMX monitors.
   <!--
     diskStore: see http://www.ehcache.org/documentation/user-guide/storage-options#ltdiskstoregt-configuration-element
   -->
-  <diskStore path="java.io.tmpdir/cdm-server-ehcache" />
+  <diskStore path="user.home/.cdm-server-ehcache" />
   <defaultCache maxElementsInMemory="10" eternal="false"
     timeToIdleSeconds="120" timeToLiveSeconds="120" overflowToDisk="true" />
   <cache

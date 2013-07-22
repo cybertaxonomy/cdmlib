@@ -160,28 +160,45 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return dao.countDescriptions(type, hasImages, hasText, feature);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * rename -> getElements
-     */
     @Override
-    public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
+    public Pager<DescriptionElementBase> pageDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
             Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-        List<DescriptionElementBase> results = listDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
+        List<DescriptionElementBase> results = listDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         return new DefaultPagerImpl<DescriptionElementBase>(pageNumber, results.size(), pageSize, results);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getDescriptionElements(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.Set, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
     @Override
-    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
+    @Deprecated
+    public Pager<DescriptionElementBase> getDescriptionElements(DescriptionBase description,
             Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
-        Integer numberOfResults = dao.countDescriptionElements(description, features, type);
+        return pageDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
+    }
 
+    @Override
+    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        Integer numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
         List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
         if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getDescriptionElements(description, features, type, pageSize, pageNumber, propertyPaths);
+            results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         }
         return results;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#listDescriptionElements(eu.etaxonomy.cdm.model.description.DescriptionBase, java.util.Set, java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    @Deprecated
+    public List<DescriptionElementBase> listDescriptionElements(DescriptionBase description,
+            Set<Feature> features, Class<? extends DescriptionElementBase> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        return listDescriptionElements(description, null, features, type, pageSize, pageNumber, propertyPaths);
     }
 
     @Override
@@ -406,16 +423,36 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         return vocabularyDao.findByUuid(uuid);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * descriptionElementService.listDescriptionElementsForTaxon
-     */
     @Override
+    @Deprecated
     public <T extends DescriptionElementBase> List<T> getDescriptionElementsForTaxon(
             Taxon taxon, Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
+        return listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+    }
+
+    @Override
+    public <T extends DescriptionElementBase> List<T> listDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features,
+            Class<T> type, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
         return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+    }
+
+    @Override
+    public <T extends DescriptionElementBase> Pager<T> pageDescriptionElementsForTaxon(
+            Taxon taxon, Set<Feature> features,
+            Class<T> type, Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths) {
+        Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
+        List<T> descriptionElements;
+        if(count > (pageSize * pageNumber + 1)){ // no point checking again
+            descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+        } else {
+            descriptionElements = new ArrayList<T>(0);
+        }
+        return new DefaultPagerImpl<T>(pageNumber, count.intValue(), pageSize, descriptionElements);
     }
 
 

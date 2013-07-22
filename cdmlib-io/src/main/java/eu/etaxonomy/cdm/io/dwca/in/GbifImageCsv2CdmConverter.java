@@ -18,6 +18,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -27,8 +28,8 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @date 22.11.2011
  *
  */
-public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
-						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(GbifImageCsv2CdmConverter.class);
@@ -38,11 +39,11 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaIm
 	/**
 	 * @param state
 	 */
-	public GbifImageCsv2CdmConverter(DwcaImportState state) {
+	public GbifImageCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(CsvStreamItem item ){
+	public IReader<MappedCdmBase> map(StreamItem item ){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
@@ -68,7 +69,7 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaIm
 	
 
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
 		return id;
 	}
@@ -77,7 +78,7 @@ public class GbifImageCsv2CdmConverter extends PartitionableConverterBase<DwcaIm
 //********************** PARTITIONABLE **************************************/
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
 		//taxon

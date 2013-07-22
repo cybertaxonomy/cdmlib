@@ -1205,7 +1205,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 		IdentifiableSource source = IdentifiableSource.NewDataImportInstance( id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
 		
-		if(cdmState.getConfig().isDoMatchTaxa()){
+		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
 		
@@ -1239,7 +1239,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 		String ref = elTaxonName.getAttributeValue("ref");
 		NonViralName nonViralName = taxonNameBases.get(ref);
 		
-		if(cdmState.getConfig().isDoMatchTaxa()){
+		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
 			taxon = getTaxonService().findBestMatchingTaxon(nonViralName.getTitleCache());
 		}
 		

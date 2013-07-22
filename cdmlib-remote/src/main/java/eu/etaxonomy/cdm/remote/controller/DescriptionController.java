@@ -25,13 +25,11 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -43,8 +41,6 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
-import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -68,16 +64,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     public DescriptionController(){
         super();
     }
-
-    private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
-            new String[]{
-                "representations",
-                "root.feature.representations",
-                "root.children.feature.representations",
-                "root.children.children.feature.representations",
-            });
-
-
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -105,19 +91,26 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         this.service = service;
     }
 
-    /**
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     */
-    @RequestMapping(value = {"/featureTree/{uuid}"}, method = RequestMethod.GET)
-    public FeatureTree doGetFeatureTree(
+    @RequestMapping(value = "hasStructuredData", method = RequestMethod.GET)
+    public ModelAndView doHasStructuredData(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
-            HttpServletResponse response)throws IOException {
-        FeatureTree featureTree = getCdmBaseInstance(FeatureTree.class, featureTreeService, uuid, response, FEATURETREE_INIT_STRATEGY);
-        return featureTree;
+            HttpServletResponse response) throws IOException {
+        logger.info("doHasStructuredData() - " + request.getRequestURI());
+
+        ModelAndView mv = new ModelAndView();
+
+        DescriptionBase description = service.load(uuid);
+
+        if(!(description instanceof TaxonDescription)){
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            // will terminate thread
+        }
+
+        boolean hasStructuredData = service.hasStructuredData(description);
+
+        mv.addObject(hasStructuredData);
+        return mv;
     }
 
     @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET)
@@ -149,7 +142,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             return null;
         }
 
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
+        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 
@@ -180,30 +173,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         List<StateData> states = ((CategoricalData)descriptionElement).getStateData();
         mv.addObject(states);
         return mv;
-    }
-
-
-
-    @RequestMapping(value = "/descriptionElement/find", method = RequestMethod.GET)
-    public Pager<DescriptionElementBase> doFindDescriptionElements(
-            @RequestParam(value = "query", required = true) String queryString,
-            @RequestParam(value = "type", required = false) Class type,
-            @RequestParam(value = "pageSize", required = false) Integer pageSize,
-            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
-            HttpServletRequest request,
-            HttpServletResponse response
-            )
-             throws IOException {
-
-        logger.info("doFindDescriptionElements : " + request.getRequestURI() + "?" + request.getQueryString() );
-
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
-
-        Pager<DescriptionElementBase> pager = service.searchElements(type, queryString, pageSize, pageNumber, null, DEFAULT_INIT_STRATEGY);
-
-        return pager;
     }
 
     /*
@@ -258,29 +227,6 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         TextData textData = TextData.NewInstance(Feature.DESCRIPTION());
         textData.putText(Language.DEFAULT(), naturalLanguageDescription);
         mv.addObject(textData);
-        return mv;
-    }
-
-    @RequestMapping(value = "/description/{uuid}/hasStructuredData", method = RequestMethod.GET)
-    public ModelAndView doHasStructuredData(
-            @PathVariable("uuid") UUID uuid,
-            HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-        logger.info("doHasStructuredData() - " + request.getRequestURI());
-
-        ModelAndView mv = new ModelAndView();
-
-        DescriptionBase description = service.load(uuid);
-
-        if(!(description instanceof TaxonDescription)){
-            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
-            // will terminate thread
-        }
-
-        boolean hasStructuredData = service.hasStructuredData(description);
-
-        mv.addObject(hasStructuredData);
-
         return mv;
     }
 

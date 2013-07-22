@@ -26,17 +26,31 @@ public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements I
 	private static final Logger logger = Logger.getLogger(TableDroper.class);
 	
 	private String tableName;
-		private boolean includeAudTable;
+	private boolean includeAudTable;
+	private boolean ifExists = true;
 	
 	public static final TableDroper NewInstance(String stepName, String tableName, boolean includeAudTable){
-		return new TableDroper(stepName, tableName, includeAudTable);
+		return new TableDroper(stepName, tableName, includeAudTable, true);
+	}
+	
+	/**
+	 * @param stepName
+	 * @param tableName
+	 * @param includeAudTable
+	 * @param ifExists if false, and error will be thrown if the table does not exist and can therefore not be dropped.
+	 * @see #NewInstance(String, String, boolean)
+	 * @return
+	 */
+	public static final TableDroper NewInstance(String stepName, String tableName, boolean includeAudTable, boolean ifExists){
+		return new TableDroper(stepName, tableName, includeAudTable, ifExists);
 	}
 
 	
-	protected TableDroper(String stepName, String tableName, boolean includeAudTable) {
+	protected TableDroper(String stepName, String tableName, boolean includeAudTable, boolean ifExists) {
 		super(stepName);
 		this.tableName = tableName;
 		this.includeAudTable = includeAudTable;
+		this.ifExists = ifExists;
 	}
 
 	/* (non-Javadoc)
@@ -73,10 +87,10 @@ public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements I
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		
-		updateQuery = "DROP TABLE @tableName";
+		updateQuery = "DROP TABLE @ifExists @tableName ";
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 			//MySQL allows both syntaxes
-//			updateQuery = "ALTER TABLE @tableName ADD @columnName @columnType";
+			updateQuery = " if exists (select * from INFORMATION_SCHEMA.TABLES where TABLE_NAME='@tableName') BEGIN drop table @tableName end ";
 		}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.MySQL)){
 //			updateQuery = "ALTER TABLE @tableName @addSeparator @columnName @columnType";
 		}else{
@@ -86,6 +100,9 @@ public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements I
 			throw new DatabaseTypeNotSupportedException(warning);
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
+		if (ifExists == true){
+			updateQuery = updateQuery.replace("@ifExists", "IF EXISTS");
+		}
 		
 		return updateQuery;
 	}

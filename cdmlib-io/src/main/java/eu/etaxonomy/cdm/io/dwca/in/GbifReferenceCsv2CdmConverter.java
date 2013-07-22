@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -47,8 +48,8 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @date 22.11.2011
  *
  */
-public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaImportState>  
-						implements IPartitionableConverter<CsvStreamItem, IReader<CdmBase>, String>{
+public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<DwcaDataImportConfiguratorBase, DwcaDataImportStateBase<DwcaDataImportConfiguratorBase>>  
+						implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
 	
 	private static final Logger logger = Logger.getLogger(GbifReferenceCsv2CdmConverter.class);
 
@@ -57,11 +58,11 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	/**
 	 * @param state
 	 */
-	public GbifReferenceCsv2CdmConverter(DwcaImportState state) {
+	public GbifReferenceCsv2CdmConverter(DwcaDataImportStateBase state) {
 		super(state);
 	}
 
-	public IReader<MappedCdmBase> map(CsvStreamItem item ){
+	public IReader<MappedCdmBase> map(StreamItem item ){
 		List<MappedCdmBase> resultList = new ArrayList<MappedCdmBase>(); 
 		
 		Map<String, String> csv = item.map;
@@ -112,7 +113,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	}
 
 	
-	private void handleType(Reference<?> reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, CsvStreamItem item) {
+	private void handleType(Reference<?> reference, String strType, TaxonBase<?> taxon, List<MappedCdmBase> resultList, StreamItem item) {
 		// TODO handleType not yet implemented
 		
 		if (taxon == null){
@@ -236,7 +237,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	}
 
 	@Override
-	public String getSourceId(CsvStreamItem item) {
+	public String getSourceId(StreamItem item) {
 		String id = item.get(CORE_ID);
 		return id;
 	}
@@ -245,7 +246,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 //********************** PARTITIONABLE **************************************/
 
 	@Override
-	protected void makeForeignKeysForItem(CsvStreamItem item, Map<String, Set<String>> fkMap) {
+	protected void makeForeignKeysForItem(StreamItem item, Map<String, Set<String>> fkMap) {
 		String value;
 		String key;
 		if ( hasValue(value = item.get(CORE_ID))){

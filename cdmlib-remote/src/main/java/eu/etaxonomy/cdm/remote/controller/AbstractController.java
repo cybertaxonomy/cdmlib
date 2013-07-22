@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
 
@@ -56,8 +56,21 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      *
      * @param initializationStrategy
      */
-    public void setInitializationStrategy(List<String> initializationStrategy) {
+    public final void setInitializationStrategy(List<String> initializationStrategy) {
         this.initializationStrategy = initializationStrategy;
+    }
+
+    /**
+     * Provides access to the default initialization strategy.
+     * The default initialization strategy is predefined for all controllers in
+     * {@link #DEFAULT_INIT_STRATEGY} but can be altered by
+     * concrete implementations by utilizing {@link #setInitializationStrategy(List)}
+     * in the constructor of the specific controller.
+     *
+     * @return the default initialization strategy
+     */
+    public final List<String> getInitializationStrategy() {
+        return this.initializationStrategy;
     }
 
     /**

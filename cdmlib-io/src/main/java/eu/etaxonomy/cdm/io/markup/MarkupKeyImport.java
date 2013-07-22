@@ -128,6 +128,13 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			if (isMyEndingElement(next, parentEvent)) {
 				completeCouplet(state, parentEvent, parentNode, num, childList);
 				return;
+			} else if (next.isCharacters()){
+				handleNotYetImplementedCharacters(next);
+				//work in progress from pesiimport2, not sure if this works
+//				String mainQuestion = next.asCharacters().getData();
+//				mainQuestion = mainQuestion.replaceAll("\\s+", " ").trim();
+//				KeyStatement question = KeyStatement.NewInstance(mainQuestion);
+//				if (parentNode != null){ parentNode.setStatement(question);}  //work in progress
 			} else if (isStartingElement(next, QUESTION)) {
 				handleQuestion(state, reader, next, childList);
 			} else if (isStartingElement(next, KEYNOTES)) {
@@ -225,7 +232,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		String num = getOnlyAttribute(next, NUM, true);
 		String cData = getCData(state, reader, next, false);
 		if (isNotBlank(cData) && ! cData.equals(num)){
-			String message = "CData ('%s') not be handled in <toCouplet>";
+			String message = "CData ('%s') not handled in <toCouplet>";
 			message = String.format(message, cData);
 			fireWarningEvent(message, next, 4);
 		}
@@ -256,9 +263,8 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 		return;
 	}
-	
-	
-	/**
+
+		/**
 	 * Returns the taxon text of the toTaxon element and handles all annotations as ';'-concatenated modifying text.
 	 * Footnote refs are not yet handled.
 	 * @param state
@@ -356,10 +362,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			return false;
 		}
 	}
-	
 
-	
-	
 //******************************** recognize nodes ***********/
 
 	public void makeKeyNodes(MarkupImportState state, XMLEvent event, String taxonTitle) {
@@ -401,5 +404,4 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		}
 		return matchingNodes;
 	}
-
 }

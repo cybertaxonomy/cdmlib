@@ -72,6 +72,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     }
 
 
+    @Override
     @Autowired
     public void setService(ITaxonService service) {
         this.service = service;
@@ -102,7 +103,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         if(tb instanceof Taxon){
             //the taxon already is accepted
             //FIXME take the current view into account once views are implemented!!!
-            resultset.add((Taxon)tb);
+            resultset.add(tb);
         } else {
             Synonym syn = (Synonym)tb;
             resultset.addAll(syn.getAcceptedTaxa());
@@ -123,7 +124,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
 
-        return service.listClassifications(taxonBase, null, null, DEFAULT_INIT_STRATEGY);
+        return service.listClassifications(taxonBase, null, null, getInitializationStrategy());
     }
 
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)

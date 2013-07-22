@@ -67,6 +67,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -75,17 +76,16 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  */
 public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private static final Logger logger = Logger.getLogger(MarkupDocumentImportNoComponent.class);
-
-
+	
 	private MarkupKeyImport keyImport;
 	private MarkupSpecimenImport specimenImport;
-	
+
 	private MarkupNomenclatureImport nomenclatureImport;
 	
 	public MarkupDocumentImportNoComponent(MarkupDocumentImport docImport) {
 		super(docImport);
-		keyImport = new MarkupKeyImport(docImport);
-		specimenImport = new MarkupSpecimenImport(docImport);
+		this.keyImport = new MarkupKeyImport(docImport);
+		this.specimenImport = new MarkupSpecimenImport(docImport);
 		nomenclatureImport = new MarkupNomenclatureImport(docImport, keyImport, specimenImport);
 	}
 
@@ -261,6 +261,10 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		}
 		Rank thisRank = taxon.getName().getRank();
 		Rank lastRank = lastTaxon.getName().getRank();
+		if (lastRank == null){
+			String message = "Last rank was null. Can't create tree correctly";
+			fireWarningEvent(message, makeLocationStr(dataLocation), 12);
+		}
 		if (lastTaxon.getTaxonNodes().size() > 0) {
 			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
 			if (thisRank == null){
@@ -1062,7 +1066,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		return result;
 	}
 
-
 	private void handleFeature(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
 		Map<String, Attribute> attrs = getAttributes(parentEvent);
 		Boolean isFreetext = getAndRemoveBooleanAttributeValue(parentEvent, attrs, IS_FREETEXT, false);
@@ -1207,7 +1210,6 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		
 		//for specimen only
 		if (feature.equals(Feature.SPECIMEN()) || feature.equals(Feature.MATERIALS_EXAMINED())){
-			
 			
 			List<DescriptionElementBase> specimens = specimenImport.handleMaterialsExamined(state, reader, next, feature);
 			for (DescriptionElementBase specimen : specimens){
@@ -1906,16 +1908,18 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				return feature;
 			}
 			uuid = state.getTransformer().getFeatureUuid(classValue);
-			if (uuid == null) {
-				uuid = state.getFeatureUuid(classValue);
-			}			
+			
+			if (uuid == null){
+				uuid = state.getUnknownFeatureUuid(classValue);
+			}
+			
 			if (uuid == null) {
 				// TODO
 				String message = "Uuid is not defined for '%s'";
 				message = String.format(message, classValue);
 				fireWarningEvent(message, parentEvent, 8);
 				uuid = UUID.randomUUID();
-				state.putFeatureUuid(classValue, uuid);
+				state.putUnknownFeatureUuid(classValue, uuid);
 			}
 
 			// TODO eFlora vocabulary
@@ -1936,11 +1940,10 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 			String message = "Could not create feature for %s: %s";
 			message = String.format(message, classValue, e.getMessage());
 			fireWarningEvent(message, parentEvent, 4);
-			e.printStackTrace();
+			state.putUnknownFeatureUuid(classValue, null);
+//			e.printStackTrace();
 			return Feature.UNKNOWN();
 		}
 	}
-
-
 
 }

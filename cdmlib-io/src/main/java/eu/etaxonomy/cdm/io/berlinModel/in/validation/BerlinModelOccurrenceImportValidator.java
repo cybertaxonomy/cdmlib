@@ -54,7 +54,7 @@ public class BerlinModelOccurrenceImportValidator implements IOValidator<BerlinM
 				                " Name ON PTaxon.PTNameFk = Name.NameId INNER JOIN " +
 				                " Status ON PTaxon.StatusFk = Status.StatusId LEFT OUTER JOIN " +
 				                " Reference ON PTaxon.PTRefFk = Reference.RefId " + 
-							" WHERE (PTaxon.StatusFk <> 1)  ";
+							" WHERE (PTaxon.StatusFk NOT IN ( 1, 5))  ";
 
 				if (StringUtils.isNotBlank(config.getOccurrenceFilter())){
 					strQuery += String.format(" AND (%s) ", config.getOccurrenceFilter()) ; 

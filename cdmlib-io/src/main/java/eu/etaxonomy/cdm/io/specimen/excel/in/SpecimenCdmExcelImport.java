@@ -273,9 +273,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		facade.setGatheringPeriod(getTimePeriod(row.getCollectingDate(), row.getCollectingDateEnd()));
 		facade.setLocality(row.getLocality());
 		facade.setFieldNotes(row.getFieldNotes());
-		facade.setFieldNumber(NB(row.getCollectorsNumber()));
-		facade.setEcology(NB(row.getEcology()));
-		facade.setPlantDescription(NB(row.getPlantDescription()));
+		facade.setFieldNumber(row.getCollectorsNumber());
+		facade.setEcology(row.getEcology());
+		facade.setPlantDescription(row.getPlantDescription());
 //		facade.setSex(row.get)
 		handleExactLocation(facade, row, state);
 		facade.setCollector(getOrMakeAgent(state, row.getCollectors()));
@@ -284,8 +284,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		
 		
 		//derivedUnit
-		facade.setBarcode(NB(row.getBarcode()));
-		facade.setAccessionNumber(NB(row.getAccessionNumber()));
+		facade.setBarcode(row.getBarcode());
+		facade.setAccessionNumber(row.getAccessionNumber());
 		facade.setCollection(getOrMakeCollection(state, row.getCollectionCode(), row.getCollection()));
 		for (IdentifiableSource source : row.getSources()){
 			facade.addSource(source);

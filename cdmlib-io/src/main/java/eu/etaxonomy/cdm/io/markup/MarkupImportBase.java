@@ -24,6 +24,7 @@ import javax.xml.stream.XMLEventReader;
 import javax.xml.stream.XMLStreamConstants;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.events.Attribute;
+import javax.xml.stream.events.Characters;
 import javax.xml.stream.events.EndElement;
 import javax.xml.stream.events.StartElement;
 import javax.xml.stream.events.XMLEvent;
@@ -194,10 +195,9 @@ public abstract class MarkupImportBase  {
 	protected static final String TO_TAXON = "toTaxon";
 
 
-
 	protected MarkupDocumentImport docImport;
 	private IEditGeoService editGeoService;
-
+	
 	public MarkupImportBase(MarkupDocumentImport docImport) {
 		super();
 		this.docImport = docImport;
@@ -537,10 +537,15 @@ public abstract class MarkupImportBase  {
 		fire(event);		
 	}
 	
-
 	protected void fireNotYetImplementedElement(Location location, QName qName, int stackDepth) {
 		String message = "Element not yet implemented: %s";
 		IIoEvent event = makeProblemEvent(location, String.format(message, qName.getLocalPart()), 1, stackDepth+1 );
+		fire(event);		
+	}
+
+	protected void fireNotYetImplementedCharacters(Location location, Characters chars, int stackDepth) {
+		String message = "Characters not yet handled: %s";
+		IIoEvent event = makeProblemEvent(location, String.format(message, chars.getData()), 1, stackDepth+1 );
 		fire(event);		
 	}
 
@@ -558,7 +563,14 @@ public abstract class MarkupImportBase  {
 		int lineNumber = stackTrace[stackDepth].getLineNumber();
 		String methodName = stackTrace[stackDepth].getMethodName();
 		String locationStr = makeLocationStr(location);
-		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, 
+		String className = stackTrace[stackDepth].getClassName();
+		Class<?> declaringClass;
+		try {
+			declaringClass = Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			declaringClass = this.getClass();
+		}
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, 
 				locationStr, lineNumber, severity, methodName);
 		return event;
 	}
@@ -650,6 +662,15 @@ public abstract class MarkupImportBase  {
 		}else{
 			fireUnexpectedEvent(event, 1);
 		}	
+	}
+	
+	/**
+	 * Fires an not yet implemented event and adds the element name to the unhandled elements stack.
+	 * @param event
+	 */
+	protected void handleNotYetImplementedCharacters(XMLEvent event) {
+		Characters chars = event.asCharacters();
+		fireNotYetImplementedCharacters(event.getLocation(), chars, 1);
 	}
 
 	/**
@@ -1065,8 +1086,7 @@ public abstract class MarkupImportBase  {
 	 * @param next
 	 * @return
 	 */
-	protected NamedAreaLevel makeNamedAreaLevel(MarkupImportState state,
-			String levelString, XMLEvent next) {
+	protected NamedAreaLevel makeNamedAreaLevel(MarkupImportState state, String levelString, XMLEvent next) {
 		NamedAreaLevel level;
 		try {
 			level = state.getTransformer().getNamedAreaLevelByKey(levelString);

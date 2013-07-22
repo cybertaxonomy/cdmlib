@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 
 
 /**
@@ -36,7 +37,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_31_33.class);
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
-	private static final String endSchemaVersion = "3.3.0.0.201306010000";
+	private static final String endSchemaVersion = "3.3.0.0.201308010000";
 	
 // ********************** FACTORY METHOD *******************************************
 	
@@ -57,6 +58,17 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	 */
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
+		
+		//CHECKS
+		
+		//remove SpecimenOrObservationBase_Media #3597
+		  //TODO check if SpecimenOrObservationBase_Media has data => move to first position, don't run update if data exists
+		if (false){
+			throw new RuntimeException("Required check for SpecimenOrObservationBase_Media");
+		}else{
+			logger.warn("CHECKS for inconsistent data not running !!!!");
+		}
+		
 		
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
@@ -303,12 +315,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		//TODO add Marker vocabulary and terms #3591 => TermUpdater
 		
-		//remove SpecimenOrObservationBase_Media #3597
-		  //TODO check if SpecimenOrObservationBase_Media has data => move to first position, don't run update if data exists
-		if (true){
-			throw new RuntimeException("Required check for SpecimenOrObservationBase_Media");
-		}
-		
 		  //SpecimenOrObservationBase_Media #3597
 		stepName = "Remove table SpecimenOrObservationBase_Media";
 		tableName = "SpecimenOrObservationBase_Media";
@@ -390,28 +396,33 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	 */
 	private void updateOriginalSourceType(List<ISchemaUpdaterStep> stepList) {
 		String stepName;
+		String typeAttrName = "sourceType";
 		ISchemaUpdaterStep step;
-		stepName = "Create original source type column";
+		stepName = "Update original source type column in OriginalSourceBase_AUD: set all to unknown";
 		//all audits to unknown type
-		String query = "UPDATE OriginalSourceBase_AUD SET type = 0 ";
+		String query = String.format("UPDATE OriginalSourceBase_AUD SET %s = '%s' ", typeAttrName, OriginalSourceType.Unknown.getKey());
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
 		 //all data to unknown
-		query = "UPDATE OriginalSourceBase SET type = 0 ";
+		stepName = "Update original source type column: set all to unknown";
+		query = String.format("UPDATE OriginalSourceBase SET %s = '%s' ", typeAttrName, OriginalSourceType.Unknown.getKey());
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
-		 //all imports recognized by idInSOurce and by missing nameInSource
-		query = "UPDATE OriginalSourceBase SET type = 3 WHERE " +
+		 //all IMPORTS recognized by idInSOurce and by missing nameInSource
+		stepName = "Update original source type column: set to 'import' where possible";
+		query = String.format("UPDATE OriginalSourceBase SET %s = '%s' WHERE " +
 				"((idInSource IS NOT NULL) OR (idNamespace IS NOT NULL))  AND " +
-				"( nameUsedInSource IS NULL AND originalNameString IS NULL ) ";
+				"( nameUsedInSource_id IS NULL AND originalNameString IS NULL ) ", typeAttrName, OriginalSourceType.Import.getKey());
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
-		 //all imports recognized by idInSOurce and by missing nameInSource
-		query = "UPDATE OriginalSourceBase SET type = 1 WHERE " +
+		
+		 //all PRIMARY TAXONOMIC SOURCES recognized by missing idInSource and namespace and by existing citation
+		stepName = "Update original source type column: set to 'primary taxonomic source' where possible";
+		query = String.format("UPDATE OriginalSourceBase SET  %s = '%s' WHERE " +
 				"(idInSource IS NULL AND idNamespace IS NULL) AND " +
-				"( citation IS NOT NULL ) ";
+				"( citation IS NOT NULL ) ", typeAttrName, OriginalSourceType.PrimaryTaxonomicSource.getKey());
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 	}

@@ -1,9 +1,9 @@
 // $Id: NamedAreaPropertyEditor.java 8450 2010-03-19 15:12:17Z a.kohlbecker $
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.api.service.ITermService;
  * @author a.kohlbecker
  * @date 30.06.2009
  */
-@Component
 public class NamedAreaPropertyEditor extends PropertyEditorSupport  {
 	
 	@Autowired

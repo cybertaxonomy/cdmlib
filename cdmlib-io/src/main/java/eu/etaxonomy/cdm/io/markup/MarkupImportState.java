@@ -80,13 +80,14 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
 	
+	private Map<String,UUID> unknownFeaturesUuids = new HashMap<String, UUID>();
+	
 	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
 	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
 	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
 	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
 	
-	private Map<String, UUID> featureUuidMap = new HashMap<String, UUID>(); //keep in multiple imports
-
+	
 	/**
 	 * This method resets all those variables that should not be reused from one import to another.
 	 * @see MarkupImportConfigurator#isReuseExistingState()
@@ -279,6 +280,10 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		return areaMap.put(key, value);
 	}
 
+	public void putUnknownFeatureUuid(String featureLabel, UUID featureUuid) {
+		this.unknownFeaturesUuids.put(featureLabel, featureUuid);
+	}
+
 	public boolean isOnlyNumberedTaxaExist() {
 		return onlyNumberedTaxaExist;
 	}
@@ -294,7 +299,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		return charFeatureSorterListMap;
 	}
 	
+	public UUID getUnknownFeatureUuid(String featureLabel){
+		return this.unknownFeaturesUuids.get(featureLabel);
+	}
 	
+
 	/**
 	 * Adds new lists to the feature sorter list maps using the given key.
 	 * If at least 1 list already existed for the given key, true is returned. False
@@ -331,13 +340,6 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void putFeatureToGeneralSorterList(Feature feature) {
 		currentGeneralFeatureSorterList.add(new FeatureSorterInfo(feature)); 
 		
-	}
-
-	public void putFeatureUuid(String featureString, UUID uuid) {
-		featureUuidMap.put(featureString, uuid);
-	}
-	public UUID getFeatureUuid(String featureString){
-		return featureUuidMap.get(featureString);
 	}
 
 	public String getLatestGenusEpithet() {

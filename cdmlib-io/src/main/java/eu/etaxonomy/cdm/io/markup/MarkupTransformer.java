@@ -658,7 +658,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("vernacular")){return Feature.COMMON_NAME();
 		}else if (key.equalsIgnoreCase("specimens")){return Feature.SPECIMEN();
 		}else if (key.equalsIgnoreCase("materials examined")){return Feature.MATERIALS_EXAMINED();
-		
+		}else if (key.equalsIgnoreCase("material and methods")){return Feature.MATERIALS_METHODS();
 		}else if (key.equalsIgnoreCase("Vegetative Anatomy")){return Feature.ANATOMY();
 		
 		}else{
