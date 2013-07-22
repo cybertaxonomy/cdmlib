@@ -41,6 +41,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
@@ -161,6 +162,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
    //open issues: is null allowed? If not, implement unique constraint
     
     @XmlElement(name = "idInVocabulary")
+    @Length(max=255)
     private String idInVocabulary;  //the unique tabel this term uses in its given vocabulary #3479
 
 //***************************** CONSTRUCTOR *******************************************/
