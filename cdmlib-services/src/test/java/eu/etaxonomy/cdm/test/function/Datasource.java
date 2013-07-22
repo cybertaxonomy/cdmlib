@@ -52,6 +52,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 		System.out.println(lsDataSources);
 //		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
@@ -61,7 +62,7 @@ public class Datasource {
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 //		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
+		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		appCtr.close();
 	}
 	
