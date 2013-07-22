@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -35,7 +36,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
     }
 
     public Reference<?> extractMods(Node node){
-//        System.out.println("extractMods");
+        //        System.out.println("extractMods");
         Map<String, String> modsMap = new HashMap<String, String>();
         NodeList children = node.getChildNodes();
         List<String> roleList = new ArrayList<String>();
@@ -54,9 +55,9 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         content=tmp.item(j).getTextContent().trim();
                         if (!content.isEmpty()) {
                             modsMap.put("mainTitle",content);
-//                            ref.setTitleCache(content,true);
+                            //                            ref.setTitleCache(content,true);
                             ref.setTitle(content);
-//                            ref.generateTitle();
+                            //                            ref.generateTitle();
                         }
                     }
                 }
@@ -87,6 +88,12 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                     if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
                         ref.setIssn("GenericHash: "+content);
+                        try {
+                            ref.setUri(new URI("http://plazi.cs.umb.edu/GgServer/search?MODS.ModsDocID="+content));
+                        } catch (URISyntaxException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -96,7 +103,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     //                    System.out.println("Child of mods:location: "+tmp.item(j).getNodeName());
                     if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:url")) {
                         content = tmp.item(j).getTextContent().trim();
-                        if (!content.isEmpty() && content != "http://un.availab.le") {
+                        if (!content.isEmpty() && (content != "http://un.availab.le")) {
                             modsMap.put("url",content);
                             ref.setUri(URI.create(content));
                         }
@@ -119,11 +126,11 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 ref=refe;
             }
         }
-//        System.out.println(modsMap);
-//
-//        System.out.println("REFERENCE "+ref.getCitation());
-//        System.out.println("REFERENCE "+ref.getTitle());
-//        System.out.println("REFERENCE "+ref.getTitleCache());
+        //        System.out.println(modsMap);
+        //
+        //        System.out.println("REFERENCE "+ref.getCitation());
+        //        System.out.println("REFERENCE "+ref.getTitle());
+        //        System.out.println("REFERENCE "+ref.getTitleCache());
         return ref;
     }
 
@@ -143,7 +150,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         List<Person> persons = new ArrayList<Person>();
         List<String> editors= new ArrayList<String>();
 
-        if (attributeMap.getNamedItem("type") != null && attributeMap.getNamedItem("type").getNodeValue().equalsIgnoreCase("personal")) {
+        if ((attributeMap.getNamedItem("type") != null) && attributeMap.getNamedItem("type").getNodeValue().equalsIgnoreCase("personal")) {
 
             NodeList tmp = node.getChildNodes();
             for (int j=0;j<tmp.getLength();j++){
@@ -163,7 +170,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     for (int k=0; k< tmp2.getLength();k++){
                         if (tmp2.item(k).getNodeName().equalsIgnoreCase("mods:roleTerm")){
                             content = tmp2.item(k).getTextContent().trim();
-//                            System.out.println("ROLETERM!" +content);
+                            //                            System.out.println("ROLETERM!" +content);
                             if (!content.isEmpty()) {
                                 roleList.add(content);
                                 //                                p.setNomenclaturalTitle(content);
@@ -179,7 +186,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                 }
                 if (newRole){
-                    if (p!=null && role.equals(AUTHOR)) {
+                    if ((p!=null) && role.equals(AUTHOR)) {
                         UUID uuid = null;
                         if (!personMap.containsKey(p.getTitleCache())){
                             uuid = importer.getAgentService().saveOrUpdate(p);
@@ -189,10 +196,10 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             uuid = personMap.get(p.getTitleCache());
                             p = (Person) importer.getAgentService().find(uuid);
                         }
-//                        logger.info("ADD PERSON "+p);
+                        //                        logger.info("ADD PERSON "+p);
                         persons.add(p);
                     }
-                    if (p!=null && role.equals(EDITOR)) {
+                    if ((p!=null) && role.equals(EDITOR)) {
                         editors.add(p.getTitleCache());
                     }
                 }
@@ -208,7 +215,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     authorTeam.addTeamMember(pers);
                 }
 
-                if (!personMap.containsKey(authorTeam.getTitleCache()) && authorTeam.getTeamMembers().size()>0){
+                if (!personMap.containsKey(authorTeam.getTitleCache()) && (authorTeam.getTeamMembers().size()>0)){
                     UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
                     personMap.put(authorTeam.getTitleCache(),uuid);
                 }else{
@@ -272,13 +279,13 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         }
                         if (!refFound){
                             book = ReferenceFactory.newBook();
-//                            book.setTitleCache(content,true);
+                            //                            book.setTitleCache(content,true);
                             book.setTitle(content);
-//                            book.generateTitle();
+                            //                            book.generateTitle();
                         }
-                        if (ref.getInBook() == null || !ref.getInBook().equals(book)) {
+                        if ((ref.getInBook() == null) || !ref.getInBook().equals(book)) {
                             ref.setInBook(book);
-//                            ref.generateTitle();
+                            //                            ref.generateTitle();
                         }
                     }
                 }
@@ -300,13 +307,13 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (children.item(i).getNodeName().contains("publisher")) {
                         try{
                             publisher=children.item(i).getChildNodes().item(0).getTextContent().trim();
-//                            System.out.println("PUBLISHER "+publisher);
+                            //                            System.out.println("PUBLISHER "+publisher);
                         }catch(Exception e){System.out.println("oups "+e);}
                     }
                     if (children.item(i).getNodeName().contains("place")) {
                         try{
                             publishplace=children.item(i).getTextContent().trim();
-//                            System.out.println("PUBLISHED "+publishplace);
+                            //                            System.out.println("PUBLISHED "+publishplace);
                         }catch(Exception e){System.out.println("oups "+e);}
                     }
                     if (publishplace.isEmpty() && !publisher.isEmpty()) {
@@ -331,7 +338,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 partList = new ArrayList<String>();
                 for (int i=0;i<children.getLength();i++){
                     mapmap = new HashMap<String, String>();
-//                    System.out.println(children.item(i).getNodeName());
+                    //                    System.out.println(children.item(i).getNodeName());
 
                     if (children.item(i).getNodeName().equalsIgnoreCase("mods:date")){
                         content = children.item(i).getTextContent().trim();
@@ -373,7 +380,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                                 }
                             }
                         }
-//                        System.out.println("SET PAGES "+pstart+"-"+pend);
+                        //                        System.out.println("SET PAGES "+pstart+"-"+pend);
                         ref.setPages(pstart+"-"+pend);
                     }
                     partList.add(mapmap.toString());

@@ -57,6 +57,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     private Reference<?> secundum;
     private boolean keepOriginalSecundum;
     private Rank maxRank;
+    private boolean askedForHRank =false;
 
 
     @SuppressWarnings("unchecked")
@@ -271,7 +272,11 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
      * @return
      */
     public Reference<?> getSecundum() {
-       return secundum;
+        if(secundum == null){
+            secundum = ReferenceFactory.newGeneric();
+            secundum.setTitle("default secundum");
+        }
+        return secundum;
     }
 
 
@@ -287,4 +292,12 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
         this.maxRank = maxRank;
     }
 
+
+    public boolean hasAskedForHigherRank(){
+        return askedForHRank;
+    }
+
+    public void setHasAskedForHigherRank(boolean asked){
+        askedForHRank=asked;
+    }
 }
