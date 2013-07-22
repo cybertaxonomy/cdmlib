@@ -57,7 +57,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 		Set<Sequence> sequences = sample1.getSequences();
 		
 		Sequence sequence = sequences.iterator().next();
-		DefinedTerm marker = sequence.getMarker();
+		DefinedTerm marker = sequence.getDnaMarker();
 		Assert.assertNotNull("Marker should not be null", marker);
 		Assert.assertEquals("Markers label should be 'Marker'",MARKER_LABEL, marker.getLabel());
 		
@@ -88,7 +88,7 @@ public class MolecularHibernateImplTest  extends CdmTransactionalIntegrationTest
 		
 		DefinedTerm marker = DefinedTerm.ITS1_MARKER();
 		Assert.assertNotNull("ITS1 marker must not be null", marker);
-		sequence.setMarker(marker);
+		sequence.setDnaMarker(marker);
 		
 		occurrenceDao.save(sample);
 		

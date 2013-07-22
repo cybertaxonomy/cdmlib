@@ -864,7 +864,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Primer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Sequence.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceDirection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SequenceString.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleSequence.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/SingleRead.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/name/BacterialName.java -text

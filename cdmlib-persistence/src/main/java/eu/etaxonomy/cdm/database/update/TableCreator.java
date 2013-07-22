@@ -40,6 +40,8 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 	private boolean includeAudTable;
 	private boolean includeCdmBaseAttributes;
 	private boolean includeIdentifiableEntity;
+	private boolean includeAnnotatableEntity;
+	private boolean includeEventBase;
 	protected List<ColumnAdder> columnAdders = new ArrayList<ColumnAdder>();
 	protected List<ISchemaUpdaterStep> mnTablesStepList = new ArrayList<ISchemaUpdaterStep>();
 	private String primaryKeyParams;
@@ -50,18 +52,29 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 	
 //	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNull, boolean includeAudTable){
 	public static final TableCreator NewInstance(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, boolean includeAudTable, boolean includeCdmBaseAttributes){
-		return new TableCreator(stepName, tableName, columnNames, columnTypes, null, null, null, includeAudTable, includeCdmBaseAttributes, false);
+		return new TableCreator(stepName, tableName, columnNames, columnTypes, null, null, null, includeAudTable, includeCdmBaseAttributes, false, false);
 	}
 	
 	public static final TableCreator NewInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable, boolean includeCdmBaseAttributes){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false);
+		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, includeCdmBaseAttributes, false, false);
+	}
+	
+	public static final TableCreator NewAnnotatableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false);
+	}
+	
+	public static final TableCreator NewEventInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
+		TableCreator result = new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, false);
+		result.includeEventBase = true;
+		return result;
 	}
 	
 	public static final TableCreator NewIdentifiableInstance(String stepName, String tableName, String[] columnNames, String[] columnTypes, String[] referencedTables, boolean includeAudTable){
-		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true);
+		return new TableCreator(stepName, tableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), null, null, Arrays.asList(referencedTables), includeAudTable, true, true, true);
 	}
 	
-	protected TableCreator(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNotNull, List<String> referencedTables, boolean includeAudTable, boolean includeCdmBaseAttributes, boolean includeIdentifiableEntity) {
+	protected TableCreator(String stepName, String tableName, List<String> columnNames, List<String> columnTypes, List<Object> defaultValues, List<Boolean> isNotNull, List<String> referencedTables, 
+			boolean includeAudTable, boolean includeCdmBaseAttributes, boolean includeAnnotatableEntity, boolean includeIdentifiableEntity) {
 		super(stepName);
 		this.tableName = tableName;
 		this.columnNames = columnNames;
@@ -71,6 +84,7 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		this.referencedTables = referencedTables;
 		this.includeAudTable = includeAudTable;
 		this.includeCdmBaseAttributes = includeCdmBaseAttributes;
+		this.includeAnnotatableEntity = includeAnnotatableEntity;
 		this.includeIdentifiableEntity = includeIdentifiableEntity;
 		makeColumnAdders();
 		makeMnTables();
@@ -155,6 +169,12 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 					+ " updatedby_id integer, ";
 				
 		}
+		if (this.includeEventBase){
+			//TODO handle as column adder
+			updateQuery += "timeperiod_start, timeperiod_end, timeperiod_freetext, actor_id, description varchar(255),";
+			logger.warn("ForeignKey for actor not yet handled");
+		}
+		
 		if (this.includeIdentifiableEntity){
 			updateQuery += "lsid_authority varchar(255), lsid_lsid varchar(255), lsid_namespace varchar(255), lsid_object varchar(255), lsid_revision varchar(255), protectedtitlecache bit not null, titleCache varchar(255),";
 		}
@@ -185,13 +205,24 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 
 
 	private void makeMnTables() {
-		if (this.includeIdentifiableEntity){
-			TableCreator tableCreator;
+		TableCreator tableCreator;
+
+		if (this.includeAnnotatableEntity){
 			//annotations
 			stepName= "Add @tableName annotations";
 			stepName = stepName.replace("@tableName", this.tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Annotation", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
+
+			//marker
+			stepName= "Add @tableName marker";
+			stepName = stepName.replace("@tableName", this.tableName);
+			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT);
+			mnTablesStepList.add(tableCreator);
+			
+		}
+		
+		if (this.includeIdentifiableEntity){
 
 			//credits
 			stepName= "Add @tableName credits";
@@ -203,12 +234,6 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 			stepName= "Add @tableName extensions";
 			stepName = stepName.replace("@tableName", this.tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Extension", SchemaUpdaterBase.INCLUDE_AUDIT);
-			mnTablesStepList.add(tableCreator);
-
-			//marker
-			stepName= "Add @tableName marker";
-			stepName = stepName.replace("@tableName", this.tableName);
-			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Marker", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
 			
 			//OriginalSourceBase
@@ -222,7 +247,6 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 			stepName = stepName.replace("@tableName", this.tableName);
 			tableCreator = MnTableCreator.NewMnInstance(stepName, this.tableName, "Rights", SchemaUpdaterBase.INCLUDE_AUDIT);
 			mnTablesStepList.add(tableCreator);
-
 			
 		}
 	}

@@ -15,15 +15,20 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import com.sun.tools.xjc.reader.gbind.Sequence;
+
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
+import eu.etaxonomy.cdm.model.common.MaterialAndMethod;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 
 /**
@@ -233,7 +238,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//add kindOfUnit to SpecimenOrObservationBase
 		stepName = "Add kindOfUnit column to SpecimenOrObservationBase";
 		tableName = "SpecimenOrObservationBase";
-		columnName = "kindOfUnit";
+		columnName = "kindOfUnit_id";
 		String relatedTable = "DefinedTermBase";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
 		stepList.add(step);
@@ -264,7 +269,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)  #3571
 		stepName = "Remove table DescriptionBase_SpecimenOrObservationBase";
 		tableName = "DescriptionBase_SpecimenOrObservationBase";
-		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//TODO create table CdmPreferences  #3555
@@ -280,13 +285,13 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//remove table Sequence_GenBankAccession #3552
 		stepName = "Remove table Sequence_GenBankAccession";
 		tableName = "Sequence_GenBankAccession";
-		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//remove table GenBankAccession #3552
 		stepName = "Remove table GenBankAccession";
 		tableName = "GenBankAccession";
-		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//TODO (read first #3360) add columns GeneticAccessionNumber(String) to Sequence 
@@ -306,7 +311,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//remove DescriptionBase_Feature  #2202
 		stepName = "Remove table DescriptionBase_Feature";
 		tableName = "DescriptionBase_Feature";
-		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//add timeperiod to columns to description element base #3312
@@ -318,7 +323,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		  //SpecimenOrObservationBase_Media #3597
 		stepName = "Remove table SpecimenOrObservationBase_Media";
 		tableName = "SpecimenOrObservationBase_Media";
-		TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		
@@ -358,6 +363,48 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//Amplification #3360
+		stepName = "Create table 'Primer'";
+		tableName = "Primer";
+		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
+				new String[]{"label","sequence_id","publishedIn_id"},  //colNames 
+				new String[]{"string_255","int","int"},  // columnTypes
+				new String[]{null,Sequence.class.getSimpleName(),Reference.class.getSimpleName()},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//MaterialAndMethod #3360
+		stepName = "Create table 'MaterialAndMethod'";
+		tableName = MaterialAndMethod.class.getSimpleName();
+		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
+				new String[]{"materialMethodTerm_id","materialMethodText"},  //colNames 
+				new String[]{"int","string_1000",},  // columnTypes
+				new String[]{"DefinedTermBase",null},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//Amplification #3360
+		stepName = "Create table 'Amplification'";
+		tableName = "Amplification";
+		String matMetName = MaterialAndMethod.class.getSimpleName();
+		step = TableCreator.NewEventInstance(stepName, tableName, 
+				new String[]{"dnaSample_id","dnaMarker_id","forwardPrimer_id","reversePrimer_id","purification_id","cloning_id"},  //colNames 
+				new String[]{"int","int","int","int","int","int"},  // columnTypes
+				new String[]{"SpecimenOrObservationBase","DefinedTermBase","Primer","Primer",matMetName, matMetName},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//Amplification #3360
+		stepName = "Create table 'SingleRead'";
+		tableName = "SingleReadSingleRead";
+		step = TableCreator.NewEventInstance(stepName, tableName, 
+				new String[]{"amplification_id","materialAndMethod_id","primer_id","pherogram_id","direction","sequenceString_length","sequenceString_sequence"},  //colNames 
+				new String[]{"int","int","int","int","int","int","string_1000"},  // columnTypes
+				new String[]{"Amplification",matMetName, "Primer","Media", null, null},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+	
+		
 		return;
 	}
 
@@ -374,9 +421,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update gathering elevation max";
 		//all audits to unknown type
 		String query = " UPDATE GatheringEvent ge " + 
-				" SET ge.absoluteElevationMax = ge.elevation + ge.elevationErrorRadius,  " +
-				"     ge.absoluteElevation =  ge.elevationErrorRadius - ge.elevationErrorRadius" +
-				" WHERE ge.elevationErrorRadius is not null ";
+				" SET ge.absoluteElevationMax = ge.absoluteElevation + ge.absoluteElevationError,  " +
+				"     ge.absoluteElevation =  ge.absoluteElevation - ge.absoluteElevationError" +
+				" WHERE ge.absoluteElevationError is not null ";
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		//TODO same for AUD
@@ -384,7 +431,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//remove error column
 		stepName = "Remove elevationErrorRadius column";
 		tableName = "GatheringEvent";
-		columnName = "elevationErrorRadius";
+		columnName = "absoluteElevationError";
 		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
@@ -422,7 +469,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update original source type column: set to 'primary taxonomic source' where possible";
 		query = String.format("UPDATE OriginalSourceBase SET  %s = '%s' WHERE " +
 				"(idInSource IS NULL AND idNamespace IS NULL) AND " +
-				"( citation IS NOT NULL ) ", typeAttrName, OriginalSourceType.PrimaryTaxonomicSource.getKey());
+				"( citation_id IS NOT NULL ) ", typeAttrName, OriginalSourceType.PrimaryTaxonomicSource.getKey());
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 	}

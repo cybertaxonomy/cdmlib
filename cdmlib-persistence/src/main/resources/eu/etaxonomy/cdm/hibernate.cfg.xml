@@ -138,7 +138,7 @@
       <mapping class="eu.etaxonomy.cdm.model.molecular.Primer"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Sequence"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.SequenceString"/>
-      <mapping class="eu.etaxonomy.cdm.model.molecular.SingleSequence"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.SingleRead"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Cloning"/>
       <!-- Name Package -->
       <mapping class="eu.etaxonomy.cdm.model.name.BacterialName"/>

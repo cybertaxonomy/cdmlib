@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Amplification", propOrder = {
 	"dnaSample",
-	"marker",
+	"dnaMarker",
 	"forwardPrimer",
 	"reversePrimer",
 	"purification",
@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 	"gelRunningTime",
 	"gelConcentration",
 	"gelPhoto",
-	"singleSequences"
+	"singleReads"
 })
 @XmlRootElement(name = "Amplification")
 @Entity
@@ -79,20 +79,20 @@ public class Amplification extends EventBase implements Cloneable{
     @IndexedEmbedded
     private DnaSample dnaSample;
 	
-    @XmlElementWrapper(name = "SingleSequences")
-    @XmlElement(name = "SingleSequence")
+    @XmlElementWrapper(name = "SingleReads")
+    @XmlElement(name = "SingleRead")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @OneToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-	private Set<SingleSequence> singleSequences = new HashSet<SingleSequence>();
+	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
 	
     /** @see #getMarker()*/
-    @XmlElement(name = "Marker")
+    @XmlElement(name = "DnaMarker")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.EAGER)
-    private DefinedTerm marker;
+    private DefinedTerm dnaMarker;
 	
     /** @see #getForwardPrimer() */
     @XmlElement(name = "ForwardPrimer")
@@ -201,26 +201,26 @@ public class Amplification extends EventBase implements Cloneable{
 	}
 	
 	/**
-	 * The {@link SingleSequence single sequences} created by using this amplification's result.
+	 * The {@link SingleRead single sequences} created by using this amplification's result.
 	 */
-	public Set<SingleSequence> getSingleSequences() {
-		return singleSequences;
+	public Set<SingleRead> getSingleReads() {
+		return singleReads;
 	}
 
-	public void addSingleSequence(SingleSequence singleSequence){
-		if (singleSequence.getAmplification() != null){
-			singleSequence.getAmplification().singleSequences.remove(singleSequence);
+	public void addSingleRead(SingleRead singleRead){
+		if (singleRead.getAmplification() != null){
+			singleRead.getAmplification().singleReads.remove(singleRead);
 		}
-		this.singleSequences.add(singleSequence);
-		singleSequence.setAmplification(this);
+		this.singleReads.add(singleRead);
+		singleRead.setAmplification(this);
 	}
 	
 	/**
-	 * @see #getSingleSequences()
+	 * @see #getSingleReads()
 	 */
 	//TODO private until it is clear how bidirectionality is handled
-	private void setSingleSequences(Set<SingleSequence> singleSequences) {
-		this.singleSequences = singleSequences;
+	private void setSingleReads(Set<SingleRead> singleReads) {
+		this.singleReads = singleReads;
 	}
 
 
@@ -228,14 +228,14 @@ public class Amplification extends EventBase implements Cloneable{
 	 * The {@link TermType#DnaMarker marker} examined by this amplification.
 	 */
 	public DefinedTerm getMarker() {
-		return marker;
+		return dnaMarker;
 	}
 
 	/**
 	 * @see #getMarker()
 	 */
 	public void setMarker(DefinedTerm marker) {
-		this.marker = marker;
+		this.dnaMarker = marker;
 	}
 
 	/**
@@ -439,9 +439,9 @@ public class Amplification extends EventBase implements Cloneable{
 		try{
 			Amplification result = (Amplification)super.clone();
 			
-			result.singleSequences = new HashSet<SingleSequence>();
-			for (SingleSequence seq: this.singleSequences){
-				result.singleSequences.add((SingleSequence) seq);
+			result.singleReads = new HashSet<SingleRead>();
+			for (SingleRead seq: this.singleReads){
+				result.singleReads.add((SingleRead) seq);
 			
 			}
 			

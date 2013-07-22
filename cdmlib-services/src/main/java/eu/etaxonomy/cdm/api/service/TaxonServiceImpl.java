@@ -77,7 +77,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
-import eu.etaxonomy.cdm.model.molecular.SingleSequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -847,10 +847,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 	//we do show only those gelPhotos which lead to a consensus sequence
                 	for (Sequence sequence : sequences) {
                 		Set<Media> dnaRelatedMedia = new HashSet<Media>();
-                    	for (SingleSequence singleSequence : sequence.getSingleSequences()){
-                    		Amplification amplification = singleSequence.getAmplification();
+                    	for (SingleRead singleRead : sequence.getSingleReads()){
+                    		Amplification amplification = singleRead.getAmplification();
                     		dnaRelatedMedia.add(amplification.getGelPhoto());
-                    		dnaRelatedMedia.add(singleSequence.getPherogram());
+                    		dnaRelatedMedia.add(singleRead.getPherogram());
                     		dnaRelatedMedia.remove(null);
                     	}
                     	taxonMedia.addAll(dnaRelatedMedia);

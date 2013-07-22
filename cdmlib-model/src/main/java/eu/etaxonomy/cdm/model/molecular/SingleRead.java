@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
- * Instances of this the {@link SingleSequence SingleSequence} class describe the process and the result of a single
+ * Instances of this the {@link SingleRead} class describe the process and the result of a single
  * sequence generation (read). It has as an input the PCR result ({@link Amplification}). A primer 
  * is used for expressing the DNA in either {@link SequenceDirection#Forward forward} or 
  * {@link SequenceDirection#Reverse reverse} direction.
@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.media.Media;
  * @created 2013-07-05
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SingleSequence", propOrder = {
+@XmlType(name = "SingleRead", propOrder = {
 	"amplification",
 	"sequence",
 	"primer",
@@ -59,9 +59,9 @@ import eu.etaxonomy.cdm.model.media.Media;
 @XmlRootElement(name = "Primer")
 @Entity
 @Audited
-public class SingleSequence extends EventBase implements Cloneable{
+public class SingleRead extends EventBase implements Cloneable{
 	private static final long serialVersionUID = 1735535003073536132L;
-	private static final Logger logger = Logger.getLogger(SingleSequence.class);
+	private static final Logger logger = Logger.getLogger(SingleRead.class);
 	
 	/** @see #getAmplification()  */
 	@XmlElement(name = "Amplification")
@@ -110,7 +110,7 @@ public class SingleSequence extends EventBase implements Cloneable{
 
 	/**
 	 * Returns the {@link Amplification amplification} that was the input for this 
-	 * {@link SingleSequence single sequence}.
+	 * {@link SingleRead single sequence}.
 	 */
 	public Amplification getAmplification() {
 		return amplification;
@@ -266,7 +266,7 @@ public class SingleSequence extends EventBase implements Cloneable{
 	@Override
 	public Object clone()  {
 		try{
-		SingleSequence result = (SingleSequence)super.clone();
+		SingleRead result = (SingleRead)super.clone();
 		
 		//sequences
 		result.sequence = (SequenceString)this.sequence.clone();

@@ -87,7 +87,7 @@
       <!-- Molecular Package -->
      	<class>eu.etaxonomy.cdm.model.molecular.DnaSample"</class>
      	<class>eu.etaxonomy.cdm.model.molecular.Amplification"</class>
-      	<class>eu.etaxonomy.cdm.model.molecular.SingleSequence"</class>
+      	<class>eu.etaxonomy.cdm.model.molecular.SingleRead"</class>
       	<class>eu.etaxonomy.cdm.model.molecular.Sequencing"</class>
       	<class>eu.etaxonomy.cdm.model.molecular.Primer"</class>
       	<class>eu.etaxonomy.cdm.model.molecular.PhylogeneticTree"</class>

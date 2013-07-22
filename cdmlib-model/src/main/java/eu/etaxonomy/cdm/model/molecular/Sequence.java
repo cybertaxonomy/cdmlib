@@ -48,8 +48,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * may also include the extracted barcode sequence.
  * 
  * This class holds information about both the combining process of 
- * {@link SingleSequence single sequences} to one consensus sequence
- * (singleSequences, contigFile) as well as sequence related information.
+ * {@link SingleRead single sequences} to one consensus sequence
+ * (singleReads, contigFile) as well as sequence related information.
  * The later includes the sequence string itself, important genetic information
  * (marker, haplotype) as well as registration information (genetic accession number)
  * citations and barcoding information.
@@ -65,12 +65,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 	"consensusSequence",
 	"isBarcode",
     "barcodeSequencePart",
-    "marker",
+    "dnaMarker",
     "geneticAccessionNumber",
     "boldProcessId",
     "haplotype",
     "contigFile",
-    "singleSequences",
+    "singleReads",
     "citations"
 })
 @XmlRootElement(name = "Sequencing")
@@ -132,21 +132,21 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	@Size(max=20)
 	private String boldProcessId;
 	
-    @XmlElementWrapper(name = "SingleSequences")
-    @XmlElement(name = "SingleSequence")
+    @XmlElementWrapper(name = "SingleReads")
+    @XmlElement(name = "SingleRead")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-	private Set<SingleSequence> singleSequences = new HashSet<SingleSequence>();
+	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
     
-	/** @see #getMarker() */
-	@XmlElement(name = "Marker")
+	/** @see #getDnaMarker() */
+	@XmlElement(name = "DnaMarker")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
 	//no cascade as it is a defined term
-	private DefinedTerm marker;
+	private DefinedTerm dnaMarker;
 
 	
 	/** @see #getHaplotype() */
@@ -268,16 +268,16 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 * Sets the {@link TermType#DnaMarker marker} examined and described by this sequencing.
 	 * @return
 	 */
-	public DefinedTerm getMarker(){
-		return this.marker;
+	public DefinedTerm getDnaMarker(){
+		return this.dnaMarker;
 	}
 
 	/**
-	 * @see #getMarker()
+	 * @see #getDnaMarker()
 	 * @param marker
 	 */
-	public void setMarker(DefinedTerm marker){
-		this.marker = marker;
+	public void setDnaMarker(DefinedTerm dnaMarker){
+		this.dnaMarker = dnaMarker;
 	}
 
 	/**
@@ -372,29 +372,29 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	/**
-	 * The single sequences that where used to create this consensus sequence.
+	 * The single reads that where used to create this consensus sequence.
 	 */
-	public Set<SingleSequence> getSingleSequences() {
-		return singleSequences;
+	public Set<SingleRead> getSingleReads() {
+		return singleReads;
 	}
 	/**
-	 * @see #getSingleSequences()
+	 * @see #getSingleReads()
 	 */
-	public void addSingleSquence(SingleSequence singleSequence) {
-		this.singleSequences.add(singleSequence);
+	public void addSingleRead(SingleRead singleRead) {
+		this.singleReads.add(singleRead);
 	}
 	/**
-	 * @see #getSingleSequences()
+	 * @see #getSingleReads()
 	 */
-	public void removeSingleSquence(SingleSequence singleSequence) {
-		this.singleSequences.remove(singleSequence);
+	public void removeSingleRead(SingleRead singleRead) {
+		this.singleReads.remove(singleRead);
 	}
 	/**
-	 * @see #getSingleSequences()
+	 * @see #getSingleReads()
 	 */
 	//TODO private as long it is unclear how bidirectionality is handled
-	private void setSingleSequences(Set<SingleSequence> singleSequences) {
-		this.singleSequences = singleSequences;
+	private void setSingleReads(Set<SingleRead> singleReads) {
+		this.singleReads = singleReads;
 	}
 
 
@@ -425,7 +425,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	@Transient
 	public Set<Media> getPherograms(){
 		Set<Media> result = new HashSet<Media>();
-		for (SingleSequence singleSeq : singleSequences){
+		for (SingleRead singleSeq : singleReads){
 			if (singleSeq.getPherogram() != null){
 				result.add(singleSeq.getPherogram());
 			}
@@ -502,9 +502,9 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		
 		
 		//single sequences
-		result.singleSequences = new HashSet<SingleSequence>();
-		for (SingleSequence seq: this.singleSequences){
-			result.singleSequences.add((SingleSequence) seq);
+		result.singleReads = new HashSet<SingleRead>();
+		for (SingleRead seq: this.singleReads){
+			result.singleReads.add((SingleRead) seq);
 		}
 		
 		//citations  //TODO do we really want to copy these ??
