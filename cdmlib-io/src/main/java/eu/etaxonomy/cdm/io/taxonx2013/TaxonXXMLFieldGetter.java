@@ -41,10 +41,10 @@ public class TaxonXXMLFieldGetter {
     /**
      * parse the Mods from the TaxonX file
      *
-    *@return the created Reference object
-    **/
+     *@return the created Reference object
+     **/
     public Reference<?> parseMods(){
-//        System.out.println("PARSEMODS");
+        //        System.out.println("PARSEMODS");
         //taxonx
         Node root = doc.getFirstChild();
 
@@ -53,14 +53,14 @@ public class TaxonXXMLFieldGetter {
         NodeList nodes = root.getChildNodes();
         Reference<?> ref = null;
         for (int i=0; i< nodes.getLength();i++) {
-//            System.out.println(nodes.item(i).getNodeName());
+            //            System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxheader")){
                 NodeList nodes2 = nodes.item(i).getChildNodes();
                 for (int j=0; j< nodes2.getLength();j++){
-//                    System.out.println("nodes2 : "+nodes2.item(j).getNodeName());
+                    //                    System.out.println("nodes2 : "+nodes2.item(j).getNodeName());
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("mods:mods")){
                         ref = modsextractor.extractMods(nodes2.item(j));
-//                        System.out.println("reference: "+ref.getTitleCache());
+                        //                        System.out.println("reference: "+ref.getTitleCache());
                         importer.getReferenceService().saveOrUpdate(ref);
                     }
                 }
@@ -88,7 +88,7 @@ public class TaxonXXMLFieldGetter {
         NodeList nodes = root.getChildNodes();
 
         for (int i=0; i< nodes.getLength();i++) {
-//            System.out.println(nodes.item(i).getNodeName());
+            //            System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxBody")){
                 NodeList nodes2 = nodes.item(i).getChildNodes();
                 for (int j=0; j< nodes2.getLength();j++){
@@ -108,10 +108,11 @@ public class TaxonXXMLFieldGetter {
      * @param classification2
      */
     public void updateClassification(Classification classification2) {
-       this.classification=classification2;
-       if (treatmentextractor != null) {
-        treatmentextractor.updateClassification(classification);
-    }
+        System.out.println("UPDATECLASSIFICATIONS "+classification2);
+        classification=classification2;
+        if (treatmentextractor != null) {
+            treatmentextractor.updateClassification(classification);
+        }
 
     }
 

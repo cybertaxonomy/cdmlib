@@ -83,7 +83,10 @@ public class TaxonXExtractor {
 
     protected TaxonXImport importer;
     protected TaxonXImportState configState;
+    private final Map<String,String> namesAsked = new HashMap<String, String>();
+    private final Map<String,Rank>ranksAsked = new HashMap<String, Rank>();
 
+    Logger logger = Logger.getLogger(this.getClass());
 
     public class MySpecimenOrObservation{
         String descr="";
@@ -115,7 +118,8 @@ public class TaxonXExtractor {
      * @return
      */
     @SuppressWarnings({ "unused", "null", "rawtypes" })
-    protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnitBase derivedUnitBase) {
+    protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnitBase derivedUnitBase,
+            DerivedUnitType defaultAssociation) {
         String country=null;
         String locality=null;
         String stateprov=null;
@@ -124,7 +128,7 @@ public class TaxonXExtractor {
         Double latitude=null,longitude=null;
         TimePeriod tp =null;
         String day,month,year="";
-        String descr="";
+        String descr="not available";
         String type="";
         boolean asso=false;
         NodeList eventContent =null;
@@ -207,83 +211,90 @@ public class TaxonXExtractor {
                 }
             }
             if(xmldata.item(n).getNodeName().equalsIgnoreCase("#text")){
-                descr=xmldata.item(n).getTextContent().trim();
-                if (descr.length()>1) {
+                descr=xmldata.item(n).getTextContent().replaceAll(";","").trim();
+                if (descr.length()>1 && containsDistinctLetters(descr)) {
                     specimenOrObservation.setDescr(descr);
                     asso=true;
                 }
             }
             if(xmldata.item(n).getNodeName().equalsIgnoreCase("tax:p")){
-                descr=xmldata.item(n).getTextContent().trim();
-                if (descr.length()>1) {
+                descr=xmldata.item(n).getTextContent().replaceAll(";","").trim();
+                if (descr.length()>1 && containsDistinctLetters(descr)) {
                     specimenOrObservation.setDescr(descr);
                     asso=true;
                 }
             }
         }
-        if(asso && descr.length()>1){
+        //        if(asso && descr.length()>1){
 
-            //            logger.info("DESCR: "+descr);
-            if (!type.isEmpty()) {
-                derivedUnitFacade = getFacade(type);
-                SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
-                SpecimenTypeDesignationStatus stds= getSpecimenTypeDesignationStatusByKey(type);
-                if (stds !=null) {
-                    stds = (SpecimenTypeDesignationStatus) importer.getTermService().find(stds.getUuid());
-                }
-
-                designation.setTypeStatus(stds);
-                derivedUnitFacade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
-
-                derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
-                //                designation.setTypeSpecimen(derivedUnitBase);
-                //                TaxonNameBase<?,?> name = taxon.getName();
-                //                name.addTypeDesignation(designation, true);
-            } else {
-                derivedUnitFacade = getFacade(descr);
-                derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+        //            logger.info("DESCR: "+descr);
+        if (!type.isEmpty()) {
+            if (!containsDistinctLetters(type)) {
+                type="no description text";
+            }
+            derivedUnitFacade = getFacade(type.replaceAll(";",""), defaultAssociation);
+            SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
+            SpecimenTypeDesignationStatus stds= getSpecimenTypeDesignationStatusByKey(type);
+            if (stds !=null) {
+                stds = (SpecimenTypeDesignationStatus) importer.getTermService().find(stds.getUuid());
             }
 
-            unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
-                    configState.getConfig(),importer.getAgentService());
-            
-            if(tp!=null) {
-                unitsGatheringEvent.setGatheringDate(tp);
+            designation.setTypeStatus(stds);
+            derivedUnitFacade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
+
+            derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            //                designation.setTypeSpecimen(derivedUnitBase);
+            //                TaxonNameBase<?,?> name = taxon.getName();
+            //                name.addTypeDesignation(designation, true);
+        } else {
+            if (!containsDistinctLetters(descr.replaceAll(";",""))) {
+                descr="no description text";
             }
 
-            // country
-            unitsGatheringArea = new UnitsGatheringArea();
-            unitsGatheringArea.setParams(null, country, configState.getConfig(), importer.getTermService(), importer.getOccurrenceService());
-
-            areaCountry =  unitsGatheringArea.getCountry();
-
-            //                         // other areas
-            //                         unitsGatheringArea = new UnitsGatheringArea(namedAreaList,dataHolder.getTermService());
-            //                         ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
-            //                         for (DefinedTermBase namedArea : nas) {
-            //                             unitsGatheringEvent.addArea(namedArea);
-            //                         }
-
-            // copy gathering event to facade
-            GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
-            derivedUnitFacade.setLocality(gatheringEvent.getLocality());
-            derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
-            derivedUnitFacade.setCollector(gatheringEvent.getCollector());
-            derivedUnitFacade.setCountry((NamedArea)areaCountry);
-
-            for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
-                derivedUnitFacade.addCollectingArea((NamedArea) area);
-            }
-            //                         derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
-
-            // TODO exsiccatum
-
-            // add fieldNumber
-            if (fieldNumber != null) {
-                derivedUnitFacade.setFieldNumber(fieldNumber);
-            }
-            specimenOrObservation.setDerivedUnitBase(derivedUnitBase);
+            derivedUnitFacade = getFacade(descr.replaceAll(";",""), defaultAssociation);
+            derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
         }
+
+        unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
+                configState.getConfig(),importer.getAgentService());
+
+        if(tp!=null) {
+            unitsGatheringEvent.setGatheringDate(tp);
+        }
+
+        // country
+        unitsGatheringArea = new UnitsGatheringArea();
+        unitsGatheringArea.setParams(null, country, configState.getConfig(), importer.getTermService(), importer.getOccurrenceService());
+
+        areaCountry =  unitsGatheringArea.getCountry();
+
+        //                         // other areas
+        //                         unitsGatheringArea = new UnitsGatheringArea(namedAreaList,dataHolder.getTermService());
+        //                         ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
+        //                         for (DefinedTermBase namedArea : nas) {
+        //                             unitsGatheringEvent.addArea(namedArea);
+        //                         }
+
+        // copy gathering event to facade
+        GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
+        derivedUnitFacade.setLocality(gatheringEvent.getLocality());
+        derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
+        derivedUnitFacade.setCollector(gatheringEvent.getCollector());
+        derivedUnitFacade.setCountry((NamedArea)areaCountry);
+
+        for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
+            derivedUnitFacade.addCollectingArea((NamedArea) area);
+        }
+        //                         derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
+
+        // TODO exsiccatum
+
+        // add fieldNumber
+        if (fieldNumber != null) {
+            derivedUnitFacade.setFieldNumber(fieldNumber);
+        }
+        specimenOrObservation.setDerivedUnitBase(derivedUnitBase);
+        //        }
         return specimenOrObservation;
     }
 
@@ -336,8 +347,8 @@ public class TaxonXExtractor {
             return null;
         }
     }
-    protected DerivedUnitFacade getFacade(String recordBasis) {
-        //        logger.info("getFacade()");
+    protected DerivedUnitFacade getFacade(String recordBasis, DerivedUnitType defaultAssoc) {
+//        System.out.println("getFacade() for "+recordBasis);
         DerivedUnitType type = null;
 
         // create specimen
@@ -358,12 +369,12 @@ public class TaxonXExtractor {
             }
             if (type == null) {
                 logger.info("The basis of record does not seem to be known: *" + recordBasisL+"*");
-                type = DerivedUnitType.DerivedUnit;
+                type = defaultAssoc;
             }
             // TODO fossils?
         } else {
             logger.info("The basis of record is null");
-            type = DerivedUnitType.DerivedUnit;
+            type = defaultAssoc;
         }
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
         return derivedUnitFacade;
@@ -388,7 +399,7 @@ public class TaxonXExtractor {
 
 
     protected final static String SPLITTER = ",";
-    Logger logger = Logger.getLogger(getClass());
+
 
     protected  int askQuestion(String question){
         Scanner scan = new Scanner(System.in);
@@ -490,24 +501,26 @@ public class TaxonXExtractor {
      */
     protected String getFullReference(String name, List<ParserProblem> problems) {
         //        logger.info("getFullReference for "+ name);
-        JTextArea textArea = new JTextArea("Complete the reference '"+name+"' (use Euro+Med Checklist for Plants).\nThe current problem is "+StringUtils.join(problems,"--"));
+        JTextArea textArea = new JTextArea("Complete the reference or the name '"+name+"'.\nThe current problem is "+StringUtils.join(problems,"--"));
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize( new Dimension( 700, 100 ) );
+        scrollPane.setPreferredSize( new Dimension( 700, 70 ) );
 
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String s = (String)JOptionPane.showInputDialog(
                 null,
                 scrollPane,
-                "Get full reference name",
+                "Get full reference or name",
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
                 name);
         return s;
     }
+
+
 
     /**
      * @param name
@@ -519,34 +532,45 @@ public class TaxonXExtractor {
         //        logger.info("getScientificName for "+ fullname);
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JTextArea textArea = new JTextArea("The names in the free text and in the xml tags do not match : "+fullname+
-                ", or "+atomised+"\n"+formatNode(fullParagraph));
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
-        String s = (String)JOptionPane.showInputDialog(
-                null,
-                scrollPane,
-                "Which name do I have to use? The current classification is "+classificationName,
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                null,
-                fullname);
-        return s;
+        String k = fullname+"_"+atomised;
+        if (namesAsked.containsKey(k)){
+            return namesAsked.get(k);
+        }
+        else{
+            JTextArea textArea = new JTextArea("The names in the free text and in the xml tags do not match : "+fullname+
+                    ", or "+atomised+"\n"+formatNode(fullParagraph));
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
+            String s = (String)JOptionPane.showInputDialog(
+                    null,
+                    scrollPane,
+                    "Which name do I have to use? The current classification is "+classificationName,
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    fullname);
+            namesAsked.put(k, s);
+            return s;
+        }
     }
 
 
     protected int askAddParent(String s){
-    JTextArea textArea = new JTextArea("If you want to add a parent taxa for "+s+", click \"Yes\"." +
-            " If it is a root for this classification, click \"No\" or \"Cancel\".");
-    JScrollPane scrollPane = new JScrollPane(textArea);
-    textArea.setLineWrap(true);
-    textArea.setWrapStyleWord(true);
-    scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
+//        boolean hack=true;
+//        if (hack) {
+//            return 1;
+//        }
+        JTextArea textArea = new JTextArea("If you want to add a parent taxa for "+s+", click \"Yes\"." +
+                " If it is a root for this classification, click \"No\" or \"Cancel\".");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 70 ) );
 
-    int addTaxon = JOptionPane.showConfirmDialog(null,scrollPane);
-    return addTaxon;
+        int addTaxon = JOptionPane.showConfirmDialog(null,scrollPane);
+        return addTaxon;
     }
 
     protected String askSetParent(String s){
@@ -557,16 +581,16 @@ public class TaxonXExtractor {
         textArea.setWrapStyleWord(true);
         scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
 
-        s = (String)JOptionPane.showInputDialog(
+        String s2 = (String)JOptionPane.showInputDialog(
                 null,
                 scrollPane,
                 "",
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 null,
-                null);
-        return s;
-        }
+                s);
+        return s2;
+    }
 
     protected String askRank(String s, List<String> rankListStr){
         JTextArea  textArea = new JTextArea("What is the rank for "+s+"?");
@@ -575,7 +599,7 @@ public class TaxonXExtractor {
         textArea.setWrapStyleWord(true);
         scrollPane.setPreferredSize( new Dimension( 700, 200 ) );
 
-       String r = (String)JOptionPane.showInputDialog(
+        String r = (String)JOptionPane.showInputDialog(
                 null,
                 scrollPane,
                 "",
@@ -583,7 +607,7 @@ public class TaxonXExtractor {
                 null,
                 rankListStr.toArray(),
                 null);
-       return r;
+        return r;
     }
 
     /**
@@ -621,36 +645,43 @@ public class TaxonXExtractor {
         //        logger.info("askForRank for "+ fullname+ ", "+rank);
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        JTextArea textArea = new JTextArea("What is the correct rank for "+fullname+"?");
-        JScrollPane scrollPane = new JScrollPane(textArea);
-        textArea.setLineWrap(true);
-        textArea.setWrapStyleWord(true);
-        scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
 
-        List<Rank> rankList = new ArrayList<Rank>();
-        rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
-
-        List<String> rankListStr = new ArrayList<String>();
-        for (Rank r:rankList) {
-            rankListStr.add(r.toString());
+        if (ranksAsked.containsKey(fullname)){
+            return ranksAsked.get(fullname);
         }
-        String s = (String)JOptionPane.showInputDialog(
-                null,
-                scrollPane,
-                "The rank extracted from the TaxonX file is "+rank.toString(),
-                JOptionPane.PLAIN_MESSAGE,
-                null,
-                rankListStr.toArray(),
-                rank.toString());
+        else{
+            JTextArea textArea = new JTextArea("What is the correct rank for "+fullname+"?");
+            JScrollPane scrollPane = new JScrollPane(textArea);
+            textArea.setLineWrap(true);
+            textArea.setWrapStyleWord(true);
+            scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
 
-        Rank cR = null;
-        try {
-            cR = Rank.getRankByEnglishName(s,nomenclaturalCode,true);
-        } catch (UnknownCdmTypeException e) {
-            logger.warn("Unknown rank ?!"+s);
-            logger.warn(e);
+            List<Rank> rankList = new ArrayList<Rank>();
+            rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
+
+            List<String> rankListStr = new ArrayList<String>();
+            for (Rank r:rankList) {
+                rankListStr.add(r.toString());
+            }
+            String s = (String)JOptionPane.showInputDialog(
+                    null,
+                    scrollPane,
+                    "The rank extracted from the TaxonX file is "+rank.toString(),
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    rankListStr.toArray(),
+                    rank.toString());
+
+            Rank cR = null;
+            try {
+                cR = Rank.getRankByEnglishName(s,nomenclaturalCode,true);
+            } catch (UnknownCdmTypeException e) {
+                logger.warn("Unknown rank ?!"+s);
+                logger.warn(e);
+            }
+            ranksAsked.put(fullname,cR);
+            return cR;
         }
-        return cR;
     }
 
     /**
@@ -662,7 +693,17 @@ public class TaxonXExtractor {
      * @return the section name
      * */
     protected String askMultiple(Node fullParagraph){
-        JTextArea textArea = new JTextArea("What category is it for this paragraph \n"+fullParagraph);
+        String fp = "";
+        try {
+            fp = formatNode(fullParagraph);
+        } catch (TransformerFactoryConfigurationError e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        } catch (TransformerException e1) {
+            // TODO Auto-generated catch block
+            e1.printStackTrace();
+        }
+        JTextArea textArea = new JTextArea("What category is it for this paragraph \n"+fp);
         JScrollPane scrollPane = new JScrollPane(textArea);
         textArea.setLineWrap(true);
         textArea.setWrapStyleWord(true);
@@ -702,6 +743,7 @@ public class TaxonXExtractor {
      * @return Taxon, the parent Taxon
      */
     protected Taxon askParent(Taxon taxon,Classification classification ) {
+        System.out.println("ASK PARENT "+classification);
         //        logger.info("ask Parent "+taxon.getTitleCache());
         Set<TaxonNode> allNodes = classification.getAllNodes();
         Map<String,Taxon> nodesMap = new HashMap<String, Taxon>();
@@ -746,7 +788,6 @@ public class TaxonXExtractor {
         }
         r=r.replace("dwcranks:", "");
         r =r.replace("dwc:","");
-        //        logger.info("SEARCH RANK FOR "+r);
 
         Rank rank = Rank.UNKNOWN_RANK();
         if (r.equalsIgnoreCase("Superfamily")) {
@@ -788,7 +829,7 @@ public class TaxonXExtractor {
         if (r.equalsIgnoreCase("Subspecies")) {
             rank=Rank.SUBSPECIES();
         }
-        if (r.equalsIgnoreCase("Variety")) {
+        if (r.equalsIgnoreCase("Variety") || r.equalsIgnoreCase("varietyEpithet")) {
             rank=Rank.VARIETY();
         }
         if (r.equalsIgnoreCase("Subvariety")) {
@@ -833,6 +874,9 @@ public class TaxonXExtractor {
         if (ato.containsKey("dwc:infraspecificepithet")) {
             rank= Rank.INFRASPECIES();
         }
+        if (ato.containsKey("dwcranks:varietyepithet")) {
+            rank=Rank.VARIETY();
+        }
         //popUp(rank.getTitleCache());
         return rank;
     }
@@ -852,6 +896,18 @@ public class TaxonXExtractor {
         transformer.transform(source, result);
         String xmlString = result.getWriter().toString();
         return xmlString;
+    }
+
+    protected boolean containsDistinctLetters(String word){
+        Set<Character> dl = new HashSet<Character>();
+        for (char a: word.toCharArray()) {
+            dl.add(a);
+        }
+        if(dl.size()>1 && word.indexOf("no description text")==-1) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 

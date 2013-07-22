@@ -67,13 +67,13 @@ public class UnitsGatheringEvent {
             this.setTeam(team, config);
         }
     }
-//
+    //
     public UnitsGatheringEvent(ITermService termService, String locality, String collectorName, Double longitude,
             Double latitude, TaxonXImportConfigurator config,IAgentService agentService){
         if (!StringUtils.isEmpty(locality)) {
             this.setLocality(termService, locality, null);
         }
-                this.setCoordinates(longitude, latitude);
+        this.setCoordinates(longitude, latitude);
         if (!StringUtils.isEmpty(collectorName)) {
             this.setCollector(collectorName, config, agentService);
         }
@@ -140,7 +140,7 @@ public class UnitsGatheringEvent {
         LanguageString loc = null;
         List<LanguageString> languages = termService.getAllLanguageStrings(0, 0);
         boolean locFound=false;
-        if (languageIso == null || termService.getLanguageByIso(languageIso) == null){
+        if ((languageIso == null) || (termService.getLanguageByIso(languageIso) == null)){
             //            if (languageIso != null && termService.getLanguageByIso(languageIso) == null ){
             //                logger.info("unknown iso used for the locality: "+languageIso);
             //            }
@@ -188,7 +188,7 @@ public class UnitsGatheringEvent {
      */
     public void setCoordinates(Double longitude, Double latitude){
         //create coordinates point
-        if(longitude == null || latitude == null){
+        if((longitude == null) || (latitude == null)){
             return;
         }
         Point coordinates = Point.NewInstance();
@@ -289,8 +289,8 @@ public class UnitsGatheringEvent {
      */
     public void setTeam(String gatheringTeam, SpecimenSynthesysExcelImportConfigurator config) {
         Team t = new Team();
-        if (gatheringTeam != null && !gatheringTeam.isEmpty()) {
-            if (gatheringTeam.indexOf("et al.") != -1 || gatheringTeam.indexOf("& al.") != -1 || gatheringTeam.indexOf(" al.") != -1){
+        if ((gatheringTeam != null) && !gatheringTeam.isEmpty()) {
+            if ((gatheringTeam.indexOf("et al.") != -1) || (gatheringTeam.indexOf("& al.") != -1) || (gatheringTeam.indexOf(" al.") != -1)){
                 t.setTitleCache(gatheringTeam);
             } else{
                 String[] tmp1 = gatheringTeam.split(" et ");
@@ -317,8 +317,8 @@ public class UnitsGatheringEvent {
      */
     public void setTeam(String gatheringTeam, Abcd206ImportConfigurator config) {
         Team t = new Team();
-        if (gatheringTeam != null && !gatheringTeam.isEmpty()) {
-            if (gatheringTeam.indexOf("et al.") != -1 || gatheringTeam.indexOf("& al.") != -1 || gatheringTeam.indexOf(" al.") != -1){
+        if ((gatheringTeam != null) && !gatheringTeam.isEmpty()) {
+            if ((gatheringTeam.indexOf("et al.") != -1) || (gatheringTeam.indexOf("& al.") != -1) || (gatheringTeam.indexOf(" al.") != -1)){
                 t.setTitleCache(gatheringTeam);
             } else{
                 String[] tmp1 = gatheringTeam.split(" et ");
