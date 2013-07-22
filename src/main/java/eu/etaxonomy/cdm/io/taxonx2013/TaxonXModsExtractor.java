@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -86,6 +87,12 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                     if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
                         ref.setIssn("GenericHash: "+content);
+                        try {
+                            ref.setUri(new URI("http://plazi.cs.umb.edu/GgServer/search?MODS.ModsDocID="+content));
+                        } catch (URISyntaxException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
             }

@@ -46,8 +46,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author p.kelbert 2013
  */
 @Component
-public class TaxonXImport extends
-SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
+public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
     private static final Logger logger = Logger.getLogger(TaxonXImport.class);
     private static String prefix = "";
 
@@ -118,7 +117,6 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
                 null,
                 nodeList.toArray(),
                 classificationName);
-
         if (!classifDic.containsKey(s)){
             System.out.println("Classif inconnue ?? "+s+", "+classifDic);
             if (s.equalsIgnoreCase("Other classification - add a new one")){
@@ -130,6 +128,8 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             refreshTransaction();
         }
         else{
+            classification = classifDic.get(s);
+        }
             if (classification == null) {
                 String name = taxonXstate.getConfig().getClassificationName();
 
@@ -140,12 +140,6 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
                 getClassificationService().saveOrUpdate(classification);
                 refreshTransaction();
             }
-            else{
-                classification = classifDic.get(s);
-            }
-        }
-
-
     }
 
     /**

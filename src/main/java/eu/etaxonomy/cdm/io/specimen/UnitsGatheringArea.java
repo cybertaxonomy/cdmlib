@@ -106,7 +106,7 @@ public class UnitsGatheringArea {
             UUID areaUUID = null;
             areaUUID = getNamedAreaDecision(namedAreaStr,config);
 
-            if (areaUUID == null){
+            if (areaUUID == null && config.isInteractWithUser()){
                 areaUUID = askForArea(namedAreaStr, matchingTerms);
             }
             if (DEBUG) {
@@ -192,7 +192,7 @@ public class UnitsGatheringArea {
                 UUID areaUUID = null;
                 areaUUID = getNamedAreaDecision(fullName,config);
 
-                if ((areaUUID == null) && (matchingTerms.keySet().size()>0)){
+                if ((areaUUID == null) && (matchingTerms.keySet().size()>0) && config.isInteractWithUser()){
                     areaUUID = askForArea(fullName, matchingTerms);
                     logger.info("selected area: "+areaUUID);
                 }

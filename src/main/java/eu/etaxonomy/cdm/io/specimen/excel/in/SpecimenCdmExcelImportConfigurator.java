@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,40 +29,41 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorBase implements IImportConfigurator {
 	private static final Logger logger = Logger.getLogger(SpecimenCdmExcelImportConfigurator.class);
 	private static IInputTransformer defaultTransformer = new SpecimenCdmExcelTransformer();
-	
+
 	//old
 	private boolean doParsing = false;
 	private boolean reuseMetadata = false;
 	private boolean reuseTaxon = false;
 	private String taxonReference = null;
-	
+
 	//new
 	private boolean doSpecimen = true;  //reads the specimen worksheet
 	private boolean doAreaLevels = true;  //reads the areaLevels worksheet
 	private boolean doExtensionTypes = true;  //reads the extensionType worksheet
-	
-	
-	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry 
+
+
+	private boolean useCountry;  //if isocountry and country is available, use country instead of isocountry
 	//tries to match areas by the abbreviated label
 	//TODO still needs to be refined as this may hold only for certain vocabularies, levels, ...
 	//there also maybe more strategies like first label, then abbreviated label, ....
 	private TermMatchMode areaMatchMode = TermMatchMode.UUID_ONLY;
-	private PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
-	
-	//if true, determinations are imported also as individualAssociations	
+	private final PersonParserFormatEnum personParserFormat = PersonParserFormatEnum.POSTFIX;  //
+
+	//if true, determinations are imported also as individualAssociations
 	private boolean makeIndividualAssociations = true;
 	private boolean useMaterialsExaminedForIndividualsAssociations = true;
 	private boolean firstDeterminationIsStoredUnder = false;
 	private boolean determinationsAreDeterminationEvent = true;
-	
+
 	private boolean preferNameCache = true;
 	private boolean createTaxonIfNotExists = false;
 //	private boolean includeSynonymsForTaxonMatching = false;
 
-		
-	
-	
-	@SuppressWarnings("unchecked")
+
+
+
+	@Override
+    @SuppressWarnings("unchecked")
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
 			NamedAreaLevelExcelImport.class,
@@ -70,12 +71,22 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 			SpecimenCdmExcelImport.class
 		};
 	}
-	
+
 	public static SpecimenCdmExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination){
 		return new SpecimenCdmExcelImportConfigurator(uri, destination);
 	}
-	
-	
+
+
+	  /**
+     * @param uri
+     * @param object
+     * @param b
+     * @return
+     */
+    public static SpecimenCdmExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean interact) {
+        return new SpecimenCdmExcelImportConfigurator(uri, destination, interact);
+    }
+
 	/**
 	 * @param berlinModelSource
 	 * @param sourceReference
@@ -84,13 +95,24 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	private SpecimenCdmExcelImportConfigurator(URI uri, ICdmDataSource destination) {
 		super(uri, destination, defaultTransformer);
 	}
-	
-	
-	
+
+	/**
+     * @param berlinModelSource
+     * @param sourceReference
+     * @param destination
+     */
+    private SpecimenCdmExcelImportConfigurator(URI uri, ICdmDataSource destination, boolean interact) {
+        super(uri, destination, defaultTransformer);
+        setInteractWithUser(interact);
+    }
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
 	 */
-	public SpecimenCdmExcelImportState getNewState() {
+	@Override
+    public SpecimenCdmExcelImportState getNewState() {
 		return new SpecimenCdmExcelImportState(this);
 	}
 
@@ -108,27 +130,28 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		}
 		return sourceReference;
 	}
-	
+
 
 
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
 	 */
-	public String getSourceNameString() {
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
 		}else{
 			return this.getSource().toString();
 		}
 	}
-	
-// **************************** OLD ******************************************	
-	
+
+// **************************** OLD ******************************************
+
 	public void setTaxonReference(String taxonReference) {
 		this.taxonReference = taxonReference;
 	}
-	
+
 	public Reference getTaxonReference() {
 		//TODO
 		if (this.taxonReference == null){
@@ -136,27 +159,27 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		}
 		return sourceReference;
 	}
-	
+
 	public void setDoAutomaticParsing(boolean doParsing){
 		this.doParsing=doParsing;
 	}
-	
+
 	public boolean getDoAutomaticParsing(){
 		return this.doParsing;
 	}
-	
+
 	public void setReUseExistingMetadata(boolean reuseMetadata){
 		this.reuseMetadata = reuseMetadata;
 	}
-	
+
 	public boolean getReUseExistingMetadata(){
 		return this.reuseMetadata;
 	}
-	
+
 	public void setReUseTaxon(boolean reuseTaxon){
 		this.reuseTaxon = reuseTaxon;
 	}
-	
+
 	public boolean getDoReUseTaxon(){
 		return this.reuseTaxon;
 	}
@@ -195,7 +218,7 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 	public void setFirstDeterminationIsStoredUnder(boolean firstDeterminationIsStoredUnder) {
 		this.firstDeterminationIsStoredUnder = firstDeterminationIsStoredUnder;
 	}
-	
+
 	public boolean isDeterminationsAreDeterminationEvent() {
 		return determinationsAreDeterminationEvent ;
 	}
@@ -248,7 +271,9 @@ public class SpecimenCdmExcelImportConfigurator extends ExcelImportConfiguratorB
 		return areaMatchMode;
 	}
 
-	
-	
-	
+
+
+
+
+
 }

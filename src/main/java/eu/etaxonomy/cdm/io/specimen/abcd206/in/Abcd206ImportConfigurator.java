@@ -45,7 +45,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private Map<String, Team> titleCacheTeam;
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
-    private boolean askUserForHelp =true;
     private boolean allowReuseOtherClassifications =true;
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -75,8 +74,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
      * @param b
      * @return
      */
-    public static Abcd206ImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean userInteraction) {
-        return new Abcd206ImportConfigurator(uri, destination,userInteraction);
+    public static Abcd206ImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean interact) {
+        return new Abcd206ImportConfigurator(uri, destination,interact);
     }
 
 
@@ -97,13 +96,16 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
      * @param sourceReference
      * @param destination
      */
-    private Abcd206ImportConfigurator(URI uri, ICdmDataSource destination, boolean userInteraction) {
+    private Abcd206ImportConfigurator(URI uri, ICdmDataSource destination, boolean interact) {
         super(defaultTransformer);
         setSource(uri);
         setDestination(destination);
         setSourceReferenceTitle("ABCD classic");
-        this.askUserForHelp=userInteraction;
+        setInteractWithUser(interact);
     }
+
+
+
 
 
     /* (non-Javadoc)
@@ -275,16 +277,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return namedAreaDecisions.get(areaStr);
     }
 
-    /**
-     * @return
-     */
-    public boolean isInteractWithUser() {
-        return askUserForHelp;
-    }
-
-    public void setInteractWithUser (boolean interaction){
-        this.askUserForHelp=interaction;
-    }
 
     /**
      * @return the allowReuseOtherClassifications
@@ -306,6 +298,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     public SpecimenUserInteraction getSpecimenUserInteraction() {
         return specimenUserInteraction;
     }
+
 
 
 
