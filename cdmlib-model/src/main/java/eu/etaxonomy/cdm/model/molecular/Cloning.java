@@ -61,7 +61,11 @@ public class Cloning extends EventBase implements Cloneable{
 	private String strain;
 	
 	/** @see #getMethod()*/
-	private MaterialAndMethod method;
+    @XmlElement(name = "Cloning")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
+    private MaterialAndMethod method;
 	
     /** @see #getForwardPrimer() */
     @XmlElement(name = "ForwardPrimer")

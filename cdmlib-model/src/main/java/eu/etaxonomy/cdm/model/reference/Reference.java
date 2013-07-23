@@ -140,18 +140,15 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	
 	//Title of the reference
 	@XmlElement(name ="AbbrevTitle" )
-	@Column(length=256, name="abbrevTitle")
 	@Field
 	@Match(MatchMode.EQUAL)  //TODO check if this is correct
 	@NullOrNotEmpty
-	@Length(max = 256)
+	@Length(max = 255)
 	private String abbrevTitle;
 	
 	//Title of the reference
 	@XmlElement(name ="AbbrevTitleCache" )
-	@Column(length=256, name="abbrevTitleCache")
 	@Field
-	@Lob
 	@Match(MatchMode.CACHE)
     //TODO Val #3379
 //	@NotNull

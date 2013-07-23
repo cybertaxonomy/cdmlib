@@ -31,6 +31,7 @@ public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements I
 	private boolean includeAudTable;
 	private Object defaultValue;
 	private boolean isNotNull;
+
 	private String referencedTable;
 
 	public static final ColumnAdder NewIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull, String referencedTable){
@@ -44,6 +45,10 @@ public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements I
 	public static final ColumnAdder NewTinyIntegerInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
 		return new ColumnAdder(stepName, tableName, newColumnName, "tinyint", includeAudTable, null, notNull, null);
 	}
+	
+	public static final ColumnAdder NewDoubleInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
+		return new ColumnAdder(stepName, tableName, newColumnName, "double", includeAudTable, null, notNull, null);
+	}
 
 	public static final ColumnAdder NewBooleanInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, Boolean defaultValue){
 		return new ColumnAdder(stepName, tableName, newColumnName, "bit", includeAudTable, defaultValue, false, null);
@@ -55,6 +60,10 @@ public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements I
 
 	public static final ColumnAdder NewStringInstance(String stepName, String tableName, String newColumnName, int length, boolean includeAudTable){
 		return new ColumnAdder(stepName, tableName, newColumnName, "nvarchar("+length+")", includeAudTable, null, false, null);
+	}
+
+	public static final ColumnAdder NewClobInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
+		return new ColumnAdder(stepName, tableName, newColumnName, "clob", includeAudTable, null, false, null);
 	}
 	
 	public static final ColumnAdder NewDateTimeInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
@@ -72,6 +81,10 @@ public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements I
 		this.referencedTable = referencedTable;
 	}
 
+	public ColumnAdder setNotNull(boolean isNotNull) {
+		this.isNotNull = isNotNull;
+		return this;
+	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
@@ -146,10 +159,25 @@ public class ColumnAdder extends SchemaUpdaterStepBase<ColumnAdder> implements I
 		return updateQuery;
 	}
 
-	private String getDatabaseColumnType(ICdmDataSource datasource, String columnType) {
+	protected static String getDatabaseColumnType(ICdmDataSource datasource, String columnType) {
 		String result = columnType;
-		if (datasource.getDatabaseType().equals(DatabaseTypeEnum.PostgreSQL)){
+		DatabaseTypeEnum dbType = datasource.getDatabaseType();
+		//nvarchar
+		if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){
 			result = result.replace("nvarchar", "varchar");
+		}
+		//CLOB
+		if (columnType.equalsIgnoreCase("clob")){
+			//TODO use hibernate dialects
+			if (dbType.equals(DatabaseTypeEnum.MySQL)){
+				result = "longtext";
+			}else if (dbType.equals(DatabaseTypeEnum.H2)){
+				result = "CLOB";  //or NVARCHAR
+			}else if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){
+				result = "text";
+			}else if (dbType.equals(DatabaseTypeEnum.SqlServer2005)){
+				result = "NVARCHAR(MAX)";
+			}
 		}
 		return result;
 	}

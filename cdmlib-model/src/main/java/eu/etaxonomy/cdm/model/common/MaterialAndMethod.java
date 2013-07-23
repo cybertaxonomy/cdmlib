@@ -9,9 +9,14 @@
 package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
@@ -39,9 +44,14 @@ public class MaterialAndMethod extends AnnotatableEntity {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MaterialAndMethod.class);
 	
+    @XmlElement(name = "MaterialMethodTerm")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch=FetchType.LAZY)
 	private DefinedTerm materialMethodTerm;
 	
-	private String materialMethodText;
+    @XmlElement(name = "MaterialMethodText")
+    private String materialMethodText;
 
 	
 	

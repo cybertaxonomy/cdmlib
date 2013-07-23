@@ -18,9 +18,12 @@ import org.apache.log4j.Logger;
 import com.sun.tools.xjc.reader.gbind.Sequence;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
+import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
@@ -38,8 +41,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
-
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_31_33.class);
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
 	private static final String endSchemaVersion = "3.3.0.0.201308010000";
@@ -89,8 +90,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create original source type column";
 		tableName = "OriginalSourceBase";
 		String columnName = "sourceType";
-		//TODO NOT NULL unclear
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true, null);
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 4, INCLUDE_AUDIT);
+		((ColumnAdder)step).setNotNull(true);
 		stepList.add(step);
 		
 		//TODO ?? update original source type
@@ -154,6 +155,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO NOT NULL unclear
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
+		
+		stepName = "Create termType column in TermVocabulary";
+		tableName = "TermVocabulary";
+		columnName = "termType";
+		//TODO NOT NULL unclear
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 4, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		
 		//TODO update termType for DefinedTerms and TermVocabulary, no type must be null
 		
 		
@@ -175,11 +185,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO add column for DistanceToWaterSurfaceMax/Text und DistanceToGroundMax/Text
 		
-		//TODO update datatype of sequence.sequence => CLOB (keeping data not necessary #3325)
-		//NOTE: column has been changed: #3360
+		
+		//update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference, Rights, MediaRepresentationPart ) 
+		//#3345,    TODO adapt type to <65k
+		//TODO sequence.sequence has been changed #3360
+		changeUriType(stepList);
 
-		//TODO update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference
-		//Rights, MediaRepresentationPart ) #3345
 				
 		//update Sicilia -> Sicily
 		//#3540
@@ -212,6 +223,33 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		//TODO add columns abbrevTitle, abbrevTitleCache and protectedAbbrevTitleCache to Reference
+		stepName = "Add abbrevTitle to Reference";
+		tableName = "Reference";
+		columnName = "abbrevTitle";
+		int length = 255;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Add abbrevTitleCache to Reference";
+		tableName = "Reference";
+		columnName = "abbrevTitleCache";
+		length = 1023;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Add protectedAbbrevTitleCache to Reference";
+		tableName = "Reference";
+		columnName = "protectedAbbrevTitleCache";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false); 
+		stepList.add(step);
+		
+		//add doi to reference
+		stepName = "Add doi to Reference";
+		tableName = "Reference";
+		columnName = "doi";
+		length = 255;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
 		
 		
 		//add start number to PolytomousKey
@@ -222,7 +260,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  defaultValue, true); 
 		stepList.add(step);
 		
-		//TODO add specimenOrObservation basis of record to SpecimenOrObservationBase
+		//add recordBasis  to specimenOrObservationBase 
+		stepName = "Add recordBasis to SpecimenOrObservationBase";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "recordBasis";
+		length = 4;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+				
+		
 		
 		//TODO update specimenOrObservationBase DTYPE with DefinedTerm where necessary
 
@@ -249,7 +295,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO update length of all title caches and full title cache in names
 		//https://dev.e-taxonomy.eu/trac/ticket/1592
 		
-		//TODO rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
+		//rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
+		stepName = "Update states_id to stateData_id in DescriptionElementBase_StateData";
+		tableName = "DescriptionElementBase_StateData";
+		oldColumnName = "states_id";
+		String newColumnName = "stateData_id";
+		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
 		
 		//TODO add sortIndex column to TaxonNode and fill with values (compare with FeatureNode filling, however, this
 //		had a bad performance
@@ -257,7 +310,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//specimen descriptions #3571
 		//TODO add column DescriptionBase.Specimen_ID  #3571
 		stepName = "Add specimen_id column to DescriptionBase";
-		tableName = "SpecimenOrObservationBase";
+		tableName = "DescriptionBase";
 		columnName = "specimen_id";
 		boolean notNull = false;
 		String referencedTable = "SpecimenOrObservationBase";
@@ -272,7 +325,17 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//TODO create table CdmPreferences  #3555
+		//create table CdmPreferences  #3555
+		stepName = "Create table 'CdmPreferences'";
+		tableName = "CdmPreferences";
+		TableCreator stepPref = TableCreator.NewInstance(stepName, tableName, 
+				new String[]{"key_subject", "key_predicate","value"},  //colNames 
+				new String[]{"string_100", "string_200","string_1023",},  // columnTypes
+				new String[]{null, "DefinedTermBase",null},  //referencedTables 
+				! INCLUDE_AUDIT, false);
+		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
+		stepList.add(stepPref);
+		//TODO length of key >= 1000
 		
 		//TODO fill CdmPreferences with default values
 		
@@ -320,16 +383,232 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		//TODO add Marker vocabulary and terms #3591 => TermUpdater
 		
-		  //SpecimenOrObservationBase_Media #3597
+		//SpecimenOrObservationBase_Media #3597
 		stepName = "Remove table SpecimenOrObservationBase_Media";
 		tableName = "SpecimenOrObservationBase_Media";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		
+		//Amplification #3360
+		stepName = "Create table 'Primer'";
+		tableName = "Primer";
+		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
+				new String[]{"label","sequence_id","publishedIn_id"},  //colNames 
+				new String[]{"string_255","int","int"},  // columnTypes
+				new String[]{null,Sequence.class.getSimpleName(),Reference.class.getSimpleName()},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
 		
+		//MaterialAndMethod #3360
+		stepName = "Create table 'MaterialAndMethod'";
+		tableName = MaterialAndMethod.class.getSimpleName();
+		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
+				new String[]{"DTYPE", "materialMethodTerm_id","materialMethodText"},  //colNames 
+				new String[]{"string_255", "int","string_1000",},  // columnTypes
+				new String[]{null, "DefinedTermBase",null},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//Cloning #3360
+		stepName = "Create table 'Cloning'";
+		tableName = "Cloning";
+		String matMetName = MaterialAndMethod.class.getSimpleName();
+		step = TableCreator.NewEventInstance(stepName, tableName, 
+				new String[]{"strain","method_id","forwardPrimer_id","reversePrimer_id"},  //colNames 
+				new String[]{"string_255", "int","int","int"},  // columnTypes
+				new String[]{null, matMetName,"Primer","Primer"},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		
+		//Amplification #3360
+		stepName = "Create table 'Amplification'";
+		tableName = "Amplification";
+		step = TableCreator.NewEventInstance(stepName, tableName, 
+				new String[]{"dnaSample_id","dnaMarker_id","forwardPrimer_id","reversePrimer_id","purification_id","cloning_id", "gelPhoto_id", "successful","successText","ladderUsed","electrophoresisVoltage","gelRunningTime","gelConcentration"},  //colNames 
+				new String[]{"int","int","int","int","int","int","int", "bit","string_255","string_255","double","double","double"},  // columnTypes
+				new String[]{"SpecimenOrObservationBase","DefinedTermBase","Primer","Primer",matMetName, matMetName, "Media", null, null, null, null, null, null},  //referencedTables 
+				INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//SingleRead #3360
+		stepName = "Create table 'SingleRead'";
+		tableName = "SingleRead";
+		step = TableCreator.NewEventInstance(stepName, tableName, 
+				new String[]{"amplification_id","materialAndMethod_id","primer_id","pherogram_id","direction","sequence_length"},  //colNames 
+				new String[]{"int","int","int","int","int","int"},  // columnTypes
+				new String[]{"Amplification",matMetName, "Primer","Media", null, null},  //referencedTables 
+				INCLUDE_AUDIT);
+		//TODO length sequence_string
+		stepList.add(step);
+		
+		//sequence - consensussequence_string  #3360
+		stepName= "Add sequence_string to single read";
+		columnName = "sequence_string";
+		step = ColumnAdder.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//amplification - single reads  #3360
+		stepName= "Add single reads to amplification";
+		String firstTable =  "Amplification";
+		String secondTable =  "SingleRead";
+		step = MnTableCreator.NewMnInstance(stepName, firstTable, null, secondTable, null, SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+		stepList.add(step);
+		
+		//sequence - single reads  #3360
+		stepName= "Add single reads to sequence";
+		firstTable =  "Sequence";
+		secondTable =  "SingleRead";
+		step = MnTableCreator.NewMnInstance(stepName, firstTable, null, secondTable, null, SchemaUpdaterBase.INCLUDE_AUDIT, false, true);
+		stepList.add(step);
+		
+		//sequence - barcode  #3360
+		stepName= "Add barcodesequencepart_length to sequence";
+		tableName = "Sequence";
+		columnName = "barcodeSequencePart_length";
+		defaultValue = null;
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, defaultValue, false);
+		stepList.add(step);
+
+		//sequence - barcode  #3360
+		stepName= "Add barcodesequencepart_string to sequence";
+		tableName = "Sequence";
+		columnName = "barcodeSequencePart_string";
+		step = ColumnAdder.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//sequence - consensussequence_length  #3360
+		stepName= "Add consensusSequence_length to sequence";
+		tableName = "Sequence";
+		columnName = "consensusSequence_length";
+		defaultValue = null;
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, defaultValue, false);
+		stepList.add(step);
+
+		//sequence - consensussequence_string  #3360
+		stepName= "Add consensusSequence_string to sequence";
+		tableName = "Sequence";
+		columnName = "consensusSequence_string";
+		step = ColumnAdder.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//sequence - contigFile  #3360
+		stepName= "Add contigFile to sequence";
+		tableName = "Sequence";
+		columnName = "contigFile_id";
+		referencedTable = "Media";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
+		stepList.add(step);
+		
+		//sequence - boldprocessid  #3360
+		stepName= "Add boldprocessId to sequence";
+		tableName = "Sequence";
+		columnName = "boldProcessId";
+		length = 20;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//sequence - boldprocessid  #3360
+		stepName= "Add geneticAccessionNumber to sequence";
+		tableName = "Sequence";
+		columnName = "geneticAccessionNumber";
+		length = 20;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//sequence - haplotype  #3360
+		stepName= "Add haplotype to sequence";
+		tableName = "Sequence";
+		columnName = "haplotype";
+		length = 100;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//sequence - isBarcode  #3360
+		stepName= "Add isBarcode to sequence";
+		tableName = "Sequence";
+		columnName = "isBarcode";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false);
+		stepList.add(step);
+		
+		//sequence - dnaMarker  #3360
+		stepName= "Add dnaMarker to sequence";
+		tableName = "Sequence";
+		columnName = "dnaMarker_id";
+		referencedTable = "DefinedTermBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
+		stepList.add(step);
+		
+		//sequence - dnaSample  #3360
+		stepName= "Add dnaSample to sequence";
+		tableName = "Sequence";
+		columnName = "dnaSample_id";
+		referencedTable = "SpecimenOrObservationBase";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
+		stepList.add(step);
 		
 		return stepList;
+	}
+
+	/**
+	 * @param stepList
+	 */
+	private void changeUriType(List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		stepName = "Update uri to clob for DefinedTermBase";
+		tableName = "DefinedTermBase";
+		String oldColumnName = "uri";
+		String newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update uri to clob for TermVocabulary";
+		tableName = "TermVocabulary";
+		oldColumnName = "uri";
+		newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//TODO are uri and termsourceuri needed ???
+		stepName = "Update termsourceuri to clob for TermVocabulary";
+		tableName = "TermVocabulary";
+		oldColumnName = "termsourceuri";
+		newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update uri to clob for Reference";
+		tableName = "Reference";
+		oldColumnName = "uri";
+		newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update uri to clob for Rights";
+		tableName = "Rights";
+		oldColumnName = "uri";
+		newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Update uri to clob for MediaRepresentationPart";
+		tableName = "MediaRepresentationPart";
+		oldColumnName = "uri";
+		newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//TODO still needed??
+		stepName = "Update uri to clob for FeatureTree";
+		tableName = "FeatureTree";
+		oldColumnName = "uri";
+		newColumnName = oldColumnName;
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
 	}
 
 	/**
@@ -363,48 +642,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//Amplification #3360
-		stepName = "Create table 'Primer'";
-		tableName = "Primer";
-		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
-				new String[]{"label","sequence_id","publishedIn_id"},  //colNames 
-				new String[]{"string_255","int","int"},  // columnTypes
-				new String[]{null,Sequence.class.getSimpleName(),Reference.class.getSimpleName()},  //referencedTables 
-				INCLUDE_AUDIT);
-		stepList.add(step);
-		
-		//MaterialAndMethod #3360
-		stepName = "Create table 'MaterialAndMethod'";
-		tableName = MaterialAndMethod.class.getSimpleName();
-		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
-				new String[]{"materialMethodTerm_id","materialMethodText"},  //colNames 
-				new String[]{"int","string_1000",},  // columnTypes
-				new String[]{"DefinedTermBase",null},  //referencedTables 
-				INCLUDE_AUDIT);
-		stepList.add(step);
-		
-		//Amplification #3360
-		stepName = "Create table 'Amplification'";
-		tableName = "Amplification";
-		String matMetName = MaterialAndMethod.class.getSimpleName();
-		step = TableCreator.NewEventInstance(stepName, tableName, 
-				new String[]{"dnaSample_id","dnaMarker_id","forwardPrimer_id","reversePrimer_id","purification_id","cloning_id"},  //colNames 
-				new String[]{"int","int","int","int","int","int"},  // columnTypes
-				new String[]{"SpecimenOrObservationBase","DefinedTermBase","Primer","Primer",matMetName, matMetName},  //referencedTables 
-				INCLUDE_AUDIT);
-		stepList.add(step);
-		
-		//Amplification #3360
-		stepName = "Create table 'SingleRead'";
-		tableName = "SingleReadSingleRead";
-		step = TableCreator.NewEventInstance(stepName, tableName, 
-				new String[]{"amplification_id","materialAndMethod_id","primer_id","pherogram_id","direction","sequenceString_length","sequenceString_sequence"},  //colNames 
-				new String[]{"int","int","int","int","int","int","string_1000"},  // columnTypes
-				new String[]{"Amplification",matMetName, "Primer","Media", null, null},  //referencedTables 
-				INCLUDE_AUDIT);
-		stepList.add(step);
-	
-		
 		return;
 	}
 
@@ -435,7 +672,62 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//create column absoluteElevationText
+		stepName = "Create absoluteElevationText column";
+		tableName = "GatheringEvent";
+		columnName = "absoluteElevationText";
+		//TODO size
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
 		
+		//retype distanceToGround 
+		stepName = "Rname distanceToGround column";
+		tableName = "GatheringEvent";
+		String strNewColumnName = "distanceToGround";
+		String strOldColumnName = "distanceToGround";
+		step = ColumnTypeChanger.NewInt2DoubleInstance(stepName, tableName, strOldColumnName, strNewColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//create column distanceToGroundMax
+		stepName = "Create distanceToGroundMax column";
+		tableName = "GatheringEvent";
+		columnName = "distanceToGroundMax";
+		step = ColumnAdder.NewDoubleInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false);
+		stepList.add(step);
+		
+		
+		//create column distanceToGroundText
+		stepName = "Create distanceToGroundText column";
+		tableName = "GatheringEvent";
+		columnName = "distanceToGroundText";
+		//TODO size
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//retype distanceToGround 
+		stepName = "Rname distanceToWaterSurface column";
+		tableName = "GatheringEvent";
+		strNewColumnName = "distanceToWaterSurface";
+		strOldColumnName = "distanceToWaterSurface";
+		step = ColumnTypeChanger.NewInt2DoubleInstance(stepName, tableName, strOldColumnName, strNewColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//create column distanceToWaterSurface
+		stepName = "Create distanceToWaterSurfaceMax column";
+		tableName = "GatheringEvent";
+		columnName = "distanceToWaterSurfaceMax";
+		step = ColumnAdder.NewDoubleInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false);
+		stepList.add(step);
+		
+		
+		//create column distanceToGroundText
+		stepName = "Create distanceToWaterSurfaceText column";
+		tableName = "GatheringEvent";
+		columnName = "distanceToWaterSurfaceText";
+		//TODO size
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
+
 	}
 
 	/**

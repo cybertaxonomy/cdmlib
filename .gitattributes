@@ -1251,6 +1251,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.jav
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnAdder.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnNameChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnRemover.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnTypeChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/DatabaseTypeNotSupportedException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ISchemaUpdaterStep.java -text

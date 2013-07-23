@@ -103,7 +103,8 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 				ColumnAdder adder = ColumnAdder.NewIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull, referencedTable);
 				this.columnAdders.add(adder);
 			}else if ("boolean".equals(columnTypes.get(i)) || "bit".equals(columnTypes.get(i))){
-				ColumnAdder adder = ColumnAdder.NewBooleanInstance(getStepName(), this.tableName,  this.columnNames.get(i), includeAudTable, Boolean.valueOf(this.defaultValues.get(i).toString()));
+				String defaultValue = this.defaultValues == null ? null : this.defaultValues.get(i).toString();
+				ColumnAdder adder = ColumnAdder.NewBooleanInstance(getStepName(), this.tableName,  this.columnNames.get(i), includeAudTable, Boolean.valueOf(defaultValue));
 				this.columnAdders.add(adder);
 			}else if (columnTypes.get(i).startsWith("string")){
 				Integer length = Integer.valueOf(columnTypes.get(i).substring("string_".length()));
@@ -111,6 +112,9 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 				this.columnAdders.add(adder);
 			}else if ("tinyint".equals(columnTypes.get(i)) ){
 				ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
+				this.columnAdders.add(adder);
+			}else if ("double".equals(columnTypes.get(i)) ){
+				ColumnAdder adder = ColumnAdder.NewDoubleInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 				this.columnAdders.add(adder);
 			}
 		}
@@ -171,7 +175,7 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		}
 		if (this.includeEventBase){
 			//TODO handle as column adder
-			updateQuery += "timeperiod_start, timeperiod_end, timeperiod_freetext, actor_id, description varchar(255),";
+			updateQuery += "timeperiod_start varchar(255), timeperiod_end varchar(255), timeperiod_freetext varchar(255), actor_id int, description varchar(255),";
 			logger.warn("ForeignKey for actor not yet handled");
 		}
 		
