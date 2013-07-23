@@ -306,35 +306,63 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         taxonNodes.add(taxonNode);
     }
     public void removeTaxonNode(TaxonNode taxonNode){
-        taxonNodes.remove(taxonNode);
+        TaxonNode parent = taxonNode.getParent();
+        if (parent != null){
+        	parent.removeChildNode(taxonNode);
+        }
+    	taxonNodes.remove(taxonNode);
+        
+    }
+    
+    public void removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
+    	TaxonNode parent = taxonNode.getParent();
+    	//taxonNode.setTaxon(null);
+		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
+			
+			taxonNode.delete();
+			
+		} else if (!taxonNode.isTopmostNode()){
+			Set<TaxonNode> children = taxonNode.getChildNodes();
+			Iterator<TaxonNode> childrenIterator = children.iterator();
+			while (childrenIterator.hasNext()){
+				TaxonNode childNode = childrenIterator.next();
+				childrenIterator.remove();
+				parent.addChildNode(childNode, null, null, null);
+				
+			}	
+			//parent.removeChildNode(taxonNode);
+			taxonNode.delete();
+		} else if (taxonNode.isTopmostNode()){
+			
+		}
+		
     }
     
     public void removeTaxonNodes(boolean deleteChildren){
     	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
     	TaxonNode node;
+    	TaxonNode parent;
     	while (nodesIterator.hasNext()){
     		node = nodesIterator.next();
-    		TaxonNode parent = node.getParent();
-    		if ((!node.getChildNodes().isEmpty() && deleteChildren) || (node.getChildNodes().isEmpty())){
-    			node.setTaxon(null);
-    		} else if (!node.isTopmostNode()){
+    		if (!deleteChildren){
     			Set<TaxonNode> children = node.getChildNodes();
     			Iterator<TaxonNode> childrenIterator = children.iterator();
+    			parent = node.getParent();
     			while (childrenIterator.hasNext()){
     				TaxonNode childNode = childrenIterator.next();
     				childrenIterator.remove();
     				parent.addChildNode(childNode, null, null, null);
-    				node.setTaxon(null);
     				
-    			}
-    		} else {
-    			//what to do if the node is topmost node??
+    			}	
+    			
+    			
     		}
-    		if (!node.isTopmostNode()){
-    			parent.removeChildNode(node);
-    		}
+    		
+    		node.delete(deleteChildren);
+    		node.setTaxon(null);
+			nodesIterator.remove();
     	}
-    	taxonNodes = null;
+    	
     }
 
 

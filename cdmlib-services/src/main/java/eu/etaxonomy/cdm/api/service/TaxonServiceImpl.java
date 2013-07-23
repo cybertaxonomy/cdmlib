@@ -919,34 +919,35 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
             //    	TaxonNode
-            if (! config.isDeleteTaxonNodes()){
+            if (! config.isDeleteTaxonNodes() || (!config.isDeleteInAllClassifications() && classification == null )){
                 if (taxon.getTaxonNodes().size() > 0){
-                    String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion.";
+                    String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion or define a classification where it should be deleted or adapt the taxon deletion configurator.";
                     throw new ReferencedObjectUndeletableException(message);
                 }
             }else{
             	Set<TaxonNode> nodes = taxon.getTaxonNodes();
             	Iterator<TaxonNode> iterator = nodes.iterator();
-            	TaxonNode node;
-            	if (config.isDeleteInAllClassifications()){
-            		boolean deleteChildren;
-            		if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
-            			deleteChildren = true;
-            		}else {
-            			deleteChildren = false;
-            		}
-            	
-	            	taxon.removeTaxonNodes(deleteChildren);
-            	}else {
+            	TaxonNode node = null;
+            	boolean deleteChildren;
+        		if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
+        			deleteChildren = true;
+        		}else {
+        			deleteChildren = false;
+        		}
+            	if (!config.isDeleteInAllClassifications() && !(classification == null)){
             		while (iterator.hasNext()){
 	            		node = iterator.next();
 	            		if (node.getClassification().equals(classification)){
-	            			node.delete();
-	            			return;
+	            			break;
 	            		}
+	            		node = null;
 	            	}
-            	}
-            	
+            		if (node != null){
+            			taxon.removeTaxonNode(node, deleteChildren);
+            		}
+            	} else if (config.isDeleteInAllClassifications()){
+	            	taxon.removeTaxonNodes(deleteChildren);
+            	} 
             	
             }
 
@@ -1039,7 +1040,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         }
                     }
                 }
-            dao.delete(taxon);
+            if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
+            	dao.delete(taxon);
+            } else{
+            	String message = "Taxon can't be deleted as it is used in a Taxonnode";
+                    throw new ReferencedObjectUndeletableException(message);
+            }
             
 
     }

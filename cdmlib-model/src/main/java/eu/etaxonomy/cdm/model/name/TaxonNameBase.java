@@ -647,6 +647,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return false;
     }
+    
+    /**
+     * Indicates <i>this</i> taxon name is a {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym}
+     * of any other taxon name. Returns "true", if a replaced
+     * synonym {@link NameRelationship relationship} from <i>this</i> taxon name to another taxon name exists,
+     * false otherwise (also in case <i>this</i> taxon name is the only one in the
+     * homotypical group).
+     */
+    @Transient
+    public boolean isReplacedSynonym(){
+        Set<NameRelationship> relationsFromThisName = this.getRelationsFromThisName();
+        for (NameRelationship relation : relationsFromThisName) {
+            if (relation.getType().isReplacedSynonymRelation()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns the taxon name which is the {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
@@ -723,6 +741,23 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }else{
             return null;
         }
+    }
+    
+    /**
+     * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
+     *  
+     */
+    @Transient
+    public Set<TaxonNameBase> getReplacedSynonyms(){
+        Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+        Set<NameRelationship> rels = this.getRelationsToThisName();
+        for (NameRelationship rel : rels){
+            if (rel.getType().isReplacedSynonymRelation()){
+                TaxonNameBase replacedSynonym = rel.getFromName();
+                result.add(replacedSynonym);
+            }
+        }
+        return result;
     }
 
     /**

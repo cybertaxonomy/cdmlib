@@ -144,7 +144,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //check if this name is still used somewhere
 
         //name relationships
-        if (! name.getNameRelations().isEmpty()){
+        if (! name.getNameRelations().isEmpty() && !config.isRemoveAllNameRelationships()){
             String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
             throw new ReferencedObjectUndeletableException(message);
 //			return null;
@@ -206,6 +206,25 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
 
         //TODO inline references
+             
+    	if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
+    		String message = "Name can't be deleted as it is a basionym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
+    		String message = "Name can't be deleted as it has a basionym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
+    		String message = "Name can't be deleted as it is a replaced synonym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
+    		String message = "Name can't be deleted as it has a replaced synonym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	
+    
 
         dao.delete(name);
         return name.getUuid();

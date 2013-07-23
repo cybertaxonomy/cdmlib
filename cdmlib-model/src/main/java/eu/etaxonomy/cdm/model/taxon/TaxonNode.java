@@ -208,13 +208,38 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      */
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-
-        node.getTaxon().removeTaxonNode(node);
+        Taxon taxon = node.getTaxon();
+        taxon.removeTaxonNode(node);
         node.setTaxon(null);
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
             node.deleteChildNode(childNode);
+        }
+
+//		// two iterations because of ConcurrentModificationErrors
+//        Set<TaxonNode> removeNodes = new HashSet<TaxonNode>();
+//        for (TaxonNode grandChildNode : node.getChildNodes()) {
+//                removeNodes.add(grandChildNode);
+//        }
+//        for (TaxonNode childNode : removeNodes) {
+//                childNode.deleteChildNode(node);
+//        }
+
+        return result;
+    }
+    
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+     */
+    public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
+        boolean result = removeChildNode(node);
+               
+        if (deleteChildren){
+	        ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+	        for(TaxonNode childNode : childNodes){
+	            node.deleteChildNode(childNode);
+	        }
         }
 
 //		// two iterations because of ConcurrentModificationErrors
@@ -268,6 +293,19 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
             return classification.deleteChildNode(this);
         }else{
             return getParent().deleteChildNode(this);
+        }
+    }
+    
+    /**
+     * Remove this taxonNode From its taxonomic parent
+     *
+     * @return true on success
+     */
+    public boolean delete(boolean deleteChildren){
+        if(isTopmostNode()){
+            return classification.deleteChildNode(this, deleteChildren);
+        }else{
+            return getParent().deleteChildNode(this, deleteChildren);
         }
     }
 

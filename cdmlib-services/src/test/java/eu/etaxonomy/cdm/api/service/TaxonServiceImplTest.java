@@ -1055,6 +1055,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 	@Test
 	@DataSet(value="BlankDataSet.xml")
 	public final void testDeleteTaxonNameUsedInTwoClassificationsDeleteAllNodes(){
+		commitAndStartNewTransaction(null);
 		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
 		//create a small classification
 		Taxon testTaxon = TaxonGenerator.getTestTaxon();
@@ -1112,7 +1113,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				e.printStackTrace();
 			}
 				
-		commitAndStartNewTransaction(null);
+		//commitAndStartNewTransaction(null);
 		Taxon tax = (Taxon)service.find(uuid);
 		assertNotNull(tax);
 		Taxon childTaxon = (Taxon)service.find(childUUID);
