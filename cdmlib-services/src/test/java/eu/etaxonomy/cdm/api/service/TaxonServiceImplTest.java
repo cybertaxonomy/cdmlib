@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -79,6 +81,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private ITaxonNodeService nodeService;
+    
+    @SpringBeanByType
+    private IDescriptionService descriptionService;
+    
+   
 
 
 
@@ -1028,9 +1035,17 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		UUID uuid = service.save(testTaxon);
 		
 		Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
-		
+		Iterator<TaxonDescription> descriptionIterator = speciesTaxon.getDescriptions().iterator();
+		UUID descrUUID = null;
+		UUID descrElementUUID = null;
+		if (descriptionIterator.hasNext()){
+			TaxonDescription descr = descriptionIterator.next();
+			descrUUID = descr.getUuid();
+			descrElementUUID = descr.getElements().iterator().next().getUuid();
+		}
 		BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
 		assertNotNull(taxonName);
+		
 		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
 		config.setDeleteNameIfPossible(false);
 		try {
@@ -1044,8 +1059,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		
 		taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
 		Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
-		
-		
+		//descriptionService.find(descrUUID);
+		assertNull(descriptionService.find(descrUUID));
+		assertNull(descriptionService.getDescriptionElementByUuid(descrElementUUID));
 		//assertNull(synName);
 		assertNotNull(taxonName);
 		assertNull(taxon);

@@ -39,6 +39,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
@@ -565,11 +566,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      * test with admin account - should succeed
      */
     @Test
-    @Ignore
-    /*FIXME fails due to org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade (remove deleted object from associations)
-     *       see ticket #3086
-     */
-    public final void testTaxonDeleteAllow_2() {
+   public final void testTaxonDeleteAllow_2() {
 
         SecurityContext context = SecurityContextHolder.getContext();
 
@@ -577,9 +574,14 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTINII);
+        Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
-            taxonService.delete(taxon);
+            try {
+				taxonService.deleteTaxon(taxon, null, null);
+			} catch (ReferencedObjectUndeletableException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -592,7 +594,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTINII);
+        taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         Assert.assertNull("The taxon must be deleted", taxon);
     }
 

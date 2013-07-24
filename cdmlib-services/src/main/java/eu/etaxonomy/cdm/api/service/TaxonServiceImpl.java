@@ -257,14 +257,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
      */
-    //TODO correct delete handling still needs to be implemented / checked
+    
     @Override
     @Transactional(readOnly = false)
     public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException{
-
     	
-    	//TODO, check whether the synonym is related to the accepted taxon or not (see java doc)
-        TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
+    	TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
         TaxonNameBase<?,?> synonymName = synonym.getName();
         HomotypicalGroup synonymHomotypicGroup = synonymName.getHomotypicalGroup();
 
@@ -289,7 +287,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         //synonym.getName().removeTaxonBase(synonym);
-        //TODO correct delete handling still needs to be implemented / checked
+       
         if (deleteSynonym){
 //			deleteSynonym(synonym, taxon, false);
             try {

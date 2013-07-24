@@ -162,7 +162,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * but also it is than difficult to decide how to handle other names
      * in the homotypic group. It is up to the implementing class to
      * handle this situation via an exception or in another way.
-     * TODO Open issue: does the old synonym need to be deleted from the database?
+     *
      *
      * @param synonym
      * 				the synonym to change into an accepted taxon

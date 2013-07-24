@@ -86,6 +86,7 @@ public class TaxonGenerator {
         botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec); 
         childTaxon.setUuid(SPECIES1_UUID);
+        childTaxon.addDescription(getTestDescription());
         Classification classification = getTestClassification("TestClassification");
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
 //        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456"); 
@@ -135,6 +136,7 @@ public class TaxonGenerator {
         childTaxon2.addMisappliedName(misappliedName, citationRef, "125");
        
         genusTaxon.addDescription(getTestDescription());
+       
         
         return genusTaxon; 
 	}
