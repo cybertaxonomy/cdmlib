@@ -65,7 +65,7 @@ public class PublisherTest {
 		
 //		Element selectedTaxonNodeElement = new Element("TaxonNode");
 //		configurator.addSelectedTaxonNodeElements(selectedTaxonNodeElement);		
-		configurator.setExportFolder(new File("/Users/l.morris/Documents"));				
+		configurator.setExportFolder(new File("/home/sybille/tmp/"));				
 	}
 	
 	private static void setTaxonNode() {
@@ -125,7 +125,7 @@ public class PublisherTest {
 		Publisher.publish(configurator);
 	}
 	
-	@Ignore
+	@Test
 	public void textPublishOdf() {
 		configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new OdfOutputModule()}));
 		
