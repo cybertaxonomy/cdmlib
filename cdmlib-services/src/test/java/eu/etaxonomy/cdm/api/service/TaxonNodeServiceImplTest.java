@@ -10,6 +10,9 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -47,6 +50,9 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 
 	@SpringBeanByType
 	private ITermService termService;
+	
+	@SpringBeanByType
+	private ITaxonService taxonService;
 
 	private static final UUID t1Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
 	private static final UUID t2Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
@@ -93,16 +99,21 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 
 		// descriptions
 		t1 = node1.getTaxon();
+		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
-		Assert.assertEquals(2, t1.getDescriptions().size());
+		assertEquals(2, t1.getDescriptions().size());
 		Assert.assertTrue(t2.getSynonyms().isEmpty());
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
+		assertEquals(1,t1.getSynonyms().size());
 
 		taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
 		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		Assert.assertEquals(2, t2.getDescriptions().size());
-
+		assertEquals(2,t2.getSynonyms().size());
+		assertEquals(2, t2.getDescriptions().size());
+		
+		assertNull(taxonService.find(t1UUID));
+		
 	}
 
 }

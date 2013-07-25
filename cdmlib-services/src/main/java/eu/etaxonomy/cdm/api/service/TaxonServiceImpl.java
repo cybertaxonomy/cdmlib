@@ -1022,7 +1022,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             
 //        	TaxonDescription
-            Set<TaxonDescription> descriptions = taxon.getDescriptions();
+           /* Set<TaxonDescription> descriptions = taxon.getDescriptions();
 
             for (TaxonDescription desc: descriptions){
                 if (config.isDeleteDescriptions()){
@@ -1033,11 +1033,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }else{
                     if (desc.getDescribedSpecimenOrObservations().size()>0){
                         String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-                                " which also describes specimens or abservations";
+                                " which also describes specimens or observations";
                             throw new ReferencedObjectUndeletableException(message);
                         }
                     }
-                }
+                }*/
             if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
             	dao.delete(taxon);
             } else{

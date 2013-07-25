@@ -439,7 +439,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -456,7 +456,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
     }
 
@@ -475,7 +475,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         context.setAuthentication(authentication);
 
-        TaxonBase<?>  taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?>  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -492,7 +492,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
     }
 
@@ -508,7 +508,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
 
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
@@ -527,7 +527,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
     }
 

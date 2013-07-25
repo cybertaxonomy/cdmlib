@@ -735,7 +735,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxonService.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
-        taxon = taxonService.load(taxon.getUuid());
+        taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
     }
 

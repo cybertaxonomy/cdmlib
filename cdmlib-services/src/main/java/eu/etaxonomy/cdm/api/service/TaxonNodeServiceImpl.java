@@ -24,6 +24,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -36,6 +38,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
 /**
@@ -52,6 +55,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	private IBeanInitializer defaultBeanInitializer;
 	
 	private Comparator<? super TaxonNode> taxonNodeComparator;
+	
+	@Autowired
+	private ITaxonService taxonService;
+	
 	@Autowired
 	public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
 		this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
@@ -156,6 +163,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			taxonRelationship.setFromTaxon(null);
 			
 			
+			
+			
 		}
 
 		
@@ -167,8 +176,16 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			description.setTitleCache(message, true);
 			newAcceptedTaxon.addDescription(description);
 		}
+		try {
+			TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
+			conf.setDeleteSynonymsIfPossible(false);
+			taxonService.deleteTaxon(oldTaxon, conf, null);
+		} catch (ReferencedObjectUndeletableException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 				
-		oldTaxonNode.delete();		
+		//oldTaxonNode.delete();		
 		return synonmyRelationship.getSynonym();
 	}
 }
