@@ -794,9 +794,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-
+	
 	@Override
-	public List<UUID>  getAllTaxonIds(UUID rootUuid){
+	public List<UUID>  getAllChildNodeIds(UUID rootUuid){
 		
 		Set<UUID> uuids= new HashSet<UUID>();
 		List<UUID> children= new ArrayList<UUID>();
@@ -804,26 +804,56 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		String queryString;
 		String parameter;
 		
-		queryString="select distinct chn.taxon.uuid from TaxonNode tn " +
+		queryString="select distinct chn.uuid from TaxonNode tn " +
 				"join tn.childNodes as chn " +
-				"where tn.taxon.uuid in :parents ";
+				"where tn.uuid in (:parents) ";
 		
 		Query query= getSession().createQuery(queryString);
 		
 		parents.add(rootUuid);
+		uuids.add(rootUuid);
 		
-		//while(!(parents.isEmpty())){
-			parents.add(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
-			parameter=parents.toString();
-			System.out.println("parameter: "+parameter);
-			
-		//children = query.list();
-		// parents=children
-		//}
-		
-		return parents;
+		while(!(parents.isEmpty())){
+			query.setParameterList("parents",parents);
+			children = query.list();
+			uuids.addAll(children);
+			parents=children;
+		}
+		List<UUID> uuidList = new ArrayList<UUID>();
+		uuidList.addAll(uuids);
+		return uuidList;
 		
 	}
+
+//	@Override
+//	public List<UUID>  getAllTaxonIds(UUID rootUuid){
+//		
+//		Set<UUID> uuids= new HashSet<UUID>();
+//		List<UUID> children= new ArrayList<UUID>();
+//		List<UUID> parents= new ArrayList<UUID>();
+//		String queryString;
+//		String parameter;
+//		
+//		queryString="select distinct chn.taxon.uuid from TaxonNode tn " +
+//				"join tn.childNodes as chn " +
+//				"where tn.taxon.uuid in :parents ";
+//		
+//		Query query= getSession().createQuery(queryString);
+//		
+//		parents.add(rootUuid);
+//		
+//		//while(!(parents.isEmpty())){
+//			parents.add(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
+//			parameter=parents.toString();
+//			System.out.println("parameter: "+parameter);
+//			
+//		//children = query.list();
+//		// parents=children
+//		//}
+//		
+//		return parents;
+//		
+//	}
 	
 	@Override
 	public void getAllTaxonIds(){

@@ -76,10 +76,13 @@ public interface IStatisticsDao {
 	
 	public List<UUID> getTaxonTree(IdentifiableEntity<?> filter);
 
-	public List<UUID> getAllTaxonIds(UUID rootUuid);
+//	public List<UUID> getAllTaxonIds(UUID rootUuid);
 
 
 	public void getAllTaxonIds();
+
+
+	public List<UUID> getAllChildNodeIds(UUID rootUuid);
 
 
 	
