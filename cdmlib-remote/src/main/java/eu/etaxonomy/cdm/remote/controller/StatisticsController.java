@@ -100,7 +100,7 @@ public class StatisticsController {
 			for (String string : type) {
 				helperConfigurator.addType(StatisticsTypeEnum.valueOf(string));
 			}
-		} else {
+		} else { // if nothing is chosen, count all:
 			for (StatisticsTypeEnum enumValue : StatisticsTypeEnum.values()) {
 				helperConfigurator.addType(enumValue);
 			}

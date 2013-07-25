@@ -16,6 +16,7 @@ import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
+import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -48,6 +49,9 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	private static final Logger logger = Logger
 			.getLogger(StatisticsServiceImpl.class);
+	
+	private static final StatisticsTypeEnum DEFAULT_TYPE=StatisticsTypeEnum.ALL_TAXA; //TODO create a list with all types.
+	private static final StatisticsPartEnum DEFAULT_FILTER=StatisticsPartEnum.ALL;
 
 	private ArrayList<Statistics> statisticsList;
 
@@ -98,7 +102,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		// TODO constant for null filter
 		if (filter == null) {
 			countAll(configurator);
-		} else {
+		} else { // check for classtype classification
 			countPart(configurator, filter);
 		}
 
@@ -207,10 +211,14 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 				statistics.addCount(type, counter);
 			}
-
-		} else {
-			// TODO
-			// right now we just return null as count for the statistics
+		} else if(filter instanceof Taxon) {
+			//get all taxa of the tree:
+			do{
+				filter.getUuid();
+				statisticsDao.getTaxonTree(filter);
+			}while(true);
+		}else {
+			// we just return null as count for the statistics
 			// element, if the filter is neither classification nor null.
 		}
 

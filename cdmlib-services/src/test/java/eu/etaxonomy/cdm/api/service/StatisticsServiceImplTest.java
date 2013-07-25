@@ -60,7 +60,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// constant if you want to printout the database content to console:
 	// only recommended for a small probe
-	private static final boolean PRINTOUT = false;
+	private static final boolean PRINTOUT = true;
 
 	// ************constants to set up the expected results for all:
 	// ********************
@@ -219,7 +219,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	 */
 
 	@Before
-	@DataSet
+//	@DataSet
 	public void setUp() throws Exception {
 
 		// missing in this example data:

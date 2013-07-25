@@ -31,6 +31,7 @@ public class StatisticsConfigurator {
 
 	//*********************** MEMBERS ********************************
 
+	// the filter list represents the path to 
 	private List<IdentifiableEntity> filter = new ArrayList<IdentifiableEntity>();
 
 	private List<StatisticsTypeEnum> type = new ArrayList<StatisticsTypeEnum>();

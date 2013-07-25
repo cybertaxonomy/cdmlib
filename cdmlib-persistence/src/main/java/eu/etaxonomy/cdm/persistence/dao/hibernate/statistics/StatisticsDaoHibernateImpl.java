@@ -8,13 +8,16 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
+import org.apache.log4j.Logger;
 import org.hibernate.Criteria;
 import org.hibernate.Query;
 import org.hibernate.criterion.Projections;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
@@ -54,6 +57,10 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 	private static final int REFERENCE_LINK_RECURSION_DEPTH = 1;
 
+	private static final Logger logger = Logger
+			.getLogger(StatisticsDaoHibernateImpl.class);
+
+	
 	@Override
 	public Long countDescriptiveSourceReferences() {
 
@@ -217,10 +224,10 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		if (clazz.equals(Taxon.class)) {
 			Criteria criteria = getSession().createCriteria(TaxonNode.class);
-			criteria = getSession().createCriteria(TaxonNode.class);
+
 			criteria.add(Restrictions.eq("classification", classification));
 			criteria.setProjection(Projections.rowCount());
-			return Long.valueOf((Integer) criteria.uniqueResult());
+			return Long.valueOf((Long) criteria.uniqueResult());
 		}
 
 		else if (clazz.equals(Synonym.class)) {
@@ -231,7 +238,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 							+ "join tn.taxon.synonymRelations as sr "
 							+ "where tn.classification=:classification ");
 			query.setParameter("classification", classification);
-
 			return (Long) query.uniqueResult();
 		}
 		// this should never happen:
@@ -357,6 +363,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		parameters.put("classification", classification);
 
+		//get the ids from the Descriptive source references to add them to the count
 		Set<Integer> ids = listDescriptiveSourceReferenceIds(classification);
 
 		// get classification reference
@@ -700,33 +707,33 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// the sources...
 		// iterate in a certain depth REFERENCE_LINK_RECURSION_DEPTH
 
-		for (int i = 0; i < REFERENCE_LINK_RECURSION_DEPTH; i++) {
-			
+//		for (int i = 0; i < REFERENCE_LINK_RECURSION_DEPTH; i++) {
+//
 //			ids.remove(null);
-			List<Integer> preIds = new ArrayList(ids);
-			
-
-			if (!preIds.isEmpty()) {
-
-				queryStrings.clear();
-				Set<Integer> postIds = new HashSet<Integer>();
-
-				queryStrings
-						.add("select distinct s.citation.id from Reference as R "
-								+ "join R.sources as s "
-								+ "where s.citation is not null "
-//								+ "and s.citation.id is not null "
-								+ " and s.citation.id in (:preIds) "
-								);
-
-				parameters.clear();
-				parameters.put("preIds", preIds);
-				postIds.addAll(processQueriesWithIdDistinctListResult(
-						queryStrings, parameters));
-				ids.addAll(postIds);
-			}
-
-		}
+//			List<Integer> preIds = new ArrayList(ids);
+//
+//			if (!preIds.isEmpty()) {
+//
+//				queryStrings.clear();
+//				Set<Integer> postIds = new HashSet<Integer>();
+//
+//				queryStrings
+//						.add("select distinct s.citation.id from Reference as R "
+//								+ "join R.sources as s "
+//								+ "where s.citation is not null "
+//								// + "and s.citation.id is not null "
+//								+ " and s.citation.id in (:preIds) ");
+//
+//				parameters.clear();
+//				parameters.put("preIds", preIds);
+//				Set<Integer> result = processQueriesWithIdDistinctListResult(
+//						queryStrings, parameters);
+//				postIds.addAll(result);
+//				
+//				ids.addAll(postIds);
+//			}
+//
+//		}
 
 		return Long.valueOf(ids.size());
 	}
@@ -743,7 +750,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	private Set<Integer> processQueriesWithIdDistinctListResult(
 			List<String> queryStrings, Map<String, Object> parameters) {
 
-		// MAYDO catch error if qeries deliver wrong type
+		// MAYDO catch error if queries deliver wrong type
 		Query query;
 		Set<Integer> ids = new HashSet<Integer>();
 
@@ -754,11 +761,12 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			List<String> queryParameters = new ArrayList<String>(
 					Arrays.asList(query.getNamedParameters()));
 
-			for (Map.Entry<String, Object> entry : parameters.entrySet()) {
+			if (parameters != null) {
+				for (Map.Entry<String, Object> entry : parameters.entrySet()) {
 
-				if (parameters != null
-						&& queryParameters.contains(entry.getKey())) {
-					query.setParameter(entry.getKey(), entry.getValue());
+					if (queryParameters.contains(entry.getKey())) {
+						query.setParameter(entry.getKey(), entry.getValue());
+					}
 				}
 			}
 			// if ((classification != null) &&
@@ -769,11 +777,62 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			// if ((type != null) && (queryParameters.contains("type"))) {
 			// query.setParameter("type", type);
 			// }
-			ids.addAll((ArrayList<Integer>) query.list());
+			List queryList=query.list();
+			//System.out.println(queryList.toString());
+			ids.addAll((ArrayList<Integer>) queryList);
+			
+//			System.out.println(parameters.toString());
+//			System.out.println("");
 		}
-
+//		System.out.println("end");
 		return ids;
 		// return Long.valueOf(ids.size());
+	}
+
+	@Override
+	public List<UUID> getTaxonTree(IdentifiableEntity filter) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<UUID>  getAllTaxonIds(UUID rootUuid){
+		
+		Set<UUID> uuids= new HashSet<UUID>();
+		List<UUID> children= new ArrayList<UUID>();
+		List<UUID> parents= new ArrayList<UUID>();
+		String queryString;
+		String parameter;
+		
+		queryString="select distinct chn.taxon.uuid from TaxonNode tn " +
+				"join tn.childNodes as chn " +
+				"where tn.taxon.uuid in :parents ";
+		
+		Query query= getSession().createQuery(queryString);
+		
+		parents.add(rootUuid);
+		
+		//while(!(parents.isEmpty())){
+			parents.add(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
+			parameter=parents.toString();
+			System.out.println("parameter: "+parameter);
+			
+		//children = query.list();
+		// parents=children
+		//}
+		
+		return parents;
+		
+	}
+	
+	@Override
+	public void getAllTaxonIds(){
+		
+		Set<UUID> uuids= new HashSet<UUID>();
+
+		
+		//return (List<UUID>) uuids;
+		
 	}
 
 }

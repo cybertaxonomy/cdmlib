@@ -1,7 +1,10 @@
 package eu.etaxonomy.cdm.persistence.dao.statistics;
 
+import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -62,12 +65,27 @@ public interface IStatisticsDao {
 
 	/**
 	 * count all Reference items attached to the given classification
-	 * but not nomeclatural references
+	 * but not nomeclatural referencesy
 	 * 
 	 * @param classification
 	 * @return - the amount of the items in the classification
 	 */
 	public Long countReferencesInClassification(Classification classification);
+
+	
+	
+	public List<UUID> getTaxonTree(IdentifiableEntity<?> filter);
+
+	public List<UUID> getAllTaxonIds(UUID rootUuid);
+
+
+	public void getAllTaxonIds();
+
+
+	
+
+
+	
 
 
 
