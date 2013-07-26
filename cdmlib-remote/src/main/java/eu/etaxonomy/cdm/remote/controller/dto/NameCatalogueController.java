@@ -14,6 +14,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
@@ -23,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import java.util.Hashtable;
 
 import org.apache.log4j.Level;
+import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.joda.time.DateTime;
 import org.joda.time.format.DateTimeFormat;
@@ -42,9 +44,11 @@ import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 
 import eu.etaxonomy.cdm.remote.controller.BaseController;
 import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
@@ -108,6 +112,9 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Default name search type */
     public static final String DEFAULT_SEARCH_TYPE = NAME_SEARCH;
+    
+    /** Default max number of hits for the exact name search  */
+    public static final String DEFAULT_MAX_NB_FOR_EXACT_SEARCH = "100";
 
     /** Classifcation 'default' key */
     public static final String CLASSIFICATION_DEFAULT = "default";
@@ -294,7 +301,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
-    return doGetNameSearch(queries, DEFAULT_SEARCH_TYPE, request, response);
+    return doGetNameSearch(queries, DEFAULT_SEARCH_TYPE, DEFAULT_MAX_NB_FOR_EXACT_SEARCH, request, response);
     }
 
     /**
@@ -307,14 +314,16 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      * URI: <b>&#x002F;{datasource-name}&#x002F;name_catalogue</b>
      *
      * @param query
-     *                The scientific name pattern(s) to query for. The query can
-     *                contain wildcard characters ('*'). The query can be
-     *                performed with no wildcard or with the wildcard at the
-     *                begin and / or end depending on the search pattern.
+     *             	The scientific name pattern(s) to query for. The query can
+     *             	contain wildcard characters ('*'). The query can be
+     *              performed with no wildcard or with the wildcard at the
+     *              begin and / or end depending on the search pattern.
      * @param type
-     *                The type of name to query. This be either
-     *                "name" : scientific name corresponding to 'name cache' in CDM or
-     *                "title" : complete name corresponding to 'title cache' in CDM
+     *              The type of name to query. This be either
+     *              "name" : scientific name corresponding to 'name cache' in CDM or
+     *              "title" : complete name corresponding to 'title cache' in CDM
+     * @param hits               
+     *            	Maximum number of responses to be returned.    
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
@@ -325,74 +334,96 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query", "type"})
     public ModelAndView doGetNameSearch(@RequestParam(value = "query", required = true) String[] queries,
             @RequestParam(value = "type", required = false, defaultValue = DEFAULT_SEARCH_TYPE) String searchType,
+            @RequestParam(value = "hits", required = false, defaultValue = DEFAULT_MAX_NB_FOR_EXACT_SEARCH) String hits,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
 
-        // if search type is not known then return error
-        if (!searchType.equals(NAME_SEARCH) && !searchType.equals(TITLE_SEARCH)) {
-            ErrorResponse er = new ErrorResponse();
-            er.setErrorMessage("searchType parameter can only be set as" + NAME_SEARCH + " or "
-                    + TITLE_SEARCH);
-            mv.addObject(er);
+        int h = 100;
+        try {        	
+        	h = Integer.parseInt(hits);
+        } catch(NumberFormatException nfe) {
+        	ErrorResponse er = new ErrorResponse();
+        	er.setErrorMessage("hits parameter is not a number");
+        	mv.addObject(er);
             return mv;
         }
-
+        
         // search through each query
         for (String query : queries) {
-
+        	if(query.equals("")) {
+				ErrorResponse er = new ErrorResponse();
+                er.setErrorMessage("Empty query field");
+                nsList.add(er);
+                continue;
+        	}
+        	// remove wildcards if any
             String queryWOWildcards = getQueryWithoutWildCards(query);
-            MatchMode mm = getMatchModeFromQuery(query);
-            logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + query
-                    + "\" without wild cards : " + queryWOWildcards + " and match mode : " + mm);
-            List<NonViralName> nameList = new ArrayList<NonViralName>();
-
-            // if "name" search then find by name cache
-            if (searchType.equals(NAME_SEARCH)) {
-                nameList = (List<NonViralName>) service.findNamesByNameCache(queryWOWildcards, mm,
-                        NAME_SEARCH_INIT_STRATEGY);
+            // convert first char to upper case
+            char[] stringArray = queryWOWildcards.toCharArray();
+            stringArray[0] = Character.toUpperCase(stringArray[0]);
+            queryWOWildcards = new String(stringArray);
+            
+            boolean wc = false;
+            
+            if(getMatchModeFromQuery(query) == MatchMode.BEGINNING) {
+            	wc = true;
             }
-
-            //if "title" search then find by title cache
-            if (searchType.equals(TITLE_SEARCH)) {
-                nameList = (List<NonViralName>) service.findNamesByTitleCache(queryWOWildcards, mm,
-                        NAME_SEARCH_INIT_STRATEGY);
-            }
+            logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + query);
+            
+            List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
+            try {            	            
+				nameSearchList = service.findByNameExactSearch(
+				        queryWOWildcards,
+				        wc,
+				        null,
+				        false, 
+				        h);
+			} catch (ParseException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				ErrorResponse er = new ErrorResponse();
+                er.setErrorMessage("Could not parse name : " + query);
+                nsList.add(er);
+                continue;
+			} 
+     
 
             // if search is successful then get related information , else return error
-            if (nameList == null || !nameList.isEmpty()) {
+            if (nameSearchList == null || !nameSearchList.isEmpty()) {
                 NameSearch ns = new NameSearch();
                 ns.setRequest(query);
 
-                for (NonViralName nvn : nameList) {
+                for (DocumentSearchResult searchResult : nameSearchList) {
+                	for(Document doc : searchResult.getDocs()) {
+                	
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
-                    Set<TaxonBase> tbSet = nvn.getTaxonBases();
-                    Set<TaxonBase> accTbSet = new HashSet<TaxonBase>();
-                    for (TaxonBase tb : tbSet) {
-                        // if synonym then get accepted taxa.
-                        if (tb instanceof Synonym) {
-                            Synonym synonym = (Synonym) tb;
-                            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-                            for (SynonymRelationship sr : synRelationships) {
-                                Taxon accTaxon = sr.getAcceptedTaxon();
-                                accTbSet.add(accTaxon);
-                            }
-                        } else {
-                            accTbSet.add(tb);
-                        }
+                    List<String> tbUuidList = new ArrayList<String>();//nvn.getTaxonBases();
+                    List<String> accTbUuidList = new ArrayList<String>();
+                    String[] tbUuids = doc.getValues("taxonBases.uuid");
+                    String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
+                    for(int i=0;i<tbUuids.length;i++) {
+                    	if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
+                    		accTbUuidList.add(tbUuids[i]);
+                    	}
                     }
                     // update name search object
-                    ns.addToResponseList(nvn.getTitleCache(), nvn.getNameCache(), 0, nvn.getUuid()
-                            .toString(), tbSet, accTbSet);
+                    ns.addToResponseList(doc.getValues("titleCache")[0], 
+                    		doc.getValues("nameCache")[0], 
+                    		searchResult.getMaxScore(), 
+                    		doc.getValues("uuid")[0].toString(), 
+                    		doc.getValues("taxonBases.uuid"),
+                    		mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
+                	}
                 }
                 nsList.add(ns);
 
             } else {
                 ErrorResponse er = new ErrorResponse();
-                er.setErrorMessage("No Taxon Name for given query : " + query);
+                er.setErrorMessage("No Taxon Name matches : " + query + ", for given accuracy");
                 nsList.add(er);
             }
         }        
@@ -461,7 +492,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      */
     @RequestMapping(value = { "fuzzy" }, method = RequestMethod.GET, params = {"query"})
     public ModelAndView doGetNameFuzzySearch(@RequestParam(value = "query", required = true) String[] queries,
-    		@RequestParam(value = "accuracy", required = false, defaultValue = "0.5") String accuracy,
+    		@RequestParam(value = "accuracy", required = false, defaultValue = "0.6") String accuracy,
     		@RequestParam(value = "hits", required = false, defaultValue = "10") String hits,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
@@ -500,14 +531,13 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             queryWOWildcards = new String(stringArray);
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
             //List<NonViralName> nameList = new ArrayList<NonViralName>();
-            List<SearchResult<TaxonNameBase>> nameSearchList = new ArrayList<SearchResult<TaxonNameBase>>();
+            List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
             try {            	            
 				nameSearchList = service.findByNameFuzzySearch(
 				        queryWOWildcards,
 				        acc,
 				        null,
 				        false, 
-				        NAME_SEARCH_INIT_STRATEGY,
 				        h);
 			} catch (ParseException e) {
 				// TODO Auto-generated catch block
@@ -524,31 +554,30 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 NameSearch ns = new NameSearch();
                 ns.setRequest(query);
 
-                for (SearchResult searchResult : nameSearchList) {
-                	NonViralName nvn = HibernateProxyHelper.deproxy(searchResult.getEntity(), NonViralName.class);
+                for (DocumentSearchResult searchResult : nameSearchList) {
+                	for(Document doc : searchResult.getDocs()) {
                 	
                     // we need to retrieve both taxon uuid of name queried and
                     // the corresponding accepted taxa.
                     // reason to return accepted taxa also, is to be able to get from
                     // scientific name to taxon concept in two web service calls.
-                    Set<TaxonBase> tbSet = nvn.getTaxonBases();
-                    Set<TaxonBase> accTbSet = new HashSet<TaxonBase>();
-                    for (TaxonBase tb : tbSet) {
-                        // if synonym then get accepted taxa.
-                        if (tb instanceof Synonym) {
-                            Synonym synonym = (Synonym) tb;
-                            Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
-                            for (SynonymRelationship sr : synRelationships) {
-                                Taxon accTaxon = sr.getAcceptedTaxon();
-                                accTbSet.add(accTaxon);
-                            }
-                        } else {
-                            accTbSet.add(tb);
-                        }
+                    List<String> tbUuidList = new ArrayList<String>();//nvn.getTaxonBases();
+                    List<String> accTbUuidList = new ArrayList<String>();
+                    String[] tbUuids = doc.getValues("taxonBases.uuid");
+                    String[] tbClassNames = doc.getValues("taxonBases.classInfo.name");
+                    for(int i=0;i<tbUuids.length;i++) {
+                    	if(tbClassNames[i].equals("eu.etaxonomy.cdm.model.taxon.Taxon")) {
+                    		accTbUuidList.add(tbUuids[i]);
+                    	}
                     }
                     // update name search object
-                    ns.addToResponseList(nvn.getTitleCache(), nvn.getNameCache(), searchResult.getMaxScore(), nvn.getUuid()
-                            .toString(), tbSet, accTbSet);
+                    ns.addToResponseList(doc.getValues("titleCache")[0], 
+                    		doc.getValues("nameCache")[0], 
+                    		searchResult.getMaxScore(), 
+                    		doc.getValues("uuid")[0].toString(), 
+                    		doc.getValues("taxonBases.uuid"),
+                    		mergeSynAccTaxonUuids(doc.getValues("taxonBases.accTaxon.uuids")));
+                	}
                 }
                 nsList.add(ns);
 
@@ -562,7 +591,17 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         mv.addObject(nsList);
         return mv;
     }
-
+    
+    private String[] mergeSynAccTaxonUuids(String[] accTaxonUuids) {
+    	List<String> accTaxonUuidList = new ArrayList<String>();
+    	for(String accTaxonUuid : accTaxonUuids) {
+    		for(String uuidListAsString : accTaxonUuid.split(AcceptedTaxonBridge.ACCEPTED_TAXON_UUID_LIST_SEP)) {
+    			accTaxonUuidList.add(uuidListAsString);
+    		}
+    	}
+    	return accTaxonUuidList.toArray(new String[0]);
+    	
+    }
     /**
      * Returns a documentation page for the Name Information API.
      * <p>
@@ -797,7 +836,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         String title = syn.getTitleCache();
                         TaxonNameBase synnvn = (TaxonNameBase) syn.getName();
                         String name = synnvn.getTitleCache();
-                        String rank = synnvn.getRank().getTitleCache();
+                        String rank = (synnvn.getRank() == null)? "" : synnvn.getRank().getTitleCache();
                         String status = SYNONYM_STATUS;
                         String relLabel = sr.getType()
                                 .getInverseRepresentation(Language.DEFAULT())
@@ -1068,6 +1107,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> ansList = new ArrayList<RemoteResponse>();
         logger.info("doGetAcceptedNameSearch()");
+        
         // if search type is not known then return error
         if (!searchType.equals(NAME_SEARCH) && !searchType.equals(TITLE_SEARCH)) {
             ErrorResponse er = new ErrorResponse();
