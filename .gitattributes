@@ -683,6 +683,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AbstractClassBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AcceptedTaxonBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/ClassInfoBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
