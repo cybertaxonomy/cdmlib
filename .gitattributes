@@ -2101,6 +2101,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPa
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/CdmMassIndexer.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/DocumentSearchResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text
