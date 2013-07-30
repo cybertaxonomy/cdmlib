@@ -1,11 +1,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,24 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
-import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
-import eu.etaxonomy.cdm.common.TreeNode;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
@@ -49,9 +34,23 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	private static final Logger logger = Logger
 			.getLogger(StatisticsServiceImpl.class);
+
+
+
+	// this does not make sense, we just count nothing if no type is given. 
+	// the one who calls this service should check that there are types given!
+//	private static final StatisticsTypeEnum DEFAULT_TYPE=StatisticsTypeEnum.ALL_TAXA; 
+	//TODO create a list with all types.
+
+	// this constant can also be used by the ones that use the service
 	
-	private static final StatisticsTypeEnum DEFAULT_TYPE=StatisticsTypeEnum.ALL_TAXA; //TODO create a list with all types.
-	private static final StatisticsPartEnum DEFAULT_FILTER=StatisticsPartEnum.ALL;
+	private static final IdentifiableEntity<?> ALL_DB = null;
+	
+	@Override
+	@Transactional
+	public IdentifiableEntity<?> getFilterALL_DB(){
+		return ALL_DB;
+	}
 
 	private ArrayList<Statistics> statisticsList;
 
@@ -99,8 +98,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 		// for the count):
 		IdentifiableEntity filter = configurator.getFilter().get(
 				(configurator.getFilter().size()) - 1);
-		// TODO constant for null filter
-		if (filter == null) {
+		if (filter == getFilterALL_DB()) {
 			countAll(configurator);
 		} else { // check for classtype classification
 			countPart(configurator, filter);
@@ -212,7 +210,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				statistics.addCount(type, counter);
 			}
 		} else if(filter instanceof Taxon) {
-			//get all taxa of the tree:
+			//TODO get all taxa of the tree:
 			do{
 				filter.getUuid();
 				statisticsDao.getTaxonTree(filter);
