@@ -374,13 +374,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @SuppressWarnings("unchecked")
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
-//    	indexedClasses.clear();
-//    	indexedClasses.add(DescriptionElementBase.class);
-//    	indexedClasses.add(TaxonBase.class);
-//    	indexedClasses.add(DescriptionElementBase.class);
-//    	indexedClasses.add(Classification.class);
-//    	indexedClasses.add(TaxonNameBase.class);
-//    	indexedClasses.add(SpecimenOrObservationBase.class);
+    	// if no indexed classes have been 'manually' set then
+    	// the default is the full list
+    	if(indexedClasses.size() == 0) {
+    		indexedClasses.add(DescriptionElementBase.class);
+    		indexedClasses.add(TaxonBase.class);    		
+    		indexedClasses.add(Classification.class);
+    		indexedClasses.add(TaxonNameBase.class);
+    		indexedClasses.add(SpecimenOrObservationBase.class);
+    	}
         return indexedClasses;
     }
 

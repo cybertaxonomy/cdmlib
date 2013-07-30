@@ -117,15 +117,17 @@ public class ManagementController {
 	@RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
 	public ModelAndView doReindex(
 			@RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
-			@RequestParam(value = "type", required = true) Class<? extends CdmBase>[] types,
+			@RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
 			@RequestParam(value = "priority", required = false) Integer priority,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
 		
 		indexer.clearIndexedClasses();
-		for (Class<? extends CdmBase> type : types) {
-			if(type != null) {
-				indexer.addToIndexedClasses(type);
+		if(types != null) {
+			for (Class<? extends CdmBase> type : types) {
+				if(type != null) {
+					indexer.addToIndexedClasses(type);
+				}
 			}
 		}
 		
