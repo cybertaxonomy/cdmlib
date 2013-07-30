@@ -586,33 +586,33 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     	
     	if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {        	
-    		textQuery.add(queryFactory.newTermQuery("genusOrUninomial", nvn.getGenusOrUninomial() + searchSuffix), Occur.SHOULD);
+    		textQuery.add(queryFactory.newTermQuery("genusOrUninomial", nvn.getGenusOrUninomial() + searchSuffix), Occur.MUST);
     		
     	} else {
     		textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
     	}
 
     	if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
-    		textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", nvn.getInfraGenericEpithet() + searchSuffix), Occur.SHOULD);
+    		textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", nvn.getInfraGenericEpithet() + searchSuffix), Occur.MUST);
     	} else {
     		textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
     	}
 
     	if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
-    		textQuery.add(queryFactory.newTermQuery("specificEpithet", nvn.getSpecificEpithet() + searchSuffix), Occur.SHOULD);  
+    		textQuery.add(queryFactory.newTermQuery("specificEpithet", nvn.getSpecificEpithet() + searchSuffix), Occur.MUST);  
 
     	} else {
     		textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
     	}
 
     	if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
-    		textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", nvn.getInfraSpecificEpithet() + searchSuffix), Occur.SHOULD);
+    		textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", nvn.getInfraSpecificEpithet() + searchSuffix), Occur.MUST);
     	} else {
     		textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
     	}
 
     	if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
-    		textQuery.add(queryFactory.newTermQuery("authorshipCache", nvn.getAuthorshipCache() + searchSuffix), Occur.SHOULD);
+    		textQuery.add(queryFactory.newTermQuery("authorshipCache", nvn.getAuthorshipCache() + searchSuffix), Occur.MUST);
     	} else {
     		//textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
     	}
