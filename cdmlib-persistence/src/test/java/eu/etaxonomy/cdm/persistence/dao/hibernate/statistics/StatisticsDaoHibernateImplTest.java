@@ -170,7 +170,7 @@ public class StatisticsDaoHibernateImplTest extends
 
 	@Test
 	// @DataSet
-	public void testGetAllTaxonIds() {
+	public void testGetAllChildNodes() {
 		List<UUID> result;
 		createDataSet();
 		for (Classification classification : classifications) {
@@ -178,7 +178,8 @@ public class StatisticsDaoHibernateImplTest extends
 			root= createTaxTree(classification);
 			result=statisticsDao.getAllChildNodeIds(root.getUuid());
 			System.out.println("classification "+ classification.getName()+": ");
-			System.out.println(result.toString());
+			System.out.println("result: "+result.toString());
+			System.out.println("");
 		}
 		if (PRINTOUT) {
 			print();
@@ -542,12 +543,12 @@ public class StatisticsDaoHibernateImplTest extends
 		for (Classification classification : classifications) {
 			System.out.println("Classification:" + classification.toString());
 			for (TaxonNode node : classification.getAllNodes()) {
-				System.out.println("\tTaxon: " + node.getTaxon().toString());
+				System.out.println("\tTaxon: " + node.getTaxon().toString()+" node UUID: "+ node.getUuid());
 				System.out.println(" \t(Name: "
 						+ node.getTaxon().getName().toString() + ")");
 				System.out.print("\tChildren: ");
 				for (TaxonNode childNode : node.getChildNodes()) {
-					System.out.print(childNode.getTaxon().getName() + "   ");
+					System.out.print(/*childNode.getTaxon().getName() + */" node UUID: "+ node.getUuid()+"   ");
 				}
 				System.out.println();
 

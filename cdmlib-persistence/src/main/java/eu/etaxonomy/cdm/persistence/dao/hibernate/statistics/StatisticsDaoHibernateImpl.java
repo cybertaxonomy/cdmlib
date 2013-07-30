@@ -804,21 +804,28 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		String queryString;
 		String parameter;
 		
-		queryString="select distinct chn.uuid from TaxonNode tn " +
+		// it should be this one!
+//		queryString="select distinct chn.uuid from TaxonNode tn " +
+//				"join tn.childNodes as chn " +
+//				"where tn.uuid in (:parents) ";
+		
+		// just for testing, but does not work anyway
+		queryString="select distinct chn.uuid from TaxonNode tn "+
 				"join tn.childNodes as chn " +
-				"where tn.uuid in (:parents) ";
+				"where tn.uuid = :parent ";
 		
 		Query query= getSession().createQuery(queryString);
 		
 		parents.add(rootUuid);
 		uuids.add(rootUuid);
 		
-		while(!(parents.isEmpty())){
-			query.setParameterList("parents",parents);
+	//	while(!(parents.isEmpty())){
+//			query.setParameterList("parents",parents);
+		query.setParameter("parent",parents.get(0));
 			children = query.list();
 			uuids.addAll(children);
 			parents=children;
-		}
+		//}
 		List<UUID> uuidList = new ArrayList<UUID>();
 		uuidList.addAll(uuids);
 		return uuidList;
