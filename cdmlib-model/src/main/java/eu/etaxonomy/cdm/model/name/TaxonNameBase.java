@@ -1338,19 +1338,19 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
         ReflectionUtils.makeAccessible(method);
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
-        Boolean test = null;
+        boolean removed = false;
         
         if (taxonBases.contains(taxonBase)){
-        	 test = taxonBases.remove(taxonBase);
+        	 removed = taxonBases.remove(taxonBase);
         }
-        if (test != null){
-	       if (!test && !taxonBases.isEmpty()){
+        if (!removed){
+	       if (!removed && !taxonBases.isEmpty()){
 		       HashSet<TaxonBase> copyTaxonBase = new HashSet<TaxonBase>();
 		       Iterator<TaxonBase> iterator = taxonBases.iterator();
 		       while (iterator.hasNext()){
 		    	   TaxonBase taxonBaseTest = iterator.next();
 		    	   if (taxonBaseTest.equals(taxonBase)){
-		    		   test = taxonBases.remove(taxonBaseTest);
+		    		   removed = taxonBases.remove(taxonBaseTest);
 		    	   }
 		    	   
 		    	   
