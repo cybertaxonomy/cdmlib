@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BacterialName;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -664,12 +666,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             rawAssociation="no description text";
                         }
                         added=true;
-                        DerivedUnitFacade derivedUnitFacade = getFacade(rawAssociation.replaceAll(";",""),DerivedUnitType.FieldObservation);
+                        DerivedUnitFacade derivedUnitFacade = getFacade(rawAssociation.replaceAll(";",""),DerivedUnitType.DerivedUnit);
                         derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+                        System.out.println("derivedUnitBase: "+derivedUnitBase);
                         derivedUnitBase.addSource(null,null,refMods,null);
                         importer.getOccurrenceService().saveOrUpdate(derivedUnitBase);
 
-                        myspecimenOrObservation = extractSpecimenOrObservation(events.item(k),derivedUnitBase,DerivedUnitType.FieldObservation);
+                        myspecimenOrObservation = extractSpecimenOrObservation(events.item(k),derivedUnitBase,DerivedUnitType.DerivedUnit);
                         derivedUnitBase = myspecimenOrObservation.getDerivedUnitBase();
                         descr=myspecimenOrObservation.getDescr();
 
@@ -741,7 +744,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         MySpecimenOrObservation myspecimenOrObservation = null;
 
 
-        myspecimenOrObservation = extractSpecimenOrObservation(materials,derivedUnitBase, DerivedUnitType.FieldObservation);
+        myspecimenOrObservation = extractSpecimenOrObservation(materials,derivedUnitBase, DerivedUnitType.DerivedUnit);
         derivedUnitBase = myspecimenOrObservation.getDerivedUnitBase();
         descr=myspecimenOrObservation.getDescr();
 
@@ -1388,7 +1391,22 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         Rank rank = Rank.UNKNOWN_RANK();
         //        String fullContent = nomenclatureNode.getTextContent();
+
+        NomenclaturalStatusType statusType = null;
         for (int i=0;i<children.getLength();i++){
+            if(children.item(i).getNodeName().equalsIgnoreCase("tax:status")){
+                String status = children.item(i).getTextContent().trim();
+                if (!status.isEmpty()){
+                    try {
+                        statusType = nomStatusString2NomStatus(status);
+                    } catch (UnknownCdmTypeException e) {
+                        logger.warn("Problem with status");
+                    }
+                }
+            }
+        }
+        for (int i=0;i<children.getLength();i++){
+
             if (children.item(i).getNodeName().equalsIgnoreCase("#text")) {
                 freetext=children.item(i).getTextContent();
             }
@@ -1426,7 +1444,18 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         nameToBeFilled = BacterialName.NewInstance(null);
                     }
                     acceptedTaxon = importer.getTaxonService().findBestMatchingTaxon(treatmentMainName);
-                    if (acceptedTaxon ==null ){
+
+                    boolean statusMatch=false;
+                    if(acceptedTaxon !=null && statusType!=null){
+                        Set<NomenclaturalStatus> status = acceptedTaxon.getName().getStatus();
+                        for (NomenclaturalStatus st:status){
+                            NomenclaturalStatusType stype = st.getType();
+                            if (stype.toString().equalsIgnoreCase(statusType.toString())) {
+                                statusMatch=true;
+                            }
+                        }
+                    }
+                    if (acceptedTaxon ==null || !statusMatch){
                         nameToBeFilled = parser.parseFullName(treatmentMainName, nomenclaturalCode, null);
                         if (nameToBeFilled.hasProblem() &&
                                 !((nameToBeFilled.getParsingProblems().size()==1) && nameToBeFilled.getParsingProblems().contains(ParserProblem.CheckRank)) ) {
@@ -1437,6 +1466,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             TaxonNameDescription td = TaxonNameDescription.NewInstance();
                             td.setTitleCache(originalTreatmentName);
                             nameToBeFilled.addDescription(td);
+                        }
+                        if(statusType != null) {
+                            nameToBeFilled.addStatus(NomenclaturalStatus.NewInstance(statusType));
                         }
                         nameToBeFilled.addSource(null,null,refMods,null);
                         acceptedTaxon= new Taxon(nameToBeFilled,(Reference<?>) nameToBeFilled.getNomenclaturalReference() );//TODO TOFIX reference
@@ -1511,6 +1543,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     maxRankRespected=false;
                 }
             }
+
         }
         //        importer.getClassificationService().saveOrUpdate(classification);
         return acceptedTaxon;

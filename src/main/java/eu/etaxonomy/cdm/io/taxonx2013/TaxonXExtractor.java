@@ -52,6 +52,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -907,6 +908,97 @@ public class TaxonXExtractor {
             return true;
         } else {
             return false;
+        }
+    }
+
+    /** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
+     */
+    protected NomenclaturalStatusType nomStatusString2NomStatus (String nomStatus) throws UnknownCdmTypeException{
+
+        if (nomStatus == null){ return null;}
+        else if ("Valid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.VALID();}
+
+        else if ("Alternative".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ALTERNATIVE();}
+        else if ("nom. altern.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ALTERNATIVE();}
+
+        else if ("Ambiguous".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.AMBIGUOUS();}
+
+        else if ("Doubtful".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.DOUBTFUL();}
+
+        else if ("Confusum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONFUSUM();}
+
+        else if ("Illegitimate".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ILLEGITIMATE();}
+        else if ("nom. illeg.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ILLEGITIMATE();}
+
+        else if ("Superfluous".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SUPERFLUOUS();}
+        else if ("nom. superfl.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SUPERFLUOUS();}
+
+        else if ("Rejected".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED();}
+        else if ("nom. rej.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED();}
+
+        else if ("Utique Rejected".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.UTIQUE_REJECTED();}
+
+        else if ("Conserved Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED_PROP();}
+
+        else if ("Orthography Conserved Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED_PROP();}
+
+        else if ("Legitimate".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.LEGITIMATE();}
+
+        else if ("Novum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();}
+        else if ("nom. nov.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();}
+        else if ("n. sp.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NOVUM();}
+
+        else if ("Utique Rejected Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.UTIQUE_REJECTED_PROP();}
+
+        else if ("Orthography Conserved".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.ORTHOGRAPHY_CONSERVED();}
+
+        else if ("Rejected Prop".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.REJECTED_PROP();}
+
+        else if ("Conserved".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED();}
+        else if ("nom. cons.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.CONSERVED();}
+
+        else if ("Sanctioned".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.SANCTIONED();}
+
+        else if ("Invalid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.INVALID();}
+        else if ("nom. inval.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.INVALID();}
+
+        else if ("Nudum".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NUDUM();}
+        else if ("nom. nud.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NUDUM();}
+
+        else if ("Combination Invalid".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.COMBINATION_INVALID();}
+
+        else if ("Provisional".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();}
+        else if ("nom. provis.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();}
+
+
+
+        else {
+            throw new UnknownCdmTypeException("Unknown Nomenclatural status type " + nomStatus);
+        }
+    }
+
+
+    //TypeDesignation
+    protected  SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
+        switch (typeStatusId){
+            case 0: return null;
+            case 1: return SpecimenTypeDesignationStatus.HOLOTYPE();
+            case 2: return SpecimenTypeDesignationStatus.LECTOTYPE();
+            case 3: return SpecimenTypeDesignationStatus.NEOTYPE();
+            case 4: return SpecimenTypeDesignationStatus.EPITYPE();
+            case 5: return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
+            case 6: return SpecimenTypeDesignationStatus.ISONEOTYPE();
+            case 7: return SpecimenTypeDesignationStatus.ISOTYPE();
+            case 8: return SpecimenTypeDesignationStatus.PARANEOTYPE();
+            case 9: return SpecimenTypeDesignationStatus.PARATYPE();
+            case 10: return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+            case 11: return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
+            case 12: return SpecimenTypeDesignationStatus.SYNTYPE();
+            case 21: return SpecimenTypeDesignationStatus.ICONOTYPE();
+            case 22: return SpecimenTypeDesignationStatus.PHOTOTYPE();
+            default: {
+                throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
+            }
         }
     }
 

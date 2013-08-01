@@ -24,6 +24,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -51,6 +52,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
 	ITermService termService;
+
+	@SpringBeanByType
+    ICommonService commonService;
 
 
 	private IImportConfigurator configurator;
@@ -96,10 +100,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	public void testInit() {
+	    System.out.println("TEST INIT");
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
 		assertNotNull("term service should not be null", termService);
+		assertNotNull("common service should not be null", commonService);
 	}
 
 //	@Test
@@ -125,7 +131,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
                     "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
                     "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
                     "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
-                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT",
+                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT","GATHERINGEVENT",
                     "HIBERNATE_SEQUENCES",
              });
         } catch (FileNotFoundException e) {

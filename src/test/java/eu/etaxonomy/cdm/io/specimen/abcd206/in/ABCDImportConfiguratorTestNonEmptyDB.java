@@ -23,6 +23,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
@@ -47,6 +48,9 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
 	@SpringBeanByType
 	IOccurrenceService occurrenceService;
 
+	@SpringBeanByType
+	ICommonService commonService;
+
 
 	private IImportConfigurator configurator;
 
@@ -70,6 +74,7 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
+		assertNotNull("common service should not be null", commonService);
 	}
 
 	@Test

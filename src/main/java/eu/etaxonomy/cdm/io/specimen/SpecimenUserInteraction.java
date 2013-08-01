@@ -10,18 +10,34 @@
 package eu.etaxonomy.cdm.io.specimen;
 
 import java.awt.Dimension;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
+import javax.swing.BoxLayout;
+import javax.swing.ButtonGroup;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.apache.log4j.Logger;
+
+import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -32,7 +48,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @date 21 juin 2013
  *
  */
-public class SpecimenUserInteraction {
+public class SpecimenUserInteraction implements ItemListener {
+
+    Logger log = Logger.getLogger(getClass());
 
     public Classification askForClassification(Map<String, Classification> classMap){
         List<String> possibilities = new ArrayList<String>(classMap.keySet());
@@ -129,6 +147,119 @@ public class SpecimenUserInteraction {
 
 
 
+
+
+    /**
+     * @param refMap
+     * @param iReferenceService
+     * @param docSources
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
+    public List<OriginalSourceBase<?>> askForSourceSource(Map<String, OriginalSourceBase<?>> refMap, String currentElement, String blabla,
+            IReferenceService iReferenceService, List<String> docSources) {
+        List<String>  possibilities = new ArrayList<String> (refMap.keySet());
+
+        Set<String> all = new HashSet<String>();
+        all.addAll(possibilities);
+
+        List<String> allList = new ArrayList<String>();
+        allList.addAll(all);
+        Collections.sort(allList);
+        allList.add(0, "Create a new source");
+
+        JLabel label = new JLabel(blabla);
+
+        sources=new ArrayList<String>();
+
+        JPanel checkPanel = null;
+        ButtonGroup group = null;
+        JScrollPane scrollPane = null;
+
+        JRadioButton jcb = null;
+
+        Object[] options = {"Add and close", "Add and continue - I want to add more sources","Close without adding anything"};
+
+        int n=1;
+        while (n==1){
+            group = new ButtonGroup();
+            checkPanel = new JPanel();
+            checkPanel.setLayout(new BoxLayout(checkPanel, BoxLayout.Y_AXIS));
+            allList.removeAll(sources);
+            scrollPane = new JScrollPane(checkPanel);
+            scrollPane.setPreferredSize( new Dimension( 700, 300 ) );
+
+            checkPanel.add(label);
+
+            for (String ch:allList){
+                if(docSources.contains(ch)) {
+                    jcb = new JRadioButton("<html><font color=\"blue\">"+ch.replace("---", "<br/>")+"</font></html>");
+                } else {
+                    jcb = new JRadioButton("<html>"+ch.replace("---", "<br/>")+"</html>");
+                }
+                jcb.addItemListener(this);
+                group.add(jcb);
+                checkPanel.add(jcb);
+            }
+
+            n = JOptionPane.showOptionDialog(null,
+                    scrollPane,
+                    "Choose a source for "+currentElement +"(in blue the source from the document)",
+                    JOptionPane.YES_NO_CANCEL_OPTION,
+                    JOptionPane.QUESTION_MESSAGE,
+                    null,
+                    options,
+                    options[1]);
+            if(n<3 && !currentSource.isEmpty() && !currentSource.equalsIgnoreCase("Create a new source")) {
+                sources.add(currentSource);
+            }
+            if(currentSource.equalsIgnoreCase("Create a new source")){
+                String a = createNewSource();
+                if (a!=null && !a.isEmpty()) {
+                    sources.add(a);
+                }
+            }
+
+        }
+
+
+
+        List<OriginalSourceBase<?>> dess = new ArrayList<OriginalSourceBase<?>>();
+        for (String src:sources){
+            if (refMap.get(src) !=null) {
+                dess.add(refMap.get(src));
+            }
+            else{
+                Reference<?> re = null;
+                String titlecache="";
+                String micro="";
+                if (src.indexOf("---")>-1){
+                    titlecache = src.split("---")[0].trim();
+                    micro=src.split("---")[1].trim();
+                }
+                else{
+                    titlecache= src.split("---")[0].trim();
+                }
+
+                List<Reference> references = iReferenceService.list(Reference.class, null, null, null, null);
+                for (Reference<?> reference:references){
+                    if (reference.getTitleCache().equalsIgnoreCase(titlecache)) {
+                        re=reference;
+                    }
+                }
+                if(re == null){
+                    re = ReferenceFactory.newGeneric();
+                    re.setTitleCache(titlecache);
+                    iReferenceService.saveOrUpdate(re);
+                }
+
+                dess.add(IdentifiableSource.NewInstance(re,micro));
+            }
+        }
+        return dess;
+    }
+
+
     /**
      * @return
      */
@@ -151,6 +282,81 @@ public class SpecimenUserInteraction {
                     "ABCD Import from XML");
         }
         return s;
+    }
+
+    /**
+     * @return
+     */
+    public String createNewSource() {
+        JTextArea textArea = new JTextArea("How should the source be named? If there is a citation detail, prefix it with 3 minus signs ('---').");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 500, 50 ) );
+
+        String s = null;
+        while (s == null) {
+            s= (String)JOptionPane.showInputDialog(
+                    null,
+                    scrollPane,
+                    "Get full source name",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    null,
+                    "ABCD Import from XML");
+        }
+        return s;
+    }
+
+
+    /**
+     * @param descriptions
+     */
+    public TaxonDescription askForDescriptionGroup(Set<TaxonDescription> descriptions) {
+        JTextArea textArea = new JTextArea("One or several description group(s) does already exist for this taxon.");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 50 ) );
+
+        Map<String,TaxonDescription> descrMap = new HashMap<String, TaxonDescription>();
+        for (TaxonDescription description : descriptions){
+            Set<IdentifiableSource> sources =  description.getTaxon().getSources();
+            sources.addAll(description.getSources());
+            descrMap.put(description.getTitleCache()+sources.toString(),description);
+            //            for (IdentifiableSource source:sources){
+            //                if(ref.equals(source.getCitation())) {
+            //                    taxonDescription = description;
+            //                }
+            //            }
+        }
+        List<String>  possibilities = new ArrayList<String> (descrMap.keySet());
+        if (possibilities.size()==0) {
+            return null;
+        }
+        Collections.sort(possibilities);
+
+        descrMap.put("No, add a brand new description group", null);
+        possibilities.add(0, "No, add a brand new description group");
+
+        String s = null;
+        while (s == null) {
+            s= (String)JOptionPane.showInputDialog(
+                    null,
+                    scrollPane,
+                    "What should be done? Should an existing group be reused ? ",
+                    JOptionPane.PLAIN_MESSAGE,
+                    null,
+                    possibilities.toArray(),
+                    "No, add a brand new description group");
+        }
+
+        if (descrMap.get(s) !=null) {
+            return descrMap.get(s);
+        } else {
+            return null;
+        }
+
     }
 
 
@@ -234,5 +440,25 @@ public class SpecimenUserInteraction {
         }
         return taxon;
     }
+
+
+    List<String> sources = new ArrayList<String>();
+    String currentSource = "";
+    /* (non-Javadoc)
+     * @see java.awt.event.ItemListener#itemStateChanged(java.awt.event.ItemEvent)
+     */
+    @Override
+    public void itemStateChanged(ItemEvent e) {
+        JRadioButton cb = (JRadioButton) e.getItem();
+        int state = e.getStateChange();
+        if (state == ItemEvent.SELECTED) {
+            currentSource=cb.getText().replace("</html>", "").replace("<html>","")
+                    .replace("<br/>","---").replace("<font color=\"blue\">","").replace("</font>","");
+        } else {
+            currentSource="";
+        }
+    }
+
+
 
 }
