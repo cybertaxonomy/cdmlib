@@ -513,8 +513,6 @@ public abstract class MarkupImportBase  {
 	}
 	
 
-	
-
 	protected void fireUnexpectedEvent(XMLEvent xmlEvent, int stackDepth) {
 		Location location = xmlEvent.getLocation();
 		String message = "Unexpected event: %s";
