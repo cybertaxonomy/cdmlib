@@ -33,7 +33,10 @@ public class MarkupModsImport extends MarkupImportBase {
 	protected static final String MODS_TITLE = "title";
 	protected static final String MODS_SUBTITLE = "subTitle";
 	protected static final String MODS_PARTNUMBER = "partNumber";
-	
+	protected static final String MODS_NAME = "name";
+	protected static final String MODS_ORIGININFO = "originInfo";
+	protected static final String MODS_IDENTIFIER = "identifier";
+
 	
 	public MarkupModsImport(MarkupDocumentImport docImport) {
 		super(docImport);
@@ -58,6 +61,12 @@ public class MarkupModsImport extends MarkupImportBase {
 					abstractStr = abstractStr.replaceFirst("ABSTRACT", "").trim();
 				}
 				modsRef.setReferenceAbstract(abstractStr);
+			} else if (isStartingElement(next, MODS_NAME)) {
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, MODS_ORIGININFO)) {
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, MODS_IDENTIFIER)) {
+				handleNotYetImplementedElement(next);
 			} else {
 				fireUnexpectedEvent(next, 0);
 				state.setUnsuccessfull();
