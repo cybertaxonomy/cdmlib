@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 
 /**
@@ -1915,7 +1914,10 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				// TODO
 				String message = "Uuid is not defined for '%s'";
 				message = String.format(message, classValue);
-				fireWarningEvent(message, parentEvent, 8);
+				if (! message.contains("<")){
+					//log only top level features
+					fireWarningEvent(message, parentEvent, 8);
+				}
 				uuid = UUID.randomUUID();
 				state.putUnknownFeatureUuid(classValue, uuid);
 			}
