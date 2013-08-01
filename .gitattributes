@@ -424,6 +424,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupInputStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupKeyImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupModsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupNomenclatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupSpecimenImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text

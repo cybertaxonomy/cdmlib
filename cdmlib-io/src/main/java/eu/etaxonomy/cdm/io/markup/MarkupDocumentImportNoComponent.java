@@ -79,12 +79,14 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 	private MarkupSpecimenImport specimenImport;
 
 	private MarkupNomenclatureImport nomenclatureImport;
-	
+	private MarkupModsImport modsImport;
+
 	public MarkupDocumentImportNoComponent(MarkupDocumentImport docImport) {
 		super(docImport);
 		this.keyImport = new MarkupKeyImport(docImport);
 		this.specimenImport = new MarkupSpecimenImport(docImport);
-		nomenclatureImport = new MarkupNomenclatureImport(docImport, keyImport, specimenImport);
+		this.nomenclatureImport = new MarkupNomenclatureImport(docImport, keyImport, specimenImport);
+		this.modsImport = new MarkupModsImport(docImport);
 	}
 
 	public void doInvoke(MarkupImportState state) throws XMLStreamException { 
@@ -191,8 +193,8 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					message = String.format(message, baseUrl);
 					fireWarningEvent(message, next, 8);
 				}
-			} else if (isStartingElement(next, MODS)){
-				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, MODS)){	
+				modsImport.handleMods(state, reader, next);
 			} else {
 				handleUnexpectedElement(next);
 			}
@@ -456,14 +458,12 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		WriterDataHolder writer = handleWriter(state, reader, next);
 		taxon.addExtension(writer.extension);
 		// TODO what if taxonTitle comes later
-		if (StringUtils.isNotBlank(taxonTitle)
-				&& writer.extension != null) {
+		if (StringUtils.isNotBlank(taxonTitle) && writer.extension != null) {
 			Reference<?> sec = ReferenceFactory.newBookSection();
 			sec.setTitle(taxonTitle);
 			TeamOrPersonBase<?> author = createAuthor(writer.writer);
 			sec.setAuthorTeam(author);
-			sec.setInReference(state.getConfig()
-					.getSourceReference());
+			sec.setInReference(state.getConfig().getSourceReference());
 			taxon.setSec(sec);
 			registerFootnotes(state, sec, writer.footnotes);
 		} else {
