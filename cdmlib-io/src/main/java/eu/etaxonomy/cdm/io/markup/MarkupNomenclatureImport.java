@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.IArticle;
+import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -249,7 +250,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			} else if (isStartingElement(next, NAME)) {
 				handleName(state, reader, next, nameMap);
 			} else if (isStartingElement(next, CITATION)) {
-				handleCitation(state, reader, next, name);
+				handleCitation(state, reader, next, name, nameMap);
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else if (isStartingElement(next, HOMONYM)) {
@@ -389,12 +390,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			makeRankDecision(state, nameMap, name, event, infrank);
 
 			// test consistency of rank and authors
-			testRankAuthorConsistency(name, event, authorStr, paraut,
-					infrParAut, infrAut);
+			testRankAuthorConsistency(name, event, authorStr, paraut,infrParAut, infrAut);
 
 			// authors
-			makeNomenclaturalAuthors(name, event, authorStr, paraut,
-					infrParAut, infrAut);
+			makeNomenclaturalAuthors(name, event, authorStr, paraut, infrParAut, infrAut);
 		}
 
 		// status
@@ -522,8 +521,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
 			if (StringUtils.isNotBlank(infrParAut)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut,
-						event);
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(infrParAut,event);
 				name.setBasionymAuthorTeam(authorAndEx[0]);
 				name.setExBasionymAuthorTeam(authorAndEx[1]);
 			}
@@ -537,8 +535,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				}
 			}
 			if (StringUtils.isNotBlank(authorStr)) {
-				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr,
-						event);
+				INomenclaturalAuthor[] authorAndEx = authorAndEx(authorStr,	event);
 				name.setCombinationAuthorTeam(authorAndEx[0]);
 				name.setExCombinationAuthorTeam(authorAndEx[1]);
 			}
@@ -600,7 +597,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void handleCitation(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, NonViralName name) throws XMLStreamException {
+			XMLEvent parentEvent, NonViralName name, Map<String, String> nameMap) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		state.setCitation(true);
@@ -609,12 +606,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
-						REF_PART);
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
 				Reference<?> reference = createReference(state, refMap, next);
 				String microReference = refMap.get(DETAILS);
-				doCitation(state, name, classValue, reference, microReference,
-						parentEvent);
+				doCitation(state, name, classValue, reference, microReference, parentEvent);
 				state.setCitation(false);
 				return;
 			} else if (isStartingElement(next, REF_PART)) {
@@ -666,21 +661,21 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		if (PUBLICATION.equalsIgnoreCase(classValue)) {
 			name.setNomenclaturalReference(reference);
 			name.setNomenclaturalMicroReference(microCitation);
+			if (reference.getAuthorTeam() == null ){
+				reference.setAuthorTeam((TeamOrPersonBase<?>)name.getCombinationAuthorTeam());
+			}
 		} else if (USAGE.equalsIgnoreCase(classValue)) {
 			Taxon taxon = state.getCurrentTaxon();
-			TaxonDescription td = getTaxonDescription(taxon, state.getConfig()
-					.getSourceReference(), false, true);
+			TaxonDescription td = getTaxonDescription(taxon, state.getConfig().getSourceReference(), false, true);
 			TextData citation = TextData.NewInstance(Feature.CITATION());
 			// TODO name used in source
 			citation.addSource(null, null, reference, microCitation);
 			td.addElement(citation);
 		} else if (TYPE.equalsIgnoreCase(classValue)) {
-			handleNotYetImplementedAttributeValue(parentEvent, CLASS,
-					classValue);
+			handleNotYetImplementedAttributeValue(parentEvent, CLASS, classValue);
 		} else {
 			// TODO Not yet implemented
-			handleNotYetImplementedAttributeValue(parentEvent, CLASS,
-					classValue);
+			handleNotYetImplementedAttributeValue(parentEvent, CLASS, classValue);
 		}
 	}
 
@@ -736,95 +731,22 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		String pages = getAndRemoveMapKey(refMap, PAGES);
 
 		if (state.isCitation()) {
-			if (volume != null || "journal".equalsIgnoreCase(type)) {
-				IArticle article = ReferenceFactory.newArticle();
-				if (pubName != null) {
-					IJournal journal = ReferenceFactory.newJournal();
-					journal.setTitle(pubName);
-					article.setInJournal(journal);
-				}
-				reference = (Reference<?>) article;
-
-			} else {
-				// TODO
-				if (pubName != null) {
-					reference = ReferenceFactory.newBookSection();
-				} else {
-					reference = ReferenceFactory.newBook();
-				}
-			}
-			// TODO use existing author from name or before
-			TeamOrPersonBase<?> author = createAuthor(authorStr);
-			reference.setAuthorTeam(author);
-
-			reference.setTitle(titleStr);
-			if (StringUtils.isNotBlank(titleCache)) {
-				reference.setTitleCache(titleCache, true);
-			}
-			reference.setEdition(edition);
-			reference.setEditor(editors);
-
-			if (pubName != null) {
-				Reference<?> inReference;
-				if (reference.getType().equals(ReferenceType.Article)) {
-					inReference = ReferenceFactory.newJournal();
-				} else {
-					inReference = ReferenceFactory.newGeneric();
-				}
-				inReference.setTitle(pubName);
-				reference.setInReference(inReference);
-			}
+			reference = handleCitationSpecific(state, type, authorStr,
+					titleStr, titleCache, volume, edition, editors, pubName, pages, refMap, parentEvent);
 
 		} else { // no citation
-			if (volume != null || "journal".equalsIgnoreCase(type)) {
-				IArticle article = ReferenceFactory.newArticle();
-				if (pubName != null) {
-					IJournal journal = ReferenceFactory.newJournal();
-					journal.setTitle(pubName);
-					article.setInJournal(journal);
-				}
-				reference = (Reference<?>) article;
-
-			} else {
-				Reference<?> bookOrPartOf = ReferenceFactory.newGeneric();
-				reference = bookOrPartOf;
-			}
-
-			// TODO type
-			TeamOrPersonBase<?> author = createAuthor(authorStr);
-			reference.setAuthorTeam(author);
-
-			reference.setTitle(titleStr);
-			if (StringUtils.isNotBlank(titleCache)) {
-				reference.setTitleCache(titleCache, true);
-			}
-			reference.setEdition(edition);
-			reference.setEditor(editors);
-
-			if (pubName != null) {
-				Reference<?> inReference;
-				if (reference.getType().equals(ReferenceType.Article)) {
-					inReference = ReferenceFactory.newJournal();
-				} else {
-					inReference = ReferenceFactory.newGeneric();
-				}
-				inReference.setTitle(pubName);
-				reference.setInReference(inReference);
-			}
+			reference = handleNonCitationSpecific(type, authorStr, titleStr,
+					titleCache, volume, edition, editors, pubName);
 		}
 		reference.setVolume(volume);
 		reference.setDatePublished(TimePeriod.parseString(year));
-		// TODO check if this is handled correctly in FM markup
-		reference.setPages(pages);
-
+		
 		// TODO
-		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE,
-				NOTES, STATUS };
+		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS };
 		for (String unhandled : unhandledList) {
 			String value = getAndRemoveMapKey(refMap, unhandled);
 			if (isNotBlank(value)) {
-				this.handleNotYetImplementedAttributeValue(parentEvent, CLASS,
-						unhandled);
+				this.handleNotYetImplementedAttributeValue(parentEvent, CLASS, unhandled);
 			}
 		}
 
@@ -835,6 +757,211 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 
 		return reference;
+	}
+
+	
+	/**
+	 * Handles references used in the citation tag
+	 * @see #handleNonCitationSpecific(String, String, String, String, String, String, String, String)
+	 */
+	private Reference<?> handleCitationSpecific(MarkupImportState state,
+			String type, String authorStr, String titleStr, String titleCache,
+			String volume, String edition, String editors, String pubName, String pages, Map<String, String> refMap, XMLEvent parentEvent) {
+		
+		if (titleStr != null){
+			String message = "Currently it is not expected that a titleStr exists in a citation";
+			fireWarningEvent(message, parentEvent, 4);
+		}
+
+		RefType refType = defineRefTypeForCitation(type, volume, editors, authorStr, pubName, parentEvent);
+		Reference<?> reference;
+		if (refType == RefType.Article) {
+			IArticle article = ReferenceFactory.newArticle();
+			if (pubName != null) {
+				IJournal journal = ReferenceFactory.newJournal();
+				journal.setTitle(pubName);
+				article.setInJournal(journal);
+			}
+			reference = (Reference<?>) article;
+		} else if (refType == RefType.BookSection) {
+			//Book Section
+			reference = ReferenceFactory.newBookSection();
+			IBook  book = ReferenceFactory.newBook();
+			reference.setInBook(book);
+			book.setTitle(pubName);
+
+			if (state.getConfig().isUseEditorAsInAuthorWhereNeeded()){
+				TeamOrPersonBase<?> inAuthor = createAuthor(editors);
+				book.setAuthorTeam(inAuthor);
+				editors = null;
+			}
+		} else if (refType == RefType.Book){
+			//Book
+			reference = ReferenceFactory.newBook();
+			reference.setTitle(pubName);
+		}else if (refType == RefType.Generic){
+			//Generic - undefinable
+			String message = "Can't define the type of the reference. Use generic instead";
+			fireWarningEvent(message, parentEvent, 4);
+			reference = ReferenceFactory.newGeneric();
+			reference.setTitle(pubName);
+			
+		}else{
+			String message = "Unhandled reference type: %s" ;
+			fireWarningEvent(String.format(message, refType.toString()), parentEvent, 8);
+			reference = ReferenceFactory.newGeneric();
+		}
+		
+		//volume
+		reference.setVolume(volume);
+		
+		//author
+		// TODO use existing author from name or before
+		TeamOrPersonBase<?> author = createAuthor(authorStr);
+		reference.setAuthorTeam(author);
+
+		//title, titleCache
+		handleTitlesInCitation(titleStr, titleCache, parentEvent, reference);
+		
+		//edition
+		reference.setEdition(edition);
+		//editors
+		handleEditorsInCitation(edition, editors, reference, parentEvent);
+		
+		//pages
+		handlePages(state, refMap, parentEvent, reference, pages);
+		
+		return reference;
+	}
+
+	private void handleEditorsInCitation(String edition, String editors, Reference<?> reference, XMLEvent parentEvent) {
+		//editor
+		reference.setEditor(editors);
+		if ( editors != null){
+			String message = "Citation reference has an editor. This is unusual for a citation reference (appears regularly in <reference> references";
+			fireWarningEvent(message, parentEvent, 4);
+		}
+	}
+
+	private void handleTitlesInCitation(String titleStr, String titleCache,
+			XMLEvent parentEvent, Reference<?> reference) {
+		reference.setTitle(titleStr);
+		//titleCache
+		if (StringUtils.isNotBlank(titleCache)) {
+			reference.setTitleCache(titleCache, true);
+		}
+		if (titleStr != null || titleCache != null){
+			String message = "Citation reference has a title or a full title. Both is unusual for a citation reference (appears regularly in <reference> references";
+			fireWarningEvent(message, parentEvent, 4);
+		}
+	}
+
+	private enum RefType{
+		Article,
+		BookSection,
+		Book,
+		Generic
+	}
+	
+	private RefType defineRefTypeForCitation(String type, String volume, String editors, 
+			String authorStr, String pubName, XMLEvent parentEvent) {
+		if ("journal".equalsIgnoreCase(type)){
+			return RefType.Article;
+		} else if (volume != null){
+			//with volume
+			if (editors == null){
+				//with editor
+				return RefType.Article;  //not always true, there may also be books with volumes, however FM does not have an "in" to distinguish books and articles 
+			}else{
+				return RefType.Generic;
+			}
+		}else {
+			// no volume
+			if (editors == null){
+				//no editors
+				return RefType.Book;  //Book must not have in-authors
+			}else{
+				if (pubName != null){
+					return RefType.BookSection;
+				}else{
+					return RefType.Generic;
+				}
+			}
+		}
+	}
+
+	private boolean isArticle(String type, String volume, String editors) {
+		if ("journal".equalsIgnoreCase(type)){
+			return true;
+		}else if (volume != null && editors == null){
+			return true;
+		}else{
+			return false;
+		}
+	}
+
+	private Reference<?> handleNonCitationSpecific(String type, String authorStr,
+			String titleStr, String titleCache, String volume, String edition,
+			String editors, String pubName) {
+		Reference<?> reference;
+		if (isArticle(type, volume, editors)) {
+			IArticle article = ReferenceFactory.newArticle();
+			if (pubName != null) {
+				IJournal journal = ReferenceFactory.newJournal();
+				journal.setTitle(pubName);
+				article.setInJournal(journal);
+			}
+			reference = (Reference<?>) article;
+
+		} else {
+			Reference<?> bookOrPartOf = ReferenceFactory.newGeneric();
+			reference = bookOrPartOf;
+		}
+
+		// TODO type
+		TeamOrPersonBase<?> author = createAuthor(authorStr);
+		reference.setAuthorTeam(author);
+
+		reference.setTitle(titleStr);
+		if (StringUtils.isNotBlank(titleCache)) {
+			reference.setTitleCache(titleCache, true);
+		}
+		reference.setEdition(edition);
+		reference.setEditor(editors);
+
+		if (pubName != null) {
+			Reference<?> inReference;
+			if (reference.getType().equals(ReferenceType.Article)) {
+				inReference = ReferenceFactory.newJournal();
+			} else {
+				inReference = ReferenceFactory.newGeneric();
+			}
+			inReference.setTitle(pubName);
+			reference.setInReference(inReference);
+		}
+		return reference;
+	}
+
+	private void handlePages(MarkupImportState state,
+			Map<String, String> refMap, XMLEvent parentEvent,
+			Reference<?> reference, String pages) {
+		// TODO check if this is handled correctly in FM markup
+		boolean switchPages = state.getConfig().isHandlePagesAsDetailWhereNeeded();
+		if (switchPages){
+			if (pages != null ){
+				String detail = refMap.get(DETAILS);
+				if (isBlank(detail)){
+					if (pages.contains("-")){
+						String message = "There is a pages tag with '-'. Unclear if this really means pages";
+						fireWarningEvent(message, parentEvent, 8);
+						reference.setPages(pages);
+					}else{
+						//handle pages as detail, this is at least true for Flora Malesiana
+						refMap.put(DETAILS, pages); 
+					}
+				}
+			}
+		}
 	}
 
 	public Reference<?> handleReference(MarkupImportState state,
