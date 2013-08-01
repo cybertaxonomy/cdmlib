@@ -1291,6 +1291,78 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				
 		assertEquals(0, size);
 	}
+	
+	
+	@Test
+	@DataSet(value="BlankDataSet.xml")
+	public final void testTaxonDeletionConfiguratorTaxonWithMisappliedName(){
+		
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		UUID uuid = service.save(testTaxon);
+			
+		Taxon misappliedName = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+				
+		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+		TaxonNode node =nodes.next();
+		testTaxon.addMisappliedName(misappliedName, null, null);
+		UUID misappliedNameUUID = service.save(misappliedName);
+		
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
+		
+				
+		try {
+			service.deleteTaxon(testTaxon, config, null);
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
+				
+		commitAndStartNewTransaction(null);
+		Taxon tax = (Taxon)service.find(uuid);
+		assertNull(tax);
+		tax = (Taxon)service.find(misappliedNameUUID);
+		
+		assertNull(tax);
+		
+	}
+	
+	@Test
+	@DataSet(value="BlankDataSet.xml")
+	public final void testTaxonDeletionConfiguratorTaxonMisappliedName(){
+		
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		UUID uuid = service.save(testTaxon);
+			
+		Taxon misappliedNameTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+				
+		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+		TaxonNode node =nodes.next();
+		testTaxon.addMisappliedName(misappliedNameTaxon, null, null);
+		UUID misappliedNameUUID = service.save(misappliedNameTaxon);
+		misappliedNameTaxon = (Taxon)service.find(misappliedNameUUID);
+		UUID misNameUUID = misappliedNameTaxon.getName().getUuid();
+		
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
+		
+				
+		try {
+			service.deleteTaxon(misappliedNameTaxon, config, null);
+		} catch (DataChangeNoRollbackException e) {
+			e.printStackTrace();
+			
+		}
+				
+		commitAndStartNewTransaction(null);
+		Taxon tax = (Taxon)service.find(uuid);
+		assertNotNull(tax);
+		tax = (Taxon)service.find(misappliedNameUUID);
+		BotanicalName name = (BotanicalName) nameService.find(misNameUUID);
+		
+		assertNull(tax);
+		assertNull(name);
+		
+	}
+	
+	
 }
 
 

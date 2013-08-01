@@ -567,13 +567,21 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
             }
         }
         //delete Relationship from other related Taxon
-        if (fromTaxon != null && fromTaxon != this){
+        if (fromTaxon != this){
             rel.setToTaxon(null);  //remove this Taxon from relationship
-            fromTaxon.removeTaxonRelation(rel);
+            if (fromTaxon != null){
+            	if (fromTaxon.getTaxonRelations().contains(rel)){
+            		fromTaxon.removeTaxonRelation(rel);
+            	}
+            }
         }
-        if (toTaxon != null && toTaxon != this){
+        if (toTaxon != this ){
             rel.setFromTaxon(null); //remove this Taxon from relationship
-            toTaxon.removeTaxonRelation(rel);
+           if (toTaxon != null){
+	           if (toTaxon.getTaxonRelations().contains(rel)) {
+	        	   toTaxon.removeTaxonRelation(rel);
+	           }
+           }
         }
     }
 
