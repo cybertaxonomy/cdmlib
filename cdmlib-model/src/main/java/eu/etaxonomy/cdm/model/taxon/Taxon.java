@@ -305,6 +305,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     protected void addTaxonNode(TaxonNode taxonNode){
         taxonNodes.add(taxonNode);
     }
+    
     public void removeTaxonNode(TaxonNode taxonNode){
         TaxonNode parent = taxonNode.getParent();
         if (parent != null){
@@ -314,9 +315,10 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         
     }
     
-    public void removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
+    public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
     	TaxonNode parent = taxonNode.getParent();
-    	//taxonNode.setTaxon(null);
+    	boolean success = true; 
+    	
 		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
 			
 			taxonNode.delete();
@@ -330,18 +332,20 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
 				parent.addChildNode(childNode, null, null, null);
 				
 			}	
-			//parent.removeChildNode(taxonNode);
-			taxonNode.delete();
-		} else if (taxonNode.isTopmostNode()){
 			
+			taxonNode.delete();
+			
+		} else if (taxonNode.isTopmostNode()){
+			success = false;
 		}
-		
+		return success;
     }
     
-    public void removeTaxonNodes(boolean deleteChildren){
+    public boolean removeTaxonNodes(boolean deleteChildren){
     	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
     	TaxonNode node;
     	TaxonNode parent;
+    	boolean success = false;
     	while (nodesIterator.hasNext()){
     		node = nodesIterator.next();
     		if (!deleteChildren){
@@ -357,11 +361,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     			
     			
     		}
-    		
-    		node.delete(deleteChildren);
+    		success = node.delete(deleteChildren);
     		node.setTaxon(null);
 			nodesIterator.remove();
     	}
+    	return success;
     	
     }
 

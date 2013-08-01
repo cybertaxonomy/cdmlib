@@ -262,7 +262,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Transactional(readOnly = false)
     public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException{
     	
-    	TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
+        TaxonNameBase<?,?> acceptedName = acceptedTaxon.getName();
         TaxonNameBase<?,?> synonymName = synonym.getName();
         HomotypicalGroup synonymHomotypicGroup = synonymName.getHomotypicalGroup();
 
@@ -911,7 +911,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
      */
     @Override
-    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws ReferencedObjectUndeletableException {
+    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws DataChangeNoRollbackException {
         if (config == null){
             config = new TaxonDeletionConfigurator();
         }
@@ -931,7 +931,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         			deleteChildren = true;
         		}else {
         			deleteChildren = false;
-        		}
+            }
+        		boolean success = true;
             	if (!config.isDeleteInAllClassifications() && !(classification == null)){
             		while (iterator.hasNext()){
 	            		node = iterator.next();
@@ -941,12 +942,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 	            		node = null;
 	            	}
             		if (node != null){
-            			taxon.removeTaxonNode(node, deleteChildren);
+            			success =taxon.removeTaxonNode(node, deleteChildren);
+            		} else {
+            			String message = "Taxon is not used in defined classification";
+            			throw new DataChangeNoRollbackException(message);
             		}
             	} else if (config.isDeleteInAllClassifications()){
-	            	taxon.removeTaxonNodes(deleteChildren);
-            	} 
-            	
+	            	success = taxon.removeTaxonNodes(deleteChildren);
+            	}
+            	if (!success){
+            		String message = "The taxon node could not be deleted.";
+            		throw new DataChangeNoRollbackException(message);
+            	}
             }
 
 
@@ -1035,20 +1042,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
                                 " which also describes specimens or observations";
                             throw new ReferencedObjectUndeletableException(message);
-                        }
+    }
                     }
                 }*/
             if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
             	dao.delete(taxon);
             } else{
-            	String message = "Taxon can't be deleted as it is used in a Taxonnode";
+            	String message = "Taxon can't be deleted as it is used in another Taxonnode";
                     throw new ReferencedObjectUndeletableException(message);
             }
             
 
     }
 
-	/* (non-Javadoc)
+    /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
      */
     @Transactional(readOnly = false)
@@ -1248,6 +1255,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         } catch (Exception e){
             logger.error(e);
+            e.printStackTrace();
         }
 
         return bestCandidate;

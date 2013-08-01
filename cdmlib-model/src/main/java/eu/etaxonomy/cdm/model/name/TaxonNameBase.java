@@ -225,6 +225,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @XmlSchemaType(name = "IDREF")
     @OneToMany(mappedBy="name", fetch= FetchType.LAZY)
     @NotNull
+    @IndexedEmbedded(depth=1)
     private Set<TaxonBase> taxonBases = new HashSet<TaxonBase>();
 
     @XmlElement(name = "Rank")

@@ -487,7 +487,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+   // @Ignore //currently does not run in suite
     public void testDeleteTaxonNameBaseAsStoredUnder() {
         final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
 
@@ -588,7 +588,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+   // @Ignore //currently does not run in suite
     public void testDeleteTaxonNameBaseAsType() {
         final String[] tableNames = new String[]{"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -635,7 +635,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+    //@Ignore //currently does not run in suite
     public void testDeleteTaxonNameBase() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -701,7 +701,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+    //@Ignore //currently does not run in suite
     public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 

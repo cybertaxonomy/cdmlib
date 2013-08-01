@@ -61,7 +61,7 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 			taxonDao.delete(taxon);
 		}
 		
-		taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
+		//taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
 		return persistentObject.getUuid();
 	}
 

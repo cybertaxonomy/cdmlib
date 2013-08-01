@@ -17,6 +17,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -55,6 +56,7 @@ import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 @RequestMapping(value = {"/portal/description"})
 public class DescriptionListPortalController extends IdentifiableListController<DescriptionBase, IDescriptionService> {
 
+   public static final Logger logger = Logger.getLogger(DescriptionListPortalController.class);
 
     @Autowired
     private ITaxonService taxonService;
@@ -145,7 +147,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
     * @return
     * @throws IOException
     */
-   @RequestMapping(value = "/portal/descriptionElement/byFeature", method = RequestMethod.GET)
+   @RequestMapping(value = "/portal/descriptionElement/byFeature", method = {RequestMethod.GET, RequestMethod.POST})
    public Pager<DescriptionElementBase> doPageDescriptionElementsByFeature(
            @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
            @RequestParam(value = "descriptionType", required = true) Class<? extends DescriptionBase> descriptionType,
@@ -178,7 +180,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
     * @return
     * @throws IOException
     */
-   @RequestMapping(value = "/portal/descriptionElement/byTaxon", method = RequestMethod.GET)
+   @RequestMapping(value = "/portal/descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST})
    public <T extends DescriptionElementBase> Pager<T> getDescriptionElementsForTaxon(
            @RequestParam(value = "taxon", required = true) UUID taxon_uuid,
            @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
@@ -200,8 +202,15 @@ public class DescriptionListPortalController extends IdentifiableListController<
                HttpStatusMessage.UUID_NOT_FOUND.send(response);
            }
        }
-       Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features.asSet(), type, pageSize,
-               pageNumber, getInitializationStrategy());
+
+       Pager<T> pager = service.pageDescriptionElementsForTaxon(
+               taxon,
+               (features != null ? features.asSet() : null),
+               type,
+               pagerParams.getPageSize(),
+               pagerParams.getPageIndex(),
+               getInitializationStrategy()
+              );
 
        return pager;
    }

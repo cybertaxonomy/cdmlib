@@ -94,8 +94,15 @@ public class ObservableBase implements IIoObservable {
 		StackTraceElement[] stackTrace = new Exception().getStackTrace();
 		int lineNumber = stackTrace[stackDepth].getLineNumber();
 		String methodName = stackTrace[stackDepth].getMethodName();
-
-		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, dataLocation, 
+		String className = stackTrace[stackDepth].getClassName();
+		Class<?> declaringClass;
+		try {
+			declaringClass = Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			declaringClass = this.getClass();
+		}
+		
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, dataLocation, 
 				lineNumber, severity, methodName);
 		
 		//for performance improvement one may read:

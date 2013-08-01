@@ -28,6 +28,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
 import eu.etaxonomy.cdm.api.service.config.TermDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -236,7 +237,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					String message = "This term has specifing terms. Move or delete specifiing terms prior to delete or change delete configuration.";
 					result.addRelatedObjects(specificTerms);
 					result.setAbort();
-					Exception ex = new Exception(message);
+					Exception ex = new DataChangeNoRollbackException(message);
 					result.addException(ex);
 				}
 			}
@@ -251,7 +252,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					String message = "This term is kind of another term. Move or delete kind of relationship prior to delete or change delete configuration.";
 					result.addRelatedObject(generalTerm);
 					result.setAbort();
-					Exception ex = new Exception(message);
+					DataChangeNoRollbackException ex = new DataChangeNoRollbackException(message);
 					result.addException(ex);
 					throw ex;
 				}
@@ -265,7 +266,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					String message = "This term is included in another term. Remove from parent term prior to delete or change delete configuration.";
 					result.addRelatedObject(parentTerm);
 					result.setAbort();
-					Exception ex = new Exception(message);
+					DataChangeNoRollbackException ex = new DataChangeNoRollbackException(message);
 					result.addException(ex);
 				}
 			}			
@@ -296,7 +297,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
 					result.addRelatedObjects(includedTerms);
 					result.setAbort();
-					Exception ex = new Exception(message);
+					Exception ex = new DataChangeNoRollbackException(message);
 					result.addException(ex);
 				}
 			}
@@ -330,7 +331,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 					
 				}
 			}
-		} catch (Exception e) {
+		} catch (DataChangeNoRollbackException e) {
 			result.setStatus(DeleteStatus.ERROR);
 		}
 		return result;

@@ -16,6 +16,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.stream.StreamImportBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportConfiguratorBase;
+import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -31,10 +34,10 @@ public class StreamPartitioner<ITEM extends IConverterInput>  implements INamesp
 	private int partitionSize;
 	private LookAheadStream<ITEM> inStream;
 	private IPartitionableConverter converter;
-	private DwcaImportState state;
+	private StreamImportStateBase<StreamImportConfiguratorBase, StreamImportBase> state;
 	private ConcatenatingReader<MappedCdmBase> outStream;
 	
-	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, DwcaImportState state, Integer size){
+	public StreamPartitioner(INamespaceReader<ITEM> input, IPartitionableConverter converter, StreamImportStateBase state, Integer size){
 		 this.inStream = new LookAheadStream<ITEM>(input);
 		 this.converter = converter;
 		 this.partitionSize = size;

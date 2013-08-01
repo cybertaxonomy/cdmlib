@@ -158,7 +158,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 		if (cdmUuid != null){
 			taxonBase = getTaxonService().find(cdmUuid);
 		}else{
-			if (CdmUtils.isNotEmpty(taxonNameStr)) {
+			if (StringUtils.isNotBlank(taxonNameStr)) {
 
 				// Rank
 				try {

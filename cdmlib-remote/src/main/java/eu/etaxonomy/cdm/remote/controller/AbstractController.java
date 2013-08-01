@@ -84,6 +84,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
             return "";
         }
         StringBuilder b = new StringBuilder();
+        b.append(request.getMethod()).append(": ");
         b.append(request.getRequestURI());
         String query = request.getQueryString();
         if(query != null) {

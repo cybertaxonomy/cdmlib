@@ -39,6 +39,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
@@ -578,9 +579,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         try{
             try {
 				taxonService.deleteTaxon(taxon, null, null);
-			} catch (ReferencedObjectUndeletableException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+			} catch (DataChangeNoRollbackException e) {
+				Assert.fail();
 			}
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){

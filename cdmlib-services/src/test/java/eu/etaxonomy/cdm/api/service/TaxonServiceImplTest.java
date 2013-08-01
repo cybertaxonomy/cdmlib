@@ -30,10 +30,13 @@ import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -974,7 +977,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         	
             service.deleteTaxon(child1, config, null);
             Assert.fail("Delete should throw an error as long as name is used in classification.");
-        } catch (ReferencedObjectUndeletableException e) {
+        } catch (DataChangeNoRollbackException e) {
             if (e.getMessage().contains("Taxon can't be deleted as it is used in a classification node")){
                 //ok
                 commitAndStartNewTransaction(tableNames);
@@ -1000,7 +1003,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         try {
         	
             service.deleteTaxon(child1, config, null);
-        } catch (ReferencedObjectUndeletableException e) {
+        } catch (DataChangeNoRollbackException e) {
             Assert.fail("Delete should not throw an exception anymore");
         }
         nTaxa = service.count(Taxon.class);
@@ -1011,7 +1014,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         
         try {
 			service.deleteTaxon(child2, config, null);
-		} catch (ReferencedObjectUndeletableException e) {
+		} catch (DataChangeNoRollbackException e) {
 			Assert.fail("Delete should not throw an exception");
 		}
 
@@ -1050,7 +1053,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		config.setDeleteNameIfPossible(false);
 		try {
 			service.deleteTaxon(speciesTaxon, config, null);
-		} catch (ReferencedObjectUndeletableException e) {
+		} catch (DataChangeNoRollbackException e) {
 			
 			Assert.fail();
 			e.printStackTrace();
@@ -1063,6 +1066,41 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		assertNull(descriptionService.find(descrUUID));
 		assertNull(descriptionService.getDescriptionElementByUuid(descrElementUUID));
 		//assertNull(synName);
+		assertNotNull(taxonName);
+		assertNull(taxon);
+	
+	}
+	
+	@Test
+	@DataSet(value="BlankDataSet.xml")
+	public final void testDeleteTaxonNameUsedInOtherContext(){
+		
+		//create a small classification
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		
+		UUID uuid = service.save(testTaxon);
+		
+		Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+		
+		BotanicalName taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+		assertNotNull(taxonName);
+		BotanicalName fromName = BotanicalName.NewInstance(Rank.SPECIES());
+		taxonName.addRelationshipFromName(fromName, NameRelationshipType.VALIDATED_BY_NAME(), null);
+		
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
+		config.setDeleteNameIfPossible(true);
+		try {
+			service.deleteTaxon(speciesTaxon, config, null);
+		} catch (DataChangeNoRollbackException e) {
+			
+			Assert.fail();
+			e.printStackTrace();
+		}
+		commitAndStartNewTransaction(null);
+		
+		taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
+		Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+		//because of the namerelationship the name cannot be deleted
 		assertNotNull(taxonName);
 		assertNull(taxon);
 	
@@ -1089,9 +1127,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		//delete the taxon in all classifications
 		try {
 			service.deleteTaxon(testTaxon, config, null);
-		} catch (ReferencedObjectUndeletableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
 		}
 		commitAndStartNewTransaction(null);
 		Taxon tax = (Taxon)service.find(uuid);
@@ -1118,15 +1155,16 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		Set<TaxonNode> childNodes = node.getChildNodes();
 		TaxonNode childNode = childNodes.iterator().next();
 		UUID childUUID = childNode.getTaxon().getUuid();
-		secondClassification.addChildTaxon(testTaxon, null, null, null);
+		childNode = secondClassification.addChildTaxon(testTaxon, null, null, null);
+		UUID childNodeUUID = childNode.getUuid();
 				
 		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
 		config.setDeleteInAllClassifications(false);
 			try {
 				service.deleteTaxon(testTaxon, config, secondClassification);
-			} catch (ReferencedObjectUndeletableException e) {
-					// TODO Auto-generated catch block
-				e.printStackTrace();
+				Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
+			} catch (DataChangeNoRollbackException e) {
+				
 			}
 				
 		//commitAndStartNewTransaction(null);
@@ -1134,6 +1172,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		assertNotNull(tax);
 		Taxon childTaxon = (Taxon)service.find(childUUID);
 		assertNotNull(tax);
+		node = nodeService.find(childNodeUUID);
+		assertNull(node);
 	}
 	
 	@Test
@@ -1156,7 +1196,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				
 		try {
 			service.deleteTaxon(testTaxon, config, null);
-		} catch (ReferencedObjectUndeletableException e) {
+		} catch (DataChangeNoRollbackException e) {
 			Assert.fail();
 		}
 				
@@ -1194,7 +1234,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				
 		try {
 			service.deleteTaxon(testTaxon, config, null);
-		} catch (ReferencedObjectUndeletableException e) {
+		} catch (DataChangeNoRollbackException e) {
 			Assert.fail();
 		}
 				
@@ -1211,8 +1251,47 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				
 		assertEquals(0, size);
 	}
-	
-	
 
-
+	
+	@Test
+	@DataSet(value="BlankDataSet.xml")
+	public final void testTaxonDeletionConfiguratorDeleteMarker(){
+		//test childHandling DELETE:
+		Taxon testTaxon = TaxonGenerator.getTestTaxon();
+		UUID uuid = service.save(testTaxon);
+			
+		Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
+				
+		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+		TaxonNode node =nodes.next();
+		Classification classification = node.getClassification();
+		classification.addParentChild(topMost, testTaxon, null, null);
+		UUID topMostUUID = service.save(topMost);
+		Marker marker = Marker.NewInstance(testTaxon, true, MarkerType.IS_DOUBTFUL());
+		testTaxon.addMarker(marker);
+		TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
+		config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
+				
+		try {
+			service.deleteTaxon(testTaxon, config, null);
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
+				
+		commitAndStartNewTransaction(null);
+		Taxon tax = (Taxon)service.find(uuid);
+		assertNull(tax);
+		tax = (Taxon)service.find(topMostUUID);
+		Set<TaxonNode> topMostNodes = tax.getTaxonNodes();
+		assertNotNull(topMostNodes);
+		assertEquals("there should be one taxon node", 1, topMostNodes.size());
+		nodes = topMostNodes.iterator();
+		TaxonNode topMostNode = nodes.next();
+		int size = topMostNode.getChildNodes().size();
+				
+		assertEquals(0, size);
+	}
 }
+
+
+

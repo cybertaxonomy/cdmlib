@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.io.dwca.in;
+package eu.etaxonomy.cdm.io.stream;
 
 import java.util.Map;
 
@@ -15,33 +15,32 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
+import eu.etaxonomy.cdm.io.dwca.in.IConverterInput;
 
 /**
  * @author a.mueller
  * @date 23.11.2011
  *
  */
-public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
+public class StreamItem implements IConverterInput<StreamItem> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(CsvStreamItem.class);
+	private static Logger logger = Logger.getLogger(StreamItem.class);
 
 	public TermUri term;
 	public Map<String, String> map;
-	private CsvStream stream;
-	private int line;
-	
+	public String location;
 	
 	/**
 	 * @param term
 	 * @param map
 	 * @param stream
 	 */
-	public CsvStreamItem(TermUri term, Map<String, String> map, CsvStream stream, int line) {
+	public StreamItem(TermUri term, Map<String, String> map, String location) {
 		super();
 		this.term = term;
 		this.map = map;
-		this.stream = stream;
-		this.line = line;
+		this.location = location;
+		
 	}
 
 	public String get(String mapKey){
@@ -68,7 +67,7 @@ public class CsvStreamItem implements IConverterInput<CsvStreamItem> {
 	 * @return
 	 */
 	public String getLocation() {
-		return CdmUtils.concat("/", stream.getFilesLocation() ,String.valueOf(line));
+		return location;
 	}
 	
 	@Override

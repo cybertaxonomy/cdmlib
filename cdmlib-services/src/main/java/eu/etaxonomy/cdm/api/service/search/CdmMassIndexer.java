@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.api.service.search;
 import java.io.IOException;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.IndexReader;
@@ -61,6 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Transactional
 public class CdmMassIndexer implements ICdmMassIndexer {
 
+	private Set<Class<? extends CdmBase>> indexedClasses = new HashSet<Class<? extends CdmBase>>();
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
 
     /*
@@ -257,16 +260,22 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = indexedClasses().length + 1; // +1 for optimize
-        monitor.beginTask("Reindexing " + indexedClasses().length + " classes", steps);
+        int steps = indexedClasses().size() + 1; // +1 for optimize
+        monitor.beginTask("Reindexing " + indexedClasses().size() + " classes", steps);
 
         for(Class<? extends CdmBase> type : indexedClasses()){
             reindex(type, monitor);
         }
 
-        optimize();
-        monitor.worked(1);
-
+        monitor.subTask("Optimizing Index");
+        SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
+        subMonitor.beginTask("Optimizing Index",1);
+        optimize();        
+        subMonitor.worked(1);
+        logger.info("end index optimization");
+        subMonitor.done();
+        
+        //monitor.worked(1);
         monitor.done();
     }
 
@@ -317,8 +326,8 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         }
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = indexedClasses().length + 1; // +1 for optimize
-        monitor.beginTask("Purging " + indexedClasses().length + " classes", steps);
+        int steps = indexedClasses().size() + 1; // +1 for optimize
+        monitor.beginTask("Purging " + indexedClasses().size() + " classes", steps);
 
         for(Class<? extends CdmBase> type : indexedClasses()){
             purge(type, monitor);
@@ -364,14 +373,17 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      */
     @SuppressWarnings("unchecked")
     @Override
-    public Class<? extends CdmBase>[] indexedClasses() {
-        return new Class[] {
-                TaxonBase.class,
-                DescriptionElementBase.class,
-                Classification.class,
-                TaxonNameBase.class,
-                SpecimenOrObservationBase.class
-                };
+    public Set<Class<? extends CdmBase>> indexedClasses() {
+    	// if no indexed classes have been 'manually' set then
+    	// the default is the full list
+    	if(indexedClasses.size() == 0) {
+    		indexedClasses.add(DescriptionElementBase.class);
+    		indexedClasses.add(TaxonBase.class);    		
+    		indexedClasses.add(Classification.class);
+    		indexedClasses.add(TaxonNameBase.class);
+    		indexedClasses.add(SpecimenOrObservationBase.class);
+    	}
+        return indexedClasses;
     }
 
     /**
@@ -383,6 +395,17 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 NonViralName.class
                 };
     }
+
+	@Override
+	public void addToIndexedClasses(Class<? extends CdmBase> cdmBaseClass) {
+		indexedClasses.add(cdmBaseClass);
+		
+	}
+
+	@Override
+	public void clearIndexedClasses() {
+		indexedClasses.clear();		
+	}
 
 
 }

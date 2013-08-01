@@ -22,6 +22,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -106,7 +107,11 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		assertEquals(1,t1.getSynonyms().size());
 
-		taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		try {
+			taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
 		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
 		assertEquals(2,t2.getSynonyms().size());

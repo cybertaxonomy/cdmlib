@@ -1,6 +1,9 @@
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.util.Set;
+
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author andreas
@@ -22,8 +25,24 @@ public interface ICdmMassIndexer {
      */
     public abstract void purge(IProgressMonitor monitor);
 
-    public Class[] indexedClasses();
+    /**
+     * Returns a list of (sub-classes of CdmBase) classes to be indexed.
+     *
+     * @return a List of {@link CdmBase} sub classes
+     */
+    public Set<Class<? extends CdmBase>> indexedClasses();
     
+    /**
+     * Adds to the current list of (sub-classes of CdmBase) classes to be indexed.
+     *
+     * @param cdmBaseClass sub-class of CdmBase class to add
+     */
+    public void addToIndexedClasses(Class<? extends CdmBase> cdmBaseClass);
+    
+    /**
+     * Clears the current list of (sub-classes of CdmBase) classes to be indexed.     
+     */
+    public void clearIndexedClasses();
     /**
      * Create (spell-checking) dictionary listed in {@link ICdmMassIndexer#dictionaryClasses()}.
      * This action will not purge the dictionary.

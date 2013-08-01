@@ -72,7 +72,7 @@ public enum MatchMode {
      */
     private String prependWildcard(String queryString) {
         if(!queryString.startsWith("%")){
-            queryString += "%";
+            queryString = "%"+ queryString;
         }
         return queryString;
     }

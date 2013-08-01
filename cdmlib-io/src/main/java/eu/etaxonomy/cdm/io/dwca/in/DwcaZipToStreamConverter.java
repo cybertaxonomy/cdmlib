@@ -127,6 +127,7 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			streamList.add(getCoreStream(state)); //for taxa and names
 		} catch (IOException e) {
 			String message = "Core stream not available for %s: %s";
+			//FIXME fire event (also in following code)
 			logger.warn(String.format(message, "taxa", e.getMessage()));
 			state.setSuccess(false);
 		} 

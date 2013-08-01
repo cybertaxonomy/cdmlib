@@ -305,10 +305,12 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/ICsvAreaRecord.java 
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/TermUri.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/ConcatenatingReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStream.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/CsvStreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMapping.java -text
-cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonCsv2CdmTaxonRelationConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcTaxonStreamItem2CdmTaxonConverter.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaDataImportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaDataImportConfiguratorBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaDataImportStateBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportState.java -text
@@ -382,6 +384,12 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelRowBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/common/ExcelTaxonOrSpecimenImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/distribution/DistributionImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelMapReader.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelRecordStream.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/stream/ExcelToStreamConverter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitRow.java -text
@@ -468,6 +476,11 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenRow.java -
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenSynthesysExcelImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenSynthesysExcelImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/specimen/excel/in/SpecimenSythesysExcelImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/stream/IItemStream.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/stream/StreamImportBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/stream/StreamImportConfiguratorBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/stream/StreamImportStateBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/stream/StreamItem.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/SimpleSpecimen.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXDescriptionImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfigurator.java -text
@@ -517,6 +530,7 @@ cdmlib-io/src/main/resources/CatalogManager.properties -text
 cdmlib-io/src/main/resources/catalog.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/defaultIoApplicationContext.xml -text
 cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/dwca/out/DwcaTaxExportConfigurator.properties -text
+cdmlib-io/src/main/resources/eu/etaxonomy/cdm/io/excel/ExcelImportMapping.properties -text
 cdmlib-io/src/main/resources/log4j.properties -text
 cdmlib-io/src/main/resources/mapping/lifeStageToGbif.tsv -text
 cdmlib-io/src/main/resources/mapping/nameTypeStatusToGbif.tsv -text
@@ -542,6 +556,7 @@ cdmlib-io/src/main/resources/schema/xml/xml.xsd -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DatabaseMappingTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaImportIntegrationTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/dwca/in/DwcaZipToStreamConverterTest.java -text
+cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AgentsTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/jaxb/AnnotationTest.java -text
@@ -587,6 +602,8 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/coreTax.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/description.txt -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/meta.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/dwca/in/vernacular.txt -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImport-TestInput.xls -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/stream/ExcelStreamImportTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalExplicit.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/DenormalImplied.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/excel/taxa/NormalExplicitImportTest-input-original.xls -text
@@ -666,6 +683,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AbstractClassBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AcceptedTaxonBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/ClassInfoBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
@@ -1567,6 +1586,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/reference/ReferenceDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testAddChild-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testDelete-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testDelete-result1.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testFind.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testFindDeleted.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml -text
@@ -2086,6 +2106,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPa
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/CdmMassIndexer.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/DocumentSearchResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text

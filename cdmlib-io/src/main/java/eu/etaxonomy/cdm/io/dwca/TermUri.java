@@ -21,7 +21,9 @@ import org.apache.log4j.Logger;
  */
 public enum TermUri {
 	CDM_SOURCE_REFERENCE("http://eu.etaxonomy.cdm.io.common.sourceReference"),
-
+	CDM_SOURCE_IDNAMESPACE("http://eu.etaxonomy.cdm.io.common.originalSourceBase.idNamespace"),
+	CDM_SOURCE_IDINSOURCE("http://eu.etaxonomy.cdm.io.common.originalSourceBase.idInSource"),
+	
 	DC_ACCESS_RIGHTS("http://purl.org/dc/terms/accessRights"),
 	DC_AUDIENCE("http://purl.org/dc/terms/audience"),
 	DC_BIBLIOGRAPHIC_CITATION("http://purl.org/dc/terms/bibliographicCitation"),
@@ -36,6 +38,7 @@ public enum TermUri {
 	DC_LICENSE("http://purl.org/dc/terms/license"),
 	DC_MODIFIED("http://purl.org/dc/terms/modified"),
 	DC_PUBLISHER("http://purl.org/dc/terms/publisher"),
+	DC_REFERENCES("http://purl.org/dc/terms/references"),
 	DC_RIGHTS("http://purl.org/dc/terms/rights"),
 	DC_RIGHTS_HOLDER("http://purl.org/dc/terms/rightsHolder"),
 	DC_SOURCE("http://purl.org/dc/terms/source"),

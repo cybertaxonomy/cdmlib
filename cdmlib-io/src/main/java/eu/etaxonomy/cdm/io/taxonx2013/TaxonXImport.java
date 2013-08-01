@@ -46,8 +46,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @author p.kelbert 2013
  */
 @Component
-public class TaxonXImport extends
-SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
+public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
     private static final Logger logger = Logger.getLogger(TaxonXImport.class);
     private static String prefix = "";
 
@@ -118,7 +117,6 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
                 null,
                 nodeList.toArray(),
                 classificationName);
-
         if (!classifDic.containsKey(s)){
             System.out.println("Classif inconnue ?? "+s+", "+classifDic);
             if (s.equalsIgnoreCase("Other classification - add a new one")){
@@ -130,6 +128,8 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             refreshTransaction();
         }
         else{
+            classification = classifDic.get(s);
+        }
             if (classification == null) {
                 String name = taxonXstate.getConfig().getClassificationName();
 
@@ -140,12 +140,6 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
                 getClassificationService().saveOrUpdate(classification);
                 refreshTransaction();
             }
-            else{
-                classification = classifDic.get(s);
-            }
-        }
-
-
     }
 
     /**
@@ -203,8 +197,11 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
             this.getReferenceService().saveOrUpdate(secundum);
         }
 
-        Rank maxRank = askForHigherRank(taxonXstate.getConfig().getNomenclaturalCode());
-        taxonXstate.getConfig().setMaxRank(maxRank);
+        if(!taxonXstate.getConfig().hasAskedForHigherRank()){
+            Rank maxRank = askForHigherRank(taxonXstate.getConfig().getNomenclaturalCode());
+            taxonXstate.getConfig().setMaxRank(maxRank);
+            taxonXstate.getConfig().setHasAskedForHigherRank(true);
+        }
 
 
         String message = "go taxonx!";
@@ -228,11 +225,11 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
              *create the appropriate Reference object
              */
             ref = taxonXFieldGetter.parseMods();
-//            logger.info("REF : "+ref.getCitation());
-//            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
+            //            logger.info("REF : "+ref.getCitation());
+            //            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
             setClassification(taxonXstate.getConfig().getClassificationName());
             taxonXFieldGetter.updateClassification(classification);
-//            logger.info("classif :"+classification);
+            //            logger.info("classif :"+classification);
             taxonXFieldGetter.parseTreatment(ref,sourceName);
 
             //        } catch (MalformedURLException e) {
@@ -310,7 +307,7 @@ SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmI
         String s = (String)JOptionPane.showInputDialog(
                 null,
                 scrollPane,
-               null,
+                null,
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 rankListStr.toArray(),

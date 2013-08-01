@@ -332,7 +332,15 @@ public class ImportHandlerBase extends DefaultHandler2 {
 		int lineNumber = stackTrace[stackDepth].getLineNumber();
 		String methodName = stackTrace[stackDepth].getMethodName();
 		String location = locator == null ? " - no locator - " : "l." + locator.getLineNumber() + "/c."+ locator.getColumnNumber();
-		IoProblemEvent event = IoProblemEvent.NewInstance(this.getClass(), message, 
+		String className = stackTrace[stackDepth].getClassName();
+		Class<?> declaringClass;
+		try {
+			declaringClass = Class.forName(className);
+		} catch (ClassNotFoundException e) {
+			declaringClass = this.getClass();
+		}
+		
+		IoProblemEvent event = IoProblemEvent.NewInstance(declaringClass, message, 
 				location, lineNumber, severity, methodName);
 		return event;
 	}

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -90,7 +91,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
 	@Transactional(readOnly = false)
-	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) {
+	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) throws DataChangeNoRollbackException {
 
 		// TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
 		// in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -176,15 +177,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			description.setTitleCache(message, true);
 			newAcceptedTaxon.addDescription(description);
 		}
-		try {
-			TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
-			conf.setDeleteSynonymsIfPossible(false);
-			taxonService.deleteTaxon(oldTaxon, conf, null);
-		} catch (ReferencedObjectUndeletableException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-				
+		
+		TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
+		conf.setDeleteSynonymsIfPossible(false);
+		taxonService.deleteTaxon(oldTaxon, conf, null);
+					
 		//oldTaxonNode.delete();		
 		return synonmyRelationship.getSynonym();
 	}

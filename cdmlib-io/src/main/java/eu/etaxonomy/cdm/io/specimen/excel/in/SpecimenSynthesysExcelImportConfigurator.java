@@ -41,7 +41,7 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
     private Map<String, Team> titleCacheTeam;
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
-    
+
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
     private Reference<?> dataReference;
 
@@ -62,6 +62,10 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 		return new SpecimenSynthesysExcelImportConfigurator(uri, destination);
 	}
 
+	public static SpecimenSynthesysExcelImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean interact){
+        return new SpecimenSynthesysExcelImportConfigurator(uri, destination,interact);
+    }
+
 
 	/**
 	 * @param berlinModelSource
@@ -73,6 +77,19 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 		setSource(uri);
 		setDestination(destination);
 	}
+
+
+    /**
+     * @param berlinModelSource
+     * @param sourceReference
+     * @param destination
+     */
+    private SpecimenSynthesysExcelImportConfigurator(URI uri, ICdmDataSource destination, boolean interact) {
+        super(defaultTransformer);
+        setSource(uri);
+        setDestination(destination);
+        setInteractWithUser(interact);
+    }
 
 
 
@@ -195,7 +212,7 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
      return defaultAuthor;
     }
 
-    
+
     public Map<String,UUID> getNamedAreaDecisions() {
         return namedAreaDecisions;
     }
