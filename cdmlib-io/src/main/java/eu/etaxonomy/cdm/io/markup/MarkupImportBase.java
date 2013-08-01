@@ -9,14 +9,20 @@
 
 package eu.etaxonomy.cdm.io.markup;
 
+import java.net.MalformedURLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.Stack;
 import java.util.UUID;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.namespace.QName;
 import javax.xml.stream.Location;
@@ -45,19 +51,27 @@ import eu.etaxonomy.cdm.io.common.events.IoProblemEvent;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
+import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -196,6 +210,7 @@ public abstract class MarkupImportBase  {
 
 
 	protected MarkupDocumentImport docImport;
+
 	private IEditGeoService editGeoService;
 	
 	public MarkupImportBase(MarkupDocumentImport docImport) {
@@ -1282,6 +1297,671 @@ public abstract class MarkupImportBase  {
 		return text == null ? false : text.trim().matches("^[\\.,;:]$");
 	}
 
+	
+	protected String getXmlTag(XMLEvent event) {
+		String result;
+		if (event.isStartElement()) {
+			result = "<" + event.asStartElement().getName().getLocalPart()
+					+ ">";
+		} else if (event.isEndElement()) {
+			result = "</" + event.asEndElement().getName().getLocalPart() + ">";
+		} else {
+			String message = "Only start or end elements are allowed as Html tags";
+			throw new IllegalStateException(message);
+		}
+		return result;
+	}
+
+	protected WriterDataHolder handleWriter(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
+		String text = "";
+		checkNoAttributes(parentEvent);
+		WriterDataHolder dataHolder = new WriterDataHolder();
+		List<FootnoteDataHolder> footnotes = new ArrayList<FootnoteDataHolder>();
+
+		// TODO handle attributes
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				text = CdmUtils.removeBrackets(text);
+				if (checkMandatoryText(text, parentEvent)) {
+					text = normalize(text);
+					dataHolder.writer = text;
+					dataHolder.footnotes = footnotes;
+
+					// Extension
+					UUID uuidWriterExtension = MarkupTransformer.uuidWriterExtension;
+					ExtensionType writerExtensionType = this
+							.getExtensionType(state, uuidWriterExtension,
+									"Writer", "writer", "writer");
+					Extension extension = Extension.NewInstance();
+					extension.setType(writerExtensionType);
+					extension.setValue(text);
+					dataHolder.extension = extension;
+
+					// Annotation
+					UUID uuidWriterAnnotation = MarkupTransformer.uuidWriterAnnotation;
+					AnnotationType writerAnnotationType = this.getAnnotationType(state, uuidWriterAnnotation, "Writer", "writer", "writer", null);
+					Annotation annotation = Annotation.NewInstance(text, writerAnnotationType, getDefaultLanguage(state));
+					dataHolder.annotation = annotation;
+
+					return dataHolder;
+				} else {
+					return null;
+				}
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				FootnoteDataHolder footNote = handleFootnoteRef(state, reader, next);
+				if (footNote.isRef()) {
+					footnotes.add(footNote);
+				} else {
+					logger.warn("Non ref footnotes not yet impelemnted");
+				}
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+
+			} else {
+				handleUnexpectedElement(next);
+				state.setUnsuccessfull();
+			}
+		}
+		throw new IllegalStateException("<writer> has no end tag");
+	}
+	
+
+	protected void registerFootnotes(MarkupImportState state, AnnotatableEntity entity, List<FootnoteDataHolder> footnotes) {
+		for (FootnoteDataHolder footNote : footnotes) {
+			registerFootnoteDemand(state, entity, footNote);
+		}
+	}
+	
+
+	private void registerFootnoteDemand(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
+		FootnoteDataHolder existingFootnote = state.getFootnote(footnote.ref);
+		if (existingFootnote != null) {
+			attachFootnote(state, entity, existingFootnote);
+		} else {
+			Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.ref);
+			if (demands == null) {
+				demands = new HashSet<AnnotatableEntity>();
+				state.putFootnoteDemands(footnote.ref, demands);
+			}
+			demands.add(entity);
+		}
+	}
+	
+
+	protected void attachFootnote(MarkupImportState state, AnnotatableEntity entity, FootnoteDataHolder footnote) {
+		AnnotationType annotationType = this.getAnnotationType(state, MarkupTransformer.uuidFootnote, "Footnote", "An e-flora footnote", "fn", null);
+		Annotation annotation = Annotation.NewInstance(footnote.string, annotationType, getDefaultLanguage(state));
+		// TODO transient objects
+		entity.addAnnotation(annotation);
+		save(entity, state);
+	}
+	
+
+	protected void attachFigure(MarkupImportState state, XMLEvent next, AnnotatableEntity entity, Media figure) {
+		// IdentifiableEntity<?> toSave;
+		if (entity.isInstanceOf(TextData.class)) {
+			TextData deb = CdmBase.deproxy(entity, TextData.class);
+			deb.addMedia(figure);
+			// toSave = ((TaxonDescription)deb.getInDescription()).getTaxon();
+		} else if (entity.isInstanceOf(SpecimenOrObservationBase.class)) {
+			String message = "figures for specimen should be handled as Textdata";
+			fireWarningEvent(message, next, 4);
+			// toSave = ime;
+		} else if (entity.isInstanceOf(IdentifiableMediaEntity.class)) {
+			IdentifiableMediaEntity<?> ime = CdmBase.deproxy(entity, IdentifiableMediaEntity.class);
+			ime.addMedia(figure);
+			// toSave = ime;
+		} else {
+			String message = "Unsupported entity to attach media: %s";
+			message = String.format(message, entity.getClass().getName());
+			// toSave = null;
+		}
+		save(entity, state);
+	}
+	
+
+	protected void registerGivenFootnote(MarkupImportState state, FootnoteDataHolder footnote) {
+		state.registerFootnote(footnote);
+		Set<AnnotatableEntity> demands = state.getFootnoteDemands(footnote.id);
+		if (demands != null) {
+			for (AnnotatableEntity entity : demands) {
+				attachFootnote(state, entity, footnote);
+			}
+		}
+	}
+	
+
+	protected FootnoteDataHolder handleFootnote(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, 
+			MarkupSpecimenImport specimenImport, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
+		FootnoteDataHolder result = new FootnoteDataHolder();
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		result.id = getAndRemoveAttributeValue(attributes, ID);
+		// result.ref = getAndRemoveAttributeValue(attributes, REF);
+		checkNoAttributes(attributes, parentEvent);
+
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isStartingElement(next, FOOTNOTE_STRING)) {
+				String string = handleFootnoteString(state, reader, next, specimenImport, nomenclatureImport);
+				result.string = string;
+			} else if (isMyEndingElement(next, parentEvent)) {
+				return result;
+			} else {
+				fireUnexpectedEvent(next, 0);
+			}
+		}
+		return result;
+	}
+	
+
+	protected Media handleFigure(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, 
+			MarkupSpecimenImport specimenImport, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
+		// FigureDataHolder result = new FigureDataHolder();
+
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String id = getAndRemoveAttributeValue(attributes, ID);
+		String type = getAndRemoveAttributeValue(attributes, TYPE);
+		String urlAttr = getAndRemoveAttributeValue(attributes, URL);
+		checkNoAttributes(attributes, parentEvent);
+
+		String urlString = null;
+		String legendString = null;
+		String titleString = null;
+		String numString = null;
+		String text = null;
+		if (isNotBlank(urlAttr)){
+			urlString = CdmUtils.Nz(state.getBaseMediaUrl()) + urlAttr;
+		}
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (isNotBlank(text)){
+					fireWarningEvent("Text not yet handled for figures: " + text, next, 4);
+				}
+				Media media = makeFigure(state, id, type, urlString, legendString, titleString, numString, next);
+				return media;
+			} else if (isStartingElement(next, FIGURE_LEGEND)) {
+				// TODO same as figure string ?
+				legendString = handleFootnoteString(state, reader, next, specimenImport, nomenclatureImport);
+			} else if (isStartingElement(next, FIGURE_TITLE)) {
+				titleString = getCData(state, reader, next);
+			} else if (isStartingElement(next, URL)) {
+				String localUrl = getCData(state, reader, next);
+				String url = CdmUtils.Nz(state.getBaseMediaUrl()) + localUrl;
+				if (isBlank(urlString)){
+					urlString = url;
+				}
+				if (! url.equals(urlString)){
+					String message = "URL attribute and URL element differ. Attribute: %s, Element: %s";
+					fireWarningEvent(String.format(message, urlString, url), next, 2);
+				}
+			} else if (isStartingElement(next, NUM)) {
+				numString = getCData(state, reader, next);
+			} else if (next.isCharacters()) {
+				text += CdmUtils.concat("", text, next.asCharacters().getData());
+			} else {
+				fireUnexpectedEvent(next, 0);
+			}
+		}
+		throw new IllegalStateException("<figure> has no end tag");
+	}
+
+
+	/**
+	 * @param state
+	 * @param id
+	 * @param type
+	 * @param urlString
+	 * @param legendString
+	 * @param titleString
+	 * @param numString
+	 * @param next
+	 */
+	private Media makeFigure(MarkupImportState state, String id, String type, String urlString, 
+			String legendString, String titleString, String numString, XMLEvent next) {
+		Media media = null;
+		boolean isFigure = false;
+		try {
+			//TODO maybe everything is a figure as it is all taken from a book
+			if ("lineart".equals(type)) {
+				isFigure = true;
+//				media = Figure.NewInstance(url.toURI(), null, null,	null);
+			} else if (type == null || "photo".equals(type)
+					|| "signature".equals(type)
+					|| "others".equals(type)) {
+				//TODO
+			} else {
+				String message = "Unknown figure type '%s'";
+				message = String.format(message, type);
+				fireWarningEvent(message, next, 2);
+			}
+			media = docImport.getImageMedia(urlString, docImport.getReadMediaData(), isFigure);
+			
+			if (media != null){
+				// title
+				if (StringUtils.isNotBlank(titleString)) {
+					media.putTitle(getDefaultLanguage(state), titleString);
+				}
+				// legend
+				if (StringUtils.isNotBlank(legendString)) {
+					media.addDescription(legendString, getDefaultLanguage(state));
+				}
+				if (StringUtils.isNotBlank(numString)) {
+					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
+					// vol.13)
+					Reference<?> citation = state.getConfig().getSourceReference();
+					media.addSource(numString, "num", citation, null);
+					// TODO name used in source if available
+				}
+				// TODO which citation
+				if (StringUtils.isNotBlank(id)) {
+					media.addSource(id, null, state.getConfig().getSourceReference(), null);
+				} else {
+					String message = "Figure id should never be empty or null";
+					fireWarningEvent(message, next, 6);
+				}
+
+				// text
+				// do nothing
+				registerGivenFigure(state, next, id, media);
+				
+			}else{
+				String message = "No media found: ";
+				fireWarningEvent(message, next, 4);
+			}
+		} catch (MalformedURLException e) {
+			String message = "Media uri has incorrect syntax: %s";
+			message = String.format(message, urlString);
+			fireWarningEvent(message, next, 4);
+//		} catch (URISyntaxException e) {
+//			String message = "Media uri has incorrect syntax: %s";
+//			message = String.format(message, urlString);
+//			fireWarningEvent(message, next, 4);
+		}
+
+		return media;
+	}
+	
+
+	private void registerGivenFigure(MarkupImportState state, XMLEvent next, String id, Media figure) {
+		state.registerFigure(id, figure);
+		Set<AnnotatableEntity> demands = state.getFigureDemands(id);
+		if (demands != null) {
+			for (AnnotatableEntity entity : demands) {
+				attachFigure(state, next, entity, figure);
+			}
+		}
+		save(figure, state);
+	}
+	
+
+	private FootnoteDataHolder handleFootnoteRef(MarkupImportState state,
+			XMLEventReader reader, XMLEvent parentEvent)
+			throws XMLStreamException {
+		FootnoteDataHolder result = new FootnoteDataHolder();
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		result.ref = getAndRemoveAttributeValue(attributes, REF);
+		checkNoAttributes(attributes, parentEvent);
+
+		// text is not handled, needed only for debugging purposes
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			// if (isStartingElement(next, FOOTNOTE_STRING)){
+			// String string = handleFootnoteString(state, reader, next);
+			// result.string = string;
+			// }else
+			if (isMyEndingElement(next, parentEvent)) {
+				return result;
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+
+			} else {
+				fireUnexpectedEvent(next, 0);
+			}
+		}
+		return result;
+	}
+
+
+
+	private String handleFootnoteString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, MarkupSpecimenImport specimenImport, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
+		boolean isTextMode = true;
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return text;
+			} else if (next.isEndElement()) {
+				if (isEndingElement(next, FULL_NAME)) {
+					popUnimplemented(next.asEndElement());
+				} else if (isEndingElement(next, BR)) {
+					isTextMode = true;
+				} else if (isHtml(next)) {
+					text += getXmlTag(next);
+				} else {
+					handleUnexpectedEndElement(next.asEndElement());
+				}
+			} else if (next.isStartElement()) {
+				if (isStartingElement(next, FULL_NAME)) {
+					handleNotYetImplementedElement(next);
+				} else if (isStartingElement(next, GATHERING)) {
+					text += specimenImport.handleInLineGathering(state, reader, next);
+				} else if (isStartingElement(next, REFERENCES)) {
+					text += " " + handleInLineReferences(state, reader, next, nomenclatureImport)+ " ";
+				} else if (isStartingElement(next, BR)) {
+					text += "<br/>";
+					isTextMode = false;
+				} else if (isStartingElement(next, NOMENCLATURE)) {
+					handleNotYetImplementedElement(next);
+				} else if (isHtml(next)) {
+					text += getXmlTag(next);
+				} else {
+					handleUnexpectedStartElement(next.asStartElement());
+				}
+			} else if (next.isCharacters()) {
+				if (!isTextMode) {
+					String message = "footnoteString is not in text mode";
+					fireWarningEvent(message, next, 6);
+				} else {
+					text += next.asCharacters().getData().trim(); 
+					// getCData(state, reader, next); does not work as we have inner tags like <references>
+				}
+			} else {
+				handleUnexpectedEndElement(next.asEndElement());
+			}
+		}
+		throw new IllegalStateException("<footnoteString> has no closing tag");
+
+	}
+
+	private static final List<String> htmlList = Arrays.asList("sub", "sup",
+			"ol", "ul", "li", "i", "b", "table", "br","tr","td");
+
+	protected boolean isHtml(XMLEvent event) {
+		if (event.isStartElement()) {
+			String tag = event.asStartElement().getName().getLocalPart();
+			return htmlList.contains(tag);
+		} else if (event.isEndElement()) {
+			String tag = event.asEndElement().getName().getLocalPart();
+			return htmlList.contains(tag);
+		} else {
+			return false;
+		}
+
+	}
+	
+
+	private String handleInLineReferences(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+
+		boolean hasReference = false;
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				checkMandatoryElement(hasReference, parentEvent.asStartElement(), REFERENCE);
+				return text;
+			} else if (isStartingElement(next, REFERENCE)) {
+				text += handleInLineReference(state, reader, next, nomenclatureImport);
+				hasReference = true;
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<References> has no closing tag");
+	}
+
+	private String handleInLineReference(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent, MarkupNomenclatureImport nomenclatureImport)throws XMLStreamException {
+		Reference<?> reference = nomenclatureImport.handleReference(state, reader, parentEvent);
+		String result = "<cdm:ref uuid='%s'>%s</ref>";
+		result = String.format(result, reference.getUuid(), reference.getTitleCache());
+		save(reference, state);
+		return result;
+	}
+	
+
+	/**
+	 * Handle string
+	 * @param state
+	 * @param reader
+	 * @param parentEvent
+	 * @param feature only needed for distributionLocalities
+	 * @return
+	 * @throws XMLStreamException
+	 */
+	protected Map<String, String> handleString(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, Feature feature)throws XMLStreamException {
+		// attributes
+		String classValue = getClassOnlyAttribute(parentEvent, false);
+		if (StringUtils.isNotBlank(classValue)) {
+			String message = "class attribute for <string> not yet implemented";
+			fireWarningEvent(message, parentEvent, 2);
+		}
+
+		// subheadings
+		Map<String, String> subHeadingMap = new HashMap<String, String>();
+		String currentSubheading = null;
+
+		boolean isTextMode = true;
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				putCurrentSubheading(subHeadingMap, currentSubheading, text);
+				return subHeadingMap;
+			} else if (isStartingElement(next, BR)) {
+				text += "<br/>";
+				isTextMode = false;
+			} else if (isEndingElement(next, BR)) {
+				isTextMode = true;
+			} else if (isHtml(next)) {
+				text += getXmlTag(next);
+			} else if (isStartingElement(next, SUB_HEADING)) {
+				text = putCurrentSubheading(subHeadingMap,currentSubheading, text);
+				// TODO footnotes
+				currentSubheading = getCData(state, reader, next).trim();
+			} else if (isStartingElement(next, DISTRIBUTION_LOCALITY)) {
+				if (feature != null && !feature.equals(Feature.DISTRIBUTION())) {
+					String message = "Distribution locality only allowed for feature of type 'distribution'";
+					fireWarningEvent(message, next, 4);
+				}
+				text += handleDistributionLocality(state, reader, next);
+			} else if (next.isCharacters()) {
+				if (! isTextMode) {
+					String message = "String is not in text mode";
+					fireWarningEvent(message, next, 6);
+				} else {
+					text += next.asCharacters().getData();
+				}
+			} else if (isStartingElement(next, HEADING)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, VERNACULAR_NAMES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, QUOTE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, DEDICATION)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, TAXONTYPE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FULL_NAME)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			}else if (isStartingElement(next, REFERENCES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, GATHERING)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, ANNOTATION)) {
+				//TODO  //TODO test handleSimpleAnnotation
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, HABITAT)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FIGURE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FIGURE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FOOTNOTE)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, WRITER)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, DATES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<String> has no closing tag");
+	}
+	
+
+	/**
+	 * @param subHeadingMap
+	 * @param currentSubheading
+	 * @param text
+	 * @return
+	 */
+	private String putCurrentSubheading(Map<String, String> subHeadingMap, String currentSubheading, String text) {
+		if (StringUtils.isNotBlank(text)) {
+			text = removeStartingMinus(text);
+			subHeadingMap.put(currentSubheading, text.trim());
+		}
+		return "";
+	}
+
+	private String removeStartingMinus(String string) {
+		string = replaceStart(string, "-");
+		string = replaceStart(string, "\u002d");
+		string = replaceStart(string, "\u2013");
+		string = replaceStart(string, "\u2014");
+		string = replaceStart(string, "--");
+		return string;
+	}
+	
+	
+	/**
+	 * @param value
+	 * @param replacementString
+	 */
+	private String replaceStart(String value, String replacementString) {
+		if (value.startsWith(replacementString) ){
+			value = value.substring(replacementString.length()).trim();
+		}
+		while (value.startsWith("-") || value.startsWith("\u2014") ){
+			value = value.substring("-".length()).trim();
+		}
+		return value;
+	}
+	
+
+	private String handleDistributionLocality(MarkupImportState state,XMLEventReader reader, XMLEvent parentEvent)throws XMLStreamException {
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		String classValue = getAndRemoveRequiredAttributeValue(parentEvent, attributes, CLASS);
+		String statusValue =getAndRemoveAttributeValue(attributes, STATUS);
+		String frequencyValue =getAndRemoveAttributeValue(attributes, FREQUENCY);
+		
+
+		Taxon taxon = state.getCurrentTaxon();
+		// TODO which ref to take?
+		Reference<?> ref = state.getConfig().getSourceReference();
+
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (StringUtils.isNotBlank(text)) {
+					String label = CdmUtils.removeTrailingDot(normalize(text));
+					TaxonDescription description = getTaxonDescription(taxon, ref, false, true);
+					NamedAreaLevel level = makeNamedAreaLevel(state,classValue, next);
+					
+					//status
+					PresenceAbsenceTermBase<?> status = null;
+					if (isNotBlank(statusValue)){
+						try {
+							status = state.getTransformer().getPresenceTermByKey(statusValue);
+							if (status == null){
+								//TODO
+								String message = "The presence/absence status '%s' could not be transformed to an CDM status";								
+								fireWarningEvent(String.format(message, statusValue), next, 4);
+							}
+						} catch (UndefinedTransformerMethodException e) {
+							throw new RuntimeException(e);
+						}
+					}else{
+						status = PresenceTerm.PRESENT();
+					}
+					//frequency
+					if (isNotBlank(frequencyValue)){
+						String message = "The frequency attribute is currently not yet available in CDM";
+						fireWarningEvent(message, parentEvent, 6);
+					}
+					
+					NamedArea higherArea = null;
+					List<NamedArea> areas = new ArrayList<NamedArea>(); 
+					
+					String patSingleArea = "([^,\\(]{3,})";
+					String patSeparator = "(,|\\sand\\s)";
+					String hierarchiePattern = String.format("%s\\((%s(%s%s)*)\\)",patSingleArea, patSingleArea, patSeparator, patSingleArea);
+					Pattern patHierarchie = Pattern.compile(hierarchiePattern, Pattern.CASE_INSENSITIVE);
+					Matcher matcher = patHierarchie.matcher(label); 
+					if (matcher.matches()){
+						String higherAreaStr = matcher.group(1).trim();
+						higherArea =  makeArea(state, higherAreaStr, level);
+						String[] innerAreas = matcher.group(2).split(patSeparator);
+						for (String innerArea : innerAreas){
+							if (isNotBlank(innerArea)){
+								NamedArea singleArea = makeArea(state, innerArea.trim(), level);
+								areas.add(singleArea);
+								NamedArea partOf = singleArea.getPartOf();
+//								if (partOf == null){
+//									singleArea.setPartOf(higherArea);
+//								}
+							}
+						}
+					}else{
+						NamedArea singleArea = makeArea(state, label, level);
+						areas.add(singleArea);
+					}
+					
+					for (NamedArea area : areas){
+						//create distribution
+						Distribution distribution = Distribution.NewInstance(area,status);
+						description.addElement(distribution);
+					}
+				} else {
+					String message = "Empty distribution locality";
+					fireWarningEvent(message, next, 4);
+				}
+				return text;
+			} else if (isStartingElement(next, COORDINATES)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isEndingElement(next, COORDINATES)) {
+				//TODO
+				popUnimplemented(next.asEndElement());
+			} else if (next.isCharacters()) {
+				text += next.asCharacters().getData();
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("<DistributionLocality> has no closing tag");
+	}	
 
 	
 //********************************************** OLD *************************************	

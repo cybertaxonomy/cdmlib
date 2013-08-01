@@ -419,6 +419,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FootnoteDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImportNoComponent.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupFeatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
