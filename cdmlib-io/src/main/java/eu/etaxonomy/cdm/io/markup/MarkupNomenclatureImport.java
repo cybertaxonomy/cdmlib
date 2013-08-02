@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NameTypeParser;
-import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -57,15 +56,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	private static final Logger logger = Logger.getLogger(MarkupNomenclatureImport.class);
 
 
-	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
+//	private NonViralNameParserImpl parser = new NonViralNameParserImpl();
 
-	private MarkupKeyImport keyImport;
 	private MarkupSpecimenImport specimenImport;
 
-	public MarkupNomenclatureImport(MarkupDocumentImport docImport,
-			MarkupKeyImport keyImport, MarkupSpecimenImport specimenImport) {
+	public MarkupNomenclatureImport(MarkupDocumentImport docImport, MarkupSpecimenImport specimenImport) {
 		super(docImport);
-		this.keyImport = keyImport;
 		this.specimenImport = specimenImport;
 	}
 
@@ -97,40 +93,28 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		boolean hasNom = false;
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
-			if (next.isEndElement()) {
-				if (isMyEndingElement(next, parentEvent)) {
-					checkMandatoryElement(hasNom, parentEvent, NOM);
-					return;
-				} else {
-					if (isEndingElement(next, NAME_TYPE)) {
-						state.setNameType(false);
-					} else if (isEndingElement(next, NOTES)) {
-						// NOT YET IMPLEMENTED
-						popUnimplemented(next.asEndElement());
-					} else {
-						handleUnexpectedEndElement(next.asEndElement());
-					}
-				}
-			} else if (next.isStartElement()) {
-				if (isStartingElement(next, NOM)) {
-					NonViralName<?> name = handleNom(state, reader, next, homotypicalGroup);
-					homotypicalGroup = name.getHomotypicalGroup();
-					hasNom = true;
-				} else if (isStartingElement(next, NAME_TYPE)) {
-					state.setNameType(true);
-					handleNameType(state, reader, next, homotypicalGroup);
-				} else if (isStartingElement(next, SPECIMEN_TYPE)) {
-					specimenImport.handleSpecimenType(state, reader, next,
-							homotypicalGroup);
-				} else if (isStartingElement(next, NOTES)) {
-					handleNotYetImplementedElement(next);
-				} else {
-					handleUnexpectedStartElement(next);
-				}
+			if (isMyEndingElement(next, parentEvent)) {
+				checkMandatoryElement(hasNom, parentEvent, NOM);
+				state.setLatestAuthorInHomotype(null);
+				return;
+			} else if (isEndingElement(next, NAME_TYPE)) {
+				state.setNameType(false);
+			} else if (isStartingElement(next, NOM)) {
+				NonViralName<?> name = handleNom(state, reader, next, homotypicalGroup);
+				homotypicalGroup = name.getHomotypicalGroup();
+				hasNom = true;
+			} else if (isStartingElement(next, NAME_TYPE)) {
+				state.setNameType(true);
+				handleNameType(state, reader, next, homotypicalGroup);
+			} else if (isStartingElement(next, SPECIMEN_TYPE)) {
+				specimenImport.handleSpecimenType(state, reader, next, homotypicalGroup);
+			} else if (isStartingElement(next, NOTES)) {
+				handleNotYetImplementedElement(next);
 			} else {
 				handleUnexpectedElement(next);
 			}
 		}
+		state.setLatestAuthorInHomotype(null);
 		// TODO handle missing end element
 		throw new IllegalStateException("Homotypes has no closing tag");
 
@@ -207,9 +191,8 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @return
 	 * @throws XMLStreamException
 	 */
-	private NonViralName<?> handleNom(MarkupImportState state,
-			XMLEventReader reader, XMLEvent parentEvent,
-			HomotypicalGroup homotypicalGroup) throws XMLStreamException {
+	private NonViralName<?> handleNom(MarkupImportState state, XMLEventReader reader, 
+			XMLEvent parentEvent, HomotypicalGroup homotypicalGroup) throws XMLStreamException {
 		boolean isSynonym = false;
 		boolean isNameType = state.isNameType();
 		// attributes
@@ -232,11 +215,14 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		Map<String, String> nameMap = new HashMap<String, String>();
 		String text = "";
 		
+		boolean nameFilled = false;
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				// fill the name with all data gathered
-				fillName(state, nameMap, name, next);
+				// fill the name with all data gathered, if not yet done before
+				if (nameFilled == false){
+					fillName(state, nameMap, name, next);
+				}
 				handleNomText(state, parentEvent, text, isNameType);
 				return name;
 			} else if (isEndingElement(next, ANNOTATION)) {
@@ -250,6 +236,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			} else if (isStartingElement(next, NAME)) {
 				handleName(state, reader, next, nameMap);
 			} else if (isStartingElement(next, CITATION)) {
+				//we need to fill the name here to have nomenclatural author available for the following citations
+				fillName(state, nameMap, name, next);
+				nameFilled = true;
 				handleCitation(state, reader, next, name, nameMap);
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
@@ -357,8 +346,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				nameMap.put(classValue, text);
 				return;
 			} else if (isStartingElement(next, ANNOTATION)) {
-				handleNotYetImplementedElement(next); // TODO test
-														// handleSimpleAnnotation
+				handleNotYetImplementedElement(next); // TODO test handleSimpleAnnotation
 			} else if (next.isCharacters()) {
 				text += next.asCharacters().getData();
 			} else {
@@ -393,7 +381,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			testRankAuthorConsistency(name, event, authorStr, paraut,infrParAut, infrAut);
 
 			// authors
-			makeNomenclaturalAuthors(name, event, authorStr, paraut, infrParAut, infrAut);
+			makeNomenclaturalAuthors(state, event, name, authorStr, paraut, infrParAut, infrAut);
 		}
 
 		// status
@@ -406,8 +394,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			try {
 				// TODO handle trim earlier
 				statusStr = statusStr.trim();
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType
-						.getNomenclaturalStatusTypeByAbbreviation(statusStr);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr);
 				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
 			} catch (UnknownCdmTypeException e) {
 				String message = "Status '%s' could not be recognized";
@@ -505,6 +492,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	/**
+	 * @param state 
 	 * @param name
 	 * @param event
 	 * @param authorStr
@@ -512,7 +500,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void makeNomenclaturalAuthors(NonViralName name, XMLEvent event,
+	private void makeNomenclaturalAuthors(MarkupImportState state, XMLEvent event, NonViralName<?> name, 
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() != null && name.getRank().isInfraSpecific()) {
 			if (StringUtils.isNotBlank(infrAut)) {
@@ -545,11 +533,14 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				name.setExBasionymAuthorTeam(authorAndEx[1]);
 			}
 		}
+		
+		//remember author for following citations
+		state.setLatestAuthorInHomotype((TeamOrPersonBase<?>)name.getCombinationAuthorTeam());
 	}
 
-	private TeamOrPersonBase[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {
+	private TeamOrPersonBase<?>[] authorAndEx(String authorAndEx, XMLEvent xmlEvent) {
 		authorAndEx = authorAndEx.trim();
-		TeamOrPersonBase[] result = new TeamOrPersonBase[2];
+		TeamOrPersonBase<?>[] result = new TeamOrPersonBase[2];
 
 		String[] split = authorAndEx.split("\\sex\\s");
 		if (split.length > 2) {
@@ -584,8 +575,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			if (homotypicalGroup != null) {
 				name.setHomotypicalGroup(homotypicalGroup);
 			}
-			SynonymRelationshipType synonymType = SynonymRelationshipType
-					.HETEROTYPIC_SYNONYM_OF();
+			SynonymRelationshipType synonymType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
 			if (taxon.getHomotypicGroup().equals(homotypicalGroup)) {
 				synonymType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 			}
@@ -597,7 +587,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	}
 
 	private void handleCitation(MarkupImportState state, XMLEventReader reader,
-			XMLEvent parentEvent, NonViralName name, Map<String, String> nameMap) throws XMLStreamException {
+			XMLEvent parentEvent, NonViralName<?> name, Map<String, String> nameMap) throws XMLStreamException {
 		String classValue = getClassOnlyAttribute(parentEvent);
 
 		state.setCitation(true);
@@ -655,15 +645,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	}
 
-	private void doCitation(MarkupImportState state, NonViralName name,
-			String classValue, Reference reference, String microCitation,
+	private void doCitation(MarkupImportState state, NonViralName<?> name,
+			String classValue, Reference<?> reference, String microCitation,
 			XMLEvent parentEvent) {
 		if (PUBLICATION.equalsIgnoreCase(classValue)) {
 			name.setNomenclaturalReference(reference);
 			name.setNomenclaturalMicroReference(microCitation);
-			if (reference.getAuthorTeam() == null ){
-				reference.setAuthorTeam((TeamOrPersonBase<?>)name.getCombinationAuthorTeam());
-			}
 		} else if (USAGE.equalsIgnoreCase(classValue)) {
 			Taxon taxon = state.getCurrentTaxon();
 			TaxonDescription td = getTaxonDescription(taxon, state.getConfig().getSourceReference(), false, true);
@@ -690,7 +677,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 	 * @param infrParAut
 	 * @param infrAut
 	 */
-	private void testRankAuthorConsistency(NonViralName name, XMLEvent event,
+	private void testRankAuthorConsistency(NonViralName<?> name, XMLEvent event,
 			String authorStr, String paraut, String infrParAut, String infrAut) {
 		if (name.getRank() == null) {
 			return;
@@ -738,8 +725,13 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			reference = handleNonCitationSpecific(type, authorStr, titleStr,
 					titleCache, volume, edition, editors, pubName);
 		}
-		reference.setVolume(volume);
-		reference.setDatePublished(TimePeriod.parseString(year));
+
+		//year
+		TimePeriod timeperiod = TimePeriod.parseString(year);
+		if (reference.getType().equals(ReferenceType.BookSection)){
+			reference.getInBook().setDatePublished(timeperiod);
+		}
+		reference.setDatePublished(timeperiod);
 		
 		// TODO
 		String[] unhandledList = new String[] { ALTERNATEPUBTITLE, ISSUE, NOTES, STATUS };
@@ -781,6 +773,11 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 				IJournal journal = ReferenceFactory.newJournal();
 				journal.setTitle(pubName);
 				article.setInJournal(journal);
+				article.setVolume(volume);
+				if (isNotBlank(edition)){
+					String message = "Article must not have an edition.";
+					fireWarningEvent(message, parentEvent, 4);
+				}
 			}
 			reference = (Reference<?>) article;
 		} else if (refType == RefType.BookSection) {
@@ -789,7 +786,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			IBook  book = ReferenceFactory.newBook();
 			reference.setInBook(book);
 			book.setTitle(pubName);
-
+			book.setVolume(volume);
+			book.setEdition(edition);
+			
 			if (state.getConfig().isUseEditorAsInAuthorWhereNeeded()){
 				TeamOrPersonBase<?> inAuthor = createAuthor(editors);
 				book.setAuthorTeam(inAuthor);
@@ -799,12 +798,43 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			//Book
 			reference = ReferenceFactory.newBook();
 			reference.setTitle(pubName);
+			reference.setVolume(volume);
+			reference.setEdition(edition);
 		}else if (refType == RefType.Generic){
 			//Generic - undefinable
-			String message = "Can't define the type of the reference. Use generic instead";
-			fireWarningEvent(message, parentEvent, 4);
+//			String message = "Can't define the type of the reference. Use generic instead";
+//			fireWarningEvent(message, parentEvent, 4);
 			reference = ReferenceFactory.newGeneric();
 			reference.setTitle(pubName);
+			reference.setEdition(edition);
+			
+			//volume indicates an in-reference
+			if (isNotBlank(volume)){
+				Reference<?> partOf = ReferenceFactory.newGeneric();
+				partOf.setVolume(volume);
+				partOf.setInReference(reference);
+				reference = partOf;
+			}
+		}else if (refType == RefType.LatestUsed){
+			Reference<?> latestReference = state.getLatestReferenceInHomotype();
+			if (latestReference == null){
+				String message = "No former reference available for incomplete citation";
+				fireWarningEvent(message, parentEvent, 6);
+				reference = ReferenceFactory.newGeneric();
+			}else{
+				if (latestReference.getInReference() != null){
+					reference = (Reference<?>)latestReference.clone();
+				}else{
+					String message = "Latest reference is not an in-reference. This is not yet handled.";
+					fireWarningEvent(message, parentEvent, 6);
+					reference = ReferenceFactory.newGeneric();
+				}
+			}
+			reference.setVolume(volume);
+			if (isNotBlank(edition)){
+				String message = "Edition not yet handled for incomplete citations";
+				fireWarningEvent(message, parentEvent, 4);
+			}
 			
 		}else{
 			String message = "Unhandled reference type: %s" ;
@@ -812,24 +842,31 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			reference = ReferenceFactory.newGeneric();
 		}
 		
-		//volume
-		reference.setVolume(volume);
-		
 		//author
-		// TODO use existing author from name or before
-		TeamOrPersonBase<?> author = createAuthor(authorStr);
-		reference.setAuthorTeam(author);
+		TeamOrPersonBase<?> author;
+		if (isBlank(authorStr)){
+			if (refType != RefType.LatestUsed){
+				author = state.getLatestAuthorInHomotype();
+				reference.setAuthorTeam(author);
+			}
+		}else{
+			author = createAuthor(authorStr);
+			state.setLatestAuthorInHomotype(author);
+			reference.setAuthorTeam(author);
+		}
+		
 
 		//title, titleCache
 		handleTitlesInCitation(titleStr, titleCache, parentEvent, reference);
-		
-		//edition
-		reference.setEdition(edition);
+
 		//editors
 		handleEditorsInCitation(edition, editors, reference, parentEvent);
 		
 		//pages
 		handlePages(state, refMap, parentEvent, reference, pages);
+		
+		//remember reference for following citation
+		state.setLatestReferenceInHomotype(reference);
 		
 		return reference;
 	}
@@ -845,7 +882,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 
 	private void handleTitlesInCitation(String titleStr, String titleCache,
 			XMLEvent parentEvent, Reference<?> reference) {
-		reference.setTitle(titleStr);
+		if (isNotBlank(titleStr)){
+			reference.setTitle(titleStr);
+		}
 		//titleCache
 		if (StringUtils.isNotBlank(titleCache)) {
 			reference.setTitleCache(titleCache, true);
@@ -860,30 +899,33 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		Article,
 		BookSection,
 		Book,
-		Generic
+		Generic,
+		LatestUsed
 	}
 	
 	private RefType defineRefTypeForCitation(String type, String volume, String editors, 
 			String authorStr, String pubName, XMLEvent parentEvent) {
 		if ("journal".equalsIgnoreCase(type)){
 			return RefType.Article;
-		} else if (volume != null){
-			//with volume
-			if (editors == null){
-				//with editor
-				return RefType.Article;  //not always true, there may also be books with volumes, however FM does not have an "in" to distinguish books and articles 
-			}else{
-				return RefType.Generic;
-			}
 		}else {
-			// no volume
 			if (editors == null){
 				//no editors
-				return RefType.Book;  //Book must not have in-authors
+				if (pubName == null){
+					//looks like we need to use reference info from former citations here
+					return RefType.LatestUsed;
+				}else if (volume == null){
+					return RefType.Book;  //Book must not have in-authors
+				}else{
+					return RefType.Generic;
+				}
+
 			}else{
+				//editors
 				if (pubName != null){
 					return RefType.BookSection;
 				}else{
+					String message = "Unexpected state: Citation has editors but no pubName";
+					fireWarningEvent(message, parentEvent, 4);
 					return RefType.Generic;
 				}
 			}
@@ -900,6 +942,10 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
+	/**
+	 * in work
+	 * @return
+	 */
 	private Reference<?> handleNonCitationSpecific(String type, String authorStr,
 			String titleStr, String titleCache, String volume, String edition,
 			String editors, String pubName) {
@@ -922,13 +968,17 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		TeamOrPersonBase<?> author = createAuthor(authorStr);
 		reference.setAuthorTeam(author);
 
+		//title
 		reference.setTitle(titleStr);
 		if (StringUtils.isNotBlank(titleCache)) {
 			reference.setTitleCache(titleCache, true);
 		}
+		
+		//edition
 		reference.setEdition(edition);
 		reference.setEditor(editors);
 
+		//pubName
 		if (pubName != null) {
 			Reference<?> inReference;
 			if (reference.getType().equals(ReferenceType.Article)) {
@@ -939,6 +989,9 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			inReference.setTitle(pubName);
 			reference.setInReference(inReference);
 		}
+		
+		//volume
+		reference.setVolume(volume);
 		return reference;
 	}
 
@@ -974,8 +1027,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			if (isMyEndingElement(next, parentEvent)) {
-				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(),
-						REF_PART);
+				checkMandatoryElement(hasRefPart, parentEvent.asStartElement(), REF_PART);
 				Reference<?> reference = createReference(state, refMap, next);
 				return reference;
 			} else if (isStartingElement(next, REF_PART)) {

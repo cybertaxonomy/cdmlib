@@ -16,6 +16,7 @@ import javax.xml.stream.events.XMLEvent;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.GeneralParser;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -61,17 +62,33 @@ public class MarkupModsImport extends MarkupImportBase {
 					abstractStr = abstractStr.replaceFirst("ABSTRACT", "").trim();
 				}
 				modsRef.setReferenceAbstract(abstractStr);
+			} else if (isStartingElement(next, MODS_IDENTIFIER)) {
+				handleIdentifier(state, reader, next, modsRef);
 			} else if (isStartingElement(next, MODS_NAME)) {
 				handleNotYetImplementedElement(next);
 			} else if (isStartingElement(next, MODS_ORIGININFO)) {
 				handleNotYetImplementedElement(next);
-			} else if (isStartingElement(next, MODS_IDENTIFIER)) {
-				handleNotYetImplementedElement(next);
 			} else {
-				fireUnexpectedEvent(next, 0);
-				state.setUnsuccessfull();
+				handleUnexpectedElement(next);
 			}
 		}
+		return;
+	}
+
+	private void handleIdentifier(MarkupImportState state, XMLEventReader reader, 
+			XMLEvent parentEvent, Reference<?> modsRef) throws XMLStreamException {
+		checkNoAttributes(parentEvent);
+		
+		
+		String identifier = getCData(state, reader, parentEvent, true).trim();
+		
+		if (GeneralParser.isIsbn(identifier)){
+			modsRef.setIsbn(identifier);
+		}else{
+			String message = "Identifier pattern not recognized: %s";
+			fireWarningEvent(String.format(message, identifier), parentEvent, 4);
+		}
+		
 		return;
 	}
 
@@ -103,8 +120,7 @@ public class MarkupModsImport extends MarkupImportBase {
 			}else if (isStartingElement(next, MODS_PARTNUMBER)) {
 				partNumber = this.getCData(state, reader, next);
 			} else {
-				fireUnexpectedEvent(null, 0);
-				state.setUnsuccessfull();
+				handleUnexpectedElement(next);
 			}
 		}
 		return;

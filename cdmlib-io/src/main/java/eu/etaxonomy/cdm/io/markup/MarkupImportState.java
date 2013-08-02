@@ -31,12 +31,12 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
 public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupDocumentImport>{
 	@SuppressWarnings("unused")
@@ -64,6 +64,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	private boolean taxonInClassification = true;
 	
 	private String latestGenusEpithet = null;
+	
+	private TeamOrPersonBase<?> latestAuthorInHomotype = null;
+	private Reference<?> latestReferenceInHomotype = null;
 	
 	private boolean isCitation = false;
 	private boolean isNameType = false;
@@ -388,6 +391,26 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	public void removeCurrentAreas(){
 		currentAreas.clear();
+	}
+
+
+	public TeamOrPersonBase<?> getLatestAuthorInHomotype() {
+		return latestAuthorInHomotype;
+	}
+
+
+	public void setLatestAuthorInHomotype(TeamOrPersonBase<?> latestAuthorInHomotype) {
+		this.latestAuthorInHomotype = latestAuthorInHomotype;
+	}
+
+
+	public Reference<?> getLatestReferenceInHomotype() {
+		return latestReferenceInHomotype;
+	}
+
+
+	public void setLatestReferenceInHomotype(Reference<?> latestReferenceInHomotype) {
+		this.latestReferenceInHomotype = latestReferenceInHomotype;
 	}
 
 

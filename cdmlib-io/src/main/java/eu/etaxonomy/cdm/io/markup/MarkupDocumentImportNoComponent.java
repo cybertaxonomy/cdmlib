@@ -64,7 +64,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		super(docImport);
 		this.keyImport = new MarkupKeyImport(docImport);
 		this.specimenImport = new MarkupSpecimenImport(docImport);
-		this.nomenclatureImport = new MarkupNomenclatureImport(docImport, keyImport, specimenImport);
+		this.nomenclatureImport = new MarkupNomenclatureImport(docImport, specimenImport);
 		this.modsImport = new MarkupModsImport(docImport);
 		this.featureImport = new MarkupFeatureImport(docImport, specimenImport, nomenclatureImport);
 	}
