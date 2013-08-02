@@ -328,11 +328,17 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	 * 
 	 * @param feature
 	 */
-	public void putFeatureToCharSorterList(Feature feature) {
-		currentCharFeatureSorterList.add(new FeatureSorterInfo(feature)); 
-		
+	public FeatureSorterInfo putFeatureToCharSorterList(Feature feature) {
+		FeatureSorterInfo featureSorterInfo = new FeatureSorterInfo(feature);
+		currentCharFeatureSorterList.add(featureSorterInfo);
+		return featureSorterInfo;
+	}
+	
+	public FeatureSorterInfo getLatestCharFeatureSorterInfo() {
+		return currentCharFeatureSorterList.get(currentCharFeatureSorterList.size() - 1);
 	}
 
+	
 	/**
 	 * 
 	 * @param feature
