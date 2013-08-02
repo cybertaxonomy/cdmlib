@@ -10,6 +10,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DocUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DoubleResult.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ExcelUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/FileCopy.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/GeneralParser.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/StreamUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/Tree.java -text
@@ -30,6 +31,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/SubProgressMonitor.
 cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
+cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/GeneralParserTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UriUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UuidGenerator.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
