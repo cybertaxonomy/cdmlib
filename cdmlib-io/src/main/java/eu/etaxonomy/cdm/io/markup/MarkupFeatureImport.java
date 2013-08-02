@@ -324,7 +324,17 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		List<TextData> result = new ArrayList<TextData>();
 		String classValue = getClassOnlyAttribute(parentEvent);
 		Feature feature = makeFeature(classValue, state, parentEvent, parentFeature);
-		state.putFeatureToCharSorterList(feature);
+		if(parentFeature == null){
+			state.putFeatureToCharSorterList(feature);
+		}else{
+			FeatureSorterInfo parentInfo = state.getLatestCharFeatureSorterInfo();
+			if (! parentInfo.getUuid().equals(parentFeature.getUuid())){
+				String message = "The parent char feature is not the same as the latest feature. This is the case for char hierarchies with > 2 levels, which is not yet handled by the import";
+				fireWarningEvent(message, parentEvent, 6);
+			}else{
+				state.getLatestCharFeatureSorterInfo().addSubFeature(new FeatureSorterInfo(feature));
+			}
+		}
 		
 		boolean isTextMode = true;
 		String text = "";
