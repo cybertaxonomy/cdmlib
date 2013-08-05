@@ -72,6 +72,7 @@ public final class BfnXmlTransformer {
 		//genus subdivision
 		//TODO 
 		}else if (strRank.equals("aggr")){return Rank.SPECIESAGGREGATE();
+		}else if (strRank.equals("agg.")){return Rank.SPECIESAGGREGATE();
 		}else if (strRank.equals("taxinfragen")){return Rank.INFRAGENERICTAXON();
 		}else if (strRank.equals("subser")){return Rank.SUBSERIES();
 		}else if (strRank.equals("ser")){return Rank.SERIES();
@@ -92,6 +93,7 @@ public final class BfnXmlTransformer {
 		}else if (strRank.equals("subsubvar")){return Rank.SUBSUBVARIETY();
 		}else if (strRank.equals("subvar")){return Rank.SUBVARIETY();
 		}else if (strRank.equals("var")){return Rank.VARIETY();
+		}else if (strRank.equals("var.")){return Rank.VARIETY();
 		//TODO -> see documentation, Bacteria status
 //		}else if (strRank.equals("pv")){return Rank;
 //		}else if (strRank.equals("bv")){return Rank.;
@@ -132,6 +134,60 @@ public final class BfnXmlTransformer {
 	
 	/** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
 	 */
+	public static String redListString2RedListCode (String redListCode) throws UnknownCdmTypeException{
+		if (redListCode == null){ return null;
+		}else if (redListCode.equals("#dtpl_RLKat_NULL#")){return "0";
+		}else if (redListCode.equals("#dtpl_RLKat_EINS#")){return "1";
+		}else if (redListCode.equals("#dtpl_RLKat_ZWEI#")){return "2"; 
+		}else if (redListCode.equals("#dtpl_RLKat_DREI#")){return "3"; 
+		}else if (redListCode.equals("#dtpl_RLKat_VIER#")){return "4"; 
+		}else if (redListCode.equals("#dtpl_RLKat_G#")){return "G"; 
+		}else if (redListCode.equals("#dtpl_RLKat_R#")){return "R"; 
+		}else if (redListCode.equals("#dtpl_RLKat_V#")){return "V"; 
+		}else if (redListCode.equals("#dtpl_RLKat_STERN#")){return "*";
+		}else if (redListCode.equals("#dtpl_RLKat_STERN##dtpl_RLKat_STERN#")){return "**";
+		}else if (redListCode.equals("#dtpl_RLKat_D#")){return "D";
+		}else if (redListCode.equals("#dtpl_RLKat_RAUTE#")){
+			char c = 0x2666;
+			return String.valueOf(c);//"\u11049";
+		}else if (redListCode.equals("kN#")){return "-";
+		}else if (redListCode.equals("#dtpl_KurzfBest_RUNTER##dtpl_KurzfBest_RUNTER##dtpl_KurzfBest_RUNTER#")){
+			char c = 0x2193;
+			return String.valueOf(c)+String.valueOf(c)+String.valueOf(c);//"\u8595\u8595\u8595";
+		}else if (redListCode.equals("#dtpl_KurzfBest_RUNTER##dtpl_KurzfBest_RUNTER#")){
+			char c = 0x2193;
+			return String.valueOf(c)+String.valueOf(c);
+//			return "\u8595\u8595";
+		}else if (redListCode.equals("(#dtpl_KurzfBest_RUNTER#)")){
+			char c = 0x2193;
+			return String.valueOf(c);
+//			return "(\u8595)";
+		}else if (redListCode.equals("#dtpl_KurzfBest_HOCH#")){
+			char c = 0x2191;
+			return String.valueOf(c);
+//			return "\u8593";
+		}else if (redListCode.equals("#dtpl_Risiko_MINUS#")){return "-";
+		}else if (redListCode.equals("#dtpl_VERANTW_NB#")){return "nb";
+		}else if (redListCode.equals("#dtpl_TaxBez_GLEICH#")){return "=";
+		}else if (redListCode.equals("#dtpl_TaxBez_KLEINER#")){return "<";
+		}else if (redListCode.equals("#dtpl_TaxBez_GROESSER#")){return ">";
+		}else if (redListCode.equals("#dtpl_TaxBez_UNGLEICH#")){
+			char c = 0x2260;
+			return String.valueOf(c);
+//			return "\u8800";
+		}else if (redListCode.equals("#dtpl_AlteRLKat_STERN#")){return "*";
+		}else if (redListCode.equals("#dtpl_AlteRLKat_ZWEISTERN#")){return "**";
+		}else if (redListCode.equals("#dtpl_AlteRLKat_NB#")){return "NB";
+		}else if (redListCode.equals("#dtpl_AlteRLKat_KN#")){return "kN";
+		}else if (redListCode.equals("#dtpl_TaxBez_UNGLEICH#")){return "-";
+		//TODO code Indeterminate
+//		}else if (nomCode.equals("Indeterminate")){return NomenclaturalCode.XXX();
+		}	
+		else {
+			throw new UnknownCdmTypeException("Unknown Redlist Code " + redListCode);
+		}
+	}
+	
 	public static NomenclaturalCode nomCodeString2NomCode (String nomCode) throws UnknownCdmTypeException{
 		if (nomCode != null){
 			nomCode = nomCode.trim();

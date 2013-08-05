@@ -47,7 +47,7 @@ public class BfnXmlTestActivator {
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "TestBfn";
 	
-	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/rldb_Myxo.xml";
+	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/bfnXmlTest-input.xml";
 	
 	static final boolean includeNormalExplicit = true; 
 	
@@ -109,7 +109,7 @@ public class BfnXmlTestActivator {
 //			normExActivator.doImport(destination, DbSchemaValidation.VALIDATE);
 //			
 			logger.info("End");
-			System.out.println("End import from TCS ("+ source.toString() + ")...");
+			System.out.println("End import from BfnXML ("+ source.toString() + ")...");
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 		}

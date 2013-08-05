@@ -93,13 +93,8 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 //		};
 		
 		ioClassList = new Class[]{
-//			TcsXmlMetaDataImport.class
-//			, TcsXmlSpecimensImport.class
-//			, TcsXmlPublicationsImport.class
-			BfnXmlTaxonNameImport.class
-//			, TcsXmlTaxonNameRelationsImport.class
-//			, BfnXmlTaxonImport.class
-//			, TcsXmlTaxonRelationsImport.class
+				BfnXmlImportFeature.class,
+				BfnXmlImportTaxonName.class
 		};
 	};
 	
@@ -222,18 +217,6 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 	public void setBfnXmlNamespace(Namespace bfnXmlNamespace) {
 		this.bfnXmlNamespace = bfnXmlNamespace;
 	}
-	
-
-	/**
-	 * @return the funMetaDataDetailed
-	 */
-	public Method getFunctionMetaDataDetailed() {
-		if (functionMetaDataDetailed == null){
-			functionMetaDataDetailed = getDefaultFunction(BfnXmlMetaDataImport.class, "defaultMetaDataDetailedFunction");
-		}
-		return functionMetaDataDetailed;
-		
-	}
 
 	/**
 	 * @param funMetaDataDetailed the funMetaDataDetailed to set
@@ -241,10 +224,6 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 	public void setFunctionMetaDataDetailed(Method functionMetaDataDetailed) {
 		this.functionMetaDataDetailed = functionMetaDataDetailed;
 	}
-	
-	
-	
-	
 	
 	public DO_REFERENCES getDoReferences() {
 		return doReferences;
