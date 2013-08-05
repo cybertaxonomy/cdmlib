@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -113,25 +114,25 @@ public class CsvExportController extends AbstractController{
 			 *  
 			 *  HTPP Error Break
 			 */
-			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
-			ServletOutputStream sos = response.getOutputStream();
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());//byteArrayOutputStream.toByteArray()
+			InputStreamReader isr = new InputStreamReader(bais);
 			Cookie progressCookie = new Cookie("fileDownloadToken", downloadTokenValueId);
 			progressCookie.setPath("/");
 			progressCookie.setMaxAge(60);
 			response.addCookie(progressCookie);
 			response.setContentType("text/csv; charset=utf-8");
 			response.setHeader("Content-Disposition", "attachment; filename=\""+config.getClassificationTitleCache()+".txt\"");
+			PrintWriter printWriter = response.getWriter();
 
 			int i;
 			while((i = isr.read())!= -1){
-				sos.write(i);
+				printWriter.write(i);
 			}
 			byteArrayOutputStream.flush();
 			isr.close();
 			byteArrayOutputStream.close();
-			sos.flush();
-			sos.close();
+			printWriter.flush();
+			printWriter.close();
 		} catch (Exception e) {
 			logger.error("error generating feed", e);
 		}
