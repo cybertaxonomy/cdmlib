@@ -245,7 +245,6 @@ public abstract class MarkupImportBase  {
 	}
 	
 
-
 	//TODO move to service layer for all IdentifiableEntities	
 	protected void save(CdmBase cdmBase, MarkupImportState state) {
 		if (state.isCheck()){
@@ -269,6 +268,8 @@ public abstract class MarkupImportBase  {
 			docImport.getOccurrenceService().saveOrUpdate((SpecimenOrObservationBase<?>)cdmBase);
 		}else if (cdmBase.isInstanceOf(DescriptionElementBase.class)){
 			docImport.getDescriptionService().saveDescriptionElement((DescriptionElementBase)cdmBase);
+		}else if (cdmBase.isInstanceOf(Reference.class)){
+			docImport.getReferenceService().saveOrUpdate((Reference<?>)cdmBase);
 		}else{
 			String message = "Unknown cdmBase type to save: " + cdmBase.getClass();
 			fireWarningEvent(message, "Unknown location", 8);
@@ -954,7 +955,7 @@ public abstract class MarkupImportBase  {
 		return StringUtils.isBlank(str);
 	}
 
-	public TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
+	protected TaxonDescription getTaxonDescription(Taxon taxon, Reference<?> ref, boolean isImageGallery, boolean createNewIfNotExists) {
 		return docImport.getTaxonDescription(taxon, isImageGallery, createNewIfNotExists);	
 	}	
 	

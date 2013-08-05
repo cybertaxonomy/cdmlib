@@ -107,6 +107,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		if (this.isReuseExistingState() == true){
 			if (this.state == null){
 				this.state = new MarkupImportState(this);
+			}else{
+				state.reset();
 			}
 			return this.state;
 		}else{

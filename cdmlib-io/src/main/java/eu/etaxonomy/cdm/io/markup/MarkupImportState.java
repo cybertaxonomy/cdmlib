@@ -108,6 +108,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		currentAreas = new HashSet<NamedArea>();
+		
+		this.resetUuidTermMaps();
 	}
 	
 		
