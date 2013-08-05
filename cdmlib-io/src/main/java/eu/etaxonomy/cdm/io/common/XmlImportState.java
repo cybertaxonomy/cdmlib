@@ -11,8 +11,6 @@
 package eu.etaxonomy.cdm.io.common;
 
 import javax.xml.stream.XMLEventReader;
-import javax.xml.stream.XMLStreamException;
-import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
 
