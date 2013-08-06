@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,8 @@ import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -58,8 +61,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  *
  */
 public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>  extends PartitionableConverterBase<CONFIG, STATE> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
+	private static final Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
 	// temporary key for the case that no dataset information is supplied, TODO use something better
@@ -187,6 +189,18 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+		String references = item.get(TermUri.DC_REFERENCES);
+		if (StringUtils.isNotBlank(references)){
+			URI uri = makeUriIfIs(references);
+			if (uri != null){
+				Extension.NewInstance(taxonBase, references, ExtensionType.URL());
+			}else{
+				String message = "Non-URI Dublin Core References not yet handled for taxa. References is: %s";
+				fireWarningEvent(String.format(message, references), item, 6);
+			}
+		}
+		
+		
 		//TODO: Finish properly
 		String id = item.get(TermUri.CDM_SOURCE_IDINSOURCE);
 		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
@@ -197,6 +211,29 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(id, idNamespace, ref, null);
 		}
+		
+		
+		
+	}
+
+
+	/**
+	 * If str is an uri it returns is as an {@link URI}. If not it returns <code>null</code>. 
+	 * @param str
+	 * @return the URI.
+	 */
+	private URI makeUriIfIs(String str) {
+		if (! str.startsWith("http:")){
+			return null;
+		}else{
+			try {
+				URI uri = URI.create(str);
+				return uri;
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
 	}
 
 

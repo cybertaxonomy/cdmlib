@@ -48,7 +48,7 @@ public class CdmTypePropertyEditor extends PropertyEditorSupport  {
                 clazz = Class.forName("eu.etaxonomy.cdm.model.molecular."+text);
             } catch (ClassNotFoundException e) { /* IGNORE */ }
             try {
-                clazz = Class.forName("eu.etaxonomy.cdm.model.name"+text);
+                clazz = Class.forName("eu.etaxonomy.cdm.model.name."+text);
             } catch (ClassNotFoundException e) { /* IGNORE */ }
             try {
                 clazz = Class.forName("eu.etaxonomy.cdm.model.occurrence."+text);

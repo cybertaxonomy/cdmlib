@@ -10,6 +10,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DocUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DoubleResult.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ExcelUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/FileCopy.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/GeneralParser.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/StreamUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/Tree.java -text
@@ -30,6 +31,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/SubProgressMonitor.
 cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
+cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/GeneralParserTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UriUtilsTest.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/UuidGenerator.java -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/XmlHelpTest.java -text
@@ -419,11 +421,13 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/FootnoteDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImportNoComponent.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupFeatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupInputStream.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupKeyImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupModsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupNomenclatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupSpecimenImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text
@@ -683,6 +687,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/URIUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/UUIDUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/WSDLDefinitionUserType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AbstractClassBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/AcceptedTaxonBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/ClassInfoBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DateTimeBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DefinedTermBaseClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DescriptionBaseClassBridge.java -text
@@ -2214,6 +2220,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPa
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/DefaultPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/StringLabelPagerImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/CdmMassIndexer.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/DocumentSearchResult.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text

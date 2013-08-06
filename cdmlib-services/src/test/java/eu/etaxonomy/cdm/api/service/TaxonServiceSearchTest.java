@@ -27,6 +27,7 @@ import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -106,6 +107,15 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final int BENCHMARK_ROUNDS = 300;
 
+	/**
+	 * @throws java.lang.Exception
+	 */
+	@Before
+	public void setUp() throws Exception {
+		indexer.clearIndexedClasses();
+    	indexer.addToIndexedClasses(DescriptionElementBase.class);
+		indexer.addToIndexedClasses(TaxonBase.class);
+	}
     @Test
     public void testDbUnitUsageTest() throws Exception {
         assertNotNull("taxonService should exist", taxonService);

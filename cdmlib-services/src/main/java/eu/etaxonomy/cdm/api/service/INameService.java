@@ -23,6 +23,7 @@ import org.hibernate.criterion.Criterion;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -178,6 +179,55 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             List<Language> languages,
             boolean highlightFragments, 
             List<String> propertyPaths,
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+	
+	/**
+	 * Fuzzy matching for the taxon name elements using only the lucene index. 
+	 * 
+	 * The input name is first atomised using the {@link NonViralNameParserImpl}
+	 * into its separate parts (genusOrUninomial,infraGenericEpithet,specificEpithet,infraGenericEpithet,authorshipCache).
+	 * Each field is then matched separately with the same accuracy parameter.
+	 *  
+	 * @param name taxon name to fuzzy match
+	 * @param accuracy value > 0.0 and < 1.0 which determines the accuracy of the result.
+	 * @param languages list of languages to consider when matching (currently not used)
+	 * @param highlightFragments
+	 * @param maxNoOfResults 
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+    public List<DocumentSearchResult> findByNameFuzzySearch(
+            String name,
+            float accuracy,
+            List<Language> languages,
+            boolean highlightFragments, 
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+    
+	/**
+	 * Exact matching for the taxon name elements using only the lucene index.
+	 * 
+	 * The input name is first atomised using the {@link NonViralNameParserImpl}
+	 * into its separate parts (genusOrUninomial,infraGenericEpithet,specificEpithet,infraGenericEpithet,authorshipCache).
+	 * Each field is then matched separately with the same accuracy parameter.
+	 *  
+	 * @param name taxon name to fuzzy match
+	 * @param wildcard boolean flag to indicate whether a wildcard '*' should be added at the end of the query
+	 * @param languages list of languages to consider when matching (currently not used)
+	 * @param highlightFragments
+	 * @param maxNoOfResults 
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+    
+    public List<DocumentSearchResult> findByNameExactSearch(
+            String name,      
+            boolean wildcard,
+            List<Language> languages,
+            boolean highlightFragments, 
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
 
 	// TODO: Remove getNamesByName() methods. Use findNamesByTitle() instead.
