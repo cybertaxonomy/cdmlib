@@ -12,6 +12,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -35,6 +36,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
 import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
@@ -42,6 +44,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
@@ -54,7 +57,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 @Controller
 @RequestMapping(value = { "/csv" })
-public class CsvExportController{
+public class CsvExportController extends AbstractController{
 
 	/**
 	 * 
@@ -101,6 +104,7 @@ public class CsvExportController{
 		CsvTaxExportConfiguratorRedlist config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
 		logger.info("Start export...");
+		logger.info("doExportRedlist()" + requestPathAndQuery(request));
 		defaultExport.invoke(config);
 		try {
 			/*
@@ -110,25 +114,25 @@ public class CsvExportController{
 			 *  
 			 *  HTPP Error Break
 			 */
-			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-			InputStreamReader isr = new InputStreamReader(bais, "UTF-8");
-			ServletOutputStream sos = response.getOutputStream();
+			ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());//byteArrayOutputStream.toByteArray()
+			InputStreamReader isr = new InputStreamReader(bais);
 			Cookie progressCookie = new Cookie("fileDownloadToken", downloadTokenValueId);
 			progressCookie.setPath("/");
 			progressCookie.setMaxAge(60);
 			response.addCookie(progressCookie);
 			response.setContentType("text/csv; charset=utf-8");
 			response.setHeader("Content-Disposition", "attachment; filename=\""+config.getClassificationTitleCache()+".txt\"");
+			PrintWriter printWriter = response.getWriter();
 
 			int i;
 			while((i = isr.read())!= -1){
-				sos.write(i);
+				printWriter.write(i);
 			}
 			byteArrayOutputStream.flush();
 			isr.close();
 			byteArrayOutputStream.close();
-			sos.flush();
-			sos.close();
+			printWriter.flush();
+			printWriter.close();
 		} catch (Exception e) {
 			logger.error("error generating feed", e);
 		}
@@ -172,4 +176,14 @@ public class CsvExportController{
         config.setNamedAreas(selectedAreas);
 		return config;
 	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.remote.controller.AbstractController#setService(eu.etaxonomy.cdm.api.service.IService)
+	 */
+	@Override
+	public void setService(IService service) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }
