@@ -1610,12 +1610,6 @@ cdmlib-persistence/src/test/resources/log4j.properties -text
 cdmlib-persistence/src/test/resources/unitils.properties -text
 cdmlib-print/build.properties -text
 cdmlib-print/pom.xml -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/odfprint/IOdfEntityCollector.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/odfprint/OdfConfigurator.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/odfprint/OdfFactory.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/odfprint/OdfLocalEntityCollector.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/odfprint/OdfPublisher.java -text
-cdmlib-print/src/main/java/eu/etaxonomy/cdm/odfprint/OdfRemoteEntityCollector.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IXMLElements.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/IXMLEntityFactory.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/LocalXMLEntityFactory.java -text
@@ -1649,7 +1643,6 @@ cdmlib-print/src/site/apt/index.apt -text
 cdmlib-print/src/site/apt/writing-templates.apt -text
 cdmlib-print/src/site/fml/troubleshooting.fml -text
 cdmlib-print/src/site/site.xml -text
-cdmlib-print/src/test/java/eu/etaxonomy/cdm/odfprint/OdfPublisherTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PubTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PublisherTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/TransformatorTest.java -text
