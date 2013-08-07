@@ -135,7 +135,7 @@ public class PublisherTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.print.Publisher#publish()}.
 	 */
-	@Ignore
+	@Test
 	public void testPublishXml() {
 		configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new XMLOutputModule()}));
 		logger.warn("The number of selected taxon node elements is........ " + configurator.getSelectedTaxonNodeElements().size());

@@ -65,20 +65,22 @@ public class DocumentCreator {
 
 	private boolean setupOutputDocument() {
 
-		try {
-			outputDocument = OdfTextDocument.newTextDocument();
-			contentDom = outputDocument.getContentDom();
-			stylesDom = outputDocument.getStylesDom();
-			
-			officeText = outputDocument.getContentRoot();
-			
-			contentAutoStyles = contentDom.getOrCreateAutomaticStyles();
-
-			return true;
-		} catch (Exception e) {
-			logger.error("Unable to create output document.", e);
-			outputDocument = null;
-		}
+		// decommented this function due to using a new version of odftoolkit now.
+		//s.buers, 07.08.2013
+//		try {
+//			outputDocument = OdfTextDocument.newTextDocument();
+//			contentDom = outputDocument.getContentDom();
+//			stylesDom = outputDocument.getStylesDom();
+//			
+//			officeText = outputDocument.getContentRoot();
+//			
+//			contentAutoStyles = contentDom.getOrCreateAutomaticStyles();
+//
+//			return true;
+//		} catch (Exception e) {
+//			logger.error("Unable to create output document.", e);
+//			outputDocument = null;
+//		}
 		return false;
 	}
 

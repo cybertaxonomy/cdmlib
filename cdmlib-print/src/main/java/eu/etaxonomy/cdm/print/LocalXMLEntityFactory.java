@@ -55,6 +55,8 @@ import eu.etaxonomy.cdm.remote.view.JsonView.Type;
 public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
     private static final Logger logger = Logger
             .getLogger(LocalXMLEntityFactory.class);
+    
+    
 
     private final JsonView xmlView;
 

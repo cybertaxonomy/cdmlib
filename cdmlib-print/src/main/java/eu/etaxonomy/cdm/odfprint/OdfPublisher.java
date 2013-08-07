@@ -23,8 +23,7 @@ public class OdfPublisher {
 	public OdfPublisher(OdfConfigurator configurator) {
 		this.configurator = configurator;
 		// get tools for publishing from configurator:
-		entityCollector = configurator.getEntityCollector();
-		odfFactory = configurator.newOdfFactory();
+		
 	}
 
 	public void publish() {
@@ -33,12 +32,16 @@ public class OdfPublisher {
 		// configurator parameters.
 
 		// if (configurator.isAllInOne()) {
-		TextDocument document;
+		
+		
 		try {
-			document = TextDocument.newTextDocument();
-
+			TextDocument document = TextDocument.newTextDocument();
+			
+			entityCollector = configurator.newEntityCollector();
+			odfFactory = configurator.newOdfFactory();
+			
 			for (UUID taxonNodeUUid : configurator.getNodesToPublish()) {
-
+				String taxonTitle=entityCollector.getTaxonTitle(taxonNodeUUid);
 				// TODO
 				// get taxa with collector
 				// and create "chapters" for document with the factory
@@ -46,7 +49,7 @@ public class OdfPublisher {
 
 			}
 
-			document.save("quick.odt.zip");
+			document.save(configurator.getExportFile());
 
 		} catch (Exception e) {
 			logger.info("Unable to create odf document.");

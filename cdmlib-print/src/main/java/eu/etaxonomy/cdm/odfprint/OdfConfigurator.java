@@ -98,12 +98,12 @@ public class OdfConfigurator {
 		return this.nodesToPublish;
 	}
 
-	public IOdfEntityCollector getEntityCollector() {
+	public IOdfEntityCollector newEntityCollector() {
 		if (remote) {
-			return new OdfRemoteEntityCollector();
+			return new OdfRemoteEntityCollector(this);
 		}
 		else
-			return new OdfLocalEntityCollector();
+			return new OdfLocalEntityCollector(this);
 	}
 
 	public OdfFactory newOdfFactory() {
