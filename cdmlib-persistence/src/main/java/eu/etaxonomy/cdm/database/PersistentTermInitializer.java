@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.database;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -111,7 +110,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
-//            TermVocabulary v = vocabularyDao.findByUuid(UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"));
+//          TermVocabulary v = vocabularyDao.findByUuid(UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"));
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
                 //Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
                 UUID vocabularyUuid = firstPass(vocabularyType,terms);
@@ -181,7 +180,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.debug("vocabulary " + vocabularyUuid + " does not exist - saving");
             saveVocabulary(loadedVocabulary);
         }else {
-            logger.debug("vocabulary " + vocabularyUuid + " does exist and already has " + persistedVocabulary.size() + " terms");
+            if (logger.isDebugEnabled()){logger.debug("vocabulary " + vocabularyUuid + " does exist and already has " + persistedVocabulary.size() + " terms");}
             boolean persistedVocabularyHasMissingTerms = false;
             for(Object t : loadedVocabulary.getTerms()) {
                 if(!persistedVocabulary.getTerms().contains(t)) {
