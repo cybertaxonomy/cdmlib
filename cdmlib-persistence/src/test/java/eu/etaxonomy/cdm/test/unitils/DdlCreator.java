@@ -44,7 +44,7 @@ public class DdlCreator {
 		}
 	}
 	 
-	private void execute(Class dialect, String lowerCaseDialectName, Class<?>... classes) throws IOException, HibernateException, InstantiationException, IllegalAccessException {
+	private void execute(Class<?> dialect, String lowerCaseDialectName, Class<?>... classes) throws IOException, HibernateException, InstantiationException, IllegalAccessException {
 		String classPath = "eu/etaxonomy/cdm/hibernate.cfg.xml";
 		ClassPathResource resource = new ClassPathResource(classPath);
 		File file = resource.getFile();
