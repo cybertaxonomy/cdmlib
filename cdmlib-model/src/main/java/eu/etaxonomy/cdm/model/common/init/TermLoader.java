@@ -84,16 +84,18 @@ public class TermLoader implements ITermLoader {
 			//vocabulary
 			TermVocabulary<T> voc = null;
 			String labelAbbrev = null;
-			
+
+			TermType termType = TermType.Unknown;
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
-				voc = OrderedTermVocabulary.NewInstance(TermType.Unknown, termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = OrderedTermVocabulary.NewInstance(termType, termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
 			}else{
-				voc = TermVocabulary.NewInstance(TermType.Unknown, termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = TermVocabulary.NewInstance(termType, termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
 			}
 			
 			if (nextLine != null){
 				voc.readCsvLine(arrayedLine(nextLine));
 			}
+			termType = voc.getTermType();
 			
 			// Ugly, I know, but I don't think we can use a static method here . . 
 			
@@ -106,6 +108,7 @@ public class TermLoader implements ITermLoader {
 				}
 
 				T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms);
+				term.setTermType(termType);
 				terms.put(term.getUuid(), term);
 				voc.addTerm(term);
 			}
