@@ -144,7 +144,7 @@ public class Continent extends NamedArea {
 	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
 		try {
 			Continent newInstance = Continent.class.newInstance();
-		    return DefinedTermBase.readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE());
+		    return NamedArea.readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE());
 		} catch (Exception e) {
 			logger.error(e);
 			for(StackTraceElement ste : e.getStackTrace()) {
