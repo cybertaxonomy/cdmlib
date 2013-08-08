@@ -129,7 +129,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
 		String idInVocStr = idInVocabulary == null ? "NULL" : "'" + idInVocabulary + "'";
 		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, termtype, idInVocabulary, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
-				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + termType.ordinal() + ", " + idInVocStr +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
+				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + termType.getKey() + ", " + idInVocStr +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
 		datasource.executeUpdate(sqlInsertTerm);
 		
 		updateFeatureTerms(termId, datasource, monitor);
@@ -220,7 +220,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Rank.class.getSimpleName())){
 			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
-				" termType = " + rankClass.ordinal() +  
+				" termType = " + rankClass.getKey() +  
 				" WHERE id = " + termId;
 			datasource.executeUpdate(sqlUpdate);
 		}
