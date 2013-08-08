@@ -54,6 +54,7 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -209,14 +210,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO NOT NULL unclear
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
-		//TODO update rankClass (#3521)
-
 		
-		
-		//TODO change column type for DistanceToWaterSurface und DistanceToGround
-		
-		//TODO add column for DistanceToWaterSurfaceMax/Text und DistanceToGroundMax/Text
-		
+		//update rankClass (#3521)
+		updateRankClass(stepList);
 		
 		//update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference, Rights, MediaRepresentationPart ) 
 		//#3345,    TODO adapt type to <65k
@@ -581,6 +577,72 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		return stepList;
+	}
+
+	private void updateRankClass(List<ISchemaUpdaterStep> stepList) {
+		//suprageneric
+		String stepName = "Updater rankClass for suprageneric ranks";
+		String query = "UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.Suprageneric.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex < (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidGenus + "')";
+		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//genus
+		stepName = "Updater rankClass for genus rank";
+		query = "UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.Genus.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidGenus + "')";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//infrageneric
+		stepName = "Updater rankClass for ranks below genus";
+		query = "UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.Infrageneric.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' " +
+					"AND dtb.orderindex > (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidGenus + "')" + 
+					"AND dtb.orderindex <= (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidInfragenericTaxon + "')";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//agg.
+		stepName = "Updater rankClass for species group ranks";
+		query = "UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.SpeciesGroup.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' " +
+					"AND dtb.orderindex > (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidInfragenericTaxon + "')" + 
+					"AND dtb.orderindex < (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidSpecies + "')";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+//		41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9
+		
+		//species
+		stepName = "Updater rankClass for species rank";
+		query = "UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.Species.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidSpecies + "')";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//infraspecific
+		stepName = "Updater rankClass for infraspecific ranks";
+		query = "UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.Infraspecific.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidSpecies + "')";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//unknown
+		stepName = "Updater rankClass for unhandled ranks";
+		query = " UPDATE DefinedTermBase dtb " + 
+				" SET dtb.rankClass = '" + RankClass.Unknown.getKey() + "' " + 
+				" WHERE dtb.DTYPE = 'Rank' AND dtb.rankClass IS NULL ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		
+		
 	}
 
 	private void updateTermTypesForVocabularies( List<ISchemaUpdaterStep> stepList) {
