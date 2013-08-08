@@ -176,14 +176,19 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(URI.create(csvLine.get(1)));
-		String description = csvLine.get(3);
 		String label = csvLine.get(2).trim();
+		String description = csvLine.get(3);
+		
 		//see  http://dev.e-taxonomy.eu/trac/ticket/3550
 //		this.addRepresentation(Representation.NewInstance(description, label, null, lang) );
 		//preliminary until above is solved
 		this.setTitleCache(label, true);
 		
-		this.setTermType(TermType.getByKey(csvLine.get(4)));
+		TermType termType = TermType.getByKey(csvLine.get(4));
+		if (termType == null){
+			throw new IllegalArgumentException("TermType can not be mapped: " + csvLine.get(4));
+		}
+		this.setTermType(termType);
 		
 		return this;
 	}
