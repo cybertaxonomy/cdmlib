@@ -394,8 +394,9 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     }
     @Transient
     public ITreeNode getParentTreeNode() {
-        if(isTopmostNode())
+        if(isTopmostNode()){
             return getClassification();
+        }
         return parent;
     }
 
