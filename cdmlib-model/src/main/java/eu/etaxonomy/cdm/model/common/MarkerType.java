@@ -30,7 +30,6 @@ import org.hibernate.search.annotations.Indexed;
  * Marker types similar to dynamically defined attributes. These  content types
  * like "IS_DOUBTFUL", "COMPLETE"  or specific local flags.
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:33
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -55,26 +54,32 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 
 	protected static Map<UUID, MarkerType> termMap = null;
 
+    @XmlAttribute(name = "isTechnical")
+    @Field(analyze = Analyze.NO)
+    private boolean isTechnical=false;
+
+ // ***************************** FACTORY METHODD ************************/
+    
 	public static MarkerType NewInstance(String term, String label, String labelAbbrev){
 		return new MarkerType(term, label, labelAbbrev);
 	}
 
 
-
-    @XmlAttribute(name = "isTechnical")
-    @Field(analyze = Analyze.NO)
-    private boolean isTechnical=false;
-
-
-
-
-	/**
-	 * Constructor
-	 * @param term
-	 * @param label
-	 */
-	public MarkerType() {
+// ***************************** CONSTRUCTOR ******************************/
+    
+	//for hibernate use only
+	@Deprecated
+	protected MarkerType() {
+		super(TermType.MarkerType);
 	}
+
+//***************************** CONSTRUCTOR **************************************/
+
+	private MarkerType(String term, String label, String labelAbbrev) {
+		super(TermType.MarkerType, term, label, labelAbbrev);
+	}
+
+// ******************** METHODS **************************************************/	
 
 	/**
 	 * A flag indicating if markers of this type are user content or technical information
@@ -96,20 +101,9 @@ public class MarkerType extends DefinedTermBase<MarkerType> {
 		this.isTechnical = isTechnical;
 	}
 
-//***************************** CONSTRUCTOR **************************************/
-
-	/**
-	 * Constructor
-	 * @param term
-	 * @param label
-	 */
-	protected MarkerType(String term, String label, String labelAbbrev) {
-		super(TermType.MarkerType, term, label, labelAbbrev);
-	}
-
 //***************************** TERMS **************************************/
 
-
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
 	 */

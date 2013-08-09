@@ -16,7 +16,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Column;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
@@ -75,8 +74,8 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 	@Column(name="termType")
 	@NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-            parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
-        )
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
+    )
 	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")
@@ -88,17 +87,22 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
 
 //******************* CONSTRUCTOR *************************************/    
     
-    public TermBase(){
+    //for JAXB only, TODO needed?
+    @Deprecated
+    protected TermBase(){}
+    
+    protected TermBase(TermType type){
         super();
+        if (type == null){
+        	throw new IllegalArgumentException("TermType must not be null");
+        }else{
+        	this.termType = type;
+        }
         initCacheStrategy();
-
     }
 
     protected TermBase(TermType type, String term, String label, String labelAbbrev) {
-        super();
-        assert type != null;
-        this.termType = type;
-        initCacheStrategy();
+        this(type);
         this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
     }
 

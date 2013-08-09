@@ -23,12 +23,10 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
-import org.springframework.util.Assert;
 
 /**
  * Annotation types ...
  * @author a.mueller
- * @version 1.0
  * @created 12-Nov-2008 15:37:33
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -51,12 +49,12 @@ public class AnnotationType extends DefinedTermBase<AnnotationType> {
 		return new AnnotationType(term, label, labelAbbrev);
 	}
 	
-	/**
-	 * Constructor
-	 * @param term
-	 * @param label
-	 */
-	public AnnotationType() {
+//********************************** Constructor *******************************************************************/	
+
+	//for hibernate use only
+	@Deprecated
+	protected AnnotationType() {
+		super(TermType.AnnotationType);
 	}
 	
 	/**

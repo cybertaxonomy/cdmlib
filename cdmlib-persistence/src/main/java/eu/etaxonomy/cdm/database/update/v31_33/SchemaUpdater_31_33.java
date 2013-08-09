@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -54,7 +52,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
@@ -64,7 +61,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 
 /**
- * NOT YET USED
  * @author a.mueller
  * @created Oct 11, 2011
  */
@@ -123,7 +119,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		((ColumnAdder)step).setNotNull(true);
 		stepList.add(step);
 		
-		//TODO ?? update original source type
+		//update original source type
 		updateOriginalSourceType(stepList);
 		
 		//create and update elevenation max, remove error column
@@ -168,15 +164,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
-		//idInVocabulary for DefinedTerms
-		stepName = "Create idInVocabulary column in DefinedTermBase";
-		tableName = "DefinedTermBase";
-		columnName = "idInVocabulary";
-		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
-		stepList.add(step);
-		//TODO update idInVocabulary
-		
-		
 		//termType for DefinedTerms and TermVocabulary, no type must be null
 		stepName = "Create termType column in DefinedTermBase";
 		tableName = "DefinedTermBase";
@@ -198,10 +185,19 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//update termType for TermVocabulary, no type must be null
 		updateTermTypesForVocabularies(stepList);
-		
+
 		//update DTYPE of DefinedTerms
 		updateDtypeOfDefinedTerms(stepList);
+
+		//idInVocabulary for DefinedTerms
+		stepName = "Create idInVocabulary column in DefinedTermBase";
+		tableName = "DefinedTermBase";
+		columnName = "idInVocabulary";
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		stepList.add(step);
 		
+		//update idInVocabulary
+		updateIdInVocabulary(stepList);
 		
 		//rankClass (#3521)
 		stepName = "Create rankClass column in DefinedTermBase";
@@ -212,7 +208,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		//update rankClass (#3521)
-		updateRankClass(stepList);
+		step = RankClassUpdater.NewInstance();
+		stepList.add(step);
 		
 		//update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary, Reference, Rights, MediaRepresentationPart ) 
 		//#3345,    TODO adapt type to <65k
@@ -250,7 +247,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
 		stepList.add(step);
 		
-		//TODO add columns abbrevTitle, abbrevTitleCache and protectedAbbrevTitleCache to Reference
+		//add columns abbrevTitle, abbrevTitleCache and protectedAbbrevTitleCache to Reference
 		stepName = "Add abbrevTitle to Reference";
 		tableName = "Reference";
 		columnName = "abbrevTitle";
@@ -292,16 +289,19 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Add recordBasis to SpecimenOrObservationBase";
 		tableName = "SpecimenOrObservationBase";
 		columnName = "recordBasis";
-		length = 4;
+		length = 4;  //TODO needed?
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
 		stepList.add(step);
 				
-		
-		
-		//TODO update specimenOrObservationBase DTYPE with DefinedTerm where necessary
+		//update specimenOrObservationBase DTYPE with DerivedUnit where necessary
+		stepName = "Update Specimen -> DerivedUnit";
+		query = " UPDATE SpecimenOrObservationBase sob " + 
+				" SET sob.DTYPE = 'DerivedUnit' " +
+				" WHERE sob.DTYPE = 'Specimen' OR sob.DTYPE = 'Fossil' OR sob.DTYPE = 'LivingBeing' OR sob.DTYPE = 'Observation' ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
 
-
-		//TODO update DTYPE FieldObservation -> FieldUnit #3351
+		//update DTYPE FieldObservation -> FieldUnit #3351
 		stepName = "Update FieldObservation -> FieldUnit";
 		query = " UPDATE SpecimenOrObservationBase sob " + 
 				" SET sob.DTYPE = 'FieldUnit' " +
@@ -336,7 +336,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 //		had a bad performance
 		
 		//specimen descriptions #3571
-		//TODO add column DescriptionBase.Specimen_ID  #3571
+		//add column DescriptionBase.Specimen_ID  #3571
 		stepName = "Add specimen_id column to DescriptionBase";
 		tableName = "DescriptionBase";
 		columnName = "specimen_id";
@@ -347,7 +347,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//TODO update DescriptionBase.Specimen_ID data  #3571
 
-		//TODO remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)  #3571
+		//remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)  #3571
 		stepName = "Remove table DescriptionBase_SpecimenOrObservationBase";
 		tableName = "DescriptionBase_SpecimenOrObservationBase";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
@@ -579,77 +579,140 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
-	private void updateRankClass(List<ISchemaUpdaterStep> stepList) {
-		//suprageneric
-		String stepName = "Updater rankClass for suprageneric ranks";
-		String query = "UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.Suprageneric.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex < (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidGenus + "')";
+
+	private void updateIdInVocabulary(List<ISchemaUpdaterStep> stepList) {
+
+		String queryVocUuid = " UPDATE DefinedTermBase dtb INNER JOIN TermVocabulary voc ON voc.id = dtb.vocabulary_id" +
+				" SET dtb.idInVocabulary = (SELECT abbreviatedlabel " +
+					" FROM DefinedTermBase_Representation MN " + 
+					" INNER JOIN Representation r ON r.id = MN.representations_id " +
+					" WHERE MN.DefinedTermBase_id = dtb.id) " + 
+				" WHERE voc.uuid = '%s'";
+		
+		//Languages (ISO)
+		String stepName = "Update idInVocabulary for Languages ";
+		String query = "UPDATE DefinedTermBase dtb INNER JOIN TermVocabulary voc ON voc.id = dtb.vocabulary_id " + 
+				" SET dtb.idInVocabulary = dtb.iso639_2 "+ 
+				" WHERE voc.uuid = '45ac7043-7f5e-4f37-92f2-3874aaaef2de' ";
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
+
+		//Undefined Languages => all
+		stepName = "Update idInVocabulary for undefined languages";
+		String uuid = "7fd1e6d0-2e76-4dfa-bad9-2673dd042c28";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, queryVocUuid);
+		stepList.add(step);		
 		
-		//genus
-		stepName = "Updater rankClass for genus rank";
-		query = "UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.Genus.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidGenus + "')";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		//Waterbody & Country => all
+		stepName = "Update idInVocabulary for WaterbodyOrCountries";
+		uuid = "006b1870-7347-4624-990f-e5ed78484a1a";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, queryVocUuid);
 		stepList.add(step);
-
-		//infrageneric
-		stepName = "Updater rankClass for ranks below genus";
-		query = "UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.Infrageneric.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' " +
-					"AND dtb.orderindex > (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidGenus + "')" + 
-					"AND dtb.orderindex <= (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidInfragenericTaxon + "')";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
-		stepList.add(step);
-
-		//agg.
-		stepName = "Updater rankClass for species group ranks";
-		query = "UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.SpeciesGroup.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' " +
-					"AND dtb.orderindex > (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidInfragenericTaxon + "')" + 
-					"AND dtb.orderindex < (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidSpecies + "')";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
-		stepList.add(step);
-//		41bcc6ac-37d3-4fd4-bb80-3cc5b04298b9
 		
-		//species
-		stepName = "Updater rankClass for species rank";
-		query = "UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.Species.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidSpecies + "')";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		//TdwgAreas => all
+		stepName = "Update idInVocabulary for TDWG areas";
+		uuid = NamedArea.uuidTdwgAreaVocabulary.toString();
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
 		stepList.add(step);
-
-		//infraspecific
-		stepName = "Updater rankClass for infraspecific ranks";
-		query = "UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.Infraspecific.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > (SELECT orderindex FROM DefinedTermBase WHERE uuid = '" + Rank.uuidSpecies + "')";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
-		stepList.add(step);
-
-		//unknown
-		stepName = "Updater rankClass for unhandled ranks";
-		query = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '" + RankClass.Unknown.getKey() + "' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.rankClass IS NULL ";
-		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
-		stepList.add(step);
-
 		
+		//Rank => some
+		stepName = "Update idInVocabulary for ranks";
+		uuid = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
 		
+		//SpecimenTypeDesignationStatus => alle
+		stepName = "Update idInVocabulary for SpecimenTypeDesignationStatus";
+		uuid = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+
+		//NameTypeDesignationStatus => alle
+		stepName = "Update idInVocabulary for NameTypeDesignationStatus";
+		uuid = "ab60e738-4d09-4c24-a1b3-9466b01f9f55";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+		
+		//NomenclaturalStatusType => all, abbrevs.
+		stepName = "Update idInVocabulary for NomenclaturalStatusType";
+		uuid = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+
+		//TaxonRelationshipType, all but 2 (Invalid Designation for, Misapplied Name for)
+		stepName = "Update idInVocabulary for TaxonRelationshipType";
+		uuid = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+		
+		//PresenceTerm => all
+		stepName = "Update idInVocabulary for PresenceTerm";
+		uuid = "adbbbe15-c4d3-47b7-80a8-c7d104e53a05";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+
+		//AbsenceTerm => all
+		stepName = "Update idInVocabulary for AbsenceTerm";
+		uuid = "5cd438c8-a8a1-4958-842e-169e83e2ceee";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+	
+		//Sex => all
+		stepName = "Update idInVocabulary for Sex";
+		uuid = "9718b7dd-8bc0-4cad-be57-3c54d4d432fe";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+
+		//ExtensionType => all
+		stepName = "Update idInVocabulary for ExtensionType";
+		uuid = "117cc307-5bd4-4b10-9b2f-2e14051b3b20";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+
+		//ReferenceSystem => all
+		stepName = "Update idInVocabulary for ReferenceSystem";
+		uuid = "ec6376e5-0c9c-4f5c-848b-b288e6c17a86";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+		
+		//DeterminationModifier => all
+		stepName = "Update idInVocabulary for DeterminationModifier";
+		uuid = "fe87ea8d-6e0a-4e5d-b0da-0ab8ea67ca77";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(queryVocUuid, uuid));
+		stepList.add(step);
+
+		//InstitutionType, MeasurementUnit, Scope, Stage, State, TextFormat, Modifier, PreservationMethod => dummies
+		stepName = "Update idInVocabulary for dummy terms in several vocabularies";
+		query = " UPDATE DefinedTermBase dtb " +
+				" SET dtb.idInVocabulary = (SELECT abbreviatedlabel " +
+					" FROM DefinedTermBase_Representation MN " + 
+					" INNER JOIN Representation r ON r.id = MN.representations_id " +
+					" WHERE MN.DefinedTermBase_id = dtb.id) " + 
+				" WHERE dtb.termType IN ('%s','%s','%s','%s','%s','%s','%s','%s')";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, String.format(query, 
+				TermType.InstitutionType.getKey(), TermType.MeasurementUnit.getKey(),
+				TermType.Scope.getKey(), TermType.Stage.getKey(), TermType.State.getKey(),
+				TermType.TextFormat.getKey(), TermType.Modifier.getKey(), TermType.PreservationMethod.getKey()));
+		stepList.add(step);
+		
+		//NULL for empty strings
+		stepName = "Update idInVocabulary, replace empty strings by null";
+		query = "Update DefinedTermBase dtb SET idInVocabulary = NULL WHERE idInVocabulary = ''";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//MarkerType, AnnotationType, NamedAreaType, NamedAreaLevel, Feature, Continent, DerivationEventType, StatisticalMeasure, RightsType,SynonymRelationshipType & HybridRelationshipType & NameRelationshipType => none
+		
+		//DnaMarker => yes but no entries
 	}
 
 	private void updateTermTypesForVocabularies( List<ISchemaUpdaterStep> stepList) {
+		//vocabularies with terms
 		for (TermType termType : TermType.values()){
 			updateTermTypeForVocabularies(stepList, termType);
 		}
 		
+		//Natural Language Terms
 		String stepName = "Updater termType for NaturalLanguageTerms";
 		String query = "UPDATE TermVocabulary voc " + 
 				" SET voc.termType = '" + TermType.NaturalLanguageTerm.getKey() + "' " + 
@@ -657,6 +720,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 
+		//remaining vocabularies
 		stepName = "Updater termType for remaining vocabularies";
 		query = "UPDATE TermVocabulary voc " + 
 				" SET voc.termType = '"+ TermType.Unknown.getKey() +"' " + 
@@ -685,7 +749,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//NamedArea
 		String query = " UPDATE DefinedTermBase " + 
 				" SET termType = '" + TermType.NamedArea.getKey() + "' " +
-				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' OR DTYPE = '"+ WaterbodyOrCountry.class.getSimpleName() + "' OR DTYPE = '" + Continent.class.getSimpleName() + "' ";
+				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' OR DTYPE = '"+ WaterbodyOrCountry.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
@@ -797,7 +861,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//InstitutionType
 		query = " UPDATE DefinedTermBase " + 
 				" SET termType = '" + TermType.InstitutionType.getKey() + "' " +
-				" WHERE DTYPE = '" + InstitutionType.class.getSimpleName() + "' ";
+				" WHERE DTYPE = 'InstitutionType' ";
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 
@@ -914,22 +978,24 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	 */
 	private void updateDtypeOfDefinedTerms(List<ISchemaUpdaterStep> stepList) {
 
-		//TODO update DTYPE for modifiers (Stage, Scope, Sex, DeterminationModifier, Modifier -> DefinedTerm)
+		//update DTYPE for institution type and modifiers (Stage, Scope, Sex, DeterminationModifier, Modifier) -> DefinedTerm
 		String stepName = "Update DTYPE for TDWG Areas";
 		String query = " UPDATE DefinedTermBase " + 
 				" SET DTYPE = 'DefinedTerm' " +
-				" WHERE DTYPE = 'Stage' OR DTYPE = 'Scope' OR DTYPE = 'Sex' OR DTYPE = 'DeterminationModifier'  OR DTYPE = 'Modifier' ";
+				" WHERE DTYPE = 'Stage' OR DTYPE = 'Scope' OR DTYPE = 'Sex' OR DTYPE = 'DeterminationModifier'  " +
+					" OR DTYPE = 'Modifier' OR DTYPE = 'InstitutionType' ";
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 		
 		
-		//TODO update DTYPE for TDWG Areas -> NamedArea
-		stepName = "Update DTYPE for TDWG Areas";
+		//update DTYPE for TDWG Areas and Continents -> NamedArea
+		stepName = "Update DTYPE for TDWG Areas and Continents";
 		query = " UPDATE DefinedTermBase " + 
 				" SET DTYPE = 'NamedArea' " +
-				" WHERE DTYPE = 'TdwgArea' ";
+				" WHERE DTYPE = 'TdwgArea' OR DTYPE = 'Continent' ";
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
+		
 	}
 
 	/**

@@ -1926,7 +1926,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 			for (Element elGeographicArea : listGeographicAreas){
 
 				String id = elGeographicArea.getAttributeValue("id");
-				NamedArea na = new NamedArea();
+				NamedArea na = NamedArea.NewInstance();
 				importRepresentation(elGeographicArea, sddNamespace, na, id, cdmState);
 				namedAreas.put(id,na);
 								}

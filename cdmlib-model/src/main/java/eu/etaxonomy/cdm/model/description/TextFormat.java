@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * (like "xml schema namespace", "rdf", or any other format).
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:59
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -71,15 +70,13 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	public static TextFormat NewInstance(String term, String label, String labelAbbrev){
 		return new TextFormat(term, label, labelAbbrev);
 	}
+	
+//********************************** Constructor *******************************************************************/	
 
-// ************* CONSTRUCTORS *************/	
-
-	/** 
-	 * Class constructor: creates a new empty text format instance.
-	 * 
-	 * @see 	#TextFormat(String, String, String, boolean, boolean)
-	 */
-	public TextFormat() {
+	//for hibernate use only
+	@Deprecated
+	protected TextFormat() {
+		super(TermType.TextFormat);
 	}
 
 	/** 
@@ -93,7 +90,7 @@ public class TextFormat extends DefinedTermBase<TextFormat> {
 	 * 						 new text format to be created
 	 * @see 				 #TextFormat()
 	 */
-	public TextFormat(String term, String label, String labelAbbrev) {
+	private TextFormat(String term, String label, String labelAbbrev) {
 		super(TermType.TextFormat, term, label, labelAbbrev);
 	}
 

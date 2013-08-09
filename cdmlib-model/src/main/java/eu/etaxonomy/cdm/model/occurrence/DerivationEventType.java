@@ -27,6 +27,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
+/**
+ * @author m.doering
+ */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DerivationEventType")
 @XmlRootElement(name = "DerivationEventType")
@@ -68,17 +71,16 @@ public class DerivationEventType extends DefinedTermBase<DerivationEventType> {
 		return new DerivationEventType(term, label, labelAbbrev);
 	}
 	
-	/**
-	 * Constructor
-	 */
-	public DerivationEventType() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected DerivationEventType() {
+		super(TermType.DerivationEventType);
 	}
 	
 	
-	/**
-	 * Constructor
-	 */
-	public DerivationEventType(String term, String label, String labelAbbrev) {
+	private DerivationEventType(String term, String label, String labelAbbrev) {
 		super(TermType.DerivationEventType, term, label, labelAbbrev);
 	}
 

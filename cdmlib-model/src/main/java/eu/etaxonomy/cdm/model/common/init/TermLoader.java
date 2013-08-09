@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.common.init;
 
 import java.lang.reflect.Constructor;
-import java.lang.reflect.InvocationTargetException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,6 +95,7 @@ public class TermLoader implements ITermLoader {
 				voc.readCsvLine(arrayedLine(nextLine));
 			}
 			termType = voc.getTermType();
+			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
 			
 			// Ugly, I know, but I don't think we can use a static method here . . 
 			
@@ -107,7 +107,7 @@ public class TermLoader implements ITermLoader {
 					continue;
 				}
 
-				T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms);
+				T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms, abbrevAsId);
 				term.setTermType(termType);
 				terms.put(term.getUuid(), term);
 				voc.addTerm(term);

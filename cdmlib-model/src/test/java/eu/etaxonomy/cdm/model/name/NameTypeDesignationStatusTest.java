@@ -48,12 +48,6 @@ public class NameTypeDesignationStatusTest extends EntityTestBase {
 	}
 	
 	@Test
-	public void testNameTypeDesignationStatus() {
-		NameTypeDesignationStatus term = new NameTypeDesignationStatus();
-		assertNotNull(term);
-	}
-	
-	@Test
 	public void testNameTypeDesignationStatusStringString() {
 		NameTypeDesignationStatus term = new NameTypeDesignationStatus("term", "label", null);
 		assertEquals("label", term.getLabel());

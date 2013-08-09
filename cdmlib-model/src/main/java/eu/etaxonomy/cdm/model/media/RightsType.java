@@ -61,16 +61,18 @@ public class RightsType extends DefinedTermBase<RightsType> {
 		return new RightsType(text, label, labelAbbrev);
 	}
 	
-	/**
-	 * Default Constructor
-	 */
-	public RightsType() {
+//***************** CONSTRUCTOR **************************************/
+	
+	//for javassist only
+	@Deprecated
+	protected RightsType() {
+		super(TermType.RightsType);
 	}
 
 	/**
 	 * Constructor
 	 */
-	public RightsType(String term, String label, String labelAbbrev) {
+	private RightsType(String term, String label, String labelAbbrev) {
 		super(TermType.RightsType, term, label, labelAbbrev);
 	}
 

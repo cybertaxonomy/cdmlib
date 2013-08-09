@@ -592,13 +592,17 @@ public class Language extends DefinedTermBase<Language> {
 //***** CONSTRUCTOR ***************************************/    
     
     //for hibernate use only
-    protected Language() {};
+    @Deprecated
+    protected Language() {
+   		super(TermType.Language);
+    };
     
     public Language(UUID uuid) {
-        this.setUuid(uuid);
+        super(TermType.Language);
+    	this.setUuid(uuid);
     }
     public Language(String iso639_1, String iso639_x2, String englishLabel, String frenchLabel) throws Exception {
-        super();
+        super(TermType.Language);
         if(iso639_1 != null && iso639_1.length() != 2){
             logger.warn("iso639_1 is not of size 2: "+iso639_1.toString());
         }
@@ -615,7 +619,8 @@ public class Language extends DefinedTermBase<Language> {
         this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
     }
     public Language(String text, String label, String labelAbbrev, Language lang) {
-        this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
+        super(TermType.Language);
+    	this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
     }
     public Language(String label, String text, String labelAbbrev) {
         this(label,text,labelAbbrev, DEFAULT());
@@ -1193,18 +1198,17 @@ public class Language extends DefinedTermBase<Language> {
 //    }
 
     @Override
-    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
             Language newInstance =  Language.class.newInstance();
             if ( UUID.fromString(csvLine.get(0).toString()).equals(Language.uuidEnglish)){
-                DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance);
+                DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance, abbrevAsId);
             }else{
-                DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish));
+                DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish), abbrevAsId);
             }
-
-//            newInstance.setIso639_2(csvLine.get(4).trim());
-            newInstance.setIdInVocabulary(csvLine.get(4).trim());
             
+//          newInstance.setIso639_2(csvLine.get(4).trim());   //does not exist anymore
+//          newInstance.setIdInVocabulary(csvLine.get(4).trim());  //same as abbrev
             
             newInstance.setIso639_1(csvLine.get(5).trim());
             //TODO could replace with generic validation

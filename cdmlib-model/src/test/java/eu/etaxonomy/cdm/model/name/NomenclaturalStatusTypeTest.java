@@ -40,14 +40,8 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	}
 	
 	@Test
-	public void testNomenclaturalStatusType() {
-		NomenclaturalStatusType term = new NomenclaturalStatusType();
-		assertNotNull(term);
-	}
-	
-	@Test
 	public void testNomenclaturalStatusTypeStringString() {
-		NomenclaturalStatusType term = new NomenclaturalStatusType("term", "label", null);
+		NomenclaturalStatusType term = NomenclaturalStatusType.NewInstance   ("term", "label", null);
 		assertEquals("label", term.getLabel());
 	}
 	

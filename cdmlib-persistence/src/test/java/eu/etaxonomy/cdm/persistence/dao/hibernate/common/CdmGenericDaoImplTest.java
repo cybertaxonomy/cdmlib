@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -88,7 +87,6 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -323,7 +321,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				AgentBase.class,
 				Institution.class, 
 				InstitutionalMembership.class, 
-				InstitutionType.class, 
 				Person.class, 
 				Team.class, 
 				TeamOrPersonBase.class, 
@@ -375,7 +372,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				TaxonNameDescription.class, 
 				TextData.class, 
 				TextFormat.class, 
-				Continent.class, 
 				NamedArea.class, 
 				NamedAreaLevel.class, 
 				NamedAreaType.class, 

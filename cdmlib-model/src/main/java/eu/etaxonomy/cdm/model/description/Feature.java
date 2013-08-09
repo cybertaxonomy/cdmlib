@@ -69,7 +69,6 @@ import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
  * schema.
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -139,13 +138,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
-
-	/** 
-	 * Class constructor: creates a new empty feature instance.
-	 * 
-	 * @see #Feature(String, String, String)
-	 */
-	public Feature() {
+	//for hibernate use only
+	@Deprecated
+	protected Feature() {
+		super(TermType.Feature);
 	}
 	
 	/** 
@@ -587,8 +583,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     		#NewInstance(String, String, String)
 	 */
 	@Override
-	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		Feature newInstance = super.readCsvLine(termClass, csvLine, terms); 
+	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		Feature newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId); 
 		String text = (String)csvLine.get(4);
 		if (text != null && text.length() >= 6){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);};

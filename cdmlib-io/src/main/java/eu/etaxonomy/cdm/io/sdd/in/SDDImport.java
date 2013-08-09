@@ -1924,7 +1924,7 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 			for (Element elGeographicArea : listGeographicAreas){
 
 				String id = elGeographicArea.getAttributeValue("id");
-				NamedArea na = new NamedArea();
+				NamedArea na = NamedArea.NewInstance();
 				importRepresentation(elGeographicArea, sddNamespace, na, id, cdmState);
 				namedAreas.put(id,na);
 								}

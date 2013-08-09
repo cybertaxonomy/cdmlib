@@ -29,7 +29,6 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
@@ -43,7 +42,6 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -77,8 +75,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 	public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
-		indexedClasses = new Class[34];
-		indexedClasses[0] = InstitutionType.class;
+		indexedClasses = new Class[27];
+		indexedClasses[0] = Rank.class;
 		indexedClasses[1] = AnnotationType.class;
 		indexedClasses[2] = ExtensionType.class;
 		indexedClasses[3] = Language.class;
@@ -87,26 +85,24 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		indexedClasses[6] = MeasurementUnit.class;
 		indexedClasses[7] = DefinedTerm.class;
 		indexedClasses[8] = PresenceTerm.class;
-		indexedClasses[12] = State.class;
-		indexedClasses[13] = StatisticalMeasure.class;
-		indexedClasses[14] = TextFormat.class;
-		indexedClasses[15] = Continent.class;
-		indexedClasses[16] = NamedArea.class;
-		indexedClasses[17] = NamedAreaLevel.class;
-		indexedClasses[18] = NamedAreaType.class;
-		indexedClasses[19] = ReferenceSystem.class;
-		indexedClasses[21] = WaterbodyOrCountry.class;
-		indexedClasses[22] = RightsType.class;
-		indexedClasses[23] = HybridRelationshipType.class;
-		indexedClasses[24] = NameRelationshipType.class;
-		indexedClasses[25] = NameTypeDesignationStatus.class;
-		indexedClasses[26] = NomenclaturalStatusType.class;
-		indexedClasses[27] = Rank.class;
-		indexedClasses[28] = SpecimenTypeDesignationStatus.class;
-		indexedClasses[29] = DerivationEventType.class;
-		indexedClasses[31] = PreservationMethod.class;
-		indexedClasses[32] = SynonymRelationshipType.class;
-		indexedClasses[33] = TaxonRelationshipType.class;
+		indexedClasses[9] = State.class;
+		indexedClasses[10] = StatisticalMeasure.class;
+		indexedClasses[11] = TextFormat.class;
+		indexedClasses[12] = DerivationEventType.class;
+		indexedClasses[13] = NamedArea.class;
+		indexedClasses[14] = NamedAreaLevel.class;
+		indexedClasses[15] = NamedAreaType.class;
+		indexedClasses[16] = ReferenceSystem.class;
+		indexedClasses[17] = WaterbodyOrCountry.class;
+		indexedClasses[18] = RightsType.class;
+		indexedClasses[19] = HybridRelationshipType.class;
+		indexedClasses[20] = NameRelationshipType.class;
+		indexedClasses[21] = NameTypeDesignationStatus.class;
+		indexedClasses[22] = NomenclaturalStatusType.class;
+		indexedClasses[23] = SpecimenTypeDesignationStatus.class;
+		indexedClasses[24] = PreservationMethod.class;
+		indexedClasses[25] = SynonymRelationshipType.class;
+		indexedClasses[26] = TaxonRelationshipType.class;
 	}
 
 	/**

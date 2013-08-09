@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.TermType;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -57,16 +56,24 @@ import eu.etaxonomy.cdm.model.common.TermType;
 // this is needed, otherwise the fields of the also abstract super class are missed during indexing
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusBase<?>> extends OrderedTermBase<T> {
+	private static final long serialVersionUID = -7204587330204725285L;
 	static Logger logger = Logger.getLogger(TypeDesignationStatusBase.class);
 
-	// ************* CONSTRUCTORS *************/
+
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected TypeDesignationStatusBase(){super(TermType.Unknown);};
+	
 	/**
 	 * Class constructor: creates a new empty type designation status instance.
 	 *
 	 * @see 	#NameTypeDesignationStatus(String, String, String)
 	 * @see 	#SpecimenTypeDesignationStatus(String, String, String)
 	 */
-	public TypeDesignationStatusBase() {
+	protected TypeDesignationStatusBase(TermType type) {
+		super(type);
 	}
 
 
@@ -84,7 +91,7 @@ public abstract class TypeDesignationStatusBase<T extends TypeDesignationStatusB
 	 * @see 				 #SnameTypeDesignationStatus()
 	 * @see 				 #SpecimenTypeDesignationStatus()
 	 */
-	public TypeDesignationStatusBase(TermType type, String term, String label, String labelAbbrev) {
+	protected TypeDesignationStatusBase(TermType type, String term, String label, String labelAbbrev) {
 		super(type, term, label, labelAbbrev);
 	}
 }

@@ -84,7 +84,15 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	@IndexedEmbedded(depth = 2)
 	private Set<Representation> inverseRepresentations = new HashSet<Representation>();
 
-	public RelationshipTermBase() {
+//******************** CONSTRUCTOR ************************/
+	
+    //for JAXB only, TODO needed?
+    @Deprecated
+    private RelationshipTermBase(){super();}
+
+	
+	protected RelationshipTermBase(TermType type) {
+		super(type);
 	}
 	public RelationshipTermBase(TermType type, String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(type, term, label, labelAbbrev);
@@ -213,8 +221,8 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	}
 
 	@Override
-	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		T newInstance = super.readCsvLine(termClass, csvLine, terms);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		T newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 
 		String inverseText = csvLine.get(6).trim();
 		String inverseLabel = csvLine.get(5).trim();
@@ -247,7 +255,7 @@ public abstract class RelationshipTermBase<T extends RelationshipTermBase> exten
 	 */
 	@Override
 	public Object clone() {
-		RelationshipTermBase result = (RelationshipTermBase)super.clone();
+		RelationshipTermBase<?> result = (RelationshipTermBase<?>)super.clone();
 
 		result.inverseRepresentations = new HashSet<Representation>();
 		for (Representation rep: this.inverseRepresentations){

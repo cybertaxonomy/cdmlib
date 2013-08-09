@@ -60,6 +60,8 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	
 //************************ CONSTRUCTOR *****************************************************/	
 
+	//for hibernate use only
+	@Deprecated
 	protected OrderedTermVocabulary() {
 		super();
 	}

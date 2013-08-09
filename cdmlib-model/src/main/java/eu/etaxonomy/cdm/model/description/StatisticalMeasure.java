@@ -35,7 +35,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * described with numerical values (like for instance weights or temperature).
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:54
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -61,19 +60,8 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
 	private static final UUID uuidStandardDeviation = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
 
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty statistical measure instance.
-	 * 
-	 * @see #StatisticalMeasure(String, String, String)
-	 */
-	public StatisticalMeasure() {
-	}
-	public StatisticalMeasure(String term, String label, String labelAbbrev) {
-		super(TermType.StatisticalMeasure, term, label, labelAbbrev);
-	}
 
-	//********* METHODS **************************************/
+	//********* FACTORY METHODS **************************************/
 	/** 
 	 * Creates a new empty statistical measure instance.
 	 * 
@@ -97,6 +85,18 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	public static StatisticalMeasure NewInstance(String term, String label, String labelAbbrev){
 		return new StatisticalMeasure(term, label, labelAbbrev);
 	}	
+	
+	
+//********************************** Constructor *******************************************************************/	
+
+	//for hibernate use only
+	@Deprecated
+	protected StatisticalMeasure() {
+		super(TermType.StatisticalMeasure);
+	}
+	private StatisticalMeasure(String term, String label, String labelAbbrev) {
+		super(TermType.StatisticalMeasure, term, label, labelAbbrev);
+	}
 	
 	
 //************************** METHODS ********************************

@@ -30,7 +30,6 @@ import javax.xml.bind.annotation.XmlType;
 /**
  * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:44
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -45,6 +44,9 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
 	
 	protected static Map<UUID, PreservationMethod> termMap = null;
+
+
+//********************************** FACTORY METHOD *********************************/		
 	
 	/**
 	 * Factory method
@@ -55,18 +57,21 @@ public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
 	}
 	
 	/**
-	 * Constructor
-	 */
-	public PreservationMethod() {
-	}
-	
-	/**
 	 * Factory method
 	 * @return
 	 */
 	public static PreservationMethod NewInstance(String term, String label, String labelAbbrev) {
 		return new PreservationMethod(term, label, labelAbbrev);
 	}
+	
+//********************************** CONSTRUCTOR *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected PreservationMethod() {
+		super(TermType.PreservationMethod);
+	}
+
 	
 	/**
 	 * Constructor

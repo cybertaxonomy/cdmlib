@@ -35,9 +35,9 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.strategy.cache.agent.InstitutionDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * This class represents public or private institutions.
@@ -88,7 +88,7 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
-	private Set<InstitutionType> types;
+	private Set<DefinedTerm> types;  //InstitutionTypes
 
     @XmlElement(name = "IsPartOf")
     @XmlIDREF
@@ -114,16 +114,15 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	}
 
 	/**
-	 * Returns the set of institution {@link InstitutionType types} (categories)
+	 * Returns the set of institution types (categories)
 	 * used to describe or circumscribe <i>this</i> institution's activities.
 	 * Institution types are items of a controlled {@link eu.etaxonomy.cdm.model.common.TermVocabulary vocabulary}.
 	 *
 	 * @return	the set of institution types
-	 * @see     InstitutionType
 	 */
-	public Set<InstitutionType> getTypes(){
+	public Set<DefinedTerm> getTypes(){
 		if(types == null) {
-			this.types = new HashSet<InstitutionType>();
+			this.types = new HashSet<DefinedTerm>();
 		}
 		return this.types;
 	}
@@ -134,10 +133,9 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 *
 	 * @param  t  any type of institution
 	 * @see 	  #getTypes()
-	 * @see 	  InstitutionType
 	 */
-	public void addType(InstitutionType t){
-		getTypes().add(t);
+	public void addType(DefinedTerm type){
+		getTypes().add(type);
 	}
 
 	/**
@@ -146,8 +144,8 @@ public class Institution extends AgentBase<IIdentifiableEntityCacheStrategy<Inst
 	 * @param  t  the institution type which should be deleted
 	 * @see       #getTypes()
 	 */
-	public void removeType(InstitutionType t){
-		getTypes().remove(t);
+	public void removeType(DefinedTerm type){
+		getTypes().remove(type);
 	}
 
 	/**

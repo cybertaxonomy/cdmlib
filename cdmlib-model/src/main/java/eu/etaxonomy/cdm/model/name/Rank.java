@@ -15,7 +15,6 @@ import java.util.Map;
 import java.util.UUID;
 
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -175,17 +174,19 @@ public class Rank extends OrderedTermBase<Rank> {
 	 */
 	@XmlAttribute(name ="RankClass")
 	@NotNull
-	@Enumerated  //TODO use UserType 
-	    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+	@Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
 		parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
 	)
 	private RankClass rankClass;
 
 
-	// ********************* CONSTRUCTORS ************************************+/
-    
-	//for hibernate use only
-	protected Rank() {}
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected Rank() {
+		super(TermType.Rank);
+	}
 
     /**
      * Class constructor: creates an additional rank instance with a description
@@ -917,8 +918,8 @@ public class Rank extends OrderedTermBase<Rank> {
 
 
     @Override
-    public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-        Rank rank = super.readCsvLine(termClass, csvLine, terms);
+    public Rank readCsvLine(Class<Rank> termClass, List<String> csvLine, Map<UUID, DefinedTermBase> terms, boolean abbrevAsId) {
+        Rank rank = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
         RankClass rankClass = RankClass.getByKey(csvLine.get(5));
         assert rankClass != null: "XXXXXXXXXXXXXXXXXXXXX  Rank class must not be null: " + csvLine ;
         rank.setRankClass(rankClass);

@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:38
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -63,6 +62,8 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
 public class NameRelationshipType extends RelationshipTermBase<NameRelationshipType> {
+	private static final long serialVersionUID = 8504916205254159334L;
+
 	static Logger logger = Logger.getLogger(NameRelationshipType.class);
 
 	private static final UUID uuidOrthographicVariant = UUID.fromString("eeaea868-c4c1-497f-b9fe-52c9fc4aca53");
@@ -81,6 +82,11 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	private static final UUID uuidOriginalSpellingFor = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
 	
 	
+	public static NameRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+		return new NameRelationshipType(term, label, labelAbbrev, symmetric, transitive);
+	}
+
+	
 	protected static Map<UUID, NameRelationshipType> termMap = null;		
 	
 	protected static NameRelationshipType findTermByUuid(UUID uuid){
@@ -91,13 +97,12 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 	
 	
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty name relationship type instance.
-	 * 
-	 * @see 	#NameRelationshipType(String, String, String, boolean, boolean)
-	 */
-	public NameRelationshipType() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected  NameRelationshipType() {
+		super(TermType.NameRelationshipType);
 	}
 	
 	/** 
@@ -118,7 +123,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * 						 relationship type to be created is transitive
 	 * @see 				 #NameRelationshipType()
 	 */
-	public NameRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+	private NameRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(TermType.NameRelationshipType, term, label, labelAbbrev, symmetric, transitive);
 	}
 
@@ -352,7 +357,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * then independent names.<BR>
 	 * Isonyms are handled in Article 6, Note 2 of the ICNAFP (Melbourne Code): 
 	 * <code>When the same name, based on the same type, has been published independently at different
-	 *  times perhaps by different authors, then only the earliest of these “isonyms” has 
+	 *  times perhaps by different authors, then only the earliest of these ï¿½isonymsï¿½ has 
 	 *  nomenclatural status. The name is always to be cited from its original 
 	 *  place of valid publication, and later isonyms may be disregarded (but see Art. 14.15).</code>
 	 * <BR><BR>
@@ -499,12 +504,12 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	}
 
 	@Override
-	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		NameRelationshipType result = super.readCsvLine(termClass, csvLine, terms);
+	public NameRelationshipType readCsvLine(Class<NameRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		NameRelationshipType result = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 		String kindOfString = csvLine.get(10).trim();
 		if (StringUtils.isNotBlank(kindOfString)){
 			UUID uuidKindOf = UUID.fromString(kindOfString);
-			DefinedTermBase kindOf = terms.get(uuidKindOf);
+			DefinedTermBase<?> kindOf = terms.get(uuidKindOf);
 			result.setKindOf((NameRelationshipType)kindOf);
 		}
 		return result;

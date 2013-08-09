@@ -27,7 +27,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Table;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.util.Assert;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -65,7 +64,6 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	@XmlAttribute(name ="type")
 	@Column(name="sourceType")
 	@NotNull
-	@Length(max=4)
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
     	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.common.OriginalSourceType")}
     )

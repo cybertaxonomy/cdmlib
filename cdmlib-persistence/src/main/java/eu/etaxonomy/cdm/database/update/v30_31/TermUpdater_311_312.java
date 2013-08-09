@@ -82,7 +82,7 @@ public class TermUpdater_311_312 extends TermUpdaterBase implements ITermUpdater
 		uuidTerm = UUID.fromString("4f5e4c51-a664-48ad-8238-2e9f49eaf8dd");
 		description = "Sex unknown";
 		label = "unknown";
-		abbrev = "s.u.";
+		abbrev = "sex ?";
 		dtype = "Sex";
 		isOrdered = true;
 		uuidVocabulary = UUID.fromString("9718b7dd-8bc0-4cad-be57-3c54d4d432fe");

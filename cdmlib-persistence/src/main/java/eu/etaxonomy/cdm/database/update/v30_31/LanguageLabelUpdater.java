@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @author a.mueller
  * @date 15.12.2010
  */
-public class LanguageLabelUpdater extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpdater> implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LanguageLabelUpdater.class);
 

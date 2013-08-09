@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * http://userpage.chemie.fu-berlin.de/diverse/doc/ISO_3166.html
  * http://www.davros.org/misc/iso3166.txt
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:07:02
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -78,7 +77,7 @@ public class WaterbodyOrCountry extends NamedArea {
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="DefinedTermBase_Continent")
-	private Set<Continent> continents = new HashSet<Continent>();
+	private Set<NamedArea> continents = new HashSet<NamedArea>();
 	
 	protected static Map<UUID, NamedArea> termMap = null;
 	protected static Map<String, UUID> labelMap = null;
@@ -585,6 +584,8 @@ public class WaterbodyOrCountry extends NamedArea {
 	public static final WaterbodyOrCountry PERSIANGULF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidPersianGulf );}
 
 	
+//****************** FACTORY METHODS ******************************/	
+	
 	/**
 	 * Factory method
 	 * @return
@@ -602,23 +603,27 @@ public class WaterbodyOrCountry extends NamedArea {
 		return new WaterbodyOrCountry(term, label, labelAbbrev);
 	}
 	
-	public WaterbodyOrCountry() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected WaterbodyOrCountry() {
 	}
-	public WaterbodyOrCountry(String term, String label, String labelAbbrev) {
+	private WaterbodyOrCountry(String term, String label, String labelAbbrev) {
 		super(term, label, labelAbbrev);
 	}
 
+//***************************** METHODS *****************************************/
 	
-	
-	public Set<Continent> getContinents() {
+	public Set<NamedArea> getContinents() {
 		return continents;
 	}
 
-	public void addContinents(Continent continent) {
+	public void addContinents(NamedArea continent) {
 		this.continents.add(continent);
 	}
 	
-	public void removeContinents(Continent continent) {
+	public void removeContinents(NamedArea continent) {
 		this.continents.remove(continent);
 	}
 
@@ -639,7 +644,7 @@ public class WaterbodyOrCountry extends NamedArea {
 	}
 
 	@Override
-	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+	public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
 		try {
 			Language lang= Language.DEFAULT();
 			WaterbodyOrCountry newInstance = WaterbodyOrCountry.class.newInstance();
@@ -661,7 +666,7 @@ public class WaterbodyOrCountry extends NamedArea {
 				continentList=tmp.split(",");
 				for (String continent : continentList){
 					logger.debug("continent: "+ continent);
-					newInstance.addContinents((Continent)terms.get(UUID.fromString(continent)));
+					newInstance.addContinents((NamedArea)terms.get(UUID.fromString(continent)));
 				}
 			}
 			return newInstance;

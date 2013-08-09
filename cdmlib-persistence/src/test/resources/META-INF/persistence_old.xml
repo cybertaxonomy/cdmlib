@@ -9,7 +9,6 @@
         <class>eu.etaxonomy.cdm.model.agent.Contact</class>
         <class>eu.etaxonomy.cdm.model.agent.Institution</class>
         <class>eu.etaxonomy.cdm.model.agent.InstitutionalMembership</class>
-        <class>eu.etaxonomy.cdm.model.agent.InstitutionType</class>
         <class>eu.etaxonomy.cdm.model.agent.Person</class>
         <class>eu.etaxonomy.cdm.model.agent.Team</class>
         <class>eu.etaxonomy.cdm.model.agent.TeamOrPersonBase</class>

@@ -52,7 +52,7 @@ public class OrderedTermVocabularyTest extends EntityTestBase {
 	
 	private class DerivedOrderedTermBase extends OrderedTermBase<DerivedOrderedTermBase>{
 		private DerivedOrderedTermBase(){
-			super();
+			super(TermType.Unknown);
 		}
 		private DerivedOrderedTermBase(TermType type, String term, String label, String labelAbbrev){
 			super(type, term, label, labelAbbrev);

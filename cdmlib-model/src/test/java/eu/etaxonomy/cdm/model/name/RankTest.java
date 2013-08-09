@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.name;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -101,12 +100,6 @@ public class RankTest extends EntityTestBase {
 	public static void setUp() {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
-	}
-	
-	@Test
-	public void testRank() {
-		Rank rank = new Rank();
-		assertNotNull(rank);
 	}
 
 	@Test

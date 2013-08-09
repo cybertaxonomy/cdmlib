@@ -65,7 +65,7 @@ public class TermVocabularyTest extends EntityTestBase {
 	
 	private class DerivedDefinedTermBase extends OrderedTermBase<DerivedDefinedTermBase>{
 		private DerivedDefinedTermBase(){
-			super();
+			super(TermType.Unknown);
 		}
 		private DerivedDefinedTermBase(TermType type, String term, String label, String labelAbbrev){
 			super(type, term, label, labelAbbrev);

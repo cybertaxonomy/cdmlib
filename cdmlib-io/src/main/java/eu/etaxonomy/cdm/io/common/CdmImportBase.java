@@ -664,9 +664,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (relType == null){
 			relType = (TaxonRelationshipType)getTermService().find(uuid);
 			if (relType == null && ! hasNoLabel(label, text, labelAbbrev)){
-				relType = new TaxonRelationshipType();
-				Representation repr = Representation.NewInstance(text, label, labelAbbrev, Language.DEFAULT());
-				relType.addRepresentation(repr);
+				relType = TaxonRelationshipType.NewInstance(text, label, labelAbbrev, false, false);
 				relType.setUuid(uuid);
 				if (voc == null){
 					boolean isOrdered = true;

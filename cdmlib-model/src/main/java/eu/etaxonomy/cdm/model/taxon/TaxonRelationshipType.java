@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -45,7 +43,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:17
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -96,15 +93,17 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	
 	private static final UUID uuidAllRelationships = UUID.fromString("831fcd88-e5c9-49e0-b06e-bbb67d1c05c9");
 	
+	public static TaxonRelationshipType NewInstance(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+		return new TaxonRelationshipType(term, label, labelAbbrev, symmetric, transitive);
+	}	
 	
-// ************* CONSTRUCTORS *************/	
+	
+//********************************** CONSTRUCTOR *********************************/	
 
-	/** 
-	 * Class constructor: creates a new empty taxon relationship type instance.
-	 * 
-	 * @see 	#TaxonRelationshipType(String, String, String, boolean, boolean)
-	 */
-	public TaxonRelationshipType() {
+  	//for hibernate use only
+  	@Deprecated
+  	protected TaxonRelationshipType() {
+		super(TermType.TaxonRelationshipType);
 	}
 	/** 
 	 * Class constructor: creates an additional taxon relationship type
@@ -124,7 +123,7 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 	 * 						 relationship type to be created is transitive
 	 * @see 				 #TaxonRelationshipType()
 	 */
-	public TaxonRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
+	private TaxonRelationshipType(String term, String label, String labelAbbrev, boolean symmetric, boolean transitive) {
 		super(TermType.TaxonRelationshipType, term, label, labelAbbrev, symmetric, transitive);
 	}
 
@@ -425,8 +424,8 @@ public class TaxonRelationshipType extends RelationshipTermBase<TaxonRelationshi
 		return getTermByUuid(uuidAllRelationships);
 	}
 	
-	@Override
-	public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		return super.readCsvLine(termClass, csvLine, terms);
-	}
+//	@Override
+//	public TaxonRelationshipType readCsvLine(Class<TaxonRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+//		return super.readCsvLine(termClass, csvLine, terms);
+//	}
 }

@@ -51,7 +51,6 @@
       <mapping class="eu.etaxonomy.cdm.model.agent.Contact"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Institution"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.InstitutionalMembership"/>
-      <mapping class="eu.etaxonomy.cdm.model.agent.InstitutionType"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Person"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.Team"/>
       <mapping class="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase"/>
@@ -115,7 +114,6 @@
       <mapping class="eu.etaxonomy.cdm.model.description.TextFormat"/>
       <mapping class="eu.etaxonomy.cdm.model.description.WorkingSet"/>
       <!-- Location Package -->
-      <mapping class="eu.etaxonomy.cdm.model.location.Continent"/>
       <mapping class="eu.etaxonomy.cdm.model.location.NamedArea"/>
       <mapping class="eu.etaxonomy.cdm.model.location.NamedAreaLevel"/>
       <mapping class="eu.etaxonomy.cdm.model.location.NamedAreaType"/>

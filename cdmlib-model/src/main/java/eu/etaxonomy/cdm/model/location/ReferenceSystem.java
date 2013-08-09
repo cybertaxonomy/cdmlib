@@ -72,10 +72,12 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 		return new ReferenceSystem(term, label, labelAbbrev);
 	}
 	
-	/**
-	 * Constructor
-	 */
-	public ReferenceSystem() {
+//********************************** Constructor *******************************************************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected ReferenceSystem() {
+		super(TermType.ReferenceSystem);
 	}
 	
 	/**

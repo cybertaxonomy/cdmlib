@@ -95,6 +95,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
+	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev, Language language) {
+		return new NomenclaturalStatusType(description, label, labelAbbrev, language);
+	}
+	
+	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev) {
+		return new NomenclaturalStatusType(description, label, labelAbbrev);
+	}
+		
+	
 	
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
@@ -111,16 +120,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	
-	
-// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty nomenclatural status type instance.
-	 * 
-	 * @see 	#NomenclaturalStatusType(String, String, String)
-	 * @see 	#readCsvLine(List, Language)
-	 * @see 	#readCsvLine(List)
-	 */
-	public NomenclaturalStatusType() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected NomenclaturalStatusType() {
+		super(TermType.NomenclaturalStatusType);
 	}
 
 	/** 
@@ -138,10 +143,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see 				 #readCsvLine(List, Language)
 	 * @see 				 #readCsvLine(List)
 	 */
-	public NomenclaturalStatusType(String term, String label, String labelAbbrev) {
+	private NomenclaturalStatusType(String term, String label, String labelAbbrev) {
 		super(TermType.NomenclaturalStatusType, term, label, labelAbbrev);
 	}
 
+	private NomenclaturalStatusType(String term, String label, String labelAbbrev, Language language) {
+		super(TermType.NomenclaturalStatusType);
+		this.addRepresentation(new Representation(term, label, labelAbbrev, language));
+	}
+	
 //********* METHODS **************************************
 
 
@@ -839,10 +849,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List)
 	 */
 
-	public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {   //TODO should be List<String> but makes error for some strange reason
+	public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {   //TODO should be List<String> but makes error for some strange reason
 		try {
 			NomenclaturalStatusType newInstance = termClass.newInstance();
-			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN());
+			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN(), abbrevAsId);
 			return newInstance;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block

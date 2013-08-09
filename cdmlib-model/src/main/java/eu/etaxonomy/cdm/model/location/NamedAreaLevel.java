@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * Controlled vocabulary to differentiate levels of areas such as province, state,
  * etc.
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:36
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -56,7 +55,9 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	private static final UUID uuidProvince = UUID.fromString("401d48b4-9f09-4354-be0f-c2138444f72d");
 	private static final UUID uuidTown = UUID.fromString("f127b4d2-f6bc-4019-9c87-ee3f4de1f094");
 	private static final UUID uuidCountry = UUID.fromString("79db63a4-1563-461e-8e41-48f5722feca4");
-	
+
+//************************** FACTORY METHODS ********************************
+
 	/**
 	 * Factory method
 	 * @return
@@ -73,13 +74,15 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 		return new NamedAreaLevel(term, label, labelAbbrev);
 	}
 	
-	/**
-	 * Constructor
-	 */
-	public NamedAreaLevel() {
+//************************** CONSTRUCTOR ********************************
+
+	//for hibernate use only
+	@Deprecated
+	protected NamedAreaLevel() {
+		super(TermType.NamedAreaLevel);
 	}
 
-	protected NamedAreaLevel(String term, String label, String labelAbbrev) {
+	private NamedAreaLevel(String term, String label, String labelAbbrev) {
 		super(TermType.NamedAreaLevel, term, label, labelAbbrev);
 	}
 
@@ -95,7 +98,7 @@ public class NamedAreaLevel extends OrderedTermBase<NamedAreaLevel> {
 	}
 		
 	/**
-	 * continents
+	 * Continents
 	 */
 	public static final NamedAreaLevel TDWG_LEVEL1(){
 		return getTermByUuid(uuidTdwgLevel1);

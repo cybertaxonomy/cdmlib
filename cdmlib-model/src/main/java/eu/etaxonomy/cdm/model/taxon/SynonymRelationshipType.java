@@ -11,7 +11,6 @@ package eu.etaxonomy.cdm.model.taxon;
 
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -44,7 +42,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:55
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -68,13 +65,12 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	public static final UUID uuidPotentialCombinationOf = UUID.fromString("7c45871f-6dc5-40e7-9f26-228318d0f63a");
 	
 
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty synonym relationship type instance.
-	 * 
-	 * @see 	#SynonymRelationshipType(String, String, String)
-	 */
-	public SynonymRelationshipType() {
+//********************************** CONSTRUCTOR *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected SynonymRelationshipType() {
+		super(TermType.SynonymRelationshipType);
 	}
 
 	/** 
@@ -91,7 +87,7 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	 * 						 new synonym relationship type to be created
 	 * @see 				 #SynonymRelationshipType()
 	 */
-	public SynonymRelationshipType(String term, String label, String labelAbbrev) {
+	private SynonymRelationshipType(String term, String label, String labelAbbrev) {
 		super(TermType.SynonymRelationshipType, term, label, labelAbbrev, false, false);
 	}
 
@@ -189,10 +185,10 @@ public class SynonymRelationshipType extends RelationshipTermBase<SynonymRelatio
 	}
 	
 
-	@Override
-	public SynonymRelationshipType readCsvLine(Class<SynonymRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		return super.readCsvLine(termClass, csvLine, terms);
-	}
+//	@Override
+//	public SynonymRelationshipType readCsvLine(Class<SynonymRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+//		return super.readCsvLine(termClass, csvLine, terms);
+//	}
 
 	@Override
 	protected void setDefaultTerms(TermVocabulary<SynonymRelationshipType> termVocabulary) {

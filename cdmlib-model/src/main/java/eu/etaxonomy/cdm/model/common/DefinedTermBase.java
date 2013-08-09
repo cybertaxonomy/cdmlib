@@ -45,7 +45,6 @@ import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -57,7 +56,6 @@ import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 
 
 /**
@@ -80,7 +78,6 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
     DefinedTerm.class,
     ExtensionType.class,
     Feature.class,
-    InstitutionType.class,
     Language.class,
     MarkerType.class,
     MeasurementUnit.class,
@@ -167,8 +164,12 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 //***************************** CONSTRUCTOR *******************************************/
 
-    public DefinedTermBase() {
-        super();
+    //for javassit only
+    @Deprecated
+    protected DefinedTermBase(){};
+    
+    protected DefinedTermBase(TermType type) {
+        super(type);
     }
     public DefinedTermBase(TermType type, String description, String label, String labelAbbrev) {
         super(type, description, label, labelAbbrev);
@@ -331,13 +332,11 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.util.List)
-     */
-    public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+    @Override
+    public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
             T newInstance = getInstance(termClass);
-            return readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE());
+            return readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE(), abbrevAsId);
         } catch (Exception e) {
             logger.error(e);
             for(StackTraceElement ste : e.getStackTrace()) {
@@ -359,15 +358,17 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		}
 	}
 
-    protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang) {
-            newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-            newInstance.setUri( URI.create(csvLine.get(1)));
-            String label = csvLine.get(2).trim();
-            String description = csvLine.get(3);
-            String abbreviatedLabel = csvLine.get(4);
-            newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
-            newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
-            return newInstance;
+    protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
+        newInstance.setUuid(UUID.fromString(csvLine.get(0)));
+        newInstance.setUri( URI.create(csvLine.get(1)));
+        String label = csvLine.get(2).trim();
+        String description = csvLine.get(3);
+        String abbreviatedLabel = csvLine.get(4);
+        if (abbrevAsId ){
+        	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
+        }
+        newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
+        return newInstance;
     }
 
     /* (non-Javadoc)

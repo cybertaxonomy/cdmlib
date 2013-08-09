@@ -55,13 +55,13 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
 
     private String defaultColor = "000000";
 
+	
+//********************************** Constructor *******************************************************************/	
 
-    /**
-     * Class constructor: creates a new empty presence or absence term.
-     *
-     * @see #PresenceAbsenceTermBase(String, String, String)
-     */
-    protected PresenceAbsenceTermBase() {
+  	//for hibernate use only
+  	@Deprecated
+  	protected PresenceAbsenceTermBase() {
+    	super(TermType.PresenceAbsenceTerm);
     }
 
     /**
@@ -78,13 +78,15 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
     protected PresenceAbsenceTermBase(String term, String label, String labelAbbrev) {
         super(TermType.PresenceAbsenceTerm, term, label, labelAbbrev);
     }
+    
+//******************************** METHODS ****************************/    
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
      */
     @Override
-    public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-        T newInstance = super.readCsvLine(termClass, csvLine, terms);
+    public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        T newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
         String abbreviatedLabel = (String)csvLine.get(4);
 //		String uuid = (String)csvLine.get(0);
 //		map.put(abbreviatedLabel, UUID.fromString(uuid));

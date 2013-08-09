@@ -76,7 +76,6 @@ import eu.etaxonomy.cdm.model.media.Media;
 })
 @XmlRootElement(name = "NamedArea")
 @XmlSeeAlso({
-    Continent.class,
     WaterbodyOrCountry.class
 })
 @Entity
@@ -89,13 +88,27 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private static final long serialVersionUID = 6248434369557403036L;
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
-    public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
+    
+	//Continent UUIDs
+    private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
+	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
+	private static final UUID uuidAsiaTemperate = UUID.fromString("7f4f4f89-3b4c-475d-929f-144109bd8457");
+	private static final UUID uuidAsiaTropical = UUID.fromString("f8039275-d2c0-4753-a1ab-0336642a1499");
+	private static final UUID uuidNAmerica = UUID.fromString("81d8aca3-ddd7-4537-9f2b-5327c95b6e28");
+	private static final UUID uuidSAmerica = UUID.fromString("12b861c9-c922-498c-8b1a-62afc26d19e3");
+	private static final UUID uuidAustralasia = UUID.fromString("a2afdb9a-04a0-434c-9e75-d07dbeb86526");
+	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
+	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
 
+    
+    public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
+    public static final UUID uuidContinentVocabulary = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
 
     private static Map<String, UUID> tdwgAbbrevMap = null;
     private static Map<String, UUID> tdwglabelMap = null;
 
     protected static Map<UUID, NamedArea> tdwgTermMap = null;
+    private static Map<UUID, NamedArea> continentMap = null;		
 
     
     private static Map<UUID, NamedArea> termMap = null;
@@ -140,15 +153,16 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaLevel level;
 
-//*************************** CONSTRUCTOR ******************************************/
+	
+//********************************** Constructor *******************************************************************/	
 
-    /**
-     * Constructor
-     */
-    public NamedArea() {
+  	//for hibernate use only
+  	@Deprecated
+  	protected NamedArea() {
+    	super(TermType.NamedArea);
     }
 
-    public NamedArea(String term, String label, String labelAbbrev) {
+    protected NamedArea(String term, String label, String labelAbbrev) {
         super(TermType.NamedArea, term, label, labelAbbrev);
     }
 
@@ -301,8 +315,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
      * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
      */
     @Override
-    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-        NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms);
+    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 
         String levelString = csvLine.get(6);
 
@@ -334,7 +348,17 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         tdwgAbbrevMap = null;
    		tdwglabelMap = null;
    		tdwgTermMap = null;
+   		continentMap = null;
     }
+    
+	@Deprecated //preliminary, will be removed in future
+    protected static NamedArea getContinentByUuid(UUID uuid){
+		if (continentMap == null){
+			return null;
+		}else{
+			return (NamedArea)continentMap.get(uuid);
+		}
+	}
     
     @Deprecated //preliminary, will be removed in future
     protected static NamedArea getTdwgTermByUuid(UUID uuid){
@@ -390,7 +414,51 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return false;
         }
     }
+    
+	public static final NamedArea EUROPE(){
+		return getContinentByUuid(uuidEurope);
+	}
 
+	public static final NamedArea AFRICA(){
+		return getContinentByUuid(uuidAfrica);
+	}
+
+	public static final NamedArea ASIA_TEMPERATE(){
+		return getContinentByUuid(uuidAsiaTemperate);
+	}
+
+	public static final NamedArea ASIA_TROPICAL(){
+		return getContinentByUuid(uuidAsiaTropical);
+	}
+
+	public static final NamedArea NORTH_AMERICA(){
+		return getContinentByUuid(uuidNAmerica);
+	}
+
+	public static final NamedArea ANTARCTICA(){
+		return getContinentByUuid(uuidAntarctica);
+	}
+
+	public static final NamedArea SOUTH_AMERICA(){
+		return getContinentByUuid(uuidSAmerica);
+	}
+
+	public static final NamedArea AUSTRALASIA(){
+		return getContinentByUuid(uuidAustralasia);
+	}
+	
+	public static final NamedArea PACIFIC(){
+		return getContinentByUuid(uuidPacific);
+	}
+
+	
+	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
+		continentMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			continentMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+		}
+	}
+	
 	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
         tdwgTermMap = new HashMap<UUID, NamedArea>();
         for (NamedArea term : tdwgTermVocabulary.getTerms()){
@@ -450,6 +518,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
         if (termVocabulary.getUuid().equals(this.uuidTdwgAreaVocabulary)){
         	this.setTdwgDefaultTerms(termVocabulary);
+        }else if (termVocabulary.getUuid().equals(this.uuidContinentVocabulary)){
+        	this.setDefaultContinentTerms(termVocabulary);
         }else{
 	    	termMap = new HashMap<UUID, NamedArea>();
 	        for (NamedArea term : termVocabulary.getTerms()){

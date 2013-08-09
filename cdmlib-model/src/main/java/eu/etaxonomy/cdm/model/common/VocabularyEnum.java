@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -21,7 +20,6 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -42,7 +40,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 /**
  * @author n.hoffmann
  * @created 03.06.2009
- * @version 1.0
  * 
  * @deprecated
  * A static list of vocabularies is not the right way to do this.
@@ -53,7 +50,7 @@ public enum VocabularyEnum {
 
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
 	UndefinedLanguage("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28", Language.class),
-	Continent("e72cbcb6-58f8-4201-9774-15d0c6abc128", Continent.class),
+	Continent("e72cbcb6-58f8-4201-9774-15d0c6abc128", NamedArea.class),
 	WaterbodyOrCountry("006b1870-7347-4624-990f-e5ed78484a1a", WaterbodyOrCountry.class),
 	Rank("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b", Rank.class),
 	SpecimenTypeDesignationStatus("ab177bd7-d3c8-4e58-a388-226fff6ba3c2", SpecimenTypeDesignationStatus.class),
@@ -80,7 +77,7 @@ public enum VocabularyEnum {
 	NameTypeDesignationStatus("ab60e738-4d09-4c24-a1b3-9466b01f9f55", NameTypeDesignationStatus.class),
 	ExtensionType("117cc307-5bd4-4b10-9b2f-2e14051b3b20",ExtensionType.class),
 	ReferenceSystem("ec6376e5-0c9c-4f5c-848b-b288e6c17a86",ReferenceSystem.class),
-	InstitutionType("29ad808b-3126-4274-be81-4561e7afc76f", InstitutionType.class),
+	InstitutionType("29ad808b-3126-4274-be81-4561e7afc76f", DefinedTerm.class),
 	MeasurementUnit("3b82c375-66bb-4636-be74-dc9cd087292a", MeasurementUnit.class),
 	Scope("109bf76d-6f55-43d5-9ec5-6115d9490faa", DefinedTerm.class),
 	Stage("4d475bea-c3ae-4494-be16-6796f22fabac", DefinedTerm.class),
@@ -89,7 +86,7 @@ public enum VocabularyEnum {
 //	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
 	NaturalLanguageTerm("fdaba4b0-5c14-11df-a08a-0800200c9a66", NaturalLanguageTerm.class),
 	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", DefinedTerm.class),
-	Marker("d219a463-1cc9-4800-b82f-3146d0afe31e", DefinedTerm.class)
+	DnaMarker("d219a463-1cc9-4800-b82f-3146d0afe31e", DefinedTerm.class)
 	;
 	
 	

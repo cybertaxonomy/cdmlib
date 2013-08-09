@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -24,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -75,13 +73,16 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	private static final UUID uuidMinorParent = UUID.fromString("e556b240-b03f-46b8-839b-ad89df633c5a");
 	
 	
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty hybrid relationship type instance.
-	 * 
-	 * @see 	#HybridRelationshipType(String, String, String)
-	 */
-	public HybridRelationshipType() {
+	public static HybridRelationshipType NewInstance(String term, String label, String labelAbbrev) {
+		return new HybridRelationshipType(term, label, labelAbbrev);
+	}
+
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected HybridRelationshipType() {
+		super(TermType.HybridRelationshipType);
 	}
 	/** 
 	 * Class constructor: creates an additional hybrid relationship type
@@ -97,7 +98,7 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 	 * 						 new hybrid relationship type to be created
 	 * @see 				 #HybridRelationshipType()
 	 */
-	public HybridRelationshipType(String term, String label, String labelAbbrev) {
+	private HybridRelationshipType(String term, String label, String labelAbbrev) {
 		super(TermType.HybridRelationshipType, term, label, labelAbbrev, false, false);
 	}
 
@@ -241,9 +242,9 @@ public class HybridRelationshipType extends RelationshipTermBase<HybridRelations
 		}	
 	}
 	
-	@Override
-	public HybridRelationshipType readCsvLine(Class<HybridRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		return super.readCsvLine(termClass, csvLine, terms);
-	}
+//	@Override
+//	public HybridRelationshipType readCsvLine(Class<HybridRelationshipType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+//		return super.readCsvLine(termClass, csvLine, terms);
+//	}
 
 }

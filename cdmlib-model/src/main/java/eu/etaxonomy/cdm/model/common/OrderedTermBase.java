@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -67,13 +66,21 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	public int getOrderIndex() {
 		return orderIndex;
 	}
-		
-	public OrderedTermBase() {
-		super();
+
+// *********************** CONSTRUCTOR *************************/
+	
+	//for JAXB only, TODO needed?
+    @Deprecated
+    protected OrderedTermBase(){}
+	
+	protected OrderedTermBase(TermType type) {
+		super(type);
 	}
 	public OrderedTermBase(TermType type, String term, String label, String labelAbbrev) {
 		super(type, term, label, labelAbbrev);
 	}	
+	
+// **************************** METHODS ******************************/	
 	
 	/**
 	 * Compares this OrderedTermBase with the specified OrderedTermBase for

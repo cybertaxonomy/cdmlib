@@ -16,7 +16,6 @@ import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
@@ -104,10 +103,9 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlAttribute(name ="RecordBasis")
 	@Column(name="recordBasis")
 	@NotNull
-//	@Enumerated
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-    parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType")}
-    		)
+    	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType")}
+    )
 	private SpecimenOrObservationType recordBasis;
 
 	
@@ -184,14 +182,15 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     private boolean publish = true;
 
 
-// ********************** CONSTRUCTOR ******************************/
-	
-    //Constructor for hibernate use only
-	protected SpecimenOrObservationBase(){super();}
+//********************************** CONSTRUCTOR *********************************/	
 
-	public SpecimenOrObservationBase(SpecimenOrObservationType recordBasis) {
+  	//for hibernate use only
+  	@Deprecated
+  	protected SpecimenOrObservationBase(){super();}
+
+	protected SpecimenOrObservationBase(SpecimenOrObservationType recordBasis) {
 		super();
-		assert recordBasis != null : "RecordBasis must not be null";
+		if (recordBasis == null){ throw new IllegalArgumentException("RecordBasis must not be null");}
 		this.recordBasis = recordBasis;
 	}
 	

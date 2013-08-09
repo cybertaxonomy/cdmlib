@@ -30,7 +30,6 @@ import org.hibernate.search.annotations.Indexed;
  * types, but rather content types like "DOI", "2nd nomenclatural reference", "3rd
  * hybrid parent" or specific local identifiers.
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -84,9 +83,10 @@ public class ExtensionType extends DefinedTermBase<ExtensionType> {
 
 //********************************** Constructor *******************************************************************/	
 	
-	//public only for Term Loader
+	//for hibernate use only
 	@Deprecated
-	public ExtensionType() {
+	protected ExtensionType() {
+		super(TermType.ExtensionType);
 	}
 	
 	/** 

@@ -49,7 +49,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  * A single enumeration must only contain DefinedTerm instances of one kind
  * (this means a subclass of DefinedTerm).
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -94,7 +93,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 
 // ************************* CONSTRUCTOR *************************************************
 
+	//for hibernate use only
+	@Deprecated
 	protected TermVocabulary() {
+		super(TermType.Unknown);
 	}
 
 	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {

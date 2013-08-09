@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -86,13 +85,12 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidIsosyntype = UUID.fromString("052a5ff0-8e9a-4355-b24f-5e4bb6071f44");
 
 	
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty type designation status instance.
-	 * 
-	 * @see 	#TypeDesignationStatus(String, String, String)
-	 */
-	public SpecimenTypeDesignationStatus() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected SpecimenTypeDesignationStatus() {
+		super(TermType.SpecimenTypeDesignationStatus);
 	}
 
 
@@ -109,7 +107,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * 						 new type designation status to be created
 	 * @see 				 #TypeDesignationStatus()
 	 */
-	public SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
+	private SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
 		super(TermType.SpecimenTypeDesignationStatus, term, label, labelAbbrev);
 	}
 	

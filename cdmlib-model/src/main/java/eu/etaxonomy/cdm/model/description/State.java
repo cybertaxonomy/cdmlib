@@ -51,13 +51,13 @@ public class State extends OrderedTermBase<State> {
 
 	protected static Map<UUID, State> termMap = null;	
 	
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty state.
-	 * 
-	 * @see #State(String, String, String)
-	 */
-	public State() {
+	
+//********************************** Constructor *******************************************************************/	
+
+	//for hibernate use only
+	@Deprecated
+	protected State() {
+		super(TermType.State);
 	}
 
 	/** 
@@ -71,7 +71,7 @@ public class State extends OrderedTermBase<State> {
 	 * 						 new state to be created
 	 * @see 				 #State()
 	 */
-	public State(String term, String label, String labelAbbrev) {
+	private State(String term, String label, String labelAbbrev) {
 		super(TermType.State, term, label, labelAbbrev);
 	}
 	

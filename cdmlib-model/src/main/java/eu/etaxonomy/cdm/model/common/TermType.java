@@ -375,7 +375,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	 * @see Sequencing#getMarker() 
 	 */
 	@XmlEnumValue("DnaMarker")
-	DnaMarker(UUID.fromString("7fdddb4f-b0ec-4ce0-bc28-dc94e30e8252"), "DNA Marker", "MAR", null),
+	DnaMarker(UUID.fromString("7fdddb4f-b0ec-4ce0-bc28-dc94e30e8252"), "DNA Marker", "DMA", null),
 	;
 	
 	@SuppressWarnings("unused")

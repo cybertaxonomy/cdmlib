@@ -9,19 +9,21 @@
  
 package eu.etaxonomy.cdm.test.suite;
 
+import org.apache.log4j.Logger;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
-import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.aspectj.PropertyChangeTest;
-
-import eu.etaxonomy.cdm.model.agent.InstitutionTypeTest;
-import eu.etaxonomy.cdm.model.common.*;
+import eu.etaxonomy.cdm.model.common.CdmBaseTest;
+import eu.etaxonomy.cdm.model.common.DefinedTermBaseTest;
+import eu.etaxonomy.cdm.model.common.MarkerTypeTest;
+import eu.etaxonomy.cdm.model.common.OrderedTermBaseTest;
+import eu.etaxonomy.cdm.model.common.OrderedTermVocabularyTest;
+import eu.etaxonomy.cdm.model.common.TermVocabularyTest;
 import eu.etaxonomy.cdm.model.common.init.TermLoaderTest;
-//import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBaseTest;
 import eu.etaxonomy.cdm.model.description.TextDataTest;
-import eu.etaxonomy.cdm.model.name.*;
-import eu.etaxonomy.cdm.model.taxon.*;
+import eu.etaxonomy.cdm.model.name.BotanicalNameTest;
+import eu.etaxonomy.cdm.model.taxon.TaxonTest;
 import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameCacheStrategyTest;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 
@@ -48,8 +50,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplTest;
 			//strategy
 			BotanicNameCacheStrategyTest.class,
 			NonViralNameParserImplTest.class,
-			MarkerTypeTest.class,
-			InstitutionTypeTest.class
+			MarkerTypeTest.class
 		}
 	)
 public class CdmTestSuite {

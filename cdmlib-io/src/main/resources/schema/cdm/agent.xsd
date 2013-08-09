@@ -19,8 +19,6 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
 
   <xs:element name="Institution" type="agent:Institution"/>
 
-  <xs:element name="InstitutionType" type="agent:InstitutionType"/>
-
   <xs:element name="InstitutionalMembership" type="agent:InstitutionalMembership"/>
 
   <xs:element name="Person" type="agent:Person"/>
@@ -99,14 +97,6 @@ targetNamespace="http://etaxonomy.eu/cdm/model/agent/1.0"
           </xs:element>
           <xs:element name="IsPartOf" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="InstitutionType">
-    <xs:complexContent>
-      <xs:extension base="common:DefinedTermBase">
-        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
