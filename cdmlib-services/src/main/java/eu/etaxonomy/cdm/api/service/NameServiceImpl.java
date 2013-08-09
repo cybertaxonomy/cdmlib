@@ -567,7 +567,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     protected LuceneSearch prepareFindByFuzzyNameSearch(Class<? extends CdmBase> clazz, 
     		NonViralName nvn,
     		float accuracy,
-    		int maxNoOfResults,
+    		int maxNoOfResults,    		
     		List<Language> languages,
     		boolean highlightFragments) {
     	String similarity = Float.toString(accuracy);    	
@@ -627,6 +627,34 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     		luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
     	}
     	return luceneSearch;
+    }
+    
+    protected LuceneSearch prepareFindByFuzzyTitleCacheSearch(Class<? extends CdmBase> clazz, 
+    		String name,
+    		float accuracy,
+    		int maxNoOfResults,    		
+    		List<Language> languages,
+            boolean highlightFragments) {    	    	
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        // ---- search criteria
+        luceneSearch.setClazz(clazz);
+        FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());                      
+
+        fltq.addTerms(name.toLowerCase(), "nameCache", accuracy, 3);           
+
+     	BooleanQuery finalQuery = new BooleanQuery(false);
+     	
+     	finalQuery.add(fltq, Occur.MUST);   
+     	
+        luceneSearch.setQuery(finalQuery);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
     }
     
     protected LuceneSearch prepareFindByExactNameSearch(Class<? extends CdmBase> clazz, 
@@ -721,6 +749,30 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
         
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        
+        @SuppressWarnings("rawtypes")
+        List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
+
+        return searchResults;
+    }
+    
+    public List<DocumentSearchResult> findByFuzzyNameCacheSearch(
+            String name,
+    		float accuracy,            
+            List<Language> languages,
+            boolean highlightFragments,
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+
+    	logger.info("Name to fuzzy search for : " + name);
+    	
+        LuceneSearch luceneSearch = prepareFindByFuzzyTitleCacheSearch(null, name, accuracy, maxNoOfResults, languages, highlightFragments);
+
+        // --- execute search        
+        TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();        
 
         // --- initialize taxa, highlight matches ....
         ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());

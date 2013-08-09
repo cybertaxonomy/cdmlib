@@ -122,6 +122,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /** Classifcation 'all' key */
     public static final String CLASSIFICATION_ALL = "all";
     
+    /** Fuzzy Name Cache search */
+    public static final String FUZZY_NAME_CACHE = "name";
+    
+    /** Fuzzy Atomised Name search */
+    public static final String FUZZY_ATOMISED = "atomised";
+    
     private static final String DWC_DATASET_ID = "http://rs.tdwg.org/dwc/terms/datasetID";
 
     private static final DateTimeFormatter fmt = DateTimeFormat.forPattern("dd-MM-yyyy");
@@ -482,7 +488,11 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *                Briefly described, this is equivalent to the edit distance between the two words, divided by 
      *                the length of the shorter of the compared terms.
      * @param hits               
-     *            Maximum number of responses to be returned.    
+     *            Maximum number of responses to be returned.
+     * @param type               
+     *            The type of fuzzy search to call. This can be either
+     *              "name" : fuzzy searches scientific names corresponding to 'name cache' in CDM or
+     *              "atomised" : parses the query into atomised elements and fuzzy searches the individual elements in the CDM      
      * @param request Http servlet request.
      * @param response Http servlet response.
      * @return a List of {@link NameSearch} objects each corresponding to a
@@ -494,6 +504,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     public ModelAndView doGetNameFuzzySearch(@RequestParam(value = "query", required = true) String[] queries,
     		@RequestParam(value = "accuracy", required = false, defaultValue = "0.6") String accuracy,
     		@RequestParam(value = "hits", required = false, defaultValue = "10") String hits,
+    		@RequestParam(value = "type", required = false, defaultValue = FUZZY_NAME_CACHE) String type,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> nsList = new ArrayList<RemoteResponse>();
@@ -532,14 +543,23 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             logger.info("doGetNameSearch()" + request.getRequestURI() + " for query \"" + queryWOWildcards + " with accuracy " + accuracy);
             //List<NonViralName> nameList = new ArrayList<NonViralName>();
             List<DocumentSearchResult> nameSearchList = new ArrayList<DocumentSearchResult>();
-            try {            	            
-				nameSearchList = service.findByNameFuzzySearch(
-				        queryWOWildcards,
-				        acc,
-				        null,
-				        false, 
-				        h);
-			} catch (ParseException e) {
+            try {       
+            	if(type.equals(FUZZY_ATOMISED)) {
+            		nameSearchList = service.findByNameFuzzySearch(
+            				queryWOWildcards,
+            				acc,
+            				null,
+            				false, 
+            				h);
+            	} else {
+            		nameSearchList = service.findByFuzzyNameCacheSearch(
+            				queryWOWildcards,
+            				acc,
+            				null,
+            				false, 
+            				h);
+            	}
+            } catch (ParseException e) {
 				// TODO Auto-generated catch block
 				//e.printStackTrace();
 				ErrorResponse er = new ErrorResponse();

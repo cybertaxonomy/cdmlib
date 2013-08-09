@@ -126,7 +126,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     @XmlElement(name = "NameCache")
     @Fields({
         @Field(name = "nameCache_tokenized"),
-        @Field(store = Store.YES, index = Index.YES, analyze = Analyze.NO)
+        @Field(store = Store.YES, index = Index.YES, analyze = Analyze.YES)
     })
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
