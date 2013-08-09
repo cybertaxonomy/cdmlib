@@ -49,7 +49,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
- *
  */
 
 

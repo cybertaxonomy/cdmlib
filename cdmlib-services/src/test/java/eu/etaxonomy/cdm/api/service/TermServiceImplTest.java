@@ -80,7 +80,7 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getTermByUuid(java.util.UUID)}.
+     * Test method for {@link eu.etaxonomy.cdm.api.service.TermServiceImpl#getContinentByUuid(java.util.UUID)}.
      */
     @Test
     /* @DataSet
