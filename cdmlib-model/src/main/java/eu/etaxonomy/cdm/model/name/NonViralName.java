@@ -42,6 +42,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Target;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Analyzer;
 import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Fields;
 import org.hibernate.search.annotations.Index;
@@ -128,6 +129,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         @Field(name = "nameCache_tokenized"),
         @Field(store = Store.YES, index = Index.YES, analyze = Analyze.YES)
     })
+    @Analyzer (impl = org.apache.lucene.analysis.KeywordAnalyzer.class)
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.DEFINED,
             cacheReplacedProperties={"genusOrUninomial", "infraGenericEpithet", "specificEpithet", "infraSpecificEpithet"} )
     @NotEmpty(groups = Level2.class) // implicitly NotNull

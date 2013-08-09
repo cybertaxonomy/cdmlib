@@ -429,7 +429,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
             } else {
                 ErrorResponse er = new ErrorResponse();
-                er.setErrorMessage("No Taxon Name matches : " + query + ", for given accuracy");
+                er.setErrorMessage("No Taxon Name matches : " + query);
                 nsList.add(er);
             }
         }        

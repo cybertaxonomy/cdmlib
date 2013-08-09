@@ -29,6 +29,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Explanation;
 import org.apache.lucene.search.FuzzyLikeThisQuery;
 import org.apache.lucene.search.FuzzyQuery;
+import org.apache.lucene.search.PhraseQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.BooleanClause.Occur;
@@ -579,9 +580,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     	LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);    	   
     	QueryFactory queryFactory = new QueryFactory(luceneSearch);
-
-    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
-    	luceneSearch.setSortFields(sortFields);
+    	
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
 
     	// ---- search criteria
     	luceneSearch.setClazz(clazz);
@@ -629,7 +630,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     	return luceneSearch;
     }
     
-    protected LuceneSearch prepareFindByFuzzyTitleCacheSearch(Class<? extends CdmBase> clazz, 
+    protected LuceneSearch prepareFindByFuzzyNameCacheSearch(Class<? extends CdmBase> clazz, 
     		String name,
     		float accuracy,
     		int maxNoOfResults,    		
@@ -639,11 +640,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
+    	
         // ---- search criteria
         luceneSearch.setClazz(clazz);
         FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());                      
 
-        fltq.addTerms(name.toLowerCase(), "nameCache", accuracy, 3);           
+        fltq.addTerms(name, "nameCache", accuracy, 3);           
 
      	BooleanQuery finalQuery = new BooleanQuery(false);
      	
@@ -668,23 +672,19 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
-        luceneSearch.setSortFields(sortFields);
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
         luceneSearch.setClazz(clazz);
-        
-        
-        
+                             
         if(name != null && !name.equals("")) {        	        	
         	if(wildcard) {
-        		textQuery.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);
-        	} else {
-        		textQuery.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);
+        		textQuery.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);        		
+        	} else {        		
+        		textQuery.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);   		
         	}
-        } 
-        
-        finalQuery.add(textQuery, Occur.MUST);
+        }                
 
         luceneSearch.setQuery(textQuery);
 
@@ -768,7 +768,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     	logger.info("Name to fuzzy search for : " + name);
     	
-        LuceneSearch luceneSearch = prepareFindByFuzzyTitleCacheSearch(null, name, accuracy, maxNoOfResults, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareFindByFuzzyNameCacheSearch(null, name, accuracy, maxNoOfResults, languages, highlightFragments);
 
         // --- execute search        
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
@@ -790,12 +790,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             boolean highlightFragments, 
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
 
-    	logger.info("Name to fuzzy search for : " + name);
+    	logger.info("Name to exact search for : " + name);
     	
-        LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
+    	LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
 
         // --- execute search        
+    
+        
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+        
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();        
 
         // --- initialize taxa, highlight matches ....
