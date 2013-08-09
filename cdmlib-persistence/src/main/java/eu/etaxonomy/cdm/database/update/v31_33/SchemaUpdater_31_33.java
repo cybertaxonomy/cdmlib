@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
 /**
  * @author a.mueller
- * @created Oct 11, 2011
+ * @created Jun 06, 2013
  */
 public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
@@ -125,7 +125,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//create and update elevenation max, remove error column
 		updateElevationMax(stepList);
 		
-		//create taxon node tree index
+		//create TaxonNode tree index
 		stepName = "Create taxon node tree index";
 		tableName = "TaxonNode";
 		columnName = "treeIndex";
@@ -133,17 +133,18 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//TODO update tree index
+		//FIXME update tree index
 		
-		//create original source type column
+		//create TaxonNode sort index column
 		stepName = "Create taxon node sort index column";
 		tableName = "TaxonNode";
 		columnName = "sortIndex";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, null);
 		stepList.add(step);
 		
-		//TODO implement sorted behaviour in model first !!
-		//TODO update sortindex (similar updater exists already for FeatureNode#sortIndex in schema update 25_30 
+		//FIXME implement sorted behaviour in model first !!
+		//FIXME update sortindex (similar updater exists already for FeatureNode#sortIndex in schema update 25_30 
+				//	but	had a bad performance
 		
 		//create feature node tree index
 		stepName = "Create feature node tree index";
@@ -153,7 +154,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
 				
-		//TODO update tree index for feature node
+		//FIXME update tree index for feature node
 		
 		//update introduced: adventitious (casual) label
 		//#3540
@@ -317,10 +318,21 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
 		stepList.add(step);
 
-		//TODO remove citation_id and citationmicroreference columns from Media table #2541
-		//first check if columns are always empty
+		//remove citation_id and citationmicroreference columns from Media table #2541
+		//FIXME first check if columns are always empty
+		stepName = "Remove citation column from Media";
+		tableName = "Media";
+		columnName = "citation_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
 		
-		//TODO update length of all title caches and full title cache in names
+		stepName = "Remove citation microreference column from Media";
+		tableName = "Media";
+		columnName = "citationMicroReference";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//FIXME update length of all title caches and full title cache in names
 		//https://dev.e-taxonomy.eu/trac/ticket/1592
 		
 		//rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
@@ -330,10 +342,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String newColumnName = "stateData_id";
 		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
-		
-		
-		//TODO add sortIndex column to TaxonNode and fill with values (compare with FeatureNode filling, however, this
-//		had a bad performance
 		
 		//specimen descriptions #3571
 		//add column DescriptionBase.Specimen_ID  #3571
@@ -345,7 +353,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
-		//TODO update DescriptionBase.Specimen_ID data  #3571
+		//FIXME update DescriptionBase.Specimen_ID data  #3571
 
 		//remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)  #3571
 		stepName = "Remove table DescriptionBase_SpecimenOrObservationBase";
@@ -385,10 +393,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//TODO (read first #3360) add columns GeneticAccessionNumber(String) to Sequence 
-
-		//TODO update molecular data #3360
-		
+		//remove old sequence columns  
+		removeOldSequenceColumns(stepList);
 		
 		//add MediaSpecimen column #3614
 		stepName = "Add mediaSpecimen column to SpecimenOrObservationBase";
@@ -409,7 +415,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		addTimeperiodToDescriptionElement(stepList);
 
 
-		//TODO add Marker vocabulary and terms #3591 => TermUpdater
+		//TODO add DnaMarker vocabulary and terms #3591 => TermUpdater
 		
 		//SpecimenOrObservationBase_Media #3597
 		stepName = "Remove table SpecimenOrObservationBase_Media";
@@ -579,6 +585,53 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
+
+	private void removeOldSequenceColumns(List<ISchemaUpdaterStep> stepList) {
+		//TODO also remove Identifiable attributes ??
+		
+		//remove citationmicroreference
+		String stepName = "Remove citationmicroreference column";
+		String tableName = "Sequence";
+		String columnName = "citationMicroReference";
+		ISchemaUpdaterStep step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//remove datesequenced
+		stepName = "Remove datesequenced column";
+		columnName = "datesequenced";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//remove length
+		stepName = "Remove length column";
+		columnName = "length";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//remove sequence
+		stepName = "Remove sequence column";
+		columnName = "sequence";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);		
+
+		//remove locus_id
+		stepName = "Remove locus_id column";
+		columnName = "locus_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//remove publishedin_id
+		stepName = "Remove publishedin_id column";
+		columnName = "publishedin_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+		
+		//remove barcode
+		stepName = "Remove barcode column";
+		columnName = "barcode";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+	}
 
 	private void updateIdInVocabulary(List<ISchemaUpdaterStep> stepList) {
 

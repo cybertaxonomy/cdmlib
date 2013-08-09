@@ -37,6 +37,7 @@ import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.codehaus.plexus.util.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -364,7 +365,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         String label = csvLine.get(2).trim();
         String description = csvLine.get(3);
         String abbreviatedLabel = csvLine.get(4);
-        if (abbrevAsId ){
+        if (abbrevAsId && StringUtils.isNotBlank(abbreviatedLabel)){
         	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
         }
         newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
