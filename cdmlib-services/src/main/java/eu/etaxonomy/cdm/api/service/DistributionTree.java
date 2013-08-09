@@ -34,7 +34,7 @@ public class DistributionTree extends Tree<Distribution>{
     public static final Logger logger = Logger.getLogger(DistributionTree.class);
 
     public DistributionTree(){
-        NamedArea area = new NamedArea();
+        NamedArea area = NamedArea.NewInstance();
         Distribution data = Distribution.NewInstance();
         data.setArea(area);
         data.putModifyingText(Language.ENGLISH(), "test");
