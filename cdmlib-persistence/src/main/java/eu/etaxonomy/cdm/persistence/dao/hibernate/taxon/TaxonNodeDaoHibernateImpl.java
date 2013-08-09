@@ -30,7 +30,6 @@ import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 /**
  * @author a.mueller
  * @created 16.06.2009
- * @version 1.0
  */
 @Repository
 @Qualifier("taxonNodeDaoHibernateImpl")
