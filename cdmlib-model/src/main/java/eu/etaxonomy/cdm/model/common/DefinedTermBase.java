@@ -365,7 +365,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         String label = csvLine.get(2).trim();
         String description = csvLine.get(3);
         String abbreviatedLabel = csvLine.get(4);
-        if (abbrevAsId && StringUtils.isNotBlank(abbreviatedLabel)){
+        if (StringUtils.isBlank(abbreviatedLabel)){
+        	abbreviatedLabel = null;
+        }
+        if (abbrevAsId){
         	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
         }
         newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );

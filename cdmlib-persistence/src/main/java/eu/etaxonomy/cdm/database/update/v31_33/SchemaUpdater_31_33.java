@@ -754,9 +754,17 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
 		stepList.add(step);
 
-		//MarkerType, AnnotationType, NamedAreaType, NamedAreaLevel, Feature, Continent, DerivationEventType, StatisticalMeasure, RightsType,SynonymRelationshipType & HybridRelationshipType & NameRelationshipType => none
+		//MarkerType, AnnotationType, NamedAreaType, NamedAreaLevel, Feature, Continent, DerivationEventType, StatisticalMeasure, RightsType,SynonymRelationshipType & HybridRelationshipType & NameRelationshipType 
+		//=> none
 		
 		//DnaMarker => yes but no entries
+		
+		//Clean up empty abbreviated labels in representations
+		stepName = "Update abbreviated label, replace empty strings by null";
+		query = "Update Representation r SET r.abbreviatedLabel = NULL WHERE r.abbreviatedLabel = ''";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
 	}
 
 	private void updateTermTypesForVocabularies( List<ISchemaUpdaterStep> stepList) {
