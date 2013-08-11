@@ -141,7 +141,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     protected boolean protectedNameCache;
 
     @XmlElement(name = "GenusOrUninomial")
-    @Field(analyze = Analyze.YES)
+    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
     @Match(MatchMode.EQUAL_REQUIRED)
     @CacheUpdate("nameCache")
     @Size(max = 255)
@@ -151,7 +151,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String genusOrUninomial;
 
     @XmlElement(name = "InfraGenericEpithet")
-    @Field(analyze = Analyze.YES)
+    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
@@ -160,7 +160,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String infraGenericEpithet;
 
     @XmlElement(name = "SpecificEpithet")
-    @Field(analyze = Analyze.YES)
+    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty
@@ -169,7 +169,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
     private String specificEpithet;
 
     @XmlElement(name = "InfraSpecificEpithet")
-    @Field(analyze = Analyze.YES)
+    @Field(analyze = Analyze.YES,indexNullAs=Field.DEFAULT_NULL_TOKEN)
     @CacheUpdate("nameCache")
     //TODO Val #3379
 //    @NullOrNotEmpty

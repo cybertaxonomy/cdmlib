@@ -591,25 +591,29 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     	if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {        	
     		fltq.addTerms(nvn.getGenusOrUninomial().toLowerCase(), "genusOrUninomial", accuracy, 3);    		
     	} else {
-    		textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		//textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
     	}
 
     	if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
     		fltq.addTerms(nvn.getInfraGenericEpithet().toLowerCase(), "infraGenericEpithet", accuracy, 3); 
     	} else {
-    		textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		//textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
     	}
 
     	if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
     		fltq.addTerms(nvn.getSpecificEpithet().toLowerCase(), "specificEpithet", accuracy, 3); 
     	} else {
-    		textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);    		
+    		//textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
     	}
 
     	if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
     		fltq.addTerms(nvn.getInfraSpecificEpithet().toLowerCase(), "infraSpecificEpithet", accuracy, 3); 
     	} else {
-    		textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		//textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
     	}
 
     	if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
