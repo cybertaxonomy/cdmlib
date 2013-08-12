@@ -42,7 +42,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
@@ -539,14 +538,10 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      */
     protected Set<TaxonNode> getAncestors(){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
-
-
         nodeSet.add(this);
-
         if(this.getParent() != null){
             nodeSet.addAll(((TaxonNode) this.getParent()).getAncestors());
         }
-
         return nodeSet;
     }
 
@@ -589,12 +584,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     protected void setCountChildren(int countChildren) {
         this.countChildren = countChildren;
     }
-//	public Taxon getOriginalConcept() {
-//		return originalConcept;
-//	}
-//	public void setOriginalConcept(Taxon originalConcept) {
-//		this.originalConcept = originalConcept;
-//	}
+
     public Synonym getSynonymToBeUsed() {
         return synonymToBeUsed;
     }
