@@ -60,7 +60,8 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-		String database = "cdm_test";
+//		String database = "cdm_test";
+		String database = "test";
 		String username = "edit";
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 		
@@ -68,7 +69,7 @@ public class Datasource {
 		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
 		
 		
-		//		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		appCtr.close();
