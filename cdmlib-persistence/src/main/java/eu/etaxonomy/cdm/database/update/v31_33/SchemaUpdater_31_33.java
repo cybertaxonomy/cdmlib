@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -90,6 +91,11 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	@Override
 	protected List<ISchemaUpdaterStep> getUpdaterList() {
 		
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		String columnName;
+		
 		//CHECKS
 		
 		//remove SpecimenOrObservationBase_Media #3597
@@ -106,15 +112,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//TODO Does it throw exception if table does not exist?
 		//Was in Schemaupdater_301_31 which was never used and later deleted (r18331).
 		//drop TypeDesignationBase_TaxonNameBase   //from schemaUpdater 301_31
-		String stepName = "Drop duplicate TypeDesignation-TaxonName table";
-		String tableName = "TypeDesignationBase_TaxonNameBase";
-		ISchemaUpdaterStep step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepName = "Drop duplicate TypeDesignation-TaxonName table";
+		tableName = "TypeDesignationBase_TaxonNameBase";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//create original source type column
 		stepName = "Create original source type column";
 		tableName = "OriginalSourceBase";
-		String columnName = "sourceType";
+		columnName = "sourceType";
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 4, INCLUDE_AUDIT);
 		((ColumnAdder)step).setNotNull(true);
 		stepList.add(step);
@@ -133,7 +139,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//FIXME update tree index
+		//update treeindex for taxon nodes
+		stepName = "Update TaxonNode treeindex";
+		tableName = "TaxonNode";
+		String treeIdColumnName = "classification_id";
+		step = TreeIndexUpdater.NewInstance(stepName, tableName, treeIdColumnName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
 		
 		//create TaxonNode sort index column
 		stepName = "Create taxon node sort index column";
@@ -154,7 +165,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
 				
-		//FIXME update tree index for feature node
+		//update tree index for feature node
+		stepName = "Update FeatureNode treeindex";
+		tableName = "FeatureNode";
+		treeIdColumnName = "featuretree_id";
+		step = TreeIndexUpdater.NewInstance(stepName, tableName, treeIdColumnName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
 		
 		//update introduced: adventitious (casual) label
 		//#3540

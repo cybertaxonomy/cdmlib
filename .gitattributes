@@ -1266,6 +1266,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableDroper.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableNameChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermRepresentationUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TreeIndexUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UniqueIndexDropper.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/VocabularyCreator.java -text
