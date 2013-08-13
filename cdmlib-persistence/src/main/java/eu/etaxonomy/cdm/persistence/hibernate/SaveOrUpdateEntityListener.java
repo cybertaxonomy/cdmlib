@@ -66,7 +66,7 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 	 * @param event
 	 * @param node
 	 */
-	private <T extends ITreeNode<T>> void reindex(SaveOrUpdateEvent event, ITreeNode<?> node) {
+	private <T extends ITreeNode> void reindex(SaveOrUpdateEvent event, T node) {
 		String oldChildIndex = node.treeIndex();
 		String sep = ITreeNode.separator;
 		String pref = ITreeNode.treePrefix;
@@ -75,12 +75,16 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 		if (node.getId() > 0 && (oldChildIndex == null|| ! oldChildIndex.startsWith(parentIndex))){   //TODO
 			String newChildIndex = parentIndex + node.getId() + sep;
 			node.setTreeIndex(newChildIndex);
+			
+			//TODO this is a greedy implementation, better use update by replace string
+			//either using and improving the below code or by using native SQL
+			//The current approach may run out of memory for large descendant sets.
 			List<T> childNodes = (List<T>)node.getChildNodes();
 			for (T child : childNodes){
 				reindex(event, child);
 			}
 			
-			String className = event.getEntityName();
+//			String className = event.getEntityName();
 //					String updateQuery = " UPDATE %s tn " +
 //							" SET tn.treeIndex = Replace(tn.treeIndex, '%s', '%s') " +
 //							" WHERE tn.id <> "+ node.getId()+" ";
