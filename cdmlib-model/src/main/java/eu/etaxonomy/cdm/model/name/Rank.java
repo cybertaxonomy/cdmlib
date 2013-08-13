@@ -22,6 +22,7 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
@@ -951,10 +952,7 @@ public class Rank extends OrderedTermBase<Rank> {
         Representation representation = rank.getRepresentation(lang);
         String abbrevLabel = representation.getAbbreviatedLabel();
         String label = representation.getLabel();
-        if (abbrevLabel == null){
-            logger.warn("Abbreviated label for rank is NULL.Can't add rank: " + CdmUtils.Nz(rank.getLabel()));
-            return;
-        }
+       
         //initialize maps
         if (abbrevMap == null){
             abbrevMap = new HashMap<String, UUID>();
@@ -962,9 +960,13 @@ public class Rank extends OrderedTermBase<Rank> {
         if (labelMap == null){
             labelMap = new HashMap<String, UUID>();
         }
-        //add to map
-        abbrevMap.put(abbrevLabel, rank.getUuid());
         labelMap.put(label.toLowerCase(), rank.getUuid());
+        //add to map
+        if (StringUtils.isBlank(abbrevLabel)){
+            logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));
+        }else{
+        	abbrevMap.put(abbrevLabel, rank.getUuid());
+        }
     }
 
 
