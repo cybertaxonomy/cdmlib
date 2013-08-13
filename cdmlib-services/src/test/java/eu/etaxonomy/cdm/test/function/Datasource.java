@@ -107,8 +107,7 @@ public class Datasource {
 	private void testSqlServer(){
 		DbSchemaValidation validation = DbSchemaValidation.CREATE;
 		CdmDataSource ds = 
-			CdmDataSource.NewSqlServer2005Instance("LENOVO-T61", "NielsTest", -1, "Niels", "test", null);
-			//CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
+			CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 //		ds =
 //			 CdmPersistentDataSource.NewInstance("localH2");
 		try {
