@@ -111,6 +111,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 			result = string + afterYear;
 		}else{
 			result = string + beforeYear + year + afterYear;
+			//TODO remove double dots (..) if string ends with "."?  #3645
 		}
 		return result;
 	}

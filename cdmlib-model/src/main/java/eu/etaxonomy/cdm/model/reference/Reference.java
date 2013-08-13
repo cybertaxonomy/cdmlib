@@ -272,7 +272,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
    // @InReference(groups=Level2.class)
-   	protected Reference inReference;
+   	protected Reference<?> inReference;
 
 //    @XmlElement(name = "FullReference")
 //    @XmlIDREF
@@ -356,9 +356,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	private boolean cacheStrategyRectified = false;
 
     protected Reference(){
-		super();
-		this.type = ReferenceType.Generic;
-		this.cacheStrategy =(S)this.type.getCacheStrategy();
+		this(ReferenceType.Generic);
 	}
 
 	protected Reference(ReferenceType type) {
