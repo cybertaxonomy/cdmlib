@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * @date 16.09.2010
  *
  */
-public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase implements ISchemaUpdaterStep {
+public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureNodeTreeColumnUpdater> implements ISchemaUpdaterStep {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureNodeTreeColumnUpdater.class);
 	
