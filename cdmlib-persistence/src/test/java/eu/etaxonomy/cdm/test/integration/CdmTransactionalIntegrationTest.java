@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.test.integration;
 
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
+import org.apache.log4j.Priority;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -367,10 +369,10 @@ public abstract class CdmTransactionalIntegrationTest extends CdmIntegrationTest
      */
     protected void commitAndStartNewTransaction(final String[] tableNames) {
         commit();
-        if(logger.isDebugEnabled()){
-//            printDataSet(System.out, tableNames);
-            //careful, this will overwrite existing files
-//          writeDbUnitDataSetFile(tableNames);
+        if(logger.isEnabledFor(Level.DEBUG)){
+            printDataSet(System.out, tableNames);
+//            careful, this will overwrite existing files:
+//            writeDbUnitDataSetFile(tableNames);
         }
         startNewTransaction();
     }

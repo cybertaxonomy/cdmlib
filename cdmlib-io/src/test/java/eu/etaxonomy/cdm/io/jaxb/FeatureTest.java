@@ -42,9 +42,9 @@ public class FeatureTest {
 			assertNotNull("FeatureNode.feature must not be null",featureNode.getFeature());
 			assertEquals("FeatureNode.feature must equal Feature",feature,featureNode.getFeature());
 			
-			assertNotNull("FeatureNode.children must not be null",featureNode.getChildren());
-			assertFalse("FeatureNode.children must not be empty",featureNode.getChildren().isEmpty());
-			assertEquals("FeatureNode.children must have 4 child nodes",4,featureNode.getChildren().size());
+			assertNotNull("FeatureNode.children must not be null",featureNode.getChildNodes());
+			assertFalse("FeatureNode.children must not be empty",featureNode.getChildNodes().isEmpty());
+			assertEquals("FeatureNode.children must have 4 child nodes",4,featureNode.getChildNodes().size());
 			
 	    }
 }

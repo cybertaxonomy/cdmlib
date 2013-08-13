@@ -1253,7 +1253,7 @@ public class SDDDocumentBuilder {
 
 	public void buildBranches(FeatureNode parent, ElementImpl element,
 			boolean isRoot) {
-		List<FeatureNode> children = parent.getChildren();
+		List<FeatureNode> children = parent.getChildNodes();
 		if (!parent.isLeaf()) {
 			ElementImpl elCharNode = new ElementImpl(document, NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,

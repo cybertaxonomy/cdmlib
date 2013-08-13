@@ -794,8 +794,8 @@ public class PolytomousKeyGenerator {
 				iIdependencies.get(state).add(node.getFeature());
 			}
 		}
-		if (node.getChildren()!=null) {
-			for (FeatureNode fn : node.getChildren()){
+		if (node.getChildNodes()!=null) {
+			for (FeatureNode fn : node.getChildNodes()){
 				checkDependencies(fn);
 			}
 		}

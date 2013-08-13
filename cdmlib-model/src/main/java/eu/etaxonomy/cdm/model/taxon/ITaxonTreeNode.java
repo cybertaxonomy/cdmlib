@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author n.hoffmann
  * @created Sep 18, 2009
  */
-public interface ITreeNode extends IAnnotatableEntity {
+public interface ITaxonTreeNode extends IAnnotatableEntity {
 
 	/**
 	 * Adds a taxon node as a child of the ITreeNode

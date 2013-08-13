@@ -42,12 +42,12 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
  * @created 31.03.2009
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNode", propOrder = {
@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
-public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable{
+public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
 
@@ -376,10 +376,22 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 
 //*********** GETTER / SETTER ***********************************/
 
-
-	@Transient
-    public String getTreeIndex() {
+	@Override
+    public String treeIndex() {
 		return treeIndex;
+	}
+	
+	@Override
+	@Deprecated //for CDM lib internal use only, may be removed in future versions
+	public void setTreeIndex(String treeIndex) {
+		this.treeIndex = treeIndex;
+	}
+    
+
+	@Override
+	@Deprecated //for CDM lib internal use only, may be removed in future versions
+	public int treeId() {
+		return this.classification.getId();
 	}
     
     public Taxon getTaxon() {
@@ -392,7 +404,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         }
     }
     @Transient
-    public ITreeNode getParentTreeNode() {
+    public ITaxonTreeNode getParentTreeNode() {
         if(isTopmostNode()){
             return getClassification();
         }
@@ -413,7 +425,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      *
      * @see setParentTreeNode(ITreeNode)
      */
-    protected void setParent(ITreeNode parent) {
+    protected void setParent(ITaxonTreeNode parent) {
         if(parent instanceof Classification){
             this.parent = null;
             return;
@@ -428,13 +440,13 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      * @param parent
      */
     @Transient
-    protected void setParentTreeNode(ITreeNode parent){
+    protected void setParentTreeNode(ITaxonTreeNode parent){
     	setParentTreeNode(parent, parent.getChildNodes().size());
     }   
     @Transient
-    protected void setParentTreeNode(ITreeNode parent, int index){
+    protected void setParentTreeNode(ITaxonTreeNode parent, int index){
         // remove ourselves from the old parent
-        ITreeNode formerParent = this.getParentTreeNode();
+        ITaxonTreeNode formerParent = this.getParentTreeNode();
         
         //special case, child already exists for same parent
         if (formerParent != null && formerParent.equals(parent)){
@@ -670,6 +682,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
             return null;
         }
     }
+
 
 
 }

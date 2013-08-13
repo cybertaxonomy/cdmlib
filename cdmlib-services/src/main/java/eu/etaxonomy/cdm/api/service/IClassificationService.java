@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITreeNode;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -44,7 +44,7 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param uuid
      * @return
      */
-    public ITreeNode getTreeNodeByUuid(UUID uuid);
+    public ITaxonTreeNode getTreeNodeByUuid(UUID uuid);
 
     /**
      *
@@ -261,14 +261,14 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param treeNode
      * @return
      */
-    public UUID removeTreeNode(ITreeNode treeNode);
+    public UUID removeTreeNode(ITaxonTreeNode treeNode);
 
     /**
      *
      * @param treeNode
      * @return
      */
-    public UUID saveTreeNode(ITreeNode treeNode);
+    public UUID saveTreeNode(ITaxonTreeNode treeNode);
 
 
     public List<TaxonNode> getAllNodes();

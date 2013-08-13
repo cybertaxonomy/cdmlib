@@ -219,7 +219,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 	@Transient
 	public List<FeatureNode> getRootChildren(){
 		List<FeatureNode> result = new ArrayList<FeatureNode>();
-		result.addAll(root.getChildren());
+		result.addAll(root.getChildNodes());
 		return result;
 	}
 	

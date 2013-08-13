@@ -754,6 +754,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java 
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISimpleTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ITreeNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IVersionableEntity.java -text svneol=unset#text/plain
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableSource.java -text
@@ -937,7 +938,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/AlternativeTreeRoot.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Classification.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITaxonNodeComparator.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITreeNode.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/ITaxonTreeNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/IllegalAncestryException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/Synonym.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/SynonymRelationship.java -text
@@ -2210,6 +2211,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientific
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/SecurityTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest-indexing.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testDeleteSynonym.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testInferredSynonyms.xml -text

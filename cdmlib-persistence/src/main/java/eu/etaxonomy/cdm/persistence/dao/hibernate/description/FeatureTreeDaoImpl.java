@@ -53,7 +53,7 @@ public class FeatureTreeDaoImpl extends IdentifiableDaoBase<FeatureTree> impleme
 	}
 
 	public void loadNodes(FeatureNode root, List<String> nodePaths) {
-		for(FeatureNode child : root.getChildren()) {
+		for(FeatureNode child : root.getChildNodes()) {
 			defaultBeanInitializer.initialize(child, nodePaths);
 			loadNodes(child,nodePaths);
 		}

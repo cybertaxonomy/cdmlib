@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
-import eu.etaxonomy.cdm.model.taxon.ITreeNode;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
@@ -247,8 +247,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#getTreeNodeByUuid(java.util.UUID)
      */
     @Override
-    public ITreeNode getTreeNodeByUuid(UUID uuid){
-        ITreeNode treeNode = taxonNodeDao.findByUuid(uuid);
+    public ITaxonTreeNode getTreeNodeByUuid(UUID uuid){
+        ITaxonTreeNode treeNode = taxonNodeDao.findByUuid(uuid);
         if(treeNode == null){
             treeNode = dao.findByUuid(uuid);
         }
@@ -275,7 +275,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#removeTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
      */
     @Override
-    public UUID removeTreeNode(ITreeNode treeNode) {
+    public UUID removeTreeNode(ITaxonTreeNode treeNode) {
         if(treeNode instanceof Classification){
             return dao.delete((Classification) treeNode);
         }else if(treeNode instanceof TaxonNode){
@@ -305,7 +305,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#saveTreeNode(eu.etaxonomy.cdm.model.taxon.ITreeNode)
      */
     @Override
-    public UUID saveTreeNode(ITreeNode treeNode) {
+    public UUID saveTreeNode(ITaxonTreeNode treeNode) {
         if(treeNode instanceof Classification){
             return dao.save((Classification) treeNode);
         }else if(treeNode instanceof TaxonNode){
