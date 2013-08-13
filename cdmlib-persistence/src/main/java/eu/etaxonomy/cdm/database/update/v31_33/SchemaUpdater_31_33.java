@@ -285,6 +285,10 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false); 
 		stepList.add(step);
 		
+		//FIXME update abbrevTitle, protectedAbbrevTitle and abbrevTitleCache in Reference
+		updateAbbrevTitle(stepList);
+		
+		
 		//add doi to reference
 		stepName = "Add doi to Reference";
 		tableName = "Reference";
@@ -601,6 +605,50 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
+
+	private void updateAbbrevTitle(List<ISchemaUpdaterStep> stepList) {
+
+		String stepName = "Update abbrevTitleCache for protected title caches with title";
+		String query = " UPDATE Reference r " + 
+				" SET r.abbrevTitle = r.title, r.abbrevTitleCache = r.titleCache, r.protectedAbbrevTitleCache = r.protectedTitleCache"; 
+//				+ " WHERE r.title IS NOT NULL AND r.protectedTitleCache = 1 ";
+		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+//		stepName = "Update abbrevTitleCache for protected title caches with no title";
+//		query = " UPDATE Reference r " + 
+//				" SET r.abbrevTitleCache = r.titleCache, r.protectedAbbrevTitleCache = r.protectedTitleCache" + 
+//				" WHERE r.title IS NULL AND r.protectedTitleCache = 1 ";
+//		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+//		stepList.add(step);
+
+//		stepName = "Update abbrevTitleCache for protected title caches with title";
+//		query = " UPDATE Reference r " + 
+//				" SET r.abbrevTitle = r.title, r.abbrevTitleCache = r.titleCache, r.protectedAbbrevTitleCache = r.protectedTitleCache" + 
+//				" WHERE r.title IS NOT NULL AND r.protectedTitleCache = 0 ";
+//		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+//		stepList.add(step);
+		
+		stepName = "Update reference title, set null where abbrev title very likely";
+		query = " UPDATE Reference r " + 
+				" SET r.title = NULL " + 
+				" WHERE r.title IS NOT NULL AND r.protectedTitleCache = 0 AND " +
+					" ( LENGTH(r.title) <= 15 AND title like '%.%.%' OR LENGTH(r.title) < 30 AND title like '%.%.%.%' OR LENGTH(r.title) < 45 AND title like '%.%.%.%.%' OR LENGTH(r.title) < 60 AND title like '%.%.%.%.%.%' " +
+					")" ;
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		
+		stepName = "Update reference abbrevTitle, set null where abbrev title very unlikely";
+		query = " UPDATE Reference r " + 
+				" SET r.abbrevTitle = NULL " + 
+				" WHERE r.title IS NOT NULL AND r.protectedTitleCache = 0 AND " +
+					" ( title NOT like '%.%' OR LENGTH(r.title) > 30 AND title NOT like '%.%.%' " +
+					")" ;
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+				
+	}
 
 	private void removeOldSequenceColumns(List<ISchemaUpdaterStep> stepList) {
 		//TODO also remove Identifiable attributes ??
