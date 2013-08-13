@@ -77,11 +77,11 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
                 	teamOrPerson.setTitleCache(titleCache, false);
             	}
             
-            //team-or-person caches
+            //reference caches
             }else if(Reference.class.isAssignableFrom(entityClazz)){
             	Reference<?> ref = (Reference<?>)entity;
             	ref.getAbbrevTitleCache();
-            	
+            	ref.getTitleCache();
             //title cache
             }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;

@@ -377,7 +377,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
         }
         // is title dirty, i.e. equal NULL?
         if (abbrevTitleCache == null){
-            this.abbrevTitleCache = generateTitle();
+            this.abbrevTitleCache = generateAbbrevTitle();
             this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
         }
         return abbrevTitleCache;	

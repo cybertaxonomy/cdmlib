@@ -20,25 +20,30 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.IArticle;
 import eu.etaxonomy.cdm.model.reference.IBook;
+import eu.etaxonomy.cdm.model.reference.IJournal;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 18.03.2009
- * @version 1.0
  */
 public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
@@ -52,6 +57,9 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	@SpringBeanByType
 	private IAgentDao agentDao;
 
+	@SpringBeanByType
+	private IReferenceDao referenceDao;
+	
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -77,7 +85,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
-	//@ExpectedDataSet
+	@ExpectedDataSet
 	public void testOnSaveOrUpdateNames() {
 		//names
 		BotanicalName name =  (BotanicalName)cdmEntityDaoBase.findByUuid(UUID.fromString("a49a3963-c4ea-4047-8588-2f8f15352730"));
@@ -126,30 +134,17 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	 */
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
-	//@ExpectedDataSet
+	@ExpectedDataSet
 	public void testOnSaveOrUpdateAgents() {
-
-//		646dad4b-0f0e-4f5a-b059-8099ad9a6125
-//		ca904533-2a70-49f3-9a0e-5e4bcc12c154
-//		4c4e15e3-3a4f-4505-900a-fae2555ac9e4
 		
 		//person
 		Person person1;
 		Person person2;
-		Person person3;person1 = Person.NewInstance();
+		Person person3;
 		
-		person1.setUuid(UUID.fromString("646dad4b-0f0e-4f5a-b059-8099ad9a6125"));
-		person1.setFirstname("P1FN");
-		person1.setLastname("P1LN");
-		person1.setPrefix("Dr1.");
-		person1.setSuffix("Suff1");
+		person1 = makePerson1();
 		
-		person2 = Person.NewInstance();
-		person2.setUuid(UUID.fromString("ca904533-2a70-49f3-9a0e-5e4bcc12c154"));
-		person2.setNomenclaturalTitle("P2NomT");
-		person2.setLastname("P2LN");
-		person2.setFirstname("P2FN");
-		person2.setSuffix("P2Suff");
+		person2 = makePerson2();
 		
 		person3 = Person.NewInstance(); //empty person
 		person3.setUuid(UUID.fromString("4c4e15e3-3a4f-4505-900a-fae2555ac9e4"));
@@ -177,7 +172,60 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		Assert.assertEquals(team1, team2);
 
 	}
+
+	private Person makePerson1() {
+		Person person1;
+		person1 = Person.NewInstance();
+		
+		person1.setUuid(UUID.fromString("646dad4b-0f0e-4f5a-b059-8099ad9a6125"));
+		person1.setFirstname("P1FN");
+		person1.setLastname("P1LN");
+		person1.setPrefix("Dr1.");
+		person1.setSuffix("Suff1");
+		return person1;
+	}
+
+	private Person makePerson2() {
+		Person person2;
+		person2 = Person.NewInstance();
+		person2.setUuid(UUID.fromString("ca904533-2a70-49f3-9a0e-5e4bcc12c154"));
+		person2.setNomenclaturalTitle("P2NomT");
+		person2.setLastname("P2LN");
+		person2.setFirstname("P2FN");
+		person2.setSuffix("P2Suff");
+		return person2;
+	}
 	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase#saveOrUpdate(eu.etaxonomy.cdm.model.common.CdmBase)}.
+	 */
+	@Test
+	@DataSet("CacheStrategyGeneratorTest.xml")
+	@ExpectedDataSet
+	public void testOnSaveOrUpdateReferences() {
+		//References
+		IJournal journal1 = ReferenceFactory.newJournal();
+		Person journalAuthor = makePerson1();
+		
+		journal1.setTitle("My journal");
+		journal1.setUuid(UUID.fromString("a7fdf3b8-acd8-410a-afcd-1768d29d67e9"));
+		journal1.setAbbrevTitle("M. Journ.");
+		journal1.setAuthorTeam(journalAuthor);
+		
+		referenceDao.saveOrUpdate((Reference<?>)journal1);
+		
+		Person articleAuthor = makePerson2();
+		IArticle article1 = ReferenceFactory.newArticle();
+		article1.setUuid(UUID.fromString("eb090fbc-5895-405c-aba5-cac287efb128"));
+		article1.setAbbrevTitle("M. Art.");
+		article1.setVolume("1");
+		article1.setDatePublished(TimePeriod.NewInstance(1972));
+		article1.setInJournal(journal1);
+		article1.setAuthorTeam(articleAuthor);
+		
+		referenceDao.saveOrUpdate((Reference<?>)article1);
+		
+	}
 }	
 	
 

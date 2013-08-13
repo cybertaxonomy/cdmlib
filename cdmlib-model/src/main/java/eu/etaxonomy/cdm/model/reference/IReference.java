@@ -64,16 +64,25 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	 */
 	public String getTitle();
 	
+	
 	/**
-	 * Returns the abbreviated title of this reference.
+	 * Returns the references title
 	 */
 	public String getAbbrevTitle();
-	
+		
 	/**
 	 * Sets the references title
 	 * @param title
 	 */
 	public void setTitle(String title);
+
+	
+	/**
+	 * Sets the references abbreviated title
+	 * @param title
+	 */
+	public void setAbbrevTitle(String abbrevTitle);
+
 	
 	/**
 	 * Returns the date when the reference was published as a {@link TimePeriod}
