@@ -48,7 +48,7 @@ public interface INomenclaturalReference extends IReference{
 	 * @see #isProtectedAbbrevTitleCache()
 	 * @return the abbreviated representation of this reference
 	 */
-	//TODO discuss if we move all teh abbreviated title methods to another interface, e.g. IReference 
+	//TODO discuss if we move all the abbreviated title methods to another interface, e.g. IReference 
 	public String getAbbrevTitleCache();
 	
 	/**

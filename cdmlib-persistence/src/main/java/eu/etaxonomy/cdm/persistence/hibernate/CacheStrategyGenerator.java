@@ -24,12 +24,12 @@ import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateProxyHelperExtended;
 
 /**
  * @author a.mueller
  * @created 04.03.2009
- * @version 1.0
  */
 public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
 	private static final long serialVersionUID = -5511287200489449838L;
@@ -76,7 +76,12 @@ public class CacheStrategyGenerator implements SaveOrUpdateEventListener {
             	if (! teamOrPerson.isProtectedTitleCache()){
                 	teamOrPerson.setTitleCache(titleCache, false);
             	}
- 
+            
+            //team-or-person caches
+            }else if(Reference.class.isAssignableFrom(entityClazz)){
+            	Reference<?> ref = (Reference<?>)entity;
+            	ref.getAbbrevTitleCache();
+            	
             //title cache
             }else if(IdentifiableEntity.class.isAssignableFrom(entityClazz)) {
         		IdentifiableEntity<?> identifiableEntity = (IdentifiableEntity)entity;

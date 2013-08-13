@@ -12,8 +12,6 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 import java.util.List;
 
 import org.hibernate.HibernateException;
-import org.hibernate.Query;
-import org.hibernate.event.spi.EventSource;
 import org.hibernate.event.spi.SaveOrUpdateEvent;
 import org.hibernate.event.spi.SaveOrUpdateEventListener;
 import org.joda.time.DateTime;

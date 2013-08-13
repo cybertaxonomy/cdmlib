@@ -18,21 +18,20 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author a.mueller
- * @version 1.0
  * @created 08-Aug-2008 22:06:45
  */
-public class ReferenceBaseDefaultCacheStrategy<T extends Reference> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
+public class ReferenceDefaultCacheStrategy<T extends Reference> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ReferenceBaseDefaultCacheStrategy.class);
+	private static final Logger logger = Logger.getLogger(ReferenceDefaultCacheStrategy.class);
 	
 	/**
 	 * Constructor
 	 */
-	public ReferenceBaseDefaultCacheStrategy(){
+	public ReferenceDefaultCacheStrategy(){
 		super();
 	}
-	public static ReferenceBaseDefaultCacheStrategy NewInstance(){
-		return new ReferenceBaseDefaultCacheStrategy();
+	public static ReferenceDefaultCacheStrategy NewInstance(){
+		return new ReferenceDefaultCacheStrategy();
 	}
 	
 	
@@ -48,19 +47,25 @@ public class ReferenceBaseDefaultCacheStrategy<T extends Reference> extends Stra
 	final static UUID uuid = UUID.fromString("763fe4a0-c79f-4f14-9693-631680225ec3");
 	
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
+	@Override
+	public String getAbbrevTitleCache(T reference) {
+		return getTitleCache(reference, true);
+	}
+
+	@Override
 	public String getTitleCache(T strictReferenceBase) {
+		return getTitleCache(strictReferenceBase, false);
+	}
+	
+	private String getTitleCache(T ref, boolean isAbbrev) {
 		String result = "";
-		if (strictReferenceBase == null){
+		if (ref == null){
 			return null;
 		}
-		String titel = CdmUtils.Nz(strictReferenceBase.getTitle()).trim();
+		String titel = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
 		//titelAbbrev
 		String titelAbbrevPart = "";
-		if (!"".equals(titel)){
+		if (isNotBlank(titel)){
 			result = titel + blank; 
 		}
 		//delete .
@@ -68,16 +73,16 @@ public class ReferenceBaseDefaultCacheStrategy<T extends Reference> extends Stra
 			result = result.substring(0, result.length()-1);
 		}
 		
-		result = addYear(result, strictReferenceBase);
-		TeamOrPersonBase team = strictReferenceBase.getAuthorTeam();
-		String author = CdmUtils.Nz(team == null ? "" : team.getTitleCache());
-		if (CdmUtils.isNotEmpty(author)){
-			result = author + afterAuthor + result;
+		result = addYear(result, ref);
+		TeamOrPersonBase<?> team = ref.getAuthorTeam();
+		if (team != null){
+			String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
+			if (isNotBlank(author)){
+				result = author + afterAuthor + result;
+			}
 		}
 		return result;
 	}
-	
-
 	
 	protected String addYear(String string, T ref){
 		String result;
@@ -131,4 +136,5 @@ public class ReferenceBaseDefaultCacheStrategy<T extends Reference> extends Stra
 		}
 		return referenceTitleCache;
 	}
+
 }

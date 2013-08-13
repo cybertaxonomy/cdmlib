@@ -100,6 +100,23 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setInJournal(null);
 		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
 	}
+	
+	@Test
+	public void testGetAbbrevTitleCache(){
+		journal1.setTitle("My journal");
+		journal1.setAuthorTeam(team2);
+		article1.setTitle("My article");
+		article1.setInJournal(journal1);
+		article1.setAuthorTeam(team1);
+		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		article1.setAbbrevTitle("M. art.");
+		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getAbbrevTitleCache());
+
+		article1.setInJournal(null);
+		//TODO should not be needed here
+		article1.setTitleCache(null);
+		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
+	}
 
 	@Test
 	public void testGetNomenclaturalCitation(){
@@ -114,7 +131,7 @@ public class ArticleDefaultCacheStrategyTest {
 
 	
 	@Test 
-	public void testGetNomRefTitleWithoutYearAndAuthor(){
+	public void testGetTitleWithoutYearAndAuthor(){
 		journal1.setTitle("My journal");
 		journal1.setAuthorTeam(team2);
 		article1.setTitle("My article");
@@ -123,7 +140,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setVolume("34");
 		article1.setSeries("ser. 2");
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
-		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getNomRefTitleWithoutYearAndAuthor((Reference<?>)article1));
+		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference<?>)article1, false));
 	}
 	
 	@Test 

@@ -34,32 +34,48 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 	protected String afterYear = "";
 	protected String afterAuthor = ", ";	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
-	public String getTokenizedNomenclaturalTitel(T nomenclaturalReference) {
-		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
+
+	@Override
+	public String getTokenizedNomenclaturalTitel(T ref) {
+		String result =  getTitleWithoutYearAndAuthor(ref, true);
 		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
-		result = addYear(result, nomenclaturalReference, true);
+		result = addYear(result, ref, true);
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
+	@Override
 	public String getTitleCache(T nomenclaturalReference) {
+		return getTitleCache(nomenclaturalReference, false);
+	}
+
+	@Override
+	public String getAbbrevTitleCache(T nomenclaturalReference) {
+		return getTitleCache(nomenclaturalReference, true);
+	}
+	
+	private String getTitleCache(T ref, boolean isAbbrev) {
 		//TODO needed?
-		if (nomenclaturalReference.isProtectedTitleCache()){
-			return nomenclaturalReference.getTitleCache();
+		if (isAbbrev && ref.isProtectedAbbrevTitleCache()){
+			return ref.getAbbrevTitleCache();
+		}else if (!isAbbrev && ref.isProtectedTitleCache()){
+			return ref.getTitleCache();
 		}
-		String result =  getNomRefTitleWithoutYearAndAuthor(nomenclaturalReference);
-		result = addYear(result, nomenclaturalReference, false);
-		TeamOrPersonBase<?> team = nomenclaturalReference.getAuthorTeam();
-		if (team != null &&  StringUtils.isNotEmpty(team.getTitleCache()) ){
-			result = team.getTitleCache() + afterAuthor + result;
+		String result =  getTitleWithoutYearAndAuthor(ref, isAbbrev);
+		result = addYear(result, ref, false);
+		TeamOrPersonBase<?> team = ref.getAuthorTeam();
+		
+		if (team != null){
+			String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
+			if (teamTitle.length() > 0 ){
+				result = team.getTitleCache() + afterAuthor + result;
+			}
+			
 		}
 		return result;
 	}
+	
+	protected abstract String getTitleWithoutYearAndAuthor(T reference, boolean isAbbrev);
+
 	
 	public String getCitation(T referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -99,8 +115,6 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		return result;
 	}
 	
-	protected abstract String getNomRefTitleWithoutYearAndAuthor(T reference);
-	
 	public String getNomenclaturalCitation(T nomenclaturalReference, String microReference) {
 		if (nomenclaturalReference.isProtectedTitleCache()){
 			return nomenclaturalReference.getTitleCache();
@@ -113,4 +127,5 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
 		return result;
 	}
+
 }

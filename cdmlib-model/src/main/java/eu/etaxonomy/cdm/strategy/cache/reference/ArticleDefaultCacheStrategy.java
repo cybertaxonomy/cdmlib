@@ -15,9 +15,11 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
 	public static final String UNDEFINED_JOURNAL = "- undefined journal -";
@@ -59,34 +61,50 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		if (article.isProtectedTitleCache()){
 			return article.getTitleCache();
 		}
-		String result =  getNomRefTitleWithoutYearAndAuthor(article);
+		String result =  getTitleWithoutYearAndAuthor(article, false);
 		result = addYear(result, article, false);
 		TeamOrPersonBase<?> team = article.getAuthorTeam();
 		result = CdmUtils.concat(" ", article.getTitle(), result);
-		if (team != null &&  CdmUtils.isNotEmpty(team.getTitleCache())){
+		if (team != null &&  StringUtils.isNotBlank(team.getTitleCache())){
 			String authorSeparator = StringUtils.isNotBlank(article.getTitle())? afterAuthor : " ";
 			result = team.getTitleCache() + authorSeparator + result;
 		}
 		return result;
 	}
 
+	@Override
+	public String getAbbrevTitleCache(T article) {
+		if (article.isProtectedAbbrevTitleCache()){
+			return article.getAbbrevTitleCache();
+		}
+		String result =  getTitleWithoutYearAndAuthor(article, true);
+		result = addYear(result, article, false);
+		TeamOrPersonBase<?> team = article.getAuthorTeam();
+		result = CdmUtils.concat(" ", article.getTitle(), result);
+		if (team != null &&  StringUtils.isNotBlank(team.getNomenclaturalTitle())){
+			String authorSeparator = StringUtils.isNotBlank(article.getTitle())? afterAuthor : " ";
+			result = team.getNomenclaturalTitle() + authorSeparator + result;
+		}
+		return result;
+	}
 
 	@Override
-	protected String getNomRefTitleWithoutYearAndAuthor(T article){
+	protected String getTitleWithoutYearAndAuthor(T article, boolean isAbbrev){
 		if (article == null){
 			return null;
 		}
-		boolean hasJournal = (article.getInReference() != null);
+		IJournal journal = article.getInReference();
+		boolean hasJournal = (journal != null);
 		
-		String titelAbbrev;
+		String journalTitel;
 		if (hasJournal){
-			titelAbbrev = CdmUtils.Nz(article.getInReference().getTitle()).trim();
+			journalTitel = CdmUtils.getPreferredNonEmptyString(journal.getTitle(), journal.getAbbrevTitle(), isAbbrev, true);
 		}else{
-			titelAbbrev = UNDEFINED_JOURNAL;
+			journalTitel = UNDEFINED_JOURNAL;
 		}
 		
-		String series = CdmUtils.Nz(article.getSeries()).trim();
-		String volume = CdmUtils.Nz(article.getVolume()).trim();
+		String series = Nz(article.getSeries()).trim();
+		String volume = Nz(article.getVolume()).trim();
 		
 		boolean needsComma = false;
 		
@@ -96,8 +114,8 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		nomRefCache = prefixReferenceJounal + blank; 
 		
 		//titelAbbrev
-		if (CdmUtils.isNotEmpty(titelAbbrev)){
-			nomRefCache = nomRefCache + titelAbbrev + blank; 
+		if (isNotBlank(journalTitel)){
+			nomRefCache = nomRefCache + journalTitel + blank; 
 		}
 		
 		nomRefCache = getSeriesAndVolPart(series, volume, needsComma, nomRefCache);
@@ -114,7 +132,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 			boolean needsComma, String nomRefCache) {
 		//inSeries
 		String seriesPart = "";
-		if (!"".equals(series)){
+		if (isNotBlank(series)){
 			seriesPart = series;
 			if (CdmUtils.isNumeric(series)){
 				seriesPart = prefixSeries + blank + seriesPart;
@@ -140,5 +158,4 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		return nomRefCache;
 	}
 
-	
 }

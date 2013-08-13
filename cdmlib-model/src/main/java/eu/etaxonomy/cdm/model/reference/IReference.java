@@ -65,6 +65,11 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	public String getTitle();
 	
 	/**
+	 * Returns the abbreviated title of this reference.
+	 */
+	public String getAbbrevTitle();
+	
+	/**
 	 * Sets the references title
 	 * @param title
 	 */

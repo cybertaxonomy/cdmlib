@@ -22,7 +22,6 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -57,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -373,7 +372,15 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
 	public String getAbbrevTitleCache() {
-		return abbrevTitleCache;
+		if (protectedAbbrevTitleCache){
+            return this.abbrevTitleCache;
+        }
+        // is title dirty, i.e. equal NULL?
+        if (abbrevTitleCache == null){
+            this.abbrevTitleCache = generateTitle();
+            this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
+        }
+        return abbrevTitleCache;	
 	}
 
 	@Override
@@ -873,6 +880,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		rectifyCacheStrategy();
 		return super.generateTitle();
 	}
+	
+    public String generateAbbrevTitle() {
+		rectifyCacheStrategy();
+		return this.cacheStrategy.getAbbrevTitleCache(this);
+	}
 
 	/**
 	 * Returns a string representation for the year of publication / creation
@@ -1258,7 +1270,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.cacheStrategy = (S) cacheStrategy;
 	}
 
-	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
+	public void setCacheStrategy(ReferenceDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S)cacheStrategy;
 
 	}
