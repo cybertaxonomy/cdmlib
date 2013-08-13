@@ -104,40 +104,6 @@ public class Datasource {
 		appCtr.close();
 	}
 
-	private void testSqlServer(){
-		DbSchemaValidation validation = DbSchemaValidation.CREATE;
-		CdmDataSource ds = 
-			CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
-//		ds =
-//			 CdmPersistentDataSource.NewInstance("localH2");
-		try {
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
-			String sql = "SELECT name, id FROM sys.sysobjects WHERE (xtype = 'U')"; //all tables
-			ResultSet rs = ds.executeQuery(sql);
-			while (rs.next()){
-				String tableName = rs.getString("name");
-				long tableId = rs.getLong("id");
-				sql = "SELECT name FROM sys.sysobjects WHERE xtype='F' and parent_obj = " +  tableId;//get foreignkeys
-				ResultSet rsFk = ds.executeQuery(sql);
-				while (rsFk.next()){
-					String fk = rsFk.getString("name");
-					sql = " ALTER TABLE "+tableName+" DROP CONSTRAINT "+fk + "";
-					ds.executeUpdate(sql);
-				}
-				
-			}
-			
-			Person agent = Person.NewInstance();
-			appCtr.getAgentService().save(agent);
-			TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
-			appCtr.getNameService().save(tn);
-			appCtr.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
 	private void testSqlServer2005(){
 		DatabaseTypeEnum databaseTypeEnum = DatabaseTypeEnum.SqlServer2005;
 		String server = "LAPTOPHP";
