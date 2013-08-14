@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,17 +24,17 @@ import eu.etaxonomy.cdm.model.description.FeatureTree;
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = {"/featuretree/{uuid}"})
+@RequestMapping(value = {"/featureTree/{uuid}"})
 public class FeatureTreeController extends BaseController<FeatureTree, IFeatureTreeService> {
-	private static final Logger logger = Logger
-			.getLogger(FeatureTreeController.class);
+    private static final Logger logger = Logger
+            .getLogger(FeatureTreeController.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Override
-	@Autowired
-	public void setService(IFeatureTreeService service) {
-		this.service = service;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Override
+    @Autowired
+    public void setService(IFeatureTreeService service) {
+        this.service = service;
+    }
 }

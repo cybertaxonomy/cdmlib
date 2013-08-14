@@ -61,6 +61,30 @@ public class NameSearch implements RemoteResponse {
             res.addToAcceptedTaxontUuids(acctb.getUuid().toString());
         }
     }
+    
+    public void addToResponseList(String title, 
+    		String name, 
+    		float score, 
+    		String nameUuid, 
+    		String[] taxonBaseUuids,
+    		String[] accTaxonUuids) {
+
+        NameSearch.NameSearchResponse res = responseWithtitle(title);
+        if (res == null) {
+            res = new NameSearch.NameSearchResponse();
+            res.setTitle(title);
+            res.setName(name);
+            res.setScore(score);
+            response.add(res);
+        }
+        res.addToNameUuids(nameUuid);
+        for (String tbuuid : taxonBaseUuids) {
+            res.addToTaxonConceptUuids(tbuuid);
+        }
+        for (String acctbuuid : accTaxonUuids) {
+            res.addToAcceptedTaxontUuids(acctbuuid);
+        }
+    }
 
     public List<NameSearch.NameSearchResponse> getResponse() {
         return this.response;

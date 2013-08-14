@@ -21,14 +21,23 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.analysis.SimpleAnalyzer;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Explanation;
+import org.apache.lucene.search.FuzzyLikeThisQuery;
+import org.apache.lucene.search.FuzzyQuery;
+import org.apache.lucene.search.PhraseQuery;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
+import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.regex.RegexQuery;
+import org.apache.lucene.util.Version;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -40,6 +49,7 @@ import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableExcepti
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
@@ -554,10 +564,110 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return results;
     }
 
-    
-    protected LuceneSearch prepareFindByFuzzySearch(Class<? extends CdmBase> clazz, 
+
+    protected LuceneSearch prepareFindByFuzzyNameSearch(Class<? extends CdmBase> clazz, 
     		NonViralName nvn,
     		float accuracy,
+    		int maxNoOfResults,    		
+    		List<Language> languages,
+    		boolean highlightFragments) {
+    	String similarity = Float.toString(accuracy);    	
+    	String searchSuffix = "~" + similarity;
+    	
+
+    	BooleanQuery finalQuery = new BooleanQuery(false);
+    	BooleanQuery textQuery = new BooleanQuery(false);
+
+    	LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);    	   
+    	QueryFactory queryFactory = new QueryFactory(luceneSearch);
+    	
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
+
+    	// ---- search criteria
+    	luceneSearch.setClazz(clazz);
+    	
+    	FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());
+    	if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {        	
+    		fltq.addTerms(nvn.getGenusOrUninomial().toLowerCase(), "genusOrUninomial", accuracy, 3);    		
+    	} else {
+    		//textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
+    	}
+
+    	if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
+    		fltq.addTerms(nvn.getInfraGenericEpithet().toLowerCase(), "infraGenericEpithet", accuracy, 3); 
+    	} else {
+    		//textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
+    	}
+
+    	if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
+    		fltq.addTerms(nvn.getSpecificEpithet().toLowerCase(), "specificEpithet", accuracy, 3); 
+    	} else {
+    		//textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
+    	}
+
+    	if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
+    		fltq.addTerms(nvn.getInfraSpecificEpithet().toLowerCase(), "infraSpecificEpithet", accuracy, 3); 
+    	} else {
+    		//textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    		textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
+    	}
+
+    	if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
+    		fltq.addTerms(nvn.getAuthorshipCache().toLowerCase(), "authorshipCache", accuracy, 3);
+    	} else {
+    		//textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
+    	}
+
+    	textQuery.add(fltq, Occur.MUST);    	    
+
+    	finalQuery.add(textQuery, Occur.MUST); 
+    	
+    	luceneSearch.setQuery(finalQuery);
+
+    	if(highlightFragments){
+    		luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+    	}
+    	return luceneSearch;
+    }
+    
+    protected LuceneSearch prepareFindByFuzzyNameCacheSearch(Class<? extends CdmBase> clazz, 
+    		String name,
+    		float accuracy,
+    		int maxNoOfResults,    		
+    		List<Language> languages,
+            boolean highlightFragments) {    	    	
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
+    	
+        // ---- search criteria
+        luceneSearch.setClazz(clazz);
+        FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());                      
+
+        fltq.addTerms(name, "nameCache", accuracy, 3);           
+
+     	BooleanQuery finalQuery = new BooleanQuery(false);
+     	
+     	finalQuery.add(fltq, Occur.MUST);   
+     	
+        luceneSearch.setQuery(finalQuery);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
+    }
+    
+    protected LuceneSearch prepareFindByExactNameSearch(Class<? extends CdmBase> clazz, 
+    		String name,
+    		boolean wildcard,
     		List<Language> languages,
             boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
@@ -566,45 +676,21 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
-        luceneSearch.setSortFields(sortFields);
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
         luceneSearch.setClazz(clazz);
-        String similarity = Float.toString(accuracy);
-        if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {        	
-        	textQuery.add(queryFactory.newTermQuery("genusOrUninomial", nvn.getGenusOrUninomial() + "~" + similarity), Occur.SHOULD);
-        } else {
-        	textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
-        }
-        
-        if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
-        	textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", nvn.getInfraGenericEpithet() + "~" + similarity), Occur.SHOULD);
-        } else {
-        	textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-        }
-        
-        if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
-        	textQuery.add(queryFactory.newTermQuery("specificEpithet", nvn.getSpecificEpithet() + "~" + similarity), Occur.SHOULD);
-        } else {
-        	textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-        }
-        
-        if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
-        	textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", nvn.getInfraSpecificEpithet() + "~" + similarity), Occur.SHOULD);
-        } else {
-        	textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-        }
-        
-        if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
-        	textQuery.add(queryFactory.newTermQuery("authorshipCache", nvn.getAuthorshipCache() + "~" + similarity), Occur.SHOULD);
-        } else {
-        	textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
-        }
-        
-        finalQuery.add(textQuery, Occur.MUST);
+                             
+        if(name != null && !name.equals("")) {        	        	
+        	if(wildcard) {
+        		textQuery.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);        		
+        	} else {        		
+        		textQuery.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);   		
+        	}
+        }                
 
-        luceneSearch.setQuery(finalQuery);
+        luceneSearch.setQuery(textQuery);
 
         if(highlightFragments){
             luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
@@ -627,10 +713,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     	if(name != null && !name.equals("") && nvn == null) {
     		throw new ParseException("Could not parse name " + name);
     	}
-        LuceneSearch luceneSearch = prepareFindByFuzzySearch(null, nvn, accuracy, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareFindByFuzzyNameSearch(null, nvn, accuracy, maxNoOfResults, languages, highlightFragments);
 
         // --- execute search        
         TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+
+        
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
         idFieldMap.put(CdmBaseType.NONVIRALNAME, "id");
 
@@ -644,6 +732,88 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return searchResults;
 
     }
+    
+    public List<DocumentSearchResult> findByNameFuzzySearch(
+            String name,
+            float accuracy,
+            List<Language> languages,
+            boolean highlightFragments, 
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+
+    	logger.info("Name to fuzzy search for : " + name);
+    	// parse the input name
+    	NonViralNameParserImpl parser = new NonViralNameParserImpl();
+    	NonViralName nvn = parser.parseFullName(name);
+    	if(name != null && !name.equals("") && nvn == null) {
+    		throw new ParseException("Could not parse name " + name);
+    	}
+        LuceneSearch luceneSearch = prepareFindByFuzzyNameSearch(null, nvn, accuracy, maxNoOfResults, languages, highlightFragments);
+
+        // --- execute search        
+        TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+        
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        
+        @SuppressWarnings("rawtypes")
+        List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
+
+        return searchResults;
+    }
+    
+    public List<DocumentSearchResult> findByFuzzyNameCacheSearch(
+            String name,
+    		float accuracy,            
+            List<Language> languages,
+            boolean highlightFragments,
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+
+    	logger.info("Name to fuzzy search for : " + name);
+    	
+        LuceneSearch luceneSearch = prepareFindByFuzzyNameCacheSearch(null, name, accuracy, maxNoOfResults, languages, highlightFragments);
+
+        // --- execute search        
+        TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();        
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        
+        @SuppressWarnings("rawtypes")
+        List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
+
+        return searchResults;
+    }
+    
+    public List<DocumentSearchResult> findByNameExactSearch(
+            String name,
+            boolean wildcard,
+            List<Language> languages,
+            boolean highlightFragments, 
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
+
+    	logger.info("Name to exact search for : " + name);
+    	
+    	LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
+
+        // --- execute search        
+    
+        
+        TopDocs topDocs = luceneSearch.executeSearch(maxNoOfResults);
+        
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();        
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        
+        @SuppressWarnings("rawtypes")
+        List<DocumentSearchResult> searchResults = searchResultBuilder.createResultSet(topDocs, luceneSearch.getHighlightFields());
+
+        return searchResults;
+    }
+    
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#pageNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */

@@ -81,6 +81,12 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     @Override
     public int countDescriptionElements(DescriptionBase description, Set<Feature> features, Class<? extends DescriptionElementBase> clazz) {
+        return countDescriptionElements(description, null, features, clazz);
+    }
+
+    @Override
+    public int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features, Class<? extends DescriptionElementBase> clazz) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
             Criteria criteria = null;
@@ -92,6 +98,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             if(description != null) {
                 criteria.add(Restrictions.eq("inDescription", description));
+            }
+
+            if(descriptionType != null) {
+                criteria.createAlias("inDescription", "d").add(Restrictions.eq("d.class", descriptionType));
             }
 
             if(features != null && !features.isEmpty()) {
@@ -116,6 +126,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                         query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
                     }
 
+                    if(descriptionType != null) {
+                        query.add(AuditEntity.property("inDescription.class").eq(descriptionType));
+                    }
+
                     query.add(AuditEntity.relatedId("feature").eq(f.getId()));
                     query.addProjection(AuditEntity.id().count("id"));
                     count += ((Long)query.getSingleResult()).intValue();
@@ -133,6 +147,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 if(description != null) {
                     query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
                 }
+                if(descriptionType != null) {
+                    query.add(AuditEntity.property("inDescription.class").eq(descriptionType));
+                }
+
                 query.addProjection(AuditEntity.id().count("id"));
                 return ((Long)query.getSingleResult()).intValue();
             }
@@ -242,12 +260,22 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                     .createAlias("markerType", "mt")
                      .add(Restrictions.in("mt.id", markerTypeIds));
         } else if (markerTypes != null && markerTypes.isEmpty()){
-        	//AT: added in case the projects requires an third state description, An empty Marker type set
+            //AT: added in case the projects requires an third state description, An empty Marker type set
         }
+    }
+    @Override
+    public List<DescriptionElementBase> getDescriptionElements(
+            DescriptionBase description, Set<Feature> features,
+            Class<? extends DescriptionElementBase> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+        return getDescriptionElements(description, null, features, clazz, pageSize, pageNumber, propertyPaths);
     }
 
     @Override
-    public List<DescriptionElementBase> getDescriptionElements(DescriptionBase description, Set<Feature> features,Class<? extends DescriptionElementBase> clazz, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    public List<DescriptionElementBase> getDescriptionElements(
+            DescriptionBase description, Class<? extends DescriptionBase> descriptionType,
+            Set<Feature> features,
+            Class<? extends DescriptionElementBase> clazz,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -260,6 +288,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
             if(description != null) {
                 criteria.add(Restrictions.eq("inDescription", description));
+            }
+            if(descriptionType != null) {
+                criteria.createAlias("inDescription", "d").add(Restrictions.eq("d.class", descriptionType));
             }
 
             if(features != null && !features.isEmpty()) {
@@ -294,6 +325,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                         query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
                     }
 
+                    if(descriptionType != null) {
+                        query.add(AuditEntity.property("inDescription.class").eq(descriptionType));
+                    }
+
                     query.add(AuditEntity.relatedId("feature").eq(f.getId()));
                     result.addAll(query.getResultList());
                 }
@@ -307,6 +342,10 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
                 if(description != null) {
                     query.add(AuditEntity.relatedId("inDescription").eq(description.getId()));
+                }
+
+                if(descriptionType != null) {
+                    query.add(AuditEntity.property("inDescription.class").eq(descriptionType));
                 }
 
                 result = query.getResultList();
@@ -643,7 +682,41 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-        String queryString = "select de" +
+        Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, false);
+
+        List<T> results = query.list();
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
+    @Override
+    public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
+            Taxon taxon, Set<Feature> features, Class<T> type) {
+
+        Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, null, null, true);
+
+        return (Long)query.uniqueResult();
+    }
+
+    /**
+     * @param taxon
+     * @param features
+     * @param type
+     * @param pageSize
+     * @param pageNumber
+     * @return
+     */
+    private <T extends DescriptionElementBase> Query prepareGetDescriptionElementForTaxon(Taxon taxon,
+            Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, boolean asCountQuery) {
+
+        String listOrCount;
+        if(asCountQuery){
+            listOrCount = "count(de)";
+        } else {
+            listOrCount = "de";
+        }
+        String queryString = "select " + listOrCount +
             " from TaxonDescription as td" +
             " left join td.descriptionElements as de" +
             " where td.taxon = :taxon ";
@@ -671,118 +744,114 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
                 query.setFirstResult(pageNumber * pageSize);
             }
         }
-
-        List<T> results = query.list();
-        defaultBeanInitializer.initializeAll(results, propertyPaths);
-
-        return results;
+        return query;
     }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
-	 */
-	@Override
-	public List<Media> listTaxonDescriptionMedia(UUID taxonUuid,
-			Boolean limitToGalleries, Set<MarkerType> markerTypes,
-			Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    public List<Media> listTaxonDescriptionMedia(UUID taxonUuid,
+            Boolean limitToGalleries, Set<MarkerType> markerTypes,
+            Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
 
-	       	AuditEvent auditEvent = getAuditEventFromContext();
-	        if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-	            String queryString = " SELECT media " +
-					getTaxonDescriptionMediaQueryString(
-						taxonUuid, limitToGalleries,  markerTypes);
-	            queryString +=
-	    			" GROUP BY media "
+               AuditEvent auditEvent = getAuditEventFromContext();
+            if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
+                String queryString = " SELECT media " +
+                    getTaxonDescriptionMediaQueryString(
+                        taxonUuid, limitToGalleries,  markerTypes);
+                queryString +=
+                    " GROUP BY media "
 //	    						" ORDER BY index(media) "  //not functional
-	    			;
+                    ;
 
-	            Query query = getSession().createQuery(queryString);
+                Query query = getSession().createQuery(queryString);
 
-	            setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
+                setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
 
 
 //	            addMarkerTypesCriterion(markerTypes, hql);
 
-	            if(pageSize != null) {
-	            	query.setMaxResults(pageSize);
-	                if(pageNumber != null) {
-	                	query.setFirstResult(pageNumber * pageSize);
-	                }
-	            }
+                if(pageSize != null) {
+                    query.setMaxResults(pageSize);
+                    if(pageNumber != null) {
+                        query.setFirstResult(pageNumber * pageSize);
+                    }
+                }
 
-	            List<Media> results = query.list();
+                List<Media> results = query.list();
 
-	            defaultBeanInitializer.initializeAll(results, propertyPaths);
+                defaultBeanInitializer.initializeAll(results, propertyPaths);
 
-	            return results;
-	        } else {
-	        	throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid, boolean restrictToGalleries)");
-	        }
-	}
+                return results;
+            } else {
+                throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid, boolean restrictToGalleries)");
+            }
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#countTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set)
-	 */
-	@Override
-	public int countTaxonDescriptionMedia(UUID taxonUuid,
-			Boolean limitToGalleries, Set<MarkerType> markerTypes) {
-		AuditEvent auditEvent = getAuditEventFromContext();
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#countTaxonDescriptionMedia(java.util.UUID, java.lang.Boolean, java.util.Set)
+     */
+    @Override
+    public int countTaxonDescriptionMedia(UUID taxonUuid,
+            Boolean limitToGalleries, Set<MarkerType> markerTypes) {
+        AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-        	String queryString = " SELECT count(DISTINCT media) " +
-	        	getTaxonDescriptionMediaQueryString(
-					taxonUuid, limitToGalleries, markerTypes);
+            String queryString = " SELECT count(DISTINCT media) " +
+                getTaxonDescriptionMediaQueryString(
+                    taxonUuid, limitToGalleries, markerTypes);
 
-        	Query query = getSession().createQuery(queryString);
-        	setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
-        	return ((Long)query.uniqueResult()).intValue();
-		}else{
-        	throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
-		}
+            Query query = getSession().createQuery(queryString);
+            setTaxonDescriptionMediaParameters(query, taxonUuid, limitToGalleries, markerTypes);
+            return ((Long)query.uniqueResult()).intValue();
+        }else{
+            throw new OperationNotSupportedInPriorViewException("countTaxonDescriptionMedia(UUID taxonUuid)");
+        }
 
-	}
+    }
 
-	private void setTaxonDescriptionMediaParameters(Query query, UUID taxonUuid, Boolean limitToGalleries, Set<MarkerType> markerTypes) {
-		if(taxonUuid != null){
-		    query.setParameter("uuid", taxonUuid);
-		}
+    private void setTaxonDescriptionMediaParameters(Query query, UUID taxonUuid, Boolean limitToGalleries, Set<MarkerType> markerTypes) {
+        if(taxonUuid != null){
+            query.setParameter("uuid", taxonUuid);
+        }
 
-	}
+    }
 
-	/**
-	 * @param taxonUuid
-	 * @param restrictToGalleries
-	 * @param markerTypes
-	 * @return
-	 */
-	private String getTaxonDescriptionMediaQueryString(UUID taxonUuid,
-			Boolean restrictToGalleries, Set<MarkerType> markerTypes) {
-		String fromQueryString =
-			" FROM DescriptionElementBase as deb INNER JOIN " +
-				" deb.inDescription as td "
-				+ " INNER JOIN td.taxon as t "
-				+ " JOIN deb.media as media "
-				+ " LEFT JOIN td.markers marker ";
+    /**
+     * @param taxonUuid
+     * @param restrictToGalleries
+     * @param markerTypes
+     * @return
+     */
+    private String getTaxonDescriptionMediaQueryString(UUID taxonUuid,
+            Boolean restrictToGalleries, Set<MarkerType> markerTypes) {
+        String fromQueryString =
+            " FROM DescriptionElementBase as deb INNER JOIN " +
+                " deb.inDescription as td "
+                + " INNER JOIN td.taxon as t "
+                + " JOIN deb.media as media "
+                + " LEFT JOIN td.markers marker ";
 
-		String whereQueryString = " WHERE (1=1) ";
-		if (taxonUuid != null){
-			whereQueryString += " AND t.uuid = :uuid ";
-		}
-		if (restrictToGalleries){
-			whereQueryString += " AND td.imageGallery is true ";
-		}
-		if (markerTypes != null && !markerTypes.isEmpty()){
-			whereQueryString += " AND (1=0";
-			for (MarkerType markerType : markerTypes){
-				whereQueryString += " OR ( marker.markerType.id = " + markerType.getId() + " AND marker.flag is true)";
+        String whereQueryString = " WHERE (1=1) ";
+        if (taxonUuid != null){
+            whereQueryString += " AND t.uuid = :uuid ";
+        }
+        if (restrictToGalleries){
+            whereQueryString += " AND td.imageGallery is true ";
+        }
+        if (markerTypes != null && !markerTypes.isEmpty()){
+            whereQueryString += " AND (1=0";
+            for (MarkerType markerType : markerTypes){
+                whereQueryString += " OR ( marker.markerType.id = " + markerType.getId() + " AND marker.flag is true)";
 
-			}
-			whereQueryString += ") ";
-		}
+            }
+            whereQueryString += ") ";
+        }
 
-		return fromQueryString + whereQueryString;
+        return fromQueryString + whereQueryString;
 
-	}
+    }
 
 
 

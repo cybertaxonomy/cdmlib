@@ -114,7 +114,7 @@ public class OccurrenceListController extends IdentifiableListController<Specime
 
         return service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
                 maxDepth, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                orderHints, DEFAULT_INIT_STRATEGY);
+                orderHints, getInitializationStrategy());
 
     }
 

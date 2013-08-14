@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,13 +30,13 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 public class DwcaTypesRecord extends DwcaRecordBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DwcaTypesRecord.class);
-	
+
 	private String bibliographicCitation;
 	private TypeDesignationStatusBase<?> typeStatus;
 	private String typeDesignatedBy;
 	private String scientificName;
 	private Rank taxonRank;
-	private DwcaId occurrenceId;
+	private final DwcaId occurrenceId;
 	private String institutionCode;
 	private String collectionCode;
 	private String catalogNumber;
@@ -44,11 +44,15 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	private Sex sex;
 	private AgentBase<?> recordedBy;
 	private String source;
+	private String descriptionSource;
 	private TimePeriod eventDate;
 	private String verbatimLabel;
 	private String verbatimLongitude;
 	private String verbatimLatitude;
-	
+	private String coordinatesPrecision;
+
+    private String referenceSystem;
+
 	public DwcaTypesRecord(DwcaMetaDataRecord metaDataRecord, DwcaTaxExportConfigurator config){
 		super(metaDataRecord, config);
 		occurrenceId = new DwcaId(config);
@@ -57,7 +61,8 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.dwca.out.DwcaRecordBase#registerKnownFields()
 	 */
-	protected void registerKnownFields(){
+	@Override
+    protected void registerKnownFields(){
 		try {
 			addKnownField("bibliographicCitation", "http://purl.org/dc/terms/bibliographicCitation");
 			addKnownField("typeStatus", "http://rs.tdwg.org/dwc/terms/typeStatus");
@@ -72,43 +77,47 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 			addKnownField("sex", "http://rs.tdwg.org/dwc/terms/sex");
 			addKnownField("recordedBy", "http://rs.tdwg.org/dwc/terms/recordedBy");
 			addKnownField("source", "http://purl.org/dc/terms/source");
+			addKnownField("descriptionSource", "http://purl.org/dc/terms/source");
 			addKnownField("verbatimEventDate", "http://rs.tdwg.org/dwc/terms/verbatimEventDate");
 			addKnownField("verbatimLabel", "http://rs.gbif.org/terms/1.0/verbatimLabel");
 			addKnownField("verbatimLongitude", "http://rs.tdwg.org/dwc/terms/verbatimLongitude");
 			addKnownField("verbatimLatitude", "http://rs.tdwg.org/dwc/terms/verbatimLatitude");
+			addKnownField("coordinatesPrecision", "http://rs.tdwg.org/dwc/terms/coordinatePrecision");
+			addKnownField("referenceSystem","http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem");
 
 		} catch (URISyntaxException e) {
 			throw new RuntimeException(e);
 		}
 	}
-	
-	
+
+
 //	@Override
 //	public List<String> getHeaderList() {
 //		String[] result = new String[]{
-//				"coreid", 
+//				"coreid",
 //				"bibliographicCitation",
 //				"typeStatus",
-//				"typeDesignatedBy", 
-//				"scientificName", 
-//				"taxonRank", 
+//				"typeDesignatedBy",
+//				"scientificName",
+//				"taxonRank",
 //				"occurrenceId",
 //				"institutionCode",
 //				"collectionCode",
-//				"catalogNumber", 
-//				"locality", 
-//				"sex", 
+//				"catalogNumber",
+//				"locality",
+//				"sex",
 //				"recordedBy",
 //				"source",
 //				"eventDate",
-//				"verbatimLabel", 
-//				"verbatimLongitude", 
+//				"verbatimLabel",
+//				"verbatimLongitude",
 //				"verbatimLatitude"
 //		};
 //		return Arrays.asList(result);
 //	}
-	
-	public void write(PrintWriter writer) {
+
+	@Override
+    public void write(PrintWriter writer) {
 		printId(getUuid(), writer, IS_FIRST, "coreid");
 		print(bibliographicCitation, writer, IS_NOT_FIRST, TermUri.DC_BIBLIOGRAPHIC_CITATION);
 		print(getDesignationType(typeStatus), writer, IS_NOT_FIRST, TermUri.DWC_TYPE_STATUS);
@@ -123,10 +132,13 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 		print(getSex(sex), writer, IS_NOT_FIRST, TermUri.DWC_SEX);
 		print(recordedBy, writer, IS_NOT_FIRST, TermUri.DWC_RECORDED_BY);
 		print(source, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
+		print(descriptionSource, writer, IS_NOT_FIRST, TermUri.DC_SOURCE);
 		print(getTimePeriod(eventDate), writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_EVENT_DATE);
 		print(verbatimLabel, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_LABEL);
 		print(verbatimLongitude, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_LONGITUDE);
 		print(verbatimLatitude, writer, IS_NOT_FIRST, TermUri.DWC_VERBATIM_LATITUDE);
+		print(coordinatesPrecision, writer, IS_NOT_FIRST, TermUri.DWC_COORDINATES_PRECISION);
+		print(referenceSystem,writer,IS_NOT_FIRST,TermUri.DWC_COORDINATES_SYSTEM);
 		writer.println();
 	}
 
@@ -136,6 +148,13 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	public void setSource(String source) {
 		this.source = source;
 	}
+
+	public String getDescriptionSource() {
+        return descriptionSource;
+    }
+    public void setDescriptionSource(String descriptionSource) {
+        this.descriptionSource = descriptionSource;
+    }
 
 	public String getBibliographicCitation() {
 		return bibliographicCitation;
@@ -264,5 +283,21 @@ public class DwcaTypesRecord extends DwcaRecordBase {
 	public void setVerbatimLatitude(String verbatimLatitude) {
 		this.verbatimLatitude = verbatimLatitude;
 	}
+
+    /**
+     * @param string
+     */
+    public void setCoordinatesPrecisionOrError(String coordinatesPrecision) {
+        this.coordinatesPrecision=coordinatesPrecision;
+
+    }
+
+    /**
+     * @param string
+     */
+    public void setCoordinatesSystem(String referenceSystem) {
+        this.referenceSystem=referenceSystem;
+
+    }
 
 }

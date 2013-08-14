@@ -76,6 +76,13 @@ public class Extension extends VersionableEntity implements Cloneable {
 		return new Extension();
 	}
 	
+	/**
+	 * Creates a new extension and adds it to the extended object.
+	 * @param extendedObject
+	 * @param value
+	 * @param extensionType
+	 * @return
+	 */
 	public static Extension NewInstance(IdentifiableEntity<?> extendedObject, String value, ExtensionType extensionType){
 		Extension extension = new Extension();
 		extension.setValue(value);

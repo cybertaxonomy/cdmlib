@@ -32,12 +32,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
-import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
@@ -45,30 +43,23 @@ import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
- * TODO write controller documentation
+ * IMPORTANT:
+ *
+ * This controller is mostly a 1:1 copy of the DescriptionController
+ * and this provides identical end points which only differ in the depth of the
+ * object graphs returned.
  *
  * @author a.kohlbecker
- * @date 24.03.2009
+ * @date Jun 25, 2013
+ *
  */
-
 @Controller
-@RequestMapping(value = {"/portal/description/{uuid}", "/portal/description/{uuid_list}", "/portal/descriptionElement/{descriptionelement_uuid}", "/portal/featureTree/{featuretree_uuid}"})
+@RequestMapping(value = {
+            "/portal/description/{uuid}",
+            "/portal/description/{uuid_list}",
+            "/portal/descriptionElement/{descriptionelement_uuid}"})
 public class DescriptionPortalController extends BaseController<DescriptionBase, IDescriptionService>
 {
-    @Autowired
-    private IFeatureTreeService featureTreeService;
-
-    private static final List<String> FEATURETREE_INIT_STRATEGY = Arrays.asList(
-            new String[]{
-                "representations",
-                "root.feature.representations",
-                "root.children.feature.representations",
-            });
-
-    private static final List<String> DESCRIPTIONS_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
-            "elements.sources.citation.$",
-            "elements.area.$",
-            });
 
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -104,28 +95,6 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         this.service = service;
     }
 
-    /**
-     * TODO write controller method documentation
-     *
-     * @param request
-     * @param response
-     * @return
-     * @throws IOException
-     */
-
-    @RequestMapping(value = {"/portal/featureTree/{featuretree_uuid}"}, method = RequestMethod.GET)
-    public FeatureTree doGetFeatureTree(
-            @PathVariable("featuretree_uuid") UUID featureUuid,
-            HttpServletRequest request,
-            HttpServletResponse response)throws IOException {
-        //UUID featureTreeUuid = readValueUuid(request, null);
-        FeatureTree featureTree = featureTreeService.load(featureUuid, FEATURETREE_INIT_STRATEGY);
-        if(featureTree == null){
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
-        }
-        return featureTree;
-    }
-
     @RequestMapping(value = "/portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
     public Pager<Annotation> getAnnotations(
             @PathVariable("descriptionelement_uuid") UUID uuid,
@@ -133,7 +102,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             HttpServletResponse response) throws IOException {
         logger.info("getAnnotations() - " + request.getRequestURI());
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
-        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, DEFAULT_INIT_STRATEGY);
+        Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 

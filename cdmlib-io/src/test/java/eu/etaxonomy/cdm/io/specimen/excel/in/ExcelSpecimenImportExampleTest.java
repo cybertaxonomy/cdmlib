@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -60,7 +60,7 @@ public class ExcelSpecimenImportExampleTest extends
 		assertNotNull("URL for the test file '" + inputFile
 				+ "' does not exist", url);
 		try {
-			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null);
+			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
 			configurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
@@ -76,7 +76,7 @@ public class ExcelSpecimenImportExampleTest extends
 		assertNotNull("occurence service should not be null", occurrenceService);
 	}
 
-	
+
 	 @Test
 	 @Ignore
 	 public void testDoInvoke() {
@@ -86,9 +86,9 @@ public class ExcelSpecimenImportExampleTest extends
 		 occurrenceService.count(DerivedUnitBase.class));
 		 assertEquals("Number of field observations should be 3", 3,
 		 occurrenceService.count(FieldObservation.class));
-		
+
 		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
-	
+
 	 }
 
 	@Test

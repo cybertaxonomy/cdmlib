@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -105,7 +106,36 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 //			}
 			setTransformer(newTransformer);
 		}
+		
 	}
+	
+	
+	
+	/**
+	 * Resets (empties) all maps which map a uuid to a {@link DefinedTermBase term}.
+	 * This is usually needed when a a new transaction is opened and user defined terms are reused.
+	 */
+	public void resetUuidTermMaps(){
+		extensionTypeMap = new HashMap<UUID, ExtensionType>();
+		markerTypeMap = new HashMap<UUID, MarkerType>();
+		annotationTypeMap = new HashMap<UUID, AnnotationType>();
+		
+		namedAreaMap = new HashMap<UUID, NamedArea>();
+		namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
+		featureMap = new HashMap<UUID, Feature>();
+		stateTermMap = new HashMap<UUID, State>();
+		measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
+		statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
+		modifierMap = new HashMap<UUID, Modifier>();
+		
+		presenceTermMap = new HashMap<UUID, PresenceTerm>();;
+		languageMap = new HashMap<UUID, Language>();
+		taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
+		
+		referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
+		rankMap = new HashMap<UUID, Rank>();
+	}
+	
 	
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
@@ -168,8 +198,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		return treeUuidMap.size();
 	}
 
-	
-	
 	
 	/**
 	 * Adds a classification uuid to the classification uuid map,

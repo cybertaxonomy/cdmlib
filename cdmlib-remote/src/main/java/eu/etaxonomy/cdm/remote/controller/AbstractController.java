@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
 /**
  * @author a.kohlbecker
@@ -28,7 +29,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
 
@@ -38,7 +39,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
 
     public abstract void setService(SERVICE service);
 
-    protected static final Integer DEFAULT_PAGE_SIZE = 30;
+    protected static final Integer DEFAULT_PAGE_SIZE = PagerParameters.DEFAULT_PAGESIZE;
 
     /**
      * Default thread priority for long term processes which are running in
@@ -55,8 +56,21 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
      *
      * @param initializationStrategy
      */
-    public void setInitializationStrategy(List<String> initializationStrategy) {
+    public final void setInitializationStrategy(List<String> initializationStrategy) {
         this.initializationStrategy = initializationStrategy;
+    }
+
+    /**
+     * Provides access to the default initialization strategy.
+     * The default initialization strategy is predefined for all controllers in
+     * {@link #DEFAULT_INIT_STRATEGY} but can be altered by
+     * concrete implementations by utilizing {@link #setInitializationStrategy(List)}
+     * in the constructor of the specific controller.
+     *
+     * @return the default initialization strategy
+     */
+    public final List<String> getInitializationStrategy() {
+        return this.initializationStrategy;
     }
 
     /**
@@ -70,6 +84,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
             return "";
         }
         StringBuilder b = new StringBuilder();
+        b.append(request.getMethod()).append(": ");
         b.append(request.getRequestURI());
         String query = request.getQueryString();
         if(query != null) {

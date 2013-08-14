@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -49,7 +49,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	private static final Logger logger = Logger.getLogger(TcsRdfTaxonNameImport.class);
 
 	private static int modCount = 5000;
-	
+
 	public TcsRdfTaxonNameImport(){
 		super();
 	}
@@ -61,18 +61,18 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		logger.warn("Checking for TaxonNames not yet implemented");
 		//result &= checkArticlesWithoutJournal(tcsConfig);
 		//result &= checkPartOfJournal(tcsConfig);
-		
+
 		return result;
 	}
-	
+
 	protected static CdmSingleAttributeXmlMapperBase[] standardMappers = new CdmSingleAttributeXmlMapperBase[]{
-		new CdmTextElementMapper("genusPart", "genusOrUninomial") 
+		new CdmTextElementMapper("genusPart", "genusOrUninomial")
 		, new CdmTextElementMapper("uninomial", "genusOrUninomial")  //TODO make it a more specific Mapper for both attributes
 		, new CdmTextElementMapper("specificEpithet", "specificEpithet")
 		, new CdmTextElementMapper("infraspecificEpithet", "infraSpecificEpithet")
 		, new CdmTextElementMapper("infragenericEpithet", "infraGenericEpithet")
-		, new CdmTextElementMapper("microReference", nsTcom, "nomenclaturalMicroReference")		
-		
+		, new CdmTextElementMapper("microReference", nsTcom, "nomenclaturalMicroReference")
+
 	};
 
 	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
@@ -84,18 +84,18 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		, new CdmUnclearMapper("publishedIn", nsTcom)
 		, new CdmUnclearMapper("year")
 	};
-	
+
 	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
 		new CdmUnclearMapper("authorship")
 		, new CdmUnclearMapper("rankString")
 		, new CdmUnclearMapper("nameComplete")
 		, new CdmUnclearMapper("hasBasionym")
-		, new CdmUnclearMapper("dateOfEntry", nsTpalm)	
+		, new CdmUnclearMapper("dateOfEntry", nsTpalm)
 	};
-	
+
 	@Override
 	protected void doInvoke(TcsRdfImportState state){
-		
+
 		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 		MapWrapper<TeamOrPersonBase> authorMap = (MapWrapper<TeamOrPersonBase>)state.getStore(ICdmIO.TEAM_STORE);
@@ -103,39 +103,39 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		String tcsElementName;
 		Namespace tcsNamespace;
 		String value;
-		
+
 		logger.info("start makeTaxonNames ...");
 		TcsRdfImportConfigurator config = state.getConfig();
 		Element root = config.getSourceRoot();
-		
+
 		Namespace rdfNamespace = config.getRdfNamespace();
 		Namespace taxonNameNamespace = config.getTnNamespace();
-		
+
 		String idNamespace = "TaxonName";
-		
+
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
-		
+
 		int i = 0;
 		//for each taxonName
 		for (Element elTaxonName : elTaxonNames){
-			
+
 			if ((++i % modCount) == 0){ logger.info("Names handled: " + (i-1));}
-			
+
 			Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
 
 			//create TaxonName element
 			String nameAbout = elTaxonName.getAttributeValue("about", rdfNamespace);
 			String strRank = XmlHelp.getChildAttributeValue(elTaxonName, "rank", taxonNameNamespace, "resource", rdfNamespace);
 			String strNomenclaturalCode = XmlHelp.getChildAttributeValue(elTaxonName, "nomenclaturalCode", taxonNameNamespace, "resource", rdfNamespace);
-			
+
 			try {
 				Rank rank = TcsRdfTransformer.rankString2Rank(strRank);
 				NomenclaturalCode nomCode = TcsRdfTransformer.nomCodeString2NomCode(strNomenclaturalCode);
 				TaxonNameBase<?,?> nameBase = nomCode.getNewTaxonNameInstance(rank);
-				
+
 				Set<String> omitAttributes = null;
 				makeStandardMapper(elTaxonName, nameBase, omitAttributes, standardMappers);
-				
+
 				//Reference
 				//TODO
 				tcsElementName = "publishedIn";
@@ -145,7 +145,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					IGeneric nomRef = ReferenceFactory.newGeneric(); //TODO
 					nomRef.setTitleCache(value, true);
 					nameBase.setNomenclaturalReference(nomRef);
-					
+
 					//TODO
 					tcsElementName = "year";
 					tcsNamespace = taxonNameNamespace;
@@ -164,7 +164,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						((Reference<?>)nomRef).addMarker(Marker.NewInstance(MarkerType.PUBLISH(), false));
 					}
 				}
-						
+
 				//Status
 				tcsNamespace = taxonNameNamespace;
 				Element elAnnotation = elTaxonName.getChild("hasAnnotation", tcsNamespace);
@@ -189,10 +189,10 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						}
 					}
 				}
-				
+
 				if (nameBase instanceof NonViralName){
 					NonViralName<?> nonViralName = (NonViralName<?>)nameBase;
-					
+
 					//AuthorTeams
 					//TODO
 					tcsElementName = "basionymAuthorship";
@@ -202,7 +202,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						basionymAuthor.setNomenclaturalTitle(basionymAuthorValue);
 						nonViralName.setBasionymAuthorTeam(basionymAuthor);
 					}
-						
+
 					//TODO
 					tcsElementName = "combinationAuthorship";
 					String combinationAuthorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
@@ -211,13 +211,13 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 						combinationAuthor.setNomenclaturalTitle(combinationAuthorValue);
 						nonViralName.setCombinationAuthorTeam(combinationAuthor);
 					}
-					
+
 					//set the authorshipCache
 					tcsElementName = "authorship";
 					String authorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
 					String cache = nonViralName.getAuthorshipCache();
 					if ( authorValue != null){
-						//compare existing authorship cache with new one and check if it is necessary to 
+						//compare existing authorship cache with new one and check if it is necessary to
 						//make cache protected  //TODO refinement
 						if (cache == null){
 							nonViralName.setAuthorshipCache(authorValue);
@@ -233,14 +233,14 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					}
 				}
 				ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), nameAbout, idNamespace);
-				
+
 				checkAdditionalContents(elTaxonName, standardMappers, operationalMappers, unclearMappers);
-				
+
 				//nameId
 				//TODO
 				//ImportHelper.setOriginalSource(nameBase, tcsConfig.getSourceReference(), nameId);
 				taxonNameMap.put(nameAbout, nameBase);
-				
+
 			} catch (UnknownCdmTypeException e) {
 				//FIXME
 				logger.warn("Name with id " + nameAbout + " has unknown rank " + strRank + " and could not be saved.");
@@ -257,7 +257,8 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
 	 */
-	protected boolean isIgnore(TcsRdfImportState state){
+	@Override
+    protected boolean isIgnore(TcsRdfImportState state){
 		return ! state.getConfig().isDoTaxonNames();
 	}
 

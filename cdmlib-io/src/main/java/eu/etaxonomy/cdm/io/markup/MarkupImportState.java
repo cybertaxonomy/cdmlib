@@ -31,12 +31,12 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.mueller
  * @created 11.05.2009
- * @version 1.0
  */
 public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, MarkupDocumentImport>{
 	@SuppressWarnings("unused")
@@ -65,6 +65,9 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private String latestGenusEpithet = null;
 	
+	private TeamOrPersonBase<?> latestAuthorInHomotype = null;
+	private Reference<?> latestReferenceInHomotype = null;
+	
 	private boolean isCitation = false;
 	private boolean isNameType = false;
 	private boolean isProParte = false;
@@ -80,13 +83,14 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	private Map<String, UUID> areaMap = new HashMap<String, UUID>();
 	
+	private Map<String,UUID> unknownFeaturesUuids = new HashMap<String, UUID>();
+	
 	private List<FeatureSorterInfo> currentGeneralFeatureSorterList;  //keep in multiple imports
 	private List<FeatureSorterInfo> currentCharFeatureSorterList; //keep in multiple imports
 	private Map<String,List<FeatureSorterInfo>> generalFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>();  //keep in multiple imports
 	private Map<String,List<FeatureSorterInfo>> charFeatureSorterListMap = new HashMap<String, List<FeatureSorterInfo>>(); //keep in multiple imports
 	
-	private Map<String, UUID> featureUuidMap = new HashMap<String, UUID>(); //keep in multiple imports
-
+	
 	/**
 	 * This method resets all those variables that should not be reused from one import to another.
 	 * @see MarkupImportConfigurator#isReuseExistingState()
@@ -104,6 +108,8 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		footnoteRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		figureRefRegister = new HashMap<String, Set<AnnotatableEntity>>();
 		currentAreas = new HashSet<NamedArea>();
+		
+		this.resetUuidTermMaps();
 	}
 	
 		
@@ -279,6 +285,10 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		return areaMap.put(key, value);
 	}
 
+	public void putUnknownFeatureUuid(String featureLabel, UUID featureUuid) {
+		this.unknownFeaturesUuids.put(featureLabel, featureUuid);
+	}
+
 	public boolean isOnlyNumberedTaxaExist() {
 		return onlyNumberedTaxaExist;
 	}
@@ -294,7 +304,11 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 		return charFeatureSorterListMap;
 	}
 	
+	public UUID getUnknownFeatureUuid(String featureLabel){
+		return this.unknownFeaturesUuids.get(featureLabel);
+	}
 	
+
 	/**
 	 * Adds new lists to the feature sorter list maps using the given key.
 	 * If at least 1 list already existed for the given key, true is returned. False
@@ -319,11 +333,17 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	 * 
 	 * @param feature
 	 */
-	public void putFeatureToCharSorterList(Feature feature) {
-		currentCharFeatureSorterList.add(new FeatureSorterInfo(feature)); 
-		
+	public FeatureSorterInfo putFeatureToCharSorterList(Feature feature) {
+		FeatureSorterInfo featureSorterInfo = new FeatureSorterInfo(feature);
+		currentCharFeatureSorterList.add(featureSorterInfo);
+		return featureSorterInfo;
+	}
+	
+	public FeatureSorterInfo getLatestCharFeatureSorterInfo() {
+		return currentCharFeatureSorterList.get(currentCharFeatureSorterList.size() - 1);
 	}
 
+	
 	/**
 	 * 
 	 * @param feature
@@ -331,13 +351,6 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	public void putFeatureToGeneralSorterList(Feature feature) {
 		currentGeneralFeatureSorterList.add(new FeatureSorterInfo(feature)); 
 		
-	}
-
-	public void putFeatureUuid(String featureString, UUID uuid) {
-		featureUuidMap.put(featureString, uuid);
-	}
-	public UUID getFeatureUuid(String featureString){
-		return featureUuidMap.get(featureString);
 	}
 
 	public String getLatestGenusEpithet() {
@@ -380,6 +393,26 @@ public class MarkupImportState extends XmlImportState<MarkupImportConfigurator, 
 	
 	public void removeCurrentAreas(){
 		currentAreas.clear();
+	}
+
+
+	public TeamOrPersonBase<?> getLatestAuthorInHomotype() {
+		return latestAuthorInHomotype;
+	}
+
+
+	public void setLatestAuthorInHomotype(TeamOrPersonBase<?> latestAuthorInHomotype) {
+		this.latestAuthorInHomotype = latestAuthorInHomotype;
+	}
+
+
+	public Reference<?> getLatestReferenceInHomotype() {
+		return latestReferenceInHomotype;
+	}
+
+
+	public void setLatestReferenceInHomotype(Reference<?> latestReferenceInHomotype) {
+		this.latestReferenceInHomotype = latestReferenceInHomotype;
 	}
 
 

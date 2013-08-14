@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,33 +21,36 @@ import org.apache.log4j.Logger;
  */
 public enum TermUri {
 	CDM_SOURCE_REFERENCE("http://eu.etaxonomy.cdm.io.common.sourceReference"),
+	CDM_SOURCE_IDNAMESPACE("http://eu.etaxonomy.cdm.io.common.originalSourceBase.idNamespace"),
+	CDM_SOURCE_IDINSOURCE("http://eu.etaxonomy.cdm.io.common.originalSourceBase.idInSource"),
 	
 	DC_ACCESS_RIGHTS("http://purl.org/dc/terms/accessRights"),
-	DC_AUDIENCE("http://purl.org/dc/terms/audience"),	
+	DC_AUDIENCE("http://purl.org/dc/terms/audience"),
 	DC_BIBLIOGRAPHIC_CITATION("http://purl.org/dc/terms/bibliographicCitation"),
-	DC_CONTRIBUTOR("http://purl.org/dc/terms/contributor"),	
-	DC_CREATED("http://purl.org/dc/terms/created"),	
+	DC_CONTRIBUTOR("http://purl.org/dc/terms/contributor"),
+	DC_CREATED("http://purl.org/dc/terms/created"),
 	DC_CREATOR("http://purl.org/dc/terms/creator"),
 	DC_DATE("http://purl.org/dc/terms/date"),
 	DC_DESCRIPTION("http://purl.org/dc/terms/description"),
-	DC_FORMAT("http://purl.org/dc/terms/format"),	
+	DC_FORMAT("http://purl.org/dc/terms/format"),
 	DC_IDENTIFIER("http://purl.org/dc/terms/identifier"),
 	DC_LANGUAGE("http://purl.org/dc/terms/language"),
-	DC_LICENSE("http://purl.org/dc/terms/license"),	
+	DC_LICENSE("http://purl.org/dc/terms/license"),
 	DC_MODIFIED("http://purl.org/dc/terms/modified"),
-	DC_PUBLISHER("http://purl.org/dc/terms/publisher"),	
+	DC_PUBLISHER("http://purl.org/dc/terms/publisher"),
+	DC_REFERENCES("http://purl.org/dc/terms/references"),
 	DC_RIGHTS("http://purl.org/dc/terms/rights"),
 	DC_RIGHTS_HOLDER("http://purl.org/dc/terms/rightsHolder"),
 	DC_SOURCE("http://purl.org/dc/terms/source"),
-	DC_SPATIAL("http://purl.org/dc/terms/spatial"),	
+	DC_SPATIAL("http://purl.org/dc/terms/spatial"),
 	DC_SUBJECT("http://purl.org/dc/terms/subject"),
 	DC_TEMPORAL("http://purl.org/dc/terms/temporal"),
 	DC_TITLE("http://purl.org/dc/terms/title"),
-	DC_TYPE("http://purl.org/dc/terms/type"),	
-	
-	GEO_WGS84_LATITUDE("http://www.w3.org/2003/01/geo/wgs84_pos#latitude"),	
-	GEO_WGS84_LONGITUDE("http://www.w3.org/2003/01/geo/wgs84_pos#longitude"),	
-	
+	DC_TYPE("http://purl.org/dc/terms/type"),
+
+	GEO_WGS84_LATITUDE("http://www.w3.org/2003/01/geo/wgs84_pos#latitude"),
+	GEO_WGS84_LONGITUDE("http://www.w3.org/2003/01/geo/wgs84_pos#longitude"),
+
 	GBIF_APPENDIX_CITES("http://rs.gbif.org/terms/1.0/appendixCITES"),
 	GBIF_IS_PLURAL("http://rs.gbif.org/terms/1.0/isPlural"),
 	GBIF_ORGANISM_PART("http://rs.gbif.org/terms/1.0/organismPart"),
@@ -55,7 +58,7 @@ public enum TermUri {
 	GBIF_VERBATIM_LABEL("http://rs.gbif.org/terms/1.0/verbatimLabel"),
 
 	IUCN_THREAD_STATUS("http://iucn.org/terms/threatStatus"),
-	
+
 	DWC_VERNACULAR_NAME("http://rs.tdwg.org/dwc/terms/vernacularName"),
 	DWC_LOCATION_ID("http://rs.tdwg.org/dwc/terms/locationID"),
 	DWC_COUNTRY_CODE("http://rs.tdwg.org/dwc/terms/countryCode"),
@@ -66,6 +69,7 @@ public enum TermUri {
 	DWC_VERBATIM_EVENT_DATE("http://rs.tdwg.org/dwc/terms/verbatimEventDate"),
 	DWC_VERBATIM_LONGITUDE("http://rs.tdwg.org/dwc/terms/verbatimLongitude"),
 	DWC_VERBATIM_LATITUDE("http://rs.tdwg.org/dwc/terms/verbatimLatitude"),
+	DWC_COORDINATES_PRECISION("http://rs.tdwg.org/dwc/terms/coordinatePrecision"),
 	DWC_SCIENTIFIC_NAME_ID("http://rs.tdwg.org/dwc/terms/scientificNameID"),
 	DWC_ACCEPTED_NAME_USAGE_ID("http://rs.tdwg.org/dwc/terms/acceptedNameUsageID"),
 	DWC_PARENT_NAME_USAGE_ID("http://rs.tdwg.org/dwc/terms/parentNameUsageID"),
@@ -98,10 +102,10 @@ public enum TermUri {
 	DWC_INFORMATION_WITHHELD("http://rs.tdwg.org/dwc/terms/informationWithheld"),
 	DWC_DATASET_NAME("http://rs.tdwg.org/dwc/terms/datasetName"),
 	DWC_DATASET_ID("http://rs.tdwg.org/dwc/terms/datasetID"),
-	
+
 	DWC_RESOURCE_RELATIONSHIP("http://rs.tdwg.org/dwc/terms/ResourceRelationship"),
 	DWC_TAXON("http://rs.tdwg.org/dwc/terms/Taxon"),
-	
+
 	DWC_TYPE_STATUS("http://rs.tdwg.org/dwc/terms/typeStatus"),
 	DWC_TYPE_DESIGNATED_BY("http://rs.tdwg.org/dwc/terms/typeDesignatedBy"),
 	DWC_OCCURRENCE_ID("http://rs.tdwg.org/dwc/terms/occurrenceID"),
@@ -125,7 +129,7 @@ public enum TermUri {
 	DWC_START_DAY_OF_YEAR("http://rs.tdwg.org/dwc/terms/startDayOfYear"),
 	DWC_END_DAY_OF_YEAR("http://rs.tdwg.org/dwc/terms/endDayOfYear"),
 	DWC_OCCURRENCE_REMARKS("http://rs.tdwg.org/dwc/terms/occurrenceRemarks"),
-	
+
 	TDWG_UNINOMIAL("http://rs.tdwg.org/ontology/voc/TaxonName#uninomial"),
 	TDWG_GENUSPART("http://rs.tdwg.org/ontology/voc/TaxonName#genusPart"),
 	TDWG_INFRAGENERICEPITHET("http://rs.tdwg.org/ontology/voc/TaxonName#infragenericEpithet"),
@@ -141,22 +145,24 @@ public enum TermUri {
 
 	EOL_AGENT("http://eol.org/schema/agent/Agent"),
 	EOL_ORGANIZATION("http://eol.org/schema/agent/organization"),
-	
-	
+
+
 	FOAF_FAMILY_NAME("http://xmlns.com/foaf/spec/#term_familyName"),
 	FOAF_FIRST_NAME("http://xmlns.com/foaf/spec/#term_firstName"),
 	FOAF_NAME("http://xmlns.com/foaf/spec/#term_Name"),
 	FOAF_ACCOUNT_NAME("http://xmlns.com/foaf/spec/#term_accountName"),
-	
-	
+
+	DWC_COORDINATES_SYSTEM("http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem"),
+
+
 	;
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUri.class);
 
 
 	private URI uri;
-	
+
 	private TermUri(String uri){
 		try {
 			this.uri = new URI(uri);
@@ -164,21 +170,21 @@ public enum TermUri {
 			throw new RuntimeException(e);
 		}
 	}
-		
+
 
 	public String getUriString(){
 		return this.uri.toString();
 	}
-	
+
 	public URI getUri(){
 		return this.uri;
 	}
-	
+
 	@Override
 	public String toString(){
 		return getUriString();
 	}
-	
+
 	public static TermUri valueOfUriString(String termUriString){
 		for (TermUri term: TermUri.values()){
 			if (term.getUriString().equals(termUriString)){

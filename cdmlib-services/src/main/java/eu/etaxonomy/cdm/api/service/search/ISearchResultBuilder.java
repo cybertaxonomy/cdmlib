@@ -56,5 +56,18 @@ public interface ISearchResultBuilder {
      */
     public <T extends CdmBase> List<SearchResult<T>> createResultSet(TopDocs topDocs,
             String[] highlightFields, ICdmEntityDao<T> dao, Map<CdmBaseType, String> idFields, List<String> propertyPaths) throws CorruptIndexException, IOException;
+    
+    /**
+     * Creates a <code>List</code> of <code>DocumentSearchResult</code> entities from the supplied <code>TopDocs</code>.
+     * This method can be used for building index-only results.
+     *
+     * @param topDocs
+     * @param highlightFields
+     * @return
+     * @throws CorruptIndexException
+     * @throws IOException
+     */
+    public List<DocumentSearchResult> createResultSet(TopDocs topDocs, String[] highlightFields) throws CorruptIndexException, IOException;
+
 
 }

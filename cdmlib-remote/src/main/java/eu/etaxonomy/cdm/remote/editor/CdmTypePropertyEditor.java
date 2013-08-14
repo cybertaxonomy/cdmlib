@@ -13,13 +13,11 @@ package eu.etaxonomy.cdm.remote.editor;
 import java.beans.PropertyEditorSupport;
 
 import org.apache.log4j.Logger;
-import org.springframework.stereotype.Component;
 
 /**
  * @author a.kohlbecker
  * @date 30.06.2009
  */
-@Component
 public class CdmTypePropertyEditor extends PropertyEditorSupport  {
 
     public static final Logger logger = Logger.getLogger(CdmTypePropertyEditor.class);
@@ -50,7 +48,7 @@ public class CdmTypePropertyEditor extends PropertyEditorSupport  {
                 clazz = Class.forName("eu.etaxonomy.cdm.model.molecular."+text);
             } catch (ClassNotFoundException e) { /* IGNORE */ }
             try {
-                clazz = Class.forName("eu.etaxonomy.cdm.model.name"+text);
+                clazz = Class.forName("eu.etaxonomy.cdm.model.name."+text);
             } catch (ClassNotFoundException e) { /* IGNORE */ }
             try {
                 clazz = Class.forName("eu.etaxonomy.cdm.model.occurrence."+text);

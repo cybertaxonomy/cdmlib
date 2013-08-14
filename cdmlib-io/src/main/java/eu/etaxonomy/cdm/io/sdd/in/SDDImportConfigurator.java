@@ -142,14 +142,14 @@ public class SDDImportConfigurator extends XmlImportConfiguratorBase<SDDImportSt
 	/**
 	 * @param doMatchTaxa the doMatchTaxa to set
 	 */
-	public void setDoMatchTaxa(boolean doMatchTaxa) {
+	public void setReuseExistingTaxaWhenPossible(boolean doMatchTaxa) {
 		this.doMatchTaxa = doMatchTaxa;
 	}
 
 	/**
 	 * @return the doMatchTaxa
 	 */
-	public boolean isDoMatchTaxa() {
+	public boolean isReuseExistingTaxaWhenPossible() {
 		return doMatchTaxa;
 	}
 }

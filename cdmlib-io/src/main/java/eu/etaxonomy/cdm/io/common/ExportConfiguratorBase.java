@@ -1,6 +1,6 @@
 /**
 * Copyright (C) 2008 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
 */
 
@@ -23,7 +23,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	private static final Logger logger = Logger.getLogger(ExportConfiguratorBase.class);
 
 	private CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
-	
+
 	private ICdmDataSource source;
 	private DESTINATION destination;
 	protected IDatabase sourceReference;
@@ -33,50 +33,54 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	 * The transformer class to be used for Input
 	 */
 	private TRANSFORM transformer;
-	
+
 	public ExportConfiguratorBase(TRANSFORM transformer){
 		super();
 		//setDbSchemaValidation(DbSchemaValidation.UPDATE);
 		makeIoClassList();
 		this.setTransformer(transformer);
 	}
-	
-	abstract protected void makeIoClassList();
-	
 
-	public TRANSFORM getTransformer() {
+	abstract protected void makeIoClassList();
+
+
+	@Override
+    public TRANSFORM getTransformer() {
 		return transformer;
 	}
 
-	public void setTransformer(TRANSFORM transformer) {
+	@Override
+    public void setTransformer(TRANSFORM transformer) {
 		this.transformer = transformer;
 	}
-	
-	
-	public ICdmDataSource getSource() {
+
+
+	@Override
+    public ICdmDataSource getSource() {
 		return source;
 	}
-	
-	public void setSource(ICdmDataSource source) {
+
+	@Override
+    public void setSource(ICdmDataSource source) {
 		this.source = source;
 	}
-	
+
 	/**
 	 * @param source the source to get
 	 */
 	public DESTINATION getDestination() {
 		return destination;
 	}
-	
+
 	/**
 	 * @param source the source to set
 	 */
 	public void setDestination(DESTINATION destination) {
 		this.destination = destination;
 	}
-	
-	
-	
+
+
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
 	 */
@@ -91,32 +95,34 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 		}
 		return sourceReference;
 	}
-	
-	public Class<ICdmIO>[] getIoClassList(){
+
+	@Override
+    public Class<ICdmIO>[] getIoClassList(){
 		return ioClassList;
 	}
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCheck()
 	 */
-	public CHECK getCheck() {
+	@Override
+    public CHECK getCheck() {
 		return this.check;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator.CHECK)
 	 */
 	public void setCheck(CHECK check) {
 		this.check = check;
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.tcsrdf.IExportConfigurator#getDbSchemaValidation()
 	 */
 //	public DbSchemaValidation getDbSchemaValidation() {
 //		return dbSchemaValidation;
 //	}
-	
+
 //	/**
 //	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
 //	 * If a controller was already created before the last created controller is returned.
@@ -125,7 +131,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 //	public CdmApplicationController getCdmAppController(){
 //		return getCdmAppController(false);
 //	}
-	
+
 	/**
 	 * Returns a new instance of <code>CdmApplicationController</code> created by the values of this configuration.
 	 * @return
@@ -133,7 +139,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	public CdmApplicationController getNewCdmAppController(){
 		return getCdmAppController(true, false);
 	}
-	
+
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
 	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
@@ -143,8 +149,8 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	public CdmApplicationController getCdmAppController(boolean createNew){
 		return getCdmAppController(createNew, false);
 	}
-	
-	
+
+
 	/**
 	 * Returns a <code>CdmApplicationController</code> created by the values of this configuration.
 	 * If create new is true always a new controller is returned, else the last created controller is returned. If no controller has
@@ -157,12 +163,13 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 		}
 		return cdmApp;
 	}
-	
-	
+
+
 	/**
 	 * @return
 	 */
-	public boolean isValid(){
+	@Override
+    public boolean isValid(){
 		boolean result = true;
 //		if (source == null && this.getCdmAppController() == null ){
 //			logger.warn("Connection to CDM could not be established");
@@ -172,15 +179,16 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 			logger.warn("Invalid export destination");
 			result = false;
 		}
-		
+
 		return result;
 	}
-	
-	public String getSourceNameString() {
+
+	@Override
+    public String getSourceNameString() {
 		if (this.getSource() == null) {
 			return null;
 		} else {
-			return (String)this.getSource().getName();
+			return this.getSource().getName();
 		}
 	}
 

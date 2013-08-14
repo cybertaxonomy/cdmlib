@@ -455,8 +455,7 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.longitude = Double.valueOf(group.item(0)
-                    .getTextContent());
+            dataHolder.longitude = Double.valueOf(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.longitude = null;
         }
@@ -466,8 +465,7 @@ public class Abcd206XMLFieldGetter {
             getHierarchie(group.item(0));
             dataHolder.knownABCDelements.add(path);
             path = "";
-            dataHolder.latitude = Double
-                    .valueOf(group.item(0).getTextContent());
+            dataHolder.latitude = Double.valueOf(group.item(0).getTextContent());
         } catch (NullPointerException e) {
             dataHolder.latitude = null;
         }
@@ -619,7 +617,9 @@ public class Abcd206XMLFieldGetter {
     /*PARSING METHODS*/
 
     private HashMap<String, String> getAtomisedNames(String code,NodeList atomised) {
-        logger.info("code getatomised " + code);
+        if (DEBUG) {
+            logger.info("code getatomised " + code);
+        }
         if (code.indexOf("Botanical") != -1) {
             return this.getAtomisedBotanical(atomised);
         }
@@ -636,7 +636,9 @@ public class Abcd206XMLFieldGetter {
     }
 
     private HashMap<String, String> getAtomisedZoological(NodeList atomised) {
-        logger.info("getAtomisedZoo");
+        if(DEBUG) {
+            logger.info("getAtomisedZoo");
+        }
         HashMap<String, String> atomisedMap = new HashMap<String, String>();
 
         for (int i = 0; i < atomised.getLength(); i++) {
