@@ -60,7 +60,6 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	private static final Logger logger = Logger
 			.getLogger(StatisticsDaoHibernateImpl.class);
 
-	
 	@Override
 	public Long countDescriptiveSourceReferences() {
 
@@ -103,13 +102,119 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 * (eu.etaxonomy.cdm.model.taxon.Classification)
 	 */
 	@Override
-	public Long countDescriptiveSourceReferences(Classification classification) {
-		return Long.valueOf(listDescriptiveSourceReferenceIds(classification)
-				.size());
+	public Long countDescriptive(Boolean sourceRef, Classification classification) {
+		return Long.valueOf(listDescriptiveIds(sourceRef,classification).size());
 	}
 
-	private Set<Integer> listDescriptiveSourceReferenceIds(
+	// private Set<Integer> listDescriptiveSourceReferenceIds(
+	// Classification classification) {
+	//
+	// if (classification == null)
+	// return null; // or MAYDO: throw some Exception???
+	//
+	// Map<String, Object> parameters = new HashMap<String, Object>();
+	//
+	// List<String> queryStrings = new ArrayList<String>();
+	//
+	// // // Taxon description elements:
+	// queryStrings
+	// .add("select distinct des.citation.id from TaxonNode as tn "
+	// + "join tn.taxon.descriptions as d "
+	// + "join d.descriptionElements as de "
+	// + "join de.sources as des "
+	// + "where tn.classification=:classification "
+	// + "and des.citation is not null ");
+	//
+	// parameters.put("classification", classification);
+	//
+	// // TaxonNameBase description elements for taxa:
+	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+	// + "join tn.taxon.name.descriptions as d "
+	// + "join d.descriptionElements as de "
+	// + "join de.sources as des "
+	// + "where tn.classification=:classification "
+	// + "and tn.taxon is not null "
+	// + "and tn.taxon.name is not null "
+	// + "and des.citation is not null ");
+	//
+	// // TaxonNameBase description elements for synonyms:
+	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+	// + "join tn.taxon.synonymRelations as syr "
+	// + "join syr.relatedFrom as sy "
+	// + "join sy.name.descriptions as d "
+	// + "join d.descriptionElements as de "
+	// + "join de.sources as des "
+	// + "where tn.classification=:classification "
+	// + "and des.citation is not null " + "and sy is not null " // TODO:
+	// // is
+	// // this
+	// // case
+	// // actually
+	// // possible???
+	// + "and sy.name is not null ");
+	//
+	// // SpecimenOrObservationBase description elements:
+	// // 1. via determinations
+	// queryStrings
+	// .add("select distinct des.citation.id from DescriptionBase db, TaxonNode tn "
+	// + "join db.describedSpecimenOrObservations as so "
+	// + "join so.determinations as det "
+	// + "join db.descriptionElements as de "
+	// + "join de.sources as des "
+	// + "where tn.classification=:classification "
+	// + "and tn.taxon=det.taxon ");
+	//
+	// // 2. via derived units in taxon description
+	// // already done with the taxon/synonym descriptions
+	//
+	// // 3. via SpecimenTypeDesignation in TaxonName:
+	// // a. taxon names:
+	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+	// + " join tn.taxon.name.typeDesignations as tdes "
+	// + "join tdes.typeSpecimen.descriptions as d "
+	// + "join d.descriptionElements as de "
+	// + "join de.sources as des "
+	// + "where tn.classification=:classification "
+	// + "and tdes.class=:type " + "and tn.taxon is not null "
+	// + "and tn.taxon.name is not null "
+	// + "and des.citation is not null ");
+	//
+	// parameters.put("type", "SpecimenTypeDesignation");
+	//
+	// // b. synonym names:
+	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+	//
+	// + "join tn.taxon.synonymRelations as syr "
+	// + "join syr.relatedFrom as sy "
+	// + " join sy.name.typeDesignations as tdes "
+	// + "join tdes.typeSpecimen.descriptions as d "
+	// + "join d.descriptionElements as de "
+	// + "join de.sources as des "
+	// + "where tn.classification=:classification "
+	// + "and tdes.class=:type " + "and tn.taxon is not null "
+	// + "and sy.name is not null " + "and des.citation is not null ");
+	//
+	// // 4. via HomotypicalGroup in TaxonBase
+	// // we get this automatically with the names
+	//
+	// return processQueriesWithIdDistinctListResult(queryStrings, parameters);
+	//
+	// }
+
+	private Set<Integer> listDescriptiveIds(Boolean sourceReferences,
 			Classification classification) {
+
+//		Boolean sourceReferences = true;
+		String sourceRefJoins = "";
+		String sourceRefWhere = "";
+		String selection = "d.id ";
+
+		if (sourceReferences) {
+			sourceRefJoins = "join d.descriptionElements as de "
+					+ "join de.sources as des ";
+			sourceRefWhere = "and des.citation is not null ";
+			selection = "des.citation.id ";
+		}
 
 		if (classification == null)
 			return null; // or MAYDO: throw some Exception???
@@ -119,82 +224,67 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		List<String> queryStrings = new ArrayList<String>();
 
 		// // Taxon description elements:
-		queryStrings
-				.add("select distinct des.citation.id from TaxonNode as tn "
-						+ "join tn.taxon.descriptions as d "
-						+ "join d.descriptionElements as de "
-						+ "join de.sources as des "
-						+ "where tn.classification=:classification "
-						+ "and des.citation is not null ");
+		queryStrings.add("select distinct " + selection
+				+ "from TaxonNode as tn " + "join tn.taxon.descriptions as d "
+				+ sourceRefJoins + "where tn.classification=:classification "
+				+ sourceRefWhere);
 
 		parameters.put("classification", classification);
 
 		// TaxonNameBase description elements for taxa:
-		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
-				+ "join tn.taxon.name.descriptions as d "
-				+ "join d.descriptionElements as de "
-				+ "join de.sources as des "
+		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
+				+ "join tn.taxon.name.descriptions as d " + sourceRefJoins
 				+ "where tn.classification=:classification "
 				+ "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null "
-				+ "and des.citation is not null ");
+				+ "and tn.taxon.name is not null " + sourceRefWhere);
 
 		// TaxonNameBase description elements for synonyms:
-		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
 				+ "join tn.taxon.synonymRelations as syr "
 				+ "join syr.relatedFrom as sy "
-				+ "join sy.name.descriptions as d "
-				+ "join d.descriptionElements as de "
-				+ "join de.sources as des "
-				+ "where tn.classification=:classification "
-				+ "and des.citation is not null " + "and sy is not null " // TODO:
-																			// is
-																			// this
-																			// case
-																			// actually
-																			// possible???
+				+ "join sy.name.descriptions as d " + sourceRefJoins
+				+ "where tn.classification=:classification " + sourceRefWhere
+				+ "and sy is not null " // TODO:
+										// is
+										// this
+										// case
+										// actually
+										// possible???
 				+ "and sy.name is not null ");
 
 		// SpecimenOrObservationBase description elements:
 		// 1. via determinations
-		queryStrings
-				.add("select distinct des.citation.id from DescriptionBase db, TaxonNode tn "
-						+ "join db.describedSpecimenOrObservations as so "
-						+ "join so.determinations as det "
-						+ "join db.descriptionElements as de "
-						+ "join de.sources as des "
-						+ "where tn.classification=:classification "
-						+ "and tn.taxon=det.taxon ");
+		queryStrings.add("select distinct " + selection
+				+ "from DescriptionBase d, TaxonNode tn "
+				+ "join d.describedSpecimenOrObservations as so "
+				+ "join so.determinations as det " + sourceRefJoins
+				+ "where tn.classification=:classification "
+				+ "and tn.taxon=det.taxon " + sourceRefWhere);
 
 		// 2. via derived units in taxon description
 		// already done with the taxon/synonym descriptions
 
 		// 3. via SpecimenTypeDesignation in TaxonName:
 		// a. taxon names:
-		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
 				+ " join tn.taxon.name.typeDesignations as tdes "
-				+ "join tdes.typeSpecimen.descriptions as d "
-				+ "join d.descriptionElements as de "
-				+ "join de.sources as des "
+				+ "join tdes.typeSpecimen.descriptions as d " + sourceRefJoins
 				+ "where tn.classification=:classification "
 				+ "and tdes.class=:type " + "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null "
-				+ "and des.citation is not null ");
+				+ "and tn.taxon.name is not null " + sourceRefWhere);
 
 		parameters.put("type", "SpecimenTypeDesignation");
 
 		// b. synonym names:
-		queryStrings.add("select distinct des.citation.id from TaxonNode tn "
+		queryStrings.add("select distinct " + selection + "from TaxonNode tn "
 
 		+ "join tn.taxon.synonymRelations as syr "
 				+ "join syr.relatedFrom as sy "
 				+ " join sy.name.typeDesignations as tdes "
-				+ "join tdes.typeSpecimen.descriptions as d "
-				+ "join d.descriptionElements as de "
-				+ "join de.sources as des "
+				+ "join tdes.typeSpecimen.descriptions as d " + sourceRefJoins
 				+ "where tn.classification=:classification "
 				+ "and tdes.class=:type " + "and tn.taxon is not null "
-				+ "and sy.name is not null " + "and des.citation is not null ");
+				+ "and sy.name is not null " + sourceRefWhere);
 
 		// 4. via HomotypicalGroup in TaxonBase
 		// we get this automatically with the names
@@ -298,7 +388,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	 * @see eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao#
 	 * countNomenclaturalReferences()
 	 */
-	@Override
+//	@Override
 	public Long countNomenclaturalReferences() {
 		Query query = getSession()
 				.createQuery(
@@ -363,8 +453,9 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		parameters.put("classification", classification);
 
-		//get the ids from the Descriptive source references to add them to the count
-		Set<Integer> ids = listDescriptiveSourceReferenceIds(classification);
+		// get the ids from the Descriptive source references to add them to the
+		// count
+		Set<Integer> ids = listDescriptiveIds(true, classification);
 
 		// get classification reference
 		queryStrings.add("select c.reference.id from Classification as c "
@@ -707,33 +798,33 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// the sources...
 		// iterate in a certain depth REFERENCE_LINK_RECURSION_DEPTH
 
-//		for (int i = 0; i < REFERENCE_LINK_RECURSION_DEPTH; i++) {
-//
-//			ids.remove(null);
-//			List<Integer> preIds = new ArrayList(ids);
-//
-//			if (!preIds.isEmpty()) {
-//
-//				queryStrings.clear();
-//				Set<Integer> postIds = new HashSet<Integer>();
-//
-//				queryStrings
-//						.add("select distinct s.citation.id from Reference as R "
-//								+ "join R.sources as s "
-//								+ "where s.citation is not null "
-//								// + "and s.citation.id is not null "
-//								+ " and s.citation.id in (:preIds) ");
-//
-//				parameters.clear();
-//				parameters.put("preIds", preIds);
-//				Set<Integer> result = processQueriesWithIdDistinctListResult(
-//						queryStrings, parameters);
-//				postIds.addAll(result);
-//				
-//				ids.addAll(postIds);
-//			}
-//
-//		}
+		// for (int i = 0; i < REFERENCE_LINK_RECURSION_DEPTH; i++) {
+		//
+		// ids.remove(null);
+		// List<Integer> preIds = new ArrayList(ids);
+		//
+		// if (!preIds.isEmpty()) {
+		//
+		// queryStrings.clear();
+		// Set<Integer> postIds = new HashSet<Integer>();
+		//
+		// queryStrings
+		// .add("select distinct s.citation.id from Reference as R "
+		// + "join R.sources as s "
+		// + "where s.citation is not null "
+		// // + "and s.citation.id is not null "
+		// + " and s.citation.id in (:preIds) ");
+		//
+		// parameters.clear();
+		// parameters.put("preIds", preIds);
+		// Set<Integer> result = processQueriesWithIdDistinctListResult(
+		// queryStrings, parameters);
+		// postIds.addAll(result);
+		//
+		// ids.addAll(postIds);
+		// }
+		//
+		// }
 
 		return Long.valueOf(ids.size());
 	}
@@ -777,14 +868,14 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 			// if ((type != null) && (queryParameters.contains("type"))) {
 			// query.setParameter("type", type);
 			// }
-			List queryList=query.list();
-			//System.out.println(queryList.toString());
+			List queryList = query.list();
+			// System.out.println(queryList.toString());
 			ids.addAll((ArrayList<Integer>) queryList);
-			
-//			System.out.println(parameters.toString());
-//			System.out.println("");
+
+			// System.out.println(parameters.toString());
+			// System.out.println("");
 		}
-//		System.out.println("end");
+		// System.out.println("end");
 		return ids;
 		// return Long.valueOf(ids.size());
 	}
@@ -794,82 +885,80 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// TODO Auto-generated method stub
 		return null;
 	}
-	
+
 	@Override
-	public List<UUID>  getAllChildNodeIds(UUID rootUuid){
-		
-		Set<UUID> uuids= new HashSet<UUID>();
-		List<UUID> children= new ArrayList<UUID>();
-		List<UUID> parents= new ArrayList<UUID>();
+	public List<UUID> getAllChildNodeIds(UUID rootUuid) {
+
+		Set<UUID> uuids = new HashSet<UUID>();
+		List<UUID> children = new ArrayList<UUID>();
+		List<UUID> parents = new ArrayList<UUID>();
 		String queryString;
 		String parameter;
-		
+
 		// it should be this one!
-//		queryString="select distinct chn.uuid from TaxonNode tn " +
-//				"join tn.childNodes as chn " +
-//				"where tn.uuid in (:parents) ";
-		
+		// queryString="select distinct chn.uuid from TaxonNode tn " +
+		// "join tn.childNodes as chn " +
+		// "where tn.uuid in (:parents) ";
+
 		// just for testing, but does not work anyway
-		queryString="select distinct chn.uuid from TaxonNode tn "+
-				"join tn.childNodes as chn " +
-				"where tn.uuid = :parent ";
-		
-		Query query= getSession().createQuery(queryString);
-		
+		queryString = "select distinct chn.uuid from TaxonNode tn "
+				+ "join tn.childNodes as chn " + "where tn.uuid = :parent ";
+
+		Query query = getSession().createQuery(queryString);
+
 		parents.add(rootUuid);
 		uuids.add(rootUuid);
-		
-	//	while(!(parents.isEmpty())){
-//			query.setParameterList("parents",parents);
-		query.setParameter("parent",parents.get(0));
-			children = query.list();
-			uuids.addAll(children);
-			parents=children;
-		//}
+
+		// while(!(parents.isEmpty())){
+		// query.setParameterList("parents",parents);
+		query.setParameter("parent", parents.get(0));
+		children = query.list();
+		uuids.addAll(children);
+		parents = children;
+		// }
 		List<UUID> uuidList = new ArrayList<UUID>();
 		uuidList.addAll(uuids);
 		return uuidList;
-		
+
 	}
 
-//	@Override
-//	public List<UUID>  getAllTaxonIds(UUID rootUuid){
-//		
-//		Set<UUID> uuids= new HashSet<UUID>();
-//		List<UUID> children= new ArrayList<UUID>();
-//		List<UUID> parents= new ArrayList<UUID>();
-//		String queryString;
-//		String parameter;
-//		
-//		queryString="select distinct chn.taxon.uuid from TaxonNode tn " +
-//				"join tn.childNodes as chn " +
-//				"where tn.taxon.uuid in :parents ";
-//		
-//		Query query= getSession().createQuery(queryString);
-//		
-//		parents.add(rootUuid);
-//		
-//		//while(!(parents.isEmpty())){
-//			parents.add(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
-//			parameter=parents.toString();
-//			System.out.println("parameter: "+parameter);
-//			
-//		//children = query.list();
-//		// parents=children
-//		//}
-//		
-//		return parents;
-//		
-//	}
-	
-	@Override
-	public void getAllTaxonIds(){
-		
-		Set<UUID> uuids= new HashSet<UUID>();
+	// @Override
+	// public List<UUID> getAllTaxonIds(UUID rootUuid){
+	//
+	// Set<UUID> uuids= new HashSet<UUID>();
+	// List<UUID> children= new ArrayList<UUID>();
+	// List<UUID> parents= new ArrayList<UUID>();
+	// String queryString;
+	// String parameter;
+	//
+	// queryString="select distinct chn.taxon.uuid from TaxonNode tn " +
+	// "join tn.childNodes as chn " +
+	// "where tn.taxon.uuid in :parents ";
+	//
+	// Query query= getSession().createQuery(queryString);
+	//
+	// parents.add(rootUuid);
+	//
+	// //while(!(parents.isEmpty())){
+	// parents.add(UUID.fromString("54e767ee-894e-4540-a758-f906ecb4e2d9"));
+	// parameter=parents.toString();
+	// System.out.println("parameter: "+parameter);
+	//
+	// //children = query.list();
+	// // parents=children
+	// //}
+	//
+	// return parents;
+	//
+	// }
 
-		
-		//return (List<UUID>) uuids;
-		
+	@Override
+	public void getAllTaxonIds() {
+
+		Set<UUID> uuids = new HashSet<UUID>();
+
+		// return (List<UUID>) uuids;
+
 	}
 
 }

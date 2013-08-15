@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.swing.text.StyledEditorKit.BoldAction;
+
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -60,13 +62,15 @@ public interface IStatisticsDao {
 	 * 
 	 * @return - count result - number of these references
 	 */
-	public Long countDescriptiveSourceReferences(Classification classification);
+	public Long countDescriptive(Boolean sourceRef,Classification classification);
 
 
 	/**
 	 * count all Reference items attached to the given classification
 	 * but not nomeclatural referencesy
 	 * 
+	 * @param sourceRef - Boolean, tells if to count the descriptions 
+	 * 		directly or count the descriptive source references
 	 * @param classification
 	 * @return - the amount of the items in the classification
 	 */
@@ -83,6 +87,9 @@ public interface IStatisticsDao {
 
 
 	public List<UUID> getAllChildNodeIds(UUID rootUuid);
+
+
+	
 
 
 	

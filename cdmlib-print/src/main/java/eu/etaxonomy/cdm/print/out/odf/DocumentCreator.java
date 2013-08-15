@@ -72,7 +72,7 @@ public class DocumentCreator {
 			
 			officeText = outputDocument.getContentRoot();
 			
-			contentAutoStyles = contentDom.getOrCreateAutomaticStyles();
+//			contentAutoStyles = contentDom.getOrCreateAutomaticStyles();
 
 			return true;
 		} catch (Exception e) {

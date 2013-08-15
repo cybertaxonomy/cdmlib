@@ -12,11 +12,13 @@ import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
@@ -68,6 +70,9 @@ public class StatisticsServiceImpl implements IStatisticsService {
 
 	@Autowired
 	private IStatisticsDao statisticsDao;
+	
+	@Autowired
+	private IDescriptionDao descriptionDao;
 
 	/**
 	 * counts all the elements referenced in the configurator from the part of
@@ -151,6 +156,11 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				counter = statisticsDao.countDescriptiveSourceReferences();
 
 				break;
+			case DESCRIPTIONS:
+
+				counter = Long.valueOf(descriptionDao.count(DescriptionBase.class));
+
+				break;
 			}
 
 			statistics.addCount(type, counter);
@@ -198,7 +208,11 @@ public class StatisticsServiceImpl implements IStatisticsService {
 					break;
 				case DESCRIPTIVE_SOURCE_REFERENCES:
 					counter = statisticsDao
-							.countDescriptiveSourceReferences((Classification) filter);
+							.countDescriptive(true, (Classification) filter);
+					break;
+				case DESCRIPTIONS:
+					counter = statisticsDao
+							.countDescriptive(false, (Classification) filter);
 					break;
 				case NOMECLATURAL_REFERENCES:
 					counter = statisticsDao

@@ -54,9 +54,9 @@
 			<artifactId>servlet-api</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>org.odftoolkit</groupId>
-			<artifactId>odfdom-java</artifactId>
-		</dependency>
+	        <groupId>org.apache.odftoolkit</groupId>
+		<artifactId>simple-odf</artifactId>
+	    </dependency>
 		<dependency>
 			<groupId>org.jdom</groupId>
 			<artifactId>jdom</artifactId>
