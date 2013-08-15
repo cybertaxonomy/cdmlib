@@ -1500,6 +1500,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     @Transient
     public boolean isGroupsBasionym() {
+    	if (homotypicalGroup == null){
+    		homotypicalGroup = HomotypicalGroup.NewInstance();
+    		homotypicalGroup.addTypifiedName(this);
+    	}
         Set<TaxonNameBase> typifiedNames = homotypicalGroup.getTypifiedNames();
 
         // Check whether there are any other names in the group

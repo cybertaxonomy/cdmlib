@@ -355,8 +355,11 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     			while (childrenIterator.hasNext()){
     				TaxonNode childNode = childrenIterator.next();
     				childrenIterator.remove();
-    				parent.addChildNode(childNode, null, null, null);
-    				
+    				if (parent != null){
+    					parent.addChildNode(childNode, null, null, null);
+    				}else{
+    					childNode.setParent(null);
+    				}
     			}	
     			
     			

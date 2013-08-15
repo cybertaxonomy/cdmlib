@@ -202,6 +202,51 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, taxon.getSynonymRelations().size());
     }
 
+    
+
+    @Test
+    public final void testChangeSynonymToAcceptedTaxonSynonymForTwoTaxa(){
+        Rank rank = Rank.SPECIES();
+        //HomotypicalGroup group = HomotypicalGroup.NewInstance();
+        Taxon taxWithoutSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test1", null, null, null, null, null, null, null), null);
+        Taxon tax2WithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test5", null, null, null, null, null, null, null), null);
+        Taxon taxWithSyn = Taxon.NewInstance(BotanicalName.NewInstance(rank, "Test3", null, null, null, null, null, null, null), null);
+        Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test2", null, null, null, null, null, null, null), null);
+        Synonym synonym2 = Synonym.NewInstance(BotanicalName.NewInstance(rank, "Test4", null, null, null, null, null, null, null), null);
+        //synonym2.getName().setHomotypicalGroup(taxWithSyn.getHomotypicGroup());
+        //tax2.addHeterotypicSynonymName(synonym.getName());
+        taxWithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+        taxWithSyn.addSynonym(synonym2, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+        tax2WithSyn.addSynonym(synonym, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
+
+        service.save(taxWithoutSyn);
+       
+        UUID uuidSyn = service.save(synonym);
+        service.save(synonym2);
+        UUID uuidTaxWithSyn =service.save(taxWithSyn);
+        service.save(tax2WithSyn);
+        
+
+        Taxon taxon = null;
+        try {
+            taxon = service.changeSynonymToAcceptedTaxon(synonym, taxWithSyn, true, true, null, null);
+            service.save(taxon);
+        } catch (HomotypicalGroupChangeException e) {
+            Assert.fail("Invocation of change method should not throw an exception");
+        }
+        taxWithSyn = null;
+        tax2WithSyn = null;
+        
+        //test flush (resave deleted object)
+        TaxonBase<?> syn = service.find(uuidSyn);
+        taxWithSyn = (Taxon)service.find(uuidTaxWithSyn);
+        Taxon taxNew = (Taxon)service.find(taxon.getUuid());
+        assertNotNull(syn);
+        assertNotNull(taxWithSyn);
+        assertNotNull(taxNew);
+        
+       // Assert.assertEquals("New taxon should have 1 synonym relationship (the old homotypic synonym)", 1, taxon.getSynonymRelations().size());
+    }
 
     /**
      * Old implementation taken from {@link TaxonServiceImplBusinessTest} for old version of method.
@@ -973,7 +1018,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	config.setDeleteTaxonNodes(false);
 
         try {
-//			commitAndStartNewTransaction(tableNames);
+			commitAndStartNewTransaction(tableNames);
         	
             service.deleteTaxon(child1, config, null);
             Assert.fail("Delete should throw an error as long as name is used in classification.");
@@ -1000,6 +1045,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+        
+        assertEquals(0, child1.getTaxonNodes().size());
         try {
         	
             service.deleteTaxon(child1, config, null);
@@ -1017,7 +1064,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		} catch (DataChangeNoRollbackException e) {
 			Assert.fail("Delete should not throw an exception");
 		}
-
+        //service.find(uuid);
         
         nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 2 taxa in the database",2, nTaxa);
@@ -1320,8 +1367,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		Taxon tax = (Taxon)service.find(uuid);
 		assertNull(tax);
 		tax = (Taxon)service.find(misappliedNameUUID);
-		
-		assertNull(tax);
+		//TODO: is that correct or should it be deleted because there is no relation to anything
+		assertNotNull(tax);
 		
 	}
 	

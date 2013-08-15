@@ -292,7 +292,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 //			deleteSynonym(synonym, taxon, false);
             try {
                 this.dao.flush();
-                this.deleteSynonym(synonym, new SynonymDeletionConfigurator());
+                this.deleteSynonym(synonym, acceptedTaxon, new SynonymDeletionConfigurator());
 
             } catch (Exception e) {
                 logger.info("Can't delete old synonym from database");
@@ -994,7 +994,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         			taxConf.setDeleteTaxonRelationships(false);
         			taxon.removeTaxonRelation(taxRel);
         			
-            		if (taxFrom.equals(taxon)){
+            		/*if (taxFrom.equals(taxon)){
             			try{
             				this.deleteTaxon(taxTo, taxConf, classification);
             			} catch(DataChangeNoRollbackException e){
@@ -1007,7 +1007,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             				logger.debug("A related taxon will not be deleted." + e.getMessage());
             			}
             			
-            		}
+            		}*/
             	}
             }
 

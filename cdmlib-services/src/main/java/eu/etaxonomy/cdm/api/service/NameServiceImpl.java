@@ -149,6 +149,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //remove references to this name
         removeNameRelationshipsByDeleteConfig(name, config);
 
+        
+        //remove name from homotypical group
+        HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
+        if (homotypicalGroup != null){
+        	homotypicalGroup.removeTypifiedName(name);
+        }
+        
+        
         //check if this name is still used somewhere
 
         //name relationships
