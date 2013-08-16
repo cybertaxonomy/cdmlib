@@ -26,29 +26,31 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 	private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
 	
 	private String tableName;
-	private String newColumnName;
-	private String oldColumnName;
+	private String columnName;
 	private String newColumnType;
 	private boolean includeAudTable;
 	private Object defaultValue;
 	private boolean isNotNull;
 	private String referencedTable;
 
-	
-	public static final ColumnTypeChanger NewClobInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnTypeChanger(stepName, tableName, oldColumnName, newColumnName, "clob", includeAudTable, null, false, null);
+
+	public static final ColumnTypeChanger NewStringSizeInstance(String stepName, String tableName, String columnName, int newSize, boolean includeAudTable){
+		return new ColumnTypeChanger(stepName, tableName, columnName, "nvarchar("+newSize+")", includeAudTable, null, false, null);
 	}
 	
-	public static final ColumnTypeChanger NewInt2DoubleInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnTypeChanger(stepName, tableName, oldColumnName, newColumnName, "double", includeAudTable, null, false, null);
+	public static final ColumnTypeChanger NewClobInstance(String stepName, String tableName, String columnName, boolean includeAudTable){
+		return new ColumnTypeChanger(stepName, tableName, columnName, "clob", includeAudTable, null, false, null);
 	}
 	
-	protected ColumnTypeChanger(String stepName, String tableName, String oldColumnName, String newColumnName, String newColumnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
+	public static final ColumnTypeChanger NewInt2DoubleInstance(String stepName, String tableName, String columnName, boolean includeAudTable){
+		return new ColumnTypeChanger(stepName, tableName, columnName, "double", includeAudTable, null, false, null);
+	}
+	
+	protected ColumnTypeChanger(String stepName, String tableName, String columnName, String newColumnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
 		super(stepName);
 		this.tableName = tableName;
-		this.newColumnName = newColumnName;
+		this.columnName = columnName;
 		this.newColumnType = newColumnType;
-		this.oldColumnName =oldColumnName;
 		this.includeAudTable = includeAudTable;
 		this.defaultValue = defaultValue;
 		this.isNotNull = notNull;
@@ -84,7 +86,7 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 			if (defaultValue instanceof Boolean){
 				updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
 				updateQuery = updateQuery.replace("@tableName", tableName);
-				updateQuery = updateQuery.replace("@columnName", newColumnName);
+				updateQuery = updateQuery.replace("@columnName", columnName);
 				try {
 					datasource.executeUpdate(updateQuery);
 				} catch (SQLException e) {
@@ -93,7 +95,7 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 				}
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, newColumnName, referencedTable);
+				result &= TableCreator.makeForeignKey(tableName, datasource, columnName, referencedTable);
 			}
 			
 			return result;
@@ -126,7 +128,7 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 			updateQuery += " NOT NULL";
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
-		updateQuery = updateQuery.replace("@columnName", newColumnName);
+		updateQuery = updateQuery.replace("@columnName", columnName);
 		updateQuery = updateQuery.replace("@columnType", databaseColumnType);
 //		updateQuery = updateQuery.replace("@addSeparator", getAddColumnSeperator(datasource));
 		
@@ -140,9 +142,9 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 	public String getReferencedTable() {
 		return referencedTable;
 	}
-
-	public String getNewColumnName() {
-		return newColumnName;
-	}
+//
+//	public String getNewColumnName() {
+//		return columnName;
+//	}
 
 }

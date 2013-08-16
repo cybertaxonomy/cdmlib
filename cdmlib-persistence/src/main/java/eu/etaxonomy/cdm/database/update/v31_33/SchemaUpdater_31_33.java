@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
+import eu.etaxonomy.cdm.database.update.v24_25.SortIndexUpdater;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
@@ -56,6 +58,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -100,6 +103,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		//remove SpecimenOrObservationBase_Media #3597
 		  //TODO check if SpecimenOrObservationBase_Media has data => move to first position, don't run update if data exists
+		  //TODO check if Description -Specimen Relation has M:M data
 		if (false){
 			throw new RuntimeException("Required check for SpecimenOrObservationBase_Media");
 		}else{
@@ -153,9 +157,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, null);
 		stepList.add(step);
 		
-		//FIXME implement sorted behaviour in model first !!
-		//FIXME update sortindex (similar updater exists already for FeatureNode#sortIndex in schema update 25_30 
-				//	but	had a bad performance
+		//TODO implement sorted behaviour in model first !!
+		//update sortindex
+		stepName = "Update sort index on TaxonNode children";
+		tableName = "TaxonNode";
+		String parentIdColumn = "parent_id";
+		String sortIndexColumn = "sortIndex";
+		SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, parentIdColumn, sortIndexColumn, INCLUDE_AUDIT);
+		stepList.add(updateSortIndex);
+
 		
 		//create feature node tree index
 		stepName = "Create feature node tree index";
@@ -285,9 +295,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false); 
 		stepList.add(step);
 		
-		//FIXME update abbrevTitle, protectedAbbrevTitle and abbrevTitleCache in Reference
+		//update abbrevTitle, protectedAbbrevTitle and abbrevTitleCache in Reference
 		updateAbbrevTitle(stepList);
-		
 		
 		//add doi to reference
 		stepName = "Add doi to Reference";
@@ -338,7 +347,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
 		stepList.add(step);
 
-		//remove citation_id and citationmicroreference columns from Media table #2541
+		//remove citation_id and citation micro-reference columns from Media table #2541
 		//FIXME first check if columns are always empty
 		stepName = "Remove citation column from Media";
 		tableName = "Media";
@@ -352,8 +361,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//FIXME update length of all title caches and full title cache in names
-		//https://dev.e-taxonomy.eu/trac/ticket/1592
+		//update length of all title caches and full title cache in names  #1592
+		updateTitleCacheLength(stepList);
+		
 		
 		//rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
 		stepName = "Update states_id to stateData_id in DescriptionElementBase_StateData";
@@ -373,7 +383,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
-		//FIXME update DescriptionBase.Specimen_ID data  #3571
+		//update DescriptionBase.Specimen_ID data  #3571
+		updateDescriptionSpecimenRelation(stepList);
 
 		//remove tables DescriptionBase_SpecimenOrObservationBase(_AUD)  #3571
 		stepName = "Remove table DescriptionBase_SpecimenOrObservationBase";
@@ -391,7 +402,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				! INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
 		stepList.add(stepPref);
-		//TODO length of key >= 1000
+		//FIXME length of key >= 1000
 		
 		//TODO fill CdmPreferences with default values
 		
@@ -605,6 +616,127 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
+	//FIXME update length of all title caches and full title cache in names
+	//https://dev.e-taxonomy.eu/trac/ticket/1592
+	 private void updateTitleCacheLength(List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		String columnName;
+		int size = 800;
+		
+		stepName = "Change length of TaxonNameBase fullTitleCache";
+		tableName = "TaxonNameBase";
+		columnName = "fullTitleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of TaxonNameBase title cache";
+		tableName = "TaxonNameBase";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Change length of TaxonBase title cache";
+		tableName = "TaxonNameBase";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of Classification title cache";
+		tableName = "Classification";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of DescriptionBase title cache";
+		tableName = "DescriptionBase";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of FeatureTree title cache";
+		tableName = "FeatureTree";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of Collection title cache";
+		tableName = "Collection";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of Reference title cache";
+		tableName = "Reference";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of Media title cache";
+		tableName = "Media";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of PolytomousKey title cache";
+		tableName = "PolytomousKey";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of SpecimenOrObservationBase title cache";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Change length of DefinedTermBase title cache";
+		tableName = "DefinedTermBase";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Change length of TermVocabulary title cache";
+		tableName = "TermVocabulary";
+		columnName = "titleCache";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName, columnName, size , INCLUDE_AUDIT);
+		stepList.add(step);
+
+	 }
+
+
+	private void updateDescriptionSpecimenRelation(List<ISchemaUpdaterStep> stepList) {
+		//TODO warn if multiple entries for 1 description exists
+		String sqlCount = " SELECT count(*) as n " +
+				" FROM DescriptionBase_SpecimenOrObservationBase MN " +
+				" GROUP BY MN.descriptions_id " +
+				" HAVING count(*) > 1 " +
+				" ORDER BY MN.descriptions_id, MN.describedspecimenorobservations_id ";	
+		
+		//TODO ... and log the concrete records
+//		FROM DescriptionBase_SpecimenOrObservationBase ds
+//		WHERE ds.descriptions_id IN (
+//		SELECT MN.descriptions_id
+//		FROM DescriptionBase_SpecimenOrObservationBase MN
+//		GROUP BY MN.descriptions_id
+//		HAVING count(*) > 1
+//		)
+//		ORDER BY descriptions_id, describedspecimenorobservations_id
+		
+		//TODO test for H2, Postgresql AND SQLServer (later will need TOP 1)
+		String stepName = "update Description - Specimen relation data  ";
+		String sql = " UPDATE DescriptionBase db " +
+		" SET db.specimen_id =  " +
+		" (SELECT  MN.describedspecimenorobservations_id " +
+		" FROM DescriptionBase_SpecimenOrObservationBase MN " +
+		" WHERE MN.descriptions_id = db.id " +
+		" LIMIT 1 " +
+		")";
+		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		stepList.add(step);
+		
+	}
 
 	private void updateAbbrevTitle(List<ISchemaUpdaterStep> stepList) {
 
@@ -1133,52 +1265,45 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update uri to clob for DefinedTermBase";
 		tableName = "DefinedTermBase";
 		String oldColumnName = "uri";
-		String newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		stepName = "Update uri to clob for TermVocabulary";
 		tableName = "TermVocabulary";
 		oldColumnName = "uri";
-		newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//TODO are uri and termsourceuri needed ???
 		stepName = "Update termsourceuri to clob for TermVocabulary";
 		tableName = "TermVocabulary";
 		oldColumnName = "termsourceuri";
-		newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		stepName = "Update uri to clob for Reference";
 		tableName = "Reference";
 		oldColumnName = "uri";
-		newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		stepName = "Update uri to clob for Rights";
 		tableName = "Rights";
 		oldColumnName = "uri";
-		newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName,  INCLUDE_AUDIT);
 		stepList.add(step);
 
 		stepName = "Update uri to clob for MediaRepresentationPart";
 		tableName = "MediaRepresentationPart";
 		oldColumnName = "uri";
-		newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//TODO still needed??
 		stepName = "Update uri to clob for FeatureTree";
 		tableName = "FeatureTree";
 		oldColumnName = "uri";
-		newColumnName = oldColumnName;
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 
 	}
@@ -1255,9 +1380,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//retype distanceToGround 
 		stepName = "Rname distanceToGround column";
 		tableName = "GatheringEvent";
-		String strNewColumnName = "distanceToGround";
 		String strOldColumnName = "distanceToGround";
-		step = ColumnTypeChanger.NewInt2DoubleInstance(stepName, tableName, strOldColumnName, strNewColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewInt2DoubleInstance(stepName, tableName, strOldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//create column distanceToGroundMax
@@ -1279,9 +1403,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//retype distanceToGround 
 		stepName = "Rname distanceToWaterSurface column";
 		tableName = "GatheringEvent";
-		strNewColumnName = "distanceToWaterSurface";
 		strOldColumnName = "distanceToWaterSurface";
-		step = ColumnTypeChanger.NewInt2DoubleInstance(stepName, tableName, strOldColumnName, strNewColumnName, INCLUDE_AUDIT);
+		step = ColumnTypeChanger.NewInt2DoubleInstance(stepName, tableName, strOldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//create column distanceToWaterSurface

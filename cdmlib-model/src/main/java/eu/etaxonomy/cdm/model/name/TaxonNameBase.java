@@ -121,7 +121,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @CacheUpdate(noUpdate ="titleCache")
     @NotEmpty(groups = Level2.class)
-    @Size(max = 1023)
+    @Size(max = 800)  //see #1592
     protected String fullTitleCache;
 
     //if true titleCache will not be automatically generated/updated

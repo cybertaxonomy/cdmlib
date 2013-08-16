@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
@@ -61,7 +62,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Audited
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.Classification")
-public class Classification extends IdentifiableEntity implements IReferencedEntity, ITaxonTreeNode, Cloneable{
+public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> implements IReferencedEntity, ITaxonTreeNode, Cloneable{
 	private static final long serialVersionUID = -753804821474209635L;
 	private static final Logger logger = Logger.getLogger(Classification.class);
 	

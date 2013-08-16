@@ -11,6 +11,10 @@ package eu.etaxonomy.cdm.database.update.v24_25;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 
@@ -62,34 +66,89 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 	}
 
 	private boolean addColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		String resulsetQuery = "SELECT id, @parentColumn FROM @tableName ORDER BY @parentColumn, id";
+		
+		Map<Integer, Set<Integer>> indexMap = makeIndexMap(datasource);
+		
+		updateIndices(tableName, datasource, indexMap);
+		
+		return true;
+	}
+
+	/**
+	 * @param datasource 
+	 * @param rs
+	 * @param index
+	 * @param oldParentId
+	 * @return
+	 * @throws SQLException
+	 */
+	private Map<Integer, Set<Integer>> makeIndexMap(ICdmDataSource datasource) throws SQLException {
+		String resulsetQuery = "SELECT id, @parentColumn " +
+				" FROM @tableName " +
+				" WHERE @parentColumn IS NOT NULL " + 
+				" ORDER BY @parentColumn, id";
 		resulsetQuery = resulsetQuery.replace("@tableName", tableName);
 		resulsetQuery = resulsetQuery.replace("@parentColumn", parentColumn);
 
 		ResultSet rs = datasource.executeQuery(resulsetQuery);
 		Integer index = baseValue;
-		Integer oldParentId = -1;
-		while (rs.next()){
+		int oldParentId = -1;
+		
+		
+		Map<Integer, Set<Integer>> indexMap = new HashMap<Integer, Set<Integer>>(); 
+		Integer counter = 0;
+		while (rs.next() ){
+			counter++;
 			int id = rs.getInt("id");
-			Object parentId = rs.getObject(parentColumn);
-			if (parentId != null){
-				if (oldParentId != Integer.valueOf(parentId.toString())){
+			Object oParentId = rs.getObject(parentColumn);
+			if (oParentId != null){
+				int parentId = Integer.valueOf(oParentId.toString());
+				if (oldParentId != parentId){
 					index = baseValue;
-					oldParentId = Integer.valueOf(parentId.toString());
+					oldParentId = parentId;
+				}else{
+					index++;
 				}
-				String updateQuery = "UPDATE @tableName SET @sortIndexColumn = @index WHERE id = " + id;
-				updateQuery = updateQuery.replace("@tableName", tableName);
-				updateQuery = updateQuery.replace("@sortIndexColumn", sortIndexColumn);
-				updateQuery = updateQuery.replace("@index", index.toString());
-				datasource.executeUpdate(updateQuery);
-				index++;
+				putIndex(id, index, indexMap);
 			}else{
+				logger.warn("This should not happen");
 				index = baseValue;
 			}
+//			System.out.println(oParentId + "," + id+","+ index+";");
 		}
+		return indexMap;
+	}
 
-		
-		return true;
+	private void updateIndices(String tableName, ICdmDataSource datasource, Map<Integer, Set<Integer>> indexMap)
+			throws SQLException {
+		for (Integer index :  indexMap.keySet()){
+			Set<Integer> set = indexMap.get(index);
+			String idSetString = makeIdSetString(set);
+			
+			String updateQuery = "UPDATE @tableName SET @sortIndexColumn = @index WHERE id IN (@idList) ";
+			updateQuery = updateQuery.replace("@tableName", tableName);
+			updateQuery = updateQuery.replace("@sortIndexColumn", sortIndexColumn);
+			updateQuery = updateQuery.replace("@index", index.toString());
+			updateQuery = updateQuery.replace("@idList", idSetString);
+			datasource.executeUpdate(updateQuery);
+		}
+	}
+
+	private static String makeIdSetString(Set<Integer> set) {
+		StringBuffer result = new StringBuffer(set.size() * 5);
+		for (Integer id:set){
+			result.append(id + ",");
+		}
+		return result.substring(0, result.length() - 1);
+	}
+
+	private void putIndex(Integer id, Integer index, Map<Integer, Set<Integer>> indexMap) {
+		Set<Integer> set = indexMap.get(index);
+		if (set == null){
+			set = new HashSet<Integer>();
+			indexMap.put(index, set);
+		}
+		set.add(id);
 	}
 
 }

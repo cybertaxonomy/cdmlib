@@ -57,8 +57,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * depending on their grade of precision.  
  *  
  * @see		MediaKey
+ * 
  * @author  m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
 @XmlAccessorType(XmlAccessType.FIELD)

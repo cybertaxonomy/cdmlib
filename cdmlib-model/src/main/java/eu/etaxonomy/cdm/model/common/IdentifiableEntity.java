@@ -107,7 +107,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Column(length=255, name="titleCache")
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
-    @Size(max = 1023)
+    @Size(max = 800)  //see #1592
     @Fields({
         @Field(store=Store.YES),
         @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
