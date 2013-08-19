@@ -1059,7 +1059,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	dao.delete(taxon);
             } else{
             	message = "Taxon can't be deleted as it is used in another Taxonnode";
-                    throw new ReferencedObjectUndeletableException(message);
+            	 //do nothing
+                if (logger.isDebugEnabled()){logger.debug(message);}
             }
             
 

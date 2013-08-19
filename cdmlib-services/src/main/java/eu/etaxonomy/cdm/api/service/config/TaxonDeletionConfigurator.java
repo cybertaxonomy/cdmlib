@@ -34,6 +34,8 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 	
 	private boolean deleteSynonymsIfPossible = true;
 	
+	private boolean deleteMisappliedNamesAndInvalidDesignations = true;
+
 	private boolean deleteNameIfPossible = true;
 	
 	private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
@@ -93,7 +95,21 @@ public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 	}
 
 	
+	/**
+	 * If <code>true</code> related taxa with  {@link TaxonRelationshipType} misappliedName or invalidDesignation will be removed if possible 
+	 * It is possible to remove a related taxon if it is not used in any other context, e.g. any 
+	 * other @link {@link TaxonRelationship} or in another @link {@link Classification}
+	 * @return
+	 */
+	public boolean isDeleteMisappliedNamesAndInvalidDesignations() {
+		return deleteMisappliedNamesAndInvalidDesignations;
+	}
 
+
+	public void setDeleteMisappliedNamesAndInvalidDesignations(
+			boolean deleteMisappliedNamesAndInvalidDesignations) {
+		this.deleteMisappliedNamesAndInvalidDesignations = deleteMisappliedNamesAndInvalidDesignations;
+	}
 	
 
 
