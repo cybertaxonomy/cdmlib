@@ -92,6 +92,20 @@
 	    <groupId>org.apache.httpcomponents</groupId>
 	    <artifactId>httpclient</artifactId>
 	</dependency>
+	<dependency>
+        <groupId>net.sf.json-lib</groupId>
+                <artifactId>json-lib</artifactId>
+				<classifier>jdk15</classifier>
+    </dependency>
+	<dependency>
+        <groupId>net.sf.ezmorph</groupId>
+        <artifactId>ezmorph</artifactId>
+    </dependency>
+	<dependency>
+		<groupId>com.google.code.gson</groupId>
+		<artifactId>gson</artifactId>
+	</dependency>
+
 
   </dependencies>
 </project>
