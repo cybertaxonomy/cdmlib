@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.io.csv.redlist.out;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -85,6 +87,21 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			//geographical Filter
 			List<TaxonNode> filteredNodes = handleGeographicalFilter(selectedAreas, classificationSet);
 			
+			//sorting List
+			Collections.sort(filteredNodes, new Comparator<TaxonNode>() {
+
+				@Override
+				public int compare(TaxonNode tn1, TaxonNode tn2) {
+					Taxon taxon1 = tn1.getTaxon();
+					Taxon taxon2 = tn2.getTaxon();
+					if(taxon1 != null && taxon2 != null){
+						return taxon1.getTitleCache().compareTo(taxon2.getTitleCache());
+					}
+					else{
+						return 0;
+					}
+				}
+			});
 			for (TaxonNode node : filteredNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				CsvTaxRecordRedlist record = assembleRecord(state);
@@ -125,12 +142,18 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
 			Set<Classification> classificationSet = new HashSet<Classification>();
 			classificationSet.addAll(classificationList);
-			
 			return classificationSet;
 		}
 		return null;
 	}
-	
+
+//	
+//	private Collections sort(List<Classification> classificationList, new Comparator<TaxonNode>() {
+//		public int compare(TaxonNode tn1, TaxonNode tn2){
+//			int i = 0;
+//			return i;
+//		}
+//	});
 	//TODO: Exception handling
 	/**
 	 * 
