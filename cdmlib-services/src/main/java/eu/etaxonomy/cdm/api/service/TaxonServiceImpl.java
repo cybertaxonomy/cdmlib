@@ -1027,6 +1027,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if (config.isDeleteNameIfPossible()){
                 try {
                 	TaxonNameBase name = nameService.find(taxon.getName().getUuid());
+                	name = (TaxonNameBase)HibernateProxyHelper.deproxy(name);
                 	name.removeTaxonBase(taxon);
                 	nameService.save(name);
                 	

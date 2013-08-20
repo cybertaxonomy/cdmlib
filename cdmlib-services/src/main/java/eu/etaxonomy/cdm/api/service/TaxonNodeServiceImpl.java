@@ -107,7 +107,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		Taxon newAcceptedTaxon = (Taxon) HibernateProxyHelper.deproxy(newAcceptedTaxonNode.getTaxon());
 		
 		// Move oldTaxon to newTaxon
-		TaxonNameBase<?,?> synonymName = oldTaxon.getName();
+		//TaxonNameBase<?,?> synonymName = oldTaxon.getName();
+		TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
 		if (synonymRelationshipType == null){
 			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
 				synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();

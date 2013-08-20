@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.UUID;
@@ -24,6 +25,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -100,15 +102,18 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 
 		// descriptions
 		t1 = node1.getTaxon();
+		TaxonNameBase nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
 		assertEquals(2, t1.getDescriptions().size());
 		Assert.assertTrue(t2.getSynonyms().isEmpty());
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
 		assertEquals(1,t1.getSynonyms().size());
-
+		UUID synUUID = null;
+		Synonym syn;
 		try {
-			taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+			syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+			synUUID = syn.getUuid();
 		} catch (DataChangeNoRollbackException e) {
 			Assert.fail();
 		}
@@ -118,6 +123,13 @@ public class TaxonNodeServiceImplTest extends CdmIntegrationTest{
 		assertEquals(2, t2.getDescriptions().size());
 		
 		assertNull(taxonService.find(t1UUID));
+		syn = (Synonym)taxonService.find(synUUID);
+		assertNotNull(syn);
+		Taxon tax = syn.getAcceptedTaxa().iterator().next();
+		assertEquals(tax, t2);
+		TaxonNameBase name = syn.getName();
+		assertEquals(name, nameT1);
+		
 		
 	}
 
