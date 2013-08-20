@@ -193,7 +193,7 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 		if (this.sourceReference == null){
 			logger.warn("getSource Reference not yet fully implemented");
 			sourceReference = ReferenceFactory.newDatabase();
-			sourceReference.setTitleCache("XXX", true);
+			sourceReference.setTitleCache("Rote Liste Band 6 (2011), Pilze (Teil2) - Flechten und Myxomyzeten", true);
 		}
 		return sourceReference;
 	}

@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -28,12 +29,16 @@ import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -66,8 +71,6 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 	@Override
 	public boolean doCheck(BfnXmlImportState state){
 		boolean result = true;
-		logger.warn("BasionymRelations not yet implemented");
-		logger.warn("Checking for TaxonNames not yet implemented");
 		return result;
 	}
 
@@ -110,7 +113,6 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 			Element elSynonyms = XmlHelp.getSingleChildElement(success, elTaxon, childName, bfnNamespace, obligatory);
 			if(elSynonyms != null){
 				childElementName = "SYNONYM";
-//				createOrUpdateSynonym(taxonMap, success, obligatory, bfnNamespace, childElementName,elSynonyms, taxonId, config);
 				createOrUpdateSynonym(taxon, success, obligatory, bfnNamespace, childElementName,elSynonyms, taxonId, config);
 			}
 			
@@ -120,12 +122,12 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 			Element elInformations = XmlHelp.getSingleChildElement(success, elTaxon, childName, bfnNamespace, obligatory);
 			if(elInformations != null){
 				childElementName = "BEZUGSRAUM";
-				createOrUpdateInformation(taxonMap, success, obligatory, bfnNamespace, childElementName,elInformations, taxonId, config);
+				createOrUpdateInformation(taxon, success, obligatory, bfnNamespace, childElementName,elInformations, taxonId, config, state);
 			}
-		
+			taxonMap.put(Integer.parseInt(taxonId), taxon);
 
 		}
-//		taxonService.save(taxonMap.objects());
+		taxonService.save(taxonMap.objects());
 		createOrUdateClassification(config, taxonService);
 		
 		logger.info("end makeTaxonNames ...");
@@ -188,7 +190,6 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 		
 		List<Element> elWissNameList = (List<Element>)elTaxonName.getChildren(childElementName, bfnNamespace);
 		Rank rank = null;
-		String strId = null;
 		String strAuthor = null;
 		String strSupplement = null;
 		Taxon taxon = null;
@@ -197,9 +198,6 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Autoren")){
 				strAuthor = elWissName.getTextNormalize();
 			}
-//			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Eindeutiger Code")){
-//				strId = elWissName.getTextNormalize();
-//			}
 			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("Rang")){
 				String strRank = elWissName.getTextNormalize();
 				rank = makeRank(strRank);
@@ -210,17 +208,15 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 			if(elWissName.getAttributeValue("bereich", bfnNamespace).equalsIgnoreCase("wissName")){
 				try{
 					TaxonNameBase<?, ?> nameBase = parseNonviralNames(rank,strAuthor,strSupplement,elWissName);
-					
-//					nameBase.setId(Integer.parseInt(strId));
+					//TODO  extract to method?
+					if(strSupplement.equalsIgnoreCase("nom. illeg.")){
+						nameBase.addStatus(NomenclaturalStatus.NewInstance(NomenclaturalStatusType.ILLEGITIMATE()));
+					}
+
+					//					nameBase.setId(Integer.parseInt(strId));
 					
 //					ImportHelper.setOriginalSource(nameBase, config.getSourceReference(), strId, idNamespace);
-						
 					//TaxonBase<?> taxonBase = null;
-					//find best matching Taxa
-					
-					String titlecache = elWissName.getTextNormalize();
-					//titlecache = StringUtils.remove(titlecache, strAuthor);
-
 					//TODO find best matching Taxa
 //					taxonBase = getTaxonService().findBestMatchingTaxon(titlecache);
 					//getTaxonService().findTitleCache(null, titlecache, null, null, null, null);
@@ -233,14 +229,10 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 
 					taxon = Taxon.NewInstance(nameBase, config.getSourceReference());
 				} catch (UnknownCdmTypeException e) {
-//					logger.warn("Name with id " + strId + " has unknown nomenclatural code.");
 					success.setValue(false); 
 				}
 			}
 		}
-//		if(strId == null){
-//			logger.warn("TaxonID could not be retrieved...");
-//		}
 		return taxon;
 	}
 	
@@ -253,7 +245,7 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 	 * @param elSynonyms
 	 * @param taxon 
 	 */
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	@SuppressWarnings({ "unchecked" })
 	private void createOrUpdateSynonym(Taxon taxon, ResultWrapper<Boolean> success, boolean obligatory, Namespace bfnNamespace, 
 			     String childElementName, Element elSynonyms, String taxonId, BfnXmlImportConfigurator config) {
 		
@@ -285,23 +277,9 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 					try{
 						TaxonNameBase<?, ?> nameBase = parseNonviralNames(rank,strAuthor,strSupplement,elSynDetail);
 
-						//TODO find Best Matching Taxa
-//						taxonBase = getTaxonService().findBestMatchingSynonym(titlecache);
-						//find best matching Synonym:
-//						if(taxonBase != null){
-							//TODO update record
-//							Set<TaxonNameBase>synonymSet = taxon.getSynonymNames();
-//							for(TaxonNameBase s:synonymSet){
-//								if(s.equals(nameBase)){
-//									s = nameBase;
-//								}
-//							}
-//							taxon.addSynonym((Synonym)taxonBase, SynonymRelationshipType.SYNONYM_OF());
-//							taxonBase = taxon;
-//							logger.info("found existing Synonym but didn't updated it yet: " + titlecache);
-//						}else{
-							Synonym synonym = Synonym.NewInstance(nameBase, config.getSourceReference());
-							taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
+						//TODO find best matching Taxa
+						Synonym synonym = Synonym.NewInstance(nameBase, config.getSourceReference());
+						taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
 						
 					} catch (UnknownCdmTypeException e) {
 						logger.warn("Name with id " + taxonId + " has unknown nomenclatural code.");
@@ -325,18 +303,17 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 	 * @param config
 	 */
 	@SuppressWarnings("unchecked")
-	private void createOrUpdateInformation(MapWrapper<TaxonBase> taxonMap,
+	private void createOrUpdateInformation(Taxon taxon,
 			ResultWrapper<Boolean> success, boolean obligatory,
 			Namespace bfnNamespace, String childElementName,
 			Element elInformations, String taxonId,
-			BfnXmlImportConfigurator config) {
+			BfnXmlImportConfigurator config, 
+			BfnXmlImportState state) {
 
 		List<Element> elInformationList = (List<Element>)elInformations.getChildren(childElementName, bfnNamespace);
         
 		//TODO
-//		getTaxonDescription(taxon, isImageGallery, createNewIfNotExists)
-		
-        List<DescriptionElementBase> descriptionElementList = new ArrayList<>();
+		TaxonDescription taxonDescription = getTaxonDescription(taxon, false, true);
 		for(Element elInfo:elInformationList){
 
 			childElementName = "IWERT";
@@ -344,40 +321,43 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 
 			for(Element elInfoDetail : elInfoDetailList){
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("RL Kat.")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Kat. +/-")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("aktuelle Bestandsstituation")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("langfristiger Bestandstrend")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("kurzfristiger Bestandstrend")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Risikofaktoren")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Verantwortlichkeit")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("alte RL- Kat.")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Neobiota")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
 				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Eindeutiger Code")){
-					makeFeatures(descriptionElementList, elInfoDetail);
+					makeFeatures(taxonDescription, elInfoDetail, state, false);
 				}
-
+				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Kommentar zur Taxonomie")){
+					makeFeatures(taxonDescription, elInfoDetail, state, true);
+				}
+				if(elInfoDetail.getAttributeValue("standardname").equalsIgnoreCase("Kommentar zur Gefährdung")){
+					makeFeatures(taxonDescription, elInfoDetail, state, true);
+				}
 			}
 		}
-		makeTaxonDescription(taxonMap, taxonId, descriptionElementList);
-		
 	}
 
 	/**
@@ -385,79 +365,49 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 	 * @param elInfoDetail
 	 */
 	private void makeFeatures(
-			List<DescriptionElementBase> descriptionElementList,
-			Element elInfoDetail) {
+			TaxonDescription taxonDescription,
+			Element elInfoDetail,
+			BfnXmlImportState state,
+			boolean isTextData) {
 		String transformedRlKatValue = null;
+		UUID featureUUID = null;
+		UUID stateTermUUID = null;
 		String strRlKatValue = elInfoDetail.getChild("WERT").getValue();
 		String strRlKat = elInfoDetail.getAttributeValue("standardname");
+		boolean randomStateUUID = false;
 		try {
+			featureUUID = BfnXmlTransformer.getRedlistFeatureUUID(strRlKat);
 			transformedRlKatValue = BfnXmlTransformer.redListString2RedListCode(strRlKatValue);
 		} catch (UnknownCdmTypeException e) {
 			transformedRlKatValue = strRlKatValue;
 		}
-		State state;
-		Feature redListFeature = (Feature)findOrCreateTerm(strRlKat, Feature.class);
-		state = (State)findOrCreateTerm(transformedRlKatValue, State.class);
-		CategoricalData catData = CategoricalData.NewInstance(state, redListFeature);
-		DescriptionElementBase descriptionElement = catData;
-		descriptionElementList.add(descriptionElement);
-	}
-
-
-	/**
-	 * @param strTerm
-	 * @param redListCat
-	 */
-	@SuppressWarnings("rawtypes")
-	private DefinedTermBase findOrCreateTerm(String strTerm, Class clazz) {
-		DefinedTermBase termBase = null;
-		if(StringUtils.isNotBlank(strTerm)){
-		List<DefinedTermBase> featureList = getTermService().list(clazz, null, null, null, VOC_CLASSIFICATION_INIT_STRATEGY);
-			for(DefinedTermBase dt : featureList){
-				if(dt.getTitleCache().equalsIgnoreCase(strTerm)){
-					termBase = dt;
-				}
+		Feature redListFeature = getFeature(state, featureUUID);
+		State rlState = null;
+		//if is text data a state is not needed
+		if(!isTextData){
+			try {
+				stateTermUUID = BfnXmlTransformer.getRedlistStateTermUUID(transformedRlKatValue, strRlKat);
+			} catch (UnknownCdmTypeException e) {
+				stateTermUUID = UUID.randomUUID();
+				randomStateUUID = true;
 			}
-		}
-		if(termBase == null && clazz.equals(Feature.class)){
-			termBase = Feature.NewInstance(strTerm, strTerm, strTerm);
-			getTermService().saveOrUpdate(termBase);
-		}else if(termBase == null && clazz.equals(State.class)){
-			if(StringUtils.isNotBlank(strTerm)){
-				termBase = State.NewInstance(strTerm, strTerm, strTerm);
+			if(randomStateUUID || stateTermUUID == BfnXmlTransformer.stateTermEmpty){
+				if(stateTermUUID == BfnXmlTransformer.stateTermEmpty)
+					transformedRlKatValue = "keine Angabe";
+				rlState = getStateTerm(state, stateTermUUID, transformedRlKatValue, transformedRlKatValue, transformedRlKatValue, null);
 			}else{
-				String noRecord = "Keine Angabe";
-				termBase = State.NewInstance(noRecord, noRecord, noRecord);
+				rlState = getStateTerm(state, stateTermUUID);
 			}
-			getTermService().saveOrUpdate(termBase);			
 		}
-		
-		
-		return termBase;
-		
-	}
-	
-	/**
-	 * @param taxonMap
-	 * @param taxonId
-	 * @param descriptionElement
-	 */
-	private void makeTaxonDescription(MapWrapper<TaxonBase> taxonMap,
-			String taxonId, List<DescriptionElementBase> descriptionElementList) {
-		if(taxonMap.get(taxonId) instanceof Taxon){
-			Taxon taxon = (Taxon)taxonMap.get(taxonId);
-			TaxonDescription taxonDescription = TaxonDescription.NewInstance();
-			taxonDescription.setTaxon(taxon);
-
-			for(DescriptionElementBase descriptionElement:descriptionElementList){
-				taxonDescription.addElement(descriptionElement);
-			}
-			getDescriptionService().saveOrUpdate(taxonDescription);
-			TaxonBase<?> taxonBase = taxon;
-//			taxonMap.put(taxonId, taxonBase);
-			getTaxonService().saveOrUpdate(taxon);
+		if(isTextData){
+			TextData textData = TextData.NewInstance(redListFeature);
+			textData.putText(Language.GERMAN(), strRlKatValue);
+			DescriptionElementBase descriptionElement = textData;
+			taxonDescription.addElement(descriptionElement);
 		}else{
-			logger.info("Could not create TaxonDescription for: " + taxonMap.get(taxonId).getTitleCache());
+			CategoricalData catData = CategoricalData.NewInstance(rlState, redListFeature);
+			DescriptionElementBase descriptionElement = catData;
+			taxonDescription.addElement(descriptionElement);
 		}
 	}
 	
@@ -525,7 +475,11 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 				logger.info(++i + " " +nonViralName.toString() +" "+p.toString());
 			}
 		}
-		
+		Rank parsedRank = nonViralName.getRank();
+		if(parsedRank != rank){
+			nonViralName.setRank(rank);
+		}
+			
 //		nonViralName.setNameCache(strScientificName);
 		taxonNameBase = nonViralName;
 		return taxonNameBase;
