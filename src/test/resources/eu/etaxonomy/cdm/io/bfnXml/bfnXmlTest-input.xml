@@ -549,12 +549,12 @@
         </EIGENSCHAFT>
     </EIGENSCHAFTEN>
     <TAXONYME>
-        <TAXONYM reihenfolge="1">
+        <TAXONYM reihenfolge="11">
             <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">622</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Amaurochaete</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">atra</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">atra</NANTEIL>
+                <NANTEIL bereich="Eindeutiger Code">400</NANTEIL>
+                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
+                <NANTEIL bereich="Epitheton 2">globosa</NANTEIL>
+                <NANTEIL bereich="Epitheton 3">globosa</NANTEIL>
                 <NANTEIL bereich="Epitheton 4"/>
                 <NANTEIL bereich="Epitheton 5"/>
                 <NANTEIL bereich="Rang">spezies</NANTEIL>
@@ -562,60 +562,25 @@
                 <NANTEIL bereich="Autonym"/>
                 <NANTEIL bereich="Reich">Pilze</NANTEIL>
                 <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">(Alb. &amp; Schwein.) Rostaf.</NANTEIL>
+                <NANTEIL bereich="Autoren">Schwein.</NANTEIL>
                 <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Amaurochaete atra atra </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">atra Amaurochaete</NANTEIL>
+                <NANTEIL bereich="SortWissName">Arcyria globosa globosa </NANTEIL>
+                <NANTEIL bereich="SortArtEpi">globosa Arcyria</NANTEIL>
                 <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Amaurochaete atra (Alb. &amp; Schwein.)
-                    Rostaf.</NANTEIL>
+                <NANTEIL bereich="wissName">Arcyria globosa Schwein.</NANTEIL>
                 <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Amaurochaete&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;atra&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;(Alb. &amp; Schwein.)
-                    Rostaf.&lt;/span&gt;</NANTEIL>
+                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
+                    style="font-style:italic"&gt;globosa&lt;/span&gt; &lt;span
+                    style="font-variant:small-caps"&gt;Schwein.&lt;/span&gt;</NANTEIL>
             </WISSNAME>
-            <SYNONYME>
-                <SYNONYM>
-                    <WISSNAME>
-                        <NANTEIL bereich="Epitheton 1">Amaurochaete</NANTEIL>
-                        <NANTEIL bereich="Epitheton 2">fuliginosa</NANTEIL>
-                        <NANTEIL bereich="Epitheton 3">fuliginosa</NANTEIL>
-                        <NANTEIL bereich="Epitheton 4"/>
-                        <NANTEIL bereich="Epitheton 5"/>
-                        <NANTEIL bereich="Rang">spezies</NANTEIL>
-                        <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                        <NANTEIL bereich="Autonym"/>
-                        <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                        <NANTEIL bereich="Bastard "/>
-                        <NANTEIL bereich="Autoren">(Sowerby) T. Macbr.</NANTEIL>
-                        <NANTEIL bereich="Zusätze"/>
-                        <NANTEIL bereich="SortWissName">Amaurochaete fuliginosa fuliginosa </NANTEIL>
-                        <NANTEIL bereich="SortArtEpi">fuliginosa Amaurochaete</NANTEIL>
-                        <NANTEIL bereich="SortDeutName"/>
-                        <NANTEIL bereich="KlammerFlag">x</NANTEIL>
-                        <NANTEIL bereich="wissName">Amaurochaete fuliginosa (Sowerby) T.
-                            Macbr.</NANTEIL>
-                        <NANTEIL bereich="Formatiert">&lt;span
-                            style="font-style:italic"&gt;Amaurochaete&lt;/span&gt; &lt;span
-                            style="font-style:italic"&gt;fuliginosa&lt;/span&gt; &lt;span
-                            style="font-variant:small-caps"&gt;(Sowerby) T.
-                            Macbr.&lt;/span&gt;</NANTEIL>
-                    </WISSNAME>
-                    <STATI>
-                        <STATUS typ="Konzeptsynonymstatus">==</STATUS>
-                        <STATUS typ="Synonymstatus">=</STATUS>
-                    </STATI>
-                </SYNONYM>
-            </SYNONYME>
             <INFORMATIONEN>
                 <BEZUGSRAUM name="Bund">
                     <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_STERN#</WERT>
+                        <WERT>#dtpl_RLKat_D#</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
+                        <WERT> </WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Neobiota">
@@ -623,11 +588,11 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>s</WERT>
+                        <WERT>ss</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>=</WERT>
+                        <WERT>?</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="kurzfristiger Bestandstrend">
@@ -651,8 +616,9 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT>Sehr ähnlich ist A. margino-undulata (siehe Anmerkungen dort).</WERT>
+                        <FORMATWERT>Sehr ähnlich ist &lt;span style="font-style:italic"&gt;A.
+                            margino-undulata&lt;/span&gt; (siehe Anmerkungen dort).</FORMATWERT>
                     </IWERT>
                     <IWERT standardname="Kommentar zur Gefährdung">
                         <WERT/>
@@ -663,164 +629,11 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Weitere Kommentare">
-                        <WERT>Wie auch die anderen Arten der Gattung erscheint die Art gern an
-                            Stümpfen frisch gefällter, innen rotfauler Kiefern. Sie kann
-                            wahrscheinlich bereits im Holz des lebenden Baumes Plasmodien ausbilden. </WERT>
-                        <FORMATWERT>Wie auch die anderen Arten der Gattung erscheint die Art gern an
-                            Stümpfen frisch gefällter, innen rotfauler Kiefern. Sie kann
-                            wahrscheinlich bereits im Holz des lebenden Baumes Plasmodien ausbilden.
+                        <WERT>Die Art kommt insbesondere an Erlenkätzchen, aber auch an Blättern in
+                            sehr luftfeuchten Standorten wie Erlensümpfen vor. </WERT>
+                        <FORMATWERT>Die Art kommt insbesondere an Erlenkätzchen, aber auch an
+                            Blättern in sehr luftfeuchten Standorten wie Erlensümpfen vor.
                         </FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>#dtpl_AlteRLKat_STERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>622</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>6-9(-10)</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz1</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>bor-temp</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>plan</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>v</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>[= Amaurochaete fuliginosa (Sowerby) T. Macbr.#6-9(-10); Holz1;
-                            bor-temp; plan; v#A0, Lr-z, G+#Komm.: Wie auch die anderen Arten der
-                            Gattung erscheint die Art gern an Stümpfen frisch gefällter, innen
-                            rotfauler Kiefern. Sie kann wahrscheinlich bereits im Holz des lebenden
-                            Baumes Plasmodien ausbilden. </WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="2">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">630</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Amaurochaete</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">comata</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">comata</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">G. Lister &amp; Brândză</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Amaurochaete comata comata </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">comata Amaurochaete</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Amaurochaete comata G. Lister &amp; Brândză</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Amaurochaete&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;comata&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;G. Lister &amp;
-                    Brândză&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_R#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>es</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Vier Nachweise von Baumann (unpubl.) im Raum Tübingen.</WERT>
-                        <FORMATWERT>Vier Nachweise von Baumann (unpubl.) im Raum
-                            Tübingen.</FORMATWERT>
                     </IWERT>
                     <IWERT standardname="Taxonomischer Bezug">
                         <WERT/>
@@ -831,7 +644,7 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Eindeutiger Code">
-                        <WERT>630</WERT>
+                        <WERT>400</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Feuchtkammer">
@@ -843,614 +656,7 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz1-2</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>bor-temp</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>plan</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>7-9; Holz1-2; bor-temp; plan; z#A?, L?, G?#Komm.: Vier Nachweise von
-                            Baumann (unpubl.) im Raum Tübingen.</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>L?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="3">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">633</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Amaurochaete</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">tubulina</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">tubulina</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">(Alb. &amp; Schwein.) T. Macbr.</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Amaurochaete tubulina tubulina </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">tubulina Amaurochaete</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Amaurochaete tubulina (Alb. &amp; Schwein.) T.
-                    Macbr.</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Amaurochaete&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;tubulina&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;(Alb. &amp; Schwein.) T.
-                    Macbr.&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_R#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>-</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>es</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Ältere Angaben bei Killermann (1946), Podlech (1955) und aktueller
-                            Nachweis bei Gottschalk &amp; Eckel (1998).</WERT>
-                        <FORMATWERT>Ältere Angaben bei &lt;span
-                            style="font-variant:small-caps"&gt;Killermann&lt;/span&gt; (1946),
-                            &lt;span style="font-variant:small-caps"&gt;Podlech&lt;/span&gt; (1955)
-                            und aktueller Nachweis bei &lt;span
-                            style="font-variant:small-caps"&gt;Gottschalk &amp; Eckel
-                            &lt;/span&gt;(1998).</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>#dtpl_AlteRLKat_STERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>633</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>7-9</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz1-2</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>7-9; Holz1-2; z#A?, L?, G?#Komm.: Ältere Angaben bei Killermann
-                            (1946), Podlech (1955) und aktueller Nachweis bei Gottschalk &amp; Eckel
-                            (1998).</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>L?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="4">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">449</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyodes</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">incarnata</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">incarnata</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">(Alb. &amp; Schwein.) O.F. Cook</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyodes incarnata incarnata </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">incarnata Arcyodes</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyodes incarnata (Alb. &amp; Schwein.) O.F.
-                    Cook</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyodes&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;incarnata&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;(Alb. &amp; Schwein.) O.F.
-                    Cook&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_STERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>s</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Sehr unauffällige Art, ein Nachweis aus Südthüringen (Meinunger 2007).
-                            Die Art scheint bevorzugt sehr nasses Holz zu besiedeln.</WERT>
-                        <FORMATWERT>Sehr unauffällige Art, ein Nachweis aus Südthüringen &lt;span
-                            style="font-variant:small-caps"&gt;(Meinunger&lt;/span&gt; 2007). Die
-                            Art scheint bevorzugt sehr nasses Holz zu besiedeln.</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>#dtpl_AlteRLKat_STERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>449</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>5-11</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz2-3</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>temp</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>plan</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>5-11; Holz2-3; temp; plan; z#A0, Lr-z, G+#Komm.: Sehr unauffällige
-                            Art, ein Nachweis aus Südthüringen (Meinunger 2007). Die Art scheint
-                            bevorzugt sehr nasses Holz zu besiedeln.</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="5">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">2414</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">affinis</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">affinis</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">Rostaf. sensu Nann.-Bremek.</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyria affinis affinis </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">affinis Arcyria</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyria affinis Rostaf. sensu Nann.-Bremek.</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;affinis&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;Rostaf. &lt;/span&gt;sensu&lt;span
-                    style="font-variant:small-caps"&gt; Nann.-Bremek.&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_D#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT>Umstrittenes Taxon, als Sammelart zu betrachten, frühere Nachweise
-                            sind nicht immer eindeutig zuzuordnen.</WERT>
-                        <FORMATWERT>Umstrittenes Taxon, als Sammelart zu betrachten, frühere
-                            Nachweise sind nicht immer eindeutig zuzuordnen.</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>D</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>2414</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>5-11</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz3-4</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>temp</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>plan-mont</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>z?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>5-11; Holz3-4; temp; plan-mont; z?#A0, Lr-z, G+#Tax.: Umstrittenes
-                            Taxon, als Sammelart zu betrachten, frühere Nachweise sind nicht immer
-                            eindeutig zuzuordnen.</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="6">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">1913</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">afroalpina</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">afroalpina</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">Rammeloo</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyria afroalpina afroalpina </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">afroalpina Arcyria</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyria afroalpina Rammeloo</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;afroalpina&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;Rammeloo&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_D#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Die sehr kleine Art ist aus dem montanen Ostafrika beschrieben. Ein
-                            wohl zufälliger Fund in Deutschland (Schnittler unpubl., FK von
-                            Grasstreu bei Bad Godesberg, NRW).</WERT>
-                        <FORMATWERT>Die sehr kleine Art ist aus dem montanen Ostafrika beschrieben.
-                            Ein wohl zufälliger Fund in Deutschland (Schnittler unpubl., FK von
-                            Grasstreu bei Bad Godesberg, NRW).</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>D</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>1913</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT>FK</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>6-10</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>StreuG</WERT>
+                        <WERT>StreuK</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Areal">
@@ -1462,14 +668,14 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Dispersion">
-                        <WERT>z</WERT>
+                        <WERT>l</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Zweite Zeile">
-                        <WERT>FK; 6-10; StreuG; trop; plan; z#A?, L?, G?#Komm.: Die sehr kleine Art
-                            ist aus dem montanen Ostafrika beschrieben. Ein wohl zufälliger Fund in
-                            Deutschland (Schnittler unpubl., FK von Grasstreu bei Bad Godesberg,
-                            NRW).</WERT>
+                        <WERT>7-9; StreuK; trop; plan; l#A0, Lr, G+#Komm.: Die Art kommt
+                            insbesondere an Erlenkätzchen, aber auch an Blättern in sehr
+                            luftfeuchten Standorten wie Erlensümpfen vor. #Tax.: Sehr ähnlich ist A.
+                            margino-undulata (siehe Anmerkungen dort).</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Auswertung">
@@ -1481,588 +687,361 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Anteil">
-                        <WERT>A?</WERT>
+                        <WERT>A0</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Lage">
-                        <WERT>L?</WERT>
+                        <WERT>Lr</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Gefährdung">
-                        <WERT>G?</WERT>
+                        <WERT>G+</WERT>
                         <FORMATWERT/>
                     </IWERT>
                 </BEZUGSRAUM>
             </INFORMATIONEN>
         </TAXONYM>
-        <TAXONYM reihenfolge="7">
+        <TAXONYM reihenfolge="193">
             <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">350</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">cinerea</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">cinerea</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
+                <NANTEIL bereich="Eindeutiger Code">751</NANTEIL>
+                <NANTEIL bereich="Epitheton 1">Lamproderma</NANTEIL>
+                <NANTEIL bereich="Epitheton 2">atrosporum</NANTEIL>
+                <NANTEIL bereich="Epitheton 3">atrosporum</NANTEIL>
+                <NANTEIL bereich="Epitheton 4" />
+                <NANTEIL bereich="Epitheton 5" />
+                <NANTEIL bereich="Rang">agg.</NANTEIL>
+                <NANTEIL bereich="Ordnungszahl">23</NANTEIL>
+                <NANTEIL bereich="Autonym" />
                 <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">(Bull.) Pers.</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyria cinerea cinerea </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">cinerea Arcyria</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyria cinerea (Bull.) Pers.</NANTEIL>
+                <NANTEIL bereich="Bastard " />
+                <NANTEIL bereich="Autoren" />
+                <NANTEIL bereich="Zusätze">agg.</NANTEIL>
+                <NANTEIL bereich="SortWissName">Lamproderma atrosporum atrosporum </NANTEIL>
+                <NANTEIL bereich="SortArtEpi">atrosporum Lamproderma</NANTEIL>
+                <NANTEIL bereich="SortDeutName" />
+                <NANTEIL bereich="wissName">Lamproderma atrosporum</NANTEIL>
                 <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;cinerea&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;(Bull.) Pers.&lt;/span&gt;</NANTEIL>
+                    style="font-style:italic"&gt;Lamproderma&lt;/span&gt; &lt;span
+                    style="font-style:italic"&gt;atrosporum&lt;/span&gt;</NANTEIL>
             </WISSNAME>
             <INFORMATIONEN>
                 <BEZUGSRAUM name="Bund">
                     <IWERT standardname="RL Kat.">
                         <WERT>#dtpl_RLKat_STERN#</WERT>
-                        <FORMATWERT/>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Kat. +/-">
                         <WERT>=</WERT>
-                        <FORMATWERT/>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>sh</WERT>
-                        <FORMATWERT/>
+                        <WERT>s</WERT>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="langfristiger Bestandstrend">
                         <WERT>=</WERT>
-                        <FORMATWERT/>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="kurzfristiger Bestandstrend">
                         <WERT>=</WERT>
-                        <FORMATWERT/>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Risikofaktoren">
                         <WERT>=</WERT>
-                        <FORMATWERT/>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Verantwortlichkeit">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT>Formenreiche Gruppe vermutlich asexueller Kleinarten, die nach
+                            molekularbiologischen befunden (Fiore-Donno et al. 2008) in eine eigene
+                            Gattung (Meriderma) zu stellen ist. Alle zu Meriderma gehörenden Arten
+                            sind gut durch die trichterartig verbreiterten Capillitiumenden
+                            kenntlich. Poulain et al. (2011) unterscheiden im Lamproderma atrosporum
+                            agg. drei Arten, Meriderma carestiae (Ces. &amp; de Not.) Mar. Mey.
+                            &amp; Poulain, M. echinulatum (Meyl.) Mar. Mey. &amp; Poulain und M.
+                            cribrarioides (Fr.) Mar. Mey. &amp; Poulain. Die Kenntnisse zur
+                            Verbreitung der Arten dieser Gruppe in Deutschland sind gegenwärtig noch
+                            nicht ausreichend, um sie in dieser Liste differenziert zu
+                            behandeln.</WERT>
+                        <FORMATWERT>Formenreiche Gruppe vermutlich asexueller Kleinarten, die nach
+                            molekularbiologischen befunden &lt;span
+                            style="font-variant:small-caps"&gt;(Fiore-Donno&lt;/span&gt; et al.
+                            2008) in eine eigene Gattung (&lt;span
+                            style="font-style:italic"&gt;Meriderma&lt;/span&gt;) zu stellen ist.
+                            Alle zu &lt;span style="font-style:italic"&gt;Meriderma&lt;/span&gt;
+                            gehörenden Arten sind gut durch die trichterartig verbreiterten
+                            Capillitiumenden kenntlich. &lt;span
+                            style="font-variant:small-caps"&gt;Poulain&lt;/span&gt; et al. (2011)
+                            unterscheiden im &lt;span style="font-style:italic"&gt;Lamproderma
+                            atrosporum&lt;/span&gt; agg. drei Arten, &lt;span
+                            style="font-style:italic"&gt;Meriderma carestiae&lt;/span&gt; (Ces.
+                            &amp; de Not.) Mar. Mey. &amp; Poulain,&lt;span
+                            style="font-style:italic"&gt; M. echinulatum&lt;/span&gt; (Meyl.) Mar.
+                            Mey. &amp; Poulain und &lt;span style="font-style:italic"&gt;M.
+                            cribrarioides&lt;/span&gt; (Fr.) Mar. Mey. &amp; Poulain. Die Kenntnisse
+                            zur Verbreitung der Arten dieser Gruppe in Deutschland sind gegenwärtig
+                            noch nicht ausreichend, um sie in dieser Liste differenziert zu
+                            behandeln.</FORMATWERT>
                     </IWERT>
                     <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Weitere Kommentare">
-                        <WERT>Im Freiland seltener als in FK.</WERT>
-                        <FORMATWERT>Im Freiland seltener als in FK.</FORMATWERT>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>#dtpl_AlteRLKat_ZWEISTERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>350</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT>(FK)</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>(6-)7-11</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz4, Cor</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>kosm</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>plan-mont</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>v</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>(FK); (6-)7-11; Holz4, Cor; kosm; plan-mont; v#A0, Lr-z, G+#Komm.: Im
-                            Freiland seltener als in FK.</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="8">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">368</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">denudata</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">denudata</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">(L.) Wettst.</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyria denudata denudata </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">denudata Arcyria</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyria denudata (L.) Wettst.</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;denudata&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;(L.) Wettst.&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_STERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>h</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Häufig auf weißfaulem Laubholz.</WERT>
-                        <FORMATWERT>Häufig auf weißfaulem Laubholz.</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="alte RL- Kat.">
                         <WERT>#dtpl_AlteRLKat_STERN#</WERT>
-                        <FORMATWERT/>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Eindeutiger Code">
-                        <WERT>368</WERT>
-                        <FORMATWERT/>
+                        <WERT>751</WERT>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
+                        <WERT />
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Phänologie">
-                        <WERT>(6-)7-11</WERT>
-                        <FORMATWERT/>
+                        <WERT>(3-)4-5(-7)</WERT>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz3-4</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>bor-mer</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>plan-mont</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>v</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>(6-)7-11; Holz3-4; bor-mer; plan-mont; v#A0, Lr-z, G+#Komm.: Häufig
-                            auf weißfaulem Laubholz.</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="9">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">1915</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">fasciculata</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">fasciculata</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">Dhillon &amp; Nann.-Bremek.</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyria fasciculata fasciculata </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">fasciculata Arcyria</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyria fasciculata Dhillon &amp;
-                    Nann.-Bremek.</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;fasciculata&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;Dhillon &amp;
-                    Nann.-Bremek.&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_D#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Bisher ein Nachweis (Hessen, Kassel-Habichtswald, leg. L. Flatau, det.
-                            Nann.-Bremek., vgl. Eiser et al. 1980).</WERT>
-                        <FORMATWERT>Bisher ein Nachweis (Hessen, Kassel-Habichtswald, leg. L.
-                            Flatau, det. Nann.-Bremek., vgl. &lt;span
-                            style="font-variant:small-caps"&gt;Eiser&lt;/span&gt; et al.
-                            1980).</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>D</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>1915</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Areal">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Höhenstufe">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Dispersion">
-                        <WERT>?</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Zweite Zeile">
-                        <WERT>#A0, Lr-z, G+#Komm.: Bisher ein Nachweis (Hessen, Kassel-Habichtswald,
-                            leg. L. Flatau, det. Nann.-Bremek., vgl. Eiser et al. 1980).</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Auswertung">
-                        <WERT>S</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Jahrzehnt">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                </BEZUGSRAUM>
-            </INFORMATIONEN>
-        </TAXONYM>
-        <TAXONYM reihenfolge="10">
-            <WISSNAME>
-                <NANTEIL bereich="Eindeutiger Code">385</NANTEIL>
-                <NANTEIL bereich="Epitheton 1">Arcyria</NANTEIL>
-                <NANTEIL bereich="Epitheton 2">ferruginea</NANTEIL>
-                <NANTEIL bereich="Epitheton 3">ferruginea</NANTEIL>
-                <NANTEIL bereich="Epitheton 4"/>
-                <NANTEIL bereich="Epitheton 5"/>
-                <NANTEIL bereich="Rang">spezies</NANTEIL>
-                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
-                <NANTEIL bereich="Autonym"/>
-                <NANTEIL bereich="Reich">Pilze</NANTEIL>
-                <NANTEIL bereich="Bastard "/>
-                <NANTEIL bereich="Autoren">Saut.</NANTEIL>
-                <NANTEIL bereich="Zusätze"/>
-                <NANTEIL bereich="SortWissName">Arcyria ferruginea ferruginea </NANTEIL>
-                <NANTEIL bereich="SortArtEpi">ferruginea Arcyria</NANTEIL>
-                <NANTEIL bereich="SortDeutName"/>
-                <NANTEIL bereich="wissName">Arcyria ferruginea Saut.</NANTEIL>
-                <NANTEIL bereich="Formatiert">&lt;span
-                    style="font-style:italic"&gt;Arcyria&lt;/span&gt; &lt;span
-                    style="font-style:italic"&gt;ferruginea&lt;/span&gt; &lt;span
-                    style="font-variant:small-caps"&gt;Saut.&lt;/span&gt;</NANTEIL>
-            </WISSNAME>
-            <INFORMATIONEN>
-                <BEZUGSRAUM name="Bund">
-                    <IWERT standardname="RL Kat.">
-                        <WERT>#dtpl_RLKat_G#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kat. +/-">
-                        <WERT>-</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Neobiota">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="aktuelle Bestandsstituation">
-                        <WERT>mh</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="langfristiger Bestandstrend">
-                        <WERT>(&lt;)</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="kurzfristiger Bestandstrend">
-                        <WERT>(#dtpl_KurzfBest_RUNTER#)</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Risikofaktoren">
-                        <WERT>=</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Sonderfälle">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Letzter Nachweis">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Verantwortlichkeit">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Taxonomie">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Gefährdung">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Kommentar zur Nachsuche">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Weitere Kommentare">
-                        <WERT>Insbesondere auf Koniferenholz, montane und atlantisch getönte Gebiete
-                            bevorzugend.</WERT>
-                        <FORMATWERT>Insbesondere auf Koniferenholz, montane und atlantisch getönte
-                            Gebiete bevorzugend.</FORMATWERT>
-                    </IWERT>
-                    <IWERT standardname="Taxonomischer Bezug">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="alte RL- Kat.">
-                        <WERT>#dtpl_AlteRLKat_STERN#</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Eindeutiger Code">
-                        <WERT>385</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Feuchtkammer">
-                        <WERT/>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Phänologie">
-                        <WERT>(5-)9-10(-11)</WERT>
-                        <FORMATWERT/>
-                    </IWERT>
-                    <IWERT standardname="Mikrohabitat">
-                        <WERT>Holz3-4</WERT>
-                        <FORMATWERT/>
+                        <WERT>Niv</WERT>
+                        <FORMATWERT />
                     </IWERT>
                     <IWERT standardname="Areal">
                         <WERT>temp</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Höhenstufe">
+                        <WERT>mont-alp</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Dispersion">
+                        <WERT>l</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Zweite Zeile">
+                        <WERT>(3-)4-5(-7); Niv; temp; mont-alp; l#A0, Lr-z, G+#Tax.: Formenreiche
+                            Gruppe vermutlich asexueller Kleinarten, die nach molekularbiologischen
+                            befunden (Fiore-Donno et al. 2008) in eine eigene Gattung (Meriderma) zu
+                            stellen ist. Alle zu Meriderma gehörenden Arten sind gut durch die
+                            trichterartig verbreiterten Capillitiumenden kenntlich. Poulain et al.
+                            (2011) unterscheiden im Lamproderma atrosporum agg. drei Arten,
+                            Meriderma carestiae (Ces. &amp; de Not.) Mar. Mey. &amp; Poulain, M.
+                            echinulatum (Meyl.) Mar. Mey. &amp; Poulain und M. cribrarioides (Fr.)
+                            Mar. Mey. &amp; Poulain. Die Kenntnisse zur Verbreitung der Arten dieser
+                            Gruppe in Deutschland sind gegenwärtig noch nicht ausreichend, um sie in
+                            dieser Liste differenziert zu behandeln.</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Auswertung">
+                        <WERT>S</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Jahrzehnt">
+                        <WERT />
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Anteil">
+                        <WERT>A0</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Lage">
+                        <WERT>Lr-z</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                    <IWERT standardname="Gefährdung">
+                        <WERT>G+</WERT>
+                        <FORMATWERT />
+                    </IWERT>
+                </BEZUGSRAUM>
+            </INFORMATIONEN>
+        </TAXONYM><TAXONYM reihenfolge="377">
+            <WISSNAME>
+                <NANTEIL bereich="Eindeutiger Code"/>
+                <NANTEIL bereich="Epitheton 1">Comatricha</NANTEIL>
+                <NANTEIL bereich="Epitheton 2">dictyospora</NANTEIL>
+                <NANTEIL bereich="Epitheton 3">dictyospora</NANTEIL>
+                <NANTEIL bereich="Epitheton 4"/>
+                <NANTEIL bereich="Epitheton 5"/>
+                <NANTEIL bereich="Rang">spezies</NANTEIL>
+                <NANTEIL bereich="Ordnungszahl">20</NANTEIL>
+                <NANTEIL bereich="Autonym"/>
+                <NANTEIL bereich="Reich">Pilze</NANTEIL>
+                <NANTEIL bereich="Bastard "/>
+                <NANTEIL bereich="Autoren">L.F. Čelak. fil.</NANTEIL>
+                <NANTEIL bereich="Zusätze">nom. illeg.</NANTEIL>
+                <NANTEIL bereich="SortWissName">Comatricha dictyospora dictyospora </NANTEIL>
+                <NANTEIL bereich="SortArtEpi">dictyospora Comatricha</NANTEIL>
+                <NANTEIL bereich="SortDeutName"/>
+                <NANTEIL bereich="wissName">Comatricha dictyospora L.F. Čelak. fil. nom.
+                    illeg.</NANTEIL>
+                <NANTEIL bereich="Formatiert">&lt;span
+                    style="font-style:italic"&gt;Comatricha&lt;/span&gt; &lt;span
+                    style="font-style:italic"&gt;dictyospora&lt;/span&gt; &lt;span
+                    style="font-variant:small-caps"&gt;L.F. Čelak. fil.&lt;/span&gt; nom.
+                    illeg.</NANTEIL>
+            </WISSNAME>
+            <INFORMATIONEN>
+                <BEZUGSRAUM name="Bund">
+                    <IWERT standardname="RL Kat.">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Kat. +/-">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Neobiota">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="aktuelle Bestandsstituation">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="langfristiger Bestandstrend">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="kurzfristiger Bestandstrend">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Risikofaktoren">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Sonderfälle">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Letzter Nachweis">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Verantwortlichkeit">
+                        <WERT>#dtpl_VERANTW_NB#</WERT>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Kommentar zur Taxonomie">
+                        <WERT>Nach Martin &amp; Alexopoulos (1969) und Farr (1988) steht für diese
+                            Art zur Zeit kein gültiger Name zur Verfügung. Im Index Fungorum wird C.
+                            dictyospora als Synonym von Stemonitopsis dictyospora (L. F. Čelak)
+                            Nann.-Bremek. als eigenständiges Taxon geführt, während Neubert et al.
+                            (2000: 308) den Namen als synonym zu Stemonitopsis reticulata (H.C.
+                            Gilbert) Nann.-Bremek. &amp; Y. Yamam. auffassen.</WERT>
+                        <FORMATWERT>Nach &lt;span style="font-variant:small-caps"&gt;Martin &amp;
+                            Alexopoulos&lt;/span&gt; (1969) und &lt;span
+                            style="font-variant:small-caps"&gt;Farr&lt;/span&gt; (1988) steht für
+                            diese Art zur Zeit kein gültiger Name zur Verfügung. Im Index Fungorum
+                            wird &lt;span style="font-style:italic"&gt;C. dictyospora&lt;/span&gt;
+                            als Synonym von &lt;span style="font-style:italic"&gt;Stemonitopsis
+                            dictyospora&lt;/span&gt; (&lt;span style="font-variant:small-caps"&gt;L.
+                            F. Čelak) Nann.-Bremek. &lt;/span&gt;als eigenständiges Taxon geführt,
+                            während &lt;span style="font-variant:small-caps"&gt;Neubert&lt;/span&gt;
+                            et al. (2000: 308) den Namen als synonym zu &lt;span
+                            style="font-style:italic"&gt;Stemonitopsis reticulata&lt;/span&gt;
+                            &lt;span style="font-variant:small-caps"&gt;(H.C. Gilbert) Nann.-Bremek.
+                            &amp; Y. Yamam.&lt;/span&gt; auffassen.</FORMATWERT>
+                    </IWERT>
+                    <IWERT standardname="Kommentar zur Gefährdung">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Kommentar zur Nachsuche">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Weitere Kommentare">
+                        <WERT>Der erste Nachweis dieser Sippe geht auf eine Aufsammlung von 1977
+                            durch Senge (vgl. Benkert 1986) zurück. Zwei weitere Kollektionen werden
+                            in Neubert et al. 2000: 309 zitiert. Da der Status des Namens jedoch
+                            ungeklärt ist, wird das Taxon im Gegensatz zur Roten Liste 1996 hier im
+                            Anhang A2 aufgeführt.</WERT>
+                        <FORMATWERT>Der erste Nachweis dieser Sippe geht auf eine Aufsammlung von
+                            1977 durch Senge (vgl. &lt;span
+                            style="font-variant:small-caps"&gt;Benkert&lt;/span&gt; 1986) zurück.
+                            Zwei weitere Kollektionen werden in &lt;span
+                            style="font-variant:small-caps"&gt;Neubert&lt;/span&gt; et al. 2000: 309
+                            zitiert. Da der Status des Namens jedoch ungeklärt ist, wird das Taxon
+                            im Gegensatz zur Roten Liste 1996 hier im Anhang A2
+                            aufgeführt.</FORMATWERT>
+                    </IWERT>
+                    <IWERT standardname="Taxonomischer Bezug">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="alte RL- Kat.">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Eindeutiger Code">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Feuchtkammer">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Phänologie">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Mikrohabitat">
+                        <WERT/>
+                        <FORMATWERT/>
+                    </IWERT>
+                    <IWERT standardname="Areal">
+                        <WERT/>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Höhenstufe">
-                        <WERT>mont</WERT>
+                        <WERT/>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Dispersion">
-                        <WERT>z</WERT>
+                        <WERT/>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Zweite Zeile">
-                        <WERT>(5-)9-10(-11); Holz3-4; temp; mont; z#A0, Lr-z, G+#Komm.: Insbesondere
-                            auf Koniferenholz, montane und atlantisch getönte Gebiete
-                            bevorzugend.</WERT>
+                        <WERT>Komm.: Der erste Nachweis dieser Sippe geht auf eine Aufsammlung von
+                            1977 durch Senge (vgl. Benkert 1986) zurück. Zwei weitere Kollektionen
+                            werden in Neubert et al. 2000: 309 zitiert. Da der Status des Namens
+                            jedoch ungeklärt ist, wird das Taxon im Gegensatz zur Roten Liste 1996
+                            hier im Anhang A2 aufgeführt.#Tax.: Nach Martin &amp; Alexopoulos (1969)
+                            und Farr (1988) steht für diese Art zur Zeit kein gültiger Name zur
+                            Verfügung. Im Index Fungorum wird C. dictyospora als Synonym von
+                            Stemonitopsis dictyospora (L. F. Čelak) Nann.-Bremek. als eigenständiges
+                            Taxon geführt, während Neubert et al. (2000: 308) den Namen als synonym
+                            zu Stemonitopsis reticulata (H.C. Gilbert) Nann.-Bremek. &amp; Y. Yamam.
+                            auffassen.</WERT>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Auswertung">
@@ -2074,19 +1053,20 @@
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Anteil">
-                        <WERT>A0</WERT>
+                        <WERT/>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Lage">
-                        <WERT>Lr-z</WERT>
+                        <WERT/>
                         <FORMATWERT/>
                     </IWERT>
                     <IWERT standardname="Gefährdung">
-                        <WERT>G+</WERT>
+                        <WERT/>
                         <FORMATWERT/>
                     </IWERT>
                 </BEZUGSRAUM>
             </INFORMATIONEN>
         </TAXONYM>
+        
     </TAXONYME>
 </ROTELISTEDATEN>
