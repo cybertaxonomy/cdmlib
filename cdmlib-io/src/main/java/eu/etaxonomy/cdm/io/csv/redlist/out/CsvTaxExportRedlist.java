@@ -20,12 +20,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -33,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -382,6 +382,20 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 								List<String> cell = featureCells.get(i);
 								cell.add(state.toString());
 							}
+						}
+					}
+				}else if(el.isInstanceOf(TextData.class)){
+					TextData textData = CdmBase.deproxy(el, TextData.class);
+					Feature textFeature = textData.getFeature();
+					// find matching feature and put data into according cell
+					for(int i = 0; i < features.size(); i++) {
+						if(features.get(i).equals(textFeature)){
+							List<String> cell = featureCells.get(i);
+							String text = textData.getText(Language.GERMAN());
+							text = text.replaceAll(System.getProperty("line.separator"), "");
+							text = text.replaceAll("                            ", " ");
+							cell.add(text);
+							
 						}
 					}
 				}
