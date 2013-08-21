@@ -1028,10 +1028,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 try {
                 	TaxonNameBase name = nameService.find(taxon.getName().getUuid());
                 	name = (TaxonNameBase)HibernateProxyHelper.deproxy(name);
-                	name.removeTaxonBase(taxon);
-                	nameService.save(name);
-                	
-                    nameService.delete(name, config.getNameDeletionConfig());
+                	//check whether taxon will be deleted or not
+                	if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
+                		name.removeTaxonBase(taxon);
+                	    nameService.save(name);
+                		nameService.delete(name, config.getNameDeletionConfig());
+                	}
                 } catch (ReferencedObjectUndeletableException e) {
                     //do nothing
                     if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
@@ -1060,8 +1062,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	dao.delete(taxon);
             } else{
             	message = "Taxon can't be deleted as it is used in another Taxonnode";
-            	 //do nothing
-                if (logger.isDebugEnabled()){logger.debug(message);}
+            	throw new ReferencedObjectUndeletableException(message);
             }
             
 

@@ -174,7 +174,7 @@ public class Classification extends IdentifiableEntity implements IReferencedEnt
 	public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
 		boolean result = removeChildNode(node);
 		
-		node.getTaxon().removeTaxonNode(node);
+		//node.getTaxon().removeTaxonNode(node);
 		node.setTaxon(null);	
 		if (deleteChildren){
 			ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
