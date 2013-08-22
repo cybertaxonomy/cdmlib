@@ -64,6 +64,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlQuery.java -te
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/OpenUrlReference.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/scratchpads/ScratchpadsService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/main/resources/eu/etaxonomy/cdm/ext/geo/mapServices_v10.xsd -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
