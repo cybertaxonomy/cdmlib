@@ -344,7 +344,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "SpecimenOrObservationBase";
 		columnName = "kindOfUnit_id";
 		String relatedTable = "DefinedTermBase";
-		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  true, relatedTable); 
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT,  false, relatedTable); 
 		stepList.add(step);
 
 		//remove citation_id and citation micro-reference columns from Media table #2541
