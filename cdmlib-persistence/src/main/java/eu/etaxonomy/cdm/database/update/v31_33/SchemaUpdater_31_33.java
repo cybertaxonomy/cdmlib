@@ -57,8 +57,10 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
@@ -320,8 +322,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "SpecimenOrObservationBase";
 		columnName = "recordBasis";
 		length = 4;  //TODO needed?
+		//TODO NOT NULL
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, length, INCLUDE_AUDIT);
 		stepList.add(step);
+		
+		//update recordBasis
+		updateRecordBasis(stepList);
 				
 		//update specimenOrObservationBase DTYPE with DerivedUnit where necessary
 		stepName = "Update Specimen -> DerivedUnit";
@@ -614,6 +620,66 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		return stepList;
+	}
+
+	private void updateRecordBasis(List<ISchemaUpdaterStep> stepList) {
+		String stepName = "Update recordBasis for SpecimenOrObservationBase";
+		
+		//Field Unit
+		String query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.FieldUnit.getKey() + "' " +
+				" WHERE DTYPE = 'FieldUnit' OR DTYPE = 'FieldObservation'";
+		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//DerivedUnit
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.DerivedUnit.getKey() + "' " +
+				" WHERE DTYPE = '" + DerivedUnit.class.getSimpleName() + "'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//Living Being
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.LivingSpecimen.getKey() + "' " +
+				" WHERE DTYPE = 'LivingBeing'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//Observation
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.Observation.getKey() + "' " +
+				" WHERE DTYPE = 'Observation'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//Preserved Specimen
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.PreservedSpecimen.getKey() + "' " +
+				" WHERE DTYPE = 'Specimen'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//Fossil
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.Fossil.getKey() + "' " +
+				" WHERE DTYPE = 'Fossil'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//DnaSample
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.DnaSample.getKey() + "' " +
+				" WHERE DTYPE = 'DnaSample'";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//Unknown as default (if not yet handled before)
+		query = " UPDATE SpecimenOrObservationBase " + 
+				" SET recordBasis = '" + SpecimenOrObservationType.Unknown.getKey() + "' " +
+				" WHERE recordBasis IS NULL ";
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
 	}
 
 	//update length of all title caches and full title cache in names
