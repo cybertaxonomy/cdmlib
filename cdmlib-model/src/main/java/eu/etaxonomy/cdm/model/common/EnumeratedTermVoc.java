@@ -124,10 +124,10 @@ public class EnumeratedTermVoc<T extends IEnumTerm<T>> {
 	private  SingleEnumTerm<T> add(ISimpleTerm<?> term, UUID uuid, String defaultString, String key, ISimpleTerm<?> parent) {
 		SingleEnumTerm<T> singleTerm = new SingleEnumTerm<T>((T)term, uuid, defaultString, key, (T)parent);
 		if (containsKey(lookup, key)){
-			throw new RuntimeException(String.format("Key must be unique in TermType but was not for '%s'", key));
+			throw new RuntimeException(String.format("Key must be unique in enumeration but was not for '%s'", key));
 		}
 		if (containsUuid(lookup, uuid)){
-			throw new RuntimeException(String.format("UUID must be unique in TermType but was not for '%s'", uuid));
+			throw new RuntimeException(String.format("UUID must be unique in enumeration but was not for '%s'", uuid));
 		}
 		lookup.put((T)term, singleTerm);
 		return singleTerm;
