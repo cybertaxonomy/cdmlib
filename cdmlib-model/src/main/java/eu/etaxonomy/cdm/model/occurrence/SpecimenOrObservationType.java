@@ -233,7 +233,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 */
 	public boolean isPreservedSpecimen() {
 //		if (this == PreservedSpecimen || this == Fossil
-		if (isKindOf(PreservedSpecimen)
+		if (isKindOf(PreservedSpecimen) || this == PreservedSpecimen 
 			){
 			return true;
 		}else{
