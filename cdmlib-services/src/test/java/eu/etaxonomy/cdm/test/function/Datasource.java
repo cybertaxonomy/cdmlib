@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -60,10 +62,21 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-//		String database = "cdm_test";
-		String database = "test";
+		String database = "cdm_test";
+//		String database = "test";
 		String username = "edit";
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		
+		//SQLServer
+		database = "CDMTest";
+		int port = 1433;
+		username = "pesiexport";
+//		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+		
+		//H2
+		username = "sa";
+//		dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+		
 		
 		CdmUpdater updater = new CdmUpdater();
 		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
@@ -72,6 +85,11 @@ public class Datasource {
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		
+		String taxonNameStr = StringUtils.repeat("a", 750);
+		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
+		name.setTitleCache(taxonNameStr, true);
+		appCtr.getNameService().save(name);
 		appCtr.close();
 	}
 	

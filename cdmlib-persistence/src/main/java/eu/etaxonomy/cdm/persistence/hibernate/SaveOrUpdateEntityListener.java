@@ -69,8 +69,8 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 		String sep = ITreeNode.separator;
 		String pref = ITreeNode.treePrefix;
 		ITreeNode<?> parent = node.getParent();
-		String parentIndex = parent == null ? (sep + pref + node.treeId() + sep)  : parent.treeIndex();  //TODO
-		if (node.getId() > 0 && (oldChildIndex == null|| ! oldChildIndex.startsWith(parentIndex))){   //TODO
+		String parentIndex = (parent == null) ? (sep + pref + node.treeId() + sep)  : parent.treeIndex();  //TODO
+		if (node.getId() > 0 && (oldChildIndex == null || ! oldChildIndex.startsWith(parentIndex))){   //TODO
 			String newChildIndex = parentIndex + node.getId() + sep;
 			node.setTreeIndex(newChildIndex);
 			

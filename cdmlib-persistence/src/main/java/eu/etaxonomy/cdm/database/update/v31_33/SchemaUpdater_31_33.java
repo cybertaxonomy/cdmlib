@@ -616,7 +616,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
-	//FIXME update length of all title caches and full title cache in names
+	//update length of all title caches and full title cache in names
+	//TODO test for H2, Postgres, SqlServer
 	//https://dev.e-taxonomy.eu/trac/ticket/1592
 	 private void updateTitleCacheLength(List<ISchemaUpdaterStep> stepList) {
 		String stepName;

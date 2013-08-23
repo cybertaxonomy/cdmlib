@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -124,6 +125,10 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@XmlAttribute(name ="type")
 	@Column(name="refType")
+	@NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+    	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
+    )
 	protected ReferenceType type;
 
 	//Title of the reference

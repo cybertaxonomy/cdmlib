@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  * the in reference or to change the type of the in reference which may have further consequences.
  * @author a.mueller
  * @created 20.09.2009
- * @version 1.0
  */
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
@@ -89,7 +88,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	Report(UUID.fromString("4d5459b8-b65b-47cb-9579-2fe7be360d04"), "Report", "REP", null, ReferenceDefaultCacheStrategy.class),
 	//14
 	@XmlEnumValue("Thesis")
-	Thesis(UUID.fromString("cd054393-4f5e-4842-b820-b820e5732d72"), "Thesis", "TES", null, ThesisDefaultCacheStrategy.class),
+	Thesis(UUID.fromString("cd054393-4f5e-4842-b820-b820e5732d72"), "Thesis", "THE", null, ThesisDefaultCacheStrategy.class),
 	//15
 	@XmlEnumValue("Web Page")
 	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", "WEB", null, ReferenceDefaultCacheStrategy.class)

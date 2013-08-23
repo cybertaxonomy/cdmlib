@@ -43,8 +43,8 @@ public class TaxonNodeTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeTest.class);
 	private static String viewName1;
-	private static Classification taxonomicView1;
-	private static Classification taxonomicView2;
+	private static Classification classification1;
+	private static Classification classification2;
 	private static Taxon taxon1;
 	private static Taxon taxon2;
 	private static Taxon taxon3;
@@ -75,8 +75,8 @@ public class TaxonNodeTest {
 	@Before
 	public void setUp() throws Exception {
 		viewName1 = "Greuther, 1993";
-		taxonomicView1 = Classification.NewInstance(viewName1);
-		taxonomicView2 = Classification.NewInstance("Test View 2");
+		classification1 = Classification.NewInstance(viewName1);
+		classification2 = Classification.NewInstance("Test View 2");
 		taxonName1 = BotanicalName.NewInstance(Rank.SPECIES());
 		taxonName1 = BotanicalName.NewInstance(Rank.SUBSPECIES());
 		taxonName3 = BotanicalName.NewInstance(Rank.SPECIES());
@@ -106,12 +106,12 @@ public class TaxonNodeTest {
 	@Test
 	public void testNewTaxonTaxonomicView() {
 		TaxonNode testNode = new TaxonNode(taxon1);
-		taxonomicView1.addChildNode(testNode, null, null);
+		classification1.addChildNode(testNode, null, null);
 		
 		assertNotNull("test node should not be null", testNode);
 		assertEquals(taxon1,testNode.getTaxon());
-		assertEquals(taxonomicView1,testNode.getClassification());
-		assertTrue("taxon1 must become part of taxonomicView1", taxonomicView1.isTaxonInTree(taxon1));
+		assertEquals(classification1,testNode.getClassification());
+		assertTrue("taxon1 must become part of taxonomicView1", classification1.isTaxonInTree(taxon1));
 	}
 
 	/**
@@ -119,8 +119,8 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testAddChild() {
-		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null);
-		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
+		assertEquals("Number of all nodes in view should be 1", 1, classification1.getAllNodes().size());
 		
 		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33");  
 		child.setSynonymToBeUsed(syn1); //originally synToBeUsed was part of addChildTaxon
@@ -139,9 +139,9 @@ public class TaxonNodeTest {
 		assertSame("taxa must be the same", taxon2, childList.iterator().next().getTaxon());
 		
 		//test view properties
-		List<TaxonNode> rootNodes = taxonomicView1.getChildNodes();
+		List<TaxonNode> rootNodes = classification1.getChildNodes();
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
-		Set<TaxonNode> allNodes = taxonomicView1.getAllNodes();
+		Set<TaxonNode> allNodes = classification1.getAllNodes();
 		assertEquals("Number of all nodes should be 2", 2, allNodes.size());
 		assertTrue("Taxonomic view should include child", allNodes.contains(child));
 		
@@ -159,7 +159,7 @@ public class TaxonNodeTest {
 	@Test
 	public void testSetTaxon() {
 		TaxonNode node = new TaxonNode(taxon1);
-		taxonomicView1.addChildNode(node, null, null);
+		classification1.addChildNode(node, null, null);
 		assertNotNull(taxon2);
 		node.setTaxon(taxon2);
 		assertSame("taxon must be the same", taxon2, node.getTaxon());
@@ -175,7 +175,7 @@ public class TaxonNodeTest {
 		assertNotNull(taxon2);
 		TaxonNode parent = new TaxonNode(taxon2);
 		assertSame("Taxon must be the same", taxon2, parent.getTaxon());
-		taxonomicView1.addChildNode(parent, null, null);
+		classification1.addChildNode(parent, null, null);
 		node.setParent(parent);
 		assertSame("taxon2 must contain node", parent, node.getParent());
 		assertTrue("setParent must not handle child list of parent", parent.getChildNodes().isEmpty());
@@ -186,8 +186,8 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testGetChildNodes() {
-		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null);
-		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
+		assertEquals("Number of all nodes in view should be 1", 1, classification1.getAllNodes().size());
 		
 		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33");
 		child.setSynonymToBeUsed(syn1);
@@ -201,7 +201,7 @@ public class TaxonNodeTest {
 	
 	@Test
 	public void testGetCountChildren(){
-		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null);
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
 		assertEquals("Count of children must be 0", 0, root.getCountChildren());
 		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33");
 		child.setSynonymToBeUsed(syn1);
@@ -218,8 +218,8 @@ public class TaxonNodeTest {
 	
 	@Test
 	public void testDelete(){
-		TaxonNode root = taxonomicView1.addChildTaxon(taxon1, null, null);
-		assertEquals("Number of all nodes in view should be 1", 1, taxonomicView1.getAllNodes().size());
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
+		assertEquals("Number of all nodes in view should be 1", 1, classification1.getAllNodes().size());
 		
 		
 		TaxonNode childNode = root.addChildTaxon(taxon2, null, null);
@@ -230,39 +230,39 @@ public class TaxonNodeTest {
 		
 		
 		root.delete();
-		assertEquals("Number of all nodes in view should be 0", 0, taxonomicView1.getAllNodes().size());
+		assertEquals("Number of all nodes in view should be 0", 0, classification1.getAllNodes().size());
 		
 		
 	}
 	
 	@Test
 	public void testMoveTaxonNodeToOtherTree(){
-		TaxonNode node = taxonomicView1.addChildTaxon(taxon1, null, null);
-		assertEquals("The node should be in the classification we added it to", taxonomicView1, node.getClassification());
+		TaxonNode node = classification1.addChildTaxon(taxon1, null, null);
+		assertEquals("The node should be in the classification we added it to", classification1, node.getClassification());
 		
-		TaxonNode movedNode = taxonomicView2.addChildNode(node, null, null);
-		assertEquals("The node should be in the classification we moved it to", taxonomicView2, movedNode.getClassification());
-		assertEquals("The old tree should be empty now", 0, taxonomicView1.getChildNodes().size());
+		TaxonNode movedNode = classification2.addChildNode(node, null, null);
+		assertEquals("The node should be in the classification we moved it to", classification2, movedNode.getClassification());
+		assertEquals("The old tree should be empty now", 0, classification1.getChildNodes().size());
 	}
 	
 	@Test
 	public void testMoveTaxonNodeToOtherTaxonNodeInDifferentTree(){
-		TaxonNode node1 = taxonomicView1.addChildTaxon(taxon1, null, null);
+		TaxonNode node1 = classification1.addChildTaxon(taxon1, null, null);
 		TaxonNode node2 = node1.addChildTaxon(taxon3, null, null);
 		
 		assertEquals("The node should have exactly one child", 1, node1.getChildNodes().size());
-		assertEquals("The child is not in the correct tree", taxonomicView1, node2.getClassification());
-		assertEquals("The Classification should contain exactly two nodes", 2, taxonomicView1.getAllNodes().size());
+		assertEquals("The child is not in the correct tree", classification1, node2.getClassification());
+		assertEquals("The Classification should contain exactly two nodes", 2, classification1.getAllNodes().size());
 		
-		TaxonNode node3 = taxonomicView2.addChildTaxon(taxon3, null, null);
+		TaxonNode node3 = classification2.addChildTaxon(taxon3, null, null);
 		
 		// move node2 to node3 in other tree
 		node3.addChildNode(node2, null, null);
 		
 		assertEquals("Old node should not have child nodes", 0, node1.getChildNodes().size());
-		assertEquals("Old tree should contain only one node now", 1, taxonomicView1.getAllNodes().size());
-		assertEquals("Moved node not in expected tree", taxonomicView2, node2.getClassification());
-		assertEquals("Count of nodes in new tree:", 2, taxonomicView2.getAllNodes().size());
+		assertEquals("Old tree should contain only one node now", 1, classification1.getAllNodes().size());
+		assertEquals("Moved node not in expected tree", classification2, node2.getClassification());
+		assertEquals("Count of nodes in new tree:", 2, classification2.getAllNodes().size());
 		
 	}
 	
@@ -271,19 +271,49 @@ public class TaxonNodeTest {
 	 */
 	@Test
 	public void testMoveTaxonNodesRecursivelyToOtherTaxonNodeInDifferentTree(){
-		TaxonNode node1 = taxonomicView1.addChildTaxon(taxon1, null, null);
+		TaxonNode node1 = classification1.addChildTaxon(taxon1, null, null);
 		TaxonNode node2 = node1.addChildTaxon(taxon2, null, null);		
 		TaxonNode node3 = node2.addChildTaxon(taxon3, null, null);
 		
 		//move the branch to a different tree		
-		taxonomicView2.addChildNode(node1, null, null);
+		classification2.addChildNode(node1, null, null);
 		
-		assertEquals("Old tree should be empty:", 0, taxonomicView1.getAllNodes().size());
-		assertEquals("Moved node not in expected tree:", taxonomicView2, node1.getClassification());
-		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node2.getClassification());
-		assertEquals("Recursively moved node not in expected tree:", taxonomicView2, node3.getClassification());
+		assertEquals("Old tree should be empty:", 0, classification1.getAllNodes().size());
+		assertEquals("Moved node not in expected tree:", classification2, node1.getClassification());
+		assertEquals("Recursively moved node not in expected tree:", classification2, node2.getClassification());
+		assertEquals("Recursively moved node not in expected tree:", classification2, node3.getClassification());
 		
-		assertEquals("Count of nodes in new tree:", 3, taxonomicView2.getAllNodes().size());
+		assertEquals("Count of nodes in new tree:", 3, classification2.getAllNodes().size());
+		
+	}
+	
+	@Test
+	public void testAddChildNode(){
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
+		assertEquals("Number of all nodes in cla should be 1", 1, classification1.getAllNodes().size());
+		
+		TaxonNode child = root.addChildTaxon(taxon2, ref2, "p33");  
+		child.setSynonymToBeUsed(syn1); //originally synToBeUsed was part of addChildTaxon
+		//test child properties
+		assertNotNull("Child should not be null", child);
+		assertEquals("Child taxon should be taxon2", taxon2, child.getTaxon());
+		assertEquals("Parent taxon should be taxon1", taxon1, (child.getParent()).getTaxon());
+		assertEquals("Reference should be ref2", ref2, child.getReference());
+		assertEquals("Microreference should be 'p33'", "p33", child.getMicroReference());
+		assertEquals("Synonym should be syn1", syn1, child.getSynonymToBeUsed());
+		
+		//test parent properties
+		List<TaxonNode> childList = root.getChildNodes();
+		assertFalse("parent child list must not be empty",childList.isEmpty());
+		assertEquals("size of child list be 1", 1, childList.size());
+		assertSame("taxa must be the same", taxon2, childList.iterator().next().getTaxon());
+		
+		//test view properties
+		List<TaxonNode> rootNodes = classification1.getChildNodes();
+		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
+		Set<TaxonNode> allNodes = classification1.getAllNodes();
+		assertEquals("Number of all nodes should be 2", 2, allNodes.size());
+		assertTrue("Taxonomic view should include child", allNodes.contains(child));
 		
 	}
 	

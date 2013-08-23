@@ -81,9 +81,9 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		result = addYear(result, article, false);
 		TeamOrPersonBase<?> team = article.getAuthorTeam();
 		String articleTitle = CdmUtils.getPreferredNonEmptyString(article.getAbbrevTitle(), article.getTitle(), false, true);
-		result = CdmUtils.concat(" ", articleTitle, result);
+		result = CdmUtils.concat(" ", articleTitle, result);  //Article should maybe left out for nomenclatural references (?)
 		if (team != null &&  StringUtils.isNotBlank(team.getNomenclaturalTitle())){
-			String authorSeparator = StringUtils.isNotBlank(article.getTitle())? afterAuthor : " ";
+			String authorSeparator = StringUtils.isNotBlank(articleTitle) ? afterAuthor : " ";
 			result = team.getNomenclaturalTitle() + authorSeparator + result;
 		}
 		return result;

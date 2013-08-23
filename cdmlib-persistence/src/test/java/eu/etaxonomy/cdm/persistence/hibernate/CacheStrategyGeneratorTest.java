@@ -18,6 +18,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
@@ -40,12 +41,13 @@ import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 18.03.2009
  */
-public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
+public class CacheStrategyGeneratorTest extends CdmTransactionalIntegrationTest {
 	private static Logger logger = Logger.getLogger(CacheStrategyGeneratorTest.class);
 
 	private UUID uuid;
@@ -202,6 +204,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 	@Test
 	@DataSet("CacheStrategyGeneratorTest.xml")
 	@ExpectedDataSet
+	//TODO correct abbrevTitleCache for article still unclear (open question: with or without article title ?)
 	public void testOnSaveOrUpdateReferences() {
 		//References
 		IJournal journal1 = ReferenceFactory.newJournal();
@@ -212,7 +215,7 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		journal1.setAbbrevTitle("M. Journ.");
 		journal1.setAuthorTeam(journalAuthor);
 		
-		referenceDao.saveOrUpdate((Reference<?>)journal1);
+		referenceDao.save((Reference<?>)journal1);
 		
 		Person articleAuthor = makePerson2();
 		IArticle article1 = ReferenceFactory.newArticle();
@@ -222,9 +225,11 @@ public class CacheStrategyGeneratorTest extends CdmIntegrationTest {
 		article1.setDatePublished(TimePeriod.NewInstance(1972));
 		article1.setInJournal(journal1);
 		article1.setAuthorTeam(articleAuthor);
+		article1.getAbbrevTitleCache();
 		
 		referenceDao.saveOrUpdate((Reference<?>)article1);
 		
+		commit();
 	}
 }	
 	
