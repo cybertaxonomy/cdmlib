@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 
@@ -123,6 +124,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		
 		//create original source type column
 		stepName = "Create original source type column";
 		tableName = "OriginalSourceBase";
@@ -141,7 +143,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create taxon node tree index";
 		tableName = "TaxonNode";
 		columnName = "treeIndex";
-		//TODO NOT NULL unclear
+		//TODO NOT NULL unclear  //see also columnTypeChanger
 		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
 		stepList.add(step);
 		
@@ -397,6 +399,20 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "DescriptionBase_SpecimenOrObservationBase";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
+
+		//change column type for reference type
+		//TODO test with non-Mysql
+		stepName = "Change column type for Reference.type";
+		tableName = "Reference";
+		columnName = "refType";
+		Integer defaultValueStr = -1;
+		notNull = true;
+		int size = 3;
+		step = ColumnTypeChanger.NewInt2StringInstance(stepName, tableName, columnName, size, true, defaultValueStr, notNull);
+		stepList.add(step);
+		
+		//update reference type
+		updateReferenceType(stepList);
 		
 		//create table CdmPreferences  #3555
 		stepName = "Create table 'CdmPreferences'";
@@ -620,6 +636,96 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		return stepList;
+	}
+	
+	private void updateReferenceType(List<ISchemaUpdaterStep> stepList) {
+		//TODO include AUD tables
+		
+		String stepName = "Update reference refType for Reference";
+		String baseQuery = " UPDATE Reference " + 
+			" SET refType = '%s' " +
+			" WHERE refType = '%s' ";
+		Integer index = 0;
+		
+		//0-Article
+		String query = String.format(baseQuery, ReferenceType.Article.getKey(), String.valueOf(index++));
+		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//1-Book
+		query = String.format(baseQuery, ReferenceType.Book.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//2-Book Section
+		query = String.format(baseQuery, ReferenceType.BookSection.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//3-CD / DVD
+		query = String.format(baseQuery, ReferenceType.CdDvd.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//4-Database
+		query = String.format(baseQuery, ReferenceType.Database.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//5-Generic
+		query = String.format(baseQuery, ReferenceType.Generic.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//6-InProceedings
+		query = String.format(baseQuery, ReferenceType.InProceedings.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//7-Journal
+		query = String.format(baseQuery, ReferenceType.Journal.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//8-Map
+		query = String.format(baseQuery, ReferenceType.Map.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//9-Patent
+		query = String.format(baseQuery, ReferenceType.Patent.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//10-Personal Communication
+		query = String.format(baseQuery, ReferenceType.PersonalCommunication.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//11-PrintSeries
+		query = String.format(baseQuery, ReferenceType.PrintSeries.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//12-Proceedings
+		query = String.format(baseQuery, ReferenceType.Proceedings.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//13-Report
+		query = String.format(baseQuery, ReferenceType.Report.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+		
+		//14-Thesis
+		query = String.format(baseQuery, ReferenceType.Thesis.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
+
+		//15-WebPage
+		query = String.format(baseQuery, ReferenceType.WebPage.getKey(), String.valueOf(index++));
+		step = SimpleSchemaUpdaterStep.NewInstance(stepName, query);
+		stepList.add(step);
 	}
 
 	private void updateRecordBasis(List<ISchemaUpdaterStep> stepList) {

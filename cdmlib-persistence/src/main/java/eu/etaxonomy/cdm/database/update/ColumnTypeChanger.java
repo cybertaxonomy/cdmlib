@@ -45,6 +45,11 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 	public static final ColumnTypeChanger NewInt2DoubleInstance(String stepName, String tableName, String columnName, boolean includeAudTable){
 		return new ColumnTypeChanger(stepName, tableName, columnName, "double", includeAudTable, null, false, null);
 	}
+
+	public static final ColumnTypeChanger NewInt2StringInstance(String stepName, String tableName, String columnName, int size, boolean includeAudTable, Integer defaultValue, boolean notNull){
+		return new ColumnTypeChanger(stepName, tableName, columnName, "nvarchar("+size+")", includeAudTable, defaultValue, notNull, null);
+	}
+	
 	
 	protected ColumnTypeChanger(String stepName, String tableName, String columnName, String newColumnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {
 		super(stepName);
@@ -57,10 +62,6 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 		this.referencedTable = referencedTable;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
@@ -75,33 +76,53 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 	private boolean changeColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		boolean result = true;
 		try {
-			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
+			
+			String updateQuery;
 			try {
+				if (this.isNotNull){
+					updateQuery = getNotNullUpdateQuery(tableName, datasource, monitor);
+					datasource.executeUpdate(updateQuery);
+				}
+				
+				updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 				datasource.executeUpdate(updateQuery);
+				
+				if (defaultValue instanceof Boolean){
+					updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
+					updateQuery = updateQuery.replace("@tableName", tableName);
+					updateQuery = updateQuery.replace("@columnName", columnName);
+					try {
+						datasource.executeUpdate(updateQuery);
+					} catch (SQLException e) {
+						logger.error(e);
+						result = false;
+					}
+				}
+				if (referencedTable != null){
+					result &= TableCreator.makeForeignKey(tableName, datasource, columnName, referencedTable);
+				}
+				
 			} catch (SQLException e) {
 				logger.error(e);
 				result = false;
 			}
-			
-			if (defaultValue instanceof Boolean){
-				updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
-				updateQuery = updateQuery.replace("@tableName", tableName);
-				updateQuery = updateQuery.replace("@columnName", columnName);
-				try {
-					datasource.executeUpdate(updateQuery);
-				} catch (SQLException e) {
-					logger.error(e);
-					result = false;
-				}
-			}
-			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, columnName, referencedTable);
-			}
-			
+				
 			return result;
 		} catch ( DatabaseTypeNotSupportedException e) {
 			return false;
 		}
+	}
+
+	private String getNotNullUpdateQuery(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+		String query = " UPDATE %s SET %s = %S WHERE %s IS NULL ";
+		String defaultValueStr = String.valueOf(this.defaultValue);
+		if (this.defaultValue instanceof Integer){
+			//OK
+		}else{
+			defaultValueStr = "'" + defaultValueStr + "'";
+		}
+		query = String.format(query, tableName, this.columnName, defaultValueStr, this.columnName);
+		return query;
 	}
 
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
