@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
 import eu.etaxonomy.cdm.model.common.IEnumTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 
 
 /**
@@ -49,37 +51,6 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	@XmlEnumValue("Unknown")
 	Unknown(UUID.fromString("971a0c72-d4d2-4e41-8520-c9a87df34f48"), "Unknown term type","UN", null),
 
-	//1
-	/**
-	 * A physical object representing one or more organisms, part of organism, or artifact(s) of an organism. 
-	 */
-	@XmlEnumValue("PreservedSpecimen")
-	PreservedSpecimen(UUID.fromString("95cd9246-4131-444f-ad2f-3b24ca294a1f"), "Preserved Specimen", "PS"),
-	
-	//2
-	/**
-	 * Specification of PreservedSpecimen, indicating that a specimen is a fossil or is derived 
-	 * from a fossil.
-	 */
-	@XmlEnumValue("FossilSpecimen")
-	Fossil(UUID.fromString("1b0f8534-35eb-4c64-8e53-69e734043bd6"), "Fossil Specimen", "FS", PreservedSpecimen),
-
-	//3
-	/**
-	 * An organism removed from its natural occurrence and now living in captivity or cultivation
-	 */
-	@XmlEnumValue("LivingSpecimen")
-	LivingSpecimen(UUID.fromString("bc46169e-4d31-4eae-b5aa-1ddf0520c9a9"), "Living Specimen (ex situ)", "LS"),
-
-	//4
-	/**
-	 * All specimen types not covered by existing types. 
-	 *  
-	 */
-	//TODO does ABCD allow to use this also for Observations?
-	@XmlEnumValue("OtherSpecimen")
-	OtherSpecimen(UUID.fromString("b636da6a-b48f-4084-9594-25ea82429b70"), "Other Specimen", "OS"),
-	
 	//5
 	/**
 	 * Generalization for all specimen or observation except for FieldUnits. One should use DerivedUnit
@@ -88,11 +59,46 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 */
 	@XmlEnumValue("DerivedUnit")
 	DerivedUnit(UUID.fromString("da80443a-360b-4861-abeb-21e13beb5186"), "Derived Unit", "DU", null),
+	
+	//1
+	/**
+	 * A physical object representing one or more organisms, part of organism, or artifact(s) of an organism.
+	 * Specification of {@link SpecimenOrObservationType#DerivedUnit}.
+	 */
+	@XmlEnumValue("PreservedSpecimen")
+	PreservedSpecimen(UUID.fromString("95cd9246-4131-444f-ad2f-3b24ca294a1f"), "Preserved Specimen", "PS", DerivedUnit),
+	
+	//2
+	/**
+	 * Specification of PreservedSpecimen, indicating that a specimen is a fossil or is derived 
+	 * from a fossil.
+	 * Specification of {@link SpecimenOrObservationType#PreservedSpecimen}.
+	 */
+	@XmlEnumValue("FossilSpecimen")
+	Fossil(UUID.fromString("1b0f8534-35eb-4c64-8e53-69e734043bd6"), "Fossil Specimen", "FS", PreservedSpecimen),
+
+	//3
+	/**
+	 * An organism removed from its natural occurrence and now living in captivity or cultivation
+	 * Specification of {@link SpecimenOrObservationType#DerivedUnit}.
+	 */
+	@XmlEnumValue("LivingSpecimen")
+	LivingSpecimen(UUID.fromString("bc46169e-4d31-4eae-b5aa-1ddf0520c9a9"), "Living Specimen (ex situ)", "LS", DerivedUnit),
+
+	//4
+	/**
+	 * All specimen types not covered by existing types.
+	 * Specification of {@link SpecimenOrObservationType#DerivedUnit}.  
+	 */
+	//TODO does ABCD allow to use this also for Observations?
+	@XmlEnumValue("OtherSpecimen")
+	OtherSpecimen(UUID.fromString("b636da6a-b48f-4084-9594-25ea82429b70"), "Other Specimen", "OS", DerivedUnit),
 
 	//6
 	/**
 	 * Generalization for all observations, may they be human observations or machine observations.
 	 * Derived from the former (before v3.3) CDM class "Observation".
+	 * Specification of {@link SpecimenOrObservationType#DerivedUnit}. 
 	 */
 	@XmlEnumValue("Observation")
 	Observation(UUID.fromString("a8a254f1-7bed-47ec-bbee-86a794819c3b"), "Observation", "OB", DerivedUnit),
@@ -100,24 +106,34 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	//7
 	/**
 	 * Type for all observations made by a human.
-	 * Specification of "Observation".
+	 * Specification of {@link SpecimenOrObservationType#Observation}.
 	 */
 	@XmlEnumValue("HumanObservation")
-	HumanObservation(UUID.fromString("b960c06d-4bfc-4bea-bc53-aec0600409b1"), "HumanObservation", "HO", Observation),
+	HumanObservation(UUID.fromString("b960c06d-4bfc-4bea-bc53-aec0600409b1"), "Human Observation", "HO", Observation),
 
 	//8
 	/**
 	 * Type for all observations made by a machine.
-	 * Specification of "Observation".
+	 * Specification of {@link SpecimenOrObservationType#Observation}.
 	 */
 	@XmlEnumValue("MachineObservation")
-	MachineObservation(UUID.fromString("b12a13fc-0f61-4055-b9b7-4eabd417c54c"), "MachineObservation", "MO", Observation),
+	MachineObservation(UUID.fromString("b12a13fc-0f61-4055-b9b7-4eabd417c54c"), "Machine Observation", "MO", Observation),
 
-//	
-//	//10
-//	//TODO needed (isn't this also a Preserved Specimen)
-//	@XmlEnumValue("DnaSample")
-//	DnaSample(UUID.fromString("6a724560-bdfa-41c9-b459-ab0f1fc74902"), "Dna Sample", "DS"),
+	//8a
+	/**
+	 * Type for all tissue samples.
+	 * Specification of {@link SpecimenOrObservationType#PreservedSpecimen}.
+	 */
+	@XmlEnumValue("TissueSample")
+	TissueSample(UUID.fromString("3ad39d74-9bb3-4f9c-b261-8f5637bef582"), "Tissue Sample", "TS", PreservedSpecimen),
+
+	//8b
+	/**
+	 * Type for all DNA Samples.
+	 * Specification of {@link SpecimenOrObservationType#TissueSample}.
+	 */
+	@XmlEnumValue("DnaSample")
+	DnaSample(UUID.fromString("6a724560-bdfa-41c9-b459-ab0f1fc74902"), "Dna Sample", "DS", TissueSample),
 
 	//9
 	/**
@@ -131,6 +147,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	//10
 	/**
 	 * A photograph, drawing, painting or similar.
+	 * Specification of {@link SpecimenOrObservationType#Media}.
 	 */
 	@XmlEnumValue("StillImage")
 	StillImage(UUID.fromString("a8d9ada5-7f22-4fcf-8693-ae68d527289b"), "Still Image", "SI", Media),
@@ -139,6 +156,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	/**
 	 * A sequence of still images taken at regular intervals and intended to be played back as a moving image; 
 	 * may include sound.
+	 * Specification of {@link SpecimenOrObservationType#Media}.
 	 */
 	@XmlEnumValue("MovingImage")
 	MovingImage(UUID.fromString("56722418-9398-4367-afa1-46982fb93959"), "Moving Image", "MI", Media),
@@ -146,13 +164,15 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	//12
 	/**
 	 * An audio recording.
+	 * Specification of {@link SpecimenOrObservationType#Media}.
 	 */
 	@XmlEnumValue("SoundRecording")
 	SoundRecording(UUID.fromString("2a39ec19-4aae-4b74-bc5c-578c5dc94e7d"), "Moving Image", "SR", Media),
 
 	//13
 	/**
-	 * Any multi media object which is not covered by DrawingOrPhoto, MovingImage or SoundRecording.
+	 * Any multi-media object which is not covered by DrawingOrPhoto, MovingImage or SoundRecording.
+	 * Specification of {@link SpecimenOrObservationType#Media}.
 	 */
 	@XmlEnumValue("Multimedia")
 	Multimedia(UUID.fromString("bfe3fef8-d294-4554-847a-c9d8a6b74313"), "Multimedia Object", "MM", Media),
@@ -182,6 +202,10 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	}
 
 	
+	/**
+	 * Returns <code>true</code>, if it seems to make sense to use the {@link Feature feature}
+	 * {@link Feature#OBSERVATION() observation} for creating an {@link IndividualsAssociation individuals association}. 
+	 */
 	public boolean isFeatureObservation() {
 		if (this == Observation || this == HumanObservation || this == MachineObservation 
 			){
@@ -191,6 +215,10 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 		}
 	}
 	
+	/**
+	 * Returns <code>true</code>, if it seems to make sense to use the {@link Feature feature}
+	 * {@link Feature#SPECIMEN() specimen} for creating an {@link IndividualsAssociation individuals association}. 
+	 */
 	public boolean isFeatureSpecimen() {
 		if (isPreservedSpecimen() || this == LivingSpecimen || this == SpecimenOrObservationType.OtherSpecimen
 			){
@@ -204,7 +232,8 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 * @return true if this type represents a preserved specimen or one of its specifications.
 	 */
 	public boolean isPreservedSpecimen() {
-		if (this == PreservedSpecimen || this == Fossil
+//		if (this == PreservedSpecimen || this == Fossil
+		if (isKindOf(PreservedSpecimen)
 			){
 			return true;
 		}else{
@@ -265,12 +294,16 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 			return Observation;
 		} else if (type.equals("fossil")) {
 			return Fossil;
+		} else if (type.equals("tissuesample")) {
+			return TissueSample;
+		} else if (type.equals("dnasample")) {
+			return DnaSample;
 		} else if (type.equals("field(observation|unit)")) {
 			return FieldUnit;
-		} else if (type.equals("unknown")) {
-			return DerivedUnit;
 		} else if (type.equals("derivedunit")) {
 			return DerivedUnit;
+		} else if (type.equals("unknown")) {
+			return Unknown;
 		}
 		return null;
 	}
