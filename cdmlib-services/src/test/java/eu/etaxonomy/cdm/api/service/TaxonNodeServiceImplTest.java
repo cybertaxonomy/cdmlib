@@ -14,7 +14,6 @@ import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
@@ -27,7 +26,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -55,7 +53,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private static final UUID classificationUuid = UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878");
 	private static final UUID classification2Uuid = UUID.fromString("43d67247-936f-42a3-a739-bbcde372e334");
 	private static final UUID referenceUuid = UUID.fromString("de7d1205-291f-45d9-9059-ca83fc7ade14");
-	private static final UUID node2Uuid = UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
+	private static final UUID node2Uuid= UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 	private static final UUID node3Uuid = UUID.fromString("2d41f0c2-b785-4f73-a436-cc2d5e93cc5b");
 	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
@@ -82,7 +80,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-	@Ignore
 	@DataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {
 		classification = classificationService.load(classificationUuid);
@@ -125,8 +122,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		newNode = taxonNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + "#", newNode.treeIndex());
-		
-		System.out.println("REVERT IGNORE ON testMakeTaxonNodeASynonymOfAnotherTaxonNode");
+
 	}
 
 	
@@ -162,8 +158,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node3 = taxonNodeService.load(node3Uuid);
 		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node3.treeIndex());
-		
-		System.out.println("REVERT IGNORE ON testMakeTaxonNodeASynonymOfAnotherTaxonNode");
+
 	}
 
 	@Test  //here we may have a test for testing delete of a node and attaching the children

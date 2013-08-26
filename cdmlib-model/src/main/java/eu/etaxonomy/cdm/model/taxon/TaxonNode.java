@@ -343,7 +343,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	public void removeChild(int index){
 		
 		TaxonNode child = childNodes.get(index);
-		child = HibernateProxyHelper.deproxy(child, TaxonNode.class);
+		child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
 		
 		if (child != null){
 			
@@ -352,13 +352,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	        if(parent != null && parent != thisNode){
 	            throw new IllegalArgumentException("Child TaxonNode (id:" + child.getId() +") must be a child of this (id:" + thisNode.getId() + " node. Sortindex is: " + index + ", parent-id:" + parent.getId());
 	        }else if (parent == null){
-//	            System.out.println("Child-id: " + child.getId() + "; " + child.getUuid()+ "; " + child.treeIndex());
-//	            System.out.println("This-id: " + thisNode.getId() + "; " + thisNode.getUuid()+ "; " + thisNode.treeIndex());
-//	        	for (TaxonNode myChild : childNodes){
-//	        		myChild = HibernateProxyHelper.deproxy(myChild, TaxonNode.class);
-//	        		TaxonNode myParent = HibernateProxyHelper.deproxy(myChild.getParent(), TaxonNode.class);
-//	        		System.out.println("Parent:" + (myParent == null ? "null" : myParent.getId() + "," + myParent.getUuid() ) );
-//	    		}
 	            throw new IllegalStateException("Parent of child is null in TaxonNode.removeChild(int). This should not happen.");
 	        }
 			childNodes.remove(index);
