@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -39,10 +40,10 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 /**
  * @author a.mueller
  * @created 26.11.2008
- * @version 1.0
  */
 public class NonViralNameDefaultCacheStrategyTest {
-    private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 
     private NonViralNameDefaultCacheStrategy strategy;
 
@@ -68,7 +69,7 @@ public class NonViralNameDefaultCacheStrategyTest {
     private INomenclaturalAuthor exAuthor;
     private INomenclaturalAuthor basAuthor;
     private INomenclaturalAuthor exBasAuthor;
-    private Reference citationRef;
+    private Reference<?> citationRef;
 
     @BeforeClass
     public static void setUpBeforeClass() {
@@ -260,6 +261,25 @@ public class NonViralNameDefaultCacheStrategyTest {
 
         Assert.assertEquals("", "Abies alba L. \u00D7 Second parent Mill.", hybridName.getTitleCache());
 
+    }
+    
+    //TODO add more tests when specification is clearer
+    @Test
+    public void testOriginalSpelling() {
+    	NameRelationshipType origSpellingType = NameRelationshipType.ORIGINAL_SPELLING();
+    	NonViralName<?> originalName = (NonViralName<?>)speciesName.clone();
+    	originalName.setSpecificEpithet("alpa");
+    	Assert.assertEquals("Preconditions are wrong", "Abies alpa", originalName.getNameCache());
+    	
+    	speciesName.addRelationshipFromName(originalName, origSpellingType, null);
+    	Assert.assertEquals("Abies alba 'alpa'", speciesName.getNameCache());
+    	originalName.setGenusOrUninomial("Apies");
+    	
+    	speciesName.setNameCache(null, false);
+    	//TODO update cache of current name (species name)
+    	Assert.assertEquals("Abies alba 'Apies alpa'", speciesName.getNameCache());
+
+    	//TODO add more tests when specification of exact behaviour is clearer
     }
 
     @Test
@@ -472,7 +492,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 
         //test ordinary infrageneric
         List<TaggedText> subGenusNameCacheTagged = strategy.getInfraGenusTaggedNameCache(nonViralName);
-        String subGenusNameCache = strategy.createString(subGenusNameCacheTagged);
+        String subGenusNameCache = NonViralNameDefaultCacheStrategy.createString(subGenusNameCacheTagged);
         assertEquals("Subgenus name should be 'Genus subg. subgenus'.", "Genus subg. subgenus", subGenusNameCache);
         String subGenusTitle = strategy.getTitleCache(nonViralName);
         assertEquals("Subgenus name should be 'Genus subg. subgenus Anyauthor'.", "Genus subg. subgenus Anyauthor", subGenusTitle);

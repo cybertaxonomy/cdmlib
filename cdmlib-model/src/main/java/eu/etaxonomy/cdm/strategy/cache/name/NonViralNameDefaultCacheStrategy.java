@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -23,14 +25,18 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.strategy.cache.HTMLTagRules;
 import eu.etaxonomy.cdm.strategy.cache.TagEnum;
@@ -47,11 +53,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImplRegExBase;
  * Where differing from this default botanic name strategy other subclasses should overwrite the
  * existing methods, e.g. a CacheStrategy for zoological names should overwrite getAuthorAndExAuthor
  * @author a.mueller
- */
-/**
- * @author AM
- *
- * @param <T>
  */
 public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends NameCacheStrategyBase<T> implements INonViralNameCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategy.class);
@@ -141,7 +142,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 
     /**
-     * String to seperate ex author from author.
+     * String to separate ex author from author.
      * @return
      */
     public String getExAuthorSeperator() {
@@ -155,7 +156,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 
     /**
-     * String that seperates the basionym/original_combination author part from the combination author part
+     * String that separates the basionym/original_combination author part from the combination author part
      * @return
      */
     public CharSequence getBasionymAuthorCombinationAuthorSeperator() {
@@ -170,17 +171,11 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 //** *****************************************************************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
     @Override
     public String getTitleCache(T nonViralName) {
     	return getTitleCache(nonViralName, null);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.INonViralNameCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.name.NonViralName, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
-     */
     @Override
 	public String getTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
     	List<TaggedText> tags = getTaggedTitle(nonViralName);
@@ -192,9 +187,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 		}
     }
     
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.strategy.cache.HTMLTagRules)
-	 */
 	@Override
 	public String getFullTitleCache(T nonViralName, HTMLTagRules htmlTagRules) {
 		List<TaggedText> tags = getTaggedFullTitle(nonViralName);
@@ -206,10 +198,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	    }
 	}
 
-
-	/* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getFullTitleCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
     @Override
     public String getFullTitleCache(T nonViralName) {
     	return getFullTitleCache(nonViralName, null);
@@ -220,6 +208,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * Generates and returns the "name cache" (only scientific name without author teams and year).
      * @see eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy#getNameCache(eu.etaxonomy.cdm.model.name.TaxonNameBase)
      */
+    @Override
     public String getNameCache(T nonViralName) {
         List<TaggedText> tags = getTaggedName(nonViralName);
         if (tags == null){
@@ -348,9 +337,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 // ******************* Authorship ******************************/
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.INonViralNameCacheStrategy#getAuthorCache(eu.etaxonomy.cdm.model.name.NonViralName)
-     */
+    @Override
     public String getAuthorshipCache(T nonViralName) {
         if (nonViralName == null){
             return null;
@@ -433,9 +420,6 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
 // ************* TAGGED NAME ***************************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getTaggedFullTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
     @Override
     public List<TaggedText> getTaggedFullTitle(T nonViralName) {
         List<TaggedText> tags = new ArrayList<TaggedText>();
@@ -507,9 +491,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.strategy.cache.name.NameCacheStrategyBase#getTaggedTitle(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
+    @Override
     public List<TaggedText> getTaggedTitle(T nonViralName) {
         if (nonViralName == null){
             return null;
@@ -554,12 +536,12 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 
     }
 
-
     /**
      * Returns the tag list of the name part (without author and reference).
      * @param nonViralName
      * @return
      */
+    @Override
     public List<TaggedText> getTaggedName(T nonViralName) {
         if (nonViralName == null){
             return null;
@@ -880,11 +862,84 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      */
     protected void addAppendedTaggedPhrase(List<TaggedText> tags, NonViralName<?> nonViralName){
         String appendedPhrase = nonViralName ==null ? null : nonViralName.getAppendedPhrase();
+        String originalName = getOriginalNameString(nonViralName, tags);
+        if (StringUtils.isNotBlank(originalName)){
+            tags.add(new TaggedText(TagEnum.name, originalName));
+        }
         if (StringUtils.isNotEmpty(appendedPhrase)){
             tags.add(new TaggedText(TagEnum.name, appendedPhrase));
         }
     }
 
+    private String getOriginalNameString(NonViralName<?> currentName, List<TaggedText> originalNameTaggs) {
+		List<String> originalNameStrings = new ArrayList<String>(1);
+    	for (NameRelationship nameRel : currentName.getRelationsToThisName()){  //handle list, just in case we have strange data; this may result in strange looking results
+			NameRelationshipType type = nameRel.getType();
+    		if(type != null && type.equals(NameRelationshipType.ORIGINAL_SPELLING())){
+    			String originalNameString;
+    			TaxonNameBase<?,?> originalName = nameRel.getFromName();
+    			if (!originalName.isInstanceOf(NonViralName.class)){
+    				originalNameString = originalName.getTitleCache();  
+    			}else{
+    				NonViralName<?> originalNvName = CdmBase.deproxy(originalName, NonViralName.class);
+    				originalNameString = makeOriginalNameString(currentName, originalNvName, originalNameTaggs); 
+    			}
+    			originalNameStrings.add("'" + originalNameString +"'");
+    		}
+		}
+    	if (originalNameStrings.size() > 0){
+    		String result = CdmUtils.concat("", originalNameStrings.toArray(new String[originalNameStrings.size()])) ;
+	    	return result;
+    	}else{
+    		return null;
+    	}
+	}
+
+
+	private String makeOriginalNameString(NonViralName<?> currentName, NonViralName<?> originalName, List<TaggedText> currentNameTags) {
+		//use cache if necessary
+		String cacheToUse = null;
+		if (originalName.isProtectedNameCache() && StringUtils.isNotBlank(originalName.getNameCache())){
+			cacheToUse = originalName.getNameCache();
+		}else if (originalName.isProtectedTitleCache() && StringUtils.isNotBlank(originalName.getTitleCache())){
+			cacheToUse = originalName.getTitleCache();
+		}else if (originalName.isProtectedFullTitleCache() && StringUtils.isNotBlank(originalName.getFullTitleCache())){
+			cacheToUse = originalName.getFullTitleCache();
+		}
+		if (cacheToUse != null){
+			return cacheToUse;
+		}
+		//use atomized data
+		//get originalNameParts array
+		String originalNameString = originalName.getNameCache();
+		if (originalNameString == null){
+			originalNameString = originalName.getTitleCache();
+		}
+		if (originalNameString == null){  //should not happen
+			originalNameString = originalName.getFullTitleCache();
+		}
+		String[] originalNameSplit = originalNameString.split("\\s+");
+		
+		//get current name parts
+		String currentNameString = createString(currentNameTags);
+		String[] currentNameSplit = currentNameString.split("\\s+");
+		
+		//compute string
+		String result = originalNameString;
+		for (int i = 0; i < Math.min(originalNameSplit.length, currentNameSplit.length); i++){
+			if (originalNameSplit[i].equals(currentNameSplit[i])){
+				result = result.replaceFirst(originalNameSplit[i], "").trim();
+			}
+		}
+		//old
+//		if (originalName.getGenusOrUninomial() != null && originalName.getGenusOrUninomial().equals(currentName.getGenusOrUninomial())){
+//			 
+//		}
+		return result;
+	}
+
+
+	@Override
     public String getLastEpithet(T taxonNameBase) {
         Rank rank = taxonNameBase.getRank();
         if(rank.isGenus() || rank.isSupraGeneric()) {
