@@ -91,6 +91,9 @@ public abstract class ProgressMonitorWrapper implements
      * method forwards to the wrapped progress monitor.
      * Clients may override this method to do additional
      * processing.
+     * As the interface documentation says this method
+     * must not be called by a client. Clients should 
+     * always use the method </code>worked(int)</code>.
      *
      * @see IProgressMonitor#internalWorked(double)
      */
