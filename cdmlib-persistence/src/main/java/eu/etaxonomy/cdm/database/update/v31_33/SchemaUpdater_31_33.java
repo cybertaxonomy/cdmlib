@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
-import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
@@ -59,7 +58,6 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -123,7 +121,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "TypeDesignationBase_TaxonNameBase";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
-		
 		
 		//create original source type column
 		stepName = "Create original source type column";
@@ -246,7 +243,15 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//#3345,    TODO adapt type to <65k
 		//TODO sequence.sequence has been changed #3360
 		changeUriType(stepList);
-
+	
+		//Annotation.linkbackUri change name #3374
+		stepName = "Update url to uri (->clob) for Annotation.linkbackUri";
+		columnName = "linkbackUrl";
+		String newColumnName = "linkbackUri";
+		tableName = "Annotation";
+		//TODO check non MySQL and with existing data (probably does not exist)
+		step = ColumnNameChanger.NewClobInstance(stepName, tableName, columnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
 				
 		//update Sicilia -> Sicily
 		//#3540
@@ -372,12 +377,11 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//update length of all title caches and full title cache in names  #1592
 		updateTitleCacheLength(stepList);
 		
-		
 		//rename FK column states_id -> stateData_id in DescriptionElementBase_StateData(+AUD)  #2923
 		stepName = "Update states_id to stateData_id in DescriptionElementBase_StateData";
 		tableName = "DescriptionElementBase_StateData";
 		oldColumnName = "states_id";
-		String newColumnName = "stateData_id";
+		newColumnName = "stateData_id";
 		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
@@ -1432,51 +1436,61 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	 * @param stepList
 	 */
 	private void changeUriType(List<ISchemaUpdaterStep> stepList) {
+		//#3345
 		String stepName;
 		String tableName;
 		ISchemaUpdaterStep step;
+		String columnName;
+		
 		stepName = "Update uri to clob for DefinedTermBase";
 		tableName = "DefinedTermBase";
-		String oldColumnName = "uri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		columnName = "uri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		stepName = "Update uri to clob for TermVocabulary";
 		tableName = "TermVocabulary";
-		oldColumnName = "uri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		columnName = "uri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//TODO are uri and termsourceuri needed ???
 		stepName = "Update termsourceuri to clob for TermVocabulary";
 		tableName = "TermVocabulary";
-		oldColumnName = "termsourceuri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		columnName = "termsourceuri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		stepName = "Update uri to clob for Reference";
 		tableName = "Reference";
-		oldColumnName = "uri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		columnName = "uri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		stepName = "Update uri to clob for Rights";
 		tableName = "Rights";
-		oldColumnName = "uri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName,  INCLUDE_AUDIT);
+		columnName = "uri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName,  INCLUDE_AUDIT);
 		stepList.add(step);
 
 		stepName = "Update uri to clob for MediaRepresentationPart";
 		tableName = "MediaRepresentationPart";
-		oldColumnName = "uri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		columnName = "uri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//TODO still needed??
 		stepName = "Update uri to clob for FeatureTree";
 		tableName = "FeatureTree";
-		oldColumnName = "uri";
-		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		columnName = "uri";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//Annotation.linkbackUri (change from URL to URI)
+		stepName = "Update url to uri (->clob) for Annotation.linkbackUri";
+		tableName = "Annotation";
+		columnName = "linkbackUrl";
+		step = ColumnTypeChanger.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 
 	}

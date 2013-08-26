@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -108,8 +109,9 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	// for external annotations/comments the URL of these can be set.
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
-	@XmlElement(name = "LinkbackURL") // TODO tell JAXB to use the new field name: linkbackUri
-	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri
+	@XmlElement(name = "LinkbackUri")
+//	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri #3669
+	@Type(type="uriUserType")
 	private URI linkbackUri;
 
 	

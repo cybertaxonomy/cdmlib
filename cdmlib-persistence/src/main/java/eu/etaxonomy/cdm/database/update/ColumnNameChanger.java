@@ -29,19 +29,28 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase<ColumnNameChanger> 
 	private String newColumnName;
 	private String oldColumnName;
 	private boolean includeAudTable;
-	private boolean isInteger; //TODO make enum
+	private Datatype datatype; //TODO make enum
+	
+	private enum Datatype{
+		integer,
+		clob
+	}
 	
 	public static ColumnNameChanger NewIntegerInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
-		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, true);
+		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.integer);
+	}
+	
+	public static ColumnNameChanger NewClobInstance(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable){
+		return new ColumnNameChanger(stepName, tableName, oldColumnName, newColumnName, includeAudTable, null, Datatype.clob);
 	}
 
-	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable, Object defaultValue, boolean isInteger) {
+	protected ColumnNameChanger(String stepName, String tableName, String oldColumnName, String newColumnName, boolean includeAudTable, Object defaultValue, Datatype datatype) {
 		super(stepName);
 		this.tableName = tableName;
 		this.newColumnName = newColumnName;
 		this.oldColumnName = oldColumnName;
 		this.includeAudTable = includeAudTable;
-		this.isInteger = isInteger;
+		this.datatype = datatype;
 	}
 
 	/* (non-Javadoc)
@@ -94,9 +103,13 @@ public class ColumnNameChanger extends SchemaUpdaterStepBase<ColumnNameChanger> 
 		return result;
 	}
 
+
+	//TODO use same code as ColumnTypeChanger or ColumnAdder
 	private CharSequence getDefinition() {
-		if (isInteger){
+		if (this.datatype == Datatype.integer){
 			return "integer";
+		}else if (this.datatype == Datatype.clob){
+			return "longtext";
 		}else{
 			throw new RuntimeException("Definition type not supported");
 		}
