@@ -15,7 +15,6 @@ import static org.junit.Assert.assertTrue;
 
 import java.io.InputStreamReader;
 import java.net.URI;
-import java.util.List;
 
 import org.junit.Test;
 
@@ -29,7 +28,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class SpecimenTest {
@@ -41,7 +39,7 @@ public class SpecimenTest {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
-	        List<SpecimenOrObservationBase> occurrences = dataSet.getOccurrences();
+//	        List<SpecimenOrObservationBase> occurrences = dataSet.getOccurrences();
 	        
 			DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);	
 			assertNotNull("Specimen must not be null",specimen);
@@ -52,7 +50,7 @@ public class SpecimenTest {
 			assertNotNull("Person must not be null", person);
 			Taxon taxon = (Taxon)dataSet.getTaxonBases().get(0);
 			assertNotNull("Taxon must not be null",taxon);
-			TaxonNameBase name = dataSet.getTaxonomicNames().get(0);
+			TaxonNameBase<?,?> name = dataSet.getTaxonomicNames().get(0);
 			assertNotNull("TaxonNameBase must not be null",name);
 			DefinedTerm sex = (DefinedTerm)dataSet.getTerms().get(1);
 			

@@ -49,10 +49,10 @@ public class ReferenceTest {
             IArticle article = (IArticle)dataSet.getReferences().get(0);
             assertNotNull("Article must not be null",article);
 
-            IJournal journal = ((Reference)article).castReferenceToJournal();
+            IJournal journal = ((Reference<?>)article).castReferenceToJournal();
             assertEquals("Journal", journal.getType().name());
 
-            IGeneric generic = ((Reference)journal).castReferenceToGeneric();
+            IGeneric generic = ((Reference<?>)journal).castReferenceToGeneric();
             assertEquals("Generic", generic.getType().name());
 
 
