@@ -110,7 +110,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
 	@XmlElement(name = "LinkbackUri")
-//	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri #3669
 	@Type(type="uriUserType")
 	private URI linkbackUri;
 

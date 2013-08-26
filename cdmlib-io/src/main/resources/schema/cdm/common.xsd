@@ -398,7 +398,7 @@
           <xs:element name="Commentator" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="AnnotatedObject" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="AnnotationType" type="xs:IDREF" minOccurs="0"/>
-          <xs:element name="LinkbackURL" type="xs:anyURI" minOccurs="0"/>
+          <xs:element name="LinkbackUri" type="xs:anyURI" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>
     </xs:complexContent>
