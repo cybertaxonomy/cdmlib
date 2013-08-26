@@ -22,7 +22,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -48,20 +47,20 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	@SpringBeanByType
 	private ITermService termService;
 
-	private static final UUID t2Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
-	private static final UUID t3Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
+//	private static final UUID t2Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
+//	private static final UUID t3Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
 	private static final UUID classificationUuid = UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878");
 	private static final UUID classification2Uuid = UUID.fromString("43d67247-936f-42a3-a739-bbcde372e334");
 	private static final UUID referenceUuid = UUID.fromString("de7d1205-291f-45d9-9059-ca83fc7ade14");
 	private static final UUID node2Uuid= UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 	private static final UUID node3Uuid = UUID.fromString("2d41f0c2-b785-4f73-a436-cc2d5e93cc5b");
-	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
+//	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 
 	private Taxon t1;
 	private Taxon t2;
-	private Synonym s1;
+//	private Synonym s1;
 	private SynonymRelationshipType synonymRelationshipType;
 	private Reference<?> reference;
 	private String referenceDetail;
@@ -106,7 +105,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
 		Assert.assertEquals(2, t2.getDescriptions().size());
-
 	}
 	
 	@Test
@@ -122,7 +120,6 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		newNode = taxonNodeService.load(newNode.getUuid());
 		Assert.assertEquals("", oldTreeIndex + newNode.getId() + "#", newNode.treeIndex());
-
 	}
 
 	
