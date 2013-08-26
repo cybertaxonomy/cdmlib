@@ -93,7 +93,6 @@ public class ExcelSpecimenImportExampleTest extends
 	@Test
 	@DataSet
 	@ExpectedDataSet
-//	@Ignore
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
