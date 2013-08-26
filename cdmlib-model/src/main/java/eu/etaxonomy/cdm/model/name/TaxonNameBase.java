@@ -112,7 +112,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IReferencedEntity, IParsable, IRelated, IMatchable, Cloneable {
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IParsable, IRelated, IMatchable, Cloneable {
     private static final long serialVersionUID = -4530368639601532116L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
@@ -1202,17 +1202,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 
 
 // *************************************************************************//
-
-    /**
-     * @see #getNomenclaturalReference()
-     */
-    @Override
-    @Transient
-    public Reference getCitation(){
-        //TODO What is the purpose of this method differing from the getNomenclaturalReference method?
-        logger.warn("getCitation not yet implemented");
-        return null;
-    }
 
     /**
      * Returns the complete string containing the
