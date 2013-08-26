@@ -38,9 +38,12 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
  * When changing the type of a reference one must be careful with handling attached information.
  * E.g. changing the type of a reference from article to book section requires to either exchange
  * the in reference or to change the type of the in reference which may have further consequences.
+ * 
  * @author a.mueller
  * @created 20.09.2009
  */
+
+//TODO hierarchies, see http://dev.e-taxonomy.eu/trac/ticket/3619
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	

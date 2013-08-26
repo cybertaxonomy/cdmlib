@@ -98,7 +98,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	/**
 	 * Generalization for all observations, may they be human observations or machine observations.
 	 * Derived from the former (before v3.3) CDM class "Observation".
-	 * Specification of {@link SpecimenOrObservationType#DerivedUnit}. 
+	 * Specification of {@link SpecimenOrObservationType#DerivedUnit}. //TODO verify #3619
 	 */
 	@XmlEnumValue("Observation")
 	Observation(UUID.fromString("a8a254f1-7bed-47ec-bbee-86a794819c3b"), "Observation", "OB", DerivedUnit),
