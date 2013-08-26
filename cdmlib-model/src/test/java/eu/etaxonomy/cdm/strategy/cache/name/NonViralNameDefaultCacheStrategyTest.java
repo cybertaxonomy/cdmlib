@@ -284,7 +284,7 @@ public class NonViralNameDefaultCacheStrategyTest {
 
     @Test
     public void testCacheListener() {
-        Reference ref = ReferenceFactory.newGeneric();
+        Reference<?> ref = ReferenceFactory.newGeneric();
         ref.setTitleCache("GenericRef",true);
         this.subSpeciesName.setNomenclaturalReference(ref);
         Assert.assertEquals("Expected full title cache has error", "Abies alba subsp. beta, GenericRef", subSpeciesName.getFullTitleCache());
