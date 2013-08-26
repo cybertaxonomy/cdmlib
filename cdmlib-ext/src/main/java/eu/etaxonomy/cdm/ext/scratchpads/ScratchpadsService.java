@@ -24,8 +24,6 @@ import java.util.zip.ZipInputStream;
 import net.sf.json.JSON;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONException;
-import net.sf.json.JSONObject;
-import net.sf.json.JsonConfig;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
