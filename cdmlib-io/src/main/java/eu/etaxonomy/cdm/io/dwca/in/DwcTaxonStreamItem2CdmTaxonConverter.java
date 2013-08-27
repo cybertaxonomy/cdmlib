@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.io.dwca.in;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -27,6 +28,8 @@ import eu.etaxonomy.cdm.io.stream.StreamImportStateBase;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -58,8 +61,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
  *
  */
 public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImportConfiguratorBase, STATE extends StreamImportStateBase<CONFIG, StreamImportBase>>  extends PartitionableConverterBase<CONFIG, STATE> implements IPartitionableConverter<StreamItem, IReader<CdmBase>, String>{
-	@SuppressWarnings("unused")
-	private static Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
+	private static final Logger logger = Logger.getLogger(DwcTaxonStreamItem2CdmTaxonConverter.class);
 
 	private static final String ID = "id";
 	// temporary key for the case that no dataset information is supplied, TODO use something better
@@ -104,6 +106,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		
 		//nameAccordingTo
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
+		
 		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
 			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
 		}
@@ -187,6 +190,25 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+		
+		
+		String references = item.get(TermUri.DC_REFERENCES);
+		
+		if (references == null || references == "") {
+			references = item.get(TermUri.DWC_NAME_PUBLISHED_IN_ID);//lorna temporary until Scratchpads move the reference to the correct place.
+		}
+		
+		if (StringUtils.isNotBlank(references)){
+			URI uri = makeUriIfIs(references);
+			if (uri != null){
+				Extension.NewInstance(taxonBase, references, ExtensionType.URL());
+			}else{
+				String message = "Non-URI Dublin Core References not yet handled for taxa. References is: %s";
+				fireWarningEvent(String.format(message, references), item, 6);
+			}
+		}
+		
+		
 		//TODO: Finish properly
 		String id = item.get(TermUri.CDM_SOURCE_IDINSOURCE);
 		String idNamespace = item.get(TermUri.CDM_SOURCE_IDNAMESPACE);
@@ -197,6 +219,29 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = (Taxon) taxonBase;
 			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}
+		
+		
+		
+	}
+
+
+	/**
+	 * If str is an uri it returns is as an {@link URI}. If not it returns <code>null</code>. 
+	 * @param str
+	 * @return the URI.
+	 */
+	private URI makeUriIfIs(String str) {
+		if (! str.startsWith("http:")){
+			return null;
+		}else{
+			try {
+				URI uri = URI.create(str);
+				return uri;
+			} catch (Exception e) {
+				return null;
+			}
+		}
+
 	}
 
 
@@ -226,6 +271,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
 		// TODO Auto-generated method stub
 		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
+		if (tdwg_area != null){
 		if(taxonBase instanceof Synonym){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
@@ -236,7 +282,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				for(Taxon taxon : acceptedTaxaList){
 					TaxonDescription td = getTaxonDescription(taxon, false);
 					NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
-
+	
 					if (area == null){
 						area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 					}
@@ -251,7 +297,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 			TaxonDescription td = getTaxonDescription(taxon, false);
 			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
-
+	
 			if (area == null){
 				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 			}
@@ -260,6 +306,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 				td.addElement(distribution);
 			}
 		}
+	}
 	}
 
 
@@ -327,8 +374,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			//if not exists, create new
 			if (! classificationExists){
 				String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
-				if (classificationName.equals(NO_DATASET)){
-					classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
+				if (classificationName.equals(NO_DATASET)){					
+					classificationName = config.getClassificationName();
+					//classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
 				}
 				
 				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
@@ -497,7 +545,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					if (! idIsInternal){
 						//references should already exist in store if not linking to external links like URLs
 						String message = "External namePublishedInIDs are not yet supported";
-						fireWarningEvent(message, item, 4);
+						fireWarningEvent(message, item, 4);//set to DEBUG
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
 						newRef.addSource(OriginalSourceType.Import, refId, idTerm.toString(), sourceCitation, null);

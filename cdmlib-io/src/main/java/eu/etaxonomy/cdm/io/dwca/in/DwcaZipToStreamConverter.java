@@ -18,6 +18,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -263,7 +264,15 @@ public class DwcaZipToStreamConverter<STATE extends DwcaImportState> {
 			throw new IOException(String.format(message, dwcaZip.toString()));
 		}
 		ZipFile zip = new ZipFile(file, ZipFile.OPEN_READ);
+		
+		//Enumeration<? extends ZipEntry> zipEntries = zip.entries();
+		//ze = new ZipEntry(name);
 		ZipEntry metaEntry = zip.getEntry(name);
+		
+		//Lorna added this to deal with Scratchpads dwca.zip files which when unzipped have a directory dwca/ which contains the files
+		if (metaEntry == null) {
+			metaEntry = zip.getEntry("dwca/" + name);
+		}
 		if (metaEntry == null){
 			String message = "Zip entry for %s not available";
 			throw new IOException(String.format(message, name));

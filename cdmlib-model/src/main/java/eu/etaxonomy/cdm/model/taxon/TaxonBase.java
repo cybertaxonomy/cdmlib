@@ -30,8 +30,13 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.Store;
 
+import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
+import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -72,6 +77,16 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 //@PreFilter("hasPermission(filterObject, 'edit')")
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
+@ClassBridges({
+	@ClassBridge(name="classInfo",
+			index = org.hibernate.search.annotations.Index.YES, 
+			store = Store.YES,
+			impl = ClassInfoBridge.class),
+	@ClassBridge(name="accTaxon",
+			index = org.hibernate.search.annotations.Index.YES, 
+			store = Store.YES,
+			impl = AcceptedTaxonBridge.class)
+})
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
