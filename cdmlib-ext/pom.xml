@@ -101,11 +101,6 @@
         <groupId>net.sf.ezmorph</groupId>
         <artifactId>ezmorph</artifactId>
     </dependency>
-	<dependency>
-		<groupId>com.google.code.gson</groupId>
-		<artifactId>gson</artifactId>
-	</dependency>
-
 
   </dependencies>
 </project>

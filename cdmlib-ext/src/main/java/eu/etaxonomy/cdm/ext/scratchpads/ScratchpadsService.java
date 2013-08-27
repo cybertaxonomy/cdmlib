@@ -18,21 +18,15 @@ import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Iterator;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
-
-import net.sf.json.JSON;
-import net.sf.json.JSONArray;
-import net.sf.json.JSONException;
 
 import org.apache.http.HttpException;
 import org.apache.http.HttpResponse;
 import org.apache.log4j.Logger;
-
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
+import org.codehaus.jackson.JsonNode;
+import org.codehaus.jackson.map.ObjectMapper;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 
@@ -56,7 +50,6 @@ public class ScratchpadsService {
 
 		InputStream inputStream = null;
 		
-
 		try {
 			URL url = new URL(SCRATCHPADS_JSON_ENDPOINT);
 			boolean isAvailable = UriUtils.isServiceAvailable(url.toURI());
@@ -71,97 +64,83 @@ public class ScratchpadsService {
 			while ((line = reader.readLine()) != null) {
 				sb.append(line + "\n");
 				logger.debug(line);
+				
 			}
 
-
-			//JSONArray array = new JSONArray();
-			JSONArray array = JSONArray.fromObject(sb.toString());
-			//using com.google.gson, but there is also org.codehaus.jackson 
-			JsonArray jArray = new JsonParser().parse(sb.toString()).getAsJsonArray();
-
+			ObjectMapper m = new ObjectMapper();			
+			
+			JsonNode rootNode = m.readTree(sb.toString());
+			logger.debug(rootNode.toString());
+			logger.debug(rootNode.isArray());
+			
 			int num = 0;
-			for (int i=0;i<jArray.size();i++) {
-				JsonObject jsonObject = jArray.get(i).getAsJsonObject();
-				//JsonObject jsonObject = array.get(i).getAsJsonObject();
-				logger.debug(jsonObject.get("field_website"));
-				logger.debug("*********");
+			if (rootNode.isArray()) {
+				Iterator<JsonNode> arrayElements = rootNode.getElements();
+				while (arrayElements.hasNext()) {
+					JsonNode element = arrayElements.next();
+					JsonNode website = element.path("field_website");
+					//logger.debug(website.getValueAsText());
+					String fieldWebsite = website.getValueAsText();
+					
+					if (fieldWebsite.startsWith("http")) {
 
-				JsonElement fieldWebsite = jsonObject.get("field_website");
+						url = new URL(fieldWebsite + "/dwca.zip");
+						URI uri = url.toURI();
+						isAvailable = UriUtils.isServiceAvailable(uri);
+						logger.debug("Is " + fieldWebsite + " available :" + isAvailable);
 
-				if (fieldWebsite.getAsString().startsWith("http")) {
+						String websiteName = "";
+						//websiteName = (fieldWebsite.toString().split("//")[1]).split(".*")[0];
+						websiteName = websiteName + fieldWebsite.split("//")[1];
+						//if (websiteName.contains(".")){
+							//websiteName = websiteName.substring(0, websiteName.indexOf("."));
+						websiteName = websiteName.replaceAll("\\.", "_");
+							//websiteName = websiteName.substring(0, websiteName.indexOf("."));
 
-					url = new URL(fieldWebsite.getAsString() + "/dwca.zip");
-					URI uri = url.toURI();
-					isAvailable = UriUtils.isServiceAvailable(uri);
-					logger.debug("Is " + fieldWebsite + " available :" + isAvailable);
+						//} 
 
-					String websiteName = "";
-					//websiteName = (fieldWebsite.toString().split("//")[1]).split(".*")[0];
-					websiteName = websiteName + fieldWebsite.toString().split("//")[1];
-					//if (websiteName.contains(".")){
-						//websiteName = websiteName.substring(0, websiteName.indexOf("."));
-					websiteName = websiteName.replaceAll("\\.", "_");
-						//websiteName = websiteName.substring(0, websiteName.indexOf("."));
+						//logger.debug("the website name " + websiteName);
 
-					//} 
+						for (int j = 0; j < ILLEGAL_CHARACTERS.length; j++) {
 
-					logger.debug("the website name " + websiteName);
-					//if (num ==0) {
-					//break;
-					//}
-					for (int j = 0; j < ILLEGAL_CHARACTERS.length; j++) {
-
-						char ch = '_';
-						websiteName.replace(ILLEGAL_CHARACTERS[j], ch);
-					}
-
-					websiteName = websiteName.substring(0, websiteName.length()-1);
-
-					if (isAvailable) {
-
-						HttpResponse response = UriUtils.getResponse(uri, null);
-						if (UriUtils.isOk(response)) {
-
-
-							logger.debug("There is a dwca " + websiteName);
-
-							try {
-								inputStream = UriUtils.getInputStream(url.toURI());
-								//if (num ==10) {
-								//break;
-								//}
-								num++;
-
-								if (inputStream != null) {
-
-									copyDwcaZip(inputStream, websiteName);
-									//createDwcaZip(inputStream);
-								}
-								
-							} catch (HttpException e) {
-								// TODO Auto-generated catch block
-								logger.error("Failed to get dwca for " + websiteName + " as there was an error " + e);
-							} 
-
+							char ch = '_';
+							websiteName.replace(ILLEGAL_CHARACTERS[j], ch);
 						}
 
+						websiteName = websiteName.substring(0, websiteName.length());
+
+						if (isAvailable) {
+
+							HttpResponse response = UriUtils.getResponse(uri, null);
+							if (UriUtils.isOk(response)) {
+
+
+								logger.debug("There is a dwca " + websiteName);
+
+								try {
+									inputStream = UriUtils.getInputStream(url.toURI());
+
+									num++;
+
+									if (inputStream != null) {
+
+										copyDwcaZip(inputStream, websiteName);
+										//createDwcaZip(inputStream);
+									}
+									
+								} catch (HttpException e) {
+									// TODO Auto-generated catch block
+									logger.error("Failed to get dwca for " + websiteName + " as there was an error " + e);
+								} 
+
+							}
+
+						}
 					}
 				}
 			}
 
 			inputStream.close();
-			//json = sb.toString();
-
-			JSON jsonObj;
-
-			/*if(Collection.class.isAssignableFrom(sb.getClass())){
-	        	logger.debug("1 Creating the json object");
-	            jsonObj = JSONArray.fromObject(sb);
-	        } else {
-	        	logger.debug("2 Creating the json object");
-	            jsonObj = JSONObject.fromObject(sb);
-	        }*/
-			//jObj = new JSONObject(sb.toString());
 
 
 		} catch (URISyntaxException e) {
@@ -172,10 +151,7 @@ public class ScratchpadsService {
 		} catch (HttpException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (JSONException e) {
-			//Log.e("JSON Parser", "Error parsing data " + e.toString());
-			logger.error("error on parse data in jsonparser.java");
-		}
+		} 
 	}
 	
 	/**
@@ -234,10 +210,7 @@ public class ScratchpadsService {
 			e.printStackTrace();
 		} catch (IOException ie) {
 			ie.printStackTrace();
-		} catch (JSONException e) {
-			//Log.e("JSON Parser", "Error parsing data " + e.toString());
-			logger.error("error on parse data in jsonparser.java");
-		}
+		} 
 	}
 
 	/**
