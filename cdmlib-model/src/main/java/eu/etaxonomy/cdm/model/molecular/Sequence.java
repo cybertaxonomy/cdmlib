@@ -179,6 +179,12 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		return result;
 	}
 	
+	
+	public static Sequence NewInstance(String consensusSequence, Integer length){
+		Sequence result = NewInstance(consensusSequence);
+		result.getConsensusSequence().setLength(length);
+		return result;
+	}
 //*********************** CONSTRUCTOR ****************************************************/
 	
 	protected Sequence() {}
