@@ -438,6 +438,13 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateSql);
 		stepList.add(step);
 		
+		//Remove column isDescriptionSeparated from FeatureTree #3678
+		stepName = "Remove column isDescriptionSeparated from FeatureTree";
+		tableName = "FeatureTree";
+		columnName = "descriptionSeparated";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
 		//remove table Sequence_GenBankAccession #3552
 		stepName = "Remove table Sequence_GenBankAccession";
 		tableName = "Sequence_GenBankAccession";

@@ -63,7 +63,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {
-    "descriptionSeparated",
     "root",
     "uri",
     "representations"
@@ -98,9 +97,6 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
     @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
-	
-	@XmlElement(name = "IsDescriptionSeparated")
-	private boolean descriptionSeparated = false;
 		
 //******************** FACTORY METHODS ******************************************/	
 
@@ -167,26 +163,7 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
 
 // ****************** GETTER / SETTER **********************************/	
 	
-	// Delete the isDescriptionSeparated flag ??
-	/**
-	 * Returns the boolean value of the flag indicating whether the
-	 * {@link DescriptionElementBase description elements} associated with the {@link Feature features}
-	 * belonging to <i>this</i> feature tree should be treated separately (true)
-	 * or not (false).
-	 *  
-	 * @return  the boolean value of the isDescriptionSeparated flag
-	 */
-	public boolean isDescriptionSeparated() {
-		return descriptionSeparated;
-	}
 
-	/**
-	 * @see	#isDescriptionSeparated() 
-	 */
-	public void setDescriptionSeparated(boolean descriptionSeperated) {
-		this.descriptionSeparated = descriptionSeperated;
-	}
-	
 //	@OneToMany
 //	@Cascade({CascadeType.SAVE_UPDATE})
 //	public Set<FeatureNode> getNodes() {
