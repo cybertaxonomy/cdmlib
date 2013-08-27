@@ -41,5 +41,9 @@ public class TdwgAreaProvider {
 		return NamedArea.isTdwgAreaLabel(area);
 	}
 
+	public static boolean isTdwgAreaAbbreviation(String abbrev) {
+		return NamedArea.isTdwgAreaAbbreviation(abbrev);
+	}
+
 
 }
