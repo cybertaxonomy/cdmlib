@@ -35,15 +35,18 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.occurrence.CollectionDefaultCacheStrategy;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
+ * Instances of this class represent a collection for primary biodiversity data.
+ * Collections may be part of other collections and may belong to an institution.
+ * Collection inherits from 
+ * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -108,7 +111,8 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Collection superCollection;
 
-
+// ************** FACTORY METHODS *************************/
+	
 	/**
 	 * Factory method
 	 * @return
@@ -117,6 +121,8 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 		return new Collection();
 	}
 
+// ******************** CONSTRUCTOR *************************/
+	
 	/**
 	 * Constructor
 	 */
@@ -125,75 +131,109 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 		this.cacheStrategy = new CollectionDefaultCacheStrategy();
 	}
 
+// ******************* GETTER / SETTER ************************/	
+	
+	
+	
+	/**
+	 * The {@link Institution institution} this collection belongs to.
+	 * @see #getSuperCollection()
+	 * @return the institute
+	 */
 	public Institution getInstitute(){
 		return this.institute;
 	}
 
 	/**
-	 *
+	 * @see #getInstitute() 
 	 * @param institute    institute
 	 */
 	public void setInstitute(Institution institute){
 		this.institute = institute;
 	}
 
+	/**
+	 * The code for this collection. The standard this code belongs to
+	 * is given by the {@link #getCodeStandard() code standard}.
+	 * The code is NOT the {@link #getName()name} of the collection.
+	 * 
+	 * @see #getCodeStandard()
+	 * @see #getName()
+	 * @return the code
+	 */
 	public String getCode(){
 		return this.code;
 	}
 
 	/**
-	 *
-	 * @param code    code
+	 * @see #getCode()
+	 * @param code the code
 	 */
 	public void setCode(String code){
 		this.code = code;
 	}
 
+	/**
+	 * The standard used for the given {@link #getCode() collection code} 
+	 * @return the code standard
+	 */
 	public String getCodeStandard(){
 		return this.codeStandard;
 	}
 
 	/**
-	 *
+	 * @see #getCodeStandard()
+	 * @see #getCode()
 	 * @param codeStandard    codeStandard
 	 */
 	public void setCodeStandard(String codeStandard){
 		this.codeStandard = codeStandard;
 	}
 
+	/**
+	 * The name of this collection
+	 * @return the name
+	 */
 	public String getName(){
 		return this.name;
 	}
 
 	/**
-	 *
+	 * @see #getName()
 	 * @param name    name
 	 */
 	public void setName(String name){
 		this.name = name;
 	}
 
+	/**
+	 * The town or location where this collection is to be found.
+	 * @return the town or location
+	 */
 	public String getTownOrLocation(){
 		return this.townOrLocation;
 	}
 
 	/**
-	 *
+	 * @see #getTownOrLocation
 	 * @param townOrLocation    townOrLocation
 	 */
 	public void setTownOrLocation(String townOrLocation){
 		this.townOrLocation = townOrLocation;
 	}
 
-//	@Override
-//	public String generateTitle(){
-//		return "";
-//	}
-
+	/**
+	 * The collection <code>this</code> collection is part of.
+	 * @return
+	 */
 	public Collection getSuperCollection() {
 		return superCollection;
 	}
 
+	/**
+	 * @see #getSuperCollection()
+	 * @param superCollection
+	 */
 	public void setSuperCollection(Collection superCollection) {
 		this.superCollection = superCollection;
 	}
@@ -234,7 +274,7 @@ public class Collection extends IdentifiableMediaEntity<IIdentifiableEntityCache
 	@Override
 	public String toString() {
 		if (StringUtils.isNotBlank(code) || StringUtils.isNotBlank(name)){
-			return "Collection [id= "+ getId() +", + code=" + code + ", name=" + name + "]";
+			return "Collection [id= "+ getId() +", + code=" + CdmUtils.Nz(code) + ", name=" + CdmUtils.Nz(name) + "]";
 		}else{
 			return super.toString();
 		}

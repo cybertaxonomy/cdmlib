@@ -40,10 +40,9 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 @MappedSuperclass
 @Audited
 public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements IMediaDocumented, IMediaEntity{
-
 	private static final long serialVersionUID = 4038647011021908313L;
-
-	protected static Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
+	@SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
 
     @XmlElementWrapper(name = "Media", nillable = true)
     @XmlElement(name = "Medium")
