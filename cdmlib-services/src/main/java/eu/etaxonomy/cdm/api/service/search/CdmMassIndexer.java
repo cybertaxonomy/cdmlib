@@ -63,7 +63,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Transactional
 public class CdmMassIndexer implements ICdmMassIndexer {
 
-	private Set<Class<? extends CdmBase>> indexedClasses = new HashSet<Class<? extends CdmBase>>();
+    private final Set<Class<? extends CdmBase>> indexedClasses = new HashSet<Class<? extends CdmBase>>();
     public static final Logger logger = Logger.getLogger(CdmMassIndexer.class);
 
     /*
@@ -253,28 +253,31 @@ public class CdmMassIndexer implements ICdmMassIndexer {
      * @see eu.etaxonomy.cdm.database.IMassIndexer#reindex()
      */
     @Override
-    public void reindex(IProgressMonitor monitor){
+    public void reindex(Set<Class<? extends CdmBase>> types, IProgressMonitor monitor){
 
         if(monitor == null){
             monitor = new NullProgressMonitor();
         }
+        if(types == null){
+            types = indexedClasses();
+        }
 
         monitor.setTaskName("CdmMassIndexer");
-        int steps = indexedClasses().size() + 1; // +1 for optimize
-        monitor.beginTask("Reindexing " + indexedClasses().size() + " classes", steps);
+        int steps = types.size() + 1; // +1 for optimize
+        monitor.beginTask("Reindexing " + types.size() + " classes", steps);
 
-        for(Class<? extends CdmBase> type : indexedClasses()){
+        for(Class<? extends CdmBase> type : types){
             reindex(type, monitor);
         }
 
         monitor.subTask("Optimizing Index");
         SubProgressMonitor subMonitor = new SubProgressMonitor(monitor, 1);
         subMonitor.beginTask("Optimizing Index",1);
-        optimize();        
+        optimize();
         subMonitor.worked(1);
         logger.info("end index optimization");
         subMonitor.done();
-        
+
         //monitor.worked(1);
         monitor.done();
     }
@@ -374,15 +377,15 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     @SuppressWarnings("unchecked")
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
-    	// if no indexed classes have been 'manually' set then
-    	// the default is the full list
-    	if(indexedClasses.size() == 0) {
-    		indexedClasses.add(DescriptionElementBase.class);
-    		indexedClasses.add(TaxonBase.class);    		
-    		indexedClasses.add(Classification.class);
-    		indexedClasses.add(TaxonNameBase.class);
-    		indexedClasses.add(SpecimenOrObservationBase.class);
-    	}
+        // if no indexed classes have been 'manually' set then
+        // the default is the full list
+        if(indexedClasses.size() == 0) {
+            indexedClasses.add(DescriptionElementBase.class);
+            indexedClasses.add(TaxonBase.class);
+            indexedClasses.add(Classification.class);
+            indexedClasses.add(TaxonNameBase.class);
+            indexedClasses.add(SpecimenOrObservationBase.class);
+        }
         return indexedClasses;
     }
 
@@ -396,16 +399,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
                 };
     }
 
-	@Override
-	public void addToIndexedClasses(Class<? extends CdmBase> cdmBaseClass) {
-		indexedClasses.add(cdmBaseClass);
-		
-	}
-
-	@Override
-	public void clearIndexedClasses() {
-		indexedClasses.clear();		
-	}
 
 
 }

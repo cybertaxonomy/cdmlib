@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -107,15 +108,18 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final int BENCHMARK_ROUNDS = 300;
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@Before
-	public void setUp() throws Exception {
-		indexer.clearIndexedClasses();
-    	indexer.addToIndexedClasses(DescriptionElementBase.class);
-		indexer.addToIndexedClasses(TaxonBase.class);
-	}
+    private Set<Class<? extends CdmBase>> typesToIndex = null;
+
+    /**
+     * @throws java.lang.Exception
+     */
+    @Before
+    public void setUp() throws Exception {
+        typesToIndex = new HashSet<Class<? extends CdmBase>>();
+        typesToIndex.add(DescriptionElementBase.class);
+        typesToIndex.add(TaxonBase.class);
+
+    }
     @Test
     public void testDbUnitUsageTest() throws Exception {
         assertNotNull("taxonService should exist", taxonService);
@@ -879,7 +883,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commit();
         endTransaction();
         indexer.purge(DefaultProgressMonitor.NewInstance());
-        indexer.reindex(DefaultProgressMonitor.NewInstance());
+        indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
         startNewTransaction();
 //        commitAndStartNewTransaction(null);
     }
