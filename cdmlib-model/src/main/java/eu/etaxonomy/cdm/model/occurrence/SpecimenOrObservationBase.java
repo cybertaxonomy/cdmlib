@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -143,6 +144,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * Example: fruits, seeds, tissue, gDNA, leaves
 	 * 
 	 * @see ABCD: DataSets/DataSet/Units/Unit/KindOfUnit
+	 * @see TermType#KindOfUnit
 	 */
 	@XmlElement(name = "KindOfUnit")
     @XmlIDREF
