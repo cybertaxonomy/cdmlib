@@ -47,7 +47,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	 * E.g. a taxonomist may have used three books/articles/other references to gather information
 	 * about the distribution status of a taxon.
 	 * He/she will store these references as original source of type Primary Taxonomic Source.
-	 * This is a specification of PROV-O Primary Source 
+	 * This is a specialization of PROV-O Primary Source 
 	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
 	 *   
 	 */
@@ -106,7 +106,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	 * Primary Media Source describes the original source for any media file. 
 	 * E.g. a taxonomist may have used three books/articles/other references to gather information
      *
-	 * This is a specification of PROV-O Primary Source 
+	 * This is a specialization of PROV-O Primary Source 
 	 * ({@link http://www.w3.org/TR/2013/REC-prov-o-20130430/#PrimarySource})
 	 *   
 	 */

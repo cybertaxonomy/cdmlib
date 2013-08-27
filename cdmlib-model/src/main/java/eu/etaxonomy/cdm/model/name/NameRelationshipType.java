@@ -254,7 +254,7 @@ public class NameRelationshipType extends RelationshipTermBase<NameRelationshipT
 	 * publication of the given name. The first (left) name in the relationship takes the role 
 	 * of the original spelling whereas the second (right) name takes the role of the 
 	 * current/correct spelling.<BR>
-	 * Original spelling is a specification of {@link #ORTHOGRAPHIC_VARIANT()}.
+	 * Original spelling is a specialization of {@link #ORTHOGRAPHIC_VARIANT()}.
 	 * <BR>
 	 * @see #ORTHOGRAPHIC_VARIANT()
 	 * @see #MISSPELLING()

@@ -2023,7 +2023,7 @@ public class DerivedUnitFacade {
 		} else {
 			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
 				throw new MethodNotSupportedByDerivedUnitTypeException(
-						"A preservation method is only available in derived units of type 'Preserved Specimen' or one of its specifications like 'Fossil Specimen' ");
+						"A preservation method is only available in derived units of type 'Preserved Specimen' or one of its specializations like 'Fossil Specimen' ");
 			} else {
 				return null;
 			}
