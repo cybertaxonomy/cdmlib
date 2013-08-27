@@ -106,6 +106,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		
 		//nameAccordingTo
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
+		
 		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
 			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
 		}
@@ -189,7 +190,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+		
+		
 		String references = item.get(TermUri.DC_REFERENCES);
+		
+		if (references == null || references == "") {
+			references = item.get(TermUri.DWC_NAME_PUBLISHED_IN_ID);//lorna temporary until Scratchpads move the reference to the correct place.
+		}
+		
 		if (StringUtils.isNotBlank(references)){
 			URI uri = makeUriIfIs(references);
 			if (uri != null){
@@ -263,38 +271,40 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
 		// TODO Auto-generated method stub
 		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
-		if(taxonBase instanceof Synonym){
-			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
-			Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
-			if(acceptedTaxaList.size()>1){
-				String message = "Synonym is related to more than one accepted Taxa";
-				fireWarningEvent(message, item, 4);
-			}else{
-				for(Taxon taxon : acceptedTaxaList){
-					TaxonDescription td = getTaxonDescription(taxon, false);
-					NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
-
-					if (area == null){
-						area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
-					}
-					if (area != null){
-						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
-						td.addElement(distribution);
+		if (tdwg_area != null){
+			if(taxonBase instanceof Synonym){
+				Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
+				Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
+				if(acceptedTaxaList.size()>1){
+					String message = "Synonym is related to more than one accepted Taxa";
+					fireWarningEvent(message, item, 4);
+				}else{
+					for(Taxon taxon : acceptedTaxaList){
+						TaxonDescription td = getTaxonDescription(taxon, false);
+						NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
+	
+						if (area == null){
+							area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
+						}
+						if (area != null){
+							Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+							td.addElement(distribution);
+						}
 					}
 				}
 			}
-		}
-		if(!(taxonBase instanceof Synonym)){
-			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-			TaxonDescription td = getTaxonDescription(taxon, false);
-			NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
-
-			if (area == null){
-				area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
-			}
-			if (area != null){
-				Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
-				td.addElement(distribution);
+			if(!(taxonBase instanceof Synonym)){
+				Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+				TaxonDescription td = getTaxonDescription(taxon, false);
+				NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
+	
+				if (area == null){
+					area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
+				}
+				if (area != null){
+					Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
+					td.addElement(distribution);
+				}
 			}
 		}
 	}
@@ -364,8 +374,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			//if not exists, create new
 			if (! classificationExists){
 				String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
-				if (classificationName.equals(NO_DATASET)){
-					classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
+				if (classificationName.equals(NO_DATASET)){					
+					classificationName = config.getClassificationName();
+					//classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
 				}
 				
 				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
@@ -534,7 +545,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					if (! idIsInternal){
 						//references should already exist in store if not linking to external links like URLs
 						String message = "External namePublishedInIDs are not yet supported";
-						fireWarningEvent(message, item, 4);
+						fireWarningEvent(message, item, 4);//set to DEBUG
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
 						newRef.addSource(refId, idTerm.toString(), sourceCitation, null);
