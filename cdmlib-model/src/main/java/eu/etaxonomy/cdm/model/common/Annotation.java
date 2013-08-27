@@ -106,7 +106,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
 	private AnnotationType annotationType;
 
-	// for external annotations/comments the URL of these can be set.
+	// for external annotations/comments the URI of these can be set.
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
 	@XmlElement(name = "LinkbackUri")
@@ -174,28 +174,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		this.linkbackUri = linkbackUri;
 	}
 
-	/**
-	 * private get/set methods for Hibernate that allows us to save the URL as strings
-	 * @return
-	 */
-	private String getLinkbackUriStr() {
-		if (linkbackUri == null){
-			return null;
-		}
-		return linkbackUri.toString();
-	}
-	private void setLinkbackUriStr(String linkbackUriString) {
-		if (linkbackUriString == null){
-			this.linkbackUri = null;
-		}else{
-			try {
-				this.linkbackUri = new URI(linkbackUriString);
-			} catch (URISyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-		}
-	}
 
 // ***************************** TO STRING ***********************************
 
