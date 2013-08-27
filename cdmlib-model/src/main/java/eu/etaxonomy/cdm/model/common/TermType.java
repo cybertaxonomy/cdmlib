@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
@@ -274,6 +275,9 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	 * This class corresponds to GeneralModifierNLDType according to
 	 * the SDD schema.
 	 * This class is a generalization of {@link #Scope} and {@link #DeterminationModifier}
+	 * 
+	 * @see DescriptionElementBase#getModifiers()
+	 * @see StateData#getModifiers()
 	 */
 	@XmlEnumValue("Modifier")
 	Modifier(UUID.fromString("97c4db67-ccf5-40bf-9fb8-83fb7446a364"), "Modifier", "MO", null),
@@ -284,7 +288,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	 * {@link TaxonDescription taxon descriptions} and others. 
 	 * This could include not only Stage (life stage) and Sex 
 	 * but also for instance particular organism parts or seasons.<BR>
-	 * Scope is a specification of {@link #Modifier} and a generalization of 
+	 * Scope is a specialization of {@link #Modifier} and a generalization of 
 	 * {@link #Sex} and {@link #Stage}
 	 *
 	 * @see Modifier
@@ -302,11 +306,38 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	 * does not belong to a {@link SpecimenDescription specimen description} but is an attribute of
 	 * the specimen itself.<BR>
 	 * 
-	 * Stage is a specification of {@link #Scope}.
+	 * Stage is a specialization of {@link #Scope}.
 	 */
 	@XmlEnumValue("Stage")
 	Stage(UUID.fromString("cf411ef0-8eee-4461-99e9-c03f4f0a1656"), "Stage", "STG", Scope),
 
+	//26a
+	/** The kind-of-unit type represents the restriction (scope) concerning the part(s) of an 
+	 * organism or the class of materials represented by a specimen or observation or described
+	 * by a {@link DescriptionBase taxon or specimen description}.<BR> 
+	 * In a {@link DescriptionBase description} it can be used as a {@link #Modifier} or
+     * a {@link #Scope} and therefore it is a specialization of {@link #Scope}.<BR>
+	 * The kind-of-unit of a {@link SpecimenOrObservationBase specimen or observation}
+	 * should be added as an {@link SpecimenOrObservationBase#getKindOfUnit() kindOfUnit} attribute
+	 * if the specimen is only a part of an organism and this part is described by the part-of-unit.
+	 * If only a part of a specimen is described in a {@link SpecimenDescription specimen description}
+	 * the kind-of-unit should be used as a {@link DescriptionBase description} scope 
+	 * (not yet implemented for specimen descriptions) or as a modifier in a 
+	 * {@link DescriptionElementBase description item}.<BR><BR>
+	 * 
+	 * Value examples are: fruits, seeds, tissue, gDNA, leaves, ... <BR>
+     * 
+	 * KindOfUnit is a Specialization of {@link #Scope}.
+	 * 
+	 * @see SpecimenOrObservationBase#getKindOfUnit()
+	 * @see TaxonDescription#getScopes()
+	 * @see DescriptionElementBase#getModifiers()
+	 * @see StateData#getModifiers()
+	 */
+	@XmlEnumValue("KindOfUnit")
+	KindOfUnit(UUID.fromString("e3edf086-ff7b-4e58-ab1c-d509352fe5f4"), "Kind of Unit", "KOU", Scope),
+
+	
 	//27
 	/**
 	 * The type represents the restriction concerning the sex for
@@ -315,7 +346,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	 * does not belong to a {@link SpecimenDescription specimen description} but is an attribute of
 	 * the specimen itself.<BR>
 	 * 
-	 * Sex is a specification of {@link #Scope}.
+	 * Sex is a specialization of {@link #Scope}.
 	 */
 	@XmlEnumValue("Sex")
 	Sex(UUID.fromString("4046f91f-063b-4b84-b34a-6245c2abc06f"), "Sex", "SEX", Scope),
@@ -358,7 +389,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	/**
 	 * TODO
 	 * 
-	 * Determination modifier is a specification of {@link #Modifier}.
+	 * Determination modifier is a specialization of {@link #Modifier}.
 	 */
 	@XmlEnumValue("DeterminationModifier")
 	DeterminationModifier(UUID.fromString("ce910516-bc5d-4ac5-be4d-f3c14c27dd85"), "Determination modifier", "DMO", Modifier),
