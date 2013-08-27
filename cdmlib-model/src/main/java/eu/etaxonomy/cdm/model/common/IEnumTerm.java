@@ -3,7 +3,6 @@
  */
 package eu.etaxonomy.cdm.model.common;
 
-import java.util.Set;
 
 /**
  * @author a.mueller
