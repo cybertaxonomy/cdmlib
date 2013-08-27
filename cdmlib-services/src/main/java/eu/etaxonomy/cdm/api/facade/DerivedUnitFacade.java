@@ -1210,8 +1210,8 @@ public class DerivedUnitFacade {
 	 * 
 	 * @see #getDistanceToWaterSurface()
 	 * @see #getDistanceToWaterSurfaceMax()
-	 * @param minimumDistance minimum of the range
-	 * @param maximumDistance maximum of the range
+	 * @param minimumDistance minimum of the range, this is the distance which is closer to the water surface
+	 * @param maximumDistance maximum of the range, this is the distance which is farer to the water surface
 	 */
 	public void setDistanceToWaterSurfaceRange(Double minimumDistance, Double maximumDistance) throws IllegalArgumentException{
 		getGatheringEvent(true).setDistanceToWaterSurface(minimumDistance);
