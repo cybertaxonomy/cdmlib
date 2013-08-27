@@ -37,5 +37,9 @@ public class TdwgAreaProvider {
         return NamedArea.getAreaByTdwgLabel(tdwgLabel);
     }
 
+	public static boolean isTdwgAreaLabel(String area) {
+		return NamedArea.isTdwgAreaLabel(area);
+	}
+
 
 }
