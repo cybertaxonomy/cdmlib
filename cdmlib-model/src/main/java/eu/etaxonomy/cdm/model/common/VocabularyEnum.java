@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 @Deprecated 
 public enum VocabularyEnum {
 
+	
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
 	UndefinedLanguage("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28", Language.class),
 	Continent("e72cbcb6-58f8-4201-9774-15d0c6abc128", NamedArea.class),
@@ -86,7 +87,9 @@ public enum VocabularyEnum {
 //	NamedArea("57c25420-ae94-4848-9513-2aff9bdb502c", NamedArea.class),
 	NaturalLanguageTerm("fdaba4b0-5c14-11df-a08a-0800200c9a66", NaturalLanguageTerm.class),
 	Modifier("b9434774-4931-4f1e-99cb-40a3ecd61777", DefinedTerm.class),
-	DnaMarker("d219a463-1cc9-4800-b82f-3146d0afe31e", DefinedTerm.class)
+	DnaMarker("d219a463-1cc9-4800-b82f-3146d0afe31e", DefinedTerm.class),
+	PlantKindOfUnit("5167c47b-7726-4dba-b02f-dafb7629481b", DefinedTerm.class),
+	SpecimenKindOfUnit("b0344ec4-12f7-40d3-82c1-0092e9780bbd", DefinedTerm.class)
 	;
 	
 	

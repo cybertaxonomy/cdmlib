@@ -145,7 +145,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             }
         }else{
             logger.error("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
-            throw new NullPointerException("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
+            throw new IllegalStateException("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
         }
         logger.debug("Setting defined Terms for class " + clazz.getSimpleName() + ", " + persistedVocabulary.getTerms().size() + " in vocabulary");
         super.setDefinedTerms(clazz, persistedVocabulary);
