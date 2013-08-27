@@ -144,11 +144,6 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	@Size(max=30)
 	private String absoluteElevationText;
 
-//	@XmlElement(name = "AbsoluteElevationError")
-//	@Field(analyze = Analyze.NO)
-//	@NumericField
-//	private Integer absoluteElevationError;
-
 	// distance in meter from the ground surface when collecting. E.g. 10m below the ground or 10m above the ground/bottom of a lake or 20m up in the canope
 	@XmlElement(name = "DistanceToGround")
 	@Field(analyze = Analyze.NO)
