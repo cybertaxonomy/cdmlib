@@ -14,6 +14,7 @@ import java.net.URI;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -53,6 +54,7 @@ import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 @XmlRootElement(name = "Rights")
 @Entity
 @Audited
+@Table(name = "RightsInfo")  //to avoid conflicts with reserved database words
 public class Rights extends LanguageStringBase implements Cloneable{
 	private static final long serialVersionUID = 4920749849951432284L;
 	private static final Logger logger = Logger.getLogger(Rights.class);

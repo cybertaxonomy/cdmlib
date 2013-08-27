@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
+import eu.etaxonomy.cdm.database.update.TableNameChanger;
 import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
 import eu.etaxonomy.cdm.database.update.v24_25.SortIndexUpdater;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
@@ -438,6 +439,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewInstance(stepName, updateSql);
 		stepList.add(step);
 		
+		//update Rights table to RightsInfo
+		updateRights2RightsInfo(stepList);
+		
 		//Remove column isDescriptionSeparated from FeatureTree #3678
 		stepName = "Remove column isDescriptionSeparated from FeatureTree";
 		tableName = "FeatureTree";
@@ -649,6 +653,119 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		return stepList;
 	}
 	
+	private void updateRights2RightsInfo(List<ISchemaUpdaterStep> stepList) {
+		//#2945
+		String stepName = "Update Rights to RightsInfo";
+		String tableName = "Rights";
+		String newTableName = "RightsInfo";
+		ISchemaUpdaterStep step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update AgentBase_Rights to RightsInfo";
+		tableName = "AgentBase_Rights";
+		newTableName = "AgentBase_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Rights_Annotation to RightsInfo";
+		tableName = "Rights_Annotation";
+		newTableName = "RightsInfo_Annotation";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Rights_id column in RightsInfo_Annotation";
+		tableName = "RightsInfo_Annotation";
+		String columnName = "Rights_Id";
+		String newColumnName = "RightsInfo_id";
+		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, columnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Rights_Marker to RightsInfo";
+		tableName = "Rights_Marker";
+		newTableName = "RightsInfo_Marker";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Update Rights_id column in RightsInfo_Marker";
+		tableName = "RightsInfo_Marker";
+		columnName = "Rights_Id";
+		newColumnName = "RightsInfo_id";
+		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, columnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Classification_Rights to RightsInfo";
+		tableName = "Classification_Rights";
+		newTableName = "Classification_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Collection_Rights to RightsInfo";
+		tableName = "Collection_Rights";
+		newTableName = "Collection_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		stepName = "Update DefinedTermBase_Rights to RightsInfo";
+		tableName = "DefinedTermBase_Rights";
+		newTableName = "DefinedTermBase_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update DescriptionBase_Rights to RightsInfo";
+		tableName = "DescriptionBase_Rights";
+		newTableName = "DescriptionBase_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update FeatureTree_Rights to RightsInfo";
+		tableName = "FeatureTree_Rights";
+		newTableName = "FeatureTree_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Media_Rights to RightsInfo";
+		tableName = "Media_Rights";
+		newTableName = "Media_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update PolytomousKey_Rights to RightsInfo";
+		tableName = "PolytomousKey_Rights";
+		newTableName = "PolytomousKey_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update Reference_Rights to RightsInfo";
+		tableName = "Reference_Rights";
+		newTableName = "Reference_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update SpecimenOrObservationBase_Rights to RightsInfo";
+		tableName = "SpecimenOrObservationBase_Rights";
+		newTableName = "SpecimenOrObservationBase_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update TaxonBase_Rights to RightsInfo";
+		tableName = "TaxonBase_Rights";
+		newTableName = "TaxonBase_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update TaxonNameBase_Rights to RightsInfo";
+		tableName = "TaxonNameBase_Rights";
+		newTableName = "TaxonNameBase_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Update TermVocabulary_Rights to RightsInfo";
+		tableName = "TermVocabulary_Rights";
+		newTableName = "TermVocabulary_RightsInfo";
+		step = TableNameChanger.NewInstance(stepName, tableName, newTableName, INCLUDE_AUDIT);
+		stepList.add(step);
+	}
+
 	private void updateReferenceType(List<ISchemaUpdaterStep> stepList) {
 		//TODO include AUD tables
 		

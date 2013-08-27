@@ -73,7 +73,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 		updateQuery = updateQuery.replace("@oldName", oldName);
 		updateQuery = updateQuery.replace("@newName", newName);
 		try {
-			datasource.executeQuery(updateQuery);
+			datasource.executeUpdate(updateQuery);
 		} catch (SQLException e) {
 			monitor.warning("Could not perform rename table operation", e);
 		}
