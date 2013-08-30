@@ -55,23 +55,24 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	
 	private boolean isToBeInvoked(ICdmDataSource datasource, IProgressMonitor monitor) {
 		boolean result = true;
-		String datasourceSchemaVersion;
+		String datasourceVersion;
 		try {
-			datasourceSchemaVersion = getCurrentVersion(datasource, monitor);
+			datasourceVersion = getCurrentVersion(datasource, monitor);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
 		}
 		
-		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
-		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceVersion, monitor);
+		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceVersion, monitor);
 //		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
-		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceSchemaVersion, monitor);
+		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
+		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceVersion, monitor);
 		
 		result &= isDatasourceBeforeMyTargetVersion;
-		result &= !(isAfterMyStartVersion /*&& isBeforeMyTargetVersion*/);
+		result &= !(isAfterMyStartVersion && isBeforeMyTargetVersion);
 		result &= ! (isBeforeMyStartVersion && getPreviousUpdater() == null);
-//		result &= !isBeforeMyTargetVersion;
+		result &= !isBeforeMyTargetVersion;
 		return result;
 	}
 	
@@ -88,20 +89,20 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	@Override
 	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
 		boolean result = true;
-		String datasourceSchemaVersion;
+		String datasourceVersion;
 		try {
-			datasourceSchemaVersion = getCurrentVersion(datasource, monitor);
+			datasourceVersion = getCurrentVersion(datasource, monitor);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
 		}		
 
 		
-		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
-		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceVersion, monitor);
+		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceVersion, monitor);
 //		boolean isAfterMyTargetVersion = isAfterMyTargetVersion(targetVersion, monitor);
 		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
-		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceSchemaVersion, monitor);
+		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceVersion, monitor);
 		
 		
 		
