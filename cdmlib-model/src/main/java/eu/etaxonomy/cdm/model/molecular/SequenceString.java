@@ -60,6 +60,8 @@ public class SequenceString implements Cloneable, Serializable{
 	
 // ********************* CONSTRUCTOR ********************/
 	
+	private SequenceString(){};
+	
 // ********************* GETTER / SETTER ********************/
 
 	/**

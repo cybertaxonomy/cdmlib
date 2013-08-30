@@ -103,8 +103,14 @@ public class SingleRead extends EventBase implements Cloneable{
 	
 	// ******************** FACTORY METHOD ******************/	
 	
+	public static SingleRead NewInstance(){
+		return new SingleRead();
+	}
+	
 	// ********************* CONSTRUCTOR ********************/
 		
+	private SingleRead(){};
+	
 	// ********************* GETTER / SETTER ********************/
 	
 

@@ -67,12 +67,19 @@ public class Primer extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-	private Reference publishedIn;
+	private Reference<?> publishedIn;
 
+	// ******************** FACTORY METHOD ******************/	
 	
-// ******************** FACTORY METHOD ******************/	
+	public static Primer NewInstance(String label){
+		Primer result = new Primer();
+		result.setLabel(label);
+		return result;
+	}
 	
-// ********************* CONSTRUCTOR ********************/
+	// ********************* CONSTRUCTOR ********************/
+		
+	private Primer(){};
 	
 // ********************* GETTER / SETTER ********************/
 	
