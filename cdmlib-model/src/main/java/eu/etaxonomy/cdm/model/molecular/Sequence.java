@@ -106,15 +106,6 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	@XmlElement(name = "ConsensusSequence")
     private SequenceString consensusSequence = SequenceString.NewInstance();
 	
-//	/**{@link #getSequence()}*/
-//	@XmlElement(name = "Sequence")
-//    @Lob
-//	private String sequence;
-//	
-//	@XmlElement(name = "Length")
-//	private Integer length;
-    
-	
 	@XmlAttribute(name = "isBarcode")
 	private Boolean isBarcode = null;
 	
@@ -227,10 +218,10 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	
 	/**
 	 * The isBarcode flag should be set to true if this (consensus) sequence is or includes 
-	 * a barcode sequence. If the barcode sequence is only a part of the consensus sequence
-	 * this part is to be stored as {@link #getBarcodeSequencePart() barcode sequence part}.
+	 * a barcoding sequence. If the barcoding sequence is only a part of the consensus sequence
+	 * this part is to be stored as {@link #getBarcodeSequencePart() barcoding sequence part}.
 	 * A isBarcode value of <code>null</code> indicates that we do have no knowledge
-	 * wether the sequence is a barcoding sequence or not.
+	 * whether the sequence is a barcoding sequence or not.
 	 * 
 	 * @see #getBarcodeSequencePart()
 	 * @see #getSequenceString()

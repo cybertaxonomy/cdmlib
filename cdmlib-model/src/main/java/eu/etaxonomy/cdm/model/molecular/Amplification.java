@@ -273,6 +273,8 @@ public class Amplification extends EventBase implements Cloneable{
 	/**
 	 * Information if this amplification was successful or not. Success may be defined
 	 * by the results of the electrophoresis.
+	 * 
+	 * @see #getSuccessText()
 	 */
 	public Boolean getSuccessful() {
 		return successful;
@@ -287,7 +289,10 @@ public class Amplification extends EventBase implements Cloneable{
 	}
 
 	/**
-	 * Freetext about the
+	 * Freetext about the success of this amplification explaining
+	 * in detail why it is concidered to be successful/unsucessful
+	 * 
+	 * @see #getSuccessful()
 	 */
 	public String getSuccessText() {
 		return successText;
