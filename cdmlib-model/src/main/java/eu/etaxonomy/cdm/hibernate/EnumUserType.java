@@ -24,9 +24,10 @@ import org.hibernate.usertype.ParameterizedType;
 import org.hibernate.usertype.UserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
 
-import eu.etaxonomy.cdm.model.common.IEnumTerm;
+import eu.etaxonomy.cdm.model.common.IKeyTerm;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.molecular.SequenceDirection;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
@@ -76,7 +77,7 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 	}
 
 	@Override
-	public IEnumTerm<?> nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
+	public IKeyTerm nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) 
 			throws HibernateException, SQLException {
         String val = (String) StandardBasicTypes.STRING.nullSafeGet(rs, names, session, owner);
 		
@@ -101,6 +102,9 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 			//SpecimenOrObservationType
 			}else if (clazz.equals(SpecimenOrObservationType.class)){
 				return SpecimenOrObservationType.getByKey(val);
+			//SequenceDirection
+			}else if (clazz.equals(SequenceDirection.class)){
+				return SequenceDirection.getByKey(val);
 			}else{
 	        	throw new IllegalArgumentException(String.format("EnumType %s not supported by %s.", clazz.getSimpleName(), EnumUserType.class.getSimpleName()));
 	        }
@@ -113,7 +117,7 @@ public class EnumUserType<E extends Enum<E>>  extends AbstractUserType implement
 		if (value == null) { 
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
         } else { 
-        	IEnumTerm<?> term = (IEnumTerm<?>)value;
+        	IKeyTerm term = (IKeyTerm)value;
             StandardBasicTypes.STRING.nullSafeSet(statement, term.getKey(), index, session);
         }
 	}

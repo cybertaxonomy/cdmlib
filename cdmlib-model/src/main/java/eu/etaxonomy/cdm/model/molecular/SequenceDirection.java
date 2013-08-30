@@ -10,21 +10,27 @@ package eu.etaxonomy.cdm.model.molecular;
 
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.IKeyTerm;
+import eu.etaxonomy.cdm.model.common.Language;
+
 /**
  * @author a.mueller
  * @created 2013-07-11
  */
-public enum SequenceDirection {
-	Forward("e611de24-09bf-468f-b6ee-e34124022912", "FWD"), 
-	Reverse("d116fb2c-00e7-46a4-86b4-74c46ca2afa0", "REV")
+public enum SequenceDirection implements IKeyTerm {
+	Forward("e611de24-09bf-468f-b6ee-e34124022912", "Forward", "FWD"), 
+	Reverse("d116fb2c-00e7-46a4-86b4-74c46ca2afa0", "Reverse", "REV")
 	;
 	
 	private UUID uuid;
 	private String key;
+	private String message;
+//	private static Map<String,SequenceDirection> keyMap = new HashMap<String, SequenceDirection>();
 	
-	private SequenceDirection(String uuidString, String key){
+	private SequenceDirection(String uuidString, String defaultMessage, String key){
 		uuid = UUID.fromString(uuidString);
 		this.key = key;
+//		keyMap.put(key, this);
 	}
 
 	public UUID getUuid() {
@@ -33,6 +39,27 @@ public enum SequenceDirection {
 
 	public String getKey() {
 		return key;
+	}
+
+
+	@Override
+	public String getMessage() {
+		return message;
+	}
+
+	@Override
+	public String getMessage(Language language) {
+		//TODO support i18n
+		return message;
+	}
+
+	public static IKeyTerm getByKey(String val) {
+		for (SequenceDirection dir : SequenceDirection.values()){
+			if (dir.key.equals(val)){
+				return dir;
+			}
+		}
+		return null;
 	}
 
 }

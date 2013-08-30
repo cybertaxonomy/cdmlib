@@ -23,6 +23,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
@@ -89,9 +90,11 @@ public class SingleRead extends EventBase implements Cloneable{
 	private Media pherogram;
 	
 	/** @see #getDirection()*/
-	//TODO
 	@XmlAttribute(name ="direction")
-	@Enumerated
+	//TODO length = 3
+	@Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+    	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.molecular.SequenceDirection")}
+	)
 	private SequenceDirection direction;
 	
 	@XmlElement(name = "MaterialAndMethod")

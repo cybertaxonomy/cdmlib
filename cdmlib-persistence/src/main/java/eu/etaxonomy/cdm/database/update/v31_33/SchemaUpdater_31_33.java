@@ -539,7 +539,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "SingleRead";
 		step = TableCreator.NewEventInstance(stepName, tableName, 
 				new String[]{"amplification_id","materialAndMethod_id","primer_id","pherogram_id","direction","sequence_length"},  //colNames 
-				new String[]{"int","int","int","int","int","int"},  // columnTypes
+				new String[]{"int","int","int","int","string_3","int"},  // columnTypes
 				new String[]{"Amplification",matMetName, "Primer","Media", null, null},  //referencedTables 
 				INCLUDE_AUDIT);
 		//TODO length sequence_string

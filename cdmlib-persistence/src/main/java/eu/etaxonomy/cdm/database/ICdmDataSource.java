@@ -125,7 +125,7 @@ public interface ICdmDataSource {
 	public NomenclaturalCode getNomenclaturalCode();
 
 	/**
-	 * Returns a single the first value of a row of a resultset.
+	 * Returns a single the first value of a row of a resultset.<BR>
 	 * 
 	 * <strong>Caution</strong> This method opens a connection on first use. Subsequent calls will use the same connection.
 	 * Please close the connection when not needed anymore with {@link ICdmDataSource#closeOpenConnections()}
