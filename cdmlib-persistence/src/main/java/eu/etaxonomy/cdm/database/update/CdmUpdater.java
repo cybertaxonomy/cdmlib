@@ -130,6 +130,7 @@ public class CdmUpdater {
 			//This is how {@link PooledOptimizer#generate(org.hibernate.id.enhanced.AccessCallback)} works
 			//it substracts the increment size from the value in hibernate_sequences to get the initial value.
 			//Haven't checked why.
+			//For the correct increment size see eu.etaxonomy.cdm.model.common.package-info.java
 			int incrementSize = 10;
 			newVal = newVal + incrementSize;
 			if (newVal != null && newVal >= oldVal){
