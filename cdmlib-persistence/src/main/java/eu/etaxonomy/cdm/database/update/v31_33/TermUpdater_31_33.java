@@ -36,7 +36,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdater_31_33.class);
 	
-	public static final String startTermVersion = "3.0.1.4.201105100000";
+	public static final String startTermVersion = "3.0.1.5.201109280000";
 	private static final String endTermVersion = "3.3.0.0.201308010000";
 	
 // *************************** FACTORY **************************************/
@@ -62,7 +62,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 
 		// proles, #2793
 		UUID uuidTerm = UUID.fromString("8810d1ba-6a34-4ae3-a355-919ccd1cd1a5");
-		String description = "Rank 'Proles'. Note: This rank is not compliant with the current nomenclatural codes";
+		String description = "Rank ''Proles''. Note: This rank is not compliant with the current nomenclatural codes";
 		String label = "Proles";
 		String abbrev = "prol.";
 		String dtype = Rank.class.getSimpleName();
@@ -77,7 +77,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 
 		// race, #2793
 		uuidTerm = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
-		description = "Rank 'Race'. Note: This rank is not compliant with the current nomenclatural codes";
+		description = "Rank ''Race''. Note: This rank is not compliant with the current nomenclatural codes";
 		label = "Race";
 		abbrev = "race";
 		dtype = Rank.class.getSimpleName();
@@ -92,13 +92,13 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 
 		// sublusus, #2793
 		uuidTerm = UUID.fromString("1fafa596-a8e7-4e62-a378-3cc8cb3627ca");
-		description = "Rank 'Sublusus'. Note: This rank is not compliant with the current nomenclatural codes";
+		description = "Rank ''Sublusus''. Note: This rank is not compliant with the current nomenclatural codes";
 		label = "Sublusus";
 		abbrev = "sublusus";
 		dtype = Rank.class.getSimpleName();
 		isOrdered = true;
 		uuidVocabulary = UUID.fromString("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b");
-		uuidAfterTerm = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f625");
+		uuidAfterTerm = UUID.fromString("196dee39-cfd8-4460-8bf0-88b83da27f62");
 		uuidLang = Language.uuidEnglish;
 		rankClass = RankClass.Infraspecific;
 		stepName = "Add 'sublusus' rank to ranks";
@@ -107,7 +107,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 
 		// comb. nov., #3545
 		uuidTerm = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
-		description = "Nomenclatural status type 'new combination'";
+		description = "Nomenclatural status type ''new combination''";
 		label = "new combination";
 		abbrev = "comb. nov.";
 		dtype = NomenclaturalStatusType.class.getSimpleName();
@@ -121,7 +121,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 
 		// original spelling, #2874
 		uuidTerm = UUID.fromString("264d2be4-e378-4168-9760-a9512ffbddc4");
-		description = "Namerelationship type 'original spelling for'";
+		description = "Namerelationship type ''original spelling for''";
 		label = "original spelling for";
 		abbrev = null;
 		String reverseDescription = "has original spelling";
@@ -144,7 +144,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 		
 		// later isnonym, #2874
 		uuidTerm = UUID.fromString("29ab238d-598d-45b9-addd-003cf39ccc3e");
-		description = "Namerelationship type 'later isonym for'";
+		description = "Namerelationship type ''later isonym for''";
 		label = "later isonym for";
 		abbrev = null;
 		reverseDescription = "has earlier isonym";
@@ -169,18 +169,11 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 		return list;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
-	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getPreviousUpdater()
-	 */
 	@Override
 	public ITermUpdater getPreviousUpdater() {
 		return TermUpdater_314_315.NewInstance();
