@@ -165,6 +165,8 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 				.setSymmetricTransitiv(symmetric, transitive));
 
 		
+		//there are some more new vocabularies, but we trust that the term initializer will 
+		//initialize and persist them correctly
 		
 		return list;
 	}
