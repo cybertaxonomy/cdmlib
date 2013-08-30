@@ -26,9 +26,6 @@ public class MySQL5MyISAMUtf8Dialect extends MySQL5Dialect {
 		registerColumnType(Types.BOOLEAN, "bit");
 	}
 	
-    /* (non-Javadoc)
-     * @see org.hibernate.dialect.Dialect#getTableTypeString()
-     */
     @Override
 	public String getTableTypeString() {
         return " ENGINE=MYISAM DEFAULT CHARSET=utf8";
