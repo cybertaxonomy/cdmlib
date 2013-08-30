@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -22,13 +20,11 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> implements ISchemaUpdaterStep {
+public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeChanger> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnTypeChanger.class);
 	
-	private String tableName;
 	private String columnName;
 	private String newColumnType;
-	private boolean includeAudTable;
 	private Object defaultValue;
 	private boolean isNotNull;
 	private String referencedTable;
@@ -63,52 +59,33 @@ public class ColumnTypeChanger extends SchemaUpdaterStepBase<ColumnTypeChanger> 
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		boolean result = true;
-		result &= changeColumn(tableName, datasource, monitor);
-		if (includeAudTable){
-			String aud = "_AUD";
-			result &= changeColumn(tableName + aud, datasource, monitor);
-		}
-		return (result == true )? 0 : null;
-	}
-
-	private boolean changeColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		boolean result = true;
 		try {
 			
 			String updateQuery;
-			try {
-				if (this.isNotNull){
-					updateQuery = getNotNullUpdateQuery(tableName, datasource, monitor);
-					datasource.executeUpdate(updateQuery);
-				}
-				
-				updateQuery = getUpdateQueryString(tableName, datasource, monitor);
+			if (this.isNotNull){
+				updateQuery = getNotNullUpdateQuery(tableName, datasource, monitor);
 				datasource.executeUpdate(updateQuery);
-				
-				if (defaultValue instanceof Boolean){
-					updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
-					updateQuery = updateQuery.replace("@tableName", tableName);
-					updateQuery = updateQuery.replace("@columnName", columnName);
-					try {
-						datasource.executeUpdate(updateQuery);
-					} catch (SQLException e) {
-						logger.error(e);
-						result = false;
-					}
-				}
-				if (referencedTable != null){
-					result &= TableCreator.makeForeignKey(tableName, datasource, columnName, referencedTable);
-				}
-				
-			} catch (SQLException e) {
-				logger.error(e);
-				result = false;
+			}
+			
+			updateQuery = getUpdateQueryString(tableName, datasource, monitor);
+			datasource.executeUpdate(updateQuery);
+			
+			if (defaultValue instanceof Boolean){
+				updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
+				updateQuery = updateQuery.replace("@tableName", tableName);
+				updateQuery = updateQuery.replace("@columnName", columnName);
+				datasource.executeUpdate(updateQuery);
+			}
+			if (referencedTable != null){
+				result &= TableCreator.makeForeignKey(tableName, datasource, columnName, referencedTable);
 			}
 				
 			return result;
-		} catch ( DatabaseTypeNotSupportedException e) {
+		} catch ( Exception e) {
+			monitor.warning(e.getMessage(), e);
+			logger.error(e);
 			return false;
 		}
 	}

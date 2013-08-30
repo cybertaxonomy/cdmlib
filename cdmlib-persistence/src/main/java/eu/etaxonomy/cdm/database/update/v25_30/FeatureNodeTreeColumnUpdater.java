@@ -43,9 +43,6 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 		this.includeAudTable = includeAudTable;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
@@ -58,38 +55,43 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 	}
 
 	private boolean updateTree(String treeTableName, String nodeTableName, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		String resulsetQuery = "SELECT id, root_id FROM @treeTableName ORDER BY id";
-		resulsetQuery = resulsetQuery.replace("@treeTableName", treeTableName);
-
-		ResultSet rs = datasource.executeQuery(resulsetQuery);
-		while (rs.next()){
-			Integer treeId = rs.getInt("id");
-			Integer rootId = rs.getInt("root_id");
-			String updateQuery = "UPDATE @nodeTableName SET featuretree_id = @treeId WHERE id = @rootId";
-			updateQuery = updateQuery.replace("@nodeTableName", nodeTableName);
-			updateQuery = updateQuery.replace("@treeId", treeId.toString());
-			updateQuery = updateQuery.replace("@rootId", rootId.toString());
-			datasource.executeUpdate(updateQuery);
-		}	
-		
-		String countQuery = "SELECT count(*) FROM @nodeTableName WHERE featuretree_id IS NULL";
-		countQuery = countQuery.replace("@nodeTableName", nodeTableName);
-		Long countMissingTrees = (Long)datasource.getSingleValue(countQuery);
-		while (countMissingTrees > 0){
-			String updateQuery = "UPDATE @nodeTableName AS child INNER JOIN @nodeTableName AS parent ON child.parent_fk = parent.id " +
-					"SET child.featuretree_id = parent.featuretree_id WHERE child.featuretree_id IS NULL";
-			updateQuery = updateQuery.replace("@nodeTableName", nodeTableName);
-//			updateQuery = updateQuery.replace("@treeId", treeId.toString());
-				
-			datasource.executeUpdate(updateQuery);
-			Long oldCountMissingTrees = countMissingTrees;
-			countMissingTrees = (Long)datasource.getSingleValue(countQuery);
-			if (oldCountMissingTrees.equals(countMissingTrees)){
-				throw new RuntimeException("No row updated in FeatureNodeTreeColumnUpdater. Throw exception to avoid infinite loop");
+		try{
+			String resulsetQuery = "SELECT id, root_id FROM @treeTableName ORDER BY id";
+			resulsetQuery = resulsetQuery.replace("@treeTableName", treeTableName);
+	
+			ResultSet rs = datasource.executeQuery(resulsetQuery);
+			while (rs.next()){
+				Integer treeId = rs.getInt("id");
+				Integer rootId = rs.getInt("root_id");
+				String updateQuery = "UPDATE @nodeTableName SET featuretree_id = @treeId WHERE id = @rootId";
+				updateQuery = updateQuery.replace("@nodeTableName", nodeTableName);
+				updateQuery = updateQuery.replace("@treeId", treeId.toString());
+				updateQuery = updateQuery.replace("@rootId", rootId.toString());
+				datasource.executeUpdate(updateQuery);
+			}	
+			
+			String countQuery = "SELECT count(*) FROM @nodeTableName WHERE featuretree_id IS NULL";
+			countQuery = countQuery.replace("@nodeTableName", nodeTableName);
+			Long countMissingTrees = (Long)datasource.getSingleValue(countQuery);
+			while (countMissingTrees > 0){
+				String updateQuery = "UPDATE @nodeTableName AS child INNER JOIN @nodeTableName AS parent ON child.parent_fk = parent.id " +
+						"SET child.featuretree_id = parent.featuretree_id WHERE child.featuretree_id IS NULL";
+				updateQuery = updateQuery.replace("@nodeTableName", nodeTableName);
+	//			updateQuery = updateQuery.replace("@treeId", treeId.toString());
+					
+				datasource.executeUpdate(updateQuery);
+				Long oldCountMissingTrees = countMissingTrees;
+				countMissingTrees = (Long)datasource.getSingleValue(countQuery);
+				if (oldCountMissingTrees.equals(countMissingTrees)){
+					throw new RuntimeException("No row updated in FeatureNodeTreeColumnUpdater. Throw exception to avoid infinite loop");
+				}
 			}
+			return true;
+		}catch(Exception e){
+			monitor.warning(e.getMessage(), e);
+			logger.error(e.getMessage());
+			return false;
 		}
-		
-		return true;
 	}
 
 }

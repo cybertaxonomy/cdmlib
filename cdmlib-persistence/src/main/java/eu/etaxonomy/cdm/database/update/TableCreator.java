@@ -26,18 +26,16 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements ISchemaUpdaterStep {
+public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(TableCreator.class);
 	
 	private static final boolean SORT_INDEX = true;
 	
-	protected String tableName;
 	private List<String> columnNames;
 	private List<String> columnTypes;
 	private List<Object> defaultValues;
 	private List<Boolean> isNotNull;
 	private List<String> referencedTables;
-	private boolean includeAudTable;
 	private boolean includeCdmBaseAttributes;
 	private boolean includeIdentifiableEntity;
 	private boolean includeAnnotatableEntity;
@@ -120,27 +118,6 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		}
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
-	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		try {
-			boolean result = true;
-			result &= createTable(tableName, false, datasource, monitor);
-			if (includeAudTable){
-				String aud = "_AUD";
-				result &= createTable(tableName + aud, true, datasource, monitor);
-			}
-//			result &= invokeMns();
-			return (result == true )? 0 : null;
-		} catch (DatabaseTypeNotSupportedException e) {
-			throw new SQLException(e);
-		}
-	}
-
-
 
 	@Override
 	public List<ISchemaUpdaterStep> getInnerSteps() {
@@ -158,53 +135,55 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		return result;
 	}
 
-	private boolean createTable(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
-		boolean result = true;
-		String updateQuery = "CREATE TABLE @tableName (";
-		if (isAudit){
-			updateQuery += " REV integer not null, revtype tinyint, ";
-		}
-		if (includeCdmBaseAttributes){
-				updateQuery += " id integer not null,"
-					+ " created datetime, "
-					+ " uuid varchar(36),"
-					+ " updated datetime, "
-					+ " createdby_id integer,"
-					+ " updatedby_id integer, ";
-				
-		}
-		if (this.includeEventBase){
-			//TODO handle as column adder
-			updateQuery += "timeperiod_start varchar(255), timeperiod_end varchar(255), timeperiod_freetext varchar(255), actor_id int, description varchar(255),";
-			logger.warn("ForeignKey for actor not yet handled");
-		}
-		
-		if (this.includeIdentifiableEntity){
-			updateQuery += "lsid_authority varchar(255), lsid_lsid varchar(255), lsid_namespace varchar(255), lsid_object varchar(255), lsid_revision varchar(255), protectedtitlecache bit not null, titleCache varchar(255),";
-		}
-		
-		updateQuery += 	getColumnsSql(tableName, datasource, monitor);
-		
-		String primaryKeySql = primaryKey(isAudit)==null ? "" : "primary key (" + primaryKey(isAudit) + "),";
-		String uniqueSql = unique(isAudit)== null ? "" : "unique(" + unique(isAudit) + "),";
-		updateQuery += primaryKeySql + uniqueSql;
-		
-		updateQuery = StringUtils.chomp(updateQuery.trim(), ",");
-		updateQuery += ")";
-		
-		updateQuery = updateQuery.replace("@tableName", tableName);
-		if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
-			updateQuery += " ENGINE=MYISAM DEFAULT CHARSET=utf8 ";
-		}
-		logger.debug(updateQuery);
+	@Override
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor)  {
 		try {
+			boolean result = true;
+			String updateQuery = "CREATE TABLE @tableName (";
+			if (isAuditing){
+				updateQuery += " REV integer not null, revtype tinyint, ";
+			}
+			if (includeCdmBaseAttributes){
+					updateQuery += " id integer not null,"
+						+ " created datetime, "
+						+ " uuid varchar(36),"
+						+ " updated datetime, "
+						+ " createdby_id integer,"
+						+ " updatedby_id integer, ";
+					
+			}
+			if (this.includeEventBase){
+				//TODO handle as column adder
+				updateQuery += "timeperiod_start varchar(255), timeperiod_end varchar(255), timeperiod_freetext varchar(255), actor_id int, description varchar(255),";
+				logger.warn("ForeignKey for actor not yet handled");
+			}
+			
+			if (this.includeIdentifiableEntity){
+				updateQuery += "lsid_authority varchar(255), lsid_lsid varchar(255), lsid_namespace varchar(255), lsid_object varchar(255), lsid_revision varchar(255), protectedtitlecache bit not null, titleCache varchar(255),";
+			}
+			
+			updateQuery += 	getColumnsSql(tableName, datasource, monitor);
+			
+			String primaryKeySql = primaryKey(isAuditing)==null ? "" : "primary key (" + primaryKey(isAuditing) + "),";
+			String uniqueSql = unique(isAuditing)== null ? "" : "unique(" + unique(isAuditing) + "),";
+			updateQuery += primaryKeySql + uniqueSql;
+			
+			updateQuery = StringUtils.chomp(updateQuery.trim(), ",");
+			updateQuery += ")";
+			
+			updateQuery = updateQuery.replace("@tableName", tableName);
+			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
+				updateQuery += " ENGINE=MYISAM DEFAULT CHARSET=utf8 ";
+			}
+			logger.debug(updateQuery);
 			datasource.executeUpdate(updateQuery);
-		} catch (SQLException e) {
+			result &= createForeignKeys(tableName, isAuditing, datasource, monitor);
+			return result;
+		} catch (Exception e) {
+			monitor.warning(e.getMessage(), e);
 			logger.error(e);
-			result = false;
+			return false;
 		}
-		result &= createForeignKeys(tableName, isAudit, datasource, monitor);
-		return result;
 	}
 
 
@@ -255,7 +234,7 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		}
 	}
 	
-	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) {
+	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
 		if (includeCdmBaseAttributes){
 			String attribute = "updatedby";
@@ -280,7 +259,7 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		return result;
 	}
 
-	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, String attribute, String referencedTable) {
+	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, String attribute, String referencedTable) throws SQLException {
 		boolean result = true;
 		String index = "FK@tableName_@attribute";
 		index = index.replace("@tableName", tableName);
@@ -300,8 +279,7 @@ public class TableCreator extends SchemaUpdaterStepBase<TableCreator> implements
 		try {
 			datasource.executeUpdate(updateQuery);
 		} catch (SQLException e) {
-			logger.error(e);
-			result = false;
+			throw e;
 		}
 		return result;
 	}

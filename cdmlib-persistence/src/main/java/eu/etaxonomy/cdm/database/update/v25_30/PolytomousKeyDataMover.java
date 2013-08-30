@@ -47,18 +47,22 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		this.includeAudTable = includeAudTable;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
+
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		boolean result = true;
-		result &= movePolytomousKeys(featureTreeTableName, featureNodeTableName, polytomousKeyTableName, polytomousKeyNodeTableName, datasource, monitor, false);
-		if (includeAudTable){
-			String aud = "_AUD";
-			result &= movePolytomousKeys(featureTreeTableName + aud, featureNodeTableName + aud, polytomousKeyTableName + aud, polytomousKeyNodeTableName + aud, datasource, monitor, true);
+		try {
+			boolean result = true;
+			result &= movePolytomousKeys(featureTreeTableName, featureNodeTableName, polytomousKeyTableName, polytomousKeyNodeTableName, datasource, monitor, false);
+			if (includeAudTable){
+				String aud = "_AUD";
+				result &= movePolytomousKeys(featureTreeTableName + aud, featureNodeTableName + aud, polytomousKeyTableName + aud, polytomousKeyNodeTableName + aud, datasource, monitor, true);
+			}
+			return (result == true )? 0 : null;
+		} catch (Exception e) {
+			monitor.warning(e.getMessage(), e);
+			logger.error(e.getMessage());
+			return null;
 		}
-		return (result == true )? 0 : null;
 	}
 
 	private boolean movePolytomousKeys(String featureTreeTableName, String featureNodeTableName, String polytomousKeyTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, IProgressMonitor monitor, boolean isAudit) throws SQLException {
@@ -70,7 +74,7 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		result &= moveQuestions(featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
 		
 		result &= deleteOldData(datasource, isAudit);
-		return true;
+		return result;
 	}
 
 

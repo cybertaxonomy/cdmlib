@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -22,12 +20,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class ColumnRemover extends SchemaUpdaterStepBase<ColumnRemover> implements ISchemaUpdaterStep {
+public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(ColumnRemover.class);
 	
-	private String tableName;
 	private String oldColumnName;
-	private boolean includeAudTable;
 	
 	public static final ColumnRemover NewInstance(String stepName, String tableName, String oldColumnName, boolean includeAudTable){
 		return new ColumnRemover(stepName, tableName, oldColumnName, includeAudTable);
@@ -41,32 +37,16 @@ public class ColumnRemover extends SchemaUpdaterStepBase<ColumnRemover> implemen
 		this.includeAudTable = includeAudTable;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		boolean result = true;
-		result &= removeColumn(tableName, datasource, monitor);
-		if (includeAudTable){
-			String aud = "_AUD";
-			result &= removeColumn(tableName + aud, datasource, monitor);
-		}
-		return (result == true )? 0 : null;
-	}
-
-	private boolean removeColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
-			try {
-				datasource.executeUpdate(updateQuery);
-			} catch (SQLException e) {
-				logger.error(e);
-				result = false;
-			}
+			datasource.executeUpdate(updateQuery);
 			return result;
-		} catch ( DatabaseTypeNotSupportedException e) {
+		} catch ( Exception e) {
+			monitor.warning(e.getMessage(), e);
+			logger.error(e);
 			return false;
 		}
 	}

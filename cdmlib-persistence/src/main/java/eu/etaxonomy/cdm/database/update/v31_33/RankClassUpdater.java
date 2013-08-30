@@ -44,52 +44,58 @@ public class RankClassUpdater extends SchemaUpdaterStepBase<RankClassUpdater> im
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		
-		//update representation label
-		String sql;
-		sql = " SELECT orderindex FROM DefinedTermBase WHERE uuid = '%s'";
-		Integer genusOrderIndex = (Integer)datasource.getSingleValue(String.format(sql, Rank.uuidGenus));
-		Integer infraGenericOrderIndex = (Integer)datasource.getSingleValue(String.format(sql, Rank.uuidInfragenericTaxon));
-		Integer speciesOrderIndex = (Integer)datasource.getSingleValue(String.format(sql, Rank.uuidSpecies));
-		
-		//suprageneric
-		sql = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '%s' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex < %d";
-		datasource.executeUpdate(String.format(sql, RankClass.Suprageneric.getKey(), genusOrderIndex));
+		try {
+			//update representation label
+			String sql;
+			sql = " SELECT orderindex FROM DefinedTermBase WHERE uuid = '%s'";
+			Integer genusOrderIndex = (Integer)datasource.getSingleValue(String.format(sql, Rank.uuidGenus));
+			Integer infraGenericOrderIndex = (Integer)datasource.getSingleValue(String.format(sql, Rank.uuidInfragenericTaxon));
+			Integer speciesOrderIndex = (Integer)datasource.getSingleValue(String.format(sql, Rank.uuidSpecies));
+			
+			//suprageneric
+			sql = " UPDATE DefinedTermBase dtb " + 
+					" SET dtb.rankClass = '%s' " + 
+					" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex < %d";
+			datasource.executeUpdate(String.format(sql, RankClass.Suprageneric.getKey(), genusOrderIndex));
 
-		
-		//genus
-		sql = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '%s' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = %d";
-		datasource.executeUpdate(String.format(sql, RankClass.Genus.getKey(), genusOrderIndex));
-		
-		//infrageneric
-		sql = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '%s' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > %d AND dtb.orderindex <= %d";
-		datasource.executeUpdate(String.format(sql, RankClass.Infrageneric.getKey(), genusOrderIndex, infraGenericOrderIndex));
+			
+			//genus
+			sql = " UPDATE DefinedTermBase dtb " + 
+					" SET dtb.rankClass = '%s' " + 
+					" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = %d";
+			datasource.executeUpdate(String.format(sql, RankClass.Genus.getKey(), genusOrderIndex));
+			
+			//infrageneric
+			sql = " UPDATE DefinedTermBase dtb " + 
+					" SET dtb.rankClass = '%s' " + 
+					" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > %d AND dtb.orderindex <= %d";
+			datasource.executeUpdate(String.format(sql, RankClass.Infrageneric.getKey(), genusOrderIndex, infraGenericOrderIndex));
 
-		//species group
-		sql = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '%s' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > %d AND dtb.orderindex < %d";
-		datasource.executeUpdate(String.format(sql, RankClass.SpeciesGroup.getKey(), infraGenericOrderIndex, speciesOrderIndex));
-		
-		//species
-		sql = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '%s' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = %d";
-		datasource.executeUpdate(String.format(sql, RankClass.Species.getKey(), speciesOrderIndex));
+			//species group
+			sql = " UPDATE DefinedTermBase dtb " + 
+					" SET dtb.rankClass = '%s' " + 
+					" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > %d AND dtb.orderindex < %d";
+			datasource.executeUpdate(String.format(sql, RankClass.SpeciesGroup.getKey(), infraGenericOrderIndex, speciesOrderIndex));
+			
+			//species
+			sql = " UPDATE DefinedTermBase dtb " + 
+					" SET dtb.rankClass = '%s' " + 
+					" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex = %d";
+			datasource.executeUpdate(String.format(sql, RankClass.Species.getKey(), speciesOrderIndex));
 
-		//infraspecific
-		sql = " UPDATE DefinedTermBase dtb " + 
-				" SET dtb.rankClass = '%s' " + 
-				" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > %d";
-		datasource.executeUpdate(String.format(sql, RankClass.Infraspecific.getKey(), speciesOrderIndex));
+			//infraspecific
+			sql = " UPDATE DefinedTermBase dtb " + 
+					" SET dtb.rankClass = '%s' " + 
+					" WHERE dtb.DTYPE = 'Rank' AND dtb.orderindex > %d";
+			datasource.executeUpdate(String.format(sql, RankClass.Infraspecific.getKey(), speciesOrderIndex));
 
-		
-		return 0;
+			
+			return 0;
+		} catch (Exception e) {
+			monitor.warning(e.getMessage(), e);
+			logger.warn(e.getMessage());
+			return null;
+		}
 	}
 
 	

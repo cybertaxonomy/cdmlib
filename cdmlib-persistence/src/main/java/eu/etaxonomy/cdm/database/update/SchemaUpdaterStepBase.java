@@ -32,10 +32,12 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
 	
 	protected String stepName;
+
+	private boolean ignoreErrors;
 		
 	
 //************************ CONSTRUCTOR ***********************************/
-	
+
 	protected SchemaUpdaterStepBase(String stepName){
 		this.setStepName(stepName);
 	}
@@ -108,6 +110,17 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<ISchemaUpdaterStep>();
+	}
+	
+	@Override
+	public boolean isIgnoreErrors() {
+		return ignoreErrors;
+	}
+	
+	
+	@Override
+	public void setIgnoreErrors(boolean ignoreErrors) {
+		this.ignoreErrors = ignoreErrors;
 	}
 
 	@Override

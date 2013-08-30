@@ -23,4 +23,8 @@ public interface ISchemaUpdaterStep {
 
 	public List<ISchemaUpdaterStep> getInnerSteps();
 
+	public boolean isIgnoreErrors();
+
+	public void setIgnoreErrors(boolean ignoreErrors);
+
 }

@@ -9,8 +9,6 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -22,11 +20,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements ISchemaUpdaterStep {
+public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(TableDroper.class);
 	
-	private String tableName;
-	private boolean includeAudTable;
 	private boolean ifExists = true;
 	
 	public static final TableDroper NewInstance(String stepName, String tableName, boolean includeAudTable){
@@ -53,32 +49,16 @@ public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements I
 		this.ifExists = ifExists;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		boolean result = true;
-		result &= removeTable(tableName, datasource, monitor);
-		if (includeAudTable){
-			String aud = "_AUD";
-			result &= removeTable(tableName + aud, datasource, monitor);
-		}
-		return (result == true )? 0 : null;
-	}
-
-	private boolean removeTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
-			try {
-				datasource.executeUpdate(updateQuery);
-			} catch (SQLException e) {
-				logger.error(e);
-				result = false;
-			}
+			datasource.executeUpdate(updateQuery);
 			return result;
-		} catch ( DatabaseTypeNotSupportedException e) {
+		} catch ( Exception e) {
+			monitor.warning(e.getMessage(), e);
+			logger.error(e);
 			return false;
 		}
 	}
@@ -102,6 +82,8 @@ public class TableDroper extends SchemaUpdaterStepBase<TableDroper> implements I
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		if (ifExists == true){
 			updateQuery = updateQuery.replace("@ifExists", "IF EXISTS");
+		}else{
+			updateQuery = updateQuery.replace("@ifExists", "");
 		}
 		
 		return updateQuery;

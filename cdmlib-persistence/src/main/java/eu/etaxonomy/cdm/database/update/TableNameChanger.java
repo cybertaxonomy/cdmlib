@@ -41,21 +41,19 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 		this.includeAudTable = includeAudTable;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
-		result &= renameTable(oldName, newName, datasource, monitor);
+		result &= invokeOnTable(oldName, newName, datasource, monitor);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= renameTable(oldName + aud, newName + aud, datasource, monitor);
+			result &= invokeOnTable(oldName + aud, newName + aud, datasource, monitor);
 		}
 		return (result == true )? 0 : null;
 	}
 
-	private boolean renameTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	//does not support AuditedSchemaUpdaterStepBase signature
+	private boolean invokeOnTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.MySQL)){

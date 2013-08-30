@@ -16,8 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
@@ -172,9 +170,9 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	public void startTransaction() {
 		try {
 			Connection connection = getConnection();
-			connection.setAutoCommit(false);
 			this.connection = connection;
-	    	return;
+			connection.setAutoCommit(false);
+			return;
 		} catch(SQLException e) {
 			logger.error("Problems when starting transaction \n" + "Exception: " + e);
 			return;

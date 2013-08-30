@@ -20,12 +20,12 @@ import eu.etaxonomy.cdm.model.common.CdmMetaData;
 
 
 /**
+ * Common updater base class for updating schema or terms.
  * @author a.mueller
  * @date 16.11.2010
  *
  */
 public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>> implements IUpdater<U> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	
 	protected List<T> list;
@@ -140,7 +140,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		if (result == false){
 			return result;
 		}
-		datasource.startTransaction();
+//		datasource.startTransaction();  transaction already started by CdmUpdater
 		try {
 			for (T step : list){
 				result &= handleSingleStep(datasource, monitor, result, step, false);
@@ -148,8 +148,6 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 					break;
 				}
 			}
-			// TODO schema version gets updated even if something went utterly wrong while executing the steps
-			// I don't think we want this to happen
 			if (result == true){
 				result &= updateVersion(datasource, monitor);
 			}else{
@@ -157,13 +155,9 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			}
 			
 		} catch (Exception e) {
+			datasource.rollback();
 			logger.error("Error occurred while trying to run updater: " + this.getClass().getName());
 			result = false;
-		}
-		if (result == false){
-			datasource.commitTransaction();
-		}else{
-			datasource.rollback();
 		}
 		return result;
 	
@@ -184,7 +178,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				monitor.worked(1);
 //			}
 		} catch (Exception e) {
-			monitor.warning("Monitor: Exception occurred while updating schema", e);
+			monitor.warning("Monitor: Exception occurred while handling single schema updating step", e);
 			datasource.rollback();
 			result = false;
 		}

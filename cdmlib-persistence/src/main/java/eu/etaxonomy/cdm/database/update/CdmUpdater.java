@@ -52,18 +52,29 @@ public class CdmUpdater {
 		monitor.beginTask(taskName, steps);
 		
 		try {
+			datasource.startTransaction();
 			result &= currentSchemaUpdater.invoke(datasource, monitor);
-			// the above apparently did not work while testing. Did not want to set the version in CdmMetaData yet
-//			result &= currentSchemaUpdater.invoke(currentSchemaUpdater.getTargetVersion(), datasource, monitor);
+			if (result == true){
+				result &= currentTermUpdater.invoke(datasource, monitor);
+			}
+			if (result == false){
+				datasource.rollback();
+			}else{
+				datasource.commitTransaction();
+			}
 			
-			result &= currentTermUpdater.invoke(datasource, monitor);
 		} catch (Exception e) {
 			result = false;
 			monitor.warning("Stopped schema updater");
 		} finally {
 			String message = "Update finished " + (result ? "successfully" : "with ERRORS");
 			monitor.subTask(message);
-			monitor.done();
+			if (!result){
+				monitor.warning(message);
+				monitor.setCanceled(true);
+			}else{
+				monitor.done();
+			}
 			logger.info(message);
 		}
 		
