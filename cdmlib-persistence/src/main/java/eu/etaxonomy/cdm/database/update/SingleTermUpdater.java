@@ -214,8 +214,8 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	
 	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Rank.class.getSimpleName())){
-			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
-				" termType = '" + rankClass.getKey() + "'" +  
+			String sqlUpdate = "UPDATE DefinedTermBase  " + 
+				" SET rankClass = '" + rankClass.getKey() + "'" +  
 				" WHERE id = " + termId;
 			datasource.executeUpdate(sqlUpdate);
 		}
