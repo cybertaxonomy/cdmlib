@@ -270,19 +270,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//add publish flag to taxon
-		stepName = "Add publish flag column to taxon base";
-		tableName = "TaxonBase";
-		columnName = "publish";
-		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
-		stepList.add(step);
-		
-		//add publish flag to specimen
-		stepName = "Add publish flag column to SpecimenOrObservationBase";
-		tableName = "SpecimenOrObservationBase";
-		columnName = "publish";
-		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
-		stepList.add(step);
+		//add publish flag #1780
+		addPublishFlag(stepList);
 		
 		//add columns abbrevTitle, abbrevTitleCache and protectedAbbrevTitleCache to Reference
 		stepName = "Add abbrevTitle to Reference";
@@ -345,6 +334,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing("SpecimenOrObservationBase");
 		stepList.add(step);
 
+		
+		
 		//update DTYPE FieldObservation -> FieldUnit #3351
 		stepName = "Update FieldObservation -> FieldUnit";
 		query = " UPDATE SpecimenOrObservationBase sob " + 
@@ -651,6 +642,130 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		return stepList;
+	}
+
+	private void addPublishFlag(List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		String columnName;
+		String query;
+		
+		//TaxonBase
+		
+		//add publish flag to taxon
+		stepName = "Add publish flag column to taxon base";
+		tableName = "TaxonBase";
+		columnName = "publish";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
+		stepList.add(step);
+		
+		//update publish with existing publish false markers
+		stepName = "update TaxonBase publish if publish false markers exist";
+		query = " UPDATE TaxonBase tb " +
+				" SET publish = 0 " +
+				" WHERE tb.id IN ( " + 
+				" SELECT DISTINCT MN.TaxonBase_id " +
+				" FROM Marker m INNER JOIN TaxonBase_Marker MN ON MN.markers_id = m.id " +  
+				" INNER JOIN DefinedTermBase markerType ON m.markertype_id = markerType.id " +
+				" WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' " +
+				")" ;
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonBase");
+		stepList.add(step);
+		
+		//remove publish marker MN table
+		stepName = "Remove existing TaxonBase publish markers MN";
+		query = " DELETE "  +
+				" FROM TaxonBase_Marker " + 
+				" WHERE markers_id IN ( " +
+					" SELECT m.id " + 
+					" FROM Marker m INNER JOIN DefinedTermBase mType ON m.markertype_id = mType.id " +  
+					" WHERE mType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc'  " + 
+				")" ;
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonBase_Marker");
+		stepList.add(step);
+		
+		//update publish with existing publish false markers
+		stepName = "Remove existing TaxonBase publish markers";
+		query = " DELETE "  +
+				" FROM Marker " + 
+				" WHERE id NOT IN " +
+						" (SELECT MN.markers_id FROM TaxonBase_Marker MN) " + 
+					" AND (markedObj_type = 'eu.etaxonomy.cdm.model.taxon.Synonym' OR markedObj_type = 'eu.etaxonomy.cdm.model.taxon.Taxon') " +  
+					" AND markertype_id IN ( " +
+						"SELECT id FROM DefinedTermBase WHERE uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' " +
+						")"  ;
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);  //AUD does not have markedObj_type
+		stepList.add(step);
+
+		//SpecimenOrObservationBase
+		
+		//add publish flag to specimen
+		stepName = "Add publish flag column to SpecimenOrObservationBase";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "publish";
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, true);
+		stepList.add(step);
+		
+		//update publish with existing publish false markers
+		stepName = "update SpecimenOrObservationBase publish if publish false markers exist";
+		query = " UPDATE SpecimenOrObservationBase sob " +
+				" SET publish = 0 " +
+				" WHERE sob.id IN ( " + 
+				" SELECT DISTINCT MN.SpecimenOrObservationBase_id " +
+				" FROM Marker m INNER JOIN SpecimenOrObservationBase_Marker MN ON MN.markers_id = m.id " +  
+					" INNER JOIN DefinedTermBase markerType ON m.markertype_id = markerType.id " +
+				" WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' " +
+				")" ;
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "SpecimenOrObservationBase");
+		stepList.add(step);
+	
+		//remove publish marker MN table
+		stepName = "Remove existing SpecimenOrObservationBase publish markers MN";
+		query = " DELETE "  +
+				" FROM SpecimenOrObservationBase_Marker " + 
+				" WHERE markers_id IN ( " +
+					" SELECT m.id " + 
+					" FROM Marker m INNER JOIN DefinedTermBase mType ON m.markertype_id = mType.id " +  
+					" WHERE mType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc'  " + 
+				")" ;
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "SpecimenOrObservationBase_Marker");
+		stepList.add(step);
+		
+		//update publish with existing publish false markers
+		stepName = "Remove existing SpecimenOrObservationBase publish markers";
+		query = " DELETE "  +
+				" FROM Marker " + 
+				" WHERE id NOT IN " +
+					" (SELECT MN.markers_id FROM SpecimenOrObservationBase_Marker MN) " + 
+					" AND (markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.DerivedUnit' " +
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.FieldObservation' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.FieldUnit' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.Specimen' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.Fossil' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.LivingBeing' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.Observation' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.MediaSpecimen' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.occurrence.TissueSample' " +  
+						"OR markedObj_type = 'eu.etaxonomy.cdm.model.molecular.DnaSample') " +  
+					" AND markertype_id IN ( " +
+						"SELECT id FROM DefinedTermBase WHERE uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' " + 
+						")" ;
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
+		stepList.add(step);
+		
+		//remove all audited markers if no current markers exist
+		//this may remove more audited markers then expected but we do accept this here
+		stepName = "Remove all audited markers if no current markers exist"; 
+		query = " DELETE "  +
+				" FROM Marker_AUD " + 
+				" WHERE id NOT IN (SELECT id FROM Marker ) " +
+					" AND markertype_id IN ( " +
+						"SELECT id FROM DefinedTermBase WHERE uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' " + 
+						")" ;
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
+		stepList.add(step);
+	
 	}
 	
 	private void updateRights2RightsInfo(List<ISchemaUpdaterStep> stepList) {
