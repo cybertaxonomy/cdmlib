@@ -1089,7 +1089,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	private void removeOldSequenceColumns(List<ISchemaUpdaterStep> stepList) {
 		//TODO also remove Identifiable attributes ??
 		
-		//remove citationmicroreference
+		//remove citation microreference
 		String stepName = "Remove citationmicroreference column";
 		String tableName = "Sequence";
 		String columnName = "citationMicroReference";
@@ -1175,12 +1175,43 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, String.format(queryVocUuid, uuid)).setDefaultAuditing(tableName);
 		stepList.add(step);
 		
+		//avoid duplicate for section (bot.)
+		stepName = "Update idInVoc for section (bot.)";
+		String sql = " UPDATE DefinedTermBase SET idInVocabulary = 'sect.(bot.)' WHERE uuid = '3edff68f-8527-49b5-bf91-7e4398bb975c'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+
+		//avoid duplicate for subsection (bot.)
+		stepName = "Update idInVoc for subsection (bot.)";
+		sql = " UPDATE DefinedTermBase SET idInVocabulary = 'subsect.(bot.)' WHERE uuid = 'd20f5b61-d463-4448-8f8a-c1ff1f262f59'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+
+		//avoid duplicate for section (zool.)
+		stepName = "Update idInVoc for section (zool.)";
+		sql = " UPDATE DefinedTermBase SET idInVocabulary = 'sect.(zool.)' WHERE uuid = '691d371e-10d7-43f0-93db-3d7fa1a62c54'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+
+		//avoid duplicate for subsection (zool.)
+		stepName = "Update idInVoc for subsection (zool.)";
+		sql = " UPDATE DefinedTermBase SET idInVocabulary = 'subsect.(zool.)' WHERE uuid = '0ed32d28-adc4-4303-a9ca-68e2acd67e33'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+
+		
 		//SpecimenTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for SpecimenTypeDesignationStatus";
 		uuid = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, String.format(queryVocUuid, uuid)).setDefaultAuditing(tableName);
 		stepList.add(step);
 
+		//avoid duplicate for PT
+		stepName = "Update idInVoc for Phototype (PhT) to avoid duplicate for PT";
+		sql = " UPDATE DefinedTermBase SET idInVocabulary = 'PhT' WHERE uuid = 'b7807acc-f559-474e-ad4a-e7a41e085e34'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		
 		//NameTypeDesignationStatus => all
 		stepName = "Update idInVocabulary for NameTypeDesignationStatus";
 		uuid = "ab60e738-4d09-4c24-a1b3-9466b01f9f55";
@@ -1197,6 +1228,18 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update idInVocabulary for TaxonRelationshipType";
 		uuid = "15db0cf7-7afc-4a86-a7d4-221c73b0c9ac";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, String.format(queryVocUuid, uuid)).setDefaultAuditing(tableName);
+		stepList.add(step);
+		
+		//avoid duplicate for Misapplied Name (remove '-')
+		stepName = "Update idInVoc for Misapplied Name Relationship";
+		sql = " UPDATE DefinedTermBase SET idInVocabulary = NULL WHERE uuid = '1ed87175-59dd-437e-959e-0d71583d8417'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		
+		//avoid duplicate for Invalid designation (remove '-')
+		stepName = "Update idInVoc for Invalid Designation";
+		sql = " UPDATE DefinedTermBase SET idInVocabulary = NULL WHERE uuid = '605b1d01-f2b1-4544-b2e0-6f08def3d6ed'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
 		stepList.add(step);
 		
 		//PresenceTerm => all
