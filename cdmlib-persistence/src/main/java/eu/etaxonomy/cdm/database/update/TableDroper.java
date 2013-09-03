@@ -55,12 +55,30 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 			datasource.executeUpdate(updateQuery);
+			if (! this.isAuditing){
+				removeFromHibernateSequences(datasource, monitor, tableName);
+			}
 			return result;
 		} catch ( Exception e) {
 			monitor.warning(e.getMessage(), e);
 			logger.error(e);
 			return false;
 		}
+	}
+
+	private boolean removeFromHibernateSequences(ICdmDataSource datasource, IProgressMonitor monitor, String tableName) {
+		try {
+			String sql = " DELETE FROM hibernate_sequences WHERE sequence_name = '%s'";
+			sql = String.format(sql, tableName);
+			datasource.executeUpdate(sql);
+			return true;
+		} catch (Exception e) {
+			String message = "Exception occurred when trying to read or update hibernate_sequences table for value " + this.tableName + ": " + e.getMessage();
+			monitor.warning(message, e);
+			logger.error(message);
+			return false;
+		}
+		
 	}
 
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
