@@ -15,6 +15,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -84,7 +85,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		
 		String id = Integer.toString(vocId);
 		//FIXME get current time
-		String created = "2010-09-16 10:15:00";
+		String created  =DateTime.now().toString("yyyy-mm-dd hh:mm:ss");
 		String dtype;
 		if (isOrdered){
 			dtype = "OrderedTermVocabulary";

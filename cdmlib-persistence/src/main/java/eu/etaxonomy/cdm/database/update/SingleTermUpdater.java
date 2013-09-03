@@ -11,9 +11,13 @@ package eu.etaxonomy.cdm.database.update;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.DateFormat;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -113,7 +117,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 		
 		String id = Integer.toString(termId);
-		String created = "2010-09-16 10:15:00";
+		String created = DateTime.now().toString("yyyy-mm-dd hh:mm:ss");
 		String defaultColor = "null";
 		String protectedTitleCache = getBoolean(false, datasource);
 		String orderIndex;
@@ -285,5 +289,11 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		return this;
 	}
 
+	public static void main(String[] args){
+		String time = DateTime.now().toString("yyyy-mm-dd hh:mm:ss");
+		System.out.println(time);
+		
+
+	}
 
 }
