@@ -117,7 +117,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 		
 		String id = Integer.toString(termId);
-		String created = DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
+		String created = getNowString();
 		String defaultColor = "null";
 		String protectedTitleCache = getBoolean(false, datasource);
 		String orderIndex;
@@ -189,7 +189,6 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		
 		return termId;
 	}
-
 
 	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Feature.class.getSimpleName())){
@@ -287,13 +286,6 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		this.symmetric = symmetric;
 		this.transitive = transitive;
 		return this;
-	}
-
-	public static void main(String[] args){
-		String time = DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
-		System.out.println(time);
-		
-
 	}
 
 }

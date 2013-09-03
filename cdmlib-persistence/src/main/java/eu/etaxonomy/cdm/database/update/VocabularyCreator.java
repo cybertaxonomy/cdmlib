@@ -84,7 +84,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		
 		
 		String id = Integer.toString(vocId);
-		String created  = DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
+		String created  = getNowString();
 		String dtype;
 		if (isOrdered){
 			dtype = "OrderedTermVocabulary";

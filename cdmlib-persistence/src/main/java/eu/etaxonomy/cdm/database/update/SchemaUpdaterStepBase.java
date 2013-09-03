@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -121,6 +122,16 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	@Override
 	public void setIgnoreErrors(boolean ignoreErrors) {
 		this.ignoreErrors = ignoreErrors;
+	}
+	
+
+	/**
+	 * Returns a time string with date and time (without millis) that 
+	 * can be used as a time string for database insert and update
+	 * @return
+	 */
+	protected String getNowString() {
+		return DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 	}
 
 	@Override
