@@ -138,7 +138,7 @@ public class Rank extends OrderedTermBase<Rank> {
     private static final UUID uuidCultivar = UUID.fromString("5e98415b-dc6e-440b-95d6-ea33dbb39ad0");
     private static final UUID uuidUnknownRank = UUID.fromString("5c4d6755-2cf6-44ca-9220-cccf8881700b");
 
-    private static Map<String, UUID> abbrevMap = null;
+    private static Map<String, UUID> idInVocMap = null;
     private static Map<String, UUID> labelMap = null;
 
     protected static Map<UUID, Rank> termMap = null;
@@ -552,34 +552,34 @@ public class Rank extends OrderedTermBase<Rank> {
 
 
     /**
-     * Returns the rank identified through a name (abbreviated or not).
+     * Returns the rank identified through a label or the identifier within the vocabulary
      * Preliminary implementation for BotanicalNameParser.
      *
      * @param	strRank	the string identifying the rank
      * @return  		the rank
      */
-    public static Rank getRankByNameOrAbbreviation(String strRank) throws UnknownCdmTypeException{
-        return getRankByNameOrAbbreviation(strRank, false);
+    public static Rank getRankByNameOrIdInVoc(String strRank) throws UnknownCdmTypeException{
+        return getRankByNameOrIdInVoc(strRank, false);
     }
 
     /**
-     * Returns the rank identified through a name (abbreviated or not) for a given nomenclatural code.
+     * Returns the rank identified through a label or the identifier within the vocabulary
+     * for a given nomenclatural code.
      * Preliminary implementation for BotanicalNameParser.
      *
      * @param	strRank	the string identifying the rank
      * @param   nc      the nomenclatural code
      * @return  		the rank
      */
-    public static Rank getRankByNameOrAbbreviation(String strRank, NomenclaturalCode nc)
-                throws UnknownCdmTypeException{
-        return getRankByNameOrAbbreviation(strRank, nc, false);
+    public static Rank getRankByNameOrIdInVoc(String strRank, NomenclaturalCode nc) throws UnknownCdmTypeException{
+        return getRankByNameOrIdInVoc(strRank, nc, false);
     }
 
     // TODO
     // Preliminary implementation for BotanicalNameParser.
     // not yet complete
     /**
-     * Returns the rank identified through a name (abbreviated or not).
+     * Returns the rank identified through a label or the identifier within the vocabulary.
      * Preliminary implementation for BotanicalNameParser.
      *
      * @param	strRank	the string identifying the rank
@@ -587,10 +587,9 @@ public class Rank extends OrderedTermBase<Rank> {
      * 			unknown or not yet implemented
      * @return  		the rank
      */
-    public static Rank getRankByNameOrAbbreviation(String strRank, boolean useUnknown)
-            throws UnknownCdmTypeException{
+    public static Rank getRankByNameOrIdInVoc(String strRank, boolean useUnknown) throws UnknownCdmTypeException{
         try {
-            return getRankByAbbreviation(strRank);
+            return getRankByIdInVoc(strRank);
         } catch (UnknownCdmTypeException e) {
             return getRankByName(strRank, useUnknown);
         }
@@ -600,7 +599,7 @@ public class Rank extends OrderedTermBase<Rank> {
     // Preliminary implementation for BotanicalNameParser.
     // not yet complete
     /**
-     * Returns the rank identified through a name (abbreviated or not).
+     * Returns the rank identified through a label or the identifier within the vocabulary.
      * Preliminary implementation for BotanicalNameParser.
      *
      * @param	strRank	the string identifying the rank
@@ -609,17 +608,17 @@ public class Rank extends OrderedTermBase<Rank> {
      * 			unknown or not yet implemented
      * @return  		the rank
      */
-    public static Rank getRankByNameOrAbbreviation(String strRank, NomenclaturalCode nc, boolean useUnknown)
+    public static Rank getRankByNameOrIdInVoc(String strRank, NomenclaturalCode nc, boolean useUnknown)
             throws UnknownCdmTypeException{
         try {
-            return getRankByAbbreviation(strRank, nc);
+            return getRankByIdInVoc(strRank, nc);
         } catch (UnknownCdmTypeException e) {
             return getRankByName(strRank, nc, useUnknown);
         }
     }
 
     /**
-     * Returns the rank identified through an abbreviated name.
+     * Returns the rank identified through the vocabulary identifier.
      * Preliminary implementation for BotanicalNameParser.<BR>
      * Note: For abbrev = "[unranked]" the result is undefined.
      * It maybe the infrageneric unranked or the infraspecific unranked.
@@ -628,21 +627,20 @@ public class Rank extends OrderedTermBase<Rank> {
      * @param	abbrev	the string for the name abbreviation
      * @return  		the rank
      */
-    public static Rank getRankByAbbreviation(String abbrev)
-                        throws UnknownCdmTypeException{
-        return getRankByAbbreviation(abbrev, false);
+    public static Rank getRankByIdInVoc(String abbrev) throws UnknownCdmTypeException{
+        return getRankByIdInVoc(abbrev, false);
     }
 
     /**
      * Returns the rank identified through an abbreviated name for a given nomenclatural code.
-     * See also {@link #getRankByAbbreviation(String, boolean)}
+     * See also {@link #getRankByIdInVoc(String, boolean)}
      *
      * @param	abbrev	the string for the name abbreviation
      * @param	nc	    the nomenclatural code
      * @return  		the rank
      */
-    public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc) throws UnknownCdmTypeException{
-        return getRankByAbbreviation(abbrev, nc, false);
+    public static Rank getRankByIdInVoc(String abbrev, NomenclaturalCode nc) throws UnknownCdmTypeException{
+        return getRankByIdInVoc(abbrev, nc, false);
     }
 
     // TODO
@@ -656,48 +654,58 @@ public class Rank extends OrderedTermBase<Rank> {
      * If no according abbreviation is available it throws either an UnknownCdmTypeException
      * or an #Rank.UNKNOWN() object depending on the useUnknown flag.
      *
-     * @param	abbrev		the string for the name abbreviation
+     * @param	idInVoc		the string for the name abbreviation
      * @param 	useUnknown 	if true the rank UNKNOWN_RANK is returned if the abbrev is
      * 			unknown or not yet existent
      * @return  the rank
      */
-    public static Rank getRankByAbbreviation(String abbrev, boolean useUnknown) throws UnknownCdmTypeException{
+    public static Rank getRankByIdInVoc(String idInVoc, boolean useUnknown) throws UnknownCdmTypeException{
         Rank result = null;
-        if (abbrev == null){
-            throw new NullPointerException("Abbrev is NULL in getRankByAbbreviation");
+        if (idInVoc == null){
+            throw new NullPointerException("idInVoc is NULL in getRankByIdInVoc");
         }
-        if (abbrev.trim().equals("")){
-            //handle empty abbrev as unknown
-            abbrev = "oija�m��";
+        if (StringUtils.isBlank(idInVoc)){
+            //handle empty idInVoc as unknown
+            idInVoc = "oijas34\u0155";
         }
-        if (abbrevMap == null){
+        if (idInVocMap == null){
             return null;
         }
-        UUID uuid = abbrevMap.get(abbrev);
+        idInVoc = normalizeSectionAndSubsection(idInVoc);
+        UUID uuid = idInVocMap.get(idInVoc);
         if (uuid != null ){
             result = getTermByUuid(uuid);
         }
         if (result != null){
             return result;
         }else {
-            if (abbrev == null){
-                abbrev = "(null)";
+            if (idInVoc == null){
+                idInVoc = "(null)";
             }
             if (useUnknown){
-                logger.info("Unknown rank name: " + abbrev + ". Rank 'UNKNOWN_RANK' created instead");
+                logger.info("Unknown rank name: " + idInVoc + ". Rank 'UNKNOWN_RANK' created instead");
                 return Rank.UNKNOWN_RANK();
             }else{
-                throw new UnknownCdmTypeException("Unknown rank abbreviation: " + abbrev);
+                throw new UnknownCdmTypeException("Unknown rank abbreviation: " + idInVoc);
             }
         }
     }
 
-    // TODO
+    private static String normalizeSectionAndSubsection(String idInVoc) {
+		if (idInVoc.equals("sect.")){
+			return "sect.(bot.)";
+		}else if (idInVoc.equals("subsect.")){
+			return "subsect.(bot.)";
+		}
+    	return idInVoc;
+	}
+
+	// TODO
     // Preliminary implementation to cover Botany and Zoology.
     /**
      * Returns the rank identified through an abbreviated name for a given nomenclatural code.
      * Preliminary implementation for ICBN and ICZN.
-     * See also {@link #getRankByAbbreviation(String, boolean)}
+     * See also {@link #getRankByIdInVoc(String, boolean)}
 
      *
      * @param	abbrev		the string for the name abbreviation
@@ -706,7 +714,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * 			unknown or not yet implemented
      * @return  the rank
      */
-    public static Rank getRankByAbbreviation(String abbrev, NomenclaturalCode nc, boolean useUnknown)
+    public static Rank getRankByIdInVoc(String abbrev, NomenclaturalCode nc, boolean useUnknown)
             throws UnknownCdmTypeException{
 
         if (nc != null && nc.equals(NomenclaturalCode.ICZN)) {
@@ -718,7 +726,7 @@ public class Rank extends OrderedTermBase<Rank> {
                 }
             }
         }
-        return getRankByAbbreviation(abbrev, useUnknown);
+        return getRankByIdInVoc(abbrev, useUnknown);
     }
 
     // TODO
@@ -954,8 +962,8 @@ public class Rank extends OrderedTermBase<Rank> {
         String label = representation.getLabel();
        
         //initialize maps
-        if (abbrevMap == null){
-            abbrevMap = new HashMap<String, UUID>();
+        if (idInVocMap == null){
+            idInVocMap = new HashMap<String, UUID>();
         }
         if (labelMap == null){
             labelMap = new HashMap<String, UUID>();
@@ -965,7 +973,7 @@ public class Rank extends OrderedTermBase<Rank> {
         if (StringUtils.isBlank(abbrevLabel)){
             logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));
         }else{
-        	abbrevMap.put(abbrevLabel, rank.getUuid());
+        	idInVocMap.put(abbrevLabel, rank.getUuid());
         }
     }
 

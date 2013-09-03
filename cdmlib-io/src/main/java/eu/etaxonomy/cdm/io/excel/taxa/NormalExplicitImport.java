@@ -163,7 +163,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 
 				// Rank
 				try {
-					rank = Rank.getRankByNameOrAbbreviation(rankStr);
+					rank = Rank.getRankByNameOrIdInVoc(rankStr);
 				} catch (UnknownCdmTypeException ex) {
 					try {
 						rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);

@@ -475,7 +475,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		//rank
 		Rank rank;
 		try {
-			rank = StringUtils.isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrAbbreviation(commonDetermination.rank, true);
+			rank = StringUtils.isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrIdInVoc(commonDetermination.rank, true);
 		} catch (UnknownCdmTypeException e) {
 			rank = null;
 		}
@@ -650,7 +650,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		try {
 			if (StringUtils.isNotBlank(determinationLight.rank) ){
-				name.setRank(Rank.getRankByNameOrAbbreviation(determinationLight.rank, nc, true));
+				name.setRank(Rank.getRankByNameOrIdInVoc(determinationLight.rank, nc, true));
 			}
 		} catch (UnknownCdmTypeException e) {
 			String message = "Rank not found: %s: ";

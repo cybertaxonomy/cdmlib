@@ -507,10 +507,10 @@ public class BerlinModelTransformer {
 				}
 			}
 			try {
-				result = Rank.getRankByNameOrAbbreviation(abbrev);
+				result = Rank.getRankByNameOrIdInVoc(abbrev);
 			} catch (UnknownCdmTypeException e) {
 				try {
-					result = Rank.getRankByNameOrAbbreviation(rankName);
+					result = Rank.getRankByNameOrIdInVoc(rankName);
 				} catch (UnknownCdmTypeException e1) {
 					switch (rankId){
 						case 0: return null;

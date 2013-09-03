@@ -614,7 +614,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			try {
 				rank = Rank.getRankByEnglishName(strRank, nomCode, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
-					rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+					rank = Rank.getRankByNameOrIdInVoc(strRank, USE_UNKNOWN);
 					if (rank.equals(Rank.UNKNOWN_RANK())){
 						String message = "Rank can not be defined for '%s'";
 						message = String.format(message, strRank);
@@ -628,7 +628,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 		if ( (rank == null || rank.equals(Rank.UNKNOWN_RANK())) && strVerbatimRank != null){
 			try {
-				rank = Rank.getRankByNameOrAbbreviation(strVerbatimRank, USE_UNKNOWN);
+				rank = Rank.getRankByNameOrIdInVoc(strVerbatimRank, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
 					String message = "Rank can not be defined for '%s'";
 					message = String.format(message, strVerbatimRank);

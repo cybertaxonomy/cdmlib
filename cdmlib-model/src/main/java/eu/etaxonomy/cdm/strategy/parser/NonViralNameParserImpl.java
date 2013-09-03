@@ -800,7 +800,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				if ("[unranked]".equals(epi[1])){
 					infraGenericRank = Rank.INFRAGENERICTAXON();
 				}else{
-					infraGenericRank = Rank.getRankByAbbreviation(epi[1]);
+					infraGenericRank = Rank.getRankByIdInVoc(epi[1]);
 				}
 				nameToBeFilled.setRank(infraGenericRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -809,7 +809,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 			 //aggr. or group
 			 else if (aggrOrGroupPattern.matcher(fullNameString).matches()){
-				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[2]));
+				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 			}
@@ -822,7 +822,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 			 //autonym
 			 else if (autonymPattern.matcher(fullNameString).matches()){
-				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[epi.length - 2]));
+				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[epi.length - 2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(epi[epi.length - 1]);
@@ -842,7 +842,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				if ("[unranked]".equals(infraSpecRankEpi)){
 					infraSpecificRank = Rank.INFRASPECIFICTAXON();
 				}else{
-					infraSpecificRank = Rank.getRankByAbbreviation(infraSpecRankEpi);
+					infraSpecificRank = Rank.getRankByIdInVoc(infraSpecRankEpi);
 				}
 				nameToBeFilled.setRank(infraSpecificRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -853,7 +853,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			 else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
 				boolean implemented = false;
 				if (implemented){
-					nameToBeFilled.setRank(Rank.getRankByNameOrAbbreviation(epi[2]));
+					nameToBeFilled.setRank(Rank.getRankByNameOrIdInVoc(epi[2]));
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 					nameToBeFilled.setSpecificEpithet(epi[1]);
 					//TODO result.setUnnamedNamePhrase(epi[2] + " " + epi[3]);

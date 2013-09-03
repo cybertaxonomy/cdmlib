@@ -353,7 +353,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 
 	private boolean isInfraSpecificMarker(String single) {
 		try {
-			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
+			if (Rank.getRankByIdInVoc(single).isInfraSpecific()){
 				return true;
 			}else{
 				return false;

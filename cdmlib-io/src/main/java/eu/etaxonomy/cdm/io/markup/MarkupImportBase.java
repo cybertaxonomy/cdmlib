@@ -1034,7 +1034,7 @@ public abstract class MarkupImportBase  {
 			if (value.equals(GENUS_ABBREVIATION)){
 				rank = Rank.GENUS();
 			}else if (byAbbrev) {
-				rank = Rank.getRankByAbbreviation(value, nc, useUnknown);
+				rank = Rank.getRankByIdInVoc(value, nc, useUnknown);
 			} else {
 				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
 			}

@@ -441,7 +441,7 @@ public class IpniService  implements IIpniService{
 		//rank
 		try {
 			String rankStr = nomalizeRank(valueMap.get(RANK));
-			name.setRank(Rank.getRankByNameOrAbbreviation(rankStr, NomenclaturalCode.ICNAFP, true));
+			name.setRank(Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICNAFP, true));
 		} catch (UnknownCdmTypeException e) {
 			logger.warn("Rank was unknown");
 		}
