@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -881,24 +882,32 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			logger.warn("statusType is NULL");
 			return;
 		}
-		Language lang = Language.LATIN();   
-		Representation representation = statusType.getRepresentation(lang);
-		String abbrevLabel = representation.getAbbreviatedLabel();
-		String label = representation.getLabel();
-		if (abbrevLabel == null){
-			logger.warn("label is NULL");
-			return;
+		List<Language> list = new ArrayList<Language>();
+		list.add(Language.LATIN());
+		list.add(Language.ENGLISH());
+		list.add(Language.DEFAULT());
+		
+		Representation representation = statusType.getPreferredRepresentation(list);
+		if (representation != null){
+			
+			String abbrevLabel = representation.getAbbreviatedLabel();
+			String label = representation.getLabel();
+			if (abbrevLabel == null){
+				logger.warn("label is NULL");
+				return;
+			}
+			//initialize maps
+			if (abbrevMap == null){
+				abbrevMap = new HashMap<String, UUID>();
+			}
+			if (labelMap == null){
+				labelMap = new HashMap<String, UUID>();
+			}
+			//add to map
+			abbrevMap.put(abbrevLabel, statusType.getUuid());
+			labelMap.put(label.toLowerCase(), statusType.getUuid());	
 		}
-		//initialize maps
-		if (abbrevMap == null){
-			abbrevMap = new HashMap<String, UUID>();
-		}
-		if (labelMap == null){
-			labelMap = new HashMap<String, UUID>();
-		}
-		//add to map
-		abbrevMap.put(abbrevLabel, statusType.getUuid());
-		labelMap.put(label.toLowerCase(), statusType.getUuid());	
+		
 	}
 
 
