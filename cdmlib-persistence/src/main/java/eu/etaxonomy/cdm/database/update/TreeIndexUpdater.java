@@ -13,6 +13,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 
 /**
  * @author a.mueller
@@ -50,18 +51,23 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			
 	//		String charType = "CHAR";  //TODO may depend on database type
 			
-			//clean up  //this should not happen with correct "delete" implementation
+			//clean up nodes without classification  //this should not happen with correct "delete" implementation
 			String sql = String.format(" DELETE FROM %s WHERE %s IS NULL ", tableName, treeIdColumnName);
 			datasource.executeUpdate(sql);
 			
+			//... set all index entries to NULL
 			sql = String.format(" UPDATE %s SET %s = NULL", tableName, indexColumnName);
 			datasource.executeUpdate(sql);
 			
 			//start
+			String separator = ITreeNode.separator;
+			String treePrefix = ITreeNode.treePrefix;
 			sql = String.format(" UPDATE %s tn " +
-					" SET tn.%s = CONCAT('#c', tn.%s, '#') " +
+					" SET tn.%s = CONCAT('%s%s', tn.%s, '%s', tn.id, '%s') " +
 					" WHERE tn.%s IS NULL AND tn.%s IS NOT NULL ", 
-					tableName, indexColumnName, treeIdColumnName, parentIdColumnName, treeIdColumnName);
+						tableName, 
+						indexColumnName, separator, treePrefix, treeIdColumnName, separator, separator, 
+						parentIdColumnName, treeIdColumnName);
 			datasource.executeUpdate(sql);
 			
 			//width search index creation
@@ -74,9 +80,10 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			do {
 			
 				sql = String.format(" UPDATE %s child INNER JOIN %s parent ON child.%s = parent.id " +
-						" SET child.%s = CONCAT( parent.%s, child.id, '#') " +
+						" SET child.%s = CONCAT( parent.%s, child.id, '%s') " +
 						" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ", 
-							tableName, tableName, parentIdColumnName, indexColumnName, indexColumnName,
+							tableName, tableName, parentIdColumnName, 
+							indexColumnName, indexColumnName, separator,
 							indexColumnName, indexColumnName);
 				datasource.executeUpdate(sql);
 				
