@@ -117,7 +117,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 		
 		String id = Integer.toString(termId);
-		String created = DateTime.now().toString("yyyy-mm-dd hh:mm:ss");
+		String created = DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 		String defaultColor = "null";
 		String protectedTitleCache = getBoolean(false, datasource);
 		String orderIndex;
@@ -290,7 +290,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	}
 
 	public static void main(String[] args){
-		String time = DateTime.now().toString("yyyy-mm-dd hh:mm:ss");
+		String time = DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 		System.out.println(time);
 		
 

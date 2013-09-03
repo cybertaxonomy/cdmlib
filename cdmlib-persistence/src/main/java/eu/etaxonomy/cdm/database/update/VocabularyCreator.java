@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  * @date 10.09.2010
  *
  */
-public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VocabularyCreator.class);
 
@@ -84,8 +84,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		
 		
 		String id = Integer.toString(vocId);
-		//FIXME get current time
-		String created  =DateTime.now().toString("yyyy-mm-dd hh:mm:ss");
+		String created  = DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 		String dtype;
 		if (isOrdered){
 			dtype = "OrderedTermVocabulary";
