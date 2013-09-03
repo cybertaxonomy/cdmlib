@@ -114,7 +114,7 @@ public class TermUpdater_31_33 extends TermUpdaterBase implements ITermUpdater {
 		isOrdered = true;
 		uuidVocabulary = UUID.fromString("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f");
 		uuidAfterTerm = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
-		uuidLang = Language.uuidEnglish;
+		uuidLang = Language.uuidLatin;
 		stepName = "Add 'comb. nov.' status to nom. status types";
 		termType = TermType.NomenclaturalStatusType;
 		list.add( SingleTermUpdater.NewInstance(stepName, termType, uuidTerm, abbrev, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
