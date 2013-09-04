@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.SQLServer2008Dialect;
+
 
 
 /**
@@ -18,7 +21,7 @@ package eu.etaxonomy.cdm.database.types;
 public class SqlServer2008DatabaseType extends SqlServer2005DatabaseType {
     
     //hibernate dialect
-    protected String hibernateDialect = "SQLServer2008Dialect" ;
+    protected Dialect hibernateDialect = new SQLServer2008Dialect();
     
 	
 	//Constructor

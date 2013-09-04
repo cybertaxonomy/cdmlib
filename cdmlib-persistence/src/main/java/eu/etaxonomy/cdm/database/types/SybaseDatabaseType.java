@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.SybaseDialect;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
@@ -28,7 +31,7 @@ public class SybaseDatabaseType extends DatabaseTypeBase {
     //port
     private int defaultPort = 4100;
     //hibernate dialect
-    private String hibernateDialect = "SybaseDialect";
+    private Dialect hibernateDialect = new SybaseDialect();
 
     private static String dbSeparator = "/";
     

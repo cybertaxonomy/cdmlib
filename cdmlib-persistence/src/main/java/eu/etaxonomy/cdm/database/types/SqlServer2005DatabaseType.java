@@ -12,6 +12,9 @@ package eu.etaxonomy.cdm.database.types;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.SQLServer2005Dialect;
+
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -37,7 +40,7 @@ public class SqlServer2005DatabaseType extends DatabaseTypeBase {
     protected int defaultPort = 1433;
     
     //hibernate dialect
-    protected String hibernateDialect = "SQLServer2005Dialect";
+    protected Dialect hibernateDialect = new SQLServer2005Dialect();
  
     public String getConnectionString(ICdmDataSource ds, int port){
     	return getConnectionString(ds, port, null);

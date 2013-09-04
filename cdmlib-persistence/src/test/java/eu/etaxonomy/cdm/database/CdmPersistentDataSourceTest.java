@@ -192,7 +192,7 @@ public class CdmPersistentDataSourceTest {
 		
 		Properties properties = (Properties)propValue.getValue();
 		assertEquals(hbm2dll.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
-		assertEquals(dataSource.getDatabaseType().getHibernateDialect(), properties.getProperty("hibernate.dialect"));
+		assertEquals(dataSource.getDatabaseType().getHibernateDialectCanonicalName(), properties.getProperty("hibernate.dialect"));
 		assertEquals(NoCachingRegionFactory.class.getName(), properties.getProperty("hibernate.cache.region.factory_class"));
 		assertEquals(String.valueOf(false), properties.getProperty("hibernate.show_sql"));
 		assertEquals(String.valueOf(false), properties.getProperty("hibernate.format_sql"));
@@ -229,7 +229,7 @@ public class CdmPersistentDataSourceTest {
 		
 		Properties properties = (Properties)propValue.getValue();
 		assertEquals(hbm2dll.toString(), properties.getProperty("hibernate.hbm2ddl.auto"));
-		assertEquals(dataSource.getDatabaseType().getHibernateDialect(), properties.getProperty("hibernate.dialect"));
+		assertEquals(dataSource.getDatabaseType().getHibernateDialectCanonicalName(), properties.getProperty("hibernate.dialect"));
 		assertEquals(cacheProviderClass.getName(), properties.getProperty("hibernate.cache.region.factory_class"));
 		assertEquals(String.valueOf(showSql), properties.getProperty("hibernate.show_sql"));
 		assertEquals(String.valueOf(formatSql), properties.getProperty("hibernate.format_sql"));

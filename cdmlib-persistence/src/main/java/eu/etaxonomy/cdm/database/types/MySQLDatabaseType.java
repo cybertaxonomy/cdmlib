@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5InnoDBUtf8Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 
@@ -36,10 +38,9 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     private static String dbSeparator = "/";
 
     //hibernate dialect
-    // TODO switch to MySQLInnoDBUtf8Dialect !!
     // see #3371 (switch cdm to MySQL InnoDB)
-     private String hibernateDialect = MySQL5InnoDBUtf8Dialect.class.getSimpleName();
-//    private final String hibernateDialect = MySQL5MyISAMUtf8Dialect.class.getSimpleName();
+    private Dialect hibernateDialect = new MySQL5InnoDBUtf8Dialect();
+//    private Dialect hibernateDialect = MySQL5MyISAMUtf8Dialect.getDialect();
 
     //connection String
 	@Override

@@ -79,7 +79,7 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 				datasource.executeUpdate(updateQuery);
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, columnName, referencedTable);
+				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, columnName, referencedTable);
 			}
 				
 			return result;

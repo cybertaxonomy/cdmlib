@@ -56,6 +56,7 @@ public interface ICdmDataSource {
 	public String getServer();
 
 	/**
+	 * Returns the name of the datasource on the given server.
 	 * @return
 	 */
 	public String getDatabase();
@@ -125,7 +126,9 @@ public interface ICdmDataSource {
 	public NomenclaturalCode getNomenclaturalCode();
 
 	/**
-	 * Returns a single the first value of a row of a resultset.<BR>
+	 * Returns the first value of the first row of a result set.<BR>
+	 * If no row exists in the result set
+	 * <code>null</code> is returned.
 	 * 
 	 * <strong>Caution</strong> This method opens a connection on first use. Subsequent calls will use the same connection.
 	 * Please close the connection when not needed anymore with {@link ICdmDataSource#closeOpenConnections()}

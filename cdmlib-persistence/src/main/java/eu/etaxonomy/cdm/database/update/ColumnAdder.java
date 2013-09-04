@@ -96,7 +96,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 				datasource.executeUpdate(updateQuery);
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, newColumnName, referencedTable);
+				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable);
 			}
 			
 			return result;
@@ -158,6 +158,12 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 	}
 	
 
+	/**
+	 * Returns the sql keywords for adding a column. This is usually 'ADD' or 'ADD COLUMN'
+	 * @param datasource
+	 * @return
+	 * @throws DatabaseTypeNotSupportedException
+	 */
 	public static String getAddColumnSeperator(ICdmDataSource datasource) throws DatabaseTypeNotSupportedException {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		if (type.equals(DatabaseTypeEnum.SqlServer2005)){
