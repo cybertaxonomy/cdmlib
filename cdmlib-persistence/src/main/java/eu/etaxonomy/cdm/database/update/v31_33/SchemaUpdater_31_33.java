@@ -106,7 +106,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//CHECKS
 		
 		//remove SpecimenOrObservationBase_Media #3597
-		  //TODO check if SpecimenOrObservationBase_Media has data => move to first position, don't run update if data exists
 		  //TODO check if Description -Specimen Relation has M:M data
 		if (false){
 			throw new RuntimeException("Required check for SpecimenOrObservationBase_Media");
