@@ -1257,6 +1257,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2008Da
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/AuditedSchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ClassChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnAdder.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnNameChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnRemover.java -text
@@ -1301,6 +1302,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpd
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v30_31/TermUpdater_31_311.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/RankClassUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/SchemaUpdater_31_33.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/SpecimenMediaMoverUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermUpdater_31_33.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AnnotationTypeAutoInitializer.java -text

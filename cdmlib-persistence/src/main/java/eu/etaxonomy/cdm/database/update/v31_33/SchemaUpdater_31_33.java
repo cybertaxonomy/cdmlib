@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import com.sun.tools.xjc.reader.gbind.Sequence;
 
+import eu.etaxonomy.cdm.database.update.ClassChanger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -334,6 +336,16 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing("SpecimenOrObservationBase");
 		stepList.add(step);
 
+		stepName = "Update Specimen -> DerivedUnit";
+		String newClass = "eu.etaxonomy.cdm.model.occurrence.DerivedUnit";
+		String[] oldClassPaths = new String[]{
+				"eu.etaxonomy.cdm.model.occurrence.Specimen"
+				,"eu.etaxonomy.cdm.model.occurrence.Fossil"
+				,"eu.etaxonomy.cdm.model.occurrence.LivingBeing"
+				,"eu.etaxonomy.cdm.model.occurrence.Observation"
+			};
+		step = ClassChanger.NewIdentifiableInstance(stepName, tableName, newClass, oldClassPaths, INCLUDE_AUDIT);
+		stepList.add(step);
 		
 		
 		//update DTYPE FieldObservation -> FieldUnit #3351
@@ -342,6 +354,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" SET sob.DTYPE = 'FieldUnit' " +
 				" WHERE sob.DTYPE = 'FieldObservation' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing("SpecimenOrObservationBase");
+		stepList.add(step);
+
+		stepName = "Update Specimen -> DerivedUnit";
+		newClass = "eu.etaxonomy.cdm.model.occurrence.FieldUnit";
+		oldClassPaths = new String[]{
+				"eu.etaxonomy.cdm.model.occurrence.FieldObservation"
+			};
+		step = ClassChanger.NewIdentifiableInstance(stepName, tableName, newClass, oldClassPaths, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//add kindOfUnit to SpecimenOrObservationBase
@@ -475,6 +495,11 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 
 		//TODO add DnaMarker vocabulary and terms #3591 => TermUpdater
+		
+		//move specimen imdages
+		stepName = "Move images from SpecimenOrObservationBase_Media to image gallery";
+		step = SpecimenMediaMoverUpdater.NewInstance();
+		stepList.add(step);
 		
 		//SpecimenOrObservationBase_Media #3597
 		stepName = "Remove table SpecimenOrObservationBase_Media";
@@ -883,7 +908,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 	private void updateReferenceType(List<ISchemaUpdaterStep> stepList) {
 		
-		String stepName = "Update reference refType for Reference";
 		String baseQuery = " UPDATE Reference " + 
 			" SET refType = '%s' " +
 			" WHERE refType = '%s' ";
@@ -891,81 +915,97 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String tableName = "Reference";
 		
 		//0-Article
+		String stepName = "Update reference refType for Article";
 		String query = String.format(baseQuery, ReferenceType.Article.getKey(), String.valueOf(index++));
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//1-Book
+		stepName = "Update reference refType for Book";
 		query = String.format(baseQuery, ReferenceType.Book.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//2-Book Section
+		stepName = "Update reference refType for Book Section";
 		query = String.format(baseQuery, ReferenceType.BookSection.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//3-CD / DVD
+		stepName = "Update reference refType for CD";
 		query = String.format(baseQuery, ReferenceType.CdDvd.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//4-Database
+		stepName = "Update reference refType for Database";
 		query = String.format(baseQuery, ReferenceType.Database.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//5-Generic
+		stepName = "Update reference refType for Generic";
 		query = String.format(baseQuery, ReferenceType.Generic.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//6-InProceedings
+		stepName = "Update reference refType for InProceedings";
 		query = String.format(baseQuery, ReferenceType.InProceedings.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		//7-Journal
+		stepName = "Update reference refType for Journal";
 		query = String.format(baseQuery, ReferenceType.Journal.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 		
 		//8-Map
+		stepName = "Update reference refType for Map";
 		query = String.format(baseQuery, ReferenceType.Map.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 		
 		//9-Patent
+		stepName = "Update reference refType for Patent";
 		query = String.format(baseQuery, ReferenceType.Patent.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 		
 		//10-Personal Communication
+		stepName = "Update reference refType for Personal Communication";
 		query = String.format(baseQuery, ReferenceType.PersonalCommunication.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 		
 		//11-PrintSeries
+		stepName = "Update reference refType for PrintSeries";
 		query = String.format(baseQuery, ReferenceType.PrintSeries.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 		
 		//12-Proceedings
+		stepName = "Update reference refType for Proceedings";
 		query = String.format(baseQuery, ReferenceType.Proceedings.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);;
 		stepList.add(step);
 		
 		//13-Report
+		stepName = "Update reference refType for Report";
 		query = String.format(baseQuery, ReferenceType.Report.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);;
 		stepList.add(step);
 		
 		//14-Thesis
+		stepName = "Update reference refType for Thesis";
 		query = String.format(baseQuery, ReferenceType.Thesis.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);;
 		stepList.add(step);
 
 		//15-WebPage
+		stepName = "Update reference refType for WebPage";
 		query = String.format(baseQuery, ReferenceType.WebPage.getKey(), String.valueOf(index++));
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);;
 		stepList.add(step);
