@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStr
 /**
  * @author a.mueller
  * @created 03.08.2009
- * @version 1.0
  */
 public class DefaultMergeStrategyTest {
 	@SuppressWarnings("unused")

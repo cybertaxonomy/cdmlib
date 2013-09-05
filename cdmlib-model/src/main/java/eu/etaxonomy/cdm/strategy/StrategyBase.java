@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -85,7 +86,8 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 				fieldType == DateTime.class ||
 				fieldType == LSID.class ||
 				fieldType == Contact.class ||
-				fieldType == URI.class
+				fieldType == URI.class ||
+				fieldType == DOI.class
 			){
 				return true;
 		}else{
