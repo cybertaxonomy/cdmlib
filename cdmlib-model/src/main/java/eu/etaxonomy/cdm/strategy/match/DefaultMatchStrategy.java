@@ -28,6 +28,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -210,6 +211,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 				}else if(fieldType == UUID.class){
 					//result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(fieldType == URI.class){
+					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+				}else if(fieldType == DOI.class){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(isSingleCdmBaseObject(fieldType)){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);

@@ -45,6 +45,7 @@ import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -207,10 +208,10 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
     @XmlElement(name = "Doi")
     @Field
-    @NullOrNotEmpty
-	@Length(max = 255)
-//	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.doi.message}")
-	protected String doi;
+//    @NullOrNotEmpty
+//	@Length(max = 1000)
+    @Type(type="doiUserType")
+    protected DOI doi;
 
 
 	@XmlElement(name = "ISSN")
@@ -487,12 +488,12 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 	
     @Override
-	public String getDoi() {
+	public DOI getDoi() {
 		return doi;
 	}
 
     @Override
-	public void setDoi(String doi) {
+	public void setDoi(DOI doi) {
 		this.doi = doi;
 	}
 
