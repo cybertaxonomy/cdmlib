@@ -147,7 +147,7 @@ public final class DOI implements java.io.Serializable{
 		
 		
 		//now we should have the pure doi
-		if (doi.length() > 1000){
+		if (doi.length() > MAX_LENGTH){
 			//for persistence reason we currently restrict the length of DOIs to 1000
 			throw new IllegalArgumentException("DOIs may have a maximum length of 1000 in the CDM.");
 		}
