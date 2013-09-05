@@ -375,9 +375,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         return newInstance;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter)
-     */
+    @Override
     public void writeCsvLine(CSVWriter writer, T term) {
         String [] line = new String[4];
         line[0] = term.getUuid().toString();
@@ -387,9 +385,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         writer.writeNext(line);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
-     */
     @Transient
     public T getByUuid(UUID uuid){
         return this.vocabulary.findTermByUuid(uuid);

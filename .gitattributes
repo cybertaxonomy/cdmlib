@@ -1081,7 +1081,8 @@ cdmlib-model/src/main/resources/terms/AnnotationType.csv -text
 cdmlib-model/src/main/resources/terms/Continent.csv -text
 cdmlib-model/src/main/resources/terms/DerivationEventType.csv -text
 cdmlib-model/src/main/resources/terms/DeterminationModifier.csv -text
-cdmlib-model/src/main/resources/terms/DnaMarker.csv -text
+cdmlib-model/src/main/resources/terms/DnaMarkerChloroplast.csv -text
+cdmlib-model/src/main/resources/terms/DnaMarkerEukaryote.csv -text
 cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
