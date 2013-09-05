@@ -38,7 +38,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
@@ -51,8 +50,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 })
 @XmlSeeAlso({
     DefinedTermBase.class,
-    TermVocabulary.class,
-    FeatureTree.class
+    TermVocabulary.class
 })
 @MappedSuperclass
 @Audited

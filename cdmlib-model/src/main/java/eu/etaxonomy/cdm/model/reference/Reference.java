@@ -42,10 +42,13 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
+import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -208,9 +211,9 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
     @XmlElement(name = "Doi")
     @Field
-//    @NullOrNotEmpty
-//	@Length(max = 1000)
     @Type(type="doiUserType")
+    @FieldBridge(impl = DoiBridge.class)
+    @Column(length=DOI.MAX_LENGTH)
     protected DOI doi;
 
 

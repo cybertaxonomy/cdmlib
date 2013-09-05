@@ -32,6 +32,7 @@ public final class DOI implements java.io.Serializable{
      */
 	private static final long serialVersionUID = -3871039785359980553L;
 
+	public static final int MAX_LENGTH = 1000;
 
 	/**
 	 * The default public DOI proxy server
@@ -72,6 +73,8 @@ public final class DOI implements java.io.Serializable{
 	
 	
 // ******************************* CONSTRUCTOR ************************************/	
+	private DOI(){}; //empty constructor required for JAXB
+	
 	
     /**
      * Creates a doi by its registrantCode and its suffix
