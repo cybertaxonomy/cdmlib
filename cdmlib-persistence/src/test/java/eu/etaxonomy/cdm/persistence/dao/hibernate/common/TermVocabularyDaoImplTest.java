@@ -59,7 +59,7 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		//with subclasses
 		List<TermVocabulary<? extends NamedArea>> namedAreaVocabularies = dao.listByTermClass(NamedArea.class, true, false, null, null, null, null);
 		int subclassedSize = namedAreaVocabularies.size();
-		assertEquals("There should be 3 vocabularies (TdwgAreas, Continents, WaterbodyOrCountries)", 3, subclassedSize);
+		assertEquals("There should be 3 vocabularies (TdwgAreas, Continents, WaterbodyOrCountries)", 4, subclassedSize);
 		
 		List<TermVocabulary<? extends NamedArea>> namedAreaOnlyVocabularies = dao.listByTermClass(NamedArea.class, false, false, null, null, null, null);
 		List<TermVocabulary<? extends WaterbodyOrCountry>> countryVocabularies = dao.listByTermClass(WaterbodyOrCountry.class, false, false, null, null, null, null);

@@ -103,12 +103,14 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     
     public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
     public static final UUID uuidContinentVocabulary = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
+    public static final UUID uuidWaterbodyVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
 
     private static Map<String, UUID> tdwgAbbrevMap = null;
     private static Map<String, UUID> tdwglabelMap = null;
 
-    protected static Map<UUID, NamedArea> tdwgTermMap = null;
+    private static Map<UUID, NamedArea> tdwgTermMap = null;
     private static Map<UUID, NamedArea> continentMap = null;		
+    private static Map<UUID, NamedArea> waterbodyMap = null;		
 
     
     private static Map<UUID, NamedArea> termMap = null;
@@ -310,10 +312,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         super.setIncludes(includes);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
-     */
     @Override
     public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
@@ -326,22 +324,22 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             newInstance.setLevel(level);
         }
 
-        String partOfString = csvLine.get(7);
-
-        if(partOfString != null && partOfString.length() != 0) {
-            UUID partOfUuid = UUID.fromString(partOfString);
-            NamedArea partOf = (NamedArea)terms.get(partOfUuid);
-            partOf.addIncludes(newInstance);
-        }
+//        String partOfString = csvLine.get(7);
+//
+//        if(partOfString != null && partOfString.length() != 0) {
+//            UUID partOfUuid = UUID.fromString(partOfString);
+//            NamedArea partOf = (NamedArea)terms.get(partOfUuid);
+//            partOf.addIncludes(newInstance);
+//        }
         return newInstance;
     }
+    
+	@Override
+	protected int partOfCsvLineIndex(){
+		return 7;
+	}
 
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-     */
     @Override
     public void resetTerms(){
         termMap = null;
@@ -349,6 +347,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
    		tdwglabelMap = null;
    		tdwgTermMap = null;
    		continentMap = null;
+   		waterbodyMap = null;
     }
     
 	@Deprecated //preliminary, will be removed in future
@@ -359,6 +358,15 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 			return (NamedArea)continentMap.get(uuid);
 		}
 	}
+	
+    @Deprecated //preliminary, will be removed in future
+    protected static NamedArea getWaterbodyByUuid(UUID uuid){
+		if (waterbodyMap == null){
+			return null;
+		}else{
+			return (NamedArea)waterbodyMap.get(uuid);
+		}
+    }
     
     @Deprecated //preliminary, will be removed in future
     protected static NamedArea getTdwgTermByUuid(UUID uuid){
@@ -458,6 +466,13 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 			continentMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
 		}
 	}
+
+	protected void setDefaultWaterbodyTerms(TermVocabulary<NamedArea> termVocabulary) {
+		waterbodyMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			waterbodyMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+		}
+	}
 	
 	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
         tdwgTermMap = new HashMap<UUID, NamedArea>();
@@ -520,6 +535,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         	this.setTdwgDefaultTerms(termVocabulary);
         }else if (termVocabulary.getUuid().equals(this.uuidContinentVocabulary)){
         	this.setDefaultContinentTerms(termVocabulary);
+        }else if (termVocabulary.getUuid().equals(this.uuidWaterbodyVocabulary)){
+        	this.setDefaultWaterbodyTerms(termVocabulary);
         }else{
 	    	termMap = new HashMap<UUID, NamedArea>();
 	        for (NamedArea term : termVocabulary.getTerms()){
@@ -719,9 +736,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
 // ******************* toString **********************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
-     */
     @Override
     public String toString(){
         String result, label, level = "";
