@@ -69,7 +69,7 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 		}
 		
 		//check if in use
-		if (! checkTermInUse(datasource, monitor, id)){
+		if (checkTermInUse(datasource, monitor, id)){
 			return 0;
 		}
 		
@@ -83,7 +83,7 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 		
 		//get representation ids
 		List<Integer> repIDs = new ArrayList<Integer>();
-		getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation");
+		getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation" );
 		getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation");
 		
 		//remove MN table
@@ -105,7 +105,7 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 
 	private void getRepIds(ICdmDataSource datasource, int id,
 			List<Integer> repIDs, String mnRepresentationIdAttr, String mnTableName) throws SQLException {
-		String sql = " SELECT DISTINCT %s as repId FROM %s WHERE @mnTermIdName = %d";
+		String sql = " SELECT DISTINCT %s as repId FROM %s WHERE DefinedTermBase_id = %d";
 		sql = String.format(sql, mnRepresentationIdAttr, mnTableName, id);
 		ResultSet rs = datasource.executeQuery(sql);
 		while (rs.next()){
@@ -119,8 +119,8 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 	private boolean checkTermInUse(ICdmDataSource datasource, IProgressMonitor monitor, int id) throws SQLException {
 		for (String query : checkUsedQueries){
 			query = String.format(query, id);
-			Integer i = (Integer)datasource.getSingleValue(query);
-			if (i != null && i>0){
+			Number i = (Number)datasource.getSingleValue(query);
+			if (i != null && (Long)i > 0.0){
 				return true;
 			}
 		}

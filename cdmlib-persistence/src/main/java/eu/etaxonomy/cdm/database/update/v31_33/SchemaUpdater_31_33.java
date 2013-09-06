@@ -1456,15 +1456,87 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				" WHERE dtb.uuid = '881b9c80-626d-47a6-b308-a63ee5f4178f' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
 		stepList.add(step);
+
+		stepName = "Update idInVocabulary for dummy stage";
+		query = " UPDATE DefinedTermBase dtb " +
+				" SET dtb.idinvocabulary = 'sgd' " +
+				" WHERE dtb.uuid = '48f8e8a7-a2ac-4974-9ce8-6944afc5095e' ";
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
+		stepList.add(step);
+
+		stepName = "Update idInVocabulary for dummy modifier";
+		query = " UPDATE DefinedTermBase dtb " +
+				" SET dtb.idinvocabulary = 'md' " +
+				" WHERE dtb.uuid = 'efc38dad-205c-4028-ad9d-ae509a14b37a' ";
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
+		stepList.add(step);
+
+		//Remove state dummy
+		stepName = "Remove state dummy if possible";
+		uuid = "881b9c80-626d-47a6-b308-a63ee5f4178f";
+		String checkUsed = " SELECT count(*) as n FROM StateData sd " +
+				" WHERE sd.state_id = %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
+		stepList.add(step);
 		
-		//Reomve institution type dummy
-		//TODO seems not to work
+		//Remove institution type dummy
 		stepName = "Remove institution type dummy term";
-		uuid = "29ad808b-3126-4274-be81-4561e7afc76f";
-		String checkUsed = " SELECT count(*) as n FROM AgentBase_DefinedTermBase MN " +
+		uuid = "bea94a6c-472b-421c-abc1-52f797c51dbf";
+		checkUsed = " SELECT count(*) as n FROM AgentBase_DefinedTermBase MN " +
 				" WHERE MN.types_id = %d ";
 		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
 		stepList.add(step);
+
+		//Remove scope dummy
+		stepName = "Remove scope dummy term";
+		uuid = "2ace7f1f-4ce6-47e1-8a65-e3f6b724876c";
+		checkUsed = " SELECT count(*) as n FROM DescriptionBase_Scope MN " +
+				" WHERE MN.scopes_id = %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
+		stepList.add(step);
+		
+		//Remove stage dummy
+		stepName = "Remove stage dummy term";
+		uuid = "48f8e8a7-a2ac-4974-9ce8-6944afc5095e";
+		checkUsed = " SELECT count(*) as n FROM DescriptionBase_Scope MN " +
+				" WHERE MN.scopes_id = %d ";
+		String checkUsed2 = " SELECT count(*) as n FROM SpecimenOrObservationBase osb " +
+				" WHERE osb.lifestage_id =  %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed)
+				.addCheckUsedQuery(checkUsed2);
+		stepList.add(step);
+
+		//Remove text format dummy
+		stepName = "Remove text format dummy if possible";
+		uuid = "5d095782-d99c-46bc-a158-edb2e47c9b63";
+		checkUsed = " SELECT count(*) as n FROM DescriptionElementBase deb " +
+				" WHERE deb.format_id = %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
+		stepList.add(step);
+
+		//Remove modifier dummy
+		stepName = "Remove modifier dummy if possible";
+		uuid = "efc38dad-205c-4028-ad9d-ae509a14b37a";
+		checkUsed = " SELECT count(*) as n FROM DescriptionElementBase_Modifier MN " +
+				" WHERE MN.modifiers_id = %d ";
+		checkUsed2 = " SELECT count(*) as n FROM StateData_DefinedTermBase MN " +
+				" WHERE MN.modifiers_id = %d ";
+		String checkUsed3 = " SELECT count(*) as n FROM StatisticalMeasurementValue_DefinedTermBase MN " +
+				" WHERE MN.modifiers_id = %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed)
+				.addCheckUsedQuery(checkUsed2)
+				.addCheckUsedQuery(checkUsed3);
+		stepList.add(step);
+		
+		//Remove text preservation method dummy
+		stepName = "Remove preservation method dummy if possible";
+		uuid = "3edc2633-365b-4a9b-bc3a-f3f85f59dbdf";
+		checkUsed = " SELECT count(*) as n FROM SpecimenOrObservationBase osb " +
+				" WHERE osb.preservation_id =  %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
+		stepList.add(step);
+		
+		
 		
 		//Split WaterbodyOrCountry Vocabulary  #3700
 		stepName = "Create Waterbody vocabulary";
