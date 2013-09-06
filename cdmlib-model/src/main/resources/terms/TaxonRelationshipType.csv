@@ -1,4 +1,4 @@
-"15db0cf7-7afc-4a86-a7d4-221c73b0c9ac",,"TaxonRelationshipType","TaxonRelationshipType","TRT","1"
+"15db0cf7-7afc-4a86-a7d4-221c73b0c9ac",,"Taxon Relationship Type","Taxon Relationship Type","TRT","1"
 "d13fecdf-eb44-4dd7-9244-26679c05df1c",,"Taxonomically Included in","Taxonomically Included in","⊂","Taxonomically Includes","Taxonomically Includes","⊃",FALSE,TRUE
 "1ed87175-59dd-437e-959e-0d71583d8417",,"Misapplied Name for","Misapplied Name for","–","Has Misapplied Name","Has Misapplied Name",,FALSE,FALSE
 "605b1d01-f2b1-4544-b2e0-6f08def3d6ed",,"Invalid Designation for","Invalid Designation for","–","Has Invalid Designation","Has Invalid Designation",,FALSE,FALSE
