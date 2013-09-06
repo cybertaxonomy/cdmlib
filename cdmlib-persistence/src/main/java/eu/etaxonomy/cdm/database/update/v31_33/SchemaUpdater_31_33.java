@@ -1544,8 +1544,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
 		stepList.add(step);
 		
-		
-		
 		//Split WaterbodyOrCountry Vocabulary  #3700
 		stepName = "Create Waterbody vocabulary";
 		UUID uuidVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
@@ -1571,6 +1569,39 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 			.addTermUuid(UUID.fromString("aa96ca19-46ab-c953-a494-96886eb7108a"))
 			.addTermUuid(UUID.fromString("aa96ca19-46ab-4114-a494-96886eb7108a"))
 			;
+		stepList.add(step);
+		
+		//update waterbody uuids   #3705   AND waterbody DTYPE to NamedArea and sortindex new #3700
+		stepName = "Update waterbody uuids";
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 1, uuid = 'af4271e5-8897-4e6f-9db7-54ea4f28cfc0' WHERE uuid = 'aa96ca19-46ab-6365-af29-e4842f13eb4c' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 2, uuid = '77e79804-1b17-4c99-873b-933fe216e3da' WHERE uuid = '36aea55c-46ab-6365-af29-e4842f13eb4c' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 3, uuid = '3d68a327-104c-49d5-a2d8-c71c6600181b' WHERE uuid = '36aea55c-892c-6365-af29-e4842f13eb4c' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 4, uuid = 'ff744a37-5990-462c-9c20-1e85a9943851' WHERE uuid = '36aea55c-892c-4114-af29-d4b287f76fab' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 5, uuid = 'ef04f363-f67f-4a2c-8d98-110de4c5f654' WHERE uuid = 'aa96ca19-892c-4114-af29-d4b287f76fab' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 6, uuid = '8811a47e-29d6-4455-8f83-8916b78a692f' WHERE uuid = 'aa96ca19-892c-4114-a494-d4b287f76fab' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 7, uuid = '4cb4bbae-9aab-426c-9025-e34f809165af' WHERE uuid = 'd4cf6c57-892c-4114-bf57-96886eb7108a' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 8, uuid = '598fec0e-b93a-4947-a1f3-601e380797f7' WHERE uuid = 'd4cf6c57-892c-c953-a494-96886eb7108a' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 9, uuid = 'ee69385e-6c80-405c-be6e-974e9fd1e297' WHERE uuid = 'aa96ca19-46ab-c953-a494-96886eb7108a' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'NamedArea', orderindex = 10, uuid = '8dc16e70-74b8-4143-95cf-a659a319a854' WHERE uuid = 'aa96ca19-46ab-4114-a494-96886eb7108a' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
 		stepList.add(step);
 		
 		

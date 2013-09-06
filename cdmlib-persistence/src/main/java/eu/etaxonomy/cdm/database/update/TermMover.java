@@ -22,7 +22,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * Moves terms from one vocabulary to another.
  * TODO does not yet check all DefinedTermBase_XXX tables except for representations.
- * Does also not handle AUD tables
+ * TODO Does also not handle AUD tables
+ * TODO Does not handle orderindex
  * 
  * @author a.mueller
  * @date 06.09.2013
