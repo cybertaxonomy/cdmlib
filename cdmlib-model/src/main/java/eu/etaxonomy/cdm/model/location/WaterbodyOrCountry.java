@@ -322,16 +322,17 @@ public class WaterbodyOrCountry extends NamedArea {
 	private static final UUID uuidYemen = UUID.fromString("713e1840-ff18-4a96-bc32-3da2b048c77d");
 	private static final UUID uuidZambiaRepublicof = UUID.fromString("90318040-d346-4c8f-be69-fa8ade0b12d9");
 	private static final UUID uuidZimbabwe = UUID.fromString("aa96ca19-46ab-40ad-a494-e4842f13eb4c");
-	private static final UUID uuidArcticOcean = UUID.fromString("aa96ca19-46ab-6365-af29-e4842f13eb4c");
-	private static final UUID uuidAtlanticOcean = UUID.fromString("36aea55c-46ab-6365-af29-e4842f13eb4c");
-	private static final UUID uuidPacificOcean = UUID.fromString("36aea55c-892c-6365-af29-e4842f13eb4c");
-	private static final UUID uuidIndianOcean = UUID.fromString("36aea55c-892c-4114-af29-d4b287f76fab");
-	private static final UUID uuidSouthernOcean = UUID.fromString("aa96ca19-892c-4114-af29-d4b287f76fab");
-	private static final UUID uuidMediterraneanSea = UUID.fromString("aa96ca19-892c-4114-a494-d4b287f76fab");
-	private static final UUID uuidBlackSea = UUID.fromString("d4cf6c57-892c-4114-bf57-96886eb7108a");
-	private static final UUID uuidCaspianSea = UUID.fromString("d4cf6c57-892c-c953-a494-96886eb7108a");
-	private static final UUID uuidRedSea = UUID.fromString("aa96ca19-46ab-c953-a494-96886eb7108a");
-	private static final UUID uuidPersianGulf = UUID.fromString("aa96ca19-46ab-4114-a494-96886eb7108a");
+	
+	private static final UUID uuidArcticOcean = UUID.fromString("af4271e5-8897-4e6f-9db7-54ea4f28cfc0");
+	private static final UUID uuidAtlanticOcean = UUID.fromString("77e79804-1b17-4c99-873b-933fe216e3da");
+	private static final UUID uuidPacificOcean = UUID.fromString("3d68a327-104c-49d5-a2d8-c71c6600181b");
+	private static final UUID uuidIndianOcean = UUID.fromString("ff744a37-5990-462c-9c20-1e85a9943851");
+	private static final UUID uuidSouthernOcean = UUID.fromString("ef04f363-f67f-4a2c-8d98-110de4c5f654");
+	private static final UUID uuidMediterraneanSea = UUID.fromString("8811a47e-29d6-4455-8f83-8916b78a692f");
+	private static final UUID uuidBlackSea = UUID.fromString("4cb4bbae-9aab-426c-9025-e34f809165af");
+	private static final UUID uuidCaspianSea = UUID.fromString("598fec0e-b93a-4947-a1f3-601e380797f7");
+	private static final UUID uuidRedSea = UUID.fromString("ee69385e-6c80-405c-be6e-974e9fd1e297");
+	private static final UUID uuidPersianGulf = UUID.fromString("8dc16e70-74b8-4143-95cf-a659a319a854");
 
 	public static final WaterbodyOrCountry AFGHANISTAN () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAfghanistan );}
 	public static final WaterbodyOrCountry ALBANIAPEOPLESSOCIALISTREPUBLICOF () { return (WaterbodyOrCountry)termMap.get(WaterbodyOrCountry.uuidAlbaniaPeoplesSocialistRepublicof );}
