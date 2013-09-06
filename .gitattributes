@@ -1280,11 +1280,13 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/MnTableCreator
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SchemaUpdaterStepBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SimpleSchemaUpdaterStep.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermRemover.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SingleTermUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/SortIndexUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableDroper.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TableNameChanger.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermMover.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermRepresentationUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TermUpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/TreeIndexUpdater.java -text

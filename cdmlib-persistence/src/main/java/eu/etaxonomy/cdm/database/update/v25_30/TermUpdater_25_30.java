@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.database.update.v24_25.TermUpdater_24_25;
 import eu.etaxonomy.cdm.database.update.v30_31.TermUpdater_30_31;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * @author a.mueller
@@ -87,7 +88,7 @@ public class TermUpdater_25_30 extends TermUpdaterBase implements ITermUpdater {
 		abbrev = "undef. lang.";
 		boolean isOrdered = false;
 		Class termClass = Language.class;
-		VocabularyCreator updater = VocabularyCreator.NewVocabularyInstance(uuidUndefLanguagesVoc, description, label, abbrev, isOrdered, termClass);
+		VocabularyCreator updater = VocabularyCreator.NewVocabularyInstance(uuidUndefLanguagesVoc, description, label, abbrev, isOrdered, termClass, TermType.Language);
 		list.add(updater);
 		
 		// unknown language

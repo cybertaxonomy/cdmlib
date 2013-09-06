@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database.update.v31_33;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -27,11 +28,14 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.MnTableCreator;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SingleTermRemover;
 import eu.etaxonomy.cdm.database.update.SortIndexUpdater;
 import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.TableNameChanger;
+import eu.etaxonomy.cdm.database.update.TermMover;
 import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
+import eu.etaxonomy.cdm.database.update.VocabularyCreator;
 import eu.etaxonomy.cdm.database.update.v30_31.SchemaUpdater_30_301;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -59,7 +63,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -1446,6 +1449,50 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				TermType.TextFormat.getKey(), TermType.Modifier.getKey(), TermType.PreservationMethod.getKey()))
 				.setDefaultAuditing(tableName);
 		stepList.add(step);
+		
+		stepName = "Update idInVocabulary for dummy state";
+		query = " UPDATE DefinedTermBase dtb " +
+				" SET dtb.idinvocabulary = 'std' " +
+				" WHERE dtb.uuid = '881b9c80-626d-47a6-b308-a63ee5f4178f' ";
+		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
+		stepList.add(step);
+		
+		//Reomve institution type dummy
+		//TODO seems not to work
+		stepName = "Remove institution type dummy term";
+		uuid = "29ad808b-3126-4274-be81-4561e7afc76f";
+		String checkUsed = " SELECT count(*) as n FROM AgentBase_DefinedTermBase MN " +
+				" WHERE MN.types_id = %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
+		stepList.add(step);
+		
+		//Split WaterbodyOrCountry Vocabulary  #3700
+		stepName = "Create Waterbody vocabulary";
+		UUID uuidVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
+		String description = "Major Waterbodies of the World";
+		String label = "Waterbody";
+		String abbrev = null;
+		boolean isOrdered = false;
+		TermType termType = TermType.NamedArea;
+		Class<?> termClass = NamedArea.class;
+		step = VocabularyCreator.NewVocabularyInstance(uuidVocabulary, description, label, abbrev, isOrdered, termClass, termType);
+		stepList.add(step);
+		
+		stepName = "Move waterbodies to new vocabulary";
+		UUID newVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
+		step = TermMover.NewInstance(stepName, newVocabulary, "aa96ca19-46ab-6365-af29-e4842f13eb4c")
+			.addTermUuid(UUID.fromString("36aea55c-46ab-6365-af29-e4842f13eb4c"))
+			.addTermUuid(UUID.fromString("36aea55c-892c-6365-af29-e4842f13eb4c"))
+			.addTermUuid(UUID.fromString("36aea55c-892c-4114-af29-d4b287f76fab"))
+			.addTermUuid(UUID.fromString("aa96ca19-892c-4114-af29-d4b287f76fab"))
+			.addTermUuid(UUID.fromString("aa96ca19-892c-4114-a494-d4b287f76fab"))
+			.addTermUuid(UUID.fromString("d4cf6c57-892c-4114-bf57-96886eb7108a"))
+			.addTermUuid(UUID.fromString("d4cf6c57-892c-c953-a494-96886eb7108a"))
+			.addTermUuid(UUID.fromString("aa96ca19-46ab-c953-a494-96886eb7108a"))
+			.addTermUuid(UUID.fromString("aa96ca19-46ab-4114-a494-96886eb7108a"))
+			;
+		stepList.add(step);
+		
 		
 		//NULL for empty strings
 		stepName = "Update idInVocabulary, replace empty strings by null";
