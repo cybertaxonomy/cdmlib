@@ -1487,6 +1487,14 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
 		stepList.add(step);
 
+		//Remove measurement unit dummy
+		stepName = "Remove measurement unit dummy term";
+		uuid = "e19dd590-5be8-4c93-978f-b78554116289";
+		checkUsed = " SELECT count(*) as n FROM DescriptionElementBase deb " +
+				" WHERE deb.unit_id = %d ";
+		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
+		stepList.add(step);
+		
 		//Remove scope dummy
 		stepName = "Remove scope dummy term";
 		uuid = "2ace7f1f-4ce6-47e1-8a65-e3f6b724876c";
