@@ -349,6 +349,23 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         }
     }
     
+	protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
+        newInstance.setUuid(UUID.fromString(csvLine.get(0)));
+        newInstance.setUri( URI.create(csvLine.get(1)));
+        String label = csvLine.get(2).trim();
+        String description = csvLine.get(3);
+        String abbreviatedLabel = csvLine.get(4);
+        if (StringUtils.isBlank(abbreviatedLabel)){
+        	abbreviatedLabel = null;
+        }
+        if (abbrevAsId){
+        	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
+        }
+        newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
+        
+        return newInstance;
+    }
+    
     protected void readIsPartOf(T newInstance, List<String> csvLine, Map<UUID, DefinedTermBase> terms){
         int index = partOfCsvLineIndex();
  		if (index != -1){
@@ -370,22 +387,6 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 		return -1;
 	}
 
-	protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
-        newInstance.setUuid(UUID.fromString(csvLine.get(0)));
-        newInstance.setUri( URI.create(csvLine.get(1)));
-        String label = csvLine.get(2).trim();
-        String description = csvLine.get(3);
-        String abbreviatedLabel = csvLine.get(4);
-        if (StringUtils.isBlank(abbreviatedLabel)){
-        	abbreviatedLabel = null;
-        }
-        if (abbrevAsId){
-        	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
-        }
-        newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
-        
-        return newInstance;
-    }
 
 	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
 		try {
