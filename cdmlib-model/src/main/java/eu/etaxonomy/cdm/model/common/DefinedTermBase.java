@@ -337,29 +337,40 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
             T newInstance = getInstance(termClass);
-            return readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE(), abbrevAsId);
+            readCsvLine(newInstance, csvLine, Language.CSV_LANGUAGE(), abbrevAsId);
+            readIsPartOf(newInstance, csvLine, terms);
+            return newInstance;
         } catch (Exception e) {
             logger.error(e);
             for(StackTraceElement ste : e.getStackTrace()) {
                 logger.error(ste);
             }
+            throw new RuntimeException(e);
         }
-
-        return null;
     }
     
-	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
-		try {
-			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
-			c.setAccessible(true);
-			T termInstance = c.newInstance();
-			return termInstance;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+    protected void readIsPartOf(T newInstance, List<String> csvLine, Map<UUID, DefinedTermBase> terms){
+        int index = partOfCsvLineIndex();
+ 		if (index != -1){
+	        String partOfString = csvLine.get(index);
+	         if(StringUtils.isNotBlank(partOfString)) {
+	             UUID partOfUuid = UUID.fromString(partOfString);
+	             DefinedTermBase partOf = (DefinedTermBase)terms.get(partOfUuid);
+	             partOf.addIncludes(newInstance);
+	         }
+ 		}
+ 	
+    }
+    
+	/**
+	 * Get the 
+	 * @return
+	 */
+	protected int partOfCsvLineIndex() {
+		return -1;
 	}
 
-    protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
+	protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
         newInstance.setUuid(UUID.fromString(csvLine.get(0)));
         newInstance.setUri( URI.create(csvLine.get(1)));
         String label = csvLine.get(2).trim();
@@ -372,8 +383,20 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
         }
         newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
+        
         return newInstance;
     }
+
+	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+		try {
+			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
+			c.setAccessible(true);
+			T termInstance = c.newInstance();
+			return termInstance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 
     @Override
     public void writeCsvLine(CSVWriter writer, T term) {

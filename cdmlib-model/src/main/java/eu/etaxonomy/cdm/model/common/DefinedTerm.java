@@ -9,6 +9,7 @@
 package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -18,8 +19,11 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
+import org.codehaus.plexus.util.StringUtils;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
+
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 
 /**
@@ -145,5 +149,23 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 			termMap.put(term.getUuid(), (DefinedTerm)term);  //TODO casting
 		}		
 	}
+
+	@Override
+	protected int partOfCsvLineIndex(){
+		return 5;
+	}
+
+//	@Override
+//	void readIsPartOf(DefinedTerm newInstance, List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
+//        int index = 7;
+//		String partOfString = csvLine.get(index);
+//
+//        if(StringUtils.isNotBlank(partOfString)) {
+//            UUID partOfUuid = UUID.fromString(partOfString);
+//            DefinedTerm partOf = (DefinedTerm)terms.get(partOfUuid);
+//            partOf.addIncludes(newInstance);
+//        }
+//		
+//	}
 
 }
