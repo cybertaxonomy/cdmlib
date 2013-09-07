@@ -1617,7 +1617,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//FIXME rename column
+		//rename column
 		stepName = "Rename DefinedTermBase_Country.waterbodiesorcountries_id";
 		tableName = "DefinedTermBase_Country";
 		String oldColumnName = "waterbodiesorcountries_id";
