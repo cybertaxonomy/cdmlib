@@ -87,6 +87,11 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 
 // ********************************* FACTORY METHODS *****************************************/
 
+
+	public static TermVocabulary NewInstance(TermType type){
+		return new TermVocabulary(type);
+	}
+	
 	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
 		return new TermVocabulary(type, description, label, abbrev, termSourceUri);
 	}
@@ -99,6 +104,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		super(TermType.Unknown);
 	}
 
+	protected TermVocabulary(TermType type) {
+		super(type);
+	}
+	
 	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
 		super(type, term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
@@ -182,9 +191,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		String description = csvLine.get(3);
 		
 		//see  http://dev.e-taxonomy.eu/trac/ticket/3550
-//		this.addRepresentation(Representation.NewInstance(description, label, null, lang) );
+		this.addRepresentation(Representation.NewInstance(description, label, null, lang) );
 		//preliminary until above is solved
-		this.setTitleCache(label, true);
+//		this.setTitleCache(label, true);
 		
 		TermType termType = TermType.getByKey(csvLine.get(4));
 		if (termType == null){

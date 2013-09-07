@@ -81,14 +81,12 @@ public class TermLoader implements ITermLoader {
 			String [] nextLine = reader.readNext();
 			
 			//vocabulary
-			TermVocabulary<T> voc = null;
-			String labelAbbrev = null;
-
+			TermVocabulary<T> voc;
 			TermType termType = TermType.Unknown;
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
-				voc = OrderedTermVocabulary.NewInstance(termType, termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = OrderedTermVocabulary.NewInstance(termType);
 			}else{
-				voc = TermVocabulary.NewInstance(termType, termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = TermVocabulary.NewInstance(termType);
 			}
 			
 			if (nextLine != null){

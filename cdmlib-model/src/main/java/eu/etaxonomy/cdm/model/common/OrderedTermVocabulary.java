@@ -43,6 +43,17 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
 
 // ************************* FACTORY METHODS ***********************************************/
+
+	
+	/**
+	 * @param type the {@link TermType term type}, must be the same as for all included terms
+	 * @return
+	 * @throws NullPointerException if type is <code>null</code>
+	 */
+	public static OrderedTermVocabulary NewInstance(TermType type){
+		return new OrderedTermVocabulary(type);
+	}
+	
 	
 	/**
 	 * @param type the {@link TermType term type}, must be the same as for all included terms
@@ -64,6 +75,15 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	@Deprecated
 	protected OrderedTermVocabulary() {
 		super();
+	}
+	
+	/**
+	 * @param term
+	 * @param label
+	 * @param termSourceUri
+	 */
+	protected OrderedTermVocabulary(TermType type) {
+		super(type);
 	}
 	
 	/**
