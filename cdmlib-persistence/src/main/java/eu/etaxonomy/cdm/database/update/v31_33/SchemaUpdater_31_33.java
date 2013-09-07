@@ -474,6 +474,30 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//remove table Sequence_Credit #3360
+		stepName = "Remove table Sequence_Credit";
+		tableName = "Sequence_Credit";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//remove table Sequence_Extension #3360
+		stepName = "Remove table Sequence_Extension";
+		tableName = "Sequence_Extension";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//remove table Sequence_OriginalSourceBase #3360
+		stepName = "Remove table Sequence_OriginalSourceBase";
+		tableName = "Sequence_OriginalSourceBase";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//remove table Sequence_OriginalSourceBase #3360
+		stepName = "Remove table Sequence_Rights";
+		tableName = "Sequence_Rights";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
 		//remove old sequence columns  
 		removeOldSequenceColumns(stepList);
 		
@@ -496,8 +520,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		addTimeperiodToDescriptionElement(stepList);
 
 
-		//TODO add DnaMarker vocabulary and terms #3591 => TermUpdater
-		
 		//move specimen imdages
 		stepName = "Move images from SpecimenOrObservationBase_Media to image gallery";
 		step = SpecimenMediaMoverUpdater.NewInstance();
