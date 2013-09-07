@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 
 /**
  * @author a.mueller
@@ -166,8 +166,8 @@ public class DwcaDistributionRecord extends DwcaRecordBase implements IDwcaAreaR
 		if (area.getVocabulary().getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
 			String locationId = "TDWG:" + area.getIdInVocabulary();
 			this.locationIdString = locationId;
-		}else if (area.isInstanceOf(WaterbodyOrCountry.class)){
-			WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);
+		}else if (area.isInstanceOf(Country.class)){
+			Country country = CdmBase.deproxy(area, Country.class);
 			String locationId = "ISO3166:" + country.getIso3166_A2();
 			this.locationIdString = locationId;
 		}else{

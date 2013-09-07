@@ -777,7 +777,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 		 if (state.getConfig().doAskForDate()) {
 			 keepAtomisedDate = askQuestion("Gathering dates can be stored in either atomised fieds (day month year) or in a concatenated field."+
 					 "\nWhich value do you want to store?\nPress 1 for the atomised, press 2 for the concatenated field, and then press enter.");
-			 useTDWGarea = askQuestion("Use TDWG area or WaterbodyOrCountry/namedarea?\n Press 1 for TDWG areas\n Press 2 for classics WaterbodyOrCountry.");
+			 useTDWGarea = askQuestion("Use TDWG area or Country/namedarea?\n Press 1 for TDWG areas\n Press 2 for classics Country.");
 		 }
 
 		 tx = startTransaction();

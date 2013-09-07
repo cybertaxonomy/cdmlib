@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -51,7 +51,7 @@ public enum VocabularyEnum {
 	Language("45ac7043-7f5e-4f37-92f2-3874aaaef2de", Language.class),
 	UndefinedLanguage("7fd1e6d0-2e76-4dfa-bad9-2673dd042c28", Language.class),
 	Continent("e72cbcb6-58f8-4201-9774-15d0c6abc128", NamedArea.class),
-	Country("006b1870-7347-4624-990f-e5ed78484a1a", WaterbodyOrCountry.class),
+	Country("006b1870-7347-4624-990f-e5ed78484a1a", Country.class),
 	Waterbody("35a62b25-f541-4f12-a7c7-17d90dec3e03", NamedArea.class),
 	Rank("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b", Rank.class),
 	SpecimenTypeDesignationStatus("ab177bd7-d3c8-4e58-a388-226fff6ba3c2", SpecimenTypeDesignationStatus.class),

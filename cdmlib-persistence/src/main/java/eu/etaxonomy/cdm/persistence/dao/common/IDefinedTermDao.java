@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -40,7 +40,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 
 	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales);
 
-	public WaterbodyOrCountry getCountryByIso(String iso639);
+	public Country getCountryByIso(String iso639);
 
 	public <TYPE extends DefinedTermBase> List<TYPE> getDefinedTermByRepresentationText(String text, Class<TYPE> clazz );
 

@@ -103,7 +103,8 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
     public List<NamedAreaVocabularyType> getNamedAreaVocabularyTypes() {
         List<NamedAreaVocabularyType> result = new ArrayList<NamedAreaVocabularyType>(3);
         result.add(NamedAreaVocabularyType.TDWG_AREA);
-        result.add(NamedAreaVocabularyType.WATERBODY_OR_COUNTRY);
+        result.add(NamedAreaVocabularyType.COUNTRY);
+        result.add(NamedAreaVocabularyType.WATERBODY);
         result.add(NamedAreaVocabularyType.CONTINENT);
         return result;
     }
@@ -121,10 +122,12 @@ public class LocationServiceImpl extends ServiceBase<DefinedTermBase,IDefinedTer
         if(vocabularyType == NamedAreaVocabularyType.CONTINENT){
             namedAreaVocabularyUuid = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
         }
-        if(vocabularyType == NamedAreaVocabularyType.WATERBODY_OR_COUNTRY){
+        if(vocabularyType == NamedAreaVocabularyType.COUNTRY){
             namedAreaVocabularyUuid = UUID.fromString("006b1870-7347-4624-990f-e5ed78484a1a");
         }
-
+        if(vocabularyType == NamedAreaVocabularyType.WATERBODY){
+            namedAreaVocabularyUuid = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
+        }
         return (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(namedAreaVocabularyUuid);
     }
 

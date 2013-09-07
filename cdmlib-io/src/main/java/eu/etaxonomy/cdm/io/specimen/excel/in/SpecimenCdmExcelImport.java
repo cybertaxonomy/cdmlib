@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -932,7 +932,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			}
 		}
 		if (StringUtils.isNotBlank(row.getCountry())){
-			List<WaterbodyOrCountry> countries = getOccurrenceService().getWaterbodyOrCountryByName(row.getCountry());
+			List<Country> countries = getOccurrenceService().getCountryByName(row.getCountry());
 			if (countries.size() >0){
 				facade.setCountry(countries.get(0));
 			}else{

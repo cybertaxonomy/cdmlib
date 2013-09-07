@@ -26,7 +26,7 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 
 /**
  * This class represents atomized postal addresses.
@@ -63,7 +63,7 @@ public class Address extends VersionableEntity implements Cloneable{
 		return new Address();
 	}
 	
-    public static Address NewInstance(WaterbodyOrCountry country,
+    public static Address NewInstance(Country country,
 			String locality, String pobox, String postcode,
 			String region, String street, Point location) {
 		return new Address(country, locality, location, pobox, postcode,
@@ -74,7 +74,7 @@ public class Address extends VersionableEntity implements Cloneable{
     	
     }
     
-	private Address(WaterbodyOrCountry country, String locality, Point location,
+	private Address(Country country, String locality, Point location,
 			String pobox, String postcode, String region, String street) {
 		super();
 		this.country = country;
@@ -105,24 +105,24 @@ public class Address extends VersionableEntity implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private WaterbodyOrCountry country;
+	private Country country;
     
     @XmlElement(name = "Location")
 	private Point location;
 	
 	/**
-	 * Returns the {@link WaterbodyOrCountry country} involved in <i>this</i> postal address.
+	 * Returns the {@link Country country} involved in <i>this</i> postal address.
 	 * 
 	 * @return	the country 
 	 */
-	public WaterbodyOrCountry getCountry(){
+	public Country getCountry(){
 		return this.country;
 	}
 
 	/**
 	 * @see			   #getCountry()
 	 */
-	public void setCountry(WaterbodyOrCountry country){
+	public void setCountry(Country country){
 		this.country = country;
 	}
 

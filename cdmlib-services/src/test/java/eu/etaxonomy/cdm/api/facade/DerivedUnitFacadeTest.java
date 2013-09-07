@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -130,7 +130,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     DerivedUnitFacade emptyFacade;
 
-    NamedArea country = WaterbodyOrCountry.GERMANY();
+    NamedArea country = Country.GERMANY();
 
     // ****************************** SET UP **********************************/
 

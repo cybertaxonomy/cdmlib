@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -49,9 +49,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
 
-    public WaterbodyOrCountry getCountryByIso(String iso639);
+    public Country getCountryByIso(String iso639);
 
-    public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
+    public List<Country> getCountryByName(String name);
 
     /**
      * Returns a paged list of occurrences that have been determined to belong

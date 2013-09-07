@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -479,7 +479,7 @@ private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUni
 		for (NamedArea area : state.getCurrentAreas()){
 			if (area == null){
 				continue;
-			}else if (area.isInstanceOf(WaterbodyOrCountry.class)){
+			}else if (area.isInstanceOf(Country.class)){
 				facade.setCountry(area);
 			}else{
 				String message = "Current area %s is not country. This is not expected for currently known data.";
@@ -529,11 +529,11 @@ private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUni
 				//gabon specific
 				if (text.contains("gabonais ")){
 					text = text.replace("gabonais ", "");
-					state.addCurrentArea(WaterbodyOrCountry.GABONGABONESEREPUBLIC());
+					state.addCurrentArea(Country.GABONGABONESEREPUBLIC());
 				}
 				if (text.contains(" pour le Gabon")){
 					text = text.replace(" pour le Gabon", "");
-					state.addCurrentArea(WaterbodyOrCountry.GABONGABONESEREPUBLIC());
+					state.addCurrentArea(Country.GABONGABONESEREPUBLIC());
 				}
 				
 				//update feature

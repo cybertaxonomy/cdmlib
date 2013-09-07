@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -87,8 +87,8 @@ public class TestSpecimen {
 		
 		logger.info("Create locality");
 		NamedArea namedArea = NamedArea.NewInstance();
-		WaterbodyOrCountry country = WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC();
-		namedArea.addWaterbodyOrCountry(country);
+		Country country = Country.ARGENTINAARGENTINEREPUBLIC();
+		namedArea.addCountry(country);
 		namedArea.setType(NamedAreaType.ADMINISTRATION_AREA());
 		// XX
 		

@@ -92,7 +92,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -376,7 +376,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				NamedAreaLevel.class, 
 				NamedAreaType.class, 
 				ReferenceSystem.class, 
-				WaterbodyOrCountry.class, 
+				Country.class, 
 				AudioFile.class, 
 				ImageFile.class, 
 				Media.class, 
@@ -736,7 +736,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		String street3 = "Street3";
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
@@ -792,7 +792,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			if (street3.equals(address.getStreet())){
 				street3Exists = true;
 			}
-			if (WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC() == address.getCountry()){
+			if (Country.ARGENTINAARGENTINEREPUBLIC() == address.getCountry()){
 				country1Exists = true;
 			}
 		}

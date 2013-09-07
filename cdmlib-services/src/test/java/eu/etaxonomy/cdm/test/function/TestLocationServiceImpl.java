@@ -57,8 +57,14 @@ public class TestLocationServiceImpl  extends CdmIntegrationTest{
 
 	@Ignore
 	@Test
-	public void testGetTopLevelWaterbodyOrCoutryAreas(){
-		locationService.getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType.WATERBODY_OR_COUNTRY);
+	public void testGetTopLevelCoutryAreas(){
+		locationService.getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType.COUNTRY);
+	}
+
+	@Ignore
+	@Test
+	public void testGetTopLevelWaterbodyAreas(){
+		locationService.getTopLevelNamedAreasByVocabularyType(NamedAreaVocabularyType.WATERBODY);
 	}
 
 	public void testNewDatasourceClass(){

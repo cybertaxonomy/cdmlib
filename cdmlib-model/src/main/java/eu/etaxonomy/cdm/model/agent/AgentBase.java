@@ -26,7 +26,7 @@ import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.IdentifiableMediaEntity;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
@@ -115,10 +115,10 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @param pobox
 	 * @param region
 	 * @param location
-	 * @see eu.etaxonomy.cdm.model.agent.Contact#addAddress(java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.location.WaterbodyOrCountry, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.location.Point)
+	 * @see eu.etaxonomy.cdm.model.agent.Contact#addAddress(java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.location.Country, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.location.Point)
 	 */
 	public void addAddress(String street, String postcode, String locality,
-			WaterbodyOrCountry country, String pobox, String region,
+			Country country, String pobox, String region,
 			Point location) {
 		getNewOrExistingContact(true).addAddress(street, postcode, locality, country, pobox, region,
 				location);

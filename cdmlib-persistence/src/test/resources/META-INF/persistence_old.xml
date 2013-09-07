@@ -72,7 +72,7 @@
         <class>eu.etaxonomy.cdm.model.location.NamedAreaType</class>
         <class>eu.etaxonomy.cdm.model.location.ReferenceSystem</class>
         <class>eu.etaxonomy.cdm.model.location.Point</class>
-        <class>eu.etaxonomy.cdm.model.location.WaterbodyOrCountry</class>
+        <class>eu.etaxonomy.cdm.model.location.Country</class>
       <!-- Media Package -->
         <class>eu.etaxonomy.cdm.model.media.AudioFile</class>
         <class>eu.etaxonomy.cdm.model.media.ImageFile</class>

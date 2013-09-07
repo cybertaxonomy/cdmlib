@@ -30,7 +30,7 @@ public interface ILocationService extends IService<DefinedTermBase> {
 
 	
 	public static enum NamedAreaVocabularyType{
-		TDWG_AREA, WATERBODY_OR_COUNTRY, CONTINENT
+		TDWG_AREA, COUNTRY, WATERBODY, CONTINENT
 	}
 	
     /**

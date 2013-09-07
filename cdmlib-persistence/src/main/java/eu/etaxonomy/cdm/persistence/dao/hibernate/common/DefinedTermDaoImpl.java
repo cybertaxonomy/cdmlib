@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -93,7 +93,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		indexedClasses[14] = NamedAreaLevel.class;
 		indexedClasses[15] = NamedAreaType.class;
 		indexedClasses[16] = ReferenceSystem.class;
-		indexedClasses[17] = WaterbodyOrCountry.class;
+		indexedClasses[17] = Country.class;
 		indexedClasses[18] = RightsType.class;
 		indexedClasses[19] = HybridRelationshipType.class;
 		indexedClasses[20] = NameRelationshipType.class;
@@ -163,18 +163,18 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 
 	@Override
-    public WaterbodyOrCountry getCountryByIso(String iso3166) {
+    public Country getCountryByIso(String iso3166) {
 		// If iso639 = "" query returns non-unique result. We prevent this here:
 		if (StringUtils.isBlank(iso3166)) { return null; }
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
-		  Query query = getSession().createQuery("from WaterbodyOrCountry where iso3166_A2 = :isoCode");
+		  Query query = getSession().createQuery("from Country where iso3166_A2 = :isoCode");
 		  query.setParameter("isoCode", iso3166);
-		  return (WaterbodyOrCountry) query.uniqueResult();
+		  return (Country) query.uniqueResult();
 		} else {
-			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(WaterbodyOrCountry.class,auditEvent.getRevisionNumber());
+			AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(Country.class,auditEvent.getRevisionNumber());
 			query.add(AuditEntity.property("iso3166_A2").eq(iso3166));
-			return (WaterbodyOrCountry) query.getSingleResult();
+			return (Country) query.getSingleResult();
 		}
 	}
 

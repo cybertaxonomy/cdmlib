@@ -45,7 +45,7 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -581,9 +581,9 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
 			getTermService().saveOrUpdate(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
-			area = WaterbodyOrCountry.RUSSIANFEDERATION();
+			area = Country.RUSSIANFEDERATION();
 		}else if (tdwgCode.equalsIgnoreCase("Gg")){
-			area = WaterbodyOrCountry.GEORGIA();
+			area = Country.GEORGIA();
 		}else{
 			area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwgCode);
 		}

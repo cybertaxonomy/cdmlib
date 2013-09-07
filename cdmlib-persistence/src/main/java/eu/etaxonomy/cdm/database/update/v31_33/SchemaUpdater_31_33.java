@@ -54,7 +54,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -1544,7 +1544,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SingleTermRemover.NewInstance(stepName, uuid, checkUsed);
 		stepList.add(step);
 		
-		//Split WaterbodyOrCountry Vocabulary  #3700
+		//Split Country Vocabulary  #3700
 		stepName = "Create Waterbody vocabulary";
 		UUID uuidVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
 		String description = "Major Waterbodies of the World";
@@ -1604,6 +1604,27 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
 		stepList.add(step);
 		
+		//update DTYPE for country
+		stepName = "Update DTYPE for Countries";
+		sql =" UPDATE DefinedTermBase SET DTYPE = 'Country' WHERE DTYPE = 'WaterbodyOrCountry' ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "DefinedTermBase");
+		stepList.add(step);
+		
+		//Rename tables
+		stepName = "Rename DefinedTermBase_WaterbodyOrCountry";
+		String oldName = "DefinedTermBase_WaterbodyOrCountry";
+		String newName = "DefinedTermBase_Country";
+		step = TableNameChanger.NewInstance(stepName, oldName, newName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//FIXME rename column
+		stepName = "Rename DefinedTermBase_Country.waterbodiesorcountries_id";
+		tableName = "DefinedTermBase_Country";
+		String oldColumnName = "waterbodiesorcountries_id";
+		String newColumnName = "countries_id";
+		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
 		
 		//NULL for empty strings
 		stepName = "Update idInVocabulary, replace empty strings by null";
@@ -1671,7 +1692,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//NamedArea
 		String query = " UPDATE DefinedTermBase " + 
 				" SET termType = '" + TermType.NamedArea.getKey() + "' " +
-				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' OR DTYPE = '"+ WaterbodyOrCountry.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
+				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' OR DTYPE = '"+ Country.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 		

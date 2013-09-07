@@ -98,7 +98,7 @@ http://www.w3.org/2001/XMLSchema
               <xs:element ref="taxon:SynonymRelationshipType"/>
               <xs:element ref="taxon:TaxonRelationshipType"/>
               <xs:element ref="description:TextFormat"/>
-              <xs:element ref="location:WaterbodyOrCountry"/>
+              <xs:element ref="location:Country"/>
             </xs:choice>
           </xs:sequence>
         </xs:complexType>

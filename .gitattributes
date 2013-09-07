@@ -846,13 +846,13 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/TextFormat.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/WorkingSet.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/package.html -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Country.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedArea.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaLevel.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Point.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/ReferenceSystem.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/TdwgArea_Old.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/WaterbodyOrCountry.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/AudioFile.java -text

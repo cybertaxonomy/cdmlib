@@ -39,7 +39,7 @@
           </common:Representation>
         </common:Representations>
       </agent:InstitutionType>
-      <location:WaterbodyOrCountry id="5" uuid="urn-uuid-dae14d30-fc4e-11dd-87af-0800200c9a66">
+      <location:Country id="5" uuid="urn-uuid-dae14d30-fc4e-11dd-87af-0800200c9a66">
         <common:Representations>
           <common:Representation id="4" uuid="urn-uuid-f7567530-fc4e-11dd-87af-0800200c9a66">
             <common:Text>U.K.</common:Text>
@@ -48,7 +48,7 @@
         </common:Representations>
         <common:TermVocabulary>urn-uuid-0154ed00-026c-11de-87af-0800200c9a66</common:TermVocabulary>
         <common:OrderIndex>2</common:OrderIndex>
-      </location:WaterbodyOrCountry>
+      </location:Country>
     </Terms>
     <TermVocabularies>
         <common:TermVocabulary id="1" uuid="urn-uuid-605e1c0c-2c23-4a78-acc3-fa114b25871c">

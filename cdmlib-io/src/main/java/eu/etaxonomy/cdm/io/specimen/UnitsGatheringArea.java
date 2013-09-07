@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigu
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 
 /**
  * @author p.kelbert
@@ -82,7 +82,7 @@ public class UnitsGatheringArea {
     @SuppressWarnings("rawtypes")
     public void setAreaNames(List<String> namedAreas, ImportConfiguratorBase<?, ?> config, ITermService termService){
         List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+        termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         if (DEBUG) {
             logger.info(termService.list(NamedArea.class, 0, 0, null, null));
@@ -169,7 +169,7 @@ public class UnitsGatheringArea {
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
             IOccurrenceService occurrenceService){
         List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+        termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 

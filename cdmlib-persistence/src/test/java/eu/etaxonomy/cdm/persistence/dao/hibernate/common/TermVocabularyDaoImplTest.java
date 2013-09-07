@@ -24,7 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -62,7 +62,7 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		assertEquals("There should be 3 vocabularies (TdwgAreas, Continents, WaterbodyOrCountries)", 4, subclassedSize);
 		
 		List<TermVocabulary<? extends NamedArea>> namedAreaOnlyVocabularies = dao.listByTermClass(NamedArea.class, false, false, null, null, null, null);
-		List<TermVocabulary<? extends WaterbodyOrCountry>> countryVocabularies = dao.listByTermClass(WaterbodyOrCountry.class, false, false, null, null, null, null);
+		List<TermVocabulary<? extends Country>> countryVocabularies = dao.listByTermClass(Country.class, false, false, null, null, null, null);
 		int sumOfSingleSizes = namedAreaOnlyVocabularies.size() + countryVocabularies.size();
 		assertEquals("number of NamedArea and subclasses should be same as sum of all single vocabularies", subclassedSize, sumOfSingleSizes);
 

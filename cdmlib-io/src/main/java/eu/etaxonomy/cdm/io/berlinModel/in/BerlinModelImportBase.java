@@ -33,7 +33,7 @@ import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -296,15 +296,15 @@ public abstract class BerlinModelImportBase extends DbImportBase<BerlinModelImpo
 		if ("EM".equals(em)){
 			return getNamedArea(state, BerlinModelTransformer.euroMedUuid, "Euro+Med", "Euro+Med area", "EM", null, null);
 		}else if("Rf".equals(em)){
-			return WaterbodyOrCountry.RUSSIANFEDERATION();
+			return Country.RUSSIANFEDERATION();
 		
 		}else if("KRY-OO;UKR-UK".equals(tdwg)){
-			return WaterbodyOrCountry.UKRAINE();
+			return Country.UKRAINE();
 		
 		}else if("TCS-AZ;TCS-NA".equals(tdwg)){
-			return WaterbodyOrCountry.AZERBAIJANREPUBLICOF();
+			return Country.AZERBAIJANREPUBLICOF();
 		}else if("TCS-AB;TCS-AD;TCS-GR".equals(tdwg)){
-			return WaterbodyOrCountry.GEORGIA();
+			return Country.GEORGIA();
 		
 		
 		}else if("Cc".equals(em)){

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -151,7 +151,7 @@ public class TestTaxonServices {
 		NamedArea namedArea = NamedArea.NewInstance("MyTerm", "MyLabel", "MyLabelAbbr");
 		UUID naid = appCtr.getTermService().save(namedArea);
 		
-		WaterbodyOrCountry woc = WaterbodyOrCountry.NewInstance("NAR", "Narnia", "NN");
+		Country woc = Country.NewInstance("NAR", "Narnia", "NN");
 		UUID wocid = appCtr.getTermService().save(woc);
 		
 		DefinedTermBase dtb = appCtr.getTermService().find(naid);
@@ -163,7 +163,7 @@ public class TestTaxonServices {
 		dtb = appCtr.getTermService().find(wocid);
 //		dtb = 
 //			appCtr.getTermService().getTermByUuid(UUID.fromString("7cc278aa-b42a-4b5f-b7ad-0cbab0730da8"));
-		logger.debug("WaterbodyOrCountry: " + dtb.toString());
+		logger.debug("Country: " + dtb.toString());
 
 		appCtr.commitTransaction(txStatus);
 		logger.info("End testing createNamedArea()");

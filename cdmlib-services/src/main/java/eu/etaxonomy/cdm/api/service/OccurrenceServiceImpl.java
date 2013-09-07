@@ -51,7 +51,7 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -117,7 +117,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * move to termService
      */
     @Override
-    public WaterbodyOrCountry getCountryByIso(String iso639) {
+    public Country getCountryByIso(String iso639) {
         return this.definedTermDao.getCountryByIso(iso639);
 
     }
@@ -127,11 +127,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * move to termService
      */
     @Override
-    public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name) {
-        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(WaterbodyOrCountry.class, name, null, null, null, null, null, null) ;
-        List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
+    public List<Country> getCountryByName(String name) {
+        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null) ;
+        List<Country> countries = new ArrayList<Country>();
         for (int i=0;i<terms.size();i++){
-            countries.add((WaterbodyOrCountry)terms.get(i));
+            countries.add((Country)terms.get(i));
         }
         return countries;
     }

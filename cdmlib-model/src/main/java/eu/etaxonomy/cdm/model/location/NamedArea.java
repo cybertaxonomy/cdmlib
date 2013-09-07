@@ -70,13 +70,13 @@ import eu.etaxonomy.cdm.model.media.Media;
     "validPeriod",
     "shape",
     "pointApproximation",
-    "waterbodiesOrCountries",
+    "countries",
     "type",
     "level"
 })
 @XmlRootElement(name = "NamedArea")
 @XmlSeeAlso({
-    WaterbodyOrCountry.class
+    Country.class
 })
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
@@ -172,8 +172,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private Point pointApproximation;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
-    private final Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
+    @JoinTable(name="DefinedTermBase_Country")
+    private final Set<Country> countries = new HashSet<Country>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaType type;
@@ -237,20 +237,20 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         this.shape = shape;
     }
 
-    @XmlElementWrapper(name = "WaterbodiesOrCountries")
-    @XmlElement(name = "WaterbodiesOrCountry")
+    @XmlElementWrapper(name = "Countries")
+    @XmlElement(name = "Country")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
-        return waterbodiesOrCountries;
+    public Set<Country> getCountries() {
+        return countries;
     }
 
-    public void addWaterbodyOrCountry(WaterbodyOrCountry waterbodyOrCountry) {
-        this.waterbodiesOrCountries.add(waterbodyOrCountry);
+    public void addCountry(Country country) {
+        this.countries.add(country);
     }
 
-    public void removeWaterbodyOrCountry(WaterbodyOrCountry waterbodyOrCountry) {
-        this.waterbodiesOrCountries.remove(waterbodyOrCountry);
+    public void removeCountry(Country country) {
+        this.countries.remove(country);
     }
 
     @XmlElement(name = "PointApproximation")
@@ -851,7 +851,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         NamedArea result;
 
             result = (NamedArea)super.clone();
-            //no changes to level, pointApproximation, shape, type, validPeriod and waterbodiesOrCountries
+            //no changes to level, pointApproximation, shape, type, validPeriod and countries
             return result;
 
     }

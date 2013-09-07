@@ -119,7 +119,7 @@
       <mapping class="eu.etaxonomy.cdm.model.location.NamedAreaType"/>
       <mapping class="eu.etaxonomy.cdm.model.location.ReferenceSystem"/>
       <mapping class="eu.etaxonomy.cdm.model.location.Point"/>
-      <mapping class="eu.etaxonomy.cdm.model.location.WaterbodyOrCountry"/>
+      <mapping class="eu.etaxonomy.cdm.model.location.Country"/>
       <!-- Media Package -->
       <mapping class="eu.etaxonomy.cdm.model.media.AudioFile"/>
       <mapping class="eu.etaxonomy.cdm.model.media.ImageFile"/>

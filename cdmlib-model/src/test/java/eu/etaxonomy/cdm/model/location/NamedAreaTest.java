@@ -67,7 +67,7 @@ public class NamedAreaTest {
 	@Test
 	public void labelWithLevelTest(){
 		Assert.assertEquals("Named Area 1 - Level 1", NamedArea.labelWithLevel(namedArea1, Language.DEFAULT()));
-		Assert.assertEquals("Germany - WaterbodyOrCountry", NamedArea.labelWithLevel(WaterbodyOrCountry.GERMANY(), Language.DEFAULT()));
+		Assert.assertEquals("Germany - Country", NamedArea.labelWithLevel(Country.GERMANY(), Language.DEFAULT()));
 		Assert.assertEquals("Germany - TDWG Level 3", NamedArea.labelWithLevel(getAreaByTdwgAbbreviation("GER"), Language.DEFAULT()));
 		NamedArea namedArea2 = NamedArea.NewInstance("Description for Named Area 2", "", "NA2");
 		Assert.assertEquals("NA2 - NamedArea", NamedArea.labelWithLevel(namedArea2, Language.DEFAULT()));
