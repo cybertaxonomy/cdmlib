@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.database.update.v31_33;
 
-import java.sql.ResultSet;
 import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.model.name.RankClass;
  * @date 15.12.2013
  */
 public class RankClassUpdater extends SchemaUpdaterStepBase<RankClassUpdater> implements ITermUpdaterStep{
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RankClassUpdater.class);
 
 	private static final String stepName = "Update rank class values";

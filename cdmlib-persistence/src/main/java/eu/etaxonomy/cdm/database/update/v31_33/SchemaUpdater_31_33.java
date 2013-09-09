@@ -531,7 +531,24 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//all molecular (#3360) and related updates
+		updateMolecularAndRelated(stepList);
 		
+		//update vocabulary representaitons
+		step = TermVocabularyRepresentationUpdater.NewInstance();
+		stepList.add(step);
+		
+		return stepList;
+	}
+
+	private void updateMolecularAndRelated(List<ISchemaUpdaterStep> stepList) {
+		String stepName;
+		String tableName;
+		ISchemaUpdaterStep step;
+		String columnName;
+		int length;
+		Integer defaultValue;
+		String referencedTable;
 		//Amplification #3360
 		stepName = "Create table 'Primer'";
 		tableName = "Primer";
@@ -689,8 +706,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		referencedTable = "SpecimenOrObservationBase";
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, referencedTable);
 		stepList.add(step);
-		
-		return stepList;
 	}
 
 	private void addPublishFlag(List<ISchemaUpdaterStep> stepList) {

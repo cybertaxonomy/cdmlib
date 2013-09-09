@@ -1313,6 +1313,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/RankCla
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/SchemaUpdater_31_33.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/SpecimenMediaMoverUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermUpdater_31_33.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v31_33/TermVocabularyRepresentationUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AbstractBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AnnotationTypeAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/AutoPropertyInitializer.java -text

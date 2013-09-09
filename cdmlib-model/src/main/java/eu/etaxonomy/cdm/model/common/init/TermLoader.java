@@ -34,16 +34,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 public class TermLoader implements ITermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
-	private Map<Class<? extends DefinedTermBase>,String> termFileNames = new HashMap<Class<? extends DefinedTermBase>,String>();
-	
-	public TermLoader() {
-		this.termFileNames.put(NamedArea.class, "TdwgArea.csv");
-	}
-	
-	public void setTermFileNames(Map<Class<? extends DefinedTermBase>,String> termFileNames) {
-		this.termFileNames = termFileNames;
-	}
-	
 	public void unloadAllTerms(){
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
 //			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
@@ -62,15 +52,6 @@ public class TermLoader implements ITermLoader {
 	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 		
 		String filename = vocType.name()+".csv";
-//		termClass.getSimpleName()+".csv";
-		
-//		/**
-//		 * Check to see if a non-standard filename should be used 
-//		 * ( The file should still reside in the same directory )
-//		 */ 
-//		if(termFileNames.containsKey(termClass)) {
-//			filename = termFileNames.get(termClass);
-//		}
 		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
 		
 		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;

@@ -127,7 +127,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		
 		UUID uuidRepresentation = UUID.randomUUID();
 		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
-				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "',  '" + abbrev +  "', " + langId + ")"; 
+				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "'," + nullSafeString(abbrev) +  ", " + langId + ")"; 
 		
 		datasource.executeUpdate(sqlInsertRepresentation);
 		
@@ -141,6 +141,14 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 	}
 
 
+
+	private String nullSafeString(String abbrev) {
+		if (abbrev == null){
+			return "NULL";
+		}else{
+			return "'" + abbrev + "'";
+		}
+	}
 
 	private static String makeStepName(String label) {
 		String stepName = "Create new vocabulary '"+ label + "'";
