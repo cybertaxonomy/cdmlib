@@ -211,8 +211,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
     @XmlElement(name = "Doi")
     @Field
-    @Type(type="doiUserType")
     @FieldBridge(impl = DoiBridge.class)
+    @Type(type="doiUserType")
     @Column(length=DOI.MAX_LENGTH)
     protected DOI doi;
 
