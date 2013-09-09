@@ -49,7 +49,7 @@ import eu.etaxonomy.cdm.model.common.LSIDWSDLLocator;
  * @see javax.wsdl.Definition Definition
  */
 public class WSDLDefinitionUserType extends AbstractUserType implements UserType {
-	
+	private static final long serialVersionUID = 186785968465961559L;
 	private static final int[] SQL_TYPES = { Types.CLOB };
 
 	public Object deepCopy(Object o) throws HibernateException {
