@@ -51,8 +51,8 @@ import eu.etaxonomy.cdm.model.common.EventBase;
 @Indexed
 @Audited
 public class DerivationEvent extends EventBase implements Cloneable{
-	
-	static Logger logger = Logger.getLogger(DerivationEvent.class);
+	private static final long serialVersionUID = 3661673673962819395L;
+	private static final Logger logger = Logger.getLogger(DerivationEvent.class);
 
 	@XmlElementWrapper(name = "Originals")
 	@XmlElement(name = "Original")
