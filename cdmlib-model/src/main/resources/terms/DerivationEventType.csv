@@ -1,9 +1,14 @@
 "398b50bb-348e-4fe0-a7f5-a75afd846d1f",,"derivation event type","derivation event type","DET","0"
-"8f54c7cc-eb5e-4652-a6e4-3a4ba429b327",,"duplicate","duplicate",
-"1cb2bd40-5c9c-459b-89c7-4d9c2fca7432",,"gathering in-situ","gathering in-situ",
-"9dc1df08-1f31-4008-a4e2-1ddf7c9115da",,"tissue sampling","tissue sampling",
-"f9f957b6-88c0-4531-9a7f-b5fb1c9daf66",,"dna extraction","dna extraction",
-"a4a8e4ce-0e58-462a-be67-a7f567d96da1",,"vegetative propagation","vegetative propagation",
-"661e7292-6bcb-495d-a3cc-140024ae3471",,"duplicate segregation","duplicate segregation",
-"3c7c0929-0528-493e-9e5f-15e0d9585fa1",,"accessioning","accessioning",
-"aa79baac-165d-47ad-9e80-52a03776d8ae",,"sexual reproduction","sexual reproduction",
+"8f54c7cc-eb5e-4652-a6e4-3a4ba429b327",,"duplicate","duplicate"
+"1cb2bd40-5c9c-459b-89c7-4d9c2fca7432",,"gathering in-situ","gathering in-situ"
+"9dc1df08-1f31-4008-a4e2-1ddf7c9115da",,"tissue sampling","tissue sampling"
+"f9f957b6-88c0-4531-9a7f-b5fb1c9daf66",,"dna extraction","dna extraction"
+"a4a8e4ce-0e58-462a-be67-a7f567d96da1",,"vegetative propagation","vegetative propagation"
+"661e7292-6bcb-495d-a3cc-140024ae3471",,"duplicate segregation","duplicate segregation"
+"3c7c0929-0528-493e-9e5f-15e0d9585fa1",,"accessioning","accessioning"
+"aa79baac-165d-47ad-9e80-52a03776d8ae",,"sexual reproduction","sexual reproduction"
+"f7fbfbbb-86c6-4a1f-afb8-028becd2987f",,"grouping","grouping of single units to a group of units"
+"90a1062f-fa5b-4971-9990-4382e4ff70ba",,"individuals selection","extract 1 individual/organism out of any kind of sample (usually mixed samples with >1 taxa). The resulting individual may be used for a diversity of purposes like pure identification, image creation, further derivation, property assignment, ... "
+"f8febad5-4b4d-40fa-80e0-d1f82d4f510c",,"individuals cultivation","extract 1 individual out of a sample and cultivation of this individual (usually resulting in sample of many similar individuals)"
+"c868c472-4b60-4299-920a-a5698e4c26f4",,"preparation",,"preparation","the preparation of e.g. a living culture into a preparation which can be stored in a collection (using certain preparation methods)"
+"39d6d69c-17aa-4ece-a137-5ac47ed5d737",,"ex-situ cultivation","ex-situ cultivation"
