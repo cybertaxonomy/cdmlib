@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2009 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -41,8 +41,8 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 
 	/**
 	 * Constructor
-	 * 
-	 * @param currentIndex the page of this result set (0-based), can be null 
+	 *
+	 * @param currentIndex the page of this result set (0-based), can be null
 	 * @param count the total number of results available for this query
 	 * @param pageSize The size of pages (can be null if all results should be returned if available)
 	 * @param records A list of objects in this page (can be empty if there were no results)
@@ -52,11 +52,11 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 		this(currentIndex,count,pageSize,records);
 		this.suggestion = suggestion;
 	}
-	
+
 	/**
 	 * Constructor
-	 * 
-	 * @param currentIndex the page of this result set (0-based), can be null 
+	 *
+	 * @param currentIndex the page of this result set (0-based), can be null
 	 * @param count the total number of results available for this query
 	 * @param pageSize The size of pages (can be null or 0 if all results should be returned if available)
 	 * @param records A list of objects in this page (can be empty if there were no results)
@@ -67,7 +67,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
         } else {
         	this.currentIndex = 0;
         }
-		
+
         this.pageSize = pageSize;
 		this.pageNumbers = new HashMap<Integer,String>();
 		indices = new ArrayList<Integer>();
@@ -95,7 +95,7 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 				}
 			} else {
 				pagesAvailable = (count / pageSize) + 1; //12
-				
+
 				Integer labelsStart = 0;
                 if(this.currentIndex > DefaultPagerImpl.MAX_PAGE_LABELS) {
                     labelsStart = this.currentIndex - DefaultPagerImpl.MAX_PAGE_LABELS;
@@ -106,13 +106,13 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 					labelsEnd = this.currentIndex + DefaultPagerImpl.MAX_PAGE_LABELS;
 					for(int index = labelsStart; index < labelsEnd; index++) {
 						indices.add(index);
-						
+
 						String startLabel = getLabel(index * pageSize);
 						String endLabel = getLabel(((index + 1) * pageSize) - 1);
 						pageNumbers.put(index,createLabel(startLabel,endLabel));
 					}
-					
-					
+
+
 				} else {
 					for(int index = labelsStart; index < (labelsEnd -1); index++) {
 						indices.add(index);
@@ -126,12 +126,12 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 					pageNumbers.put(pagesAvailable.intValue() - 1,createLabel(startLabel,endLabel));
 				}
 
-				
+
 			}
 		} else {
 			pagesAvailable = 1;
 		}
-		
+
 		if(pagesAvailable == 1) {
 			nextIndex = null;
 			prevIndex = null;
@@ -150,70 +150,82 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
     		this.firstRecord = (this.currentIndex * pageSize) + 1;
 	    	this.lastRecord = (this.currentIndex * pageSize) + records.size();
 		}
-	    	
-		this.count = count; 
+
+		this.count = count;
 		this.records = records;
 	}
 
-	protected abstract String createLabel(String startLabel, String endLabel); 
-	
+	protected abstract String createLabel(String startLabel, String endLabel);
+
 	protected String getLabel(Integer i) {
 		Integer label = new Integer(i + 1);
 		return label.toString();
 	}
 
-	public Integer getPagesAvailable() {
+	@Override
+    public Integer getPagesAvailable() {
 		return pagesAvailable;
 	}
 
-	public Integer getNextIndex() {
+	@Override
+    public Integer getNextIndex() {
 		return nextIndex;
 	}
 
-	public Integer getPrevIndex() {
+	@Override
+    public Integer getPrevIndex() {
 		return prevIndex;
 	}
 
-	public Integer getCurrentIndex() {
+	@Override
+    public Integer getCurrentIndex() {
 		return currentIndex;
 	}
 
-	public String getPageNumber(int index) {
+	@Override
+    public String getPageNumber(int index) {
 		return pageNumbers.get(index);
 	}
 
-	public List<Integer> getIndices() {
+	@Override
+    public List<Integer> getIndices() {
 		return indices;
 	}
 
-	public Integer getCount() {
+	@Override
+    public Integer getCount() {
 		return count;
 	}
 
-	public Integer getFirstRecord() {
+	@Override
+    public Integer getFirstRecord() {
 		return firstRecord;
 	}
 
-	public Integer getLastRecord() {
+	@Override
+    public Integer getLastRecord() {
 		return lastRecord;
 	}
 
-	public List<T> getRecords() {
+	@Override
+    public List<T> getRecords() {
 		return records;
 	}
 
-	public String getSuggestion() {
+	@Override
+    public String getSuggestion() {
 		return suggestion;
 	}
 
-	public Integer getPageSize() {
+	@Override
+    public Integer getPageSize() {
 		return pageSize;
 	}
 
-	public static boolean hasResultsInRange(Integer numberOfResults, Integer pageNumber, Integer pageSize) {
-		return numberOfResults > 0 // no results at all 
+	public static boolean hasResultsInRange(Long numberOfResults, Integer pageNumber, Integer pageSize) {
+		return numberOfResults > 0 // no results at all
 				&& (pageSize == null // page size may be null : return all in this case
-				|| pageNumber != null && pageSize != null && numberOfResults >= (pageNumber * pageSize));
+				|| pageNumber != null && numberOfResults > (pageNumber * pageSize));
 	}
 
 }

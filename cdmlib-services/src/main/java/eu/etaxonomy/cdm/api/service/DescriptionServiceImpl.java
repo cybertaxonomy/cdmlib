@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -447,7 +448,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Integer pageNumber, List<String> propertyPaths) {
         Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
         List<T> descriptionElements;
-        if(count > (pageSize * pageNumber + 1)){ // no point checking again
+        if(AbstractPagerImpl.hasResultsInRange(count, pageNumber, pageSize)){ // no point checking again
             descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
         } else {
             descriptionElements = new ArrayList<T>(0);
