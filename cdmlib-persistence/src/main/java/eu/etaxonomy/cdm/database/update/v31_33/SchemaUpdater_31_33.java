@@ -585,19 +585,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, "MaterialOrMethodEvent");
 		stepList.add(step);
 		
-		
-//		//Cloning #3360
-//		stepName = "Create table 'Cloning'";
-//		tableName = "Cloning";
-//		String matMetName = MaterialOrMethodEvent.class.getSimpleName();
-//		step = TableCreator.NewEventInstance(stepName, tableName, 
-//				new String[]{"method_id","forwardPrimer_id","reversePrimer_id"},  //colNames 
-//				new String[]{"string_255", "int","int","int"},  // columnTypes
-//				new String[]{null, matMetName,"Primer","Primer"},  //referencedTables 
-//				INCLUDE_AUDIT);
-//		stepList.add(step);
-//		
-		
+	
 		//Amplification #3360
 		stepName = "Create table 'Amplification'";
 		tableName = "Amplification";
