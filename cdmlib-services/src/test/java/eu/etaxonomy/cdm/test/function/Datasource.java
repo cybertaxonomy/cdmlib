@@ -66,15 +66,15 @@ public class Datasource {
 		String username = "edit";
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 		
-		//SQLServer
-		database = "CDMTest";
-		int port = 1433;
-		username = "pesiexport";
-//		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
-		
-		//H2
-		username = "sa";
-//		dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+//		//SQLServer
+//		database = "CDMTest";
+//		int port = 1433;
+//		username = "pesiexport";
+////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		
+//		//H2
+//		username = "sa";
+////		dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
 		
 		CdmUpdater updater = new CdmUpdater();

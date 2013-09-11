@@ -78,16 +78,16 @@ public class Cloning extends MaterialOrMethodEvent implements Cloneable{
     	return new Cloning();
     }
     
-    public static Cloning NewInstance(DefinedTerm methodTerm, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
-    	return new Cloning(methodTerm, methodText, strain, forwardPrimer, reversePrimer);
+    public static Cloning NewInstance(DefinedTerm definedMaterialOrMethod, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
+    	return new Cloning(definedMaterialOrMethod, methodText, strain, forwardPrimer, reversePrimer);
     } 
     
 // ********************* CONSTRUCTOR ********************/
     
     private Cloning(){};
 
-    private Cloning(DefinedTerm methodTerm, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
-    	super(methodTerm, methodText);
+    private Cloning(DefinedTerm definedMaterialOrMethod, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
+    	super(definedMaterialOrMethod, methodText);
     	this.strain = strain;
     	this.forwardPrimer = forwardPrimer;
     	this.reversePrimer = reversePrimer;

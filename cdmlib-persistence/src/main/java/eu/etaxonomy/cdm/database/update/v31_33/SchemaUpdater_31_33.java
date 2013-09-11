@@ -564,7 +564,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create table 'MaterialOrMethodEvent'";
 		tableName = MaterialOrMethodEvent.class.getSimpleName();
 		step = TableCreator.NewEventInstance(stepName, tableName, 
-				new String[]{"DTYPE", "strain","temperature","materialMethodTerm_id", "forwardPrimer_id","reversePrimer_id","medium_id"},  //colNames 
+				new String[]{"DTYPE", "strain","temperature","definedMaterialOrMethod_id", "forwardPrimer_id","reversePrimer_id","medium_id"},  //colNames 
 				new String[]{"string_255", "string_255", "double", "int","int", "int", "int"},  // columnTypes
 				new String[]{null, null, null, "DefinedTermBase","Primer","Primer","DefinedTermBase"},  //referencedTables 
 				INCLUDE_AUDIT);

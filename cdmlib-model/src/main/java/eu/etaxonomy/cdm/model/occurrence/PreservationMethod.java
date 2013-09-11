@@ -35,7 +35,7 @@ import eu.etaxonomy.cdm.model.molecular.Cloning;
  * This class is a specialization of {@link MaterialOrMethodEvent} which allows to
  * specifically store temperature and XXX which are common parameters for preparation.
  * 
- * {@link #getMaterialMethodTerm() Defined methods} taken to describe a Preservation Method
+ * {@link #getDefinedMaterialOrMethod() Defined methods} taken to describe a Preservation Method
  * should be taken from a vocabulary of type {@link TermType#PreservationMethod}
  * 
  * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
@@ -77,12 +77,12 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 		return new PreservationMethod();
 	}
 	
-    public static PreservationMethod NewInstance(DefinedTerm methodTerm, String methodText){
-    	return new PreservationMethod(methodTerm, methodText, null, null);
+    public static PreservationMethod NewInstance(DefinedTerm definedMaterialOrMethod, String methodText){
+    	return new PreservationMethod(definedMaterialOrMethod, methodText, null, null);
     }
 
-	public static PreservationMethod NewInstance(DefinedTerm methodTerm, String methodText, DefinedTerm preservationMedium, Double temperature){
-		return new PreservationMethod(methodTerm, methodText, preservationMedium, temperature);
+	public static PreservationMethod NewInstance(DefinedTerm definedMaterialOrMethod, String methodText, DefinedTerm preservationMedium, Double temperature){
+		return new PreservationMethod(definedMaterialOrMethod, methodText, preservationMedium, temperature);
 	}
 
 	
@@ -91,8 +91,8 @@ public class PreservationMethod extends MaterialOrMethodEvent implements Cloneab
 	//for hibernate use only
 	private PreservationMethod(){};
 	
-    private PreservationMethod(DefinedTerm methodTerm, String methodText, DefinedTerm medium, Double temperature){
-    	super(methodTerm, methodText);
+    private PreservationMethod(DefinedTerm definedMaterialOrMethod, String methodText, DefinedTerm medium, Double temperature){
+    	super(definedMaterialOrMethod, methodText);
     	this.medium = medium;
     	this.temperature = temperature;
     }

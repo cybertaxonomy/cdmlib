@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.molecular.Cloning;
  * A material or method event handles data on materials or methods used for handling specimen or derived units
  * in general. It stores information on what material or method was used, who used it and when it was used.
  * For reusable data on materials or methods it is best practice to define these first as {@link DefinedTerm
- * defined terms} of type {@link TermType#MaterialOrMethod} TODO and then use this term as {@link #getMaterialMethodTerm()
+ * defined terms} of type {@link TermType#MaterialOrMethod} TODO and then use this term as {@link #getDefinedMaterialOrMethod()
  * material or method term}. If this is not possible or if additional data needs to be added one may also 
  * use {@link #getDescription() freetext} field inherited from {@link EventBase}. Actor and Date information
  * are also handled via {@link EventBase} fields.
@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.model.molecular.Cloning;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "MaterialOrMethod", propOrder = {
-	"materialMethodTerm"
+	"definedMaterialOrMethod"
 })
 @XmlRootElement(name = "MaterialOrMethod")
 @Entity
@@ -62,12 +62,12 @@ public class MaterialOrMethodEvent extends EventBase implements Cloneable{
 	private static final long serialVersionUID = -4799205199942053585L;
 	private static final Logger logger = Logger.getLogger(MaterialOrMethodEvent.class);
 	
-    @XmlElement(name = "MaterialMethodTerm")
+    @XmlElement(name = "DefinedMaterialOrMethod")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @IndexedEmbedded // no depth for terms
-	private DefinedTerm materialMethodTerm;
+	private DefinedTerm definedMaterialOrMethod;
     
 	//TODO citation / link
 
@@ -78,16 +78,16 @@ public class MaterialOrMethodEvent extends EventBase implements Cloneable{
     	return new MaterialOrMethodEvent();
     }
     
-    public static MaterialOrMethodEvent NewInstance(DefinedTerm methodTerm, String methodText){
-    	return new MaterialOrMethodEvent(methodTerm, methodText);
+    public static MaterialOrMethodEvent NewInstance(DefinedTerm definedMaterialOrMethod, String methodText){
+    	return new MaterialOrMethodEvent(definedMaterialOrMethod, methodText);
     } 
     
 // ********************* CONSTRUCTOR ********************/
     
     protected MaterialOrMethodEvent(){};
 
-    protected MaterialOrMethodEvent(DefinedTerm methodTerm, String methodText){
-    	this.materialMethodTerm = methodTerm;
+    protected MaterialOrMethodEvent(DefinedTerm definedMaterialOrMethod, String methodText){
+    	this.definedMaterialOrMethod = definedMaterialOrMethod;
     	this.setDescription(methodText);
     }
 
@@ -98,7 +98,7 @@ public class MaterialOrMethodEvent extends EventBase implements Cloneable{
 	/**
 	 * The {@link #getDescription()} method is inherited from {@link EventBase}.
 	 * In this class it is used as freetext describing the material or method used
-	 * or if a {@link #getMaterialMethodTerm() defined method} is given as
+	 * or if a {@link #getDefinedMaterialOrMethod() defined method} is given as
 	 * an additional information about how this defined method was used.
 	 * 
 	 * @see #getMaterialMethodText()
@@ -122,7 +122,7 @@ public class MaterialOrMethodEvent extends EventBase implements Cloneable{
     
 	/**
 	 * A freetext describing the material or method or if
-	 * a {@link #getMaterialMethodTerm() defined method} is given
+	 * a {@link #getDefinedMaterialOrMethod() defined method} is given
 	 * an additional information about how this method was used.
 	 * In future this method could be removed to decrease the number 
 	 * of transient getters in the CDM.
@@ -151,16 +151,16 @@ public class MaterialOrMethodEvent extends EventBase implements Cloneable{
 	 * @see #getMaterialMethodText()
 	 * @return the material or method term
 	 */
-	public DefinedTerm getMaterialMethodTerm() {
-		return materialMethodTerm;
+	public DefinedTerm getDefinedMaterialOrMethod() {
+		return definedMaterialOrMethod;
 	}
 
 	/**
-	 * @see #getMaterialMethodTerm()
+	 * @see #getDefinedMaterialOrMethod()
 	 * @param materialMethodTerm
 	 */
-	public void setMaterialMethodTerm(DefinedTerm materialMethodTerm) {
-		this.materialMethodTerm = materialMethodTerm;
+	public void setDefinedMaterialOrMethod(DefinedTerm definedMaterialOrMethod) {
+		this.definedMaterialOrMethod = definedMaterialOrMethod;
 	}
 	
 // ********************* CLONE ********************/
