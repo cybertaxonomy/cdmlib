@@ -6,96 +6,132 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-
 package eu.etaxonomy.cdm.model.occurrence;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
-
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.xml.bind.annotation.XmlAccessType;
+import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlIDREF;
+import javax.xml.bind.annotation.XmlRootElement;
+import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Indexed;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.IndexedEmbedded;
+import org.hibernate.search.annotations.NumericField;
 
-import javax.persistence.*;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.molecular.Cloning;
 
 /**
+ * This class is a specialization of {@link MaterialOrMethodEvent} which allows to
+ * specifically store temperature and XXX which are common parameters for preparation.
+ * 
+ * {@link #getMaterialMethodTerm() Defined methods} taken to describe a Preservation Method
+ * should be taken from a vocabulary of type {@link TermType#PreservationMethod}
+ * 
  * http://rs.tdwg.org/ontology/voc/Collection.rdf#SpecimenPreservationMethodTypeTerm
- * @author m.doering
- * @created 08-Nov-2007 13:06:44
+ *
+ * @author a.mueller
+ * @created 2013-09-11
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PreservationMethod")
+@XmlType(name = "PreservationMethod", propOrder = {
+	"medium",
+	"temperature"
+})
 @XmlRootElement(name = "PreservationMethod")
 @Entity
-@Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
+//TODO @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
 @Audited
-public class PreservationMethod extends DefinedTermBase<PreservationMethod> {
-	private static final long serialVersionUID = -6597303767771121540L;
+public class PreservationMethod extends MaterialOrMethodEvent implements Cloneable {
+	private static final long serialVersionUID = 2366116167028862401L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PreservationMethod.class);
-	
-	protected static Map<UUID, PreservationMethod> termMap = null;
 
-
-//********************************** FACTORY METHOD *********************************/		
+    @XmlElement(name = "Medium")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @IndexedEmbedded // no depth for terms
+    private DefinedTerm medium;
 	
-	/**
-	 * Factory method
-	 * @return
-	 */
+	@XmlElement(name = "Temperature")
+	@Field(analyze = Analyze.NO)
+	@NumericField
+	private Double temperature;
+	
+	
+	// ******************** FACTORY METHOD ******************/	
+	
 	public static PreservationMethod NewInstance(){
 		return new PreservationMethod();
 	}
 	
-	/**
-	 * Factory method
-	 * @return
-	 */
-	public static PreservationMethod NewInstance(String term, String label, String labelAbbrev) {
-		return new PreservationMethod(term, label, labelAbbrev);
-	}
-	
-//********************************** CONSTRUCTOR *********************************/	
+    public static PreservationMethod NewInstance(DefinedTerm methodTerm, String methodText){
+    	return new PreservationMethod(methodTerm, methodText, null, null);
+    }
 
-  	//for hibernate use only
-  	@Deprecated
-  	protected PreservationMethod() {
-		super(TermType.PreservationMethod);
+	public static PreservationMethod NewInstance(DefinedTerm methodTerm, String methodText, DefinedTerm preservationMedium, Double temperature){
+		return new PreservationMethod(methodTerm, methodText, preservationMedium, temperature);
 	}
 
 	
-	/**
-	 * Constructor
-	 */
-	protected PreservationMethod(String term, String label, String labelAbbrev) {
-		super(TermType.PreservationMethod, term, label, labelAbbrev);
+	// ********************* CONSTRUCTOR ********************/
+		
+	//for hibernate use only
+	private PreservationMethod(){};
+	
+    private PreservationMethod(DefinedTerm methodTerm, String methodText, DefinedTerm medium, Double temperature){
+    	super(methodTerm, methodText);
+    	this.medium = medium;
+    	this.temperature = temperature;
+    }
+	
+	// ********************* GETTER / SETTER ********************/
+
+	public DefinedTerm getMedium() {
+		return medium;
 	}
 
-// *************************** METHODS ******************************************************/	
+
+	public void setMedium(DefinedTerm medium) {
+		this.medium = medium;
+	}
+
+
+	public Double getTemperature() {
+		return temperature;
+	}
+
+
+	public void setTemperature(Double temperature) {
+		this.temperature = temperature;
+	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
+	// ********************* CLONE ********************/
+	/** 
+	 * Clones <i>this</i> {@link Cloning}. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> cloning by
+	 * modifying only some of the attributes.<BR><BR>
+	 *  
+	 * @see EventBase#clone()
+	 * @see java.lang.Object#clone()
 	 */
 	@Override
-	public void resetTerms(){
-		termMap = null;
-	}
-
-	
-	@Override
-	protected void setDefaultTerms(TermVocabulary<PreservationMethod> termVocabulary){
-		termMap = new HashMap<UUID, PreservationMethod>();
-		for (PreservationMethod term : termVocabulary.getTerms()){
-			termMap.put(term.getUuid(), term); 
-		}
+	public Object clone()  {
+		PreservationMethod result = (PreservationMethod)super.clone();
+		
+		//don't change medium, temperature
+		return result;
 	}
 }

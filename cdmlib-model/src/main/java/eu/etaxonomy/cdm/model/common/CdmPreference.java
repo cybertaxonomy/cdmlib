@@ -42,9 +42,13 @@ import org.hibernate.validator.constraints.Length;
  * @created 03.07.2013
  */
 @Entity
-public class CdmPreferences implements Serializable {
+public class CdmPreference implements Serializable {
 	private static final long serialVersionUID = 4307599154287181582L;
 
+	
+	public static CdmPreference NewInstance(String subject, String predicate, String value){
+		return new CdmPreference(subject, predicate, value);
+	}
 	
 	@Embeddable
 	public static class PrefKey implements Serializable{
@@ -105,7 +109,7 @@ public class CdmPreferences implements Serializable {
 	 * @param predicate must not be null and must not be longer then 255 characters.
 	 * @param value must not be longer then 1023 characters.
 	 */
-	public CdmPreferences(String subject, String predicate, String value){
+	public CdmPreference(String subject, String predicate, String value){
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
 		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(
@@ -126,8 +130,14 @@ public class CdmPreferences implements Serializable {
 	public String getValue() {
 		return value;
 	}
-	
-	//TODO do we need a setter?
+
+	public PrefKey getKey() {
+		return key;
+	}
+
+	public void setValue(String value) {
+		this.value = value;
+	}
 	
 	
 }

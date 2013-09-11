@@ -37,9 +37,9 @@ import org.hibernate.search.annotations.NumericField;
 
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.common.MaterialAndMethod;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 
 /**
  * @author a.mueller
@@ -116,7 +116,7 @@ public class Amplification extends EventBase implements Cloneable{
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
-    private MaterialAndMethod purification;
+    private MaterialOrMethodEvent purification;
     
     @XmlElement(name = "Cloning")
     @XmlIDREF
@@ -310,14 +310,14 @@ public class Amplification extends EventBase implements Cloneable{
 	/**
 	 * The material and/or method used for purification.
 	 */
-	public MaterialAndMethod getPurification() {
+	public MaterialOrMethodEvent getPurification() {
 		return purification;
 	}
 
 	/**
 	 * @see #getPurification()
 	 */
-	public void setPurification(MaterialAndMethod purification) {
+	public void setPurification(MaterialOrMethodEvent purification) {
 		this.purification = purification;
 	}
 	

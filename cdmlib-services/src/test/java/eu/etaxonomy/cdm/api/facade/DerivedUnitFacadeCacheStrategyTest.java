@@ -81,7 +81,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 
-	PreservationMethod preservationMethod = PreservationMethod.NewInstance("my prservation", null, null);
+	PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
 
 	DerivedUnitFacade specimenFacade;
 

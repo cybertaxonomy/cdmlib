@@ -81,13 +81,13 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionElementBase", propOrder = {
-        "feature",
-        "inDescription",
-        "timeperiod",
-        "modifiers",
-        "modifyingText",
-        "media",
-        "sources"
+    "feature",
+    "inDescription",
+    "timeperiod",
+    "modifiers",
+    "modifyingText",
+    "media",
+    "sources"
 })
 @Entity
 @Audited

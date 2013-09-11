@@ -56,7 +56,6 @@ public interface ISimpleTerm<T extends ISimpleTerm> {
 	 * the direct descendants and there recursive descendants (all descendants)
 	 * will be returned. 
 	 */
-	//TODO move up to ISimpleTerm
 	public Set<T> getGeneralizationOf(boolean recursive);
 
 }

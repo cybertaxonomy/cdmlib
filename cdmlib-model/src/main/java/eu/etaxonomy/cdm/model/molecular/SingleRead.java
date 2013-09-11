@@ -28,9 +28,9 @@ import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.common.MaterialAndMethod;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 
 /**
  * Instances of this the {@link SingleRead} class describe the process and the result of a single
@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.media.Media;
 	"primer",
 	"direction",
 	"pherogram",
-	"materialAndMethod"
+	"materialOrMethod"
 })
 @XmlRootElement(name = "Primer")
 @Entity
@@ -97,11 +97,11 @@ public class SingleRead extends EventBase implements Cloneable{
 	)
 	private SequenceDirection direction;
 	
-	@XmlElement(name = "MaterialAndMethod")
+	@XmlElement(name = "MaterialOrMethod")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-	private MaterialAndMethod materialAndMethod;
+	private MaterialOrMethodEvent materialOrMethod;
 	
 	
 	// ******************** FACTORY METHOD ******************/	
@@ -198,15 +198,15 @@ public class SingleRead extends EventBase implements Cloneable{
 	/**
 	 * The material and/or method used for this sequencing.
 	 */
-	public MaterialAndMethod getMaterialAndMethod() {
-		return materialAndMethod;
+	public MaterialOrMethodEvent getMaterialOrMethod() {
+		return materialOrMethod;
 	}
 
 	/**
-	 * @see #getMaterialAndMethod()
+	 * @see #getMaterialOrMethod()
 	 */
-	public void setMaterialAndMethod(MaterialAndMethod materialAndMethod) {
-		this.materialAndMethod = materialAndMethod;
+	public void setMaterialOrMethod(MaterialOrMethodEvent materialOrMethod) {
+		this.materialOrMethod = materialOrMethod;
 	}
 
 	

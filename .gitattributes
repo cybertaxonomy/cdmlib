@@ -740,7 +740,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmMetaData.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmPreferences.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmPreference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Credit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTerm.java -text
@@ -779,7 +779,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LanguageString.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LanguageStringBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Marker.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MarkerType.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MaterialAndMethod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageText.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/MultilanguageTextHelper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/NoDefinedTermClassException.java -text
@@ -913,6 +912,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DerivedUnit.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/DeterminationEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/FieldUnit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/GatheringEvent.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/MaterialOrMethodEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/MediaSpecimen.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/PreservationMethod.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/occurrence/SpecimenOrObservationBase.java -text

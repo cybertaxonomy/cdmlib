@@ -58,7 +58,7 @@
       <mapping class="eu.etaxonomy.cdm.model.common.Annotation"/>
       <mapping class="eu.etaxonomy.cdm.model.common.AnnotationType"/>
       <mapping class="eu.etaxonomy.cdm.model.common.CdmMetaData"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.CdmPreferences"/>
+      <mapping class="eu.etaxonomy.cdm.model.common.CdmPreference"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Credit"/>
       <mapping class="eu.etaxonomy.cdm.model.common.DefinedTerm"/>
       <mapping class="eu.etaxonomy.cdm.model.common.DefinedTermBase"/>
@@ -74,7 +74,6 @@
       <mapping class="eu.etaxonomy.cdm.model.common.LSIDAuthority"/>
       <mapping class="eu.etaxonomy.cdm.model.common.Marker"/>
       <mapping class="eu.etaxonomy.cdm.model.common.MarkerType"/>
-      <mapping class="eu.etaxonomy.cdm.model.common.MaterialAndMethod"/>
       <mapping class="eu.etaxonomy.cdm.model.common.OrderedTermBase"/>
       <mapping class="eu.etaxonomy.cdm.model.common.OrderedTermVocabulary"/>
       <mapping class="eu.etaxonomy.cdm.model.common.OriginalSourceBase"/>
@@ -160,11 +159,12 @@
       <mapping class="eu.etaxonomy.cdm.model.name.TypeDesignationBase"/>
       <mapping class="eu.etaxonomy.cdm.model.name.ViralName"/>
       <mapping class="eu.etaxonomy.cdm.model.name.ZoologicalName"/>
-      <!-- Occurence Package -->
+      <!-- Occurrence Package -->
       <mapping class="eu.etaxonomy.cdm.model.occurrence.Collection"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivationEventType"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DerivedUnit"/>
+      <mapping class="eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.MediaSpecimen"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.DeterminationEvent"/>
       <mapping class="eu.etaxonomy.cdm.model.occurrence.FieldUnit"/>

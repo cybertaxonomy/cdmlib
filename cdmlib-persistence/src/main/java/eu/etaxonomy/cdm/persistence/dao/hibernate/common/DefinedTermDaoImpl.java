@@ -75,7 +75,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 	public DefinedTermDaoImpl() {
 		super(DefinedTermBase.class);
-		indexedClasses = new Class[27];
+		indexedClasses = new Class[26];
 		indexedClasses[0] = Rank.class;
 		indexedClasses[1] = AnnotationType.class;
 		indexedClasses[2] = ExtensionType.class;
@@ -100,9 +100,8 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		indexedClasses[21] = NameTypeDesignationStatus.class;
 		indexedClasses[22] = NomenclaturalStatusType.class;
 		indexedClasses[23] = SpecimenTypeDesignationStatus.class;
-		indexedClasses[24] = PreservationMethod.class;
-		indexedClasses[25] = SynonymRelationshipType.class;
-		indexedClasses[26] = TaxonRelationshipType.class;
+		indexedClasses[24] = SynonymRelationshipType.class;
+		indexedClasses[25] = TaxonRelationshipType.class;
 	}
 
 	/**
@@ -132,9 +131,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitleAndClass(java.lang.String, java.lang.Class)
-	 */
 	@Override
     public List<DefinedTermBase> findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz) {
 		checkNotInPriorView("DefinedTermDaoImpl.findByTitleAndClass(String queryString, Class<DefinedTermBase> clazz)");
@@ -145,9 +141,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		return results;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ITitledDao#findByTitle(java.lang.String, eu.etaxonomy.cdm.persistence.dao.common.ITitledDao.MATCH_MODE, int, int, java.util.List)
-	 */
 	@Override
     public List<DefinedTermBase> findByTitle(String queryString, MatchMode matchMode, int page, int pagesize, List<Criterion> criteria) {
 		//FIXME is query parametrised?
@@ -223,9 +216,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return ((Number)criteria.uniqueResult()).intValue();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getDefinedTermByIdInVocabulary(java.lang.String, java.util.UUID, java.lang.Class, java.lang.Integer, java.lang.Integer)
-	 */
 	@Override
 	public <T extends DefinedTermBase> List<T> getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByIdInVocabulary(String label, UUID vocUuid, Class<T> clazz, Integer pageSize, Integer pageNumber)");
@@ -251,8 +241,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 		return result;
 	}
 
-	
-	
 	@Override
 	public <T extends DefinedTermBase> List<T> getDefinedTermByRepresentationAbbrev(String text, Class<T> clazz, Integer pageSize,Integer  pageNumber) {
 		checkNotInPriorView("DefinedTermDaoImpl.getDefinedTermByRepresentationAbbrev(String abbrev, Class<T> clazz, Integer pageSize,Integer  pageNumber)");
@@ -294,10 +282,6 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
         return ((Number)criteria.uniqueResult()).intValue();
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#getLangaugeByIso(java.lang.String)
-	 */
 	@Override
     public Language getLanguageByIso(String iso639) {
 		if (iso639.length() < 2 || iso639.length() > 3) {

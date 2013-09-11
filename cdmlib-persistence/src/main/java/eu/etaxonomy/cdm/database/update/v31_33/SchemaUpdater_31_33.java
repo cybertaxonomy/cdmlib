@@ -41,7 +41,6 @@ import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.MaterialAndMethod;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -63,6 +62,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -432,9 +432,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		//update reference type
 		updateReferenceType(stepList);
 		
-		//create table CdmPreferences  #3555
-		stepName = "Create table 'CdmPreferences'";
-		tableName = "CdmPreferences";
+		//create table CdmPreference  #3555
+		stepName = "Create table 'CdmPreference'";
+		tableName = "CdmPreference";
 		TableCreator stepPref = TableCreator.NewInstance(stepName, tableName, 
 				new String[]{"key_subject", "key_predicate","value"},  //colNames 
 				new String[]{"string_100", "string_200","string_1023",},  // columnTypes
@@ -549,7 +549,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		int length;
 		Integer defaultValue;
 		String referencedTable;
-		//Amplification #3360
+		
+		//Primer #3360
 		stepName = "Create table 'Primer'";
 		tableName = "Primer";
 		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
@@ -559,27 +560,43 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				INCLUDE_AUDIT);
 		stepList.add(step);
 		
-		//MaterialAndMethod #3360
-		stepName = "Create table 'MaterialAndMethod'";
-		tableName = MaterialAndMethod.class.getSimpleName();
-		step = TableCreator.NewAnnotatableInstance(stepName, tableName, 
-				new String[]{"DTYPE", "materialMethodTerm_id","materialMethodText"},  //colNames 
-				new String[]{"string_255", "int","string_1000",},  // columnTypes
-				new String[]{null, "DefinedTermBase",null},  //referencedTables 
-				INCLUDE_AUDIT);
-		stepList.add(step);
-		
-		//Cloning #3360
-		stepName = "Create table 'Cloning'";
-		tableName = "Cloning";
-		String matMetName = MaterialAndMethod.class.getSimpleName();
+		//MaterialOrMethod #3360
+		stepName = "Create table 'MaterialOrMethodEvent'";
+		tableName = MaterialOrMethodEvent.class.getSimpleName();
 		step = TableCreator.NewEventInstance(stepName, tableName, 
-				new String[]{"strain","method_id","forwardPrimer_id","reversePrimer_id"},  //colNames 
-				new String[]{"string_255", "int","int","int"},  // columnTypes
-				new String[]{null, matMetName,"Primer","Primer"},  //referencedTables 
+				new String[]{"DTYPE", "strain","temperature","materialMethodTerm_id", "forwardPrimer_id","reversePrimer_id","medium_id"},  //colNames 
+				new String[]{"string_255", "string_255", "double", "int","int", "int", "int"},  // columnTypes
+				new String[]{null, null, null, "DefinedTermBase","Primer","Primer","DefinedTermBase"},  //referencedTables 
 				INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		stepName = "Remove preservation column from SpecimenOrObservationBase";  
+		//to fully remove all foreign keys, maybe there is a better way todo so
+		//we don't expect any preservation information to exist in any CDM database
+		tableName = "SpecimenOrObservationBase";
+		String oldColumnName = "preservation_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		stepName = "Add new preservation column to SpecimenOrObservationBase";  
+		tableName = "SpecimenOrObservationBase";
+		String newColumnName = "preservation_id";
+		boolean notNull = false;
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, "MaterialOrMethodEvent");
+		stepList.add(step);
+		
+		
+//		//Cloning #3360
+//		stepName = "Create table 'Cloning'";
+//		tableName = "Cloning";
+//		String matMetName = MaterialOrMethodEvent.class.getSimpleName();
+//		step = TableCreator.NewEventInstance(stepName, tableName, 
+//				new String[]{"method_id","forwardPrimer_id","reversePrimer_id"},  //colNames 
+//				new String[]{"string_255", "int","int","int"},  // columnTypes
+//				new String[]{null, matMetName,"Primer","Primer"},  //referencedTables 
+//				INCLUDE_AUDIT);
+//		stepList.add(step);
+//		
 		
 		//Amplification #3360
 		stepName = "Create table 'Amplification'";
@@ -587,7 +604,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = TableCreator.NewEventInstance(stepName, tableName, 
 				new String[]{"dnaSample_id","dnaMarker_id","forwardPrimer_id","reversePrimer_id","purification_id","cloning_id", "gelPhoto_id", "successful","successText","ladderUsed","electrophoresisVoltage","gelRunningTime","gelConcentration"},  //colNames 
 				new String[]{"int","int","int","int","int","int","int", "bit","string_255","string_255","double","double","double"},  // columnTypes
-				new String[]{"SpecimenOrObservationBase","DefinedTermBase","Primer","Primer",matMetName, matMetName, "Media", null, null, null, null, null, null},  //referencedTables 
+				new String[]{"SpecimenOrObservationBase","DefinedTermBase","Primer","Primer","MaterialOrMethodEvent", "MaterialOrMethodEvent", "Media", null, null, null, null, null, null},  //referencedTables 
 				INCLUDE_AUDIT);
 		stepList.add(step);
 		
@@ -595,9 +612,9 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create table 'SingleRead'";
 		tableName = "SingleRead";
 		step = TableCreator.NewEventInstance(stepName, tableName, 
-				new String[]{"amplification_id","materialAndMethod_id","primer_id","pherogram_id","direction","sequence_length"},  //colNames 
+				new String[]{"amplification_id","materialOrMethod_id","primer_id","pherogram_id","direction","sequence_length"},  //colNames 
 				new String[]{"int","int","int","int","string_3","int"},  // columnTypes
-				new String[]{"Amplification",matMetName, "Primer","Media", null, null},  //referencedTables 
+				new String[]{"Amplification","MaterialOrMethodEvent", "Primer","Media", null, null},  //referencedTables 
 				INCLUDE_AUDIT);
 		//TODO length sequence_string
 		stepList.add(step);
@@ -1483,7 +1500,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, String.format(query, 
 				TermType.InstitutionType.getKey(), TermType.MeasurementUnit.getKey(),
 				TermType.Scope.getKey(), TermType.Stage.getKey(), TermType.State.getKey(),
-				TermType.TextFormat.getKey(), TermType.Modifier.getKey(), TermType.PreservationMethod.getKey()))
+				TermType.TextFormat.getKey(), TermType.Modifier.getKey(), TermType.Method.getKey()))
 				.setDefaultAuditing(tableName);
 		stepList.add(step);
 		
@@ -1882,7 +1899,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		//PreservationMethod
 		query = " UPDATE DefinedTermBase " + 
-				" SET termType = '" + TermType.PreservationMethod.getKey() + "' " +
+				" SET termType = '" + TermType.Method.getKey() + "' " +
 				" WHERE DTYPE = '" + PreservationMethod.class.getSimpleName() + "' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);

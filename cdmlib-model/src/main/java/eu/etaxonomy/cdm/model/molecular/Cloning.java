@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.model.molecular;
 
-import java.util.HashSet;
-
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
@@ -26,9 +24,9 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.EventBase;
-import eu.etaxonomy.cdm.model.common.MaterialAndMethod;
+import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 
 /**
  * Cloning is a method used in {@link Amplification DNA amplification} for multiplying the base
@@ -42,16 +40,15 @@ import eu.etaxonomy.cdm.model.common.MaterialAndMethod;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Cloning", propOrder = {
 	"strain",
-	"method",
 	"forwardPrimer",
 	"reversePrimer"
 })
 @XmlRootElement(name = "Cloning")
 @Entity
 @Audited
-//TODO which base class  (..., identifiable, definedTerm, ...)
-public class Cloning extends EventBase implements Cloneable{
+public class Cloning extends MaterialOrMethodEvent implements Cloneable{
 	private static final long serialVersionUID = 6179007910988646989L;
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(Cloning.class);
 	
 	/** @see #getStrain() */
@@ -59,13 +56,6 @@ public class Cloning extends EventBase implements Cloneable{
 	@Field
 	@Size(max=100)
 	private String strain;
-	
-	/** @see #getMethod()*/
-    @XmlElement(name = "Cloning")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.LAZY)
-    private MaterialAndMethod method;
 	
     /** @see #getForwardPrimer() */
     @XmlElement(name = "ForwardPrimer")
@@ -84,25 +74,28 @@ public class Cloning extends EventBase implements Cloneable{
 	
 // ******************** FACTORY METHOD ******************/	
 	
+    public static Cloning NewInstance(){
+    	return new Cloning();
+    }
+    
+    public static Cloning NewInstance(DefinedTerm methodTerm, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
+    	return new Cloning(methodTerm, methodText, strain, forwardPrimer, reversePrimer);
+    } 
+    
 // ********************* CONSTRUCTOR ********************/
+    
+    private Cloning(){};
+
+    private Cloning(DefinedTerm methodTerm, String methodText, String strain, Primer forwardPrimer, Primer reversePrimer){
+    	super(methodTerm, methodText);
+    	this.strain = strain;
+    	this.forwardPrimer = forwardPrimer;
+    	this.reversePrimer = reversePrimer;
+    }
 	
 // ********************* GETTER / SETTER ********************/
 	
 
-	/**
-	 * The material and/or method used for cloning.
-	 */
-	public MaterialAndMethod getMethod() {
-		return method;
-	}
-
-	/**
-	 * @see #getMethod()
-	 */
-	public void setMethod(MaterialAndMethod method) {
-		this.method = method;
-	}
-	
 	/**
 	 * The primer used for forward cloning.
 	 * @see #getReversePrimer()
@@ -155,15 +148,9 @@ public class Cloning extends EventBase implements Cloneable{
 	 */
 	@Override
 	public Object clone()  {
-		try{
-			Amplification result = (Amplification)super.clone();
+		Cloning result = (Cloning)super.clone();
 			
-			//don't change strain, method, forwardPrimer, backwardPrimer
-			return result;
-		}catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
-		}
+		//don't change strain, forwardPrimer, backwardPrimer
+		return result;
 	}
 }

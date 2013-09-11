@@ -119,7 +119,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	 * @see Marker
 	 */
 	@XmlEnumValue("MarkerType")
-	MarkerType(UUID.fromString("d28a1bf8-95ed-483a-8f02-3515b14998e0"), "MarkerType", "MAT", null),
+	MarkerType(UUID.fromString("d28a1bf8-95ed-483a-8f02-3515b14998e0"), "MarkerType", "MKT", null),
 	
 	//7
 	/**
@@ -261,9 +261,27 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 	StatisticalMeasure(UUID.fromString("a22d19cd-a342-4af2-b156-d688a7aa8a6b"), "Statistical measure", "SM", null),
 
 	//23
-	@XmlEnumValue("PreservationMethod")
-	PreservationMethod(UUID.fromString("9cadbee4-22b5-40f5-bb37-e4f5340d246e"), "Preservation method", "PRM"),
+	@XmlEnumValue("MaterialOrMethod")
+	MaterialOrMethod(UUID.fromString("285a1406-a606-46b9-b0a4-717748296e50"), "Material or Method", "MOM"),
 
+	//23a
+	@XmlEnumValue("Material")
+	Material(UUID.fromString("58499bc1-9808-4e03-861c-4325ca889515"), "Material", "MAT", MaterialOrMethod),
+
+	//23b
+	@XmlEnumValue("Method")
+	Method(UUID.fromString("527fc141-7fdf-43c1-9d46-20be13c2590c"), "Method", "MET", MaterialOrMethod),
+
+	
+//	//23c TODO required??
+//	@XmlEnumValue("PreservationMethod")   --> Method
+//	PreservationMethod(UUID.fromString("9cadbee4-22b5-40f5-bb37-e4f5340d246e"), "Preservation method", "PRM", MaterialOrMethod),
+//
+//	//23d TODO required??  --> Material
+//	@XmlEnumValue("PreservationMedium") 
+//	PreservationMedium(UUID.fromString("c6269a06-6954-4838-a7a7-7f94ba372f3d"), "Preservation medium", "PME", MaterialOrMethod),
+
+	
 	//24
 	/**
 	 * This type represents possible modulations for the validity of
