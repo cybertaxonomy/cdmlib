@@ -741,6 +741,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmMetaData.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmPreference.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmPreferencesPredicateEnum.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/CdmPreferencesSubject.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Credit.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/DefinedTerm.java -text
@@ -1133,6 +1135,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/TeamTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/AnnotationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmBaseTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmMetaDataTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmPreferencesSubjectTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/CdmPreferencesTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefaultTermInitializerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/common/DefinedTermBaseTest.java -text
@@ -1345,6 +1348,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ILsidAu
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IMarkerDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IOrderedTermVocabularyDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IOriginalSourceDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IPreferenceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IReferencedEntityDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/IRepresentationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/common/ISearchableDao.java -text
@@ -1383,6 +1387,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/MarkerDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/OrderedTermVocabularyDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/OriginalSourceDaoImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/PreferenceDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/ReferencedEntityDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/RepresentationDaoImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/TermVocabularyDaoImpl.java -text
@@ -1513,6 +1518,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/comm
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/GroupDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/PreferenceDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/TermVocabularyDaoImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/common/UserDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/description/DescriptionDaoHibernateImplTest.java -text
@@ -2067,6 +2073,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageTextD
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPreferencesService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IStatisticsService.java -text
@@ -2089,6 +2096,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGenera
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text

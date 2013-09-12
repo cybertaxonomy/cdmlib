@@ -35,11 +35,11 @@ public class CdmPreferencesTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmPreferences#CdmPreferences(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmPreference#CdmPreferences(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testCdmPreferences() {
-		CdmPreferences prefs = new CdmPreferences(subject, predicate, value);
+		CdmPreference prefs = new CdmPreference(subject, predicate, value);
 		Assert.assertEquals(subject, prefs.getSubject());
 		Assert.assertEquals(predicate, prefs.getPredicate());
 		Assert.assertEquals(value, prefs.getValue());
@@ -54,35 +54,35 @@ public class CdmPreferencesTest {
 		String veryLongText400 = veryLongText200 + veryLongText200;
 		String veryLongText1200 = veryLongText400 + veryLongText400 + veryLongText400;
 		
-		CdmPreferences prefs = null;
+		CdmPreference prefs = null;
 		try {
-			prefs = new CdmPreferences(null, predicate, value);
+			prefs = new CdmPreference(null, predicate, value);
 			Assert.fail("Subject must not be null");
 		} catch (Exception e) {
 			//ok
 		}
 		try {
-			prefs = new CdmPreferences(veryLongText400, predicate, value);
+			prefs = new CdmPreference(veryLongText400, predicate, value);
 			Assert.fail("Subject must not be longer then 255");
 		} catch (Exception e) {
 			//ok
 		}
 		
 		try {
-			prefs = new CdmPreferences(subject, null, value);
+			prefs = new CdmPreference(subject, null, value);
 			Assert.fail("Predicate must not be null");
 		} catch (Exception e) {
 			//ok
 		}
 		try {
-			prefs = new CdmPreferences(subject, veryLongText400, value);
+			prefs = new CdmPreference(subject, veryLongText400, value);
 			Assert.fail("Predicate must not be longer then 255");
 		} catch (Exception e) {
 			//ok
 		}
 		
 		try {
-			prefs = new CdmPreferences(subject, predicate, null);
+			prefs = new CdmPreference(subject, predicate, null);
 		} catch (Exception e) {
 			Assert.fail("Currently null values are allowed in preferences");
 			Assert.assertEquals(subject, prefs.getSubject());
@@ -90,7 +90,7 @@ public class CdmPreferencesTest {
 			Assert.assertNull(value, null);
 		}
 		try {
-			prefs = new CdmPreferences(subject, predicate, veryLongText1200);
+			prefs = new CdmPreference(subject, predicate, veryLongText1200);
 			Assert.fail("Value must not be longer then 1023");
 		} catch (Exception e) {
 			//ok
