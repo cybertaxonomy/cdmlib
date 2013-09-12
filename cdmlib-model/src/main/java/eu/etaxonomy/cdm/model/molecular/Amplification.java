@@ -42,6 +42,25 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 
 /**
+ * The physical process of amplification (also called PCR) extracts and replicates parts of the DNA of
+ * a given {@link #getDnaSample() DNA Sample} . The part of the DNA being replicated is defined by the 
+ * {@link #getDnaMarker() marker} (also called locus) - implemented in CDM as a {@link DefinedTerm} 
+ * of term type {@link TermType#DnaMarker}. 
+ * <BR>To execute the replication {@link Primer primers} (short DNA fractions) are 
+ * used. They may work in both directions of the DNA part therefore we do have a
+ * {@link #getForwardPrimer() forward primer} and a {@link #getReversePrimer() reverse primer}.
+ * Most (or all?) amplifications require a {@link #getPurification() purification process}. Additionally 
+ * some use {@link #getCloning()} for replication. 
+ * <H3>Quality control</H3>
+ * <BR>For quality control the resulting product (PCR) is tested using a chromatographic method called 
+ * electrophoresis. The parameters (voltage, ladder used, running time, and gel concentration) used 
+ * for this electrophoresis as well as the resulting 
+ * {@link #getGelPhoto() photo} can also be stored in the amplification instance.
+ * <BR>The resulting PCR will later be used in a {@link SingleRead DNA sequence reading process}.
+ * The PCR itself is not persistent and therefore will not be stored in the CDM.
+ * This may change in future: http://dev.e-taxonomy.eu/trac/ticket/3717. 
+ * <BR>
+ * 
  * @author a.mueller
  * @created 2013-07-05
  *
@@ -87,7 +106,7 @@ public class Amplification extends EventBase implements Cloneable{
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
 	
-    /** @see #getMarker()*/
+    /** @see #getDnaMarker()*/
     @XmlElement(name = "DnaMarker")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -201,7 +220,7 @@ public class Amplification extends EventBase implements Cloneable{
 	}
 	
 	/**
-	 * The {@link SingleRead single sequences} created by using this amplification's result.
+	 * The {@link SingleRead single sequences} created by using this amplification's result (PCR).
 	 */
 	public Set<SingleRead> getSingleReads() {
 		return singleReads;
@@ -225,16 +244,18 @@ public class Amplification extends EventBase implements Cloneable{
 
 
 	/**
-	 * The {@link TermType#DnaMarker marker} examined by this amplification.
+	 * The {@link TermType#DnaMarker DNA marker} used for this amplification.
+	 * The DNA marker also defines the part (locality) of the DNA/RNA examined.
+	 * It may also be called <i>locus</i> 
 	 */
-	public DefinedTerm getMarker() {
+	public DefinedTerm getDnaMarker() {
 		return dnaMarker;
 	}
 
 	/**
-	 * @see #getMarker()
+	 * @see #getDnaMarker()
 	 */
-	public void setMarker(DefinedTerm marker) {
+	public void setDnaMarker(DefinedTerm marker) {
 		this.dnaMarker = marker;
 	}
 
@@ -323,7 +344,7 @@ public class Amplification extends EventBase implements Cloneable{
 	
 
 	/**
-	 * The cloning process (including materials and methods) involved in this amplification.
+	 * The {@link Cloning cloning process} involved in this amplification.
 	 */
 	public Cloning getCloning() {
 		return cloning;
@@ -338,7 +359,7 @@ public class Amplification extends EventBase implements Cloneable{
 
 	/**
 	 * The voltage used for running the electrophoresis quality check.
-	 * Base unit is [V].
+	 * Base unit is voltage [V].
 	 * @see #getGelRunningTime()
 	 * @see #getGelPhoto()
 	 * @see #getLadderUsed()
@@ -358,6 +379,7 @@ public class Amplification extends EventBase implements Cloneable{
 
 	/**
 	 * The time for running the electrophoresis quality check.
+	 * Base unit is minutes [min]. 
 	 */
 	public Double getGelRunningTime() {
 		return gelRunningTime;
@@ -373,6 +395,7 @@ public class Amplification extends EventBase implements Cloneable{
 
 	/**
 	 * The gel concentration used for the electrophoresis.
+	 * Base unit is 
 	 * @see #getElectrophoresisVoltage()
 	 * @see #getGelRunningTime()
 	 * @see #getGelPhoto()
@@ -410,7 +433,8 @@ public class Amplification extends EventBase implements Cloneable{
 	/**
 	 * The photo taken from the electrophoresis result showing the quality of the amplification.
 	 * Gelphotos often do show multiple electrophoresis results. One may either cut or mark 
-	 * the part of the photo that displays <code>this</code> amplification.
+	 * the part of the photo that displays <code>this</code> amplification. However, this may make
+	 * the concrete media file unusable for other amplifications also represented by the same image.
 	 * @see #getElectrophoresisVoltage()
 	 * @see #getLadderUsed()
 	 * @see #getGelConcentration()

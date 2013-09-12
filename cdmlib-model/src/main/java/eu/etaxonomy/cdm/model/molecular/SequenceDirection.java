@@ -14,6 +14,10 @@ import eu.etaxonomy.cdm.model.common.IKeyTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
+ * A Sequence Direction defines the direction in which a DNA part was read by a {@link Primer}
+ * for a {@link SingleRead sequencing process}.
+ * This can be either {@link #Forward} or {@link #Reverse}.
+ * 
  * @author a.mueller
  * @created 2013-07-11
  */

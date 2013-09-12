@@ -29,6 +29,9 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
+ * A primer is a (short) DNA Sequence used for replication and extraction
+ * of DNA parts during e.g. {@link Amplification amplification} or 
+ * {@link SingleRead sequence reading}.
  * 
  * @author a.mueller
  * @created 2013-07-08

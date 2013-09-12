@@ -41,8 +41,13 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStrategy;
 
 /**
+ * A DNA Sample is the extracted DNA of a given tissue sample. It may be stored in
+ * a DNA Bank and should then be handled as a collection unit.
+ * DNA Sample are used to determine their {@link Sequence DNA sequences}
+ * starting with a process called {@link Amplification amplification}.
+ *  
  * @author m.doering
- * @created 08-Nov-2007 13:06:22
+ * @created 08-Nov-2007
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaSample", propOrder = {

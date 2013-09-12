@@ -44,15 +44,20 @@ import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * Alignment of multiple single sequences to a consensus sequence, 
- * may also include the extracted barcode sequence.
+ * Alignment of multiple {@link SingleRead single sequences} to a consensus sequence.
+ * This sequence is a part of (or the complete) DNA sequences of the related {@link DnaSample DNA Sample},
+ * while 
  * 
- * This class holds information about both the combining process of 
+ * <BR>This class holds information about both the combining process of 
  * {@link SingleRead single sequences} to one consensus sequence
- * (singleReads, contigFile) as well as sequence related information.
- * The later includes the sequence string itself, important genetic information
- * (marker, haplotype) as well as registration information (genetic accession number)
- * citations and barcoding information.
+ * ({@link #getSingleReads() singleReads} , {@link #getContigFile() contigFile} ) 
+ * as well as sequence related information.
+ * The later includes the {@link #getConsensusSequence() sequence string} itself, 
+ * important genetic information about the DNA that has been sequenced 
+ * ({@link #getDnaMarker() marker} , {@link #getHaplotype()} haplotype) as well as 
+ * registration information ({@link #getGeneticAccessionNumber() genetic accession number} ),
+ * citations, and barcoding information ({@link #getBoldProcessId() BOLD-id}, 
+ * {@link #getBarcodeSequencePart() barcode sequence}, ...).
  * 
  * @author m.doering
  * @created 08-Nov-2007 13:06:51
@@ -82,6 +87,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
 	
+	//TODO move to cdmlib-ext?
 	private static final String GENBANK_BASE_URI = "http://www.ncbi.nlm.nih.gov/nuccore/%s";
 	private static final String EMBL_BASE_URI = "http://www.ebi.ac.uk/ena/data/view/%s";
 	private static final String DDBJ_BASE_URI = "http://getentry.ddbj.nig.ac.jp/getentry/na/%s/?filetype=html";
@@ -199,7 +205,12 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	/**
-	 * The consensus sequence achieved by this sequencing.
+	 * The resulting consensus sequence represened by this {@link Sequence sequence} .
+	 * The consensus is usually computed from the {@link SingleRead single reads}.
+	 * The result of which is stored in a file called {@link #getContigFile() contig file}
+	 * 
+	 * #see {@link #getContigFile()}
+	 * #see {@link #getSingleReads()}
 	 */
 	public SequenceString getConsensusSequence() {
 		return consensusSequence;
@@ -219,7 +230,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	/**
 	 * The isBarcode flag should be set to true if this (consensus) sequence is or includes 
 	 * a barcoding sequence. If the barcoding sequence is only a part of the consensus sequence
-	 * this part is to be stored as {@link #getBarcodeSequencePart() barcoding sequence part}.
+	 * this part shall be stored as {@link #getBarcodeSequencePart() barcoding sequence part}.
 	 * A isBarcode value of <code>null</code> indicates that we do have no knowledge
 	 * whether the sequence is a barcoding sequence or not.
 	 * 
@@ -243,7 +254,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	/**
 	 * If the barcode sequence string does not include 100% of the (consensus) sequence 
 	 * the part used as barcode is provided here. However, the barcode part
-	 * should be kept if consensus sequence string and barcode sequence string are equal.
+	 * should be kept empty if consensus sequence string and barcode sequence string are equal.
 	 * 
 	 * @see #getIsBarcode()
 	 */
@@ -262,7 +273,11 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 	
 	/**
-	 * Sets the {@link TermType#DnaMarker marker} examined and described by this sequencing.
+	 * Sets the {@link TermType#DnaMarker DNA marker} examined and described by this sequencing.
+	 * The marker should usually be similar to the one used in the according {@link Amplification
+	 * amplification process}. However, it may slightly differ, or, if multiple amplifications where
+	 * used to build this consensus sequence it may be the super set of the markers used in amplification.
+	 * 
 	 * @return
 	 */
 	public DefinedTerm getDnaMarker(){
@@ -278,7 +293,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	/**
-	 * The accession number used in GenBank, EMBL and DDBJ. 
+	 * The accession number used in GenBank, EMBL and DDBJ.
 	 * @return
 	 */
 	public String getGeneticAccessionNumber() {
@@ -324,6 +339,9 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 	/**
 	 * The contigFile containing all data and data processing for this sequencing.
+	 * 
+	 * @see #getConsensusSequence()
+	 * @see #getSingleReads()
 	 */
 	public Media getContigFile() {
 		return contigFile;
@@ -369,7 +387,10 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	/**
-	 * The single reads that where used to create this consensus sequence.
+	 * The {@link SingleRead single reads} that were used to build this consensus sequence.
+	 * 
+	 * @see #getConsensusSequence()
+	 * @see #getContigFile()
 	 */
 	public Set<SingleRead> getSingleReads() {
 		return singleReads;

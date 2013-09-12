@@ -33,8 +33,15 @@ import org.hibernate.search.annotations.Indexed;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
+ * "A phylogenetic tree or evolutionary tree is a branching diagram or "tree" showing the 
+ * inferred evolutionary relationships among various biological species or other entities 
+ * based upon similarities and differences in their physical and/or genetic characteristics. 
+ * The taxa joined together in the tree are implied to have descended from a common ancestor."
+ * (Wikipedia).
+ * <BR> In the CDM we currently store phylogenetic trees only as media. This may change in future.
+ * 
  * @author m.doering
- * @created 08-Nov-2007 13:06:43
+ * @created 08-Nov-2007
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "PhylogeneticTree", propOrder = {

@@ -22,6 +22,15 @@ import org.apache.log4j.Logger;
 import org.codehaus.plexus.util.StringUtils;
 
 /**
+ * A sequence contains the genetic code of a DNA or RNA part. It is basically a string
+ * based on 4 letters: ATGC (Adenin, Thymin, Guanin, Cytosin) for DNA and AUGC (Thymin replaced by Uracil)
+ * for RNA.
+ * <BR>
+ * The direction of the string shall always be 5'-3' which is a convention.
+ * <BR>
+ * The sequence has a length which is stored as such if no further information is given. If the sequence
+ * string is given the length is computed automatically.
+ *  
  * @author a.mueller
  * @created 2013-07-05
  */
@@ -65,7 +74,7 @@ public class SequenceString implements Cloneable, Serializable{
 // ********************* GETTER / SETTER ********************/
 
 	/**
-	 * The sequence as a string of base pairs. 5'->3'
+	 * The sequence as a string of base pairs in direction 5'->3'.
 	 */
 	public String getString(){
 		return this.string;

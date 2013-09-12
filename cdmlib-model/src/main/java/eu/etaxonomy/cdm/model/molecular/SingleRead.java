@@ -9,7 +9,6 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 import javax.persistence.Entity;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
@@ -135,6 +134,8 @@ public class SingleRead extends EventBase implements Cloneable{
 
 	/**
 	 * The {@link Primer primer} used for processing this single sequence.
+	 * Often this primer already has been used in the according amplification.
+	 * However, there are exceptions from this rule.
 	 */
 	public Primer getPrimer() {
 		return primer;
@@ -165,9 +166,11 @@ public class SingleRead extends EventBase implements Cloneable{
 	}
 
 	/**
-	 * The direction in which this single sequence has been created.
-	 * Usually an amplification and a sequencing has a forward single sequence and/or
-	 * a reverse single sequence.
+	 * The {@link SequenceDirection direction} in which this single sequence has been created.
+	 * Usually an {@link Amplification amplification} leads to 2 single sequences a 
+	 * {@link SequenceDirection#Forward forward} and a {@link SequenceDirection#Reverse reverse} one.
+	 * These 2 result then in a {@link Sequence consensus sequence}.
+	 * But there are exceptions from this rule. 
 	 */
 	public SequenceDirection getDirection() {
 		return direction;
