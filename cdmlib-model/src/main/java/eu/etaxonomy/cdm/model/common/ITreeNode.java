@@ -55,7 +55,7 @@ public interface ITreeNode<T extends ITreeNode<T>> extends ICdmBase {
 	public void setTreeIndex(String newTreeIndex);
 	
 	/**
-	 * Returns all child nodes of this node.
+	 * Returns all direct child nodes of this node.
 	 * As tree node children do not necessarily need to be
 	 * {@link List lists} the return type of this method may change
 	 * to {@link Collection} in future. Therefore the use
