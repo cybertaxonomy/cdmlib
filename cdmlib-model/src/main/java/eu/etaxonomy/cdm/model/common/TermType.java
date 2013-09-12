@@ -414,10 +414,13 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
 
 	//33
 	/**
-	 * A marker is a region on a DNA which is adressed in an {@link Amplification amplification process}.
+	 * A marker is a region on a DNA which is addressed in an {@link Amplification amplification process}.
 	 * It is very similar to a locus, a term which is often used as a synonym. However, a locus is correctly
 	 * defining one concrete place on a given DNA and therefore is more specific. As this specific information
 	 * is usually not available the marker information is provided instead.
+	 * Sometimes marker information includes multiple markers. To handle this it was decided that for such
+	 * combined markers we need to create a new "parent" marker which includes the single markers as "partOf" marker.
+	 * However, this works only if you have a distinct marker hierarchy, so futuere
 	 * @see Amplification
 	 * @see Amplification#getMarker()
 	 * @see Sequencing 
