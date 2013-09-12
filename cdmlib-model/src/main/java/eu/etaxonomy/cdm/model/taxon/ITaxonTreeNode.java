@@ -11,7 +11,6 @@
 package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.List;
-import java.util.Set;
 
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -21,7 +20,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author n.hoffmann
  * @created Sep 18, 2009
  */
-public interface ITaxonTreeNode extends IAnnotatableEntity {
+public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableEntity {
 
 	/**
 	 * Adds a taxon node as a child of the ITreeNode
@@ -66,6 +65,7 @@ public interface ITaxonTreeNode extends IAnnotatableEntity {
 	 * Returns the list of direct child nodes of <code>this</code> ITreeNode.
 	 * @return
 	 */
+//	@Override
 	public List<TaxonNode> getChildNodes();
 	
 	/**
