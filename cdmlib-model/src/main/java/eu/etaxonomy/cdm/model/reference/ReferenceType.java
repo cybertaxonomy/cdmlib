@@ -46,16 +46,40 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ThesisDefaultCacheStrategy;
 //TODO hierarchies, see http://dev.e-taxonomy.eu/trac/ticket/3619
 @XmlEnum
 public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
-	
+
+
+	/**
+	 * A reference of type section is a part-of another reference. Section is a generalized type for all 
+	 * references which are expected to be part of another reference (e.g. an article which is part of a journal, 
+	 * a book section which is part of a book) or which may have an in-reference  
+	 * such as books which may be part of a print series or websites which may be part of other websites.
+	 * <BR>
+	 * However, section as concrete type should only be used if no more specific type is available.
+	 * This is usually the case for parts of other sections such parts of articles, parts of book sections, or 
+	 * similar cases).
+	 * 
+	 * @see ISectionBase
+	 */
+	@XmlEnumValue("Section")
+	Section(UUID.fromString("98035142-ca82-46c5-bbef-ad225f668644"), "Section", "SEC", null, ReferenceDefaultCacheStrategy.class),
+
 	//0
+	/**
+	 * Article in a journal. 
+	 * Article is a specialization of {@link #Section}. 
+	 */
 	@XmlEnumValue("Article")
-	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", "ART", null, ArticleDefaultCacheStrategy.class),
+	Article(UUID.fromString("fddfb343-f652-4f33-b6cb-7c94daa2f1ec"), "Article", "ART", Section, ArticleDefaultCacheStrategy.class),
 	//1
 	@XmlEnumValue("Book")
-	Book(UUID.fromString("9280876c-accb-4c47-873d-46bbf4296f18"), "Book", "BK", null, BookDefaultCacheStrategy.class),
+	Book(UUID.fromString("9280876c-accb-4c47-873d-46bbf4296f18"), "Book", "BK", Section, BookDefaultCacheStrategy.class),
 	//2
+	/**
+	 * A part in a book, e.g. a chapter.
+	 * BookSection is a specialization of {@link #Section}  
+	 */
 	@XmlEnumValue("Book Section")
-	BookSection(UUID.fromString("b197435d-deec-46fa-9c66-e0e6c44c57fb"), "Book Section", "BS", null, BookSectionDefaultCacheStrategy.class),
+	BookSection(UUID.fromString("b197435d-deec-46fa-9c66-e0e6c44c57fb"), "Book Section", "BS", Section, BookSectionDefaultCacheStrategy.class),
 	//3
 	@XmlEnumValue("CD or DVD")
 	CdDvd(UUID.fromString("7d7c9f56-d6fd-45aa-852f-b965afe08ec0"), "CD or DVD", "CD", null, CdDvdDefaultCacheStrategy.class),
@@ -67,7 +91,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	Generic(UUID.fromString("df149dd8-f2b4-421c-b478-acc4cce63f25"), "Generic", "GEN", null, GenericDefaultCacheStrategy.class),
 	//6
 	@XmlEnumValue("Inproceedings")
-	InProceedings(UUID.fromString("a84dae35-6708-4c3d-8bb6-41b989947fa2"), "In Proceedings", "IPR", null, ReferenceDefaultCacheStrategy.class),
+	InProceedings(UUID.fromString("a84dae35-6708-4c3d-8bb6-41b989947fa2"), "In Proceedings", "IPR", Section, ReferenceDefaultCacheStrategy.class),
 	//7
 	@XmlEnumValue("Journal")
 	Journal(UUID.fromString("d8675c58-41cd-44fb-86be-e966bd4bc747"), "Journal", "JOU", null, JournalDefaultCacheStrategy.class),
@@ -85,7 +109,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	PrintSeries(UUID.fromString("d455f30d-2685-4f57-804a-3df5ba4e0888"), "Print Series", "SER", null, ReferenceDefaultCacheStrategy.class),
 	//12
 	@XmlEnumValue("Proceedings")
-	Proceedings(UUID.fromString("cd934865-cb25-41f1-a155-f344ccb0c57f"), "Proceedings", "PRO", null, ReferenceDefaultCacheStrategy.class),
+	Proceedings(UUID.fromString("cd934865-cb25-41f1-a155-f344ccb0c57f"), "Proceedings", "PRO", Section, ReferenceDefaultCacheStrategy.class),
 	//13
 	@XmlEnumValue("Report")
 	Report(UUID.fromString("4d5459b8-b65b-47cb-9579-2fe7be360d04"), "Report", "REP", null, ReferenceDefaultCacheStrategy.class),
@@ -94,7 +118,8 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	Thesis(UUID.fromString("cd054393-4f5e-4842-b820-b820e5732d72"), "Thesis", "THE", null, ThesisDefaultCacheStrategy.class),
 	//15
 	@XmlEnumValue("Web Page")
-	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", "WEB", null, ReferenceDefaultCacheStrategy.class)
+	WebPage(UUID.fromString("1ed8b0df-0532-40ea-aef6-ee4361341165"), "Web Page", "WEB", null, ReferenceDefaultCacheStrategy.class),
+
 	;
 
 	@SuppressWarnings("unused")
@@ -156,13 +181,16 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 		return (this == Book || this == Proceedings);
 	}
 
+	
+	
 	/**
 	 * Returns true if references of this type are parts of other references (inheriting from
 	 * {@link ISectionBase}) and therefore may have an in-reference and pages.
 	 */
 	public boolean isSection(){
-		return (this == BookSection || this == InProceedings
-				|| isPrintedUnit() || this == Article );
+//		return (this == BookSection || this == InProceedings
+//				|| isPrintedUnit() || this == Article );
+		return isKindOf(Section);
 	}
 
 // *************************** DELEGATE **************************************/	
