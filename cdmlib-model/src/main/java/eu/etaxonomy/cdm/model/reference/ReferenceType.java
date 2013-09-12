@@ -185,7 +185,7 @@ public enum ReferenceType implements IEnumTerm<ReferenceType>, Serializable{
 	
 	/**
 	 * Returns true if references of this type are parts of other references (inheriting from
-	 * {@link ISectionBase}) and therefore may have an in-reference and pages.
+	 * {@link ISection}) and therefore may have an in-reference and pages.
 	 */
 	public boolean isSection(){
 //		return (this == BookSection || this == InProceedings

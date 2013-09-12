@@ -16,7 +16,7 @@ package eu.etaxonomy.cdm.model.reference;
  * In this case it is generally possible to distinguish authors, editors and
  * publishers. 
  */
-public interface IPrintedUnitBase extends IPublicationBase, ISectionBase, IVolumeReference {
+public interface IPrintedUnitBase extends IPublicationBase, ISection, IVolumeReference {
 
 	/**
 	 * Returns the print series of this printed unit

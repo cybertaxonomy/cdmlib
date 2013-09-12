@@ -32,7 +32,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.reference.ISectionBase;
+import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -675,7 +675,7 @@ public class BerlinModelTransformer {
 			return null;
 		}
 		else if (ref.getType().equals(ReferenceType.Article)){		return REF_ARTICLE;}
-		else if (ref instanceof ISectionBase){	return REF_PART_OF_OTHER_TITLE;}
+		else if (ref instanceof ISection){	return REF_PART_OF_OTHER_TITLE;}
 		else if (ref.getType().equals(ReferenceType.Book)){	return REF_BOOK;}
 		else if (ref.getType().equals(ReferenceType.Database)){	return REF_DATABASE;}
 //		else if (ref instanceof SectionBas){	return REF_INFORMAL;}

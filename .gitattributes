@@ -938,7 +938,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IProceedings.java -t
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IPublicationBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IReport.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ISectionBase.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/ISection.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IThesis.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IVolumeReference.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/reference/IWebPage.java -text
