@@ -1,12 +1,6 @@
 cdm-3.3/*.project
 cdm-3.3/.directory
 cdm-3.3/.metadata
-cdm-3.3/cdmlib-print/*odf_output.odf
-cdm-3.3/cdmlib-print/.classpath
-cdm-3.3/cdmlib-print/.project
-cdm-3.3/cdmlib-print/.settings
-cdm-3.3/cdmlib-print/target
-cdm-3.3/cdmlib-print/test
 cdm-3.3/cdmlib-remote-webapp/.classpath
 cdm-3.3/cdmlib-remote-webapp/.project
 cdm-3.3/cdmlib-remote-webapp/.settings
@@ -98,3 +92,9 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/dataset.xsd
 cdmlib-persistence/target
 cdmlib-persistence/test.xml
+cdmlib-print/*odf_output.odf
+cdmlib-print/.classpath
+cdmlib-print/.project
+cdmlib-print/.settings
+cdmlib-print/target
+cdmlib-print/test
