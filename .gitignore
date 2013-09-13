@@ -1,12 +1,6 @@
 cdm-3.3/*.project
 cdm-3.3/.directory
 cdm-3.3/.metadata
-cdm-3.3/cdmlib-commons/.classpath
-cdm-3.3/cdmlib-commons/.project
-cdm-3.3/cdmlib-commons/.settings
-cdm-3.3/cdmlib-commons/bin
-cdm-3.3/cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
-cdm-3.3/cdmlib-commons/target
 cdm-3.3/cdmlib-ext/.classpath
 cdm-3.3/cdmlib-ext/.project
 cdm-3.3/cdmlib-ext/.settings
@@ -98,3 +92,9 @@ cdm-3.3/cdmlib-services/testTaxonNodeByNameComparator-dump.xml
 cdm-3.3/latestChanges.patch
 cdm-3.3/target
 cdm-3.3/testANTLR
+cdmlib-commons/.classpath
+cdmlib-commons/.project
+cdmlib-commons/.settings
+cdmlib-commons/bin
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
+cdmlib-commons/target
