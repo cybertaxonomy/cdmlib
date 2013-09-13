@@ -20,6 +20,7 @@ import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -34,7 +35,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
@@ -105,24 +105,22 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlElement(name = "childNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-//  @OrderColumn("sortIndex")  //JPA 2.0 same as @IndexColumn
-	// @IndexColumn does not work because not every FeatureNode has a parent. But only NotNull will solve the problem (otherwise 
+    // @IndexColumn/@OrderColumn does not work because not every TaxonNode has a parent. But only NotNull will solve the problem (otherwise 
     // we will need a join table 
 	// http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
 	// http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
 	//see also https://forum.hibernate.org/viewtopic.php?p=2392563
 	//http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
 	// reading works, but writing doesn't
-	//
-    @IndexColumn(name="sortIndex", base = 0) 
+    @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
      
     
-    //see comment on children FeatureNode#IndexColumn
-    private Integer sortIndex;
+    //see comment on children TaxonNode#OrderColumn
+    private Integer sortIndex = -1;
 
 
     @XmlElement(name = "reference")
@@ -181,11 +179,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
-        if (this.getClassification().isTaxonInTree(taxon)){
-             throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
-        }
+    	return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
+    
+    }
 
-        return addChildNode(new TaxonNode(taxon), citation, microCitation);
+
+    @Override
+    public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
+        if (this.getClassification().isTaxonInTree(taxon)){
+            throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
+       }
+
+       return addChildNode(new TaxonNode(taxon), index, citation, microCitation);	
     }
 
     /**
@@ -216,7 +221,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	 * @see				#deleteChildNode(TaxonNode)
 	 * @see				#deleteChildNode(int) 
 	 */
-    public void addChildNode(TaxonNode child, int index, Reference reference, String microReference){
+    @Override
+    public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
 		if (index < 0 || index > childNodes.size() + 1){
 			throw new IndexOutOfBoundsException("Wrong index: " + index);
 		}
@@ -242,11 +248,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 		}
 		child.sortIndex = index;
 		
-
-		
         child.setReference(reference);
         child.setMicroReference(microReference);
 //        childNode.setSynonymToBeUsed(synonymToBeUsed);
+
+        return child;
 
 	}
 
@@ -447,10 +453,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @param parent
      */
     @Transient
-    protected void setParentTreeNode(ITaxonTreeNode parent){
-    	setParentTreeNode(parent, parent.getChildNodes().size());
-    }   
-    @Transient
     protected void setParentTreeNode(ITaxonTreeNode parent, int index){
         // remove ourselves from the old parent
         ITaxonTreeNode formerParent = this.getParentTreeNode();
@@ -479,13 +481,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         // add this node to the parent child nodes
         parent.getChildNodes().add(index, this);
 		//TODO workaround (see sortIndex doc)
+        //FIXME don't we need to update the parent's childNode index here??
 		for(int i = 0; i < childNodes.size(); i++){
 			childNodes.get(i).sortIndex = i;
 		}
 		this.sortIndex = index;
         
-        
-
         // update the children count
         if(parent instanceof TaxonNode){
             TaxonNode parentTaxonNode = (TaxonNode) parent;
