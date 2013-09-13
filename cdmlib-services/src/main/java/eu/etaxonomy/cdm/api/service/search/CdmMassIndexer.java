@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 
 /**
  * @author Andreas Kohlbecker
@@ -223,27 +224,39 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         logger.info("purging " + type.getName());
         fullTextSession.purgeAll(type);
 
+        // TODO
+        // toggle on off flag doSpellIndex introduced for debugging, see ticket:
+        //  #3721 (CdmMassIndexer.purge throwing errors due to LockObtainFailedException)
+        // remove once this is fixed
+        boolean doSpellIndex = true;
 
-        SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)fullTextSession.getSearchFactory();
-        IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
-        Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
-        SpellChecker spellChecker = null;
-        try {
-            spellChecker = new SpellChecker(directory);
-            spellChecker.clearIndex();
-        } catch (IOException e) {
-            logger.error("IOException when creating dictionary", e);
-            //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
-            monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
-            monitor.done();
-        }
+        if(doSpellIndex){
+            SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)fullTextSession.getSearchFactory();
+            IndexManager indexManager = searchFactory.getAllIndexesManager().getIndexManager(type.getName());
+            if(indexManager == null){
+                logger.info("No IndexManager found for " + type.getName() + ", thus nothing to purge");
+                return;
+            }
 
-        if (spellChecker != null) {
+            Directory directory = ((DirectoryBasedIndexManager) indexManager).getDirectoryProvider().getDirectory();
+            SpellChecker spellChecker = null;
             try {
-                logger.info("closing spellchecker ");
-                spellChecker.close();
+                spellChecker = new SpellChecker(directory);
+                spellChecker.clearIndex();
             } catch (IOException e) {
-                logger.error("IOException when closing spellchecker", e);
+                logger.error("IOException when creating dictionary", e);
+                //TODO better means to notify that the process has been stopped, using the STOPPED_WORK_INDICATOR is only a hack
+                monitor.worked(RestServiceProgressMonitor.STOPPED_WORK_INDICATOR);
+                monitor.done();
+            }
+
+            if (spellChecker != null) {
+                try {
+                    logger.info("closing spellchecker ");
+                    spellChecker.close();
+                } catch (IOException e) {
+                    logger.error("IOException when closing spellchecker", e);
+                }
             }
         }
     }
@@ -385,6 +398,7 @@ public class CdmMassIndexer implements ICdmMassIndexer {
             indexedClasses.add(Classification.class);
             indexedClasses.add(TaxonNameBase.class);
             indexedClasses.add(SpecimenOrObservationBase.class);
+            indexedClasses.add(TaxonRelationship.class);
         }
         return indexedClasses;
     }

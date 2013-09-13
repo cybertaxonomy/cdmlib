@@ -55,7 +55,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public class LuceneSearch {
 
-    private String groupByField = "id";
+    protected String groupByField = "id";
 
     public final static String ID_FIELD = "id";
 
@@ -65,7 +65,7 @@ public class LuceneSearch {
 
     protected IndexSearcher searcher;
 
-    private SortField[] sortFields;
+    protected SortField[] sortFields;
 
     private Class<? extends CdmBase> directorySelectClass;
 
@@ -76,7 +76,7 @@ public class LuceneSearch {
     /**
      * classFilter
      */
-    private Class<? extends CdmBase> clazz;
+    protected Class<? extends CdmBase> clazz;
 
 
     public Class<? extends CdmBase> getClazz() {
@@ -190,6 +190,15 @@ public class LuceneSearch {
     /**
      * @return
      */
+    public IndexReader getIndexReaderFor(Class<? extends CdmBase> clazz) {
+        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
+        IndexReader reader = searchFactory.getIndexReaderAccessor().open(pushAbstractBaseTypeDown(clazz));
+        return reader;
+    }
+
+    /**
+     * @return
+     */
     public QueryParser getQueryParser() {
         Analyzer analyzer = getAnalyzer();
         QueryParser parser = new QueryParser(Configuration.luceneVersion,  "titleCache", analyzer);
@@ -284,6 +293,10 @@ public class LuceneSearch {
         }
 
         // perform the search (needs two passes for grouping)
+        if(logger.isDebugEnabled()){
+            logger.debug("Grouping: sortFields=" + sortFields + ", groupByField=" + groupByField +
+                    ", groupSort=" + groupSort + ", withinGroupSort=" + withinGroupSort + ", limit=" + limit + ", maxDocsPerGroup="+ maxDocsPerGroup);
+        }
         // - first pass
         TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
         getSearcher().search(fullQuery, firstPassCollector);
@@ -297,13 +310,19 @@ public class LuceneSearch {
         boolean getMaxScores = true;
         boolean fillFields = true;
         TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
-        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields);
+        TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(
+                groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields
+                );
         getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
         TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
         // get max score from very first result
         float maxScore = groupsResult.groups[0].maxScore;
+        if(logger.isDebugEnabled()){
+            logger.debug("TopGroups: maxScore=" + maxScore + ", offset=" + offset +
+                    ", totalGroupCount=" + allGroupsCollector.getGroupCount() + ", totalGroupedHitCount=" + groupsResult.totalGroupedHitCount);
+        }
         TopGroupsWithMaxScore topGroupsWithMaxScore = new TopGroupsWithMaxScore(groupsResult, offset, allGroupsCollector.getGroupCount(), maxScore);
 
         return topGroupsWithMaxScore;

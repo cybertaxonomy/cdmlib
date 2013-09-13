@@ -521,7 +521,11 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @throws IOException
      * @throws ParseException
      * @throws LuceneMultiSearchException
+     * @deprecated this search should fully be covered by the new method
+     *      {@link #findTaxaAndNamesByFullText(EnumSet, String, Classification, Set, List, boolean, Integer, Integer, List, List)}
+     *      , maybe we should rename this latter method to give it a more meaningful name
      */
+    @Deprecated
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
             Classification classification, List<Language> languages, boolean highlightFragments,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;

@@ -22,11 +22,14 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.SortField;
+import org.apache.lucene.search.join.JoinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -145,6 +148,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
+
+    private static IndexSearcher taxonRelationshipSearcher;
 
     /**
      * Constructor
@@ -1359,7 +1364,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -1377,7 +1382,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
@@ -1390,6 +1395,82 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         textQuery.add(queryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
+
+        if(classification != null){
+            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+        }
+        luceneSearch.setQuery(finalQuery);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
+    }
+
+    /**
+     * Uses org.apache.lucene.search.join.JoinUtil for query time joining, alternatively
+     * the BlockJoinQuery could be used. The latter might be more memory save but has the
+     * drawback of requiring to do the join an indexing time.
+     * see  http://dev.e-taxonomy.eu/trac/wiki/LuceneNotes#JoinsinLucene for more information on this.
+     *
+     * Joins TaxonRelationShip with Taxon depending on the direction of the given edge:
+     * <ul>
+     * <li>direct, everted: {@link Direction.relatedTo}: TaxonRelationShip.relatedTo.id --&gt; Taxon.id </li>
+     * <li>inverse: {@link Direction.relatedFrom}:  TaxonRelationShip.relatedFrom.id --&gt; Taxon.id </li>
+     * <ul>
+     *
+     * @param queryString
+     * @param classification
+     * @param languages
+     * @param highlightFragments
+     * @return
+     */
+    protected LuceneSearch prepareFindByTaxonRelationFullTextSearch(TaxonRelationshipEdge edge, String queryString, Classification classification, List<Language> languages,
+            boolean highlightFragments) {
+
+        String idField;
+        String queryTermField;
+        String toField = "id"; // TaxonBase.uuid
+
+        if(edge.isBidirectional()){
+            throw new RuntimeException("Bidirectional joining not supported!");
+        }
+        if(edge.isEvers()){
+            idField = "relatedFrom.id";
+            queryTermField = "relatedFrom.titleCache";
+        } else if(edge.isInvers()) {
+            idField = "relatedTo.id";
+            queryTermField = "relatedTo.titleCache";
+        } else {
+            throw new RuntimeException("Invalid direction: " + edge.getDirections());
+        }
+
+        BooleanQuery finalQuery = new BooleanQuery();
+        BooleanQuery joinFromQuery = new BooleanQuery();
+        Query joinQuery = null;
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        joinFromQuery.add(queryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
+        joinFromQuery.add(queryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
+        try {
+            // TODO move into QueryFactory if possible
+            if(taxonRelationshipSearcher == null){
+                IndexReader taxonRelationshipReader = luceneSearch.getIndexReaderFor(TaxonRelationship.class);
+                taxonRelationshipSearcher = new IndexSearcher(taxonRelationshipReader);
+                taxonRelationshipSearcher.setDefaultFieldSortScoring(true, true);
+            }
+            joinQuery = JoinUtil.createJoinQuery(idField, toField, joinFromQuery, taxonRelationshipSearcher);
+            // end of possible move
+        } catch (IOException e) {
+            logger.error(e);
+        }
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        luceneSearch.setSortFields(sortFields);
+
+        finalQuery.add(joinQuery, Occur.MUST);
 
         if(classification != null){
             finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
@@ -1439,8 +1520,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
         }
         if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames)) {
-            //TODO
+            // NOTE:
+            // prepareFindByTaxonRelationFullTextSearch() is making use of JoinUtil.createJoinQuery()
+            // which allows doing query time joins
+            luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
+                    new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
+                    queryString, classification, languages, highlightFragments));
+            idFieldMap.put(CdmBaseType.TAXON, "id");
         }
+
         // TODO implement area filter
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
@@ -1455,7 +1543,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -1512,7 +1600,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
 
     }

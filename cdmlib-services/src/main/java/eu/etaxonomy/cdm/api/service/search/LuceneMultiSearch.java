@@ -22,6 +22,7 @@ import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.SortField;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 import org.hibernate.search.indexes.IndexReaderAccessor;
@@ -48,24 +49,52 @@ public class LuceneMultiSearch extends LuceneSearch {
      * @throws Exception
      */
     public LuceneMultiSearch(LuceneSearch... luceneSearch) throws LuceneMultiSearchException {
-        session = luceneSearch[0].session;
 
+        session = luceneSearch[0].session;
+        groupByField = null; //reset
         BooleanQuery query = new BooleanQuery();
 
         Set<String> highlightFields = new HashSet<String>();
+        List<SortField> multiSearcherSortFields = new ArrayList<SortField>();
 
         for(LuceneSearch search : luceneSearch){
+
             this.directorySelectClasses.add(search.getDirectorySelectClass());
             query.add(search.getQuery(), Occur.SHOULD);
+
+            // add the highlightFields from each of the sub searches
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
-            if(search.getClazz() != null){
-                if(getClazz() != null){
-                    throw new LuceneMultiSearchException("LuceneMultiSearch can only handle once class restriction, but multiple given: " + getClazz() + ", " + search.getClazz());
+
+            // set the class for each of the sub searches
+            if(search.clazz != null){
+                if(clazz != null && !clazz.equals(search.clazz)){
+                    throw new LuceneMultiSearchException(
+                            "LuceneMultiSearch can only handle once class restriction, but multiple given: " +
+                            getClazz() + ", " + search.getClazz());
                 }
                 setClazz(search.getClazz());
             }
+
+            // set the groupByField for each of the sub searches
+            if(search.groupByField != null){
+                if(groupByField != null && !groupByField.equals(search.groupByField)){
+                    throw new LuceneMultiSearchException(
+                            "LuceneMultiSearch can only handle once groupByField, but multiple given: " +
+                            groupByField + ", " + search.groupByField);
+                }
+                groupByField = search.groupByField;
+            }
+
+
+            // add the sort field from each of the sub searches
+            for(SortField addField : search.getSortFields()){
+                if(! multiSearcherSortFields.contains(addField)) {
+                    multiSearcherSortFields.add(addField);
+                }
+            }
         }
 
+        this.sortFields = multiSearcherSortFields.toArray(new SortField[multiSearcherSortFields.size()]);
         this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
         this.query = query;
     }

@@ -179,7 +179,7 @@ public class QueryFactory {
      * @return
      */
     public Query newEntityIdQuery(String idFieldName, CdmBase entitiy){
-        return newTermQuery("inDescription.taxon.taxonNodes.classification.id", String.valueOf(entitiy.getId()), false);
+        return newTermQuery(idFieldName, String.valueOf(entitiy.getId()), false);
     }
 
     /**
