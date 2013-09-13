@@ -1,0 +1,155 @@
+	---------------
+	Name Search API
+	---------------
+
+{CDM Search API for Distinct Taxonomic Name}
+
+	This web service endpoint serves as a search engine for searching a CDM datasource for distinct scientific names which contain the query string within the scientific name.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : this could either be part of a scientific name or the complete scientific name. Wild-card searches are possible by including a * within the query string.
+	
+	* '<<matchMode>>' [optional, default value = <<<BEGINNING>>>] 	: Case sensitive. This parameter can have the values,
+	
+									* <<<BEGINNING>>>	: MatchMode should be set to BEGINNING if the query contains a * at the beginning (e.g. *ichorieae).
+									
+									* <<<END>>>	:  MatchMode should be set to END if the query contains a * at the end (e.g. Cichori*).
+									
+									* <<<ANYWHERE>>>	: MatchMode should be set to ANYWHERE if the query contains a * within it (e.g.Hy*ridineae).
+									
+									* <<<EXACT>>>	: MatchMode should be set to EXACT to query for an exact name match.
+									
+	* '<<pageSize>>' [optional, default value = <<<20>>>] 	: the number of results within each page in the response. The default is set to 20.
+	
+	* '<<pageNumber>>' [optional, default value = <<<1>>>] 	: the number of the page to be returned, the first page has the pageNumber = 1.
+	
+	
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON and XML.
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<class>>> : "DefaultPagerImpl" is always returned for a name search.
+		
+		* <<<count>>> : the total number of records returned.
+		
+		* <<<currentIndex>>> : the current index of the response. Index 0 corresponds to the first page.
+		
+		* <<<firstRecord>>> : an integer indicating the number of the first record on the current page.
+		
+		* <<<indexes>>> : a sliding window showing a list of integers showing the previous and next indexes of the avaiable pages.
+			
+		* <<<lastRecord>>> : an integer indicating the number of the last record on the current page.
+		
+		* <<<nextIndex>>> : the index corresponding to the next page.
+		
+		* <<<pageSize>>> : page size provided as input.
+		
+		* <<<pagesAvailable>>> : the total number of pages available.
+		
+		* <<<prevIndex>>> : the index corresponding to the previous page.
+		
+		* <<<records>>> : a list of the scientific names returned in this page.
+		
+		* <<<suggestion>>>
+						
+	
+	Note:
+		
+		* When the number of records returned are greater than the page size multiple calls to the web service must be made to return the subequent pages.
+		
+	
+	Example Requests :
+		
+		* Exact scientific name search : 	
+				
+			* {{{queryCichorium_endivia} /name/findTitleCache.json?query=Cichorium endivia}}
+			
+		* Wild-card scientific name search (with page size specified): 
+		
+			* {{{queryCichori*pageSize25matchModeBEGINNING} /name/findTitleCache.json?query=Cichori*&pageSize=25&matchMode=BEGINNING}}
+					
+			
+	Example Responses :
+		
+		* Exact scientific name search : {query=Cichorium_endivia} [{{{CDM_Search_API_for_Distinct_Taxonomic_Name}back}}]
+										
+---
+
+[{
+
+    "class": "DefaultPagerImpl",
+    "count": 1,
+    "currentIndex": 0,
+    "firstRecord": 1,
+    "indices": [
+        0
+    ],
+    "lastRecord": 1,
+    "nextIndex": 0,
+    "pageSize": 20,
+    "pagesAvailable": 1,
+    "prevIndex": 0,
+    "records": [
+        "Cichorium endivia"
+    ],
+    "suggestion": ""
+
+}]
+
+---		
+		* Wild-card scientific name search (with page size specified): {query=Cichori*&pageSize=25&matchMode=BEGINNING} [{{{CDM_Search_API_for_Distinct_Taxonomic_Name}back}}]
+				
+---
+
+[{
+
+    "class": "DefaultPagerImpl",
+    "count": 83,
+    "currentIndex": 0,
+    "firstRecord": 1,
+    "indices": [
+        0,
+        1,
+        2
+    ],
+    "lastRecord": 25,
+    "nextIndex": 1,
+    "pageSize": 25,
+    "pagesAvailable": 4,
+    "prevIndex": 0,
+    "records": [
+        "Cichoriaceae Juss.",
+        "Cichorieae Lam. & DC.",
+        "Cichoriinae Dumort.",
+        "Cichorioideae (Juss.) Chevall.",
+        "Cichorium alatum Hochst. & Steud.",
+        "Cichorium ambiguum Schult.",
+        "Cichorium aposeris E. H. L. Krause",
+        "Cichorium arnoseris E. H. L. Krause",
+        "Cichorium balearicum Porta",
+        "Cichorium barbatum (L.) E. H. L. Krause",
+        "Cichorium bottae Deflers",
+        "Cichorium byzantinum Clementi",
+        "Cichorium caeruleum Gilib.",
+        "Cichorium callosum Pomel",
+        "Cichorium calvum Asch.",
+        "Cichorium calvum Sch. Bip.",
+        "Cichorium casnia Wall.",
+        "Cichorium cicorea Dumort.",
+        "Cichorium commune Pall.",
+        "Cichorium crispum Mill.",
+        "Cichorium dichotomum Link",
+        "Cichorium divaricatum Schousb.",
+        "Cichorium dubium E. H. L. Krause",
+        "Cichorium endivia",
+        "Cichorium endivia L."
+    ],
+    "suggestion": ""
+
+}]
+
+---		
+

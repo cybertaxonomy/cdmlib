@@ -1,0 +1,150 @@
+                                    ---------------------
+                                    Fuzzy Name Search API
+                                    ---------------------
+
+{CDM Taxonomic Fuzzy Name Search API}
+
+	This web service endpoint serves as a fuzzy search for taxonomic names. The current implementation is based on the {{{http://lucene.apache.org/core/}Apache Lucene}}
+	fuzzy query approach using a fail-fast Levenshtein distance algorithm.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : this could either be the base scientific name or the complete scientific name.
+		
+	* '<<accuracy>>' [optional, default value = <<<0.5>>>] 	: Similarity measure (\>=0.0 and \< 1.0) to impose on the matching algorithm. Briefly described, this is equivalent to the edit distance between the names being matched, divided by the length of the shorter of the 
+       compared terms.
+              
+	* '<<hits>>' [optional, default value = <<<10>>>] : maximum number of responses to be returned.
+						
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<query>>> : scientific name provided as input.
+			
+		* <<<response>>>
+		
+			* <<<acceptedTaxonUuids>>> : list of uuids of all accepted taxa related to the taxa corresponding to the taxonConceptUuids list.
+		
+			* <<<name>>> : base scientific name.
+			
+			* <<<nameUuids>>> : list of uuids of all scientific names corresponding to this name.
+			
+			* <<<score>>> : value indicating the similarity between this name returned and the query.
+			
+			* <<<taxonConceptUuids>>> : list of uuids of all taxa corresponding to this name.	
+			
+			* <<<title>>> : complete scientific name.									
+	
+	Features:
+	
+		* Possibility to perform multiple queries in one single web service call.
+		
+		* Standardised and structured error messages.
+	
+	Example Requests :
+		
+		* Genus fuzzy name search : 	
+				
+			* {{{queryHyposerid&hits2} /name_catalogue/fuzzy.json?query=Hyposerid&hits=2}}			
+			
+		* Species fuzzy name search : 	
+				
+			* {{{queryMyoseris_purpireo&accuracy0.6&hits=2} /name_catalogue/fuzzy.json?query=Myoseris purpireo&accuracy=0.6&hits=2}}				
+			
+	Example Responses :
+		
+		* Genus fuzzy name search : {query=Hyposerid&hits=2} [{{{CDM_Taxonomic_Fuzzy_Name_Search_API}back}}]
+										
+---
+
+[
+
+    {
+        "request": {
+            "query": "Hyposerid"
+        },
+        "response": [
+            {
+                "acceptedTaxonUuids": [
+                    "2e4d5b08-d785-4795-bb7a-6c745c708ca6"
+                ],
+                "name": "Hyoseris",
+                "nameUuids": [
+                    "44b72a9b-8844-4a72-89e4-0a516f1dd566"
+                ],
+                "score": 4.5794897,
+                "taxonConceptUuids": [
+                    "2e4d5b08-d785-4795-bb7a-6c745c708ca6"
+                ],
+                "title": "Hyoseris L."
+            },
+            {
+                "acceptedTaxonUuids": [
+                    "38bc9407-e379-4c15-b566-9b87b0fb7c20"
+                ],
+                "name": "Aposeris",
+                "nameUuids": [
+                    "232c9d38-7a09-4b21-9b84-45933646906f"
+                ],
+                "score": 4.19751,
+                "taxonConceptUuids": [
+                    "38bc9407-e379-4c15-b566-9b87b0fb7c20"
+                ],
+                "title": "Aposeris Cass."
+            }
+        ]
+    }
+
+]
+
+---		
+		* Species fuzzy name search : {query=Myoseris purpireo&accuracy=0.6&hits=2} [{{{CDM_Taxonomic_Fuzzy_Name_Search_API}back}}]		
+										
+---
+
+[
+
+    {
+        "request": {
+            "query": "Myoseris purpireo"
+        },
+        "response": [
+            {
+                "acceptedTaxonUuids": [
+                    "ae7578ed-a15d-4447-b607-ed6dca92f333"
+                ],
+                "name": "Myoseris purpurea",
+                "nameUuids": [
+                    "6f024d15-71c8-4566-b6e8-b37a0a23c29b"
+                ],
+                "score": 10.270407,
+                "taxonConceptUuids": [
+                    "80804544-c202-41f7-9c63-c76600781935"
+                ],
+                "title": "Myoseris purpurea (Willd.) Link"
+            },
+            {
+                "acceptedTaxonUuids": [
+                    "7b3f0f40-63f2-44a4-a72b-6a8f49dd430f"
+                ],
+                "name": "Agoseris purpurea",
+                "nameUuids": [
+                    "90fef41e-5fba-405e-95ec-2df6e60fd05e"
+                ],
+                "score": 3.2964854,
+                "taxonConceptUuids": [
+                    "ad52cb23-5c3d-4ef9-87cf-62c7d2c2df9a"
+                ],
+                "title": "Agoseris purpurea (A. Gray) Greene"
+            }
+        ]
+    }
+
+]
+
+---			

@@ -1,0 +1,21 @@
+Generating printed publications from the CDM
+
+   With the Taxonomic Editor to enter and edit data in the CDM as well as the Dataportals to publish this data over the web, there still is the need to generate high quality printed publications to present taxonomic work to a wide audience and for beeing the final step in the taxonomic workflow. It is crucial to the success of a tool providing this functionality that it will leave the user with as much control as possible when it comes to layouting and final touches. It was decided that the best solution would be to prepare the data to be edited in word processor, thus giving the taxonomists the opportunity to layout their data with tools they supposedly are familiar with already.
+
+* Functional Description
+
+  The output beeing generated will be in OpenDocument format (ODF). ODF is an ISO-certified open standard that has been adopted worldwide by numerous organizations.
+
+  Using XML export functionality already existing in the CDM, e.g. JAXB or TCS, an XML document containing all the taxonomic data in a well structured form will be generated. Since ODF is also XML based, the exported XML may be transformed into ODF by using eXtensible Stylesheet Language Transformations (XSLT). XSLT is a language to translate an XML document into another XML document with a potentially different schema or arrangement of data. The purpose of these translations is to bring the original data into a format easily understood by the importing system.
+
+  A default transformation stylesheet will be provided to transform the exported XML data into an ODF document. Although it is possible to create specialized transformation stylesheet for specific situations, the default stylesheet will contain all data and be suitable for the most common use cases.
+
+  The so generated document may now be edited in modern word processors like OpenOffice.org
+
+  * full control over data and layout is returned to the user
+    using so-called styles, similar to CSS (Cascading Style Sheets) used in XHTML documents, a layout may be specified for a class of elements. The styles approach allows the user to change the layout of the data in a consistent manner
+  * by the use of macros, automation programs inside the word processor, it is possible to post process the data, e.g. deleting unwanted parts of the data
+
+*Special Case: Printed Publication of Taxonomic Names
+
+  To facilitate the publishing of taxonomic names, specialized templates will be provided for a limited number of journals, where each template contains a layout specific to the journal.

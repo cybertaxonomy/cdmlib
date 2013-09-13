@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<project xmlns="http://maven.apache.org/DECORATION/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="CDM Library" xsi:schemaLocation="http://maven.apache.org/DECORATION/1.0.0 http://maven.apache.org/xsd/decoration-1.0.0.xsd">
+  <skin>
+    <groupId>eu.etaxonomy.site</groupId>
+    <artifactId>platform-site-skin</artifactId>
+    <version>1.0</version>
+  </skin>
+  <body>
+    <menu name="General Information">
+      <item name="What is the CDM Library?" href="index.html"/>
+      <item name="Details" href="overview.html"/>
+      <!--item name="FAQ" href="faq.html"/-->
+      <item name="Releases" href="changes-report.html"/>
+    </menu>
+    <menu name="Developer">
+      <item name="Getting started" href="getting-started.html"/>
+      <item name="Reference" href="reference.html"/>
+      <item name="UML" href="http://wp5.e-taxonomy.eu/cdm-uml"/>
+      <item name="API" href="apidocs/index.html"/>
+      <item name="REST API" href="rest-api.html">
+      <item name="Search" href="rest-api-search.html"/>
+      <item name="Statistics" href="rest-api-statistics.html"/>
+      <item name="Name Catalogue" href="rest-api-name-catalogue.html"/>
+      </item>
+      <item name="OAI-PMH" href="oai-pmh.html"/>
+      <item name="Troubleshooting" href="troubleshooting.html"/>
+      <item name="Wiki" href="http://dev.e-taxonomy.eu/trac/wiki/CdmLibraryDev"/>
+    </menu>
+    <menu name="Project">
+      <item name="Mailing Lists" href="mail-lists.html"/>
+      <item name="Project Team" href="team-list.html"/>
+      <item name="Continuous Integration" href="integration.html"/>
+      <item name="Issue Tracking" href="http://dev.e-taxonomy.eu/trac/"/>
+      <item name="Source Repository" href="source-repository.html"/>
+      <item name="License" href="license.html"/>
+    </menu>
+  </body>
+</project>

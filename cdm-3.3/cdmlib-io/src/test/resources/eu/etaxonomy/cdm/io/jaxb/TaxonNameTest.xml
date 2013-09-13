@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSet 
+    xmlns="http://etaxonomy.eu/cdm/model/1.0"
+    xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
+    xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
+    xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+    xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
+    xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0"
+    xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
+    xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
+                             ../../../../../../classes/schema/cdm/cdm.xsd">
+     <Terms>
+        <common:Language id="1" uuid="urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66"/>
+        <name:TypeDesignationStatus id="1" uuid="urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40">
+            <common:Representations>
+              <common:Representation id="1" uuid="urn-uuid-f90974d0-fc2c-11dd-87af-0800200c9a66">
+                <common:Text>isotype</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations> 
+            <common:TermVocabulary>urn-uuid-601bb562-1a00-4e2d-92dd-53e0b5311c11</common:TermVocabulary>
+            <common:OrderIndex>1</common:OrderIndex>
+        </name:TypeDesignationStatus>
+        <name:Rank id="2" uuid="urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d">
+             <common:Representations>
+              <common:Representation id="2" uuid="urn-uuid-c1e64060-fdc5-11dd-87af-0800200c9a66">
+                <common:Text>species</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations> 
+            <common:TermVocabulary>urn-uuid-7b16dcf8-f039-44cb-8eaf-9204339ca3de</common:TermVocabulary>
+            <common:OrderIndex>1</common:OrderIndex>
+        </name:Rank>
+        <name:Rank id="3" uuid="urn-uuid-41b86404-51ae-4d44-9080-6cdbdad208fd">
+            <common:Representations>
+              <common:Representation id="3" uuid="urn-uuid-664ac030-fdd1-11dd-87af-0800200c9a66">
+                <common:Text>genus</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-7b16dcf8-f039-44cb-8eaf-9204339ca3de</common:TermVocabulary>
+            <common:OrderIndex>2</common:OrderIndex>
+        </name:Rank>
+        <name:Rank id="4" uuid="urn-uuid-fb1aed7b-0869-41d6-984c-6f8b531bfd55">
+            <common:Representations>
+              <common:Representation id="4" uuid="urn-uuid-6d718010-fdd1-11dd-87af-0800200c9a66">
+                <common:Text>cultivar</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-7b16dcf8-f039-44cb-8eaf-9204339ca3de</common:TermVocabulary>
+            <common:OrderIndex>-1</common:OrderIndex>
+        </name:Rank>
+        <name:Rank id="5" uuid="urn-uuid-45e45112-5747-4d31-9a99-e11b50602309">
+            <common:Representations>
+              <common:Representation id="5" uuid="urn-uuid-3e71a4d0-fdc6-11dd-87af-0800200c9a66">
+                <common:Text>abberation</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-7b16dcf8-f039-44cb-8eaf-9204339ca3de</common:TermVocabulary>
+            <common:OrderIndex>-2</common:OrderIndex>
+        </name:Rank>
+        <name:NameRelationshipType id="6" uuid="urn-uuid-11f0481d-e7e8-4fbd-9873-98ae245b8ce1">
+            <common:Representations>
+              <common:Representation id="6" uuid="urn-uuid-5b1b4a50-fdc6-11dd-87af-0800200c9a66">
+                <common:Text>Later Homonym Of</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-51d01767-eab0-4a54-a97a-bce9ba9b24be</common:TermVocabulary>
+            <common:OrderIndex>1</common:OrderIndex>
+            <common:Symmetric>true</common:Symmetric>
+            <common:Transitive>false</common:Transitive>
+        </name:NameRelationshipType>
+        <name:NameRelationshipType id="7" uuid="urn-uuid-25792738-98de-4762-bac1-8c156faded4a">
+            <common:Representations>
+              <common:Representation id="7" uuid="urn-uuid-9bc6c570-fdc6-11dd-87af-0800200c9a66">
+                <common:Text>Basionym</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-51d01767-eab0-4a54-a97a-bce9ba9b24be</common:TermVocabulary>
+            <common:OrderIndex>2</common:OrderIndex>
+            <common:Symmetric>true</common:Symmetric>
+            <common:Transitive>false</common:Transitive>
+        </name:NameRelationshipType>
+        <name:NameRelationshipType id="8" uuid="urn-uuid-3e094060-9139-11dd-ad8b-0800200c9a66">
+            <common:Representations>
+              <common:Representation id="8" uuid="urn-uuid-bc052a70-fdc6-11dd-87af-0800200c9a66">
+                <common:Text>New Combination</common:Text>
+                <common:Language>urn-uuid-2b056a30-fdc6-11dd-87af-0800200c9a66</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-51d01767-eab0-4a54-a97a-bce9ba9b24be</common:TermVocabulary>
+            <common:OrderIndex>3</common:OrderIndex>
+            <common:Symmetric>true</common:Symmetric>
+            <common:Transitive>false</common:Transitive>
+        </name:NameRelationshipType>
+    </Terms>
+    <TermVocabularies>
+        <common:OrderedTermVocabulary id="1" uuid="urn-uuid-601bb562-1a00-4e2d-92dd-53e0b5311c11">
+            <common:TermSourceURI>http://rs.tdwg.org/ontology/voc/TaxonName#NomencalturalTypeTypeTerm</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</common:Term>
+            </common:Terms>
+        </common:OrderedTermVocabulary>
+        <common:OrderedTermVocabulary id="2" uuid="urn-uuid-7b16dcf8-f039-44cb-8eaf-9204339ca3de">
+            <common:TermSourceURI>http://rs.tdwg.org/ontology/voc/TaxonRank#TaxonRankTerm</common:TermSourceURI>            
+            <common:Terms>
+                <common:Term>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</common:Term>
+                <common:Term>urn-uuid-41b86404-51ae-4d44-9080-6cdbdad208fd</common:Term>
+                <common:Term>urn-uuid-fb1aed7b-0869-41d6-984c-6f8b531bfd55</common:Term>
+                <common:Term>urn-uuid-45e45112-5747-4d31-9a99-e11b50602309</common:Term>
+            </common:Terms>
+        </common:OrderedTermVocabulary>
+        <common:OrderedTermVocabulary id="3" uuid="urn-uuid-51d01767-eab0-4a54-a97a-bce9ba9b24be">
+            <common:TermSourceURI>http://rs.tdwg.org/ontology/voc/TaxonName.rdf#NomenclaturalNoteTypeTerm</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-11f0481d-e7e8-4fbd-9873-98ae245b8ce1</common:Term>
+                <common:Term>urn-uuid-25792738-98de-4762-bac1-8c156faded4a</common:Term>
+                <common:Term>urn-uuid-3e094060-9139-11dd-ad8b-0800200c9a66</common:Term>
+            </common:Terms>
+        </common:OrderedTermVocabulary>
+    </TermVocabularies>
+    <Agents>
+        <agent:Institution id="1" uuid="urn-uuid-5a6efefb-181a-4d9d-984f-ff7d8a076562">
+            <common:TitleCache>Kew</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <agent:Name>Royal Botanical Gardens, Kew</agent:Name>
+        </agent:Institution>
+        <agent:Person id="2" uuid="urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a">
+            <common:TitleCache>Linnaeus</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+        </agent:Person>
+        <agent:Person id="3" uuid="urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235">
+            <common:TitleCache>Schott</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <agent:FirstName>Heinrich Wilhelm</agent:FirstName>
+            <agent:LastName>Schott</agent:LastName>
+            <agent:Lifespan>
+                <common:Start>1794-01-07</common:Start>
+                <common:End>1865-03-05</common:End>
+            </agent:Lifespan>
+        </agent:Person>
+        <agent:Person id="4" uuid="urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c">
+            <common:TitleCache>Laspeyres</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+        </agent:Person>
+        <agent:Person id="5" uuid="urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb">
+            <common:TitleCache>Tutt</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <agent:FirstName>James William</agent:FirstName>
+            <agent:LastName>Tutt</agent:LastName>
+        </agent:Person>
+        <agent:Team id="6" uuid="urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c">
+            <common:TitleCache>Kitching &amp; Cadiou</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <agent:ProtectedNomenclaturalTitleCache>false</agent:ProtectedNomenclaturalTitleCache>
+            <agent:TeamMembers>
+                <agent:TeamMember>urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187</agent:TeamMember>
+                <agent:TeamMember>urn-uuid-b116ad18-fede-416c-938a-f491764b5ca8</agent:TeamMember>
+            </agent:TeamMembers>
+        </agent:Team>
+        <agent:Person id="7" uuid="urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187">
+            <common:TitleCache>Kitching</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <agent:FirstName>Ian J.</agent:FirstName>
+            <agent:LastName>Kitching</agent:LastName>
+        </agent:Person>
+        <agent:Person id="8" uuid="urn-uuid-b116ad18-fede-416c-938a-f491764b5ca8">
+            <common:TitleCache>Cadiou</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <agent:FirstName>Jean-Marie</agent:FirstName>
+            <agent:LastName>Cadiou</agent:LastName>
+        </agent:Person>
+    </Agents>
+    <Collections>
+        <occurrence:Collection id="1" uuid="urn-uuid-3345de2b-02f7-4927-9fe2-4d094449b09c">
+            <common:TitleCache>Kew Herbarium</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <occurrence:Name>Kew Herbarium</occurrence:Name>
+            <occurrence:Institution>urn-uuid-5a6efefb-181a-4d9d-984f-ff7d8a076562</occurrence:Institution>
+        </occurrence:Collection>
+    </Collections>
+    <Occurrences>
+        <occurrence:DerivedUnit id="1" uuid="urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176">
+            <common:TitleCache>K000400332</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <occurrence:Collection>urn-uuid-3345de2b-02f7-4927-9fe2-4d094449b09c</occurrence:Collection>
+            <occurrence:CatalogNumber>K000400332</occurrence:CatalogNumber>
+            <occurrence:StoredUnder>urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf</occurrence:StoredUnder>
+        </occurrence:DerivedUnit>
+    </Occurrences>
+    <References>
+        <reference:Book id="1" uuid="urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Linnaeus, 1758</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
+            <reference:AuthorTeam>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</reference:AuthorTeam>
+            <reference:Title>Syst. Nat. (Edn 10)</reference:Title>
+            <reference:DatePublished>
+                <common:Start>1758</common:Start>
+                <common:End>1758</common:End>
+            </reference:DatePublished>
+            <reference:Volume>1</reference:Volume>
+            <reference:Pages>490</reference:Pages>
+        </reference:Book>
+        <reference:Book id="2" uuid="urn-uuid-31e92efd-9a28-4c1b-9d74-4aaaf34e4c9e" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Linnaeus, 1753</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
+            <reference:AuthorTeam>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</reference:AuthorTeam>
+            <reference:Title>Species Plantarum</reference:Title>
+            <reference:DatePublished>
+                <common:Start>1753</common:Start>
+                <common:End>1753</common:End>
+            </reference:DatePublished>
+            <reference:Volume>1</reference:Volume>
+        </reference:Book>
+        <reference:Book id="3" uuid="urn-uuid-8528d6ad-b246-4a3b-b30b-cfb8549476c7" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Schott, 1856</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
+            <reference:AuthorTeam>urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235</reference:AuthorTeam>
+            <reference:Title>Synopsis aroidearum complectens enumerationem sytematicam generum et ...</reference:Title>
+            <reference:DatePublished>
+                <common:Start>1856</common:Start>
+                <common:End>1856</common:End>
+            </reference:DatePublished>
+            <reference:Pages>140</reference:Pages>
+        </reference:Book>
+        <reference:Book id="4" uuid="urn-uuid-c454e96e-16b9-4b79-9192-2604707d9042" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Tutt, 1904</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
+            <reference:AuthorTeam>urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb</reference:AuthorTeam>
+            <reference:Title>A Natural History of the British Lepidoptera</reference:Title>
+            <reference:DatePublished>
+                <common:Start>1904</common:Start>
+                <common:End>1904</common:End>
+            </reference:DatePublished>
+            <reference:Publisher>Friedländer &amp; sohn</reference:Publisher>
+        </reference:Book>
+        <reference:Book id="5" uuid="urn-uuid-db5d02b5-e6f2-4376-ab02-6e67fc8f8ff1" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Kitching &amp; Cadiou, 2000</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>true</reference:IsNomenclaturallyRelevant>
+            <reference:AuthorTeam>urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c</reference:AuthorTeam>
+            <reference:Title>Hawkmoths of the World: An Annotated and Illustrated Revisionary Checklist</reference:Title>
+            <reference:DatePublished>
+                <common:Start>2000</common:Start>
+                <common:End>2000</common:End>
+            </reference:DatePublished>
+            <reference:Publisher>Cornell University Press</reference:Publisher>
+            <reference:Pages>256</reference:Pages>
+            <reference:ISBN>0801437342</reference:ISBN>
+        </reference:Book>
+    </References>
+    <TypeDesignations>
+        <name:SpecimenTypeDesignation id="1" uuid="urn-uuid-0fdae5a6-9fad-435f-846a-8ea492938375">
+            <common:OriginalNameString>Arum gratum</common:OriginalNameString>
+            <common:Citation>urn-uuid-8528d6ad-b246-4a3b-b30b-cfb8549476c7</common:Citation>
+            <name:TypifiedNames>
+              <name:TypifiedName>urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf</name:TypifiedName>
+            </name:TypifiedNames>
+            <name:IsNotDesignated>false</name:IsNotDesignated>
+            <name:TypeSpecimen>urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176</name:TypeSpecimen>
+            <name:TypeStatus>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</name:TypeStatus>
+        </name:SpecimenTypeDesignation>
+        <name:NameTypeDesignation id="2" uuid="urn-uuid-8db5df84-fca4-4e8f-aed2-4b349dfa31d7">
+            <common:OriginalNameString></common:OriginalNameString>
+            <common:Citation>urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9</common:Citation>
+            <name:TypifiedNames>
+              <name:TypifiedName>urn-uuid-d399030c-906f-437c-90d2-3f5c89d87376</name:TypifiedName>
+            </name:TypifiedNames>
+            <name:IsNotDesignated>false</name:IsNotDesignated>
+            <name:IsRejectedType>false</name:IsRejectedType>
+            <name:IsConservedType>false</name:IsConservedType>
+            <name:IsLectoType>false</name:IsLectoType>
+            <name:TypeName>urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5</name:TypeName>
+        </name:NameTypeDesignation>
+        <name:NameTypeDesignation id="3" uuid="urn-uuid-b6a88f54-c8dd-41ea-91e6-ed459494f8fd">
+            <common:OriginalNameString>Sphinx atropos</common:OriginalNameString>
+            <common:Citation>urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9</common:Citation>
+            <name:TypifiedNames>
+              <name:TypifiedName>urn-uuid-51ab21d1-d65b-4fb0-9814-98bd411df231</name:TypifiedName>
+            </name:TypifiedNames>
+            <name:IsNotDesignated>false</name:IsNotDesignated>
+            <name:IsRejectedType>false</name:IsRejectedType>
+            <name:IsConservedType>false</name:IsConservedType>
+            <name:IsLectoType>false</name:IsLectoType>
+            <name:TypeName>urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5</name:TypeName>
+        </name:NameTypeDesignation>
+    </TypeDesignations>
+    <TaxonomicNames>
+        <name:BotanicalName id="1" uuid="urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Arum gratum Schott</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:NomenclaturalReference>urn-uuid-8528d6ad-b246-4a3b-b30b-cfb8549476c7</name:NomenclaturalReference>
+            <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:TypeDesignations>
+                <name:TypeDesignation>urn-uuid-0fdae5a6-9fad-435f-846a-8ea492938375</name:TypeDesignation>
+            </name:TypeDesignations>
+            <name:NameCache>Arum gratum</name:NameCache>
+            <name:GenusOrUninomial>Arum</name:GenusOrUninomial>
+            <name:SpecificEpithet>gratum</name:SpecificEpithet>
+            <name:AuthorshipCache>Schott</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+            <name:IsHybridFormula>false</name:IsHybridFormula>
+            <name:IsMonomHybrid>false</name:IsMonomHybrid>
+            <name:IsBinomHybrid>false</name:IsBinomHybrid>
+            <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
+            <name:IsAnamorphic>false</name:IsAnamorphic>
+        </name:BotanicalName>
+        <name:BotanicalName id="2" uuid="urn-uuid-3f319209-33ea-415d-a333-adc984125fee" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Arum italicum Mill.</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:NameCache>Arum italicum</name:NameCache>
+            <name:GenusOrUninomial>Arum-L.-1753</name:GenusOrUninomial>
+            <name:SpecificEpithet>italicum</name:SpecificEpithet>
+            <name:AuthorshipCache>Mill.</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+            <name:IsHybridFormula>false</name:IsHybridFormula>
+            <name:IsMonomHybrid>false</name:IsMonomHybrid>
+            <name:IsBinomHybrid>false</name:IsBinomHybrid>
+            <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
+            <name:IsAnamorphic>false</name:IsAnamorphic>
+        </name:BotanicalName>
+        <name:BotanicalName id="3" uuid="urn-uuid-580bd9da-6799-4ef5-8711-d22e7ea7c073" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Arum L.</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:NomenclaturalReference>urn-uuid-31e92efd-9a28-4c1b-9d74-4aaaf34e4c9e</name:NomenclaturalReference>
+            <name:Rank>urn-uuid-41b86404-51ae-4d44-9080-6cdbdad208fd</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:NameCache>Arum</name:NameCache>
+            <name:GenusOrUninomial>Arum</name:GenusOrUninomial>
+            <name:AuthorshipCache>L.</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+            <name:IsHybridFormula>false</name:IsHybridFormula>
+            <name:IsMonomHybrid>false</name:IsMonomHybrid>
+            <name:IsBinomHybrid>false</name:IsBinomHybrid>
+            <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
+            <name:IsAnamorphic>false</name:IsAnamorphic>
+        </name:BotanicalName>        
+        <name:CultivarPlantName id="4" uuid="urn-uuid-35ff446c-0ec9-4c2f-af0b-a87426b03da7" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Arum italicum marmoratum Mill.</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:Rank>urn-uuid-fb1aed7b-0869-41d6-984c-6f8b531bfd55</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:NameCache>Arum italicum marmoratum</name:NameCache>
+            <name:GenusOrUninomial>Arum</name:GenusOrUninomial>
+            <name:SpecificEpithet>italicum</name:SpecificEpithet>
+            <name:AuthorshipCache>Mill.</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+            <name:IsHybridFormula>false</name:IsHybridFormula>
+            <name:IsMonomHybrid>false</name:IsMonomHybrid>
+            <name:IsBinomHybrid>false</name:IsBinomHybrid>
+            <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
+            <name:IsAnamorphic>false</name:IsAnamorphic>
+            <name:CultivarName>marmoratum</name:CultivarName>
+        </name:CultivarPlantName>
+        <name:ZoologicalName id="5" uuid="urn-uuid-d399030c-906f-437c-90d2-3f5c89d87376" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Sphinx Linnaeus, 1758</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:NomenclaturalReference>urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9</name:NomenclaturalReference>
+            <name:Rank>urn-uuid-41b86404-51ae-4d44-9080-6cdbdad208fd</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:TypeDesignations>
+                <name:TypeDesignation>urn-uuid-8db5df84-fca4-4e8f-aed2-4b349dfa31d7</name:TypeDesignation>
+            </name:TypeDesignations>
+            <name:NameCache>Sphinx</name:NameCache>
+            <name:GenusOrUninomial>Sphinx</name:GenusOrUninomial>
+            <name:AuthorshipCache>Linnaeus, 1758</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+        </name:ZoologicalName>
+        <name:ZoologicalName id="6" uuid="urn-uuid-51ab21d1-d65b-4fb0-9814-98bd411df231" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Acherontia Laspeyres, 1809</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:Rank>urn-uuid-41b86404-51ae-4d44-9080-6cdbdad208fd</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:TypeDesignations>
+                <name:TypeDesignation>urn-uuid-b6a88f54-c8dd-41ea-91e6-ed459494f8fd</name:TypeDesignation>
+            </name:TypeDesignations>
+            <name:NameCache>Acherontia</name:NameCache>
+            <name:GenusOrUninomial>Acherontia</name:GenusOrUninomial>
+            <name:AuthorshipCache>Laspeyres, 1809</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+        </name:ZoologicalName>
+        <name:ZoologicalName id="7" uuid="urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Sphinx atropos Linnaeus, 1758</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:RelationsFromThisName>
+                <name:RelationFromThisName id="1" uuid="urn-uuid-15456240-fdcb-11dd-87af-0800200c9a66" isDoubtful="false">
+                    <name:RelatedFrom>urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5</name:RelatedFrom>
+                    <name:RelatedTo>urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb</name:RelatedTo>
+                    <name:Type>urn-uuid-3e094060-9139-11dd-ad8b-0800200c9a66</name:Type>
+                </name:RelationFromThisName>
+            </name:RelationsFromThisName>
+            <name:RelationsToThisName>
+              <name:RelationToThisName>urn-uuid-21e3ab60-fdcb-11dd-87af-0800200c9a66</name:RelationToThisName>
+            </name:RelationsToThisName>
+            <name:NameCache>Sphinx atropos</name:NameCache>
+            <name:GenusOrUninomial>Sphinx</name:GenusOrUninomial>
+            <name:SpecificEpithet>atropos</name:SpecificEpithet>
+            <name:AuthorshipCache>Linnaeus, 1758</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+        </name:ZoologicalName>
+        <name:ZoologicalName id="8" uuid="urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Acherontia atropos (Linnaeus, 1758)</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:Rank>urn-uuid-5b636229-c702-4d1f-9624-533be66ede7d</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:RelationsFromThisName>
+                <name:RelationFromThisName id="2" uuid="urn-uuid-21e3ab60-fdcb-11dd-87af-0800200c9a66" isDoubtful="false">
+                    <name:RelatedFrom>urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb</name:RelatedFrom>
+                    <name:RelatedTo>urn-uuid-75664369-645b-46cd-b133-493cbcd27cb5</name:RelatedTo>
+                    <name:Type>urn-uuid-25792738-98de-4762-bac1-8c156faded4a</name:Type>
+                </name:RelationFromThisName>
+            </name:RelationsFromThisName>
+            <name:RelationsToThisName>
+              <name:RelationToThisName>urn-uuid-15456240-fdcb-11dd-87af-0800200c9a66</name:RelationToThisName>
+              <name:RelationToThisName>urn-uuid-2e0ee760-fdcb-11dd-87af-0800200c9a66</name:RelationToThisName>
+            </name:RelationsToThisName>
+            <name:NameCache>Acherontia atropos</name:NameCache>  
+            <name:GenusOrUninomial>Acherontia</name:GenusOrUninomial>
+            <name:SpecificEpithet>atropos</name:SpecificEpithet>
+            <name:CombinationAuthorTeam>urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c</name:CombinationAuthorTeam>
+            <name:AuthorshipCache>(Linnaeus, 1758)</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+        </name:ZoologicalName>
+        <name:ZoologicalName id="9" uuid="urn-uuid-37c1b483-582a-478c-acb0-a49bbc4417e5" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Acherontia atropos ab extensa Tutt, 1904</common:TitleCache>
+            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
+            <name:NomenclaturalMicroReference>pl. II</name:NomenclaturalMicroReference>
+            <name:NomenclaturalReference>urn-uuid-c454e96e-16b9-4b79-9192-2604707d9042</name:NomenclaturalReference>
+            <name:Rank>urn-uuid-45e45112-5747-4d31-9a99-e11b50602309</name:Rank>
+            <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+            <name:RelationsFromThisName>
+                <name:RelationFromThisName id="3" uuid="urn-uuid-2e0ee760-fdcb-11dd-87af-0800200c9a66" isDoubtful="false">
+                    <common:OriginalNameString></common:OriginalNameString>
+                    <common:Citation>urn-uuid-db5d02b5-e6f2-4376-ab02-6e67fc8f8ff1</common:Citation>
+                    <name:RelatedFrom>urn-uuid-37c1b483-582a-478c-acb0-a49bbc4417e5</name:RelatedFrom>
+                    <name:RelatedTo>urn-uuid-b47e0874-1701-435f-a8f1-cadc25b99efb</name:RelatedTo>
+                    <name:Type>urn-uuid-11f0481d-e7e8-4fbd-9873-98ae245b8ce1</name:Type>
+                </name:RelationFromThisName>
+            </name:RelationsFromThisName>
+            <name:NameCache>Acherontia atropos extensa</name:NameCache>
+            <name:GenusOrUninomial>Acherontia</name:GenusOrUninomial>
+            <name:SpecificEpithet>atropos</name:SpecificEpithet>
+            <name:InfraSpecificEpithet>extensa</name:InfraSpecificEpithet>
+            <name:AuthorshipCache>Tutt, 1904</name:AuthorshipCache>
+            <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+            <name:ProtectedNameCache>false</name:ProtectedNameCache>
+        </name:ZoologicalName>
+      </TaxonomicNames>
+</DataSet>

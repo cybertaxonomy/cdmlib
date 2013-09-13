@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans 
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context
+    http://www.springframework.org/schema/context/spring-context-2.5.xsd">
+
+    <bean id="dataSource" 
+        lazy-init="true"
+        class="eu.etaxonomy.cdm.database.LocalHsqldb" 	
+        init-method="init"
+        destroy-method="destroy"
+        >
+        <property name="driverClassName" value="org.hsqldb.jdbcDriver"/>
+        <property name="username" value="sa"/>
+        <property name="password" value=""/>
+        <property name="startServer" value="true"/>
+        <property name="silent" value="true"/>
+        <!-- property name="pureUrl" value="jdbc:hsqldb:hsql://localhost/"/-->
+        <!-- property name="dbName" value="cdm"/> -->
+        <!--  <property name="databasePath" value="C:\tmp\cdmDb\"/> -->
+    </bean>
+    
+    <!-- This configures default properties, which can overridden with the file specified by the location property -->
+    <bean id="hibernateProperties" 
+        class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.dialect">org.hibernate.dialect.HSQLDialect</prop>
+                <prop key="hibernate.cache.region.factory_class">org.hibernate.cache.internal.NoCachingRegionFactory</prop>
+                <prop key="hibernate.search.autoregister_listeners">false</prop>
+                <prop key="hibernate.show_sql">false</prop>
+                <prop key="hibernate.format_sql">false</prop>
+            </props>
+        </property>
+    </bean>  
+</beans>
+

@@ -1,0 +1,32 @@
+			------
+			Search REST API
+			------
+			------
+			2012-01-29
+			------
+
+Search REST API		
+	
+	This web service namespace is part of the existing CDM REST API and provides the functionality to search for distinct taxonomic names and for associated taxonomic data. There is also functionality for an advanced search, which searches all database fields including descriptive data, in the underlying CDM datasource.
+	
+	The services include,
+		
+		*** {{{./remote/search-name-default.html} name search}} 		: This web service endpoint serves as a search engine for a query string within the scientific name.
+	
+		*** {{{./remote/search-taxon-info.html} taxon name search}}	: This web service endpoint provides taxon information related to a specific taxon name.
+	
+		*** {{{./remote/search-fulltext-info.html} full text search}} 	: This web service endpoint provides taxon information related to a query string, e.g. a string found within the free text description associated with a taxon.
+	
+	[]
+	
+	These web services have been used in the ViBRANT project ({{{http://vbrant.eu/}http://vbrant.eu/}}) using data imported into the CDM from Scratchpads, for example ({{{http://dioscoreaceae.e-monocot.org/}http://dioscoreaceae.e-monocot.org/}}). The ViBRANT search interface which uses these services can be found here: ({{http://dev.e-taxonomy.eu/vibrant_index/search}}) 	
+		
+	The search services (and related documentation) can be found at,
+	
+	*** name search 		: {{{http://dev.e-taxonomy.eu/vibrant_index/name/findTitleCache} http://dev.e-taxonomy.eu/vibrant_index/name/findTitleCache}} 
+		
+	*** taxon search 	: {{{http://dev.e-taxonomy.eu/vibrant_index/taxon/findByTitle} http://dev.e-taxonomy.eu/vibrant_index/taxon/findByTitle}} 	
+	
+	*** full text search	: {{{http://dev.e-taxonomy.eu/vibrant_index/taxon/findByDescriptionElementFullText} http://dev.e-taxonomy.eu/vibrant_index/taxon/findByDescriptionElementFullText}} 
+	
+		

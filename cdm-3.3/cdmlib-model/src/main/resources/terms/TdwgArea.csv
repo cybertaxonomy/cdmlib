@@ -1,0 +1,1040 @@
+1fb40504-d1d7-44b0-9731-374fbe6cac77,,TDWG Area,TDWG Area,"NA","1"
+e860871c-3a14-4ef2-9367-bbd92586c95b,,Europe,Europe,1,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+9444016a-b334-4772-8795-ed4019552087,,Africa,Africa,2,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+e63e4a1a-b51b-4efa-bf99-c4a389d4aab3,,Asia-Temperate,Asia-Temperate,3,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+3ed00d6a-a186-48ff-bed2-860c9481ff7d,,Asia-Tropical,Asia-Tropical,4,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+1319898d-e0f4-4d95-a043-ba838ee7c652,,Australasia,Australasia,5,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+d7fa4cbf-b5cf-4d0a-bc3c-db8706657dfd,,Pacific,Pacific,6,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+2757e726-d897-4546-93bd-7951d203bf6f,,Northern America,Northern America,7,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+6310b3ba-96f4-4855-bb5b-326e7af188ea,,Southern America,Southern America,8,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+791b3aa0-54dd-4bed-9b68-56b4680aad0c,,Antarctic,Antarctic,9,,cd7771b2-7427-4a01-9057-7d7a897dddaf,
+22524ba2-6e57-4b71-89ab-89fc50fba6b4,,Northern Europe,Northern Europe,10,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e860871c-3a14-4ef2-9367-bbd92586c95b
+d292f237-da3d-408b-93a1-3257a8c80b97,,Middle Europe,Middle Europe,11,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e860871c-3a14-4ef2-9367-bbd92586c95b
+6e980d6d-5748-4535-ad7a-95d35542910d,,Southwestern Europe,Southwestern Europe,12,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e860871c-3a14-4ef2-9367-bbd92586c95b
+5f3059a8-a4fc-434c-b6f2-292919967553,,Southeastern Europe,Southeastern Europe,13,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e860871c-3a14-4ef2-9367-bbd92586c95b
+4f1abfb5-b166-47cf-a5bb-b0e6588f5389,,Eastern Europe,Eastern Europe,14,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e860871c-3a14-4ef2-9367-bbd92586c95b
+0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1,,Northern Africa,Northern Africa,20,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+521ba4f9-0d74-4ec0-addc-fab9d72dca07,,Macaronesia,Macaronesia,21,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+931164ad-ec16-4133-afab-bdef25d67636,,West Tropical Africa,West Tropical Africa,22,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+1f29eaea-ef04-40ee-96bd-f2f433c78c8c,,West-Central Tropical Africa,West-Central Tropical Africa,23,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+b49bf097-5b36-47ff-8d8f-640bb14bdab2,,Northeast Tropical Africa,Northeast Tropical Africa,24,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+4b2e7043-640e-4bf4-8436-7436ed1f7137,,East Tropical Africa,East Tropical Africa,25,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+e4f41a32-a056-4628-94f2-23b3ad821135,,South Tropical Africa,South Tropical Africa,26,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+a1081898-e631-40b5-a225-fc24809adf8c,,Southern Africa,Southern Africa,27,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+06f367c2-e657-4894-8427-d164343dbd75,,Middle Atlantic Ocean,Middle Atlantic Ocean,28,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+b68c6158-96ff-4ef9-8fe6-d27cc4809d25,,Western Indian Ocean,Western Indian Ocean,29,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,9444016a-b334-4772-8795-ed4019552087
+6692581b-fa7a-4b13-ae39-b1a673d0b252,,Siberia,Siberia,30,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+ff2bb4b1-4190-4f04-b556-7c64bed0140a,,Russian Far East,Russian Far East,31,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+0cd59844-44e3-430c-9986-49edd1c338be,,Middle Asia,Middle Asia,32,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+f998eeb4-b105-4875-ae32-0de41cf389e4,,Caucasus,Caucasus,33,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+a8c5b44e-21ec-4d40-b847-cd1884968c92,,Western Asia,Western Asia,34,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+4b35ae1c-4f54-4818-a4c5-8323a3aea5fc,,Arabian Peninsula,Arabian Peninsula,35,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+16183741-4d45-48f4-a367-710b6ce82fee,,China,China,36,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+3dfa2c8d-5c09-44b1-8ee9-c5b0dad3c56f,,Mongolia,Mongolia,37,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+a883b11e-7ec4-486d-8ee3-2844a0bf1535,,Eastern Asia,Eastern Asia,38,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,e63e4a1a-b51b-4efa-bf99-c4a389d4aab3
+7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0,,Indian Subcontinent,Indian Subcontinent,40,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,3ed00d6a-a186-48ff-bed2-860c9481ff7d
+4739866e-3919-4d76-875e-585d45be8c88,,Indo-China,Indo-China,41,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,3ed00d6a-a186-48ff-bed2-860c9481ff7d
+07cd4677-f025-4bd3-80f6-7762056740ba,,Malesia,Malesia,42,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,3ed00d6a-a186-48ff-bed2-860c9481ff7d
+173e9075-85c9-433d-9115-dc87d61d21f4,,Papuasia,Papuasia,43,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,3ed00d6a-a186-48ff-bed2-860c9481ff7d
+37cc7b35-a580-47a2-aedf-bd06a5afe8e5,,Australia,Australia,50,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,1319898d-e0f4-4d95-a043-ba838ee7c652
+cfc163fb-54e5-48a7-ab14-cc982323f0c5,,New Zealand,New Zealand,51,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,1319898d-e0f4-4d95-a043-ba838ee7c652
+9f38ea6f-8f82-4697-9603-7877865caaac,,Southwestern Pacific,Southwestern Pacific,60,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,d7fa4cbf-b5cf-4d0a-bc3c-db8706657dfd
+aa33248e-2a35-443c-923a-bf6a813fa9f7,,South-Central Pacific,South-Central Pacific,61,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,d7fa4cbf-b5cf-4d0a-bc3c-db8706657dfd
+6a20ac07-161d-410c-9bca-87be8392306d,,Northwestern Pacific,Northwestern Pacific,62,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,d7fa4cbf-b5cf-4d0a-bc3c-db8706657dfd
+ee23fe88-8ee2-47bf-a628-8f88a6e134e0,,North-Central Pacific,North-Central Pacific,63,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,d7fa4cbf-b5cf-4d0a-bc3c-db8706657dfd
+09bc05d8-badb-4788-b1d8-47bd16fb475b,,Subarctic America,Subarctic America,70,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+519b890b-6b7d-4bfe-8112-6a80bd55102b,,Western Canada,Western Canada,71,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+56674a86-81bd-4bba-90a0-a73b95ca9a0a,,Eastern Canada,Eastern Canada,72,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+d264452e-995b-4e23-a11e-b55b22e43f19,,Northwestern U.S.A.,Northwestern U.S.A.,73,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+617ded5e-6b96-487a-b706-3fffc81104d9,,North-Central U.S.A.,North-Central U.S.A.,74,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+b6ed282f-76d1-44e3-aafb-2025fbaa001f,,Northeastern U.S.A.,Northeastern U.S.A.,75,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+32e8f7dd-76be-480e-8ff9-32ffd0be20eb,,Southwestern U.S.A.,Southwestern U.S.A.,76,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+8c7f2488-5b40-414e-b8de-e854755c69c4,,South-Central U.S.A.,South-Central U.S.A.,77,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+f1911c44-8925-4a8a-b25e-8d2379ac7195,,Southeastern U.S.A.,Southeastern U.S.A.,78,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0,,Mexico,Mexico,79,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,2757e726-d897-4546-93bd-7951d203bf6f
+38128f22-3908-44aa-8c5d-cdc9570f29f0,,Central America,Central America,80,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,6310b3ba-96f4-4855-bb5b-326e7af188ea
+b5ef1405-89f6-455b-adb1-01dfbff84663,,Caribbean,Caribbean,81,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,6310b3ba-96f4-4855-bb5b-326e7af188ea
+97df9967-f9d0-4153-ab27-83abf7e508fd,,Northern South America,Northern South America,82,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,6310b3ba-96f4-4855-bb5b-326e7af188ea
+f25135c1-f77c-46a7-ac4f-7bad9446cfef,,Western South America,Western South America,83,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,6310b3ba-96f4-4855-bb5b-326e7af188ea
+85067b09-9bdf-4cb1-9ec6-95cf884aba63,,Brazil,Brazil,84,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,6310b3ba-96f4-4855-bb5b-326e7af188ea
+87964033-5404-42ac-8f18-09baa388c14e,,Southern South America,Southern South America,85,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,6310b3ba-96f4-4855-bb5b-326e7af188ea
+09714b3f-a0d1-479e-914e-3a207c9e1b19,,Subantarctic Islands,Subantarctic Islands,90,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,791b3aa0-54dd-4bed-9b68-56b4680aad0c
+0670bfb2-5bb2-4bc5-8486-1eacc85a87b0,,Antarctic Continent,Antarctic Continent,91,,38efa5fd-d7f0-451c-9de9-e6cce41e2225,791b3aa0-54dd-4bed-9b68-56b4680aad0c
+c31dadb8-0cda-4a6a-b7ec-2787d8a25c67,,Alberta,Alberta,ABT,,25b563b6-6a6c-401b-b090-c9498886c50b,519b890b-6b7d-4bfe-8112-6a80bd55102b
+122977c7-d5e3-4d26-a658-162ce805d1a8,,Afghanistan,Afghanistan,AFG,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+00ae742b-f8b1-4f24-8dd7-57c157676734,,Argentina Northeast,Argentina Northeast,AGE,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+707c485f-dcad-41a5-bc8b-7c81d5249c9f,,Argentina South,Argentina South,AGS,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+2cac2091-77d0-4a0d-a202-609cb64b096b,,Argentina Northwest,Argentina Northwest,AGW,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+e097b877-517c-4308-9f4c-a6bfa928238d,,Alabama,Alabama,ALA,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+4fdd8662-7635-4401-94e5-6a457a8593bb,,Albania,Albania,ALB,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+4f890bf8-36e8-444a-92db-59976740ac61,,Aldabra,Aldabra,ALD,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+73755400-0105-416c-b2f4-b10e3c55b0ec,,Algeria,Algeria,ALG,,25b563b6-6a6c-401b-b090-c9498886c50b,0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1
+8cfc1722-e1e8-49d3-95a7-9879de6de490,,Altay,Altay,ALT,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+50b79b3c-41b2-4be3-a1cd-e7d360abfbec,,Aleutian Is.,Aleutian Is.,ALU,,25b563b6-6a6c-401b-b090-c9498886c50b,09bc05d8-badb-4788-b1d8-47bd16fb475b
+fe4be234-5bbb-48ee-87c5-f0d893a34889,,Amur,Amur,AMU,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+6af14e8b-2e1e-4012-980c-9bfe59ddb59d,,Andaman Is.,Andaman Is.,AND,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+bac38903-3c49-4004-8566-50e684196b47,,Angola,Angola,ANG,,25b563b6-6a6c-401b-b090-c9498886c50b,e4f41a32-a056-4628-94f2-23b3ad821135
+4f147ab5-9667-4406-a537-4ded4c4ccd63,,Antarctica,Antarctica,ANT,,25b563b6-6a6c-401b-b090-c9498886c50b,0670bfb2-5bb2-4bc5-8486-1eacc85a87b0
+9d3579a2-8bc6-4c72-904e-2961a6f84de1,,Arizona,Arizona,ARI,,25b563b6-6a6c-401b-b090-c9498886c50b,32e8f7dd-76be-480e-8ff9-32ffd0be20eb
+ebb5d419-66f5-47d8-aa84-7d986a3d9dc8,,Arkansas,Arkansas,ARK,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+747ebd42-2c2a-4db5-8a70-bc1d7a3026ab,,Aruba,Aruba,ARU,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+c1a294af-54b1-43ac-8699-49ff1a166a08,,Ascension,Ascension,ASC,,25b563b6-6a6c-401b-b090-c9498886c50b,06f367c2-e657-4894-8427-d164343dbd75
+72a08d3b-d333-4cb3-841e-c339a1e15172,,Alaska,Alaska,ASK,,25b563b6-6a6c-401b-b090-c9498886c50b,09bc05d8-badb-4788-b1d8-47bd16fb475b
+dba9e336-a2b8-4332-baff-ef6fb592a30e,,Amsterdam-St.Paul Is.,Amsterdam-St.Paul Is.,ASP,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+bac86590-6107-4bb5-b947-780a918b19a1,,Assam,Assam,ASS,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+f7754519-6799-4dd8-bccf-d48370c6dc30,,Antipodean Is.,Antipodean Is.,ATP,,25b563b6-6a6c-401b-b090-c9498886c50b,cfc163fb-54e5-48a7-ab14-cc982323f0c5
+2f10ca0f-92bc-465b-a7da-dabd94f92e2a,,Austria,Austria,AUT,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+4d176728-ada1-41f3-8b2c-123b8bf133e4,,Açôres,Açôres,AZO,,25b563b6-6a6c-401b-b090-c9498886c50b,521ba4f9-0d74-4ec0-addc-fab9d72dca07
+d9ebede1-ebe7-4b50-bb95-315e93fa7802,,Bahamas,Bahamas,BAH,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+a17bc439-3ee0-4bd0-83b8-8ec975bebb60,,Baleares,Baleares,BAL,,25b563b6-6a6c-401b-b090-c9498886c50b,6e980d6d-5748-4535-ad7a-95d35542910d
+6b8ee963-f7f6-4173-bda2-0dc1492edac1,,Bangladesh,Bangladesh,BAN,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+6ddb07e2-e227-4111-8138-7d321530f0b2,,Benin,Benin,BEN,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+a58940b2-d7e9-4a99-b255-d3eee930f2b4,,Bermuda,Bermuda,BER,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+948264a0-fd65-4423-8a0a-2bf063a3995d,,Belgium,Belgium,BGM,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+020043d9-33ee-4ed2-8411-7e744a28a8d9,,Bismarck Archipelago,Bismarck Archipelago,BIS,,25b563b6-6a6c-401b-b090-c9498886c50b,173e9075-85c9-433d-9115-dc87d61d21f4
+dc3ff939-0271-40f0-b77f-c3dc911e8d5b,,Burkina,Burkina,BKN,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+7c015a65-7cd0-49f5-8cc8-0832b56edf61,,Belarus,Belarus,BLR,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+3c3fcc8a-9ea9-45c4-b929-b4cd3a269171,,Baltic States,Baltic States,BLT,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+e4c75529-237f-4e74-bf7d-31888c35b40c,,Belize,Belize,BLZ,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+5c993136-e6e8-4cb7-8628-5a3dc72e685d,,Bolivia,Bolivia,BOL,,25b563b6-6a6c-401b-b090-c9498886c50b,f25135c1-f77c-46a7-ac4f-7bad9446cfef
+e615e7e6-5b64-4903-b794-816baab689b3,,Borneo,Borneo,BOR,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+fb4ab229-0054-43eb-a897-ef9b78c3c006,,Botswana,Botswana,BOT,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+83512b5e-f591-4e70-9138-865ad9684475,,Bouvet I.,Bouvet I.,BOU,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+6e961fee-a1f9-43f8-bd2c-9d7cefc0f3af,,British Columbia,British Columbia,BRC,,25b563b6-6a6c-401b-b090-c9498886c50b,519b890b-6b7d-4bfe-8112-6a80bd55102b
+ecc89b7e-7425-4719-8704-f48a171fc5a9,,Buryatiya,Buryatiya,BRY,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+6ca10d3d-50fe-4eb0-9027-4638178c7275,,Bulgaria,Bulgaria,BUL,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+66be1451-ffa9-4c71-84ae-fa6ff6c52df0,,Burundi,Burundi,BUR,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+72e32463-9fd7-40d4-8c32-5901cb7a8425,,Brazil West-Central,Brazil West-Central,BZC,,25b563b6-6a6c-401b-b090-c9498886c50b,85067b09-9bdf-4cb1-9ec6-95cf884aba63
+223be2d6-a7bb-4616-b0b6-3656cdd936c7,,Brazil Northeast,Brazil Northeast,BZE,,25b563b6-6a6c-401b-b090-c9498886c50b,85067b09-9bdf-4cb1-9ec6-95cf884aba63
+897e8a36-1201-44dc-aeea-7e11ce4599cb,,Brazil Southeast,Brazil Southeast,BZL,,25b563b6-6a6c-401b-b090-c9498886c50b,85067b09-9bdf-4cb1-9ec6-95cf884aba63
+50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e,,Brazil North,Brazil North,BZN,,25b563b6-6a6c-401b-b090-c9498886c50b,85067b09-9bdf-4cb1-9ec6-95cf884aba63
+0e875804-b2e6-4dbe-941d-927d3539dd12,,Brazil South,Brazil South,BZS,,25b563b6-6a6c-401b-b090-c9498886c50b,85067b09-9bdf-4cb1-9ec6-95cf884aba63
+e34ba389-b603-4590-bd11-95e3715456e2,,Cabinda,Cabinda,CAB,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+23e88955-3ee2-4d42-93ec-bd21f271e491,,Central African Republic,Central African Republic,CAF,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+d569d6e0-5006-4636-b6f6-094e29dd8c52,,California,California,CAL,,25b563b6-6a6c-401b-b090-c9498886c50b,32e8f7dd-76be-480e-8ff9-32ffd0be20eb
+efb2c2c5-c71a-4214-99e1-ff4b1ad68980,,Cayman Is.,Cayman Is.,CAY,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+6d7a5e91-765e-4edd-8c25-71052cb0dcda,,Cambodia,Cambodia,CBD,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+e2db82b4-45b7-4800-bc9c-708ef616495b,,Chagos Archipelago,Chagos Archipelago,CGS,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+f92224d9-1754-4422-853e-e2bb5d981612,,Chad,Chad,CHA,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+273e6b4f-22cf-442e-a19d-c0f9b1859e83,,China South-Central,China South-Central,CHC,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+16977fc9-9309-4609-9776-13df4a12282e,,Hainan,Hainan,CHH,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+719429fb-8f31-4bec-875e-ca5df76490ad,,Inner Mongolia,Inner Mongolia,CHI,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+357360e8-2631-4f93-bc07-71e589cab7bb,,Manchuria,Manchuria,CHM,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+8d75b680-9d66-4e82-b20a-9435ac4eeab5,,China North-Central,China North-Central,CHN,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+4b95d239-1c7d-45bd-87d0-c2db25f4d0b8,,Qinghai,Qinghai,CHQ,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+e9be3140-41ed-4f3b-85d2-883bee63b4a7,,China Southeast,China Southeast,CHS,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+e626ea99-8e46-49c6-8c1a-96b234dffd47,,Tibet,Tibet,CHT,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+7f8d9b4d-a1d3-4b74-9fa9-de45fd154db4,,Xinjiang,Xinjiang,CHX,,25b563b6-6a6c-401b-b090-c9498886c50b,16183741-4d45-48f4-a367-710b6ce82fee
+f17f271c-f95b-4db9-aa1f-31db1b99d79c,,Cocos (Keeling) Is.,Cocos (Keeling) Is.,CKI,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+c0d9eb53-dccf-4963-b0d7-49c93cc9061b,,Chile Central,Chile Central,CLC,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+8e7961af-b0bd-4959-8084-917e0e8e9b9a,,Colombia,Colombia,CLM,,25b563b6-6a6c-401b-b090-c9498886c50b,f25135c1-f77c-46a7-ac4f-7bad9446cfef
+03e4f2d6-3b1b-4b0c-8d64-ac81e02d6f1f,,Chile North,Chile North,CLN,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+df168714-503f-4fd9-8813-01f23417c0c2,,Chile South,Chile South,CLS,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+62c845f8-3d65-413b-a311-5bc9d6789a03,,Cameroon,Cameroon,CMN,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+df0da18b-bb19-4e4a-a0af-eab75abde998,,Connecticut,Connecticut,CNT,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+792e48a0-9b18-487a-b6da-33cbbb265873,,Canary Is.,Canary Is.,CNY,,25b563b6-6a6c-401b-b090-c9498886c50b,521ba4f9-0d74-4ec0-addc-fab9d72dca07
+da98e966-4250-46ac-8624-c91dc05338dc,,Colorado,Colorado,COL,,25b563b6-6a6c-401b-b090-c9498886c50b,d264452e-995b-4e23-a11e-b55b22e43f19
+3a02ef4b-f5df-4bd4-93c5-2ec4a24a8852,,Comoros,Comoros,COM,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+da2f536b-6104-40b6-b198-b803118a1314,,Congo,Congo,CON,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+c8f06fd3-616a-4d44-b57e-0a49a4d4c609,,Cook Is.,Cook Is.,COO,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+91aaed46-a4a9-47dd-9bb7-8d254b3963cb,,Corse,Corse,COR,,25b563b6-6a6c-401b-b090-c9498886c50b,6e980d6d-5748-4535-ad7a-95d35542910d
+bd243fa3-cd56-45c7-a445-1553e6e5e14d,,Costa Rica,Costa Rica,COS,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+8068a150-c71c-4e67-9e26-70c714bf6615,,Central American Pacific Is.,Central American Pacific Is.,CPI,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+c755ce8e-3ad3-4e0e-bbff-7d108a933c58,,Cape Provinces,Cape Provinces,CPP,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+546fc561-10b0-41f4-995f-cc1fe9fd8164,,Caprivi Strip,Caprivi Strip,CPV,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+e37f35fc-53df-41f6-a510-af9cefd5e921,,Caroline Is.,Caroline Is.,CRL,,25b563b6-6a6c-401b-b090-c9498886c50b,6a20ac07-161d-410c-9bca-87be8392306d
+c6582f9f-a0bb-4f76-a8c3-0562b78e723d,,Crozet Is.,Crozet Is.,CRZ,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+96886299-b8f5-4a44-abd7-3ee47c68bbe3,,Chita,Chita,CTA,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+aadc5ca0-cf8e-48e5-a12e-8d34e6c7e4cb,,Chatham Is.,Chatham Is.,CTM,,25b563b6-6a6c-401b-b090-c9498886c50b,cfc163fb-54e5-48a7-ab14-cc982323f0c5
+12c3e2c6-432e-4087-bfe2-07c29df03c47,,Cuba,Cuba,CUB,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+dccd00ae-9112-4c80-9591-09bd7ff7d4fd,,Cape Verde,Cape Verde,CVI,,25b563b6-6a6c-401b-b090-c9498886c50b,521ba4f9-0d74-4ec0-addc-fab9d72dca07
+da4cce9a-439b-4cc4-8073-85dc75bae169,,Cyprus,Cyprus,CYP,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+234d24aa-963d-441e-afdc-a1cca6e85787,,Czechoslovakia,Czechoslovakia,CZE,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+104ef871-3d5a-4e22-8ab3-05a4adec4641,,Delaware,Delaware,DEL,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+2f755c36-e953-4f4a-bf9d-3128ec03ace8,,Denmark,Denmark,DEN,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+04ec3382-0431-4430-afe8-1fc1c8ce38da,,Djibouti,Djibouti,DJI,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+54d5b1d5-295a-4206-beaf-f56b1b3385a1,,Dominican Republic,Dominican Republic,DOM,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+edf5e728-8e45-434d-ad82-50b39e2af896,,Desventurados Is.,Desventurados Is.,DSV,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+3f0f9e9a-c65f-41c3-9f50-88393d43b48b,,East Aegean Is.,East Aegean Is.,EAI,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+2288924d-3380-43b4-9787-143953c3d505,,Easter Is.,Easter Is.,EAS,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+6de5f860-b77b-4a61-bbfe-b6718108cea0,,Ecuador,Ecuador,ECU,,25b563b6-6a6c-401b-b090-c9498886c50b,f25135c1-f77c-46a7-ac4f-7bad9446cfef
+9587540f-c501-47ad-b5bc-48e4c18eede4,,Egypt,Egypt,EGY,,25b563b6-6a6c-401b-b090-c9498886c50b,0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1
+edd055d7-76ea-4185-94da-3b44c4e03bd4,,East Himalaya,East Himalaya,EHM,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+76604a11-1668-480f-9f29-498ff1b205fa,,El Salvador,El Salvador,ELS,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+ccc35725-3334-4256-a0be-afc30df943f3,,Equatorial Guinea,Equatorial Guinea,EQG,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+44651d37-9ad2-430a-be6b-3e7359f2da8a,,Eritrea,Eritrea,ERI,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+66305c99-ffe4-4ecc-8d2e-8d1efe38c9ea,,Ethiopia,Ethiopia,ETH,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+5f0cfd48-9afd-4704-8e5e-e58b377a5302,,Falkland Is.,Falkland Is.,FAL,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+09db7449-0d4a-4aed-911f-f88a5c57f93f,,Fiji,Fiji,FIJ,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+bd2d1a58-6e2f-4501-8d94-4b01615cf8d2,,Finland,Finland,FIN,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+67fb45d0-3a51-48ba-875a-7694fb566f28,,Florida,Florida,FLA,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+54e966a4-9a64-451c-9329-e2a45080f365,,Føroyar,Føroyar,FOR,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+37529096-5d47-4926-8682-4fa8311d0ef4,,France,France,FRA,,25b563b6-6a6c-401b-b090-c9498886c50b,6e980d6d-5748-4535-ad7a-95d35542910d
+84255b9c-ebd8-4f25-a18e-fb1e9343d5ba,,French Guiana,French Guiana,FRG,,25b563b6-6a6c-401b-b090-c9498886c50b,97df9967-f9d0-4153-ab27-83abf7e508fd
+1ec3e5c2-bdd8-4656-aa8a-282966667c68,,Gabon,Gabon,GAB,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+108b8834-f38c-478c-9e5a-19e0926baaeb,,Galápagos,Galápagos,GAL,,25b563b6-6a6c-401b-b090-c9498886c50b,f25135c1-f77c-46a7-ac4f-7bad9446cfef
+7147ccee-4f7c-40b7-a406-63174617fbf8,,"Gambia, The","Gambia, The",GAM,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+5b8e5984-02da-47b3-b76a-3dec7abb75d4,,Georgia,Georgia,GEO,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+7b7c2db5-aa44-4302-bdec-6556fd74b0b9,,Germany,Germany,GER,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+404795df-e4c2-4c01-944c-2b8f7a900595,,Gulf of Guinea Is.,Gulf of Guinea Is.,GGI,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+36f2a8a1-af75-4dd2-8376-a4535c6bb697,,Ghana,Ghana,GHA,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+e724a05c-c53c-427c-b42c-32ca323d13f9,,Gilbert Is.,Gilbert Is.,GIL,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+5f551283-af06-40cb-9f3f-3cccfb39d31b,,Guinea-Bissau,Guinea-Bissau,GNB,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+f089837d-5d85-4e3c-8324-7111ae020b1d,,Greenland,Greenland,GNL,,25b563b6-6a6c-401b-b090-c9498886c50b,09bc05d8-badb-4788-b1d8-47bd16fb475b
+efdb3684-9f82-4d9d-ae83-f262a4156be2,,Great Britain,Great Britain,GRB,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+65c9b84e-dd19-4842-816a-e4e7a4b5143f,,Greece,Greece,GRC,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+8f2551f2-67fa-46fc-8a81-1de160171798,,Gulf States,Gulf States,GST,,25b563b6-6a6c-401b-b090-c9498886c50b,4b35ae1c-4f54-4818-a4c5-8323a3aea5fc
+baa26afa-8dac-4a7b-b5b9-fca460ac3958,,Guatemala,Guatemala,GUA,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+a742ebff-609b-4168-a85b-1825f4da98b4,,Guinea,Guinea,GUI,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+4faf248e-8a45-42c8-b5f3-94b34b4e3794,,Guyana,Guyana,GUY,,25b563b6-6a6c-401b-b090-c9498886c50b,97df9967-f9d0-4153-ab27-83abf7e508fd
+460e57fa-9465-47bd-bf6e-c46dd29d6cdd,,Haiti,Haiti,HAI,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+bda3f9fb-30cf-43fd-8d17-5e4d69545ed5,,Hawaii,Hawaii,HAW,,25b563b6-6a6c-401b-b090-c9498886c50b,ee23fe88-8ee2-47bf-a628-8f88a6e134e0
+37f6aaf2-a6bb-4f4c-a4ad-aa25074babbf,,Howland-Baker Is.,Howland-Baker Is.,HBI,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+e6e00b4e-5417-46aa-b2ed-b123e4a94fc7,,Heard-McDonald Is.,Heard-McDonald Is.,HMD,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+4e22114e-2990-429d-83af-252d428a11e8,,Honduras,Honduras,HON,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+93ab78d4-4c7e-4316-84f1-4dccbc70d71f,,Hungary,Hungary,HUN,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+836cae07-03f0-4c1e-ac67-86c6f6457ac9,,Iceland,Iceland,ICE,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+307e943a-1e0b-48e8-b4e1-34ebd67a1efe,,Idaho,Idaho,IDA,,25b563b6-6a6c-401b-b090-c9498886c50b,d264452e-995b-4e23-a11e-b55b22e43f19
+3864694a-e0d7-40f5-b9db-0eecde047e9e,,Illinois,Illinois,ILL,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+235ff30d-2a25-4e96-b155-0fc0d08ec685,,India,India,IND,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+51a2af3d-7a01-41a8-be18-7896eaf147ff,,Indiana,Indiana,INI,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+e480fd06-ec60-4a0f-81fd-faf832b06715,,Iowa,Iowa,IOW,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+a9eead79-a85b-462b-a292-c0fb2929a3e5,,Ireland,Ireland,IRE,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+18f7a5a9-739a-44bd-925c-68609d1c1835,,Irkutsk,Irkutsk,IRK,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+33a2472d-d86b-45b1-83c0-e4cd78fb4915,,Iran,Iran,IRN,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+9e765dbf-aebb-47af-a193-a849f9daa63b,,Iraq,Iraq,IRQ,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+16444bc5-a042-4cd8-9d81-0eefd7925894,,Italy,Italy,ITA,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+c9c406ee-0747-45b0-bbe7-e3045d468b5d,,Ivory Coast,Ivory Coast,IVO,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+6e72dede-e94b-4051-bf96-348add8135e6,,Jamaica,Jamaica,JAM,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+5446b13f-0cdd-4f60-9f17-444606f7678d,,Japan,Japan,JAP,,25b563b6-6a6c-401b-b090-c9498886c50b,a883b11e-7ec4-486d-8ee3-2844a0bf1535
+32708172-de90-418a-8637-1b29ca8ff22b,,Jawa,Jawa,JAW,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+863a2c93-af7d-46fa-b8ec-9b081c972caa,,Juan Fernández Is.,Juan Fernández Is.,JNF,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+c39e7ff9-2b52-4e54-82c4-de836ab94f32,,Kamchatka,Kamchatka,KAM,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+57aa7e14-0e06-45ba-87b1-5f78c022134e,,Kansas,Kansas,KAN,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+8c815ecb-c0ac-49dc-bf9a-6af9fded206f,,Kazakhstan,Kazakhstan,KAZ,,25b563b6-6a6c-401b-b090-c9498886c50b,0cd59844-44e3-430c-9986-49edd1c338be
+ae1a9ce9-8d54-48c8-bdc8-4ad49df5e2b5,,Kerguelen,Kerguelen,KEG,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+a7947714-fb33-4aca-80ce-f418f8b89f55,,Kenya,Kenya,KEN,,25b563b6-6a6c-401b-b090-c9498886c50b,4b2e7043-640e-4bf4-8436-7436ed1f7137
+815a67da-1a22-45d3-bef3-65333795b509,,Kermadec Is.,Kermadec Is.,KER,,25b563b6-6a6c-401b-b090-c9498886c50b,cfc163fb-54e5-48a7-ab14-cc982323f0c5
+c0f1305e-95b1-4501-9bc9-90c5c3b800b5,,Kirgizistan,Kirgizistan,KGZ,,25b563b6-6a6c-401b-b090-c9498886c50b,0cd59844-44e3-430c-9986-49edd1c338be
+722f6cba-f21a-4f4d-8151-173d3377fa04,,Khabarovsk,Khabarovsk,KHA,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+09dc1f07-569c-4101-8ff1-0ae1e9046cfe,,Korea,Korea,KOR,,25b563b6-6a6c-401b-b090-c9498886c50b,a883b11e-7ec4-486d-8ee3-2844a0bf1535
+05eb3ea9-cc10-4704-9b77-17ce57dca797,,Krasnoyarsk,Krasnoyarsk,KRA,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+eb0ecf71-52c9-420d-8b04-bd5f619a606c,,Kriti,Kriti,KRI,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+690bd6d6-1132-4428-8bd4-a260c8b402b5,,Krym,Krym,KRY,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+b839ad86-c11d-4e2b-b94c-5b8e56ec0190,,Kentucky,Kentucky,KTY,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+b69dc332-a200-4185-90d6-56dee024f179,,Kuril Is.,Kuril Is.,KUR,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+7161a2d8-cb8f-4dc5-9521-44daf5dc0a64,,Kuwait,Kuwait,KUW,,25b563b6-6a6c-401b-b090-c9498886c50b,4b35ae1c-4f54-4818-a4c5-8323a3aea5fc
+7697395d-bece-4d42-b5a9-af6d7e29875d,,Kazan-retto,Kazan-retto,KZN,,25b563b6-6a6c-401b-b090-c9498886c50b,a883b11e-7ec4-486d-8ee3-2844a0bf1535
+6828f3aa-613f-413d-b1f5-5f742b3ced2c,,Labrador,Labrador,LAB,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+db3cb12f-d198-47f5-9ccf-da63e5325787,,Laos,Laos,LAO,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+af7dc765-068d-4748-8dbd-f0dbf606285e,,Liberia,Liberia,LBR,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+3cdf4b9f-ab0d-475c-a8ad-abaf50b6bc51,,Lebanon-Syria,Lebanon-Syria,LBS,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+5de71808-0572-4513-ac0f-f21216132b99,,Libya,Libya,LBY,,25b563b6-6a6c-401b-b090-c9498886c50b,0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1
+ce0b678a-f762-4e81-af58-0bce22604dec,,Laccadive Is.,Laccadive Is.,LDV,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+3429522d-f0c1-47ee-a2ed-5e7b11027b6a,,Leeward Is.,Leeward Is.,LEE,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+ec62407d-d0e1-4885-aa58-947ea319ce4c,,Lesotho,Lesotho,LES,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+c2537c9b-5f5f-4e49-975b-9098aa696232,,Line Is.,Line Is.,LIN,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+ceaadd5d-0a56-4297-a583-a887d104bb68,,Louisiana,Louisiana,LOU,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+2ddb5919-9b24-4429-b1b5-5b109ce32916,,Lesser Sunda Is.,Lesser Sunda Is.,LSI,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+f9516ee3-c0d5-4d7c-bdb2-18629044c015,,Magadan,Magadan,MAG,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+df0584e0-e291-4bbb-8f31-5dec7f8f8c11,,Maine,Maine,MAI,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+af20dad3-d152-4b50-b862-60c01da19aa5,,Manitoba,Manitoba,MAN,,25b563b6-6a6c-401b-b090-c9498886c50b,519b890b-6b7d-4bfe-8112-6a80bd55102b
+8082a407-d26a-4f8f-b5ca-2d3fb00b5086,,Macquarie Is.,Macquarie Is.,MAQ,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+7173ffcc-d91b-4c15-a563-b1c69342945f,,Massachusetts,Massachusetts,MAS,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+81837e67-e449-4434-b088-fa849c434344,,Mauritius,Mauritius,MAU,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+4340ff7b-d1ba-4d0e-8857-3cf460886615,,Mozambique Channel Is.,Mozambique Channel Is.,MCI,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+41d2ddce-22bb-4e06-a58a-377239113436,,Marcus I.,Marcus I.,MCS,,25b563b6-6a6c-401b-b090-c9498886c50b,6a20ac07-161d-410c-9bca-87be8392306d
+7442406d-0bed-4d0d-a959-b16d81c3e161,,Madagascar,Madagascar,MDG,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+c7377fb4-abb1-4afd-96fb-111cac62c8f3,,Madeira,Madeira,MDR,,25b563b6-6a6c-401b-b090-c9498886c50b,521ba4f9-0d74-4ec0-addc-fab9d72dca07
+cd604ba0-d10b-44ac-acd9-7ec4d5370d5e,,Maldives,Maldives,MDV,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+68fd0c55-a9e2-4184-ab52-9d1702b02bb7,,Michigan,Michigan,MIC,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+03d1211d-d056-46c1-998f-c2514826eafd,,Minnesota,Minnesota,MIN,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+29e6f3e7-ffa7-403a-8051-7d18e67e7a45,,Mali,Mali,MLI,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+a09998ce-f3a8-4496-947e-518466697e99,,Malawi,Malawi,MLW,,25b563b6-6a6c-401b-b090-c9498886c50b,e4f41a32-a056-4628-94f2-23b3ad821135
+7047b137-84f4-46b5-8b71-4469e3d75545,,Malaya,Malaya,MLY,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+e8d3d3c6-c6e7-4dc6-b44a-77be24c97c42,,Montana,Montana,MNT,,25b563b6-6a6c-401b-b090-c9498886c50b,d264452e-995b-4e23-a11e-b55b22e43f19
+fef7aa18-e35b-4ec4-8ba3-ed44033a38d4,,Maluku,Maluku,MOL,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+6b678353-a83e-44e1-92b0-c31433208f2e,,Mongolia,Mongolia,MON,,25b563b6-6a6c-401b-b090-c9498886c50b,3dfa2c8d-5c09-44b1-8ee9-c5b0dad3c56f
+85f6595b-c739-4a00-87a6-06dbf591d5f5,,Morocco,Morocco,MOR,,25b563b6-6a6c-401b-b090-c9498886c50b,0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1
+9ebd353e-0ab6-4185-9a9f-af92e7d11567,,Mozambique,Mozambique,MOZ,,25b563b6-6a6c-401b-b090-c9498886c50b,e4f41a32-a056-4628-94f2-23b3ad821135
+7a391925-b331-4ffe-8bf5-ba5b2439a177,,Marion-Prince Edward Is.,Marion-Prince Edward Is.,MPE,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+4f854b84-2d93-4b0d-a40d-9e05be7cbae1,,Marianas,Marianas,MRN,,25b563b6-6a6c-401b-b090-c9498886c50b,6a20ac07-161d-410c-9bca-87be8392306d
+77e49b33-ce39-48e8-bef5-eaa16091f2ef,,Marquesas,Marquesas,MRQ,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+e4836aef-cb88-4782-8c41-aefc270a2502,,Marshall Is.,Marshall Is.,MRS,,25b563b6-6a6c-401b-b090-c9498886c50b,6a20ac07-161d-410c-9bca-87be8392306d
+72fe14e6-5631-4079-ac95-3d62fe1c3aab,,Maryland,Maryland,MRY,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+3c90742c-f8bf-4344-9f23-2e3b73aee064,,Mississippi,Mississippi,MSI,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+0249d5ed-e960-4efa-b66d-5f2bd15f7b1b,,Missouri,Missouri,MSO,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+548abebd-9668-481e-a2c5-a93a600fedb9,,Mauritania,Mauritania,MTN,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+ebeb5340-2838-4b72-99b1-616e8160d0ca,,Mexico Central,Mexico Central,MXC,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+bf85121c-a686-46be-ba88-f400b37b3b25,,Mexico Northeast,Mexico Northeast,MXE,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+7d3e6e07-245d-4201-a525-10802cda6dfe,,Mexico Gulf,Mexico Gulf,MXG,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+adac7ea3-9960-411b-af26-246fa85ea19c,,Mexican Pacific Is.,Mexican Pacific Is.,MXI,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+757b5d76-1d1d-4542-9c99-fa1640dce066,,Mexico Northwest,Mexico Northwest,MXN,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde,,Mexico Southwest,Mexico Southwest,MXS,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+602303d7-93ee-4375-9095-477aad95268a,,Mexico Southeast,Mexico Southeast,MXT,,25b563b6-6a6c-401b-b090-c9498886c50b,a4243f05-52b0-4c2f-8e2c-7650a1c5d8b0
+e631e1d6-bdc4-4ece-a2b5-33b1eb22b069,,Myanmar,Myanmar,MYA,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+642bfe17-30c1-420c-be51-665af6a07bff,,Namibia,Namibia,NAM,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+da51d835-bdb4-46bd-b994-5bb9a33ff5e7,,KwaZulu-Natal,KwaZulu-Natal,NAT,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+28369e9a-251e-4735-b9b8-4271b1321808,,New Brunswick,New Brunswick,NBR,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+7a3946b0-104c-4cd2-af95-b24a4ce6d686,,North Carolina,North Carolina,NCA,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+e301f2a0-2a7c-4b6a-bd86-df15ba340a5d,,Nicobar Is.,Nicobar Is.,NCB,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+08ba6204-b699-4b91-8e16-424ed62dcc84,,North Caucasus,North Caucasus,NCS,,25b563b6-6a6c-401b-b090-c9498886c50b,f998eeb4-b105-4875-ae32-0de41cf389e4
+891381d8-cdd2-49b2-86dd-02eeaf47dc7b,,North Dakota,North Dakota,NDA,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+70b98a5c-4785-4925-9325-ec92610b9117,,Nebraska,Nebraska,NEB,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+145cb777-fd41-4ed5-b163-550784840bf7,,Nepal,Nepal,NEP,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+2ef12677-0d38-4ed9-a57a-f61a968f7a63,,Netherlands,Netherlands,NET,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+9bac52d4-5a10-4927-b630-b51273b9943b,,Nevada,Nevada,NEV,,25b563b6-6a6c-401b-b090-c9498886c50b,32e8f7dd-76be-480e-8ff9-32ffd0be20eb
+c35e4381-1646-4632-ab6f-40c80127b490,,Norfolk Is.,Norfolk Is.,NFK,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+61e4dc79-5847-4859-8f63-fa602de5743c,,Newfoundland,Newfoundland,NFL,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+36cc02ea-68fc-4024-879b-df2ad7e1d500,,Nigeria,Nigeria,NGA,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+2fd151ae-c0c5-4653-95ef-42c4addf088b,,Niger,Niger,NGR,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+0cff1981-6dbb-418b-b5e5-b427e338f2c3,,Nicaragua,Nicaragua,NIC,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+5bce0bb4-a584-4e3a-bfd9-7aa876e1ef44,,Netherlands Antilles,Netherlands Antilles,NLA,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+7a4d50ba-1b53-4ed7-8453-5ae17919df86,,Nansei-shoto,Nansei-shoto,NNS,,25b563b6-6a6c-401b-b090-c9498886c50b,a883b11e-7ec4-486d-8ee3-2844a0bf1535
+4b2396e7-6e3d-41f8-b782-247a95d4b761,,Norway,Norway,NOR,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+01176406-0e8f-4a43-a6e2-346f6769cd60,,Nauru,Nauru,NRU,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+7662bec4-dc55-4483-8f37-a78d93cc8224,,Nova Scotia,Nova Scotia,NSC,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+e8c18809-0ccf-4c68-9528-9925db6c55e7,,New South Wales,New South Wales,NSW,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+d1c88525-0110-4f9d-a639-5b4d0009b393,,Northern Territory,Northern Territory,NTA,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+ec2ae973-99e6-44ba-8417-e01e729e5dab,,Niue,Niue,NUE,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+0936c6be-e397-4793-b47b-e08d992ba5d3,,Nunavut,Nunavut,NUN,,25b563b6-6a6c-401b-b090-c9498886c50b,09bc05d8-badb-4788-b1d8-47bd16fb475b
+e9d6e328-6209-4d1f-94f0-61fd8592c09c,,New Caledonia,New Caledonia,NWC,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+b5abcf7d-796f-431a-bf93-b771693ccdcf,,New Guinea,New Guinea,NWG,,25b563b6-6a6c-401b-b090-c9498886c50b,173e9075-85c9-433d-9115-dc87d61d21f4
+36d4ef65-64d3-4733-8085-9daeba3b1aed,,New Hampshire,New Hampshire,NWH,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+ab3974aa-b195-4af7-8f19-b1049231ed4f,,New Jersey,New Jersey,NWJ,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+3a0a1cc3-8a71-43fb-86fc-0c92ddba73fc,,New Mexico,New Mexico,NWM,,25b563b6-6a6c-401b-b090-c9498886c50b,8c7f2488-5b40-414e-b8de-e854755c69c4
+86b0de03-5b68-454b-b7db-d20e6a7b0f20,,Northwest Territories,Northwest Territories,NWT,,25b563b6-6a6c-401b-b090-c9498886c50b,09bc05d8-badb-4788-b1d8-47bd16fb475b
+0392fb7c-2028-40db-8372-4621a425fe3c,,New York,New York,NWY,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+df68a983-a1ac-42f7-886d-9335c681430c,,New Zealand North,New Zealand North,NZN,,25b563b6-6a6c-401b-b090-c9498886c50b,cfc163fb-54e5-48a7-ab14-cc982323f0c5
+7f285f4c-a7e7-4021-98dd-1413930675a1,,New Zealand South,New Zealand South,NZS,,25b563b6-6a6c-401b-b090-c9498886c50b,cfc163fb-54e5-48a7-ab14-cc982323f0c5
+27f18891-4c9c-4e72-98a0-b3a90d8f0060,,Free State,Free State,OFS,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+178f0de3-54bf-4469-a8d4-8e1974be8611,,Ogasawara-shoto,Ogasawara-shoto,OGA,,25b563b6-6a6c-401b-b090-c9498886c50b,a883b11e-7ec4-486d-8ee3-2844a0bf1535
+461ba6ca-4246-4fb9-bcd4-af7c965ae777,,Ohio,Ohio,OHI,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+56e84e9c-9229-4286-b30c-5c5e68c8a144,,Oklahoma,Oklahoma,OKL,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+b3dd0577-35c4-4915-a965-7c696dc9b83c,,Oman,Oman,OMA,,25b563b6-6a6c-401b-b090-c9498886c50b,4b35ae1c-4f54-4818-a4c5-8323a3aea5fc
+2842bcb3-9ce5-473f-b155-2d7519b3bb65,,Ontario,Ontario,ONT,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+f634bb85-3c54-4ee5-815c-da689d840a57,,Oregon,Oregon,ORE,,25b563b6-6a6c-401b-b090-c9498886c50b,d264452e-995b-4e23-a11e-b55b22e43f19
+de7db6b3-7d4f-47a5-8bb8-9fa93a760672,,Pakistan,Pakistan,PAK,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+a6249157-4b39-49d2-9689-0778aec024c4,,Palestine,Palestine,PAL,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+07aced24-02ed-4e0b-80f0-b20b83fd6561,,Panamá,Panamá,PAN,,25b563b6-6a6c-401b-b090-c9498886c50b,38128f22-3908-44aa-8c5d-cdc9570f29f0
+97d0d28f-977e-41bd-a3b9-f788baaed364,,Paraguay,Paraguay,PAR,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+2ad64695-b454-49af-8b48-92f891175cba,,Prince Edward I.,Prince Edward I.,PEI,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+57343e24-9bf9-4ce6-aed5-27d563139d36,,Pennsylvania,Pennsylvania,PEN,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+eb69081d-1147-48a1-84e4-b96339a29492,,Peru,Peru,PER,,25b563b6-6a6c-401b-b090-c9498886c50b,f25135c1-f77c-46a7-ac4f-7bad9446cfef
+a5a7e2f3-5c24-4b9c-b6ba-110b62896c95,,Philippines,Philippines,PHI,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+adf502c8-d5ba-4f07-a65b-115c3b8f4c21,,Phoenix Is.,Phoenix Is.,PHX,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+717549a3-1f67-4408-8c59-42724e6d8c0f,,Pitcairn Is.,Pitcairn Is.,PIT,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+587b53b3-c12d-411c-aa58-1f8ab1c19987,,Poland,Poland,POL,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+3a22e22e-a68e-4215-8b7d-be3e39cfafa4,,Portugal,Portugal,POR,,25b563b6-6a6c-401b-b090-c9498886c50b,6e980d6d-5748-4535-ad7a-95d35542910d
+51b66943-c7b6-4b0f-8252-92e02eb5957f,,Primorye,Primorye,PRM,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+4d9400b1-de4e-495b-8a04-9468e34b0610,,Puerto Rico,Puerto Rico,PUE,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+857bec6a-b361-495b-abf1-f99cce2587c4,,Queensland,Queensland,QLD,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+c72bf61f-5446-455c-bd73-652ce4ddf1b9,,Québec,Québec,QUE,,25b563b6-6a6c-401b-b090-c9498886c50b,56674a86-81bd-4bba-90a0-a73b95ca9a0a
+24fd734c-aeb2-464f-bc25-db1d09e62084,,Réunion,Réunion,REU,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+beaff32e-3e14-4b21-8d70-5b6930077299,,Rhode I.,Rhode I.,RHO,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+4f10f141-b2bf-4d11-b018-9ed973b32729,,Rodrigues,Rodrigues,ROD,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+5120891c-0493-4b0d-8319-f6442765ec3b,,Romania,Romania,ROM,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+27be3967-faa0-45b2-a182-6bb19ace908b,,Central European Russia,Central European Russia,RUC,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+d06f68f8-5a20-4a93-88e0-09f533f3613f,,East European Russia,East European Russia,RUE,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+9169948b-c465-47b6-8acf-c9c3b0a6fff8,,North European Russia,North European Russia,RUN,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+8957c768-ee18-410d-9c43-c55cb799e205,,South European Russia,South European Russia,RUS,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+d145aa3f-857c-4b6e-b691-ce8d172f37d9,,Northwest European Russia,Northwest European Russia,RUW,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+50d2716e-328c-4fe1-9e9b-c3ed6ce60bb5,,Rwanda,Rwanda,RWA,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+37622300-94ec-4438-8e65-09d299fb7ef3,,Sakhalin,Sakhalin,SAK,,25b563b6-6a6c-401b-b090-c9498886c50b,ff2bb4b1-4190-4f04-b556-7c64bed0140a
+1762ef94-4195-4068-8703-4d11e244653f,,Samoa,Samoa,SAM,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+43bf5a60-eafc-440d-83e0-7dce0961aba8,,Sardegna,Sardegna,SAR,,25b563b6-6a6c-401b-b090-c9498886c50b,6e980d6d-5748-4535-ad7a-95d35542910d
+7dfafd0c-5b59-45f1-a2d2-0757e555e530,,Saskatchewan,Saskatchewan,SAS,,25b563b6-6a6c-401b-b090-c9498886c50b,519b890b-6b7d-4bfe-8112-6a80bd55102b
+7af350e4-7e8a-49b7-a728-3dfb3a7347ac,,Saudi Arabia,Saudi Arabia,SAU,,25b563b6-6a6c-401b-b090-c9498886c50b,4b35ae1c-4f54-4818-a4c5-8323a3aea5fc
+3dc78d7b-6cd8-4790-891d-e8d6ffa497bb,,South Carolina,South Carolina,SCA,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+67f0df67-8161-448b-9188-058b57d37c9d,,Society Is.,Society Is.,SCI,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+ef6cd955-105b-442c-95b0-6637545baaa5,,South China Sea,South China Sea,SCS,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+353f7509-cc51-4c47-b46a-15819bca9323,,Santa Cruz Is.,Santa Cruz Is.,SCZ,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+9ca35d05-ec92-41fe-ba42-ec6828ff6848,,South Dakota,South Dakota,SDA,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+f3cde575-de0d-49f9-9615-6717526458ba,,Selvagens,Selvagens,SEL,,25b563b6-6a6c-401b-b090-c9498886c50b,521ba4f9-0d74-4ec0-addc-fab9d72dca07
+4a95dae4-c8a8-42e8-ba12-540d402e360f,,Senegal,Senegal,SEN,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+89392d7c-251e-4160-8518-6f91d86e5010,,Seychelles,Seychelles,SEY,,25b563b6-6a6c-401b-b090-c9498886c50b,b68c6158-96ff-4ef9-8fe6-d27cc4809d25
+dda86ec7-b0fc-44b9-89a9-fd14762796bf,,South Georgia,South Georgia,SGE,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+4750f5f8-e7af-46d8-b497-2b68199366ba,,Sicily,Sicily,SIC,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+ea7c2f1b-9d95-4129-b84f-9653e51e3da8,,Sierra Leone,Sierra Leone,SIE,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+7720f433-5f3f-469a-b49b-b4e409064455,,Sinai,Sinai,SIN,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+c28b59c7-f65d-469e-9d53-6fce34b35e6e,,South Australia,South Australia,SOA,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+d8a1ea81-78db-46db-a27d-d8eb64bf7e41,,Socotra,Socotra,SOC,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+4cf239da-1215-4689-8cb9-495a2735cb0a,,Solomon Is.,Solomon Is.,SOL,,25b563b6-6a6c-401b-b090-c9498886c50b,173e9075-85c9-433d-9115-dc87d61d21f4
+15b4c85f-6e38-403e-a5d4-69cdc00230ea,,Somalia,Somalia,SOM,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+4774d040-9901-4eed-aaa5-8b18dcd568bc,,Spain,Spain,SPA,,25b563b6-6a6c-401b-b090-c9498886c50b,6e980d6d-5748-4535-ad7a-95d35542910d
+3a78d641-42c2-4041-919d-fe3601de6356,,Sri Lanka,Sri Lanka,SRL,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+bf83496e-9a97-4215-839a-3df00e06916e,,South Sandwich Is.,South Sandwich Is.,SSA,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+7145cc3e-0893-442d-b56e-9c74f62ce430,,St.Helena,St.Helena,STH,,25b563b6-6a6c-401b-b090-c9498886c50b,06f367c2-e657-4894-8427-d164343dbd75
+08c2d94a-0cc2-4b6b-8184-a1c1b899b805,,Sudan,Sudan,SUD,,25b563b6-6a6c-401b-b090-c9498886c50b,b49bf097-5b36-47ff-8d8f-640bb14bdab2
+b42f9b9e-afe1-4d62-a3a9-6b53599f2f60,,Sulawesi,Sulawesi,SUL,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+d7bbe237-0bae-4ef0-b8fb-332a90eee92c,,Sumatera,Sumatera,SUM,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+ff18c8ac-970f-4a90-a6a8-27859dbc6218,,Suriname,Suriname,SUR,,25b563b6-6a6c-401b-b090-c9498886c50b,97df9967-f9d0-4153-ab27-83abf7e508fd
+34c3c6fc-e6e0-44b9-8886-157c992e9485,,Svalbard,Svalbard,SVA,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+7ad3ccea-3cee-4046-b496-e694a2109fd9,,Southwest Caribbean,Southwest Caribbean,SWC,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+289074c4-a7a9-4cb3-b74a-78ad2bc6fbce,,Sweden,Sweden,SWE,,25b563b6-6a6c-401b-b090-c9498886c50b,22524ba2-6e57-4b71-89ab-89fc50fba6b4
+df9fc338-1564-4517-8e39-43087bc068f2,,Switzerland,Switzerland,SWI,,25b563b6-6a6c-401b-b090-c9498886c50b,d292f237-da3d-408b-93a1-3257a8c80b97
+5d49cc9a-3a8d-44a3-a851-6cf0e8ca154b,,Swaziland,Swaziland,SWZ,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+eed9dbda-ed03-41d5-9322-94f985de97ee,,Taiwan,Taiwan,TAI,,25b563b6-6a6c-401b-b090-c9498886c50b,a883b11e-7ec4-486d-8ee3-2844a0bf1535
+caf1697c-10d1-4d51-ac62-a977171ec56e,,Tanzania,Tanzania,TAN,,25b563b6-6a6c-401b-b090-c9498886c50b,4b2e7043-640e-4bf4-8436-7436ed1f7137
+4baeb0f7-7893-4edb-8c9b-7c0f225bf868,,Tasmania,Tasmania,TAS,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+952ea175-c3f4-4ae9-b09a-029ba81ee923,,Turks-Caicos Is.,Turks-Caicos Is.,TCI,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+ac7a6544-3f4b-463b-a19d-eea0a484da93,,Transcaucasus,Transcaucasus,TCS,,25b563b6-6a6c-401b-b090-c9498886c50b,f998eeb4-b105-4875-ae32-0de41cf389e4
+1cda9cee-21be-4a99-a983-520a749d7118,,Tristan da Cunha,Tristan da Cunha,TDC,,25b563b6-6a6c-401b-b090-c9498886c50b,09714b3f-a0d1-479e-914e-3a207c9e1b19
+d1a6df1e-7e01-4ef8-9e34-295bd59037de,,Tennessee,Tennessee,TEN,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+6d90e6d7-9f3d-48ee-8dc5-0fa0e2e102e0,,Texas,Texas,TEX,,25b563b6-6a6c-401b-b090-c9498886c50b,8c7f2488-5b40-414e-b8de-e854755c69c4
+da8aac48-9795-4767-a1a0-323160158892,,Thailand,Thailand,THA,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+bfca42eb-4fae-4233-996d-ffff6b60bf15,,Turkmenistan,Turkmenistan,TKM,,25b563b6-6a6c-401b-b090-c9498886c50b,0cd59844-44e3-430c-9986-49edd1c338be
+39983171-9173-48ac-9564-9d30c189b90f,,Togo,Togo,TOG,,25b563b6-6a6c-401b-b090-c9498886c50b,931164ad-ec16-4133-afab-bdef25d67636
+24ffcae2-2090-4106-8da6-f49a21a951de,,Tokelau-Manihiki,Tokelau-Manihiki,TOK,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+a3a4d577-ff17-4548-b766-c0b3579cde1c,,Tonga,Tonga,TON,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+a356333f-e25a-4fdd-8d69-154c24307a36,,Trinidad-Tobago,Trinidad-Tobago,TRT,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+8ae1077d-ce28-4602-909a-227686b680e1,,Tuamotu,Tuamotu,TUA,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+332abf62-47ab-43f1-a12a-3e320f4a8a6d,,Tubuai Is.,Tubuai Is.,TUB,,25b563b6-6a6c-401b-b090-c9498886c50b,aa33248e-2a35-443c-923a-bf6a813fa9f7
+0cc0f22f-df09-48d2-a2e0-27911df17c8b,,Turkey-in-Europe,Turkey-in-Europe,TUE,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+73d5c7bf-deb8-4152-b55c-5414db2c4261,,Tunisia,Tunisia,TUN,,25b563b6-6a6c-401b-b090-c9498886c50b,0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1
+48219cbc-82ab-447f-8a67-e97408736c23,,Turkey,Turkey,TUR,,25b563b6-6a6c-401b-b090-c9498886c50b,a8c5b44e-21ec-4d40-b847-cd1884968c92
+df5a43be-4dbd-4585-889d-916dc4eb085c,,Tuvalu,Tuvalu,TUV,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+b59ea7bf-6907-4275-9984-4a9b7621cae9,,Tuva,Tuva,TVA,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+3d190a52-47b9-450d-b2b8-15bd9995c8e5,,Northern Provinces,Northern Provinces,TVL,,25b563b6-6a6c-401b-b090-c9498886c50b,a1081898-e631-40b5-a225-fc24809adf8c
+90b1b04c-7604-4bdf-b648-963e933b85f8,,Tadzhikistan,Tadzhikistan,TZK,,25b563b6-6a6c-401b-b090-c9498886c50b,0cd59844-44e3-430c-9986-49edd1c338be
+e06b10c6-1cb6-4654-94b0-49878cf88a6a,,Uganda,Uganda,UGA,,25b563b6-6a6c-401b-b090-c9498886c50b,4b2e7043-640e-4bf4-8436-7436ed1f7137
+670977b8-9833-4ab4-8f68-15a5cb5f38d9,,Ukraine,Ukraine,UKR,,25b563b6-6a6c-401b-b090-c9498886c50b,4f1abfb5-b166-47cf-a5bb-b0e6588f5389
+4b8f9064-f413-41f5-8399-8a8530fea981,,Uruguay,Uruguay,URU,,25b563b6-6a6c-401b-b090-c9498886c50b,87964033-5404-42ac-8f18-09baa388c14e
+86d51169-ef60-4717-b4ec-c1522ebd4bb9,,Utah,Utah,UTA,,25b563b6-6a6c-401b-b090-c9498886c50b,32e8f7dd-76be-480e-8ff9-32ffd0be20eb
+42fb1397-83df-4fe0-a313-a04845ce378c,,Uzbekistan,Uzbekistan,UZB,,25b563b6-6a6c-401b-b090-c9498886c50b,0cd59844-44e3-430c-9986-49edd1c338be
+205587f2-6d1b-4507-8d06-3588375b0cf2,,Vanuatu,Vanuatu,VAN,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+a9a80485-407a-495d-9701-2bfff3025b37,,Venezuela,Venezuela,VEN,,25b563b6-6a6c-401b-b090-c9498886c50b,97df9967-f9d0-4153-ab27-83abf7e508fd
+889993e0-507b-48c6-bc40-8bb2dd943960,,Vermont,Vermont,VER,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+62f519dc-d315-425d-9053-319a055c1468,,Victoria,Victoria,VIC,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+ce26e090-99b0-407f-a177-3fbc316638f0,,Vietnam,Vietnam,VIE,,25b563b6-6a6c-401b-b090-c9498886c50b,4739866e-3919-4d76-875e-585d45be8c88
+9f97925d-be79-48e5-ab65-25d0bc27503c,,Venezuelan Antilles,Venezuelan Antilles,VNA,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+3a6df9f1-d33b-4fe7-a150-db130a038654,,Virginia,Virginia,VRG,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+36d57602-8107-458c-a097-5f37ff49881e,,Wake I.,Wake I.,WAK,,25b563b6-6a6c-401b-b090-c9498886c50b,6a20ac07-161d-410c-9bca-87be8392306d
+b8810d5d-152f-47df-b570-83a84a37bad6,,Wallis-Futuna Is.,Wallis-Futuna Is.,WAL,,25b563b6-6a6c-401b-b090-c9498886c50b,9f38ea6f-8f82-4697-9603-7877865caaac
+fcaa778d-12d7-4e35-9bad-05a05d80f563,,Washington,Washington,WAS,,25b563b6-6a6c-401b-b090-c9498886c50b,d264452e-995b-4e23-a11e-b55b22e43f19
+cb709a6b-604a-4dcc-9ed4-7410750a3fb6,,Western Australia,Western Australia,WAU,,25b563b6-6a6c-401b-b090-c9498886c50b,37cc7b35-a580-47a2-aedf-bd06a5afe8e5
+16939d8c-587d-4277-be04-26502fe61b28,,District of Columbia,District of Columbia,WDC,,25b563b6-6a6c-401b-b090-c9498886c50b,f1911c44-8925-4a8a-b25e-8d2379ac7195
+bd730c6b-5659-445d-9b26-3a662186b1b5,,West Himalaya,West Himalaya,WHM,,25b563b6-6a6c-401b-b090-c9498886c50b,7ceb3526-3fe2-4d4b-8b7c-e0a267b1a9a0
+8b56d6ca-77a5-436f-9839-888e4f0611ea,,Windward Is.,Windward Is.,WIN,,25b563b6-6a6c-401b-b090-c9498886c50b,b5ef1405-89f6-455b-adb1-01dfbff84663
+739fa687-ccc0-4ecd-b30e-216c1d0ae8c0,,Wisconsin,Wisconsin,WIS,,25b563b6-6a6c-401b-b090-c9498886c50b,617ded5e-6b96-487a-b706-3fffc81104d9
+2a3887f9-739d-4969-8a05-be5dff943654,,Western Sahara,Western Sahara,WSA,,25b563b6-6a6c-401b-b090-c9498886c50b,0a4bf6d1-52d6-4eff-b5d9-0b3c270291f1
+183869b8-7143-492e-abec-fc9aa585cb2e,,West Siberia,West Siberia,WSB,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+8f1802cf-8c21-4951-8460-68f23117a7a8,,West Virginia,West Virginia,WVA,,25b563b6-6a6c-401b-b090-c9498886c50b,b6ed282f-76d1-44e3-aafb-2025fbaa001f
+c75e0ede-5a11-486d-bbd5-1aad2afc1c53,,Wyoming,Wyoming,WYO,,25b563b6-6a6c-401b-b090-c9498886c50b,d264452e-995b-4e23-a11e-b55b22e43f19
+474ea264-4a0c-4e47-b2e3-b7d69161a887,,Christmas I.,Christmas I.,XMS,,25b563b6-6a6c-401b-b090-c9498886c50b,07cd4677-f025-4bd3-80f6-7762056740ba
+258f6e7c-6acb-4ccd-b312-748e0502d758,,Yakutskiya,Yakutskiya,YAK,,25b563b6-6a6c-401b-b090-c9498886c50b,6692581b-fa7a-4b13-ae39-b1a673d0b252
+d2c3f9e5-3c36-4a42-9e97-48927f63c1f4,,Yemen,Yemen,YEM,,25b563b6-6a6c-401b-b090-c9498886c50b,4b35ae1c-4f54-4818-a4c5-8323a3aea5fc
+705df0b8-452a-4868-bf12-bdc4dcde018a,,Yugoslavia,Yugoslavia,YUG,,25b563b6-6a6c-401b-b090-c9498886c50b,5f3059a8-a4fc-434c-b6f2-292919967553
+26b4e43d-3756-4b28-872b-8ef1d65168a8,,Yukon,Yukon,YUK,,25b563b6-6a6c-401b-b090-c9498886c50b,09bc05d8-badb-4788-b1d8-47bd16fb475b
+91db183a-a8c3-45dc-8cc9-2b8c2a6c183d,,Zaire,Zaire,ZAI,,25b563b6-6a6c-401b-b090-c9498886c50b,1f29eaea-ef04-40ee-96bd-f2f433c78c8c
+997ca9ce-29cb-4d9c-b9ca-b1ab98968785,,Zambia,Zambia,ZAM,,25b563b6-6a6c-401b-b090-c9498886c50b,e4f41a32-a056-4628-94f2-23b3ad821135
+5b63e02e-2e96-4acc-86a9-ded2a0359f4b,,Zimbabwe,Zimbabwe,ZIM,,25b563b6-6a6c-401b-b090-c9498886c50b,e4f41a32-a056-4628-94f2-23b3ad821135
+0103dfde-e203-40d7-bec8-bb484ae75bdf,,Alberta,Alberta,ABT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c31dadb8-0cda-4a6a-b7ec-2787d8a25c67
+019fc551-10dc-43c2-9c5b-ca52a2d09e86,,Afghanistan,Afghanistan,AFG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,122977c7-d5e3-4d26-a658-162ce805d1a8
+c6af30b9-99b3-4a98-adfb-97444ce96e8b,,Buenos Aires,Buenos Aires,AGE-BA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+72f8db6a-0472-45c4-acff-adf8563a0772,,Chaco,Chaco,AGE-CH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+7f93e700-4e9f-4894-abe1-ffcbd5327bce,,Corrientes,Corrientes,AGE-CN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+69394eb2-c2f1-4433-8fcc-daabcf70a7d5,,Córdoba,Córdoba,AGE-CD,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+356f5e7e-f8e5-4ff0-adc8-ff3ceed8b871,,Argentina Distrito Federal,Argentina Distrito Federal,AGE-DF,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+8bd874ce-36f4-4c96-b1bc-00084bbb7793,,Entre Ríos,Entre Ríos,AGE-ER,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+a12e56d3-e968-4c18-ba1e-feba731b071f,,Formosa,Formosa,AGE-FO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+b7eac6d2-22b0-4ca1-b139-0b377dbf877c,,La Pampa,La Pampa,AGE-LP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+e614e0b6-e09c-4802-b4dc-9186a3bbab2d,,Misiones,Misiones,AGE-MI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,00ae742b-f8b1-4f24-8dd7-57c157676734
+9adc826c-ef68-403c-930b-d67027a6e253,,Chubut,Chubut,AGS-CB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,707c485f-dcad-41a5-bc8b-7c81d5249c9f
+3a2a0a1e-f820-4f77-a2db-69d822eccda9,,Neuquén,Neuquén,AGS-NE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,707c485f-dcad-41a5-bc8b-7c81d5249c9f
+84d9dfd7-1c32-433b-8f30-a07fd3f61f57,,Rio Negro,Rio Negro,AGS-RN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,707c485f-dcad-41a5-bc8b-7c81d5249c9f
+53a83e7f-fb6a-437b-beab-47c389b68a41,,Santa Cruz,Santa Cruz,AGS-SC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,707c485f-dcad-41a5-bc8b-7c81d5249c9f
+75ed8ca6-0b99-4f11-a5ab-766bd819d819,,Santa Fé,Santa Fé,AGE-SF,,160ff2c8-9bfc-49c2-9afd-049c21a91695,707c485f-dcad-41a5-bc8b-7c81d5249c9f
+b42abd5a-5181-4342-a9fb-cd6193d668fa,,Tierra del Fuego (Argentina),Tierra del Fuego (Argentina),AGS-TF,,160ff2c8-9bfc-49c2-9afd-049c21a91695,707c485f-dcad-41a5-bc8b-7c81d5249c9f
+44b8a99f-344f-4c1e-8299-9cbad6fb4043,,Catamarca,Catamarca,AGW-CA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+e38f2205-3e06-4b58-9c19-ca80903e7fbd,,Jujuy,Jujuy,AGW-JU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+104bc6db-9d96-4249-a277-ca21289af3c6,,La Rioja,La Rioja,AGW-LR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+901360e8-5b48-480a-831b-e3393d4198a8,,Mendoza,Mendoza,AGW-ME,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+30dcfd8e-fd7b-4254-984b-107b8a60c57d,,Salta,Salta,AGW-SA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+4b530f04-5fc9-438e-909a-acc32cfd7986,,Santiago del Estero,Santiago del Estero,AGW-SE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+2245ce8c-b3f5-4a01-96d9-f93ea9927b2a,,San Juan,San Juan,AGW-SJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+639c2a60-7858-4eaf-9e79-f90b29a1882a,,San Luis,San Luis,AGW-SL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+d332b58c-d30d-4cac-8982-8ab8885e6355,,Tucuman,Tucuman,AGW-TU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2cac2091-77d0-4a0d-a202-609cb64b096b
+3eb214c4-31a9-49c4-8163-a3a5e4d468a0,,Alabama,Alabama,ALA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e097b877-517c-4308-9f4c-a6bfa928238d
+c97096ec-d32f-4106-920a-45f69e359199,,Albania,Albania,ALB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4fdd8662-7635-4401-94e5-6a457a8593bb
+b9ca970c-f676-40f4-8cbb-bd431b42a077,,Aldabra,Aldabra,ALD-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4f890bf8-36e8-444a-92db-59976740ac61
+c88a09f1-e3f9-46ba-8541-84f956131932,,Algeria,Algeria,ALG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,73755400-0105-416c-b2f4-b10e3c55b0ec
+13a03777-9e38-4e86-8ed2-a70f9b9279c3,,Altay,Altay,ALT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8cfc1722-e1e8-49d3-95a7-9879de6de490
+f553a336-03b4-499f-a0d3-5ac4d84a968c,,Aleutian Is.,Aleutian Is.,ALU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50b79b3c-41b2-4be3-a1cd-e7d360abfbec
+e8359d12-7331-445b-a015-d1a69684c172,,Amur,Amur,AMU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,fe4be234-5bbb-48ee-87c5-f0d893a34889
+770a5811-2b6e-4053-9ac5-35985c37a2d2,,Andaman Is.,Andaman Is.,AND-AN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6af14e8b-2e1e-4012-980c-9bfe59ddb59d
+fed827ac-2946-4066-a08c-d542fd8634af,,Coco Is.,Coco Is.,AND-CO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6af14e8b-2e1e-4012-980c-9bfe59ddb59d
+36d86e81-0288-468e-ab7e-dd63d0b0a574,,Angola,Angola,ANG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac38903-3c49-4004-8566-50e684196b47
+0c4d8f41-9621-4912-a446-228b395ff78c,,Antarctica,Antarctica,ANT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4f147ab5-9667-4406-a537-4ded4c4ccd63
+7210d9dd-304c-4577-881a-02c73f153d7b,,Arizona,Arizona,ARI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9d3579a2-8bc6-4c72-904e-2961a6f84de1
+757cb232-f714-4ed0-af91-aaf1f24d71e5,,Arkansas,Arkansas,ARK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ebb5d419-66f5-47d8-aa84-7d986a3d9dc8
+9aaf0819-6f2c-4a10-bd1a-ea5f0764c878,,Aruba,Aruba,ARU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,747ebd42-2c2a-4db5-8a70-bc1d7a3026ab
+d1a32a01-9395-4952-a754-eeae34ab1dd7,,Ascension,Ascension,ASC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c1a294af-54b1-43ac-8699-49ff1a166a08
+da4e0179-a2f1-42a9-9b81-a77e705c6c5c,,Alaska,Alaska,ASK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,72a08d3b-d333-4cb3-841e-c339a1e15172
+d8e8fb07-ca32-4f6e-99b2-7323d8e1ef32,,Amsterdam-St.Paul Is.,Amsterdam-St.Paul Is.,ASP-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,dba9e336-a2b8-4332-baff-ef6fb592a30e
+3f63e888-87bd-4ac7-8233-55e4f19bc67e,,Assam,Assam,ASS-AS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac86590-6107-4bb5-b947-780a918b19a1
+113297af-2d4a-4201-a262-cddf0dd13202,,Manipur,Manipur,ASS-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac86590-6107-4bb5-b947-780a918b19a1
+6b76fe81-1fdc-4765-b3fc-7d6387417e9a,,Meghalaya,Meghalaya,ASS-ME,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac86590-6107-4bb5-b947-780a918b19a1
+5b8034e3-3225-41e8-8ed1-7b4f2713f8db,,Mizoram,Mizoram,ASS-MI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac86590-6107-4bb5-b947-780a918b19a1
+e6023624-a003-4791-a8c8-ad015215b15c,,Nagaland,Nagaland,ASS-NA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac86590-6107-4bb5-b947-780a918b19a1
+f6046475-d928-4e87-8140-2435b642f2d7,,Tripura,Tripura,ASS-TR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bac86590-6107-4bb5-b947-780a918b19a1
+2a939b1b-e6aa-468e-a7f9-31ce3bc316d0,,Antipodean Is.,Antipodean Is.,ATP-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f7754519-6799-4dd8-bccf-d48370c6dc30
+f7659257-587d-4c9e-802b-150f3849f76a,,Austria,Austria,AUT-AU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2f10ca0f-92bc-465b-a7da-dabd94f92e2a
+1167d228-e7ff-4702-960a-578118fd6ceb,,Liechtenstein,Liechtenstein,AUT-LI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2f10ca0f-92bc-465b-a7da-dabd94f92e2a
+a17d5d28-db7b-4e7e-ab49-d24e0a8682d7,,Açôres,Açôres,AZO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4d176728-ada1-41f3-8b2c-123b8bf133e4
+1a79eb1b-734d-42d0-9887-a6fea70ab556,,Bahamas,Bahamas,BAH-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d9ebede1-ebe7-4b50-bb95-315e93fa7802
+bd621ff5-cb83-43de-adcb-600cb64e9c7f,,Baleares,Baleares,BAL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a17bc439-3ee0-4bd0-83b8-8ec975bebb60
+f69009bf-be76-4d4f-a601-25dbe52c73ec,,Bangladesh,Bangladesh,BAN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6b8ee963-f7f6-4173-bda2-0dc1492edac1
+bf4dbc7d-2cc9-411d-abdc-d50cba248607,,Benin,Benin,BEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6ddb07e2-e227-4111-8138-7d321530f0b2
+99c9fe8e-cdbb-46db-8e77-3cb4a95bb30d,,Bermuda,Bermuda,BER-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a58940b2-d7e9-4a99-b255-d3eee930f2b4
+72afac75-ab5f-4f62-80b1-e5880dcf53f7,,Belgium,Belgium,BGM-BE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,948264a0-fd65-4423-8a0a-2bf063a3995d
+afa00cef-9ac1-49f9-aca4-ffb01f5f634a,,Luxembourg,Luxembourg,BGM-LU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,948264a0-fd65-4423-8a0a-2bf063a3995d
+d9a11144-447c-4e72-b75f-9daeb254e7c4,,Bismarck Archipelago,Bismarck Archipelago,BIS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,020043d9-33ee-4ed2-8411-7e744a28a8d9
+6fd49a11-1f31-4e7b-abfc-4890b23a9fcf,,Burkina,Burkina,BKN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,dc3ff939-0271-40f0-b77f-c3dc911e8d5b
+9b33d3db-f112-4332-aadd-af490d18e4f5,,Belarus,Belarus,BLR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7c015a65-7cd0-49f5-8cc8-0832b56edf61
+caef95f0-536f-493b-bcc5-2ecf478ef4aa,,Estonia,Estonia,BLT-ES,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3c3fcc8a-9ea9-45c4-b929-b4cd3a269171
+72bc25f9-5f20-4ad9-8734-ad38044b2897,,Kaliningrad,Kaliningrad,BLT-KA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3c3fcc8a-9ea9-45c4-b929-b4cd3a269171
+b788c4c4-52a7-45ec-9589-07887d88f5c6,,Latvia,Latvia,BLT-LA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3c3fcc8a-9ea9-45c4-b929-b4cd3a269171
+50dd15a9-af27-475d-a224-23a21104bf23,,Lithuania,Lithuania,BLT-LI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3c3fcc8a-9ea9-45c4-b929-b4cd3a269171
+1e3433be-5490-463c-b988-d340603e8440,,Belize,Belize,BLZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e4c75529-237f-4e74-bf7d-31888c35b40c
+64501083-0924-4dc3-be80-d281fa700804,,Bolivia,Bolivia,BOL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c993136-e6e8-4cb7-8628-5a3dc72e685d
+ca033ec6-5bd5-487a-b0f6-f363d429afa8,,Brunei,Brunei,BOR-BR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e615e7e6-5b64-4903-b794-816baab689b3
+05c6bce3-2e55-48cb-a414-707e936066d1,,Kalimantan,Kalimantan,BOR-KA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e615e7e6-5b64-4903-b794-816baab689b3
+8d34b675-7de1-4623-a16a-1e0ca989df0c,,Sabah,Sabah,BOR-SB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e615e7e6-5b64-4903-b794-816baab689b3
+bd44128d-ddf6-4b89-af1c-bfef6bafd155,,Sarawak,Sarawak,BOR-SR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e615e7e6-5b64-4903-b794-816baab689b3
+1e326747-f911-49ca-97e1-315cced55696,,Botswana,Botswana,BOT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,fb4ab229-0054-43eb-a897-ef9b78c3c006
+4dac21e1-61f5-45a7-8899-04e2f50dd5a3,,Bouvet I.,Bouvet I.,BOU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,83512b5e-f591-4e70-9138-865ad9684475
+2698d951-e48f-4869-8c79-1bc59db07cc4,,British Columbia,British Columbia,BRC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6e961fee-a1f9-43f8-bd2c-9d7cefc0f3af
+3c8c5292-df45-472d-98e0-8e48a5328227,,Buryatiya,Buryatiya,BRY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ecc89b7e-7425-4719-8704-f48a171fc5a9
+776d3bd4-a64e-4259-a3e6-540caab9a891,,Bulgaria,Bulgaria,BUL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6ca10d3d-50fe-4eb0-9027-4638178c7275
+d97c5986-3e62-4c30-8f4d-df6dd4074764,,Burundi,Burundi,BUR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,66be1451-ffa9-4c71-84ae-fa6ff6c52df0
+2a37be56-a42c-4a9a-ae03-fd89eac4bac1,,Brazilia Distrito Federal,Brazilia Distrito Federal,BZC-DF,,160ff2c8-9bfc-49c2-9afd-049c21a91695,72e32463-9fd7-40d4-8c32-5901cb7a8425
+0b51b937-6b73-4b71-892d-f01d467060e1,,Goiás,Goiás,BZC-GO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,72e32463-9fd7-40d4-8c32-5901cb7a8425
+bc51f7d2-776a-4ee1-9ff3-28e19cec10a7,,Mato Grosso do Sul,Mato Grosso do Sul,BZC-MS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,72e32463-9fd7-40d4-8c32-5901cb7a8425
+00b3e39f-5359-4b0b-80ef-1ca94da03aa2,,Mato Grosso,Mato Grosso,BZC-MT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,72e32463-9fd7-40d4-8c32-5901cb7a8425
+7876b019-46c4-425d-8d0c-1e57b4145e41,,Alagoas,Alagoas,BZE-AL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+fded854f-ed57-46ce-a664-e6d5173c6478,,Bahia,Bahia,BZE-BA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+39ad67bf-2b32-4831-99fd-0e669b3f78ca,,Ceará,Ceará,BZE-CE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+5b62e196-c4b3-4a67-b2f1-26bdb66dfda2,,Fernando de Noronha,Fernando de Noronha,BZE-FN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+39bc4948-c03f-4a93-b54f-35d2aeedde06,,Maranhao,Maranhao,BZE-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+6e1a0fbd-f8df-453a-bde3-2d7f75ea144b,,Paraíba,Paraíba,BZE-PB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+961744da-44de-4325-b051-96ece1e6d0d3,,Pernambuco,Pernambuco,BZE-PE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+5e72c1cc-fe4c-492e-927f-b1b1c4eb8235,,Piauí,Piauí,BZE-PI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+51cb58ce-6070-41fc-bb7c-e866e9fab336,,Rio Grande do Norte,Rio Grande do Norte,BZE-RN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+b34d164e-ff7c-4cd9-9d4b-b34832837113,,Sergipe,Sergipe,BZE-SE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,223be2d6-a7bb-4616-b0b6-3656cdd936c7
+0d6fe90f-7f2e-4ac8-8e6b-ea543145a645,,Espirito Santo,Espirito Santo,BZL-ES,,160ff2c8-9bfc-49c2-9afd-049c21a91695,897e8a36-1201-44dc-aeea-7e11ce4599cb
+60999bdf-79e6-4bc5-ab77-6f3477187f75,,Minas Gerais,Minas Gerais,BZL-MG,,160ff2c8-9bfc-49c2-9afd-049c21a91695,897e8a36-1201-44dc-aeea-7e11ce4599cb
+ed329818-e45c-4dfc-b116-3dad8c3cb923,,Rio de Janeiro,Rio de Janeiro,BZL-RJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,897e8a36-1201-44dc-aeea-7e11ce4599cb
+0c00b73c-7b40-48e8-ad8e-d627a250e664,,São Paulo,São Paulo,BZL-SP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,897e8a36-1201-44dc-aeea-7e11ce4599cb
+895e278b-51b9-4aa3-9529-15ff1cd3f205,,Trindade,Trindade,BZL-TR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,897e8a36-1201-44dc-aeea-7e11ce4599cb
+40987986-0481-4ea4-93e8-ea7266a74d35,,Acre,Acre,BZN-AC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+e98b37bc-5ead-4782-a561-163b14c0b6e8,,Amazonas,Amazonas,BZN-AM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+62b94eee-3620-46b3-a118-8899c0d32cb8,,Amapá,Amapá,BZN-AP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+66301e48-a27b-444e-b1b5-ce99f2ab1feb,,Pará,Pará,BZN-PA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+2b24d78c-c296-491c-a089-60d6fd25f769,,Roraima,Roraima,BZN-RM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+0a6e5446-aefc-46ed-9808-5e6fb651ab45,,Rondônia,Rondônia,BZN-RO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+3c2e1e30-cd13-4d4b-aba5-444d000005cd,,Tocantins,Tocantins,BZN-TO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50e0c0a8-d601-48a5-b6f7-ac1972a2bd8e
+a755293a-e0af-4b73-bcc5-83327553ad51,,Paraná,Paraná,BZS-PR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0e875804-b2e6-4dbe-941d-927d3539dd12
+57feaa67-3a87-4462-939b-3ff0e5fb87fa,,Rio Grande do Sul,Rio Grande do Sul,BZS-RS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0e875804-b2e6-4dbe-941d-927d3539dd12
+2e81bb7d-c7f2-4cf9-a580-4ec8caaebba6,,Santa Catarina,Santa Catarina,BZS-SC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0e875804-b2e6-4dbe-941d-927d3539dd12
+aed8e86e-8a54-46e8-98ec-0dc41c52859b,,Cabinda,Cabinda,CAB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e34ba389-b603-4590-bd11-95e3715456e2
+9b303a72-5147-4c03-8758-ee4dab1249ef,,Central African Republic,Central African Republic,CAF-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,23e88955-3ee2-4d42-93ec-bd21f271e491
+175a2a3d-dd30-4992-adad-8c8966b911fd,,California,California,CAL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d569d6e0-5006-4636-b6f6-094e29dd8c52
+b4432cd1-630c-49fb-a191-271823f4f0d2,,Cayman Is.,Cayman Is.,CAY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,efb2c2c5-c71a-4214-99e1-ff4b1ad68980
+192d277b-7559-4bb5-b212-a4d64810d973,,Cambodia,Cambodia,CBD-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6d7a5e91-765e-4edd-8c25-71052cb0dcda
+ddeadead-dd96-4a27-9289-b6fc197bdf08,,Chagos Archipelago,Chagos Archipelago,CGS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e2db82b4-45b7-4800-bc9c-708ef616495b
+0e64f21a-8ea7-40aa-8513-63606447a546,,Chad,Chad,CHA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f92224d9-1754-4422-853e-e2bb5d981612
+fd0c336a-5081-444d-b8b2-6111ef74e26b,,Chongqing,Chongqing,CHC-CQ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,273e6b4f-22cf-442e-a19d-c0f9b1859e83
+78afe8a9-fcaa-4f2a-8ad9-718f10e9881f,,Guizhou,Guizhou,CHC-GZ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,273e6b4f-22cf-442e-a19d-c0f9b1859e83
+f40ef648-3dbc-4f2e-b0a9-cb526dd88c80,,Hubei,Hubei,CHC-HU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,273e6b4f-22cf-442e-a19d-c0f9b1859e83
+cbabc112-bc00-402a-81ee-57e945b6c298,,Sichuan,Sichuan,CHC-SC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,273e6b4f-22cf-442e-a19d-c0f9b1859e83
+eedbd7df-cfa9-4506-91bc-8ab052183462,,Yunnan,Yunnan,CHC-YN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,273e6b4f-22cf-442e-a19d-c0f9b1859e83
+62d6672c-13a4-4df8-b40d-f996e9d8e6b0,,Hainan,Hainan,CHH-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,16977fc9-9309-4609-9776-13df4a12282e
+b393d5ec-4865-45b0-b688-22d88bac137b,,Nei Mongol,Nei Mongol,CHI-NM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,719429fb-8f31-4bec-875e-ca5df76490ad
+629f51dd-27a1-49ac-9253-fa5ca793fdf0,,Ningxia,Ningxia,CHI-NX,,160ff2c8-9bfc-49c2-9afd-049c21a91695,719429fb-8f31-4bec-875e-ca5df76490ad
+93840e4a-d5de-468d-a35a-629430192791,,Heilongjiang,Heilongjiang,CHM-HJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,357360e8-2631-4f93-bc07-71e589cab7bb
+ac40926b-a478-48bb-8719-13119b3b2bcd,,Jilin,Jilin,CHM-JL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,357360e8-2631-4f93-bc07-71e589cab7bb
+a6cabaff-16b5-4207-878a-a4bf70260e83,,Liaoning,Liaoning,CHM-LN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,357360e8-2631-4f93-bc07-71e589cab7bb
+0dd6f4f6-2d38-41fa-8ae1-6689bae0638a,,Beijing,Beijing,CHN-BJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+ea148213-215b-4548-a393-f472b39dc6fd,,Gansu,Gansu,CHN-GS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+2982aae9-e60f-4aed-ada1-29968277af2d,,Hebei,Hebei,CHN-HB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+96471c82-c993-4609-a272-f4bb7df1158f,,Shaanxi,Shaanxi,CHN-SA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+97ee7fee-940a-48fd-8d3a-42edb21b7591,,Shandong,Shandong,CHN-SD,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+a0fac021-61c4-44d2-ac7e-d4d9a5c7927d,,Shanxi,Shanxi,CHN-SX,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+7b1cec1a-739e-437b-bf7b-bfde1b71828f,,Tianjin,Tianjin,CHN-TJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8d75b680-9d66-4e82-b20a-9435ac4eeab5
+88dda871-eef1-4e00-b96d-7490703de84d,,Qinghai,Qinghai,CHQ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4b95d239-1c7d-45bd-87d0-c2db25f4d0b8
+5ce6089a-9212-4cbc-b42c-5b1197043c86,,Anhui,Anhui,CHS-AH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+b1650734-9e24-4409-9dd3-8cb5f206d0ca,,Fujian,Fujian,CHS-FJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+599579c2-1e1a-4668-8bd6-1dabce3282d9,,Guangdong,Guangdong,CHS-GD,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+0a662d74-ecb7-4bb0-a458-2442612f4df5,,Guangxi,Guangxi,CHS-GX,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+76f0b8a6-edc1-43c4-8fc8-fbfbca101fee,,Henan,Henan,CHS-HE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+f0463996-504b-4398-a3bd-21b5afc9a736,,Hong Kong,Hong Kong,CHS-HK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+de638bfb-9703-491c-a66f-0113846a56b8,,Hunan,Hunan,CHS-HN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+4292f645-5741-49af-a747-38b36e91ff8d,,Jiangsu,Jiangsu,CHS-JS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+a7cf6e57-c704-4d96-9c6d-3fb1eaf474e3,,Jiangxi,Jiangxi,CHS-JX,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+a40f5ee5-a595-46de-8b93-506cc61a30d7,,Kin-Men,Kin-Men,CHS-KI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+70877ae8-f708-4624-9caa-db789f5d26c2,,Macau,Macau,CHS-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+f2a0c8a0-b869-463d-8db1-942b73f7df64,,Ma-tsu-Pai-chúan,Ma-tsu-Pai-chúan,CHS-MP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+21162d82-eacf-4a45-99d8-19a32badad8e,,Shanghai,Shanghai,CHS-SH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+a3252a2b-1210-466b-8683-472fda15d50c,,Zhejiang,Zhejiang,CHS-ZJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9be3140-41ed-4f3b-85d2-883bee63b4a7
+fce7c291-a555-434d-a8e0-e06140bbaecf,,Tibet,Tibet,CHT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e626ea99-8e46-49c6-8c1a-96b234dffd47
+96433579-0c5f-4d67-9857-dd6ab34895c0,,Xinjiang,Xinjiang,CHX-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7f8d9b4d-a1d3-4b74-9fa9-de45fd154db4
+89843ff7-05f0-455e-b97f-b22312964255,,Cocos (Keeling) Is.,Cocos (Keeling) Is.,CKI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f17f271c-f95b-4db9-aa1f-31db1b99d79c
+18573a20-1b4d-41a7-995d-7ac2f68abff7,,Biobío,Biobío,CLC-BI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+51f7efdb-4632-4628-a395-6cc57047453e,,Coquimbo,Coquimbo,CLC-CO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+9be63577-5283-4bcb-9739-c0f560594d54,,La Araucania,La Araucania,CLC-LA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+dc6dd81a-cdb5-4c5c-9275-319ec6c535fd,,Maule,Maule,CLC-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+b43a3d93-f3ad-427b-a462-7500d8a615e9,,O'Higgins,O'Higgins,CLC-OH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+a94636e2-6490-4011-9bfa-efa3a3af0972,,Santiago,Santiago,CLC-SA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+b9c97d9c-8cf9-408e-a391-8d6cb0ba72a3,,Valparaíso,Valparaíso,CLC-VA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0d9eb53-dccf-4963-b0d7-49c93cc9061b
+eca8bb03-8336-4396-8e0b-2d98c5a62a32,,Colombia,Colombia,CLM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8e7961af-b0bd-4959-8084-917e0e8e9b9a
+beac5efa-f57e-47ea-8772-7f9541fa8765,,Antofagasta,Antofagasta,CLN-AN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,03e4f2d6-3b1b-4b0c-8d64-ac81e02d6f1f
+3307fceb-69ff-4a20-88be-6d34ae89409d,,Atacama,Atacama,CLN-AT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,03e4f2d6-3b1b-4b0c-8d64-ac81e02d6f1f
+5ea2ef41-e327-4d59-9c92-760d9073646e,,Tarapaca,Tarapaca,CLN-TA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,03e4f2d6-3b1b-4b0c-8d64-ac81e02d6f1f
+9a63d984-b405-4bc0-8e08-dbb79109782d,,Aisén,Aisén,CLS-AI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df168714-503f-4fd9-8813-01f23417c0c2
+2f978481-3921-4173-8fe7-4b51c84e6649,,Los Lagos,Los Lagos,CLS-LL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df168714-503f-4fd9-8813-01f23417c0c2
+0a6165e5-31e5-4323-9d92-b25821194fcd,,Magellanes,Magellanes,CLS-MG,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df168714-503f-4fd9-8813-01f23417c0c2
+6db5c74f-a5d3-423d-a678-7112be81f963,,Cameroon,Cameroon,CMN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,62c845f8-3d65-413b-a311-5bc9d6789a03
+275bb1e9-72de-4345-a7f6-c2e473ad850b,,Connecticut,Connecticut,CNT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df0da18b-bb19-4e4a-a0af-eab75abde998
+336518de-0645-4454-b730-dd7099d00fdd,,Canary Is.,Canary Is.,CNY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,792e48a0-9b18-487a-b6da-33cbbb265873
+1320f903-d644-40b9-8ee2-275dfa384ad1,,Colorado,Colorado,COL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,da98e966-4250-46ac-8624-c91dc05338dc
+0a57ef70-bea5-40cb-a8e7-481478da5d06,,Comoros,Comoros,COM-CO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3a02ef4b-f5df-4bd4-93c5-2ec4a24a8852
+99fe5d0f-56c9-4e18-b429-0971b8f12b25,,Mayotte,Mayotte,COM-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3a02ef4b-f5df-4bd4-93c5-2ec4a24a8852
+67acff9a-257d-469c-8b17-607fdbceaa2e,,Congo,Congo,CON-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,da2f536b-6104-40b6-b198-b803118a1314
+318423a0-3cd7-47f4-8452-2eca950092b3,,Cook Is.,Cook Is.,COO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c8f06fd3-616a-4d44-b57e-0a49a4d4c609
+a7570889-39a4-4bb8-b28f-77bd153d44fa,,Corse,Corse,COR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,91aaed46-a4a9-47dd-9bb7-8d254b3963cb
+c839afa6-1db2-4b48-9d79-250fcfed9f89,,Costa Rica,Costa Rica,COS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bd243fa3-cd56-45c7-a445-1553e6e5e14d
+70cf656c-21c0-4c67-a737-2331539d430f,,Clipperton I.,Clipperton I.,CPI-CL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8068a150-c71c-4e67-9e26-70c714bf6615
+3af035d9-de46-42a6-af98-37b8bfcb5768,,Cocos I.,Cocos I.,CPI-CO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8068a150-c71c-4e67-9e26-70c714bf6615
+f0775631-b985-48f9-847c-990f6d921c46,,Malpelo I.,Malpelo I.,CPI-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8068a150-c71c-4e67-9e26-70c714bf6615
+2466ddca-9662-42ea-97ea-85b0405f8155,,Eastern Cape Province,Eastern Cape Province,CPP-EC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c755ce8e-3ad3-4e0e-bbff-7d108a933c58
+70fb4828-7756-4f13-8813-4da957f6c424,,Northern Cape Province,Northern Cape Province,CPP-NC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c755ce8e-3ad3-4e0e-bbff-7d108a933c58
+b3cf874d-745b-4574-8887-6c2cbe8e6188,,Western Cape Province,Western Cape Province,CPP-WC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c755ce8e-3ad3-4e0e-bbff-7d108a933c58
+1a6e7f6b-824d-40e0-846c-895855640500,,Caprivi Strip,Caprivi Strip,CPV-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,546fc561-10b0-41f4-995f-cc1fe9fd8164
+98cd8286-032a-49db-8034-0d52aa6be72d,,Micronesia Federated States,Micronesia Federated States,CRL-MF,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e37f35fc-53df-41f6-a510-af9cefd5e921
+387ee427-88af-4791-8357-335b8d75839f,,Palau,Palau,CRL-PA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e37f35fc-53df-41f6-a510-af9cefd5e921
+c2c92549-0f3d-4f96-9950-6503bf1d45e1,,Crozet Is.,Crozet Is.,CRZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c6582f9f-a0bb-4f76-a8c3-0562b78e723d
+94d17555-90d0-43b6-92fa-a4ec0f776833,,Chita,Chita,CTA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,96886299-b8f5-4a44-abd7-3ee47c68bbe3
+de4e0b06-a751-4dfa-b838-504204213780,,Chatham Is.,Chatham Is.,CTM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,aadc5ca0-cf8e-48e5-a12e-8d34e6c7e4cb
+66ce6bb4-b48e-483b-aed1-62646e9c80b8,,Cuba,Cuba,CUB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,12c3e2c6-432e-4087-bfe2-07c29df03c47
+c5773847-3eb1-4a6a-ab97-30ea78651205,,Cape Verde,Cape Verde,CVI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,dccd00ae-9112-4c80-9591-09bd7ff7d4fd
+9d447b51-e363-4dde-ae40-84c55679983c,,Cyprus,Cyprus,CYP-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,da4cce9a-439b-4cc4-8073-85dc75bae169
+cd9612b2-1a27-4895-966c-59fcfe7c49d2,,Czech Republic,Czech Republic,CZE-CZ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,234d24aa-963d-441e-afdc-a1cca6e85787
+d4170b17-ebe4-4fb4-b5b1-3b8da07ae683,,Slovakia,Slovakia,CZE-SK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,234d24aa-963d-441e-afdc-a1cca6e85787
+2040cd9f-3fb0-4b47-8984-5a72fbfbcad9,,Delaware,Delaware,DEL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,104ef871-3d5a-4e22-8ab3-05a4adec4641
+f818c97e-fd61-42fe-9d75-d433f8cb349c,,Denmark,Denmark,DEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2f755c36-e953-4f4a-bf9d-3128ec03ace8
+f8ea3076-0f5c-46aa-a8a3-2669e9ccc522,,Djibouti,Djibouti,DJI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,04ec3382-0431-4430-afe8-1fc1c8ce38da
+f8265093-496d-4e00-b732-460f0ee2fca5,,Dominican Republic,Dominican Republic,DOM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,54d5b1d5-295a-4206-beaf-f56b1b3385a1
+5efab129-f8dc-4029-bdc3-5fbe3aaf71dc,,Desventurados Is.,Desventurados Is.,DSV-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,edf5e728-8e45-434d-ad82-50b39e2af896
+352c212b-c0bc-4294-b87e-c3d8fdbed724,,East Aegean Is.,East Aegean Is.,EAI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3f0f9e9a-c65f-41c3-9f50-88393d43b48b
+80b8d861-0e07-489d-9977-970a7e6d832a,,Easter Is.,Easter Is.,EAS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2288924d-3380-43b4-9787-143953c3d505
+4545d099-32e6-44f8-bce9-8c29df82cde7,,Ecuador,Ecuador,ECU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6de5f860-b77b-4a61-bbfe-b6718108cea0
+6e2fd22b-7fcd-40d1-bc6f-cdc593b182ac,,Egypt,Egypt,EGY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9587540f-c501-47ad-b5bc-48e4c18eede4
+babf2ddb-eba1-488a-bea8-21b098ddb315,,Arunachal Pradesh,Arunachal Pradesh,EHM-AP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,edd055d7-76ea-4185-94da-3b44c4e03bd4
+6a91ae3b-14af-4de6-8a12-be93bbd9166a,,Bhutan,Bhutan,EHM-BH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,edd055d7-76ea-4185-94da-3b44c4e03bd4
+6ac84372-1882-4bc0-8154-8674ba925f10,,Darjiling,Darjiling,EHM-DJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,edd055d7-76ea-4185-94da-3b44c4e03bd4
+c086fb8d-ee90-404d-8bca-9412aaa6b0d9,,Sikkim,Sikkim,EHM-SI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,edd055d7-76ea-4185-94da-3b44c4e03bd4
+df21cb0e-ac98-4534-a603-0b18ba6059d4,,El Salvador,El Salvador,ELS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,76604a11-1668-480f-9f29-498ff1b205fa
+a561767e-348c-46cd-9942-264d41fb67b7,,Equatorial Guinea,Equatorial Guinea,EQG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ccc35725-3334-4256-a0be-afc30df943f3
+001304b9-c267-4dcc-be52-16bbd936ea1f,,Eritrea,Eritrea,ERI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,44651d37-9ad2-430a-be6b-3e7359f2da8a
+44a6ee56-767a-463f-b8ad-e924f0d2f3e5,,Ethiopia,Ethiopia,ETH-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,66305c99-ffe4-4ecc-8d2e-8d1efe38c9ea
+e2af7b11-9179-4cac-ba35-65e8ec9053ae,,Falkland Is.,Falkland Is.,FAL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5f0cfd48-9afd-4704-8e5e-e58b377a5302
+de779b91-732f-4aee-ace6-5647b1787509,,Fiji,Fiji,FIJ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,09db7449-0d4a-4aed-911f-f88a5c57f93f
+f71525d8-0913-4a5c-97f1-a8374a8843da,,Finland,Finland,FIN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bd2d1a58-6e2f-4501-8d94-4b01615cf8d2
+c21e91c8-ba91-45ac-81fd-cd13452911d1,,Florida,Florida,FLA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,67fb45d0-3a51-48ba-875a-7694fb566f28
+08eb9360-bdfc-42cc-9c35-655cdc018f58,,Føroyar,Føroyar,FOR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,54e966a4-9a64-451c-9329-e2a45080f365
+7be07113-7c04-4fb2-9e63-6759bcc39a7a,,Channel Is.,Channel Is.,FRA-CI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,37529096-5d47-4926-8682-4fa8311d0ef4
+41c5129a-3465-42cc-b016-59ab9ffad71a,,France,France,FRA-FR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,37529096-5d47-4926-8682-4fa8311d0ef4
+d4d02666-40a0-45c3-894b-482f64b54f69,,Monaco,Monaco,FRA-MO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,37529096-5d47-4926-8682-4fa8311d0ef4
+0e3306bd-6f2d-4f31-be3f-7c97648352a9,,French Guiana,French Guiana,FRG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,84255b9c-ebd8-4f25-a18e-fb1e9343d5ba
+dd5be3e5-e7ff-48be-b1f3-32f93996bd38,,Gabon,Gabon,GAB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,1ec3e5c2-bdd8-4656-aa8a-282966667c68
+3489394e-a20c-4e24-93c8-869d54f522ca,,Galápagos,Galápagos,GAL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,108b8834-f38c-478c-9e5a-19e0926baaeb
+92389b5b-067c-4c8f-a5b7-2bf4ab5df860,,"Gambia, The","Gambia, The",GAM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7147ccee-4f7c-40b7-a406-63174617fbf8
+bdec0502-18da-47fa-b101-74fb3e2fa52a,,Georgia,Georgia,GEO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5b8e5984-02da-47b3-b76a-3dec7abb75d4
+2dabc6d7-7e2a-4adc-9c9c-7244d4099fd5,,Germany,Germany,GER-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7b7c2db5-aa44-4302-bdec-6556fd74b0b9
+5df6d614-b1f7-41b1-b430-b74692f5abd6,,Annobón,Annobón,GGI-AN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,404795df-e4c2-4c01-944c-2b8f7a900595
+47023991-ff3f-499b-903b-97f9d9d9aaa9,,Bioko,Bioko,GGI-BI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,404795df-e4c2-4c01-944c-2b8f7a900595
+d73cc73e-5e7e-43b5-9e15-d791b4f86f2f,,Principe,Principe,GGI-PR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,404795df-e4c2-4c01-944c-2b8f7a900595
+c64e07cc-0a58-44b3-ac91-c216d1b91c1f,,São Tomé,São Tomé,GGI-ST,,160ff2c8-9bfc-49c2-9afd-049c21a91695,404795df-e4c2-4c01-944c-2b8f7a900595
+7987d14f-5346-4a6c-98ca-b739ccc1470b,,Ghana,Ghana,GHA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,36f2a8a1-af75-4dd2-8376-a4535c6bb697
+632ccb5f-6864-4f2d-a764-5e963cab6de9,,Gilbert Is.,Gilbert Is.,GIL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e724a05c-c53c-427c-b42c-32ca323d13f9
+7dd4d6fb-ecd3-43c6-a7ef-1921162d107c,,Guinea-Bissau,Guinea-Bissau,GNB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5f551283-af06-40cb-9f3f-3cccfb39d31b
+3a27e7e5-16ea-47db-b783-9f9e60bbd2d4,,Greenland,Greenland,GNL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f089837d-5d85-4e3c-8324-7111ae020b1d
+b7fc1c91-c4a3-487d-937e-cc8f763b717a,,Great Britain,Great Britain,GRB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,efdb3684-9f82-4d9d-ae83-f262a4156be2
+60a7d818-1910-4a95-9620-8d83592f9bd8,,Greece,Greece,GRC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,65c9b84e-dd19-4842-816a-e4e7a4b5143f
+e21b5be6-1492-4123-abfe-d45fd5136b25,,Bahrain,Bahrain,GST-BA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8f2551f2-67fa-46fc-8a81-1de160171798
+ed84cd13-29d1-4348-bd36-ef4cb2d3b9a6,,Qatar,Qatar,GST-QA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8f2551f2-67fa-46fc-8a81-1de160171798
+78a1681f-cbcd-4d5c-ad1c-b4b1dc30e9cb,,United Arab Emirates,United Arab Emirates,GST-UA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8f2551f2-67fa-46fc-8a81-1de160171798
+ae6f3667-5ee6-42b0-8af9-da33af7e22a4,,Guatemala,Guatemala,GUA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,baa26afa-8dac-4a7b-b5b9-fca460ac3958
+1e8c8b3b-b91a-4b4e-b445-9a5ac606b502,,Guinea,Guinea,GUI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a742ebff-609b-4168-a85b-1825f4da98b4
+97ab4587-7677-4cb2-b198-0ea99a25a694,,Guyana,Guyana,GUY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4faf248e-8a45-42c8-b5f3-94b34b4e3794
+d6af812a-d9fd-46ab-91ca-595c2cdacfa0,,Haiti,Haiti,HAI-HA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,460e57fa-9465-47bd-bf6e-c46dd29d6cdd
+62e2f64a-d0dd-4a9b-9214-59ca95ffac30,,Navassa I.,Navassa I.,HAI-NI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,460e57fa-9465-47bd-bf6e-c46dd29d6cdd
+b5ccde93-c0fb-4b4c-a3b1-2a87829e84da,,Hawaiian Is.,Hawaiian Is.,HAW-HI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bda3f9fb-30cf-43fd-8d17-5e4d69545ed5
+3cc53cea-2323-4914-a663-0611c0636f13,,Johnston I.,Johnston I.,HAW-JI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bda3f9fb-30cf-43fd-8d17-5e4d69545ed5
+d3cb6808-e47d-4d10-a339-c9a93684d342,,Midway Is.,Midway Is.,HAW-MI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bda3f9fb-30cf-43fd-8d17-5e4d69545ed5
+c605878a-8b5f-454e-abfd-c2f9c77002ec,,Howland-Baker Is.,Howland-Baker Is.,HBI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,37f6aaf2-a6bb-4f4c-a4ad-aa25074babbf
+3fea8c26-1fab-4b57-a89b-ec7ef2e532d2,,Heard-McDonald Is.,Heard-McDonald Is.,HMD-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e6e00b4e-5417-46aa-b2ed-b123e4a94fc7
+d3d2765d-d059-4713-9123-baf8ca074a32,,Honduras,Honduras,HON-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4e22114e-2990-429d-83af-252d428a11e8
+6f8dc312-e77e-4935-8a76-f24969bc7078,,Hungary,Hungary,HUN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,93ab78d4-4c7e-4316-84f1-4dccbc70d71f
+993ec1df-8c6b-4f75-a66c-738ce9d71957,,Iceland,Iceland,ICE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,836cae07-03f0-4c1e-ac67-86c6f6457ac9
+3887f38f-ae38-4ed8-b2a9-41f6b78a2d43,,Idaho,Idaho,IDA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,307e943a-1e0b-48e8-b4e1-34ebd67a1efe
+9acf4863-3eac-4859-aea8-dc79134b33a8,,Illinois,Illinois,ILL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3864694a-e0d7-40f5-b9db-0eecde047e9e
+a9931f3e-e059-4b32-a666-23c10c714407,,Andhra Pradesh,Andhra Pradesh,IND-AP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+d8d51792-9a41-44f8-bffb-f22ebaef3754,,Bihar,Bihar,IND-BI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+042ab3ee-9bcc-4925-88cf-35137e029b86,,Chandigarh,Chandigarh,IND-CH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+104d84f7-716c-44a2-a174-60c01ce0f9af,,Chattisgarh,Chattisgarh,IND-CT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+d5106e1d-40dc-405e-ab8a-5a854ebd1f86,,Dadra-Nagar-Haveli,Dadra-Nagar-Haveli,IND-DD,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+66a7b6f2-da99-47b2-a603-eb6ddae91d50,,Delhi,Delhi,IND-DE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+f52dc5be-6b3c-440a-9089-f3eaeed5c857,,Diu,Diu,IND-DI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+e81dffef-c1db-4c3d-8dbb-dec57dc40eab,,Daman,Daman,IND-DM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+ae4e8d1a-4495-4d6e-bfbb-e28256349d85,,Goa,Goa,IND-GO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+8a858374-81e4-4585-ae5f-4cd618400fd9,,Gujarat,Gujarat,IND-GU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+ca200baf-24bd-4dfe-bdc9-4cd2869f0cea,,Haryana,Haryana,IND-HA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+4fed0fd3-8648-4104-88dc-b1133b5b5227,,Jharkhand,Jharkhand,IND-JK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+0bf52a90-8f06-4881-b90b-c940522e264c,,Kerala,Kerala,IND-KE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+ba304903-cad7-45e9-9955-501a7aa3fb54,,Karaikal,Karaikal,IND-KL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+f82fcc4b-1e50-4cd3-ace5-6c3bffdfb251,,Karnataka,Karnataka,IND-KT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+c2662a7d-e26a-447e-a130-22b39bef2f80,,Mahé,Mahé,IND-MH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+1fdd0e8a-0f7c-440a-9982-b5d97eb98f5f,,Madhya Pradesh,Madhya Pradesh,IND-MP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+f84c153b-360b-472d-a641-806c4200af35,,Maharashtra,Maharashtra,IND-MR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+ed5512f2-f762-422d-aaf5-57aa813a22df,,Orissa,Orissa,IND-OR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+c11458c6-81d4-4cb9-b800-74097c655cc8,,Pondicherry,Pondicherry,IND-PO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+94ede15d-c1b6-466e-af32-19dbdf090da3,,Punjab,Punjab,IND-PU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+0e1f785c-dfff-4137-86bd-5c4047894d8e,,Rajasthan,Rajasthan,IND-RA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+a4fb4d07-4c7a-4ce6-a928-131d0a34db17,,Tamil Nadu,Tamil Nadu,IND-TN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+54444bfd-cdc4-4043-9ebf-14d2b141395f,,Uttar Pradesh,Uttar Pradesh,IND-UP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+7a97e38a-1e5d-4e6d-91d2-ec9f6364cc4c,,West Bengal,West Bengal,IND-WB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+b287bb04-2d21-405b-bc93-bd207b38bd36,,Yanam,Yanam,IND-YA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,235ff30d-2a25-4e96-b155-0fc0d08ec685
+6ef83660-69ed-477c-b2ef-639852b104b1,,Indiana,Indiana,INI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,51a2af3d-7a01-41a8-be18-7896eaf147ff
+6e7245aa-e3cd-4251-90ee-a3f85aede88e,,Iowa,Iowa,IOW-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e480fd06-ec60-4a0f-81fd-faf832b06715
+a2e12f91-a168-492e-aaaf-22aae4cd2397,,Ireland,Ireland,IRE-IR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a9eead79-a85b-462b-a292-c0fb2929a3e5
+419e3ef7-c1dc-47af-83f7-2b05c9ebae4c,,Northern Ireland,Northern Ireland,IRE-NI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a9eead79-a85b-462b-a292-c0fb2929a3e5
+bb16684c-0638-4831-99df-f9a2dd7b7e6b,,Irkutsk,Irkutsk,IRK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,18f7a5a9-739a-44bd-925c-68609d1c1835
+f46d2d84-0387-41dd-9e77-28f9d7d06f16,,Iran,Iran,IRN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,33a2472d-d86b-45b1-83c0-e4cd78fb4915
+497a208e-9337-4708-9f3a-17efef2f33a8,,Iraq,Iraq,IRQ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9e765dbf-aebb-47af-a193-a849f9daa63b
+d9ef6446-b38f-4176-874c-b90b7fe0458b,,Italy,Italy,ITA-IT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,16444bc5-a042-4cd8-9d81-0eefd7925894
+a97d4f6b-7f86-4125-b3ff-f7c3ceb0f495,,San Marino,San Marino,ITA-SM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,16444bc5-a042-4cd8-9d81-0eefd7925894
+0fcb6ed1-fb5f-4360-9ced-1fac46bdc8bb,,Vatican City,Vatican City,ITA-VC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,16444bc5-a042-4cd8-9d81-0eefd7925894
+c36d5a55-033c-4f34-bbea-d435304ceeba,,Ivory Coast,Ivory Coast,IVO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c9c406ee-0747-45b0-bbe7-e3045d468b5d
+6c30ac35-c486-4e72-a48b-4987585c9fde,,Jamaica,Jamaica,JAM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6e72dede-e94b-4051-bf96-348add8135e6
+72a3ca2e-6c7d-451e-aa15-c7cd0e86a370,,Hokkaido,Hokkaido,JAP-HK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5446b13f-0cdd-4f60-9f17-444606f7678d
+11192c4f-e0c9-4f28-8c6d-064c9f694bb0,,Honshu,Honshu,JAP-HN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5446b13f-0cdd-4f60-9f17-444606f7678d
+264f2319-0749-47b8-9a39-17c2a57189d0,,Kyushu,Kyushu,JAP-KY,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5446b13f-0cdd-4f60-9f17-444606f7678d
+494fb115-9cf0-4e34-9fed-612b64e3224e,,Shikoku,Shikoku,JAP-SH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5446b13f-0cdd-4f60-9f17-444606f7678d
+36b93871-0bee-4380-b47e-56a843ce6aa3,,Jawa,Jawa,JAW-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,32708172-de90-418a-8637-1b29ca8ff22b
+9fd8ad23-d932-4cdc-8822-029685073c5c,,Juan Fernández Is.,Juan Fernández Is.,JNF-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,863a2c93-af7d-46fa-b8ec-9b081c972caa
+0cf7c7c4-fa55-41e2-8c25-b9a5fede449b,,Kamchatka,Kamchatka,KAM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c39e7ff9-2b52-4e54-82c4-de836ab94f32
+e1120ec1-7ee1-475e-b880-f66631666f7a,,Kansas,Kansas,KAN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,57aa7e14-0e06-45ba-87b1-5f78c022134e
+2cc9b611-f48a-4a21-b28c-f0a580b6bf06,,Kazakhstan,Kazakhstan,KAZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8c815ecb-c0ac-49dc-bf9a-6af9fded206f
+8452f319-86c9-4065-88e4-7adf66e945fd,,Kerguelen,Kerguelen,KEG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ae1a9ce9-8d54-48c8-bdc8-4ad49df5e2b5
+742abf05-8d1c-4939-b97d-927b17341415,,Kenya,Kenya,KEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a7947714-fb33-4aca-80ce-f418f8b89f55
+a7a53d93-6a43-4c0c-b9c5-f832f125c5bf,,Kermadec Is.,Kermadec Is.,KER-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,815a67da-1a22-45d3-bef3-65333795b509
+18e391d2-3a8c-4efd-83e5-605dc178b7eb,,Kirgizistan,Kirgizistan,KGZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c0f1305e-95b1-4501-9bc9-90c5c3b800b5
+84af6761-0b47-4ff6-bf66-7b03287ac0cf,,Khabarovsk,Khabarovsk,KHA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,722f6cba-f21a-4f4d-8151-173d3377fa04
+dd63dd30-16a9-46c4-a6a9-67dc83eaf2aa,,North Korea,North Korea,KOR-NK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,09dc1f07-569c-4101-8ff1-0ae1e9046cfe
+59f4887a-6724-42b5-af22-c9e7b009891f,,South Korea,South Korea,KOR-SK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,09dc1f07-569c-4101-8ff1-0ae1e9046cfe
+b69b568c-b8b5-49f3-8d1e-84a737d928ab,,Krasnoyarsk,Krasnoyarsk,KRA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,05eb3ea9-cc10-4704-9b77-17ce57dca797
+ce577904-25e7-4172-b15d-eb5e7469167f,,Kriti,Kriti,KRI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,eb0ecf71-52c9-420d-8b04-bd5f619a606c
+f3253f0d-05ce-41d7-ae5a-10fa60c7f547,,Krym,Krym,KRY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,690bd6d6-1132-4428-8bd4-a260c8b402b5
+31b3c605-0f49-4d73-b018-c86e4ca4de50,,Kentucky,Kentucky,KTY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b839ad86-c11d-4e2b-b94c-5b8e56ec0190
+5150bbcf-0c6f-4010-973a-e9856bcfc396,,Kuril Is.,Kuril Is.,KUR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b69dc332-a200-4185-90d6-56dee024f179
+df1b04c7-f978-4ad4-8bbf-618aed7e44a9,,Kuwait,Kuwait,KUW-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7161a2d8-cb8f-4dc5-9521-44daf5dc0a64
+dd5fb4eb-cf48-489f-9786-71600fd7517e,,Kazan-retto,Kazan-retto,KZN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7697395d-bece-4d42-b5a9-af6d7e29875d
+928fc96c-6ea8-4679-943c-37bdad233324,,Labrador,Labrador,LAB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6828f3aa-613f-413d-b1f5-5f742b3ced2c
+bd72f665-a9d0-4928-a293-bbb1d7f31fdf,,Laos,Laos,LAO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,db3cb12f-d198-47f5-9ccf-da63e5325787
+fc6dfd5e-43cf-47c5-a2a1-bad849a452f9,,Liberia,Liberia,LBR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,af7dc765-068d-4748-8dbd-f0dbf606285e
+2173fe0b-311b-440e-b4df-26acd1c70ca7,,Lebanon,Lebanon,LBS-LB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3cdf4b9f-ab0d-475c-a8ad-abaf50b6bc51
+aa80988d-a00b-4cf3-8c63-feb52ac85a81,,Syria,Syria,LBS-SY,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3cdf4b9f-ab0d-475c-a8ad-abaf50b6bc51
+8b943f73-8988-43a8-88ba-3b048eea2827,,Libya,Libya,LBY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5de71808-0572-4513-ac0f-f21216132b99
+e062678f-23ba-4bad-bc46-c40e704422c4,,Laccadive Is.,Laccadive Is.,LDV-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ce0b678a-f762-4e81-af58-0bce22604dec
+1d3fa83d-a348-4b47-b2fc-3105e476aca5,,Antigua-Barbuda,Antigua-Barbuda,LEE-AB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+070afba6-c7e1-4acc-9139-ebbdca9cd73f,,Anguilla,Anguilla,LEE-AG,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+e7bb3a9d-2313-42ea-8929-a704bdda09ab,,Aves I.,Aves I.,LEE-AV,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+9a51f2c5-3269-41c0-8fba-faaee4271bb5,,British Virgin Is.,British Virgin Is.,LEE-BV,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+5608fea2-e246-4455-bb39-fd8c55ea411d,,Guadeloupe,Guadeloupe,LEE-GU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+5528904f-f645-42a0-9602-13a65c7073ad,,Montserrat,Montserrat,LEE-MO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+570bef0e-fbf4-47bc-801d-2245d592168f,,Netherlands Leeward Is.,Netherlands Leeward Is.,LEE-NL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+e294e779-8bdf-4c2e-8d78-46abd05453ca,,St.Kitts-Nevis,St.Kitts-Nevis,LEE-SK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+aa936910-fa3d-4139-9ab4-a82b7e8988d1,,St.Martin-St.Barthélémy,St.Martin-St.Barthélémy,LEE-SM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+cc6a1ace-bd07-4e38-80d5-5b7d1d9067fd,,Virgin Is.,Virgin Is.,LEE-VI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3429522d-f0c1-47ee-a2ed-5e7b11027b6a
+aa782397-e924-4189-b771-35df76f770c2,,Lesotho,Lesotho,LES-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ec62407d-d0e1-4885-aa58-947ea319ce4c
+34fd6efd-9061-48c5-946b-bd114a418723,,Kiribati Line Is.,Kiribati Line Is.,LIN-KI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c2537c9b-5f5f-4e49-975b-9098aa696232
+6e72bebe-6709-4054-be0d-90bcdcffe272,,U.S. Line Is.,U.S. Line Is.,LIN-US,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c2537c9b-5f5f-4e49-975b-9098aa696232
+b7660ed9-e18b-4014-b0bf-efe0684ea878,,Louisiana,Louisiana,LOU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ceaadd5d-0a56-4297-a583-a887d104bb68
+3cc15dc7-bc55-4a9b-85af-e1eb733ad845,,Bali,Bali,LSI-BA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2ddb5919-9b24-4429-b1b5-5b109ce32916
+f2b95c95-199c-4627-ab18-3659b03033b8,,East Timor,East Timor,LSI-ET,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2ddb5919-9b24-4429-b1b5-5b109ce32916
+d2c7fdb0-4542-4a56-84a0-e2ab9818a145,,Lesser Sunda Is.,Lesser Sunda Is.,LSI-LS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2ddb5919-9b24-4429-b1b5-5b109ce32916
+0a248a86-bf96-4af5-b95a-b84aae5a59b7,,Magadan,Magadan,MAG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f9516ee3-c0d5-4d7c-bdb2-18629044c015
+300fac4e-e2bd-42e6-88c6-26c14cb053e0,,Maine,Maine,MAI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df0584e0-e291-4bbb-8f31-5dec7f8f8c11
+6a0598a7-5460-4c78-bf2f-91ebb688e431,,Manitoba,Manitoba,MAN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,af20dad3-d152-4b50-b862-60c01da19aa5
+a7e70b81-0202-4147-b189-f37a6eb1dfb6,,Macquarie Is.,Macquarie Is.,MAQ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8082a407-d26a-4f8f-b5ca-2d3fb00b5086
+b7605e8e-a102-465e-9143-864d3512ff9c,,Massachusetts,Massachusetts,MAS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7173ffcc-d91b-4c15-a563-b1c69342945f
+94a49266-6be8-457d-8fab-50c8c9a27d65,,Mauritius,Mauritius,MAU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,81837e67-e449-4434-b088-fa849c434344
+63a0bcf3-ae45-4e54-8cd7-8f37b1745319,,Mozambique Channel Is.,Mozambique Channel Is.,MCI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4340ff7b-d1ba-4d0e-8857-3cf460886615
+7d8b6b44-1010-4cb6-8ccc-1e3148c9f6a7,,Marcus I.,Marcus I.,MCS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,41d2ddce-22bb-4e06-a58a-377239113436
+ec823c51-f92c-4d55-8c34-322c58b7c11b,,Madagascar,Madagascar,MDG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7442406d-0bed-4d0d-a959-b16d81c3e161
+7b9c3af8-4821-451b-ad7e-84eff39d1316,,Madeira,Madeira,MDR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c7377fb4-abb1-4afd-96fb-111cac62c8f3
+92b82e06-06f6-4f32-a2ec-f8820ba5e23f,,Maldives,Maldives,MDV-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,cd604ba0-d10b-44ac-acd9-7ec4d5370d5e
+342c8ac5-153a-4654-af25-1c829e27affa,,Michigan,Michigan,MIC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,68fd0c55-a9e2-4184-ab52-9d1702b02bb7
+fe01c101-9f13-4a4a-810a-1739da4bdc85,,Minnesota,Minnesota,MIN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,03d1211d-d056-46c1-998f-c2514826eafd
+8d0e548d-2bfd-4c1d-a0ab-2c89de3145fe,,Mali,Mali,MLI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,29e6f3e7-ffa7-403a-8051-7d18e67e7a45
+a216d4de-6a7e-4173-ade7-59fd3a96f111,,Malawi,Malawi,MLW-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a09998ce-f3a8-4496-947e-518466697e99
+9f95af33-ae9e-4031-92f7-9f79d22eecf2,,Peninsular Malaysia,Peninsular Malaysia,MLY-PM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7047b137-84f4-46b5-8b71-4469e3d75545
+5863702c-ac74-41c4-83ff-ba446140034c,,Singapore,Singapore,MLY-SI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7047b137-84f4-46b5-8b71-4469e3d75545
+b0ba9c44-74a9-41e6-b896-3b4492b5c6b0,,Montana,Montana,MNT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e8d3d3c6-c6e7-4dc6-b44a-77be24c97c42
+0ac8fc74-a081-45e5-b96d-aad367b5f48b,,Maluku,Maluku,MOL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,fef7aa18-e35b-4ec4-8ba3-ed44033a38d4
+b7124d3b-fa04-4651-9267-6a2ad2a503bc,,Mongolia,Mongolia,MON-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6b678353-a83e-44e1-92b0-c31433208f2e
+3bd32d2a-b3b8-440e-8afb-e6bd2b00c887,,Morocco,Morocco,MOR-MO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,85f6595b-c739-4a00-87a6-06dbf591d5f5
+62868cfb-b94b-40fe-9128-8d4620d36619,,Spanish North African Territories,Spanish North African Territories,MOR-SP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,85f6595b-c739-4a00-87a6-06dbf591d5f5
+2bdda236-f695-4a46-b4c5-a1041b428a85,,Mozambique,Mozambique,MOZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9ebd353e-0ab6-4185-9a9f-af92e7d11567
+80f83d1a-3f0a-4ffd-9e72-91271472ad72,,Marion-Prince Edward Is.,Marion-Prince Edward Is.,MPE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7a391925-b331-4ffe-8bf5-ba5b2439a177
+aa220148-96c0-4580-a8ff-f0ecf6a66aa8,,Guam,Guam,MRN-GU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4f854b84-2d93-4b0d-a40d-9e05be7cbae1
+2fa7b7f4-6427-49d8-87e7-107c15367df6,,Northern Marianas,Northern Marianas,MRN-NM,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4f854b84-2d93-4b0d-a40d-9e05be7cbae1
+eb68f63a-c660-490e-9c2f-d8e161cf703b,,Marquesas,Marquesas,MRQ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,77e49b33-ce39-48e8-bef5-eaa16091f2ef
+fd6c8607-20c1-436b-bd62-a425b0d7b4fd,,Marshall Is.,Marshall Is.,MRS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e4836aef-cb88-4782-8c41-aefc270a2502
+a270a0a7-4f1b-43db-9ebe-b71968ee3013,,Maryland,Maryland,MRY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,72fe14e6-5631-4079-ac95-3d62fe1c3aab
+dbd3c366-9bb8-4f38-8b52-a2f208af02ce,,Mississippi,Mississippi,MSI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3c90742c-f8bf-4344-9f23-2e3b73aee064
+0e78f84c-2830-49ee-bd03-0e605ed7220f,,Missouri,Missouri,MSO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0249d5ed-e960-4efa-b66d-5f2bd15f7b1b
+e4f11abe-181d-4c15-b37a-28cec84d5622,,Mauritania,Mauritania,MTN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,548abebd-9668-481e-a2c5-a93a600fedb9
+565751f1-613e-4ddc-bfbb-4b54f2267971,,Mexico Distrito Federal,Mexico Distrito Federal,MXC-DF,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ebeb5340-2838-4b72-99b1-616e8160d0ca
+006d80e0-d30c-4151-97c6-1551bfc4ee6a,,México State,México State,MXC-ME,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ebeb5340-2838-4b72-99b1-616e8160d0ca
+d7a02375-0f0a-4bf6-9b70-b3c6e01cf1a4,,Morelos,Morelos,MXC-MO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ebeb5340-2838-4b72-99b1-616e8160d0ca
+72ad92cb-64b7-4e71-a8a3-9a07157e9ab2,,Puebla,Puebla,MXC-PU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ebeb5340-2838-4b72-99b1-616e8160d0ca
+9e6a77a5-1b7c-4b2f-a6ef-e1ea8bdd5d6d,,Tlaxcala,Tlaxcala,MXC-TL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ebeb5340-2838-4b72-99b1-616e8160d0ca
+ed5dd795-2869-4d22-aee4-00de70b27f5a,,Aguascalientes,Aguascalientes,MXE-AG,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+d4e5a892-b9d1-499d-af26-cdc4aaadfdee,,Coahuila,Coahuila,MXE-CO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+4fa2b3d9-4bc5-405a-8c81-33cfd3b64181,,Chihuahua,Chihuahua,MXE-CU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+81ac3077-c182-4acc-9136-62dc8caaee00,,Durango,Durango,MXE-DU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+a50f3b86-2ea1-4ab3-a29b-e17859ef7bef,,Guanajuato,Guanajuato,MXE-GU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+28c68418-3220-418f-b48a-323ac65aa749,,Hidalgo,Hidalgo,MXE-HI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+fd6cd489-ac26-48e7-86be-93defbd2957b,,Nuevo León,Nuevo León,MXE-NL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+55bd3283-0fcc-4875-b47c-6182a7b1fdc9,,Querétaro,Querétaro,MXE-QU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+8d400ef1-b3a2-4abb-806c-58f442a20587,,San Luis Potosí,San Luis Potosí,MXE-SL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+9c6bc35f-2da8-419f-a7bf-08317e8ae0cb,,Tamaulipas,Tamaulipas,MXE-TA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+6af99608-01a6-490d-95f5-36a41bc0059f,,Zacatecas,Zacatecas,MXE-ZA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf85121c-a686-46be-ba88-f400b37b3b25
+de72ef9f-98ed-4f36-80e6-f830ec7622ca,,Veracruz,Veracruz,MXG-VC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7d3e6e07-245d-4201-a525-10802cda6dfe
+7f3f2d42-a712-4747-8344-1e99467ef434,,Guadalupe I.,Guadalupe I.,MXI-GU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,adac7ea3-9960-411b-af26-246fa85ea19c
+7d07cc5e-1a0d-4b6d-b747-4797a664d744,,Rocas Alijos,Rocas Alijos,MXI-RA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,adac7ea3-9960-411b-af26-246fa85ea19c
+6dfaa758-e76c-48cc-9c8b-08800defc8a4,,Revillagigedo Is.,Revillagigedo Is.,MXI-RG,,160ff2c8-9bfc-49c2-9afd-049c21a91695,adac7ea3-9960-411b-af26-246fa85ea19c
+5c143c06-c456-4dc1-9ce9-7745d255c237,,Baja California,Baja California,MXN-BC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,757b5d76-1d1d-4542-9c99-fa1640dce066
+ead11f6e-743e-4fc7-859c-d78acae4e88d,,Baja California Sur,Baja California Sur,MXN-BS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,757b5d76-1d1d-4542-9c99-fa1640dce066
+6e1e23de-b355-417b-8ca7-fa7ddd387a92,,Sinaloa,Sinaloa,MXN-SI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,757b5d76-1d1d-4542-9c99-fa1640dce066
+68718c56-846c-4994-ae7d-1f5cbb5c33bc,,Sonora,Sonora,MXN-SO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,757b5d76-1d1d-4542-9c99-fa1640dce066
+b2ea91ed-c667-4fd2-81ac-9df65c394cc4,,Colima,Colima,MXS-CL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde
+b1b2d3b2-fe30-47e4-96c3-e109dd39473b,,Guerrero,Guerrero,MXS-GR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde
+2b07b916-ff4c-4c73-b6df-7c893852c33b,,Jalisco,Jalisco,MXS-JA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde
+3a30f064-6491-41cd-872a-2fec5017c2dd,,Michoacán,Michoacán,MXS-MI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde
+bb3838e9-8815-42e7-9471-3f43cb014194,,Nayarit,Nayarit,MXS-NA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde
+c17bdb19-2c0d-4745-b0c7-f234a38e039d,,Oaxaca,Oaxaca,MXS-OA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5c95c7c9-29cd-4e8a-85c6-cb9ac2060dde
+47d81f12-741e-4ffe-aaa9-1fee6b2b4463,,Campeche,Campeche,MXT-CA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,602303d7-93ee-4375-9095-477aad95268a
+3a88bbee-1381-4ce6-a921-8e75d3eccaa6,,Chiapas,Chiapas,MXT-CI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,602303d7-93ee-4375-9095-477aad95268a
+e1b3c800-dde0-465e-acd8-7a155b88728b,,Quintana Roo,Quintana Roo,MXT-QR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,602303d7-93ee-4375-9095-477aad95268a
+536476da-d49c-4c90-885c-1aaf6ef033e3,,Tabasco,Tabasco,MXT-TB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,602303d7-93ee-4375-9095-477aad95268a
+1519ea7d-d7e4-48aa-9f24-00bbd744ea31,,Yucatán,Yucatán,MXT-YU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,602303d7-93ee-4375-9095-477aad95268a
+fc6ff9e5-0e21-4109-aea9-832ec8aebaf3,,Myanmar,Myanmar,MYA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e631e1d6-bdc4-4ece-a2b5-33b1eb22b069
+c9139aa6-a098-483e-be35-39c65f8d56ea,,Namibia,Namibia,NAM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,642bfe17-30c1-420c-be51-665af6a07bff
+550bb42c-37e2-4223-a00b-607348d8d5bb,,KwaZulu-Natal,KwaZulu-Natal,NAT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,da51d835-bdb4-46bd-b994-5bb9a33ff5e7
+a7efd881-26d3-4d51-8eb7-ead43374c9f4,,New Brunswick,New Brunswick,NBR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,28369e9a-251e-4735-b9b8-4271b1321808
+c0f8789f-6c3f-4af8-8391-ad990fb40965,,North Carolina,North Carolina,NCA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7a3946b0-104c-4cd2-af95-b24a4ce6d686
+1338a3d3-10c3-47ee-ab71-3c64c4ab2c78,,Nicobar Is.,Nicobar Is.,NCB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e301f2a0-2a7c-4b6a-bd86-df15ba340a5d
+d60d5797-61b2-422a-a87c-66e577474ea2,,Chechnya,Chechnya,NCS-CH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+57588bf4-3157-4fd5-bf6a-369b59a33fc6,,Dagestan,Dagestan,NCS-DA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+3bff72cd-fef9-45f6-9bdc-d16c31210427,,Ingushetiya,Ingushetiya,NCS-IN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+37dcfe51-6e78-4fa5-9d03-a0d97273bb51,,Kabardino-Balkariya,Kabardino-Balkariya,NCS-KB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+48d3d918-8591-4117-a32c-56403761db7d,,Karacheyevo-Cherkessiya,Karacheyevo-Cherkessiya,NCS-KC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+d9548675-9a6d-4f5b-9efc-d8e499971be6,,Krasnodar,Krasnodar,NCS-KR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+22cd14fa-fa0d-4859-b8d6-b583befecb89,,Severo-Osetiya,Severo-Osetiya,NCS-SO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+ec8a2502-84f0-4d70-aa55-a663475f5c6b,,Stavropol,Stavropol,NCS-ST,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08ba6204-b699-4b91-8e16-424ed62dcc84
+2286d950-3f8b-4e53-9d9d-cf0c448c6f5f,,North Dakota,North Dakota,NDA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,891381d8-cdd2-49b2-86dd-02eeaf47dc7b
+8567fe51-9c84-4f57-94ee-c7f9f2ce7e3a,,Nebraska,Nebraska,NEB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,70b98a5c-4785-4925-9325-ec92610b9117
+aca8b819-54a8-4ee4-8e22-f9839df98975,,Nepal,Nepal,NEP-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,145cb777-fd41-4ed5-b163-550784840bf7
+f1d92cb8-9bb1-48d8-b395-eafa6d4162c3,,Netherlands,Netherlands,NET-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2ef12677-0d38-4ed9-a57a-f61a968f7a63
+35be6728-3c0f-4aa6-aa2c-8e4d9e60b8fe,,Nevada,Nevada,NEV-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9bac52d4-5a10-4927-b630-b51273b9943b
+2e33a45c-c121-47e6-bd9b-cabf3d930598,,Lord Howe I.,Lord Howe I.,NFK-LH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c35e4381-1646-4632-ab6f-40c80127b490
+97c96422-31c6-4b12-b820-31818e30673d,,Norfolk I.,Norfolk I.,NFK-NI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c35e4381-1646-4632-ab6f-40c80127b490
+15bc6921-9726-49c1-978a-f927c6966ea7,,Newfoundland,Newfoundland,NFL-NE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,61e4dc79-5847-4859-8f63-fa602de5743c
+8f19cf83-7a19-42c6-8876-4d628fe24671,,St.Pierre-Miquelon,St.Pierre-Miquelon,NFL-SP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,61e4dc79-5847-4859-8f63-fa602de5743c
+7e7a213d-f8d2-4220-98ca-247ca9ab68fa,,Nigeria,Nigeria,NGA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,36cc02ea-68fc-4024-879b-df2ad7e1d500
+bb7c7af5-78ef-4197-b504-67ff1587a43d,,Niger,Niger,NGR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2fd151ae-c0c5-4653-95ef-42c4addf088b
+00fcf611-abaf-449a-a70b-79a5762e0736,,Nicaragua,Nicaragua,NIC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0cff1981-6dbb-418b-b5e5-b427e338f2c3
+521f5c71-6c4c-490b-a042-eeca1f68ceeb,,Bonaire,Bonaire,NLA-BO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5bce0bb4-a584-4e3a-bfd9-7aa876e1ef44
+4a3532c5-9d47-4d1d-ae56-2555384058e1,,Curaçao,Curaçao,NLA-CU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5bce0bb4-a584-4e3a-bfd9-7aa876e1ef44
+db3d6a93-5ffa-4803-8004-9cfe08c5ce44,,Nansei-shoto,Nansei-shoto,NNS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7a4d50ba-1b53-4ed7-8453-5ae17919df86
+57d16bae-777b-4bbb-a3b9-02b340239571,,Norway,Norway,NOR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4b2396e7-6e3d-41f8-b782-247a95d4b761
+0e5b9e48-f7c9-42ed-8baa-32cec6f13fb4,,Nauru,Nauru,NRU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,01176406-0e8f-4a43-a6e2-346f6769cd60
+e6914731-7bb6-4cdc-bd20-5f9830f921a9,,Nova Scotia,Nova Scotia,NSC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7662bec4-dc55-4483-8f37-a78d93cc8224
+ab26e107-d801-46a3-9433-7f13f767a65b,,Australian Capital Territory,Australian Capital Territory,NSW-CT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e8c18809-0ccf-4c68-9528-9925db6c55e7
+471a9abf-8230-4e75-b2ec-f12ce14736ee,,New South Wales,New South Wales,NSW-NS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e8c18809-0ccf-4c68-9528-9925db6c55e7
+178cc276-24c8-4b9b-9afa-02431a1bec6c,,Northern Territory,Northern Territory,NTA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d1c88525-0110-4f9d-a639-5b4d0009b393
+9e31a2ec-c729-4908-93fb-056321e79e34,,Niue,Niue,NUE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ec2ae973-99e6-44ba-8417-e01e729e5dab
+c316be0e-7711-4ede-b542-290ae3b8b986,,Nunavut,Nunavut,NUN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0936c6be-e397-4793-b47b-e08d992ba5d3
+4d84243b-2b9c-4de9-8510-f78875cfab41,,New Caledonia,New Caledonia,NWC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e9d6e328-6209-4d1f-94f0-61fd8592c09c
+f1a7f887-741a-427c-bbbc-4c13a8c26659,,Irian Jaya,Irian Jaya,NWG-IJ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b5abcf7d-796f-431a-bf93-b771693ccdcf
+0145c796-4ebf-4398-bad6-614a264515b4,,Papua New Guinea,Papua New Guinea,NWG-PN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b5abcf7d-796f-431a-bf93-b771693ccdcf
+bf3ee613-1c24-4cb9-9adc-4d06f9dcae33,,New Hampshire,New Hampshire,NWH-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,36d4ef65-64d3-4733-8085-9daeba3b1aed
+52627b21-09d0-49ee-995b-773bcd2d2736,,New Jersey,New Jersey,NWJ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ab3974aa-b195-4af7-8f19-b1049231ed4f
+f3bc6a47-5caf-410d-b418-8a48f3632c38,,New Mexico,New Mexico,NWM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3a0a1cc3-8a71-43fb-86fc-0c92ddba73fc
+71a7806f-9b2b-4b1f-92ef-7b104424e4df,,Northwest Territories,Northwest Territories,NWT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,86b0de03-5b68-454b-b7db-d20e6a7b0f20
+bfdc923e-b808-40bf-b22a-fad59cfe3517,,New York,New York,NWY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0392fb7c-2028-40db-8372-4621a425fe3c
+33ae2ea4-4472-41f8-92d0-b2d22c045dbc,,New Zealand North,New Zealand North,NZN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df68a983-a1ac-42f7-886d-9335c681430c
+3add1095-b6a9-43f5-9ce8-2797b4db328b,,New Zealand South,New Zealand South,NZS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7f285f4c-a7e7-4021-98dd-1413930675a1
+3ef48a2a-4ef5-4807-ab05-9559c5305ab8,,Free State,Free State,OFS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,27f18891-4c9c-4e72-98a0-b3a90d8f0060
+e8cd281f-eba5-4529-b496-bb7d04221d73,,Ogasawara-shoto,Ogasawara-shoto,OGA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,178f0de3-54bf-4469-a8d4-8e1974be8611
+8e842dc3-6d31-4d65-a250-63a495d9c46f,,Ohio,Ohio,OHI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,461ba6ca-4246-4fb9-bcd4-af7c965ae777
+54beb9ec-857c-4149-b38d-db30e257515d,,Oklahoma,Oklahoma,OKL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,56e84e9c-9229-4286-b30c-5c5e68c8a144
+3c4f004b-51d2-488e-9d04-8c393cdba220,,Oman,Oman,OMA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b3dd0577-35c4-4915-a965-7c696dc9b83c
+979889b5-ff89-41f6-96bb-27c44cf764a3,,Ontario,Ontario,ONT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2842bcb3-9ce5-473f-b155-2d7519b3bb65
+c8ba946f-6401-4b77-ac70-04a30d8ea65d,,Oregon,Oregon,ORE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f634bb85-3c54-4ee5-815c-da689d840a57
+5a80fd55-5fe7-44d9-bdf4-13633d81f270,,Pakistan,Pakistan,PAK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,de7db6b3-7d4f-47a5-8bb8-9fa93a760672
+8cf6a459-8803-48a3-a7d6-e840681bb604,,Israel,Israel,PAL-IS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a6249157-4b39-49d2-9689-0778aec024c4
+620b8ef7-d129-44a4-aeab-9b82b58988e7,,Jordan,Jordan,PAL-JO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a6249157-4b39-49d2-9689-0778aec024c4
+077b8b6c-f1fa-4e43-abce-eb2c0942f215,,Panamá,Panamá,PAN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,07aced24-02ed-4e0b-80f0-b20b83fd6561
+de12ce18-4f5e-49b8-92d6-d6ca633084af,,Paraguay,Paraguay,PAR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,97d0d28f-977e-41bd-a3b9-f788baaed364
+4365bc4c-8edf-4827-a727-3e3dc2a48c99,,Prince Edward I.,Prince Edward I.,PEI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2ad64695-b454-49af-8b48-92f891175cba
+2f071a87-ed8d-41ab-bc6c-4a2e86fa33b6,,Pennsylvania,Pennsylvania,PEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,57343e24-9bf9-4ce6-aed5-27d563139d36
+d58447cc-7425-43f1-b1a6-221dd5591e13,,Peru,Peru,PER-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,eb69081d-1147-48a1-84e4-b96339a29492
+9dee4b0d-d864-4b6f-bd41-39a1ea7c56c3,,Philippines,Philippines,PHI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a5a7e2f3-5c24-4b9c-b6ba-110b62896c95
+02ab5796-bdfd-40c1-bf48-79d7f9b54c0b,,Phoenix Is.,Phoenix Is.,PHX-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,adf502c8-d5ba-4f07-a65b-115c3b8f4c21
+59152e23-5202-47c0-8897-6ecf021a2240,,Pitcairn Is.,Pitcairn Is.,PIT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,717549a3-1f67-4408-8c59-42724e6d8c0f
+8284f453-33b7-457d-acf8-61981112aa26,,Poland,Poland,POL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,587b53b3-c12d-411c-aa58-1f8ab1c19987
+a4841cd4-4bad-4930-a0c6-61197b15832b,,Portugal,Portugal,POR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3a22e22e-a68e-4215-8b7d-be3e39cfafa4
+72486bfa-a330-42c2-8620-20bb6e2d0379,,Primorye,Primorye,PRM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,51b66943-c7b6-4b0f-8252-92e02eb5957f
+44de1584-e6ed-4a0f-951e-2e7405180d45,,Puerto Rico,Puerto Rico,PUE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4d9400b1-de4e-495b-8a04-9468e34b0610
+12ff3212-0a5c-4621-aa96-559bf91b38c0,,Coral Sea Is. Territory,Coral Sea Is. Territory,QLD-CS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,857bec6a-b361-495b-abf1-f99cce2587c4
+a8fb3a37-57a2-4c3e-b4a7-1df394bda83c,,Queensland,Queensland,QLD-QU,,160ff2c8-9bfc-49c2-9afd-049c21a91695,857bec6a-b361-495b-abf1-f99cce2587c4
+0746cd53-e1fe-4d5e-928c-5a04885c7b3e,,Québec,Québec,QUE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c72bf61f-5446-455c-bd73-652ce4ddf1b9
+836fa04b-e2d7-4749-97f3-46b05f17b7c0,,Réunion,Réunion,REU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,24fd734c-aeb2-464f-bc25-db1d09e62084
+e9ef0836-b09f-46d6-8d85-655d2a5d06ea,,Rhode I.,Rhode I.,RHO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,beaff32e-3e14-4b21-8d70-5b6930077299
+3fc9befa-8bcf-4cdd-adc6-a8fd0046ad94,,Rodrigues,Rodrigues,ROD-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4f10f141-b2bf-4d11-b018-9ed973b32729
+fb4016ae-f667-4662-b3cd-c99aee263a36,,Romania,Romania,ROM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5120891c-0493-4b0d-8319-f6442765ec3b
+d0cd49af-1bfc-4deb-97e5-c02b0735f684,,Central European Russia,Central European Russia,RUC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,27be3967-faa0-45b2-a182-6bb19ace908b
+d3f6ae29-1f97-4a95-b0ce-6e65cb2fe788,,East European Russia,East European Russia,RUE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d06f68f8-5a20-4a93-88e0-09f533f3613f
+54c211a3-6767-434f-8176-81099d9ac6b0,,North European Russia,North European Russia,RUN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9169948b-c465-47b6-8acf-c9c3b0a6fff8
+76237f64-c306-4dd5-bff9-f9589507cbc7,,South European Russia,South European Russia,RUS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8957c768-ee18-410d-9c43-c55cb799e205
+0bd7203a-4d11-45c5-abe4-c35ed0698a52,,Northwest European Russia,Northwest European Russia,RUW-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d145aa3f-857c-4b6e-b691-ce8d172f37d9
+35ee7d91-0e7f-402b-af1c-8b35f993de4b,,Rwanda,Rwanda,RWA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,50d2716e-328c-4fe1-9e9b-c3ed6ce60bb5
+0ec14c42-9f9c-483f-8bac-49c042f4aac2,,Sakhalin,Sakhalin,SAK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,37622300-94ec-4438-8e65-09d299fb7ef3
+fdcd45a4-495e-40cd-bb06-1944ca4e635a,,American Samoa,American Samoa,SAM-AS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,1762ef94-4195-4068-8703-4d11e244653f
+58045c98-4614-4ee7-a311-900bbf77a39e,,Samoa,Samoa,SAM-WS,,160ff2c8-9bfc-49c2-9afd-049c21a91695,1762ef94-4195-4068-8703-4d11e244653f
+c2014fa0-f86a-4924-964e-f6693a39a88e,,Sardegna,Sardegna,SAR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,43bf5a60-eafc-440d-83e0-7dce0961aba8
+758b3088-c93d-4625-9500-afe5ec5cfa23,,Saskatchewan,Saskatchewan,SAS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7dfafd0c-5b59-45f1-a2d2-0757e555e530
+df0cbba2-e1e2-46f2-abad-71fe13521df8,,Saudi Arabia,Saudi Arabia,SAU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7af350e4-7e8a-49b7-a728-3dfb3a7347ac
+fd3ce6ee-65e6-46a7-a59f-e4b283477ce4,,South Carolina,South Carolina,SCA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3dc78d7b-6cd8-4790-891d-e8d6ffa497bb
+86aaf6ea-8349-4190-9c71-7f7f99bf7ca9,,Society Is.,Society Is.,SCI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,67f0df67-8161-448b-9188-058b57d37c9d
+085f5edc-986f-4283-b787-dc8f870add81,,Paracel Is.,Paracel Is.,SCS-PI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ef6cd955-105b-442c-95b0-6637545baaa5
+544c29d6-dfc2-4434-8493-d976eb1da751,,Spratly Is.,Spratly Is.,SCS-SI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ef6cd955-105b-442c-95b0-6637545baaa5
+f2b53289-c139-4aa5-8c7f-56b0a129c295,,Santa Cruz Is.,Santa Cruz Is.,SCZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,353f7509-cc51-4c47-b46a-15819bca9323
+023aaa47-04da-4d61-989f-5c9230f67bec,,South Dakota,South Dakota,SDA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9ca35d05-ec92-41fe-ba42-ec6828ff6848
+688c1e74-c207-4b08-8fba-f36289bb1f71,,Selvagens,Selvagens,SEL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,f3cde575-de0d-49f9-9615-6717526458ba
+ecfc254e-ae37-42f6-a338-e8098d89cbac,,Senegal,Senegal,SEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4a95dae4-c8a8-42e8-ba12-540d402e360f
+8b8ba8f2-e9d1-4561-a030-dda45611e7fd,,Seychelles,Seychelles,SEY-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,89392d7c-251e-4160-8518-6f91d86e5010
+8ad99980-84cf-4ff7-b244-c2208c53841e,,South Georgia,South Georgia,SGE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,dda86ec7-b0fc-44b9-89a9-fd14762796bf
+4194946a-0642-47d7-80cc-f17701c87f73,,Malta,Malta,SIC-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4750f5f8-e7af-46d8-b497-2b68199366ba
+f991f85c-bcc7-497b-9868-1ab18c72b194,,Sicily,Sicily,SIC-SI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4750f5f8-e7af-46d8-b497-2b68199366ba
+3aca2f99-dbdb-4ade-a336-17a8b537607b,,Sierra Leone,Sierra Leone,SIE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ea7c2f1b-9d95-4129-b84f-9653e51e3da8
+b7fa88cd-05bf-4abe-8b90-5dbf38465b28,,Sinai,Sinai,SIN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7720f433-5f3f-469a-b49b-b4e409064455
+c92577a8-51a3-459d-9ab0-41c5edeca450,,South Australia,South Australia,SOA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c28b59c7-f65d-469e-9d53-6fce34b35e6e
+e2707cb9-8929-435a-8c61-1c10c7889d9a,,Socotra,Socotra,SOC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d8a1ea81-78db-46db-a27d-d8eb64bf7e41
+6969efec-5333-491c-9499-8db5ee2918ed,,North Solomons,North Solomons,SOL-NO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4cf239da-1215-4689-8cb9-495a2735cb0a
+e61558d4-7bcf-43ca-aa40-7ec7ffb74c1f,,South Solomons,South Solomons,SOL-SO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4cf239da-1215-4689-8cb9-495a2735cb0a
+176373e5-435f-40ac-8d8f-bf2b4963a9a6,,Somalia,Somalia,SOM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,15b4c85f-6e38-403e-a5d4-69cdc00230ea
+095b8b6d-44c5-4d46-9b18-99d8caf396ba,,Andorra,Andorra,SPA-AN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4774d040-9901-4eed-aaa5-8b18dcd568bc
+fba94126-08ec-4a91-95d4-de10f2b27f03,,Gibraltar,Gibraltar,SPA-GI,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4774d040-9901-4eed-aaa5-8b18dcd568bc
+0113409c-7dd8-4601-b261-61d0ba43795d,,Spain,Spain,SPA-SP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4774d040-9901-4eed-aaa5-8b18dcd568bc
+dd22e5da-092c-4610-816c-bc6c3ad91620,,Sri Lanka,Sri Lanka,SRL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3a78d641-42c2-4041-919d-fe3601de6356
+b5be639a-1ec5-4be3-81e4-0f769a3a785c,,South Sandwich Is.,South Sandwich Is.,SSA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bf83496e-9a97-4215-839a-3df00e06916e
+97cc1d7f-18fa-4c77-b880-5d1ce07710da,,St.Helena,St.Helena,STH-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7145cc3e-0893-442d-b56e-9c74f62ce430
+1db7ec41-05b3-4964-8da3-6d2d91332fc7,,Sudan,Sudan,SUD-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,08c2d94a-0cc2-4b6b-8184-a1c1b899b805
+bfc07508-8ee2-413f-841e-d44a0c09e010,,Sulawesi,Sulawesi,SUL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b42f9b9e-afe1-4d62-a3a9-6b53599f2f60
+4395d5e0-64e2-4309-a2ec-b1240919c34d,,Sumatera,Sumatera,SUM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d7bbe237-0bae-4ef0-b8fb-332a90eee92c
+1e3af172-ad4b-4a4e-af30-ac4491b23b01,,Suriname,Suriname,SUR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ff18c8ac-970f-4a90-a6a8-27859dbc6218
+faa8e353-60b2-4775-99eb-9873f5216490,,Svalbard,Svalbard,SVA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,34c3c6fc-e6e0-44b9-8886-157c992e9485
+d9dadba7-eefd-42dc-99d0-7001b0316ea4,,Colombian Caribbean Is.,Colombian Caribbean Is.,SWC-CC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7ad3ccea-3cee-4046-b496-e694a2109fd9
+78cf3647-af9f-4aff-a326-72dce23adae3,,Honduran Caribbean Is.,Honduran Caribbean Is.,SWC-HC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7ad3ccea-3cee-4046-b496-e694a2109fd9
+bffeb089-afaf-4f04-b134-39cae5a45881,,Nicaraguan Caribbean Is.,Nicaraguan Caribbean Is.,SWC-NC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,7ad3ccea-3cee-4046-b496-e694a2109fd9
+1acae55b-f2ad-491d-8367-8ca76a3228e9,,Sweden,Sweden,SWE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,289074c4-a7a9-4cb3-b74a-78ad2bc6fbce
+0d353eb2-2fd8-4843-ba1f-c6873e703869,,Switzerland,Switzerland,SWI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df9fc338-1564-4517-8e39-43087bc068f2
+3e9fce6c-9f4b-42af-92b4-0a81e598c004,,Swaziland,Swaziland,SWZ-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5d49cc9a-3a8d-44a3-a851-6cf0e8ca154b
+17f23bcb-9dfb-46ed-aaee-742426008957,,Taiwan,Taiwan,TAI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,eed9dbda-ed03-41d5-9322-94f985de97ee
+06153999-40d8-4298-8ae1-0bb148e4b5a4,,Tanzania,Tanzania,TAN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,caf1697c-10d1-4d51-ac62-a977171ec56e
+0f422108-51d2-4dc9-b11b-03fc430a8994,,Tasmania,Tasmania,TAS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4baeb0f7-7893-4edb-8c9b-7c0f225bf868
+e293eda7-9bc3-4d2d-86bb-224f8f2f7e4a,,Turks-Caicos Is.,Turks-Caicos Is.,TCI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,952ea175-c3f4-4ae9-b09a-029ba81ee923
+48da1791-103c-4505-bb69-cc780bdbac2d,,Abkhaziya,Abkhaziya,TCS-AB,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+532a0762-7d64-4667-8590-5380ae39974c,,Adzhariya,Adzhariya,TCS-AD,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+17ce9ce4-ca6e-4c13-b858-5f23a89c2eb7,,Armenia,Armenia,TCS-AR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+6f85062e-1a30-4cbe-9c3a-96e3cd68ca61,,Azerbaijan,Azerbaijan,TCS-AZ,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+204ca32d-74c7-4288-ab0c-3013d24d92e1,,Georgia,Georgia,TCS-GR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+c3c37338-5f1f-447c-8948-bf20ce98f1f8,,Nakhichevan,Nakhichevan,TCS-NA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+68d8c6e8-7666-414e-9579-b1604592694d,,Nagorno Karabakh,Nagorno Karabakh,TCS-NK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ac7a6544-3f4b-463b-a19d-eea0a484da93
+3ade1654-2d18-4dca-be14-f5c7647f7bc4,,Tristan da Cunha,Tristan da Cunha,TDC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,1cda9cee-21be-4a99-a983-520a749d7118
+b71f5f89-708d-4010-a1f3-107671105abe,,Tennessee,Tennessee,TEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d1a6df1e-7e01-4ef8-9e34-295bd59037de
+a5353ceb-adac-43e2-80b7-785a383da5c9,,Texas,Texas,TEX-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,6d90e6d7-9f3d-48ee-8dc5-0fa0e2e102e0
+9806016c-be9c-4d35-ae67-d45abba590be,,Thailand,Thailand,THA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,da8aac48-9795-4767-a1a0-323160158892
+f18f0d78-d2fb-4e24-86d5-783067a25291,,Turkmenistan,Turkmenistan,TKM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bfca42eb-4fae-4233-996d-ffff6b60bf15
+e93c18ac-ed8b-4b2f-8e22-6aa9bf03b1e5,,Togo,Togo,TOG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,39983171-9173-48ac-9564-9d30c189b90f
+c7293bdb-28dc-429a-aa66-2732e0d12d1f,,Manihiki Is.,Manihiki Is.,TOK-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,24ffcae2-2090-4106-8da6-f49a21a951de
+5fa5df7b-f0f3-461c-9f29-11d40b183109,,Swains I.,Swains I.,TOK-SW,,160ff2c8-9bfc-49c2-9afd-049c21a91695,24ffcae2-2090-4106-8da6-f49a21a951de
+c1e3819c-9c05-4559-b6de-a4d792c9edc1,,Tokelau,Tokelau,TOK-TO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,24ffcae2-2090-4106-8da6-f49a21a951de
+acf51c02-d09e-4f57-8ee7-4ea82949f6a2,,Tonga,Tonga,TON-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a3a4d577-ff17-4548-b766-c0b3579cde1c
+d96d2d70-1959-45b4-90e5-692b0bc8468c,,Trinidad-Tobago,Trinidad-Tobago,TRT-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a356333f-e25a-4fdd-8d69-154c24307a36
+f981d953-a271-4e39-ade7-c89e41e550be,,Tuamotu,Tuamotu,TUA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8ae1077d-ce28-4602-909a-227686b680e1
+ceeabdbc-bf13-494a-869a-d476956b8b60,,Tubuai Is.,Tubuai Is.,TUB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,332abf62-47ab-43f1-a12a-3e320f4a8a6d
+b7ea03d2-a7f0-44bf-995f-c5a0e352480a,,Turkey-in-Europe,Turkey-in-Europe,TUE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,0cc0f22f-df09-48d2-a2e0-27911df17c8b
+c58cbd17-e60e-4adf-a970-2d37f3fedb77,,Tunisia,Tunisia,TUN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,73d5c7bf-deb8-4152-b55c-5414db2c4261
+60a9219e-136e-4ac1-92a3-1b889e473c53,,Turkey,Turkey,TUR-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,48219cbc-82ab-447f-8a67-e97408736c23
+e642ec34-2f94-4ccb-b830-e0278982919a,,Tuvalu,Tuvalu,TUV-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,df5a43be-4dbd-4585-889d-916dc4eb085c
+0b87994a-c9dd-4dff-8d38-1a11abdad2ae,,Tuva,Tuva,TVA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b59ea7bf-6907-4275-9984-4a9b7621cae9
+7ef2a035-7ac4-44c8-aa40-84adb96041e3,,Gauteng,Gauteng,TVL-GA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3d190a52-47b9-450d-b2b8-15bd9995c8e5
+d82a9d1e-e16a-4612-9507-94757ec66227,,Mpumalanga,Mpumalanga,TVL-MP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3d190a52-47b9-450d-b2b8-15bd9995c8e5
+a577d31f-aae1-4aa8-aebc-2a1282b011f8,,Northern Province,Northern Province,TVL-NP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3d190a52-47b9-450d-b2b8-15bd9995c8e5
+b5f4b104-2732-4126-8bd7-b55fb3198a29,,North-West Province,North-West Province,TVL-NW,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3d190a52-47b9-450d-b2b8-15bd9995c8e5
+ff5b262e-f7e3-468b-a5e0-a15e86af5c1d,,Tadzhikistan,Tadzhikistan,TZK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,90b1b04c-7604-4bdf-b648-963e933b85f8
+c87a4681-f30e-459a-b633-b3cf66822017,,Uganda,Uganda,UGA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,e06b10c6-1cb6-4654-94b0-49878cf88a6a
+ddac03eb-c533-4fd2-a83d-28d9dce0864d,,Moldova,Moldova,UKR-MO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,670977b8-9833-4ab4-8f68-15a5cb5f38d9
+79870854-1fef-43fb-9eb5-19faecf600d3,,Ukraine,Ukraine,UKR-UK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,670977b8-9833-4ab4-8f68-15a5cb5f38d9
+91ce37ea-8af3-42e1-873d-902583539bdf,,Uruguay,Uruguay,URU-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,4b8f9064-f413-41f5-8399-8a8530fea981
+1fd7ecde-8ecd-4cd3-b180-bb44db1fab1e,,Utah,Utah,UTA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,86d51169-ef60-4717-b4ec-c1522ebd4bb9
+1388a0b4-1833-48d1-94a0-73351999eebc,,Uzbekistan,Uzbekistan,UZB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,42fb1397-83df-4fe0-a313-a04845ce378c
+5608de8e-f327-49d3-9a04-0ac0405d34ad,,Vanuatu,Vanuatu,VAN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,205587f2-6d1b-4507-8d06-3588375b0cf2
+0e049bd9-c6ce-4e17-85fa-83c61ff90621,,Venezuela,Venezuela,VEN-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,a9a80485-407a-495d-9701-2bfff3025b37
+216d17b2-9b14-4ee5-bfda-6e82a573b704,,Vermont,Vermont,VER-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,889993e0-507b-48c6-bc40-8bb2dd943960
+519eb6b6-bed7-405c-9c5e-dd9f621be288,,Victoria,Victoria,VIC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,62f519dc-d315-425d-9053-319a055c1468
+fbb8ab2c-d526-472f-b557-c96cc03bc37c,,Vietnam,Vietnam,VIE-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,ce26e090-99b0-407f-a177-3fbc316638f0
+e7d392e6-5e48-4485-b18c-25fb140d3e1f,,Venezuelan Antilles,Venezuelan Antilles,VNA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,9f97925d-be79-48e5-ab65-25d0bc27503c
+24153857-fdf0-4d1d-adb0-b42ac71a992a,,Virginia,Virginia,VRG-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,3a6df9f1-d33b-4fe7-a150-db130a038654
+f688e0c1-7245-4b78-9fff-be767a5bb232,,Wake I.,Wake I.,WAK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,36d57602-8107-458c-a097-5f37ff49881e
+7fcf37f8-b846-4fff-a2d7-266483dfc70c,,Wallis-Futuna Is.,Wallis-Futuna Is.,WAL-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,b8810d5d-152f-47df-b570-83a84a37bad6
+dbc6bfc1-ede6-4620-84d5-890907c252e0,,Washington,Washington,WAS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,fcaa778d-12d7-4e35-9bad-05a05d80f563
+63904a7f-67ca-458b-86b3-9b5a7e68923a,,Ashmore-Cartier Is.,Ashmore-Cartier Is.,WAU-AC,,160ff2c8-9bfc-49c2-9afd-049c21a91695,cb709a6b-604a-4dcc-9ed4-7410750a3fb6
+97ac40c6-ee0e-4482-88da-8de66a73401b,,Western Australia,Western Australia,WAU-WA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,cb709a6b-604a-4dcc-9ed4-7410750a3fb6
+6bd2baf4-972a-467f-b6fa-8b89aee1f61a,,District of Columbia,District of Columbia,WDC-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,16939d8c-587d-4277-be04-26502fe61b28
+de8b64ce-3a33-4135-a850-cf109f1d48bd,,Himachal Pradesh,Himachal Pradesh,WHM-HP,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bd730c6b-5659-445d-9b26-3a662186b1b5
+c90618b9-167d-49ec-9724-259029fa00c7,,Jammu-Kashmir,Jammu-Kashmir,WHM-JK,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bd730c6b-5659-445d-9b26-3a662186b1b5
+b8d5a12f-e7e7-4c19-b64c-ead0fdc97b4e,,Uttaranchal,Uttaranchal,WHM-UT,,160ff2c8-9bfc-49c2-9afd-049c21a91695,bd730c6b-5659-445d-9b26-3a662186b1b5
+9095452e-59f7-4608-af53-341e5f400d2a,,Barbados,Barbados,WIN-BA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8b56d6ca-77a5-436f-9839-888e4f0611ea
+70933eef-4cb9-403c-95cd-314d38d99a8e,,Dominica,Dominica,WIN-DO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8b56d6ca-77a5-436f-9839-888e4f0611ea
+d91f8b52-afb4-4a05-9a2b-0091c1a2964e,,Grenada,Grenada,WIN-GR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8b56d6ca-77a5-436f-9839-888e4f0611ea
+dfb9ea63-1947-4f42-b60e-0b3469e43e8c,,Martinique,Martinique,WIN-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8b56d6ca-77a5-436f-9839-888e4f0611ea
+31468b28-6e4a-4810-a9a9-73ee02916f3c,,St.Lucia,St.Lucia,WIN-SL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8b56d6ca-77a5-436f-9839-888e4f0611ea
+3d4c2754-2000-44f6-a0a8-0d9672cba17f,,St.Vincent,St.Vincent,WIN-SV,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8b56d6ca-77a5-436f-9839-888e4f0611ea
+74ff3c89-304c-4ca7-8e57-bda96cc64788,,Wisconsin,Wisconsin,WIS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,739fa687-ccc0-4ecd-b30e-216c1d0ae8c0
+f5e1293c-477f-4989-a51a-5573ebdf2163,,Western Sahara,Western Sahara,WSA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,2a3887f9-739d-4969-8a05-be5dff943654
+b171a390-4b69-4e57-89bf-8d334368aa70,,West Siberia,West Siberia,WSB-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,183869b8-7143-492e-abec-fc9aa585cb2e
+eec1ea9a-67fd-4ad5-a241-6cf73a02434c,,West Virginia,West Virginia,WVA-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,8f1802cf-8c21-4951-8460-68f23117a7a8
+cc136338-64d2-4d20-bd45-d40fc92909a7,,Wyoming,Wyoming,WYO-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,c75e0ede-5a11-486d-bbd5-1aad2afc1c53
+932cacfd-e349-4448-8269-ff6b06c260ee,,Christmas I.,Christmas I.,XMS-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,474ea264-4a0c-4e47-b2e3-b7d69161a887
+2b8feedf-6fd4-4763-9f92-2f1dfd04c4b2,,Yakutskiya,Yakutskiya,YAK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,258f6e7c-6acb-4ccd-b312-748e0502d758
+a2a90c7d-905a-408f-afc2-9ee9165667df,,North Yemen,North Yemen,YEM-NY,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d2c3f9e5-3c36-4a42-9e97-48927f63c1f4
+e4fd740f-2401-4744-aa51-38b66848221c,,South Yemen,South Yemen,YEM-SY,,160ff2c8-9bfc-49c2-9afd-049c21a91695,d2c3f9e5-3c36-4a42-9e97-48927f63c1f4
+156f41e9-7f2d-4c56-ace5-db9581e35b7e,,Bosnia-Herzegovina,Bosnia-Herzegovina,YUG-BH,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+7d7e1b3b-77c0-4033-9fd0-3caa6370d8a9,,Croatia,Croatia,YUG-CR,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+5b8e22d1-2438-4433-8853-fac9768aea58,,Kosovo,Kosovo,YUG-KO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+7dff4ac4-6c16-4834-9922-93f5af568833,,Macedonia,Macedonia,YUG-MA,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+d18168ff-f59d-4209-8b23-bd3abeda1325,,Montenegro,Montenegro,YUG-MN,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+dc59ecd3-0051-4e81-84a2-9fd459861011,,Serbia,Serbia,YUG-SE,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+7d8e85ca-fc06-4a4b-9bb7-06d4b42c15f6,,Slovenia,Slovenia,YUG-SL,,160ff2c8-9bfc-49c2-9afd-049c21a91695,705df0b8-452a-4868-bf12-bdc4dcde018a
+0e4a1319-6c7d-48a6-af08-0d972542e3e2,,Yukon,Yukon,YUK-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,26b4e43d-3756-4b28-872b-8ef1d65168a8
+023f83b8-dc99-4ac0-80b7-79fe2678518f,,Zaire,Zaire,ZAI-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,91db183a-a8c3-45dc-8cc9-2b8c2a6c183d
+597b7676-a24d-4eaf-b7a9-dec4a2ecc712,,Zambia,Zambia,ZAM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,997ca9ce-29cb-4d9c-b9ca-b1ab98968785
+4cc60186-d723-4ff6-913a-5dd8d293a92a,,Zimbabwe,Zimbabwe,ZIM-OO,,160ff2c8-9bfc-49c2-9afd-049c21a91695,5b63e02e-2e96-4acc-86a9-ded2a0359f4b

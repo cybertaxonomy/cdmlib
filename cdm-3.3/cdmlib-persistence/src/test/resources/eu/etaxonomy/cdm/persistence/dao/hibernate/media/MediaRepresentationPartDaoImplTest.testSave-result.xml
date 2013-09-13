@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../dataset.xsd">
+  <MEDIAREPRESENTATIONPART DTYPE="ImageFile" URI="http://www.test.de" HEIGHT="22" WIDTH="25" SIZE="333" DURATION="[null]"/>
+  <MEDIAREPRESENTATIONPART DTYPE="AudioFile" URI="http://www.test2.de" HEIGHT="[null]" WIDTH="[null]" SIZE="[null]" DURATION="55"/>
+  <MEDIAREPRESENTATIONPART DTYPE="AudioFile" URI="http:\\www.fail.de" HEIGHT="[null]" WIDTH="[null]" SIZE="[null]" DURATION="55"/>
+  <MEDIAREPRESENTATIONPART DTYPE="MediaRepresentationPart" URI="http://www.test3.de" HEIGHT="[null]" WIDTH="[null]" SIZE="22" DURATION="[null]"/>
+</dataset>

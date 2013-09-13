@@ -1,0 +1,486 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+
+    <bean id="genericApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
+       <property name="includeToOneRelations" value="false" />
+       <property name="includeToManyRelations" value="false" />
+       <property name="exceptions">
+         <set>
+           <!--
+             the exceptions listed here should be covered by implementations of
+             eu.etaxonomy.cdm.persistence.dao.AutoPropertyInitializer.
+             The according configuration files are
+              - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence_security.xml
+              - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml
+             whereas persistence.xml will be removed in the near future.
+            -->
+             <value>FeatureTree.root</value>
+             <value>FeatureNode.children</value>
+             <value>FeatureNode.feature</value>
+
+             <value>TreeNode.data</value>
+             <value>TreeNode.data</value>
+
+             <value>PolytomousKey.root</value>
+             <value>PolytomousKeyNode.children</value>
+             <value>PolytomousKeyNode.question</value>
+             <value>PolytomousKeyNode.feature</value>
+             <value>PolytomousKeyNode.statement</value>
+             <value>PolytomousKeyNode.modifyingText</value>
+
+             <value>LinkedPolytomousKeyNodeRowDto.childStatement</value>
+             <value>LinkedPolytomousKeyNodeRowDto.rowQuestion</value>
+             <value>LinkedPolytomousKeyNodeRowDto.rowFeature</value>
+             <!-- value>LinkedPolytomousKeyNodeRowDto.keyNode</value-->
+
+             <value>Media.representations</value>
+             <value>MediaRepresentation.parts</value>
+
+             <value>Sequence.marker</value>
+             <value>Sequence.genBankAccessionNumber</value>
+             <value>Sequence.genBankUri</value>
+
+             <value>Annotation.annotationType</value>
+             <value>Marker.markerType</value>
+
+             <value>DerivationEvent.derivatives</value>
+             <value>DerivationEvent.originals</value>
+
+             <value>Point.referenceSystem</value>
+
+             <!-- CardinalityPropertyFilter should allow defining exceptions for abstract super classes : -->
+             <!-- <value>eu.etaxonomy.cdm.model.description.DescriptionElementBase.feature</value> -->
+
+             <value>Synonym.sec</value>
+             <value>Taxon.sec</value>
+
+             <value>StateData.state</value>
+             <value>StateData.modifiers</value>
+             <value>StateData.modifyingText</value>
+
+             <value>TextData.feature</value>
+             <value>CategoricalData.feature</value>
+             <value>CommonTaxonName.feature</value>
+             <value>Distribution.feature</value>
+             <value>IndividualsAssociation.feature</value>
+             <value>QuantitativeData.feature</value>
+             <value>TaxonInteraction.feature</value>
+             <value>TextData.feature</value>
+             <value>IdentifiableSource.citation</value>
+
+             <value>SearchResult.entity</value>
+         </set>
+       </property>
+     </bean>
+
+     <bean id="nameCatalogueApiCardinalityPropertyFilter" class="eu.etaxonomy.cdm.remote.json.util.CardinalityPropertyFilter">
+       <property name="includeToOneRelations" value="true" />
+       <property name="includeToManyRelations" value="true" />
+       <property name="exceptions">
+         <set>
+         </set>
+       </property>
+     </bean>
+
+  <!--
+         =================================================
+            default configuration for RESTful read(/write) service
+         =================================================
+    -->
+  <bean name="jsonConfig" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
+    init-method="init">
+    <property name="jsonBeanProcessorMatcher">
+      <bean
+        class="eu.etaxonomy.cdm.remote.json.processor.matcher.CdmProxyBeanProcessorMatcher" />
+    </property>
+    <property name="jsonBeanProcessors">
+      <map>
+      <entry key="org.hibernate.proxy.HibernateProxy">
+        <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
+      </entry>
+      <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+        <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
+           <property name="excludes">
+             <set value-type="java.lang.String">
+                 <value>partOf</value><!-- FIXME exclude partOf to avoid  lazy loading exceptions  -->
+                 <value>kindOf</value><!-- FIXME exclude kindOf to avoid  lazy loading exceptions  -->
+                 <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
+             </set>
+          </property>
+        </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.TextData">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TextDataBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.reference.Reference">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.KeyStatement">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.KeyStatementBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+        </entry>
+        <entry key="org.apache.lucene.document.Document">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
+        </entry>
+      </map>
+    </property>
+    <property name="jsonPropertyFilter">
+        <bean class="net.sf.json.filters.OrPropertyFilter">
+          <constructor-arg>
+              <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+          </constructor-arg>
+          <constructor-arg ref="genericApiCardinalityPropertyFilter">
+          </constructor-arg>
+        </bean>
+    </property>
+    <property name="jsonValueProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.HibernateJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.UUID">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.DateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Calendar">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.Partial">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.lang.Class">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Map">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+          <entry key="java.net.URI">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+          </entry>
+      </map>
+    </property>
+    <property name="ignoreDefaultExcludes" value="true" />
+    <property name="excludes">
+      <list value-type="java.lang.String">
+        <value>declaringClass</value><!-- DefaultExclude -->
+        <value>metaClass</value><!-- DefaultExclude -->
+        <value>id</value>
+        <value>cacheStrategy</value>
+        <value>createdBy</value>
+        <value>updatedBy</value>
+      </list>
+    </property>
+  </bean>
+
+  <!--
+         =================================================
+            configuration for RESTful classification service
+         =================================================
+    -->
+  <bean name="jsonConfigClassification" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
+    init-method="init">
+    <property name="jsonBeanProcessorMatcher">
+      <bean
+        class="eu.etaxonomy.cdm.remote.json.processor.matcher.HibernateProxyBeanProcessorMatcher" />
+    </property>
+    <property name="jsonBeanProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeDaoBeanProcessor" />
+        </entry>
+      </map>
+    </property>
+    <property name="jsonPropertyFilter">
+      <bean class="net.sf.json.filters.OrPropertyFilter">
+        <constructor-arg>
+            <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+        </constructor-arg>
+        <constructor-arg ref="genericApiCardinalityPropertyFilter">
+        </constructor-arg>
+      </bean>
+    </property>
+    <property name="jsonValueProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.HibernateJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.UUID">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.DateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Calendar">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.Partial">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.lang.Class">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Map">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+        <entry key="java.net.URI">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+        </entry>
+      </map>
+    </property>
+    <property name="ignoreDefaultExcludes" value="true" />
+    <property name="excludes">
+      <list value-type="java.lang.String">
+        <value>declaringClass</value><!-- DefaultExclude -->
+        <value>metaClass</value><!-- DefaultExclude -->
+        <value>id</value>
+        <value>cacheStrategy</value>
+        <value>createdBy</value>
+        <value>updatedBy</value>
+      </list>
+    </property>
+  </bean>
+
+  <!--
+       =================================================
+         configuration for RESTful portal service
+       =================================================
+  -->
+
+  <bean name="jsonConfigPortal" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
+    init-method="init">
+    <property name="jsonBeanProcessorMatcher">
+      <bean
+        class="eu.etaxonomy.cdm.remote.json.processor.matcher.CdmProxyBeanProcessorMatcher" />
+    </property>
+    <property name="jsonBeanProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.HibernateProxyBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.Taxon">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBaseBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.name.NameRelationship">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.NameRelationshipBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.taxon.TaxonRelationship">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonRelationshipBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.common.TermBase">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TermBaseBeanProcessor">
+            <property name="replaceRepresentations" value="true" />
+            <property name="excludes">
+                <set value-type="java.lang.String">
+                  <value>infraGenericMarker</value><!-- FIXME leads to IllegalStateException if not excluded  -->
+                  <value>partOf</value><!-- DefinedTermBase -->
+                  <value>kindOf</value><!-- DefinedTermBase -->
+                  <value>includes</value><!-- DefinedTermBase -->
+                  <value>generalizationOf</value><!-- DefinedTermBase -->
+                  <value>vocabulary</value><!-- DefinedTermBase -->
+                  <!--
+                      FIXME must exclude partOf, kindOf, includes, generalizationOf .. to
+                      avoid class cast or lazy loading exceptions in TDWG Areas
+                  -->
+                </set>
+            </property>
+          </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.TextData">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TextDataBeanProcessor">
+            <property name="replaceMultilanguageText" value="true" />
+          </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.media.Media">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.MediaBeanProcessor">
+            <property name="replaceTitle" value="true" />
+            <property name="replaceDescription" value="true" />
+          </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.reference.Reference">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.TaxonNameDescription">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameDescriptionBeanProcessor">
+              <property name="excludes">
+                <set value-type="java.lang.String">
+                  <value>taxonName</value>
+                </set>
+              </property>
+          </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.api.facade.DerivedUnitFacade">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DerivedUnitFacadeBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.location.Point">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.PointBeanProcessor"/>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
+          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+        </entry>
+        <entry key="org.apache.lucene.document.Document">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
+        </entry>
+      </map>
+    </property>
+        <property name="jsonPropertyFilter">
+            <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+        </property>
+    <property name="jsonValueProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.HibernateJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.UUID">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.DateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Calendar">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.Partial">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.lang.Class">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.ClassJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Map">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+        <entry key="java.net.URI">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+        </entry>
+      </map>
+    </property>
+    <property name="ignoreDefaultExcludes" value="true" />
+    <property name="excludes">
+      <list value-type="java.lang.String">
+        <value>declaringClass</value><!-- DefaultExclude -->
+        <value>metaClass</value><!-- DefaultExclude -->
+        <value>id</value>
+        <!--
+            commented out,
+            see  #3347 (services and REST service controller for molecular classes implemented)
+        <value>annotations</value>
+        <value>markers</value>
+        -->
+        <value>cacheStrategy</value>
+        <value>createdBy</value>
+        <value>updatedBy</value>
+        <value>inDescription</value>
+      </list>
+    </property>
+  </bean>
+
+   <!--
+         =================================================
+            default configuration name catalogue service
+         =================================================
+    -->
+  <bean name="nameCatalogueJsonConfig" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
+    init-method="init">
+    <property name="jsonPropertyFilter">
+        <bean class="net.sf.json.filters.OrPropertyFilter">
+          <constructor-arg>
+              <bean class="eu.etaxonomy.cdm.remote.json.util.InitializedHibernatePropertyFilter" />
+          </constructor-arg>
+          <constructor-arg ref="nameCatalogueApiCardinalityPropertyFilter">
+          </constructor-arg>
+        </bean>
+    </property>
+    <property name="jsonValueProcessors">
+      <map>
+        <entry key="org.hibernate.proxy.HibernateProxy">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.HibernateJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.UUID">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.UUIDJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.DateTime">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.DateTimeJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Calendar">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.CalendarJSONValueProcessor" />
+        </entry>
+        <entry key="org.joda.time.Partial">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.value.PartialJSONValueProcessor" />
+        </entry>
+        <entry key="java.util.Map">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.value.MapJSONValueProcessor" />
+        </entry>
+          <entry key="java.net.URI">
+              <bean class="eu.etaxonomy.cdm.remote.json.processor.value.URIJSONValueProcessor"/>
+          </entry>
+
+      </map>
+    </property>
+    <property name="ignoreDefaultExcludes" value="true" />
+    <property name="excludes">
+      <list value-type="java.lang.String">
+        <value>class</value>
+        <value>declaringClass</value><!-- DefaultExclude -->
+        <value>metaClass</value><!-- DefaultExclude -->
+        <value>id</value>
+        <value>cacheStrategy</value>
+        <value>createdBy</value>
+        <value>updatedBy</value>
+      </list>
+    </property>
+  </bean>
+
+</beans>

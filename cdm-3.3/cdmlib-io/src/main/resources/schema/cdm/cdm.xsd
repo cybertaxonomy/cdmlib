@@ -1,0 +1,257 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<xs:schema elementFormDefault="qualified" version="1.0" 
+targetNamespace="http://etaxonomy.eu/cdm/model/1.0" 
+xmlns="http://etaxonomy.eu/cdm/model/1.0"
+xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0" 
+xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0" 
+xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0"
+xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+xmlns:molecular="http://etaxonomy.eu/cdm/model/molecular/1.0"
+xmlns:xs="http://www.w3.org/2001/XMLSchema"
+xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
+xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
+xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0"
+xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
+xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" 
+xsi:schemaLocation="http://www.w3.org/XML/1998/namespace
+http://www.w3.org/2005/08/xml.xsd
+http://www.w3.org/2001/XMLSchema
+  http://www.w3.org/2001/XMLSchema.xsd">
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/description/1.0" schemaLocation="description.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/common/1.0" schemaLocation="common.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/location/1.0" schemaLocation="location.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/occurrence/1.0" schemaLocation="occurrence.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/name/1.0" schemaLocation="name.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/agent/1.0" schemaLocation="agent.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/taxon/1.0" schemaLocation="taxon.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/molecular/1.0" schemaLocation="molecular.xsd"/>
+
+  <xs:import namespace="http://etaxonomy.eu/cdm/model/reference/1.0" schemaLocation="reference.xsd"/>
+
+  <xs:element name="DataSet" type="DataSet"/>
+  
+  <xs:element name="Error" type="Error"/>
+  
+  <xs:complexType name="Error">
+    <xs:sequence>
+      <xs:element name="Code" type="xs:string" minOccurs="1"/>
+      <xs:element name="Message" type="xs:string" minOccurs="1"/>
+      <xs:element name="Resource" type="xs:anyURI"/>
+      <xs:element name="Cause" type="xs:string" minOccurs="0"/>
+      <xs:element name="StackTrace" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="StackTraceElement" type="xs:string"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+    </xs:sequence>
+    <xs:attribute name="status" type="xs:int"/>
+  </xs:complexType>
+
+  <xs:complexType name="DataSet">
+    <xs:sequence>
+      <xs:element name="Terms" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="description:AbsenceTerm"/>
+              <xs:element ref="common:AnnotationType"/>
+              <xs:element ref="occurrence:DerivationEventType"/>
+              <xs:element ref="occurrence:DeterminationModifier"/>
+              <xs:element ref="common:ExtensionType"/>
+              <xs:element ref="description:Feature"/>
+              <xs:element ref="name:HybridRelationshipType"/>
+              <xs:element ref="common:Language"/>
+              <xs:element ref="common:MarkerType"/>
+              <xs:element ref="description:MeasurementUnit"/>
+              <xs:element ref="description:Modifier"/>
+              <xs:element ref="location:NamedArea"/>
+              <xs:element ref="location:NamedAreaLevel"/>
+              <xs:element ref="location:NamedAreaType"/>
+              <xs:element ref="name:NameRelationshipType"/>
+              <xs:element ref="name:NameTypeDesignationStatus"/>
+              <xs:element ref="name:NomenclaturalCode"/>
+              <xs:element ref="name:NomenclaturalStatusType"/>
+              <xs:element ref="description:PresenceTerm"/>
+              <xs:element ref="occurrence:PreservationMethod"/>
+              <xs:element ref="name:Rank"/>
+              <xs:element ref="location:ReferenceSystem"/>
+              <xs:element ref="media:RightsType"/>
+              <xs:element ref="description:Scope"/>
+              <xs:element ref="description:Sex"/>
+              <xs:element ref="name:SpecimenTypeDesignationStatus"/>
+              <xs:element ref="description:Stage"/>
+              <xs:element ref="description:State"/>
+              <xs:element ref="description:StatisticalMeasure"/>
+              <xs:element ref="taxon:SynonymRelationshipType"/>
+              <xs:element ref="taxon:TaxonRelationshipType"/>
+              <xs:element ref="description:TextFormat"/>
+              <xs:element ref="location:Country"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="TermVocabularies" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="common:TermVocabulary"/>
+              <xs:element ref="common:OrderedTermVocabulary"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Agents" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="agent:Team"/>
+              <xs:element ref="agent:Institution"/>
+              <xs:element ref="agent:Person"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Collections" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="occurrence:Collection" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Occurrences" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="occurrence:DerivedUnit"/>
+              <xs:element ref="occurrence:DnaSample"/>
+              <xs:element ref="occurrence:FieldUnit"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="EventBases" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="occurrence:DerivationEvent"/>
+              <xs:element ref="occurrence:GatheringEvent"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="References" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="reference:ReferenceBase" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="TypeDesignations" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="name:NameTypeDesignation"/>
+              <xs:element ref="name:SpecimenTypeDesignation"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="FeatureTrees" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="description:FeatureTree" />
+              <xs:element ref="description:PolytomousKey"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Classification" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="taxon:Classification" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="TaxonomicNames" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="name:BacterialName"/>
+              <xs:element ref="name:BotanicalName"/>
+              <xs:element ref="name:CultivarPlantName"/>
+              <xs:element ref="name:NonViralName"/>
+              <xs:element ref="name:ViralName"/>
+              <xs:element ref="name:ZoologicalName"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="HomotypicalGroups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="name:HomotypicalGroup" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="TaxonBases" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="taxon:Taxon"/>
+              <xs:element ref="taxon:Synonym"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Media" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:choice minOccurs="0" maxOccurs="unbounded">
+              <xs:element ref="media:Media"/>
+              <xs:element ref="description:MediaKey"/>
+              <xs:element ref="common:Figure"/>
+              <xs:element ref="molecular:PhylogeneticTree"/>
+            </xs:choice>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Users" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="common:User" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="Groups" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="common:Group" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="GrantedAuthorities" minOccurs="0">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element ref="common:GrantedAuthority" minOccurs="0" maxOccurs="unbounded"/>
+          </xs:sequence>
+        </xs:complexType>
+      </xs:element>
+      <xs:element name="languageStrings" type="common:LanguageString" nillable="true" minOccurs="0" maxOccurs="unbounded"/>
+    </xs:sequence>
+  </xs:complexType>
+</xs:schema>
+

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<faqs xmlns="http://maven.apache.org/FML/1.0.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/FML/1.0.1 http://maven.apache.org/xsd/fml-1.0.1.xsd" title="Troubleshooting" toplink="false">
+	
+	<part id="log4j">
+		<title>Log4J</title>
+		<faq id="proxyWarnLog_breaks">
+			<question>My logfile is full with "ProxyWarnLog ... breaks ...".</question>
+			<answer>
+				<p>Please add <code>log4j.logger.org.hibernate.engine.internal.StatefulPersistenceContext = error</code> to your log4j.properties file.</p>
+			</answer>
+		</faq>
+	</part>
+</faqs>

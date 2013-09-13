@@ -1,0 +1,129 @@
+	---------------
+	Full text Search API
+	---------------
+
+{CDM Full text Search API}
+
+	This web service endpoint serves as a search engine for a query term related to a Taxon, e.g. In the free text descriptive data or aspart of the scientific name.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : any free text you wish to search for.
+	
+	* '<<class>>' [optional] : the class of the TaxonBase object you wish to search for.
+	
+	* '<<tree>>' [optional] : the uuid of the classification you wish to search for with the query string.
+	
+	* '<<languages>>' [optional] : a list of the languages you wish to search for the query string. English is the default.
+									
+	* '<<hl>>' [optional, default value = <<<20>>>]  : a boolean to indicate whether the query term should be highlighted in the response.
+									
+	* '<<pageSize>>' [optional, default value = <<<20>>>] 	: the number of results within each page in the response. The default is set to 20.
+	
+	* '<<pageNumber>>' [optional, default value = <<<1>>>] 	: the number of the page to be returned, the first page has the pageNumber = 1.
+	
+	
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON and XML.	
+	
+	Note:
+		
+		* When the number of records returned are greater than the page size multiple calls to the web service must be made to return the subequent pages.
+		
+	
+	Example Requests :
+		
+		* Query for the string 'annual': 	
+				
+			* {{{queryAnnual} /taxon/findByEverythingFullText.json?query=annual}}
+							
+			
+	Example Responses :
+		
+		* Query for the string 'annual' : {query=Annual} [{{{CDM_Search_API_for_Distinct_Taxonomic_Name}back}}]
+										
+---
+
+[{
+class": "DefaultPagerImpl",
+"count": 20,
+"currentIndex": 0,
+"firstRecord": 1,
+"indices": [
+
+    0
+
+],
+"lastRecord": 19,
+"nextIndex": 0,
+"pageSize": 20,
+"pagesAvailable": 1,
+"prevIndex": 0,
+"records": [
+
+    {
+        "class": "SearchResult",
+        "docs": [ … ],
+        "entity": { … },
+        "fieldHighlightMap": { … },
+        "maxScore": 0.11066758632659912,
+        "score": 0.11066758632659912
+    },
+    {
+        "class": "SearchResult",
+        "docs": [
+            { … }
+        ],
+        "entity": {
+            "appendedPhrase": "",
+            "class": "Taxon",
+            "created": "2009-02-12T14:11:02.000Z",
+            "data": [ ],
+            "doubtful": false,
+            "excluded": false,
+            "lsid": null,
+            "protectedTitleCache": false,
+            "sec": {
+                "titleCache": "\"Edit WP6 - Cichorieae\", . 2006",
+                "type": "Generic",
+                "problemEnds": -1,
+                "parsingProblem": 0,
+                "datePublished": {
+                    "class": "TimePeriod",
+                    "end": "",
+                    "freeText": "2006",
+                    "start": "2006"
+                },
+                "created": "2010-05-27T17:54:55.000+01:00",
+                "problemStarts": -1,
+                "nomenclaturallyRelevant": false,
+                "updated": "2013-01-30T17:13:49.314Z",
+                "uri": "",
+                "uuid": "c5b96998-9c52-4f24-81f9-9d0f4de43052",
+                "protectedTitleCache": false,
+                "class": "Reference"
+            },
+            "taxonStatusUnknown": false,
+            "taxonomicChildrenCount": 0,
+            "titleCache": "Shinnersoseris rostrata (A. Gray) Tomb sec. \"Edit WP6 - Cichorieae\", . 2006",
+            "unplaced": false,
+            "updated": "2013-01-30T17:13:49.315Z",
+            "useNameCache": false,
+            "uuid": "accfc102-1b2b-40bc-a0eb-71636bde7ab9"
+        },
+        "fieldHighlightMap": {
+            "name": [
+                "<B>Annual</B> skeletonweed"
+            ]
+        },
+        "maxScore": 0.11066758632659912,
+        "score": 0.11066758632659912
+    }
+
+}]
+
+
+---		
+
+	

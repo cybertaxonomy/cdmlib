@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="../../service/dataset.xsd">
+  <DEFINEDTERMBASE DTYPE="MarkerType" ID="3025" CREATED="2011-01-28 17:07:04.0" UUID="1727f4ff-05c7-4fd6-85bf-bb67d3994df7" URI="http://any.uri.com" ISTECHNICAL="false" VOCABULARY_ID="11" PROTECTEDTITLECACHE="false" TITLECACHE=""/>
+  <DEFINEDTERMBASE_REPRESENTATION DEFINEDTERMBASE_ID="3025" REPRESENTATIONS_ID="3025"/>
+  <REPRESENTATION ID="3025" CREATED="2009-01-28 17:07:03.0" UUID="9d103e4a-a3c9-4f72-8fb2-4ecd8f007b7e" TEXT="A test marker type" ABBREVIATEDLABEL="tmt" LABEL="A test marker type" LANGUAGE_ID="406"/>
+</dataset>

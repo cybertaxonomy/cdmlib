@@ -1,0 +1,2364 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets xmlns="http://rs.tdwg.org/UBIF/2006/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd">
+    <TechnicalMetadata created="1970-01-01T04:46:00">
+        <Generator name="Xper2"
+            notes="This software is developed and distributed by LIS - Laboratoire Informatique et Systématique (LIS) - Université Pierre et Marie Curie - Paris VI - Copyright (c) 2004-2009" version="1.1"/>
+    </TechnicalMetadata>
+    <Dataset xml:lang="fr">
+        <Representation>
+            <Label>Feuilles des arbres</Label>
+            <Detail>Identification des arbres présents en France à partir des feuilles.</Detail>
+        </Representation>
+        <RevisionData>
+            <Creators>
+                <Agent ref="a1" role="aut"/>
+                <Agent ref="a2" role="aut"/>
+                <Agent ref="a3" role="aut"/>
+            </Creators>
+            <DateCreated>1970-01-01T11:02:00</DateCreated>
+            <DateModified>1970-01-01T16:19:00</DateModified>
+        </RevisionData>
+        <IPRStatements>
+            <IPRStatement role="Copyright">
+                <Label>Les illustrations ont été réalisées par Dominique Visset.</Label>
+            </IPRStatement>
+        </IPRStatements>
+        <Characters>
+            <CategoricalCharacter id="c1">
+                <Representation>
+                    <Label>Forme générale du limbe (des feuilles ou des folioles)</Label>
+                    <MediaObject ref="m31"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s1">
+                        <Representation>
+                            <Label>Allongée (plus de 3 fois plus longue que large)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s2">
+                        <Representation>
+                            <Label>Ovale ou elliptique (environ 2 fois pluslongue que large)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s3">
+                        <Representation>
+                            <Label>s'inscrivant dans un carré ou uncercle (Longueur = largeur)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s4">
+                        <Representation>
+                            <Label>Autres (en particulier triangulaire outronquée en éventail)</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c2">
+                <Representation>
+                    <Label>Feuille simple ou composée</Label>
+                    <MediaObject ref="m32"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s5">
+                        <Representation>
+                            <Label>simple</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s6">
+                        <Representation>
+                            <Label>composée de plusieurs folioles</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c3">
+                <Representation>
+                    <Label>Bord du limbe (des feuilles ou des folioles)</Label>
+                    <MediaObject ref="m33"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s7">
+                        <Representation>
+                            <Label>simplement denté</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s8">
+                        <Representation>
+                            <Label>entier (lisse)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s9">
+                        <Representation>
+                            <Label>denté aiguillonné</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s10">
+                        <Representation>
+                            <Label>crénelé</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s11">
+                        <Representation>
+                            <Label>doublement denté</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c4">
+                <Representation>
+                    <Label>Base du limbe (de la feuille ou des folioles)</Label>
+                    <MediaObject ref="m34"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s12">
+                        <Representation>
+                            <Label>symétrique</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s13">
+                        <Representation>
+                            <Label>dissymétrique</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c5">
+                <Representation>
+                    <Label>Apex du limbe (extrémité distale de feuilles ou folioles)</Label>
+                    <MediaObject ref="m35"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s14">
+                        <Representation>
+                            <Label>pointu</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s15">
+                        <Representation>
+                            <Label>arrondi</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s16">
+                        <Representation>
+                            <Label>tronqué, droit ou échancré</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c6">
+                <Representation>
+                    <Label>Nervation</Label>
+                    <MediaObject ref="m36"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s17">
+                        <Representation>
+                            <Label>nervation pennée (nervure primaire unique prolongeant le pétiole)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s18">
+                        <Representation>
+                            <Label>nervation pédalée (trois nervures dont les deux extérieures bifurquées)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s19">
+                        <Representation>
+                            <Label>nervation palmée (plusieurs nervures primaires partent du même point)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s20">
+                        <Representation>
+                            <Label>nervation dichotome (se divisant en deuxplusieurs fois)</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c7">
+                <Representation>
+                    <Label>Nervation secondaire - contact avec le bord de la feuille</Label>
+                    <MediaObject ref="m37"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s21">
+                        <Representation>
+                            <Label>nevures secondaires atteignant le bord dela feuille</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s22">
+                        <Representation>
+                            <Label>nervures secondaires bouclées-fermées</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c8">
+                <Representation>
+                    <Label>Orientation des nervures secondaires</Label>
+                    <MediaObject ref="m38"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s23">
+                        <Representation>
+                            <Label>plus ou moins rectilignes vers le bord dela feuille</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s24">
+                        <Representation>
+                            <Label>recourbées vers l'apex de la feuille</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c9">
+                <Representation>
+                    <Label>Nombre de folioles</Label>
+                    <MediaObject ref="m39"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s25">
+                        <Representation>
+                            <Label>trois</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s26">
+                        <Representation>
+                            <Label>plus de trois</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c10">
+                <Representation>
+                    <Label>Disposition des folioles</Label>
+                    <MediaObject ref="m40"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s27">
+                        <Representation>
+                            <Label>pennée</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s28">
+                        <Representation>
+                            <Label>palmée</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c11">
+                <Representation>
+                    <Label>Forme des sinus (espace entre les lobes)</Label>
+                    <MediaObject ref="m41"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s29">
+                        <Representation>
+                            <Label>sinus à angle aigu</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s30">
+                        <Representation>
+                            <Label>sinus en forme de dépression arrondie</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c12">
+                <Representation>
+                    <Label>Pétiole</Label>
+                    <MediaObject ref="m42"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s31">
+                        <Representation>
+                            <Label>présence de nectaires sur le pétiole</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s32">
+                        <Representation>
+                            <Label>absence de nectaires sur le pétiole</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c13">
+                <Representation>
+                    <Label>Découpe du limbe (des feuilles ou folioles)</Label>
+                    <MediaObject ref="m43"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s33">
+                        <Representation>
+                            <Label>limbe entier</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s34">
+                        <Representation>
+                            <Label>limbe lobé</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c14">
+                <Representation>
+                    <Label>Forme générale des folioles</Label>
+                    <MediaObject ref="m44"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s35">
+                        <Representation>
+                            <Label>Ovale (largeur la plus grande dansla moitié inférieure)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s36">
+                        <Representation>
+                            <Label>Elliptique (largeur la plus grande au mieu)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s37">
+                        <Representation>
+                            <Label>Obovale (largeur la plus grande dans la moitié supérieure)</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c15">
+                <Representation>
+                    <Label>Nombres de nervures primaires des nervations palmées</Label>
+                    <MediaObject ref="m45"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s38">
+                        <Representation>
+                            <Label>3</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s39">
+                        <Representation>
+                            <Label>5 ou plus</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c16">
+                <Representation>
+                    <Label>Pilosité du pétiole</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s40">
+                        <Representation>
+                            <Label>Absente</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s41">
+                        <Representation>
+                            <Label>Présente</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+        </Characters>
+        <CharacterTrees>
+            <CharacterTree id="ct1">
+                <Representation>
+                    <Label>Ordre et dépendance entre caractères</Label>
+                </Representation>
+                <ShouldContainAllCharacters>true</ShouldContainAllCharacters>
+                <Nodes>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s6"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c1"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c2"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c3"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c4"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c5"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c6"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c7"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c8"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s5"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c9"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s5"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c10"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s33"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c11"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c12"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c13"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s5"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c14"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s17"/>
+                                <State ref="s18"/>
+                                <State ref="s20"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c15"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c16"/>
+                    </CharNode>
+                </Nodes>
+            </CharacterTree>
+        </CharacterTrees>
+        <CodedDescriptions>
+            <CodedDescription id="D1">
+                <Representation>
+                    <Label>Arbre de Judée</Label>
+                    <MediaObject ref="m1"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s15"/>
+                        <State ref="s16"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D2">
+                <Representation>
+                    <Label>Aulne</Label>
+                    <MediaObject ref="m2"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s16"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D3">
+                <Representation>
+                    <Label>Bouleau</Label>
+                    <MediaObject ref="m3"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D4">
+                <Representation>
+                    <Label>Bourdaine</Label>
+                    <MediaObject ref="m4"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D5">
+                <Representation>
+                    <Label>Chataignier</Label>
+                    <MediaObject ref="m5"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D6">
+                <Representation>
+                    <Label>Chêne</Label>
+                    <MediaObject ref="m6"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s29"/>
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D7">
+                <Representation>
+                    <Label>Cornouiller</Label>
+                    <MediaObject ref="m7"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D8">
+                <Representation>
+                    <Label>Cytise</Label>
+                    <MediaObject ref="m8"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1"/>
+                    <Categorical ref="c2">
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s25"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s27"/>
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s35"/>
+                        <State ref="s36"/>
+                    </Categorical>
+                    <Categorical ref="c15">
+                        <State ref="s38"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D9">
+                <Representation>
+                    <Label>Erable de Montpellier</Label>
+                    <MediaObject ref="m9"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15">
+                        <State ref="s38"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D10">
+                <Representation>
+                    <Label>Erable plane</Label>
+                    <MediaObject ref="m10"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D11">
+                <Representation>
+                    <Label>Ginkgo</Label>
+                    <MediaObject ref="m11"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s15"/>
+                        <State ref="s16"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s29"/>
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D12">
+                <Representation>
+                    <Label>Laurier cerise</Label>
+                    <MediaObject ref="m12"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D13">
+                <Representation>
+                    <Label>Marronnier</Label>
+                    <MediaObject ref="m13"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1"/>
+                    <Categorical ref="c2">
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s26"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s37"/>
+                    </Categorical>
+                    <Categorical ref="c15">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D14">
+                <Representation>
+                    <Label>Micocoulier</Label>
+                    <MediaObject ref="m14"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15">
+                        <State ref="s38"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D15">
+                <Representation>
+                    <Label>Noisetier</Label>
+                    <MediaObject ref="m15"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s41"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D16">
+                <Representation>
+                    <Label>Orme</Label>
+                    <MediaObject ref="m16"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D17">
+                <Representation>
+                    <Label>Peuplier</Label>
+                    <MediaObject ref="m17"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D18">
+                <Representation>
+                    <Label>Platane</Label>
+                    <MediaObject ref="m18"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D19">
+                <Representation>
+                    <Label>Prunus</Label>
+                    <MediaObject ref="m19"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D20">
+                <Representation>
+                    <Label>Saule</Label>
+                    <MediaObject ref="m20"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D21">
+                <Representation>
+                    <Label>Savonnier</Label>
+                    <MediaObject ref="m21"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1"/>
+                    <Categorical ref="c2">
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s26"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D22">
+                <Representation>
+                    <Label>Sophora</Label>
+                    <MediaObject ref="m22"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1"/>
+                    <Categorical ref="c2">
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s26"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s35"/>
+                    </Categorical>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D23">
+                <Representation>
+                    <Label>Sureau</Label>
+                    <MediaObject ref="m23"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1"/>
+                    <Categorical ref="c2">
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s26"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14">
+                        <State ref="s35"/>
+                        <State ref="s36"/>
+                    </Categorical>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D24">
+                <Representation>
+                    <Label>Tilleul</Label>
+                    <MediaObject ref="m24"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D25">
+                <Representation>
+                    <Label>Tulipier</Label>
+                    <MediaObject ref="m25"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s16"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D26">
+                <Representation>
+                    <Label>Alisier</Label>
+                    <MediaObject ref="m26"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D27">
+                <Representation>
+                    <Label>Abricotier</Label>
+                    <MediaObject ref="m27"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s29"/>
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s31"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D28">
+                <Representation>
+                    <Label>Erable champêtre</Label>
+                    <MediaObject ref="m28"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                        <State ref="s3"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s29"/>
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s31"/>
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D29">
+                <Representation>
+                    <Label>Charme</Label>
+                    <MediaObject ref="m29"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                        <State ref="s3"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D30">
+                <Representation>
+                    <Label>Erable sycomore</Label>
+                    <MediaObject ref="m30"/>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s19"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s34"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15">
+                        <State ref="s39"/>
+                    </Categorical>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D31">
+                <Representation>
+                    <Label>Hêtre</Label>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s14"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12">
+                        <State ref="s32"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s33"/>
+                    </Categorical>
+                    <Categorical ref="c14"/>
+                    <Categorical ref="c15"/>
+                    <Categorical ref="c16">
+                        <State ref="s40"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+        </CodedDescriptions>
+        <Agents>
+            <Agent id="a1">
+                <Representation>
+                    <Label>Dominique Visset</Label>
+                </Representation>
+            </Agent>
+            <Agent id="a2">
+                <Representation>
+                    <Label>Nathanaël Cao</Label>
+                </Representation>
+            </Agent>
+            <Agent id="a3">
+                <Representation>
+                    <Label>Timothée Le Péchon</Label>
+                </Representation>
+            </Agent>
+        </Agents>
+        <MediaObjects>
+            <MediaObject id="m1">
+                <Representation>
+                    <Label>Arbre de Judée - m1</Label>
+                    <Detail role="Caption">Arbre de Judée</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i1_arbredejudee.jpg"/>
+            </MediaObject>
+            <MediaObject id="m2">
+                <Representation>
+                    <Label>Aulne - m2</Label>
+                    <Detail role="Caption">Aulne</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i2_aulne.jpg"/>
+            </MediaObject>
+            <MediaObject id="m3">
+                <Representation>
+                    <Label>Bouleau - m3</Label>
+                    <Detail role="Caption">Bouleau</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i3_bouleau.jpg"/>
+            </MediaObject>
+            <MediaObject id="m4">
+                <Representation>
+                    <Label>Bourdaine - m4</Label>
+                    <Detail role="Caption">Bourdaine</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i4_bourdaine.jpg"/>
+            </MediaObject>
+            <MediaObject id="m5">
+                <Representation>
+                    <Label>Chataignier - m5</Label>
+                    <Detail role="Caption">Chataignier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i5_chataigner.jpg"/>
+            </MediaObject>
+            <MediaObject id="m6">
+                <Representation>
+                    <Label>Chêne - m6</Label>
+                    <Detail role="Caption">Chêne</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i6_chene.jpg"/>
+            </MediaObject>
+            <MediaObject id="m7">
+                <Representation>
+                    <Label>Cornouiller - m7</Label>
+                    <Detail role="Caption">Cornouiller</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i7_cornouillier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m8">
+                <Representation>
+                    <Label>Cytise - m8</Label>
+                    <Detail role="Caption">Cytise</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i8_cytise.jpg"/>
+            </MediaObject>
+            <MediaObject id="m9">
+                <Representation>
+                    <Label>Erable de Montpellier - m9</Label>
+                    <Detail role="Caption">Erable de Montpellier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i9_erabledemtpellier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m10">
+                <Representation>
+                    <Label>Erable plane - m10</Label>
+                    <Detail role="Caption">Erable plane</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i10_erable_plane.jpg"/>
+            </MediaObject>
+            <MediaObject id="m11">
+                <Representation>
+                    <Label>Ginkgo - m11</Label>
+                    <Detail role="Caption">Ginkgo</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i11_ginkobiloba.jpg"/>
+            </MediaObject>
+            <MediaObject id="m12">
+                <Representation>
+                    <Label>Laurier cerise - m12</Label>
+                    <Detail role="Caption">Laurier cerise</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i12_lauriercer.jpg"/>
+            </MediaObject>
+            <MediaObject id="m13">
+                <Representation>
+                    <Label>Marronnier - m13</Label>
+                    <Detail role="Caption">Marronnier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i13_marronnier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m14">
+                <Representation>
+                    <Label>Micocoulier - m14</Label>
+                    <Detail role="Caption">Micocoulier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i14_micocoulier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m15">
+                <Representation>
+                    <Label>Noisetier - m15</Label>
+                    <Detail role="Caption">Noisetier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i15_noisetier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m16">
+                <Representation>
+                    <Label>Orme - m16</Label>
+                    <Detail role="Caption">Orme</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i16_orme.jpg"/>
+            </MediaObject>
+            <MediaObject id="m17">
+                <Representation>
+                    <Label>Peuplier - m17</Label>
+                    <Detail role="Caption">Peuplier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i17_peuplier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m18">
+                <Representation>
+                    <Label>Platane - m18</Label>
+                    <Detail role="Caption">Platane</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i18_platane.jpg"/>
+            </MediaObject>
+            <MediaObject id="m19">
+                <Representation>
+                    <Label>Prunus - m19</Label>
+                    <Detail role="Caption">Prunus</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i19_prunus.jpg"/>
+            </MediaObject>
+            <MediaObject id="m20">
+                <Representation>
+                    <Label>Saule - m20</Label>
+                    <Detail role="Caption">Saule</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i20_saule.jpg"/>
+            </MediaObject>
+            <MediaObject id="m21">
+                <Representation>
+                    <Label>Savonnier - m21</Label>
+                    <Detail role="Caption">Savonnier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i21_savonnier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m22">
+                <Representation>
+                    <Label>Sophora - m22</Label>
+                    <Detail role="Caption">Sophora</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i22_sophora.jpg"/>
+            </MediaObject>
+            <MediaObject id="m23">
+                <Representation>
+                    <Label>Sureau - m23</Label>
+                    <Detail role="Caption">Sureau</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i23_sureau.jpg"/>
+            </MediaObject>
+            <MediaObject id="m24">
+                <Representation>
+                    <Label>Tilleul - m24</Label>
+                    <Detail role="Caption">Tilleul</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i24_tilleuil2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m25">
+                <Representation>
+                    <Label>Tulipier - m25</Label>
+                    <Detail role="Caption">Tulipier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/i25_tulipier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m26">
+                <Representation>
+                    <Label>Alisier - m26</Label>
+                    <Detail role="Caption">Alisier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/alisier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m27">
+                <Representation>
+                    <Label>Abricotier - m27</Label>
+                    <Detail role="Caption">Abricotier</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/Abricotier.jpg"/>
+            </MediaObject>
+            <MediaObject id="m28">
+                <Representation>
+                    <Label>Erable champêtre - m28</Label>
+                    <Detail role="Caption">Erable champêtre</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/Erable_champetre.jpg"/>
+            </MediaObject>
+            <MediaObject id="m29">
+                <Representation>
+                    <Label>Charme - m29</Label>
+                    <Detail role="Caption">Charme</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/Charme.jpg"/>
+            </MediaObject>
+            <MediaObject id="m30">
+                <Representation>
+                    <Label>Erable sycomore - m30</Label>
+                    <Detail role="Caption">Erable sycomore</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/Erable_sycomore.jpg"/>
+            </MediaObject>
+            <MediaObject id="m31">
+                <Representation>
+                    <Label>Forme générale du limbe (des feuilles ou des folioles) - m31</Label>
+                    <Detail role="Caption">Forme générale du limbe (des feuilles ou des folioles)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\forme_general_limbe.gif"/>
+            </MediaObject>
+            <MediaObject id="m32">
+                <Representation>
+                    <Label>Feuille simple ou composée - m32</Label>
+                    <Detail role="Caption">Feuille simple ou composée</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\simple_composee.gif"/>
+            </MediaObject>
+            <MediaObject id="m33">
+                <Representation>
+                    <Label>Bord du limbe (des feuilles ou des folioles) - m33</Label>
+                    <Detail role="Caption">Bord du limbe (des feuilles ou des folioles)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\bord_limbe.gif"/>
+            </MediaObject>
+            <MediaObject id="m34">
+                <Representation>
+                    <Label>Base du limbe (de la feuille ou des folioles) - m34</Label>
+                    <Detail role="Caption">Base du limbe (de la feuille ou des folioles)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\base_limbe.gif"/>
+            </MediaObject>
+            <MediaObject id="m35">
+                <Representation>
+                    <Label>Apex du limbe (extrémité distale de feuilles ou folioles) - m35</Label>
+                    <Detail role="Caption">Apex du limbe (extrémité distale de feuilles ou folioles)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\apex_limbe.gif"/>
+            </MediaObject>
+            <MediaObject id="m36">
+                <Representation>
+                    <Label>Nervation - m36</Label>
+                    <Detail role="Caption">Nervation</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\nervure_I.gif"/>
+            </MediaObject>
+            <MediaObject id="m37">
+                <Representation>
+                    <Label>Nervation secondaire - contact avec le bord de la feuille - m37</Label>
+                    <Detail role="Caption">Nervation secondaire - contact avec le bord de la feuille</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\nervure_II.gif"/>
+            </MediaObject>
+            <MediaObject id="m38">
+                <Representation>
+                    <Label>Orientation des nervures secondaires - m38</Label>
+                    <Detail role="Caption">Orientation des nervures secondaires</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\orientation_nervure_II.gif"/>
+            </MediaObject>
+            <MediaObject id="m39">
+                <Representation>
+                    <Label>Nombre de folioles - m39</Label>
+                    <Detail role="Caption">Nombre de folioles</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\nombre_folioles.gif"/>
+            </MediaObject>
+            <MediaObject id="m40">
+                <Representation>
+                    <Label>Disposition des folioles - m40</Label>
+                    <Detail role="Caption">Disposition des folioles</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\disposition_folioles.gif"/>
+            </MediaObject>
+            <MediaObject id="m41">
+                <Representation>
+                    <Label>Forme des sinus (espace entre les lobes) - m41</Label>
+                    <Detail role="Caption">Forme des sinus (espace entre les lobes)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\forme_sinus.gif"/>
+            </MediaObject>
+            <MediaObject id="m42">
+                <Representation>
+                    <Label>Pétiole - m42</Label>
+                    <Detail role="Caption">Pétiole</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\petiole.gif"/>
+            </MediaObject>
+            <MediaObject id="m43">
+                <Representation>
+                    <Label>Découpe du limbe (des feuilles ou folioles) - m43</Label>
+                    <Detail role="Caption">Découpe du limbe (des feuilles ou folioles)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\decoupe_limbe.gif"/>
+            </MediaObject>
+            <MediaObject id="m44">
+                <Representation>
+                    <Label>Forme générale des folioles - m44</Label>
+                    <Detail role="Caption">Forme générale des folioles</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\forme-foliole.jpg"/>
+            </MediaObject>
+            <MediaObject id="m45">
+                <Representation>
+                    <Label>Nombres de nervures primaires des nervations palmées - m45</Label>
+                    <Detail role="Caption">Nombres de nervures primaires des nervations palmées</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="images/characters\nervure_I.gif"/>
+            </MediaObject>
+        </MediaObjects>
+    </Dataset>
+</Datasets>
