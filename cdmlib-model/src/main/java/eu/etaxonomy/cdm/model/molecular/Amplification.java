@@ -395,7 +395,7 @@ public class Amplification extends EventBase implements Cloneable{
 
 	/**
 	 * The gel concentration used for the electrophoresis.
-	 * Base unit is 
+	 * Base unit is [%] 
 	 * @see #getElectrophoresisVoltage()
 	 * @see #getGelRunningTime()
 	 * @see #getGelPhoto()
