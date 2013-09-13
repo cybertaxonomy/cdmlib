@@ -1,9 +1,3 @@
-cdm-3.3/*.project
-cdm-3.3/.directory
-cdm-3.3/.metadata
-cdm-3.3/latestChanges.patch
-cdm-3.3/target
-cdm-3.3/testANTLR
 cdmlib-commons/.classpath
 cdmlib-commons/.project
 cdmlib-commons/.settings
