@@ -1,7 +1,6 @@
 * text=auto !eol
 /LICENSE.txt -text
 cdm-3.3/README.txt -text
-cdm-3.3/pom.xml -text
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
@@ -2269,6 +2268,7 @@ cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
 cdmlib-services/src/test/resources/spy.properties -text
 cdmlib-services/src/test/resources/unitils.properties -text
+/pom.xml -text
 src/changes/changes.xml -text
 src/docbkx/ReferenceDocumentation.xml -text
 src/docbkx/annotation-and-markers.xml -text
