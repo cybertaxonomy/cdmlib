@@ -2067,6 +2067,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxaAndNamesSearchMode.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
@@ -2115,6 +2116,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/DocumentSearch
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearchException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneSearch.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/QueryFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResult.java -text
