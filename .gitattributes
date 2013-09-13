@@ -1,5 +1,5 @@
 * text=auto !eol
-cdm-3.3/LICENSE.txt -text
+/LICENSE.txt -text
 cdm-3.3/README.txt -text
 cdm-3.3/pom.xml -text
 cdmlib-commons/LICENSE.TXT -text
