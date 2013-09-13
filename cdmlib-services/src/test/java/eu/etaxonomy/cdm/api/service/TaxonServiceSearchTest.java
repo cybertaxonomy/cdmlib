@@ -15,6 +15,7 @@ import static org.junit.Assert.assertNotNull;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -22,6 +23,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
+import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.index.CorruptIndexException;
@@ -37,6 +39,7 @@ import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -800,6 +803,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager;
 
         pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
+        logPagerRecords(pager, null);
         Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
 
         pager = taxonService.findByFullText(Taxon.class, "Abies", null, null, true, null, null, null, null); // --> 6
@@ -820,16 +824,48 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // synonym in classification ???
     }
 
+    @Test
+    @DataSet
+    public final void testFindTaxaAndNamesByFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, null);
+        Assert.assertEquals("Expecting 7 entities", Integer.valueOf(7), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
+                "Abies", null, null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 0 entity", Integer.valueOf(0), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
+                "balsam", null, null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+    }
+
     /**
      * Regression test for #3119: fulltext search: Entity always null whatever search
      *
      * @throws CorruptIndexException
      * @throws IOException
      * @throws ParseException
+     * @throws LuceneMultiSearchException
      */
     @Test
     @DataSet
-    public final void testFindByEverythingFullText() throws CorruptIndexException, IOException, ParseException {
+    public final void testFindByEverythingFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -854,7 +890,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     @Test
     @DataSet
-    public final void findByEveryThingFullText() throws CorruptIndexException, IOException, ParseException {
+    public final void findByEveryThingFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         refreshLuceneIndex();
 
@@ -1017,10 +1053,23 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                             "Die Balsam-Tanne (Abies balsamea) ist eine Pflanzenart aus der Gattung der Tannen (Abies). Sie wächst im nordöstlichen Nordamerika, wo sie sowohl Tief- als auch Bergland besiedelt. Sie gilt als relativ anspruchslos gegenüber dem Standort und ist frosthart. In vielen Teilen des natürlichen Verbreitungsgebietes stellt sie die Klimaxbaumart dar.",
                             Language.GERMAN(), null));
         d_abies_balsamea
+        .addElement(CommonTaxonName
+                .NewInstance(
+                        "Balsam-Tanne",
+                        Language.GERMAN(), null));
+
+        d_abies_balsamea
                 .addElement(TextData
                         .NewInstance(
                                 "Бальзам ньыв (лат. Abies balsamea) – быдмассэзлӧн пожум котырись ньыв увтырын торья вид. Ньывпуыс быдмӧ 14–20 метра вылына да овлӧ 10–60 см кыза диаметрын. Ньывпу пантасьӧ Ойвыв Америкаын.",
                                 Language.RUSSIAN(), null));
+        d_abies_balsamea
+        .addElement(CommonTaxonName
+                .NewInstance(
+                        "Бальзам ньыв",
+                        Language.RUSSIAN(), null));
+        descriptionService.saveOrUpdate(d_abies_balsamea);
+
         setComplete();
         endTransaction();
 
@@ -1061,7 +1110,26 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         }
 
         commitAndStartNewTransaction(null);
+    }
 
+    private <T extends CdmBase> void logPagerRecords(Pager<SearchResult<T>> pager, Level level){
+        if(level == null || logger.getLevel().isGreaterOrEqual(level)){
+            StringBuilder b = new StringBuilder();
+            b.append("\n");
+            int i = 0;
+            for(SearchResult sr : pager.getRecords()){
+                CdmBase entity = sr.getEntity();
+                b.append(" ").append(i++).append(" - ");
+                if(entity == null){
+                    b.append("NULL");
+                } else {
+                    b.append(entity.getClass().getSimpleName()).append(" : ").append(entity.toString());
+                    b.append(" [").append(entity.getUuid()).append("]");
+                }
+                b.append("\n");
+            }
+            logger.info(b);
+        }
     }
 
 }

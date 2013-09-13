@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +26,7 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -479,6 +482,51 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator);
 
     /**
+     * performes a union searches for TaxonBase instances on all available
+     * free text indexes. At the time of writing this documentation it combines
+     * {@link #findByDescriptionElementFullText(Class, String, Classification, List, List, boolean, Integer, Integer, List, List)}
+     * and {@link #findByFullText(Class, String, Classification, List, boolean, Integer, Integer, List, List)
+     *
+     * @param queryString
+     *            the query string
+     * @param classification
+     *            Additional filter criterion: If a taxonomic classification
+     *            three is specified here the result set will only contain taxa
+     *            of the given classification
+     * @param languages
+     *            Additional filter criterion: Search only in these languages.
+     *            Not all text fields in the cdm model are multilingual, thus
+     *            this setting will only apply to the multilingiual fields.
+     *            Other fields are searched nevertheless if this parameter is
+     *            set or not.
+     * @param highlightFragments
+     *            TODO
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     *            properties to initialize - see
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a paged list of instances of type T matching the queryString and
+     *         the additional filter criteria
+     * @return
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     * @throws LuceneMultiSearchException
+     */
+    public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
+            Classification classification, List<Language> languages, boolean highlightFragments,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
+
+    /**
      * Searches for TaxonBase instances using the TaxonBase free text index.
      *
      * <h4>This is an experimental feature, it may be moved, modified, or even
@@ -525,17 +573,21 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
     /**
-     * performes a union searches for TaxonBase instances on all available
-     * free text indexes. At the time of writing this documentation it combines
-     * {@link #findByDescriptionElementFullText(Class, String, Classification, List, List, boolean, Integer, Integer, List, List)}
-     * and {@link #findByFullText(Class, String, Classification, List, boolean, Integer, Integer, List, List)
+     * Searches for TaxonBase instances using the TaxonBase free text index.
      *
+     *
+     *
+     * <h4>This is an experimental feature, it may be moved, modified, or even
+     * removed in future releases!!!</h4>
+     * @param searchModes
+     *            Additional filter criterion: defaults to [doTaxa] if set null
      * @param queryString
      *            the query string
      * @param classification
      *            Additional filter criterion: If a taxonomic classification
      *            three is specified here the result set will only contain taxa
      *            of the given classification
+     * @param namedAreas
      * @param languages
      *            Additional filter criterion: Search only in these languages.
      *            Not all text fields in the cdm model are multilingual, thus
@@ -554,21 +606,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      *            Supports path like <code>orderHints.propertyNames</code> which
      *            include *-to-one properties like createdBy.username or
      *            authorTeam.persistentTitleCache
-     * @param propertyPaths
-     *            properties to initialize - see
-     *            {@link IBeanInitializer#initialize(Object, List)}
-     * @return a paged list of instances of type T matching the queryString and
+     * @param propertyPath
+     *            Common properties to initialize the instances of the
+     *            CDM types ({@link Taxon} and {@link Synonym}
+     *            this method can return - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a paged list of instances of {@link Taxon}, {@link Synonym}, matching the queryString and
      *         the additional filter criteria
-     * @return
      * @throws CorruptIndexException
      * @throws IOException
      * @throws ParseException
+     * @throws LuceneMultiSearchException
      */
-    public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
-            Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
-
-
+    public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
+            EnumSet<TaxaAndNamesSearchMode> searchModes,
+            String queryString, Classification classification, Set<NamedArea> namedAreas,
+            List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
 
     /**
      * Searches for TaxonBase instances by using the DescriptionElement free text index.

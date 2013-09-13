@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
@@ -61,6 +63,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -70,6 +73,7 @@ import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
@@ -1399,6 +1403,62 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
 
 
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaAndNamesByFullText(java.util.EnumSet, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, java.util.Set, java.util.List, boolean, java.lang.Integer, java.lang.Integer, java.util.List, java.util.Map)
+     */
+    @Override
+    public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
+            EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString, Classification classification,
+            Set<NamedArea> namedAreas, List<Language> languages, boolean highlightFragments, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
+            throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        // set default if parameter is null
+        if(searchModes == null){
+            searchModes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa);
+        }
+
+        List<LuceneSearch> luceneSearches = new ArrayList<LuceneSearch>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+
+
+        if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
+            Class taxonBaseSubclass = TaxonBase.class;
+            if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
+                taxonBaseSubclass = Taxon.class;
+            } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
+                taxonBaseSubclass = Synonym.class;
+            }
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments));
+            idFieldMap.put(CdmBaseType.TAXON, "id");
+        }
+        if(searchModes.contains(TaxaAndNamesSearchMode.doTaxaByCommonNames)) {
+            luceneSearches.add(prepareByDescriptionElementFullTextSearch(CommonTaxonName.class, queryString, classification, null, languages, highlightFragments));
+            idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
+        }
+        if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames)) {
+            //TODO
+        }
+        // TODO implement area filter
+
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
+
+        // --- execute search
+        TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
+
+
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
+
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findByDescriptionElementFullText(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List, java.util.List, boolean, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
@@ -1432,7 +1492,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
             Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
         LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);

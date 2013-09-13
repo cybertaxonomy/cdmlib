@@ -40,13 +40,14 @@ public class LuceneMultiSearch extends LuceneSearch {
 
     public static final Logger logger = Logger.getLogger(LuceneMultiSearch.class);
 
-    private Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
+    private final Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
 
 
     /**
      * @param luceneSearch the searches to execute together as a union like search
+     * @throws Exception
      */
-    public LuceneMultiSearch(LuceneSearch... luceneSearch) {
+    public LuceneMultiSearch(LuceneSearch... luceneSearch) throws LuceneMultiSearchException {
         session = luceneSearch[0].session;
 
         BooleanQuery query = new BooleanQuery();
@@ -57,11 +58,16 @@ public class LuceneMultiSearch extends LuceneSearch {
             this.directorySelectClasses.add(search.getDirectorySelectClass());
             query.add(search.getQuery(), Occur.SHOULD);
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
+            if(search.getClazz() != null){
+                if(getClazz() != null){
+                    throw new LuceneMultiSearchException("LuceneMultiSearch can only handle once class restriction, but multiple given: " + getClazz() + ", " + search.getClazz());
+                }
+                setClazz(search.getClazz());
+            }
         }
 
         this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
         this.query = query;
-
     }
 
     /**
@@ -75,15 +81,15 @@ public class LuceneMultiSearch extends LuceneSearch {
             SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
             List<IndexReader> readers = new ArrayList<IndexReader>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
-            	   //OLD
+                   //OLD
 //                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
 //                logger.info(directoryProviders[0].getDirectory().toString());
 
 //                ReaderProvider readerProvider = searchFactory.getReaderProvider();
-            	IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor(); 
-            	IndexReader reader = ira.open(type);
+                IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor();
+                IndexReader reader = ira.open(type);
 //            	readers.add(readerProvider.openReader(directoryProviders[0]));
-            	readers.add(reader);
+                readers.add(reader);
             }
             if(readers.size() > 1){
                 MultiReader multireader = new MultiReader(readers.toArray(new IndexReader[readers.size()]), true);
