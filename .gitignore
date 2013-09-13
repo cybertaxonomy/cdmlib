@@ -1,14 +1,6 @@
 cdm-3.3/*.project
 cdm-3.3/.directory
 cdm-3.3/.metadata
-cdm-3.3/cdmlib-ext/.classpath
-cdm-3.3/cdmlib-ext/.project
-cdm-3.3/cdmlib-ext/.settings
-cdm-3.3/cdmlib-ext/bin
-cdm-3.3/cdmlib-ext/hibernate.log
-cdm-3.3/cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd
-cdm-3.3/cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/dataset.xsd
-cdm-3.3/cdmlib-ext/target
 cdm-3.3/cdmlib-io/.classpath
 cdm-3.3/cdmlib-io/.project
 cdm-3.3/cdmlib-io/.settings
@@ -98,3 +90,11 @@ cdmlib-commons/.settings
 cdmlib-commons/bin
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/ResultWrapper.java
 cdmlib-commons/target
+cdmlib-ext/.classpath
+cdmlib-ext/.project
+cdmlib-ext/.settings
+cdmlib-ext/bin
+cdmlib-ext/hibernate.log
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/PUBLIC.xsd
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/dataset.xsd
+cdmlib-ext/target
