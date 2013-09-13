@@ -479,22 +479,28 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Pager<IdentifiableEntity> findTaxaAndNames(IFindTaxaAndNamesConfigurator configurator);
 
     /**
+     * Searches for TaxonBase instances using the TaxonBase free text index.
+     *
      * <h4>This is an experimental feature, it may be moved, modified, or even
      * removed in future releases!!!</h4>
      *
      * @param clazz
+     *            Additional filter criterion: The specific TaxonBase subclass
+     *            to search for
      * @param queryString
-     *            the query string to filter by
+     *            the query string
      * @param classification
-     *            If a taxonomic classification three is specified here the
-     *            result set will only contain taxa of the given classification
-     * @param features TODO
+     *            Additional filter criterion: If a taxonomic classification
+     *            three is specified here the result set will only contain taxa
+     *            of the given classification
      * @param languages
-     *            Search only in these languages. Not all text fields in the cdm
-     *            model are multilingual, thus this setting will only apply to
-     *            the multilingiual fields. Other fields are searched
-     *            nevertheless if this parameter is set or not.
-     * @param highlightFragments TODO
+     *            Additional filter criterion: Search only in these languages.
+     *            Not all text fields in the cdm model are multilingual, thus
+     *            this setting will only apply to the multilingiual fields.
+     *            Other fields are searched nevertheless if this parameter is
+     *            set or not.
+     * @param highlightFragments
+     *            TODO
      * @param pageSize
      *            The maximum number of objects returned (can be null for all
      *            objects)
@@ -508,7 +514,101 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param propertyPaths
      *            properties to initialize - see
      *            {@link IBeanInitializer#initialize(Object, List)}
-     * @return a paged list of instances of type T matching the queryString
+     * @return a paged list of instances of type T matching the queryString and
+     *         the additional filter criteria
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
+            List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+
+    /**
+     * performes a union searches for TaxonBase instances on all available
+     * free text indexes. At the time of writing this documentation it combines
+     * {@link #findByDescriptionElementFullText(Class, String, Classification, List, List, boolean, Integer, Integer, List, List)}
+     * and {@link #findByFullText(Class, String, Classification, List, boolean, Integer, Integer, List, List)
+     *
+     * @param queryString
+     *            the query string
+     * @param classification
+     *            Additional filter criterion: If a taxonomic classification
+     *            three is specified here the result set will only contain taxa
+     *            of the given classification
+     * @param languages
+     *            Additional filter criterion: Search only in these languages.
+     *            Not all text fields in the cdm model are multilingual, thus
+     *            this setting will only apply to the multilingiual fields.
+     *            Other fields are searched nevertheless if this parameter is
+     *            set or not.
+     * @param highlightFragments
+     *            TODO
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     *            properties to initialize - see
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a paged list of instances of type T matching the queryString and
+     *         the additional filter criteria
+     * @return
+     * @throws CorruptIndexException
+     * @throws IOException
+     * @throws ParseException
+     */
+    public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
+            Classification classification, List<Language> languages, boolean highlightFragments,
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
+
+
+
+    /**
+     * Searches for TaxonBase instances by using the DescriptionElement free text index.
+     *
+     * <h4>This is an experimental feature, it may be moved, modified, or even
+     * removed in future releases!!!</h4>
+     *
+     * @param clazz
+     *            Additional filter criterion:
+     * @param queryString
+     *            the query string to filter by
+     * @param classification
+     *            Additional filter criterion: If a taxonomic classification
+     *            three is specified here the result set will only contain taxa
+     *            of the given classification
+     * @param features
+     *            TODO
+     * @param languages
+     *            Additional filter criterion: Search only in these languages.
+     *            Not all text fields in the cdm model are multilingual, thus
+     *            this setting will only apply to the multilingiual fields.
+     *            Other fields are searched nevertheless if this parameter is
+     *            set or not.
+     * @param highlightFragments
+     *            TODO
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPaths
+     *            properties to initialize - see
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a paged list of instances of type T matching the queryString and
+     *         the additional filter criteria
      * @throws IOException
      * @throws CorruptIndexException
      * @throws ParseException
@@ -667,15 +767,6 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return list of inferred synonyms
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
-
-    public Pager<SearchResult<TaxonBase>> findByFullText(Class<? extends TaxonBase> clazz, String queryString, Classification classification,
-            List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
-            List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
-
-    public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
-            Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
-
 
 
 
