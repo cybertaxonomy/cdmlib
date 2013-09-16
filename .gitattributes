@@ -1626,6 +1626,7 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XMLHelper.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XmlEntityFactoryBase.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/IPublishOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/PublishOutputModuleBase.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/MediawikiOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/DocumentCreator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/IStyleNames.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModule.java -text
