@@ -10,11 +10,12 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import org.junit.Assert;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmPreference;
+import eu.etaxonomy.cdm.model.common.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -30,16 +31,49 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
 /************ TESTS ********************************/
 
     @Test
+    @DataSet
     public void testDao() {
     	Assert.assertNotNull(dao);
     }
 
+    @Test
+    @DataSet
+    public void testGet() {
+        PrefKey key = new PrefKey("DB", "NomCode");
+        CdmPreference pref = dao.get(key);
+        Assert.assertNotNull("CdmPreference for given key must exist", pref);
+        Assert.assertEquals("ICNAFP", pref.getValue());
+        
+        key = new PrefKey("DB", "xyz");
+        pref = dao.get(key);
+        Assert.assertNull("CdmPreference for given key must not exist", pref);
+    }
+    
 	
     @Test
-    @Ignore
+    @DataSet
+    public void testCount() {
+    	 int countStart = dao.count();
+         Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
+    }
+	
+    @Test
+    @DataSet
     public void testSet() {
-        CdmPreference pref = CdmPreference.NewInstance("Aber", "www", "200");
+    	 int countStart = dao.count();
+         Assert.assertEquals(1, countStart);
+    	
+    	CdmPreference pref = CdmPreference.NewInstance("DB", "xyz", "200");
         dao.set(pref);
+	   	int count = dao.count();
+	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
+
+        
+        pref = CdmPreference.NewInstance("DB", "NomCode", "ICZN");
+        dao.set(pref);
+        
+	   	count = dao.count();
+	    Assert.assertEquals("There should be only 1 new preference", countStart + 1, count);
         
     }
 }

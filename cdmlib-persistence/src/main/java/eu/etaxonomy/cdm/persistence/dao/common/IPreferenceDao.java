@@ -29,4 +29,10 @@ public interface IPreferenceDao {
 	 */
 	public void set(CdmPreference preference);
 
+	/**
+	 * Return the number of all existing cdm preferences
+	 * @return
+	 */
+	public int count();
+
 }
