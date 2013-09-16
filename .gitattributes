@@ -4,6 +4,7 @@
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AbstractStringComparator.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AccountStore.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DocUtils.java -text
@@ -730,7 +731,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/TeamOrPersonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package.html -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AbstractStringComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotatableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -text
