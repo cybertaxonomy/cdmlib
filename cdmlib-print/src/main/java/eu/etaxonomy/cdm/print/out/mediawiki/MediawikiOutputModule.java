@@ -44,7 +44,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 	private static final Logger logger = Logger
 			.getLogger(MediawikiOutputModule.class);
 	
-	public static String STYLESHEET_RESOURCE_DEFAULT = "/stylesheets/mediawiki/multipages.xsl";
+	public static String STYLESHEET_RESOURCE_DEFAULT = "src/main/resources/stylesheets/mediawiki/multipages.xsl";
 	
 	public void output(Document document, File exportFolder, IProgressMonitor progressMonitor) {
 		
@@ -52,8 +52,8 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 		
 		try{		
 			
-			URL xslURL = new URL("file:///C:/Users/l.morris/workspace/cdmlib/cdmlib-print/src/main/resources/stylesheets/mediawiki/multipages.xsl");
-
+//			URL xslURL = new URL("file:///C:/Users/l.morris/workspace/cdmlib/cdmlib-print/src/main/resources/stylesheets/mediawiki/multipages.xsl");
+			URL xslURL= (new java.io.File(STYLESHEET_RESOURCE_DEFAULT)).toURI().toURL();
 
 	         String xslID = xslURL.toString();
 		
@@ -121,7 +121,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 		MediawikiOutputModule outputModule = new MediawikiOutputModule();
 		PublishConfigurator configurator = PublishConfigurator.NewRemoteInstance();
-		configurator.setExportFolder(new File("/Users/l.morris/Documents")); 
+		configurator.setExportFolder(new File("src/main/resources/tmp")); 
 		Document document = new Document();
 		
 		outputModule.output(document, configurator.getExportFolder(), configurator.getProgressMonitor());
