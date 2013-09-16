@@ -105,23 +105,15 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @XmlElement(name = "childNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    // @IndexColumn/@OrderColumn does not work because not every TaxonNode has a parent. But only NotNull will solve the problem (otherwise 
-    // we will need a join table 
-	// http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
-	// http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
-	//see also https://forum.hibernate.org/viewtopic.php?p=2392563
-	//http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
-	// reading works, but writing doesn't
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
     @OrderColumn(name="sortIndex")
     @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
      
-    
-    //see comment on children TaxonNode#OrderColumn
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex = -1;
-
 
     @XmlElement(name = "reference")
     @XmlIDREF
