@@ -14,10 +14,10 @@ import eu.etaxonomy.cdm.model.common.CdmPreference;
  * @author a.mueller
  * @created 2013-09-09
  */
-public interface IPreferencesService {
+public interface IPreferenceService {
 
 	/**
-	 * Retrieve the value for the given preference key.
+	 * Retrieve the best matching value for the given preference key.
 	 * @param key
 	 * @return
 	 */
@@ -28,5 +28,11 @@ public interface IPreferencesService {
 	 * @param preference
 	 */
 	public void set(CdmPreference preference);
+	
+	/**
+	 * Return the number of all existing cdm preferences
+	 * @return
+	 */
+	public int count();
 
 }
