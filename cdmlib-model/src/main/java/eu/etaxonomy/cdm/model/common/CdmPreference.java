@@ -42,11 +42,11 @@ import org.hibernate.validator.constraints.Length;
  * @created 03.07.2013
  */
 @Entity
-public class CdmPreference implements Serializable {
+public final class CdmPreference implements Serializable {
 	private static final long serialVersionUID = 4307599154287181582L;
 
 	
-	public static CdmPreference NewInstance(String subject, String predicate, String value){
+	public static final CdmPreference NewInstance(String subject, String predicate, String value){
 		return new CdmPreference(subject, predicate, value);
 	}
 	
@@ -54,13 +54,20 @@ public class CdmPreference implements Serializable {
 	public static class PrefKey implements Serializable{
 		private static final long serialVersionUID = 9019957853773606194L;
 
-		@Length(max=255)
+		@Length(max=100)  //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
 		private String subject;
 		
-		@Length(max=255)
+		@Length(max=100)  //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
 		private String predicate;
 		
-		public PrefKey(){}
+		//for hibernate use only
+		@SuppressWarnings("unused")
+		private PrefKey(){}
+		
+
+		public PrefKey(CdmPreferencesSubject subject, CdmPreferencesPredicateEnum predicate){
+			this(subject.getKey(), predicate.getKey());
+		}
 		
 		public PrefKey(String subject, String predicate){
 			if (subject == null) throw new IllegalArgumentException("Subject must not be null for preference");
@@ -103,6 +110,29 @@ public class CdmPreference implements Serializable {
 	@Length(max=1023)
 	private String value;
 	
+//****************** CONSTRUCTOR **********************/	
+	
+	//for hibernate use only
+	@SuppressWarnings("unused")
+	private CdmPreference(){};
+
+	
+	/**
+	 * Constructor.
+	 * @param subject must not be null and must not be longer then 255 characters.
+	 * @param predicate must not be null and must not be longer then 255 characters.
+	 * @param value must not be longer then 1023 characters.
+	 */
+	public CdmPreference(CdmPreferencesSubject subject, CdmPreferencesPredicateEnum predicate, String value){
+		this.key = new PrefKey(subject, predicate);
+		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
+		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(
+				String.format("value must not be longer then 1023 characters for preference. Value = %s", value));
+		}
+		this.value = value;
+	}
+
+	
 	/**
 	 * Constructor.
 	 * @param subject must not be null and must not be longer then 255 characters.
@@ -113,12 +143,14 @@ public class CdmPreference implements Serializable {
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
 		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(
-				String.format("value must not be longer then 1023 characters for preference. Value = %s", value));
+			String.format("value must not be longer then 1023 characters for preference. Value = %s", value));
 		}
 		this.value = value;
 
 	}
 
+//************************ GETTER / SETTER ***************************/	
+	
 	public String getSubject() {
 		return key.subject;
 	}
@@ -134,10 +166,11 @@ public class CdmPreference implements Serializable {
 	public PrefKey getKey() {
 		return key;
 	}
-
-	public void setValue(String value) {
-		this.value = value;
-	}
+//
+//	we try to avoid setting of values
+//	public void setValue(String value) {
+//		this.value = value;
+//	}
 	
 	
 }

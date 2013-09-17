@@ -449,7 +449,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "CdmPreference";
 		TableCreator stepPref = TableCreator.NewInstance(stepName, tableName, 
 				new String[]{"key_subject", "key_predicate","value"},  //colNames 
-				new String[]{"string_100", "string_200","string_1023",},  // columnTypes
+				new String[]{"string_100", "string_100","string_1023",},  // columnTypes
 				new String[]{null, "DefinedTermBase",null},  //referencedTables 
 				! INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
