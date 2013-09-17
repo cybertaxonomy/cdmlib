@@ -50,6 +50,9 @@ cdmlib-ext/pom.xml -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/IBciServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryGenerator.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/SchemaAdapterBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/ServiceWrapperBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/dc/DublinCoreSchemaAdapter.java -text
@@ -74,6 +77,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/scratchpads/ScratchpadsService.jav
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/main/resources/eu/etaxonomy/cdm/ext/geo/mapServices_v10.xsd -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/GeoServiceAreaTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
