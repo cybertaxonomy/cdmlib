@@ -1,11 +1,15 @@
 package eu.etaxonomy.cdm.remote.webapp.view.ui;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Hibernate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -22,8 +26,10 @@ import ru.xpoft.vaadin.VaadinView;
 
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
+import com.vaadin.data.Container;
 import com.vaadin.data.Property.ValueChangeEvent;
 import com.vaadin.data.Property.ValueChangeListener;
+import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ThemeResource;
@@ -33,23 +39,24 @@ import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
 import com.vaadin.ui.Button.ClickListener;
-import com.vaadin.ui.Embedded;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.Field;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.HorizontalSplitPanel;
 import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
-import com.vaadin.ui.Layout.SpacingHandler;
 import com.vaadin.ui.NativeButton;
+import com.vaadin.ui.NativeSelect;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TabSheet;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.TableFieldFactory;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.Tree;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
-import com.vaadin.ui.themes.Reindeer;
 import com.vaadin.ui.themes.Runo;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
@@ -57,6 +64,9 @@ import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.model.description.CategoricalData;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -124,15 +134,18 @@ public class HelloWorld extends UI implements View{
 	private TextField userName;
 	private TextField editTaxonTextField;
 	private TextField editSynonymTextField;
-	
+
 	private Label loginName;
 	@SuppressWarnings("rawtypes")
 	private TaxonBase selectedTaxonBase; 
+	private boolean isEditable = false;
 	
+	private NativeSelect select;
+	private ComboBox comboBox;
 	@Override 	
 	protected void init(VaadinRequest request) {
 		context = SecurityContextHolder.getContext();
-
+		
 		if(context.getAuthentication() == null){
 			setContent(loginLayout());
 			handleButtonLogic();
@@ -143,7 +156,6 @@ public class HelloWorld extends UI implements View{
 	}
 
 	protected void mainLayout() {
-		
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setSizeFull();
 		verticalLayout.addComponent(initToolbar());
@@ -162,6 +174,7 @@ public class HelloWorld extends UI implements View{
 		
 		classificationTree.setSizeFull();
 		classificationOverviewTable.setSizeFull();
+		
 
 		classificationTree.setImmediate(true);
 		classificationTree.setSelectable(true);
@@ -210,11 +223,33 @@ public class HelloWorld extends UI implements View{
 		rightLayout.setHeight("100%");
 	
 		classificationOverviewTable = new Table();
-		classificationOverviewTable.addContainerProperty("Taxon", Taxon.class, null);
-		classificationOverviewTable.addContainerProperty("Synonym", Synonym.class, null);
+		classificationOverviewTable.addContainerProperty("Wissenschaftlicher Name", TaxonNameBase.class, null);
+		classificationOverviewTable.addContainerProperty("Synonym", String.class, null);
+		
+		
+//        TODO: create Field Property
+//		classificationOverviewTable.setTableFieldFactory(new TableFieldFactory() {
+//			
+//			@Override
+//			public Field<?> createField(Container container, Object itemId,
+//					Object propertyId, com.vaadin.ui.Component uiContext) {
+//				
+//				
+//				return null;
+//			}
+//		});
+//		
+		
+		classificationOverviewTable.addContainerProperty("Etablierungsstatus", String.class, null);
+//		classificationOverviewTable.addContainerProperty("Etablierungsstatus", NativeSelect.class, null);
+//		classificationOverviewTable.setEditable(true);
+		
+		initSelect();
+		
 		
 		taxonDetailTable = new Table();
 		taxonDetailTable.addContainerProperty("Synonym", Synonym.class, null);
+		taxonDetailTable.addContainerProperty("Etablierungsstatus", State.class, null);
 		taxonDetailTable.setSizeFull();
 		
 		rightLayout.addComponent(taxonDetailTable);
@@ -231,6 +266,15 @@ public class HelloWorld extends UI implements View{
 //		taxonDetailTable.setStyleName("big striped");
 		
 	}
+	
+	private void initSelect(){
+		select = new NativeSelect("Planets");
+		// Put some example data in it
+		select.addItem("Mercury");
+		select.addItem("Venus");
+		select.addItem("Earth");
+		select.addItem("Mars");
+	}		
 
 	@Transactional
 	private void initTaxonTree() {
@@ -256,12 +300,16 @@ public class HelloWorld extends UI implements View{
 			@Override
 			public void valueChange(ValueChangeEvent event) {
 				try{
+
+					//applicationContext.get
+					
 					if(classificationTree.getValue() instanceof Classification){
 						classificationOverviewTable.setVisible(true);
 						taxonDetailTable.setVisible(false);
 						if(classificationOverviewTable.removeAllItems()){
 							Classification selectedValue = (Classification) classificationTree.getValue();
 							List<TaxonNode> allNodes =  classificationService.getAllNodes();
+//							sortTaxonNodeList(allNodes);
 							Taxon taxon = null;
 							Synonym synonym = null;
 							for (TaxonNode node : allNodes){
@@ -269,17 +317,34 @@ public class HelloWorld extends UI implements View{
 								boolean isPrintedFirst = false;
 								if(taxonNode.getClassification().equals(selectedValue)){
 									taxon = taxonNode.getTaxon();
+									String taxonName = taxon.getName().toString();
+									//get taxon description
+									State population = null;
+									//get aktuelle Bestandssituation
+									Hibernate.initialize(taxonNode);
+									List<DescriptionElementBase> listDescriptionElements = descriptionService.getDescriptionElementsForTaxon(taxon, null, null, null, null, NODE_INIT_STRATEGY);
+//									List<DescriptionElementBase> listDescriptionElements = descriptionService.listDescriptionElementsForTaxon(taxonNode.getTaxon(), null, null, null, null, NODE_INIT_STRATEGY);
+									for(DescriptionElementBase deb:listDescriptionElements){
+										if(deb instanceof CategoricalData){
+//											Feature feature = deb.getFeature();
+//											if(feature.toString().equalsIgnoreCase("aktuelle Bestandssituation")){
+//												for(State state :((CategoricalData) deb).getStatesOnly()){
+//													population = state;
+//												}
+//											}
+										}
+									}
 									if(taxon.hasSynonyms()){
 										for(Synonym s : taxon.getSynonyms()){
 											synonym = s;
 											if(!isPrintedFirst){
-												classificationOverviewTable.addItem(new Object[]{taxon, s}, synonym.getId());
+												classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), s.toString(), "test"}, synonym.getId());
 												isPrintedFirst = true;
 											}
-											classificationOverviewTable.addItem(new Object[]{null, s}, synonym.getId());
+											classificationOverviewTable.addItem(new Object[]{null, s.toString(), null}, synonym.getId());
 										}
 									}else{
-										classificationOverviewTable.addItem(new Object[]{taxon, null}, taxon.getId());
+										classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), null, null}, taxon.getId());
 									}
 								}
 
@@ -292,11 +357,13 @@ public class HelloWorld extends UI implements View{
 							Taxon selectedTaxon = (Taxon) classificationTree.getValue();
 							Taxon taxon = (Taxon) taxonService.load(selectedTaxon.getUuid(), TAXON_NODE_INIT_STRATEGY);
 							for(Synonym s : taxon.getSynonyms()){
-								taxonDetailTable.addItem(new Object[]{s}, s.getId());
+								taxonDetailTable.addItem(new Object[]{s, null}, s.getId());
 							}
 						}
 						taxonDetailTable.setSelectable(true);
 					}
+				}catch(Table.CacheUpdateException tc){
+					logger.info(tc.getCause().toString());
 				}catch(Exception e){
 					logger.info(e);
 				}
@@ -309,9 +376,14 @@ public class HelloWorld extends UI implements View{
 	 * @param parent
 	 */
 	private void initTaxonTree(Set<TaxonNode> setTaxonNodes, Object parent) {
-		for (TaxonNode tn : setTaxonNodes){
+		List<TaxonNode> listTaxonNodes = new ArrayList<TaxonNode>();
+		listTaxonNodes.addAll(setTaxonNodes);
+		//sorting List
+		sortTaxonNodeList(listTaxonNodes);
+		for (TaxonNode tn : listTaxonNodes){
 			TaxonNode taxonNode = taxonNodeService.load(tn.getUuid(), NODE_INIT_STRATEGY);
 			classificationTree.addItem(taxonNode.getTaxon());
+			classificationTree.setItemCaption(taxonNode.getTaxon(), taxonNode.getTaxon().getName().toString());
 			classificationTree.setParent(taxonNode.getTaxon(), parent);
 			classificationTree.setChildrenAllowed(taxonNode.getTaxon(), true);
 			
@@ -320,11 +392,30 @@ public class HelloWorld extends UI implements View{
 			}
 			if(!taxonNode.hasChildNodes()){
 				classificationTree.setChildrenAllowed(taxonNode.getTaxon(), false);
+				classificationTree.setItemCaption(taxonNode.getTaxon(), taxonNode.getTaxon().getName().toString());
 			}
 			classificationTree.expandItemsRecursively(parent);
 		}
 
 	}
+
+	private void sortTaxonNodeList(List<TaxonNode> listTaxonNodes) {
+		Collections.sort(listTaxonNodes, new Comparator<TaxonNode>() {
+
+			@Override
+			public int compare(TaxonNode tn1, TaxonNode tn2) {
+				Taxon taxon1 = tn1.getTaxon();
+				Taxon taxon2 = tn2.getTaxon();
+				if(taxon1 != null && taxon2 != null){
+					return taxon1.getTitleCache().compareTo(taxon2.getTitleCache());
+				}
+				else{
+					return 0;
+				}
+			}
+		});
+	}
+	
 	private void initEditWindow(@SuppressWarnings("rawtypes") TaxonBase taxonBase) {
 		final Window window = new Window();
 		window.setStyleName(Runo.WINDOW_DIALOG);
@@ -338,7 +429,12 @@ public class HelloWorld extends UI implements View{
 		editSynonymTextField.setValue(taxonBase.getTitleCache());
 		addWindow(window);
 		//TODO extract listener into separate method
-		saveSynonymButton.addClickListener(new ClickListener() {
+		saveSynonymButton.addClickListener(new ClickListener() {	
+//		if(feature.toString().equalsIgnoreCase("aktuelle Bestandssituation")){
+//		for(State state :((CategoricalData) deb).getStatesOnly()){
+//			population = state;
+//		}
+//	}
 			@Override
 			public void buttonClick(ClickEvent event) {
 				// TODO Auto-generated method stub
@@ -462,6 +558,31 @@ public class HelloWorld extends UI implements View{
 					Taxon taxon = (Taxon) classificationTree.getValue();
 					selectedTaxonBase = taxonService.load(taxon.getUuid(), TAXON_NODE_INIT_STRATEGY);
 					initEditWindow(selectedTaxonBase);
+				
+				}else if(classificationTree.getValue() instanceof Classification){
+					if(isEditable == false){
+						isEditable = true;
+						classificationOverviewTable.setTableFieldFactory(new TableFieldFactory() {
+							
+							@Override
+							public Field<?> createField(Container container, Object itemId, Object propertyId,
+									com.vaadin.ui.Component uiContext) {
+			                    if (propertyId.toString().equals("Etablierungsstatus")) {
+			                        return new TextField();
+			                    }
+			   
+			                return null;
+							}
+				        });
+						classificationOverviewTable.setEditable(isEditable);
+						//set 
+						
+						
+						
+					}else if(isEditable == true){
+						isEditable = false;
+						classificationOverviewTable.setEditable(isEditable);
+					}
 				}else{
 					Notification.show("Please choose a Taxon to edit", Notification.Type.HUMANIZED_MESSAGE);
 				}
@@ -601,28 +722,41 @@ public class HelloWorld extends UI implements View{
 	}
 	
     /** Hibernate classification vocabulary initialisation strategy */
-    private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {		
-            "classification.$",
+    private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {
+            "classification",
     		"classification.rootNodes",
     		"childNodes",
     		"childNodes.taxon",
             "childNodes.taxon.name",
+            "taxonNodes",
+            "taxonNodes.taxon",
+    		"taxon.*",
             "taxon.sec",
             "taxon.name.*",
-            "taxon.synonymRelations"
+            "taxon.synonymRelations",
+    		"description",
+    		"descriptions.*",
+    		"terms"
     });
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
     		"classification",
+    		"descriptions.*",
     		"childNodes",
     		"childNodes.taxon",
     		"childNodes.taxon.name",
+    		"taxonNodes",
+    		"taxonNodes.*",
+            "taxonNodes.taxon.*",
+    		"taxon.*",
+    		"taxon.descriptions",
+    		"taxon.descriptions",
     		"taxon.sec",
     		"taxon.name.*",
-    		"taxon.synonymRelations"
+    		"taxon.synonymRelations",
+    		"terms"
     });
     
     private static final  List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] {"synonymRelations","descriptions"});
-	
-	
+
 }
