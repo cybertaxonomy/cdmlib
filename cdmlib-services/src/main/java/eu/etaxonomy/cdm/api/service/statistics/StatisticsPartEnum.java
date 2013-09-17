@@ -17,7 +17,8 @@ package eu.etaxonomy.cdm.api.service.statistics;
 public enum StatisticsPartEnum {
 	
 	ALL ("All", "All data in the datastore"),
-	CLASSIFICATION("Classification", "Data per classification")
+	CLASSIFICATION("Classification", "Data per classification"),
+	TAXON_NODE("TaxonNode","Data of tree from this taxon node")
 	;
 	
 	

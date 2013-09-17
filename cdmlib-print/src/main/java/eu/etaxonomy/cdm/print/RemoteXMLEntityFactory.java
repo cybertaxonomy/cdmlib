@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.JDOMException;
+import org.jdom.xpath.XPath;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -65,11 +66,14 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	private static final String TAXONNODE_TAXON = TAXONNODE + "/taxon";
 	
 	private static final String FEATURETREES = "featuretrees";
-	private static final String FEATURETREE = "featuretree/" + UUID;
-	private static final String FEATURENODE = "featurenode/" + UUID;
+	private static final String FEATURETREE = "featureTree/" + UUID;
+	private static final String FEATURENODE = "featureNode/" + UUID;
 	private static final String FEATURENODE_FEATURE = FEATURENODE + "/feature";
 	
 	private static final String NAME_TYPE_DESIGNATIONS = "name/" + UUID + "/typeDesignations";
+	
+	//TAXON_ACCEPTED should populate references but authorTeam is not always populated so call the reference contoller directly
+	private static final String REFERENCES = "portal/reference/" + UUID; 
 	
 	private static final String TAXON_ACCEPTED = "portal/taxon/" + UUID;
 	private static final String TAXON_SYNONYMY = "portal/taxon/" + UUID + "/synonymy";
@@ -161,6 +165,59 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	 */
 	public Element getTaxonForTaxonNode(Element taxonNodeElement) {
 		return queryService(taxonNodeElement, TAXONNODE_TAXON);
+	}
+	
+	/*
+	 * 
+	 */
+	/*public List<Element> getReferences(Element taxonElement) throws JDOMException {
+		
+		//get the references from the taxonElement
+		String referencePattern = "//name/nomenclaturalReference";
+		
+		//but there could be many references
+		Element referenceElement = (Element) XPath.selectSingleNode(taxonElement, referencePattern);
+		//List<Element> descriptionElementElements = XPath.selectNodes(context, featurePattern + "/..");
+		
+		List<Element> elementList = null;
+		
+		if(referenceElement != null){  //the referencePattern was found in the taxonElement
+									
+		Element result = queryService(referenceElement, REFERENCES);
+		
+		elementList = new ArrayList<Element>();
+		
+		for(Object child : result.getChildren()){
+			if(child instanceof Element){
+				Element childElement = (Element) ((Element)child).clone();
+				
+				childElement.detach();
+				
+				elementList.add(childElement);
+			}
+		}
+		}
+		
+		return elementList;
+	}*/
+	
+	public List<Element> getReferences(Element referenceElement){
+									
+		Element result = queryService(referenceElement, REFERENCES);
+		
+		List<Element> elementList = new ArrayList<Element>();
+		
+		for(Object child : result.getChildren()){
+			if(child instanceof Element){
+				Element childElement = (Element) ((Element)child).clone();
+				
+				childElement.detach();
+				
+				elementList.add(childElement);
+			}
+		}
+		
+		return elementList;
 	}
 	
 

@@ -38,7 +38,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IdentifiableEntityDefaultCacheStra
  * publication (protolog) or a picture of this publication.
  *
  * @author a.mueller
- * @version 1.0
  * @created 08-Jul-2008
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -62,6 +61,16 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
     @Cascade(CascadeType.SAVE_UPDATE)
     private TaxonNameBase<?,?> taxonName;
 
+//******************* FACTORY ********************************************/
+
+    /**
+     * Creates a new empty taxon name description instance.
+     */
+    public static TaxonNameDescription NewInstance(){
+        return new TaxonNameDescription();
+    }
+    
+    
     /**
      * Creates a new taxon name description instance for the given {@link TaxonNameBase name}.
      * The new taxon name description will be also added to the {@link TaxonNameBase#getDescriptions() set of descriptions}
@@ -75,20 +84,17 @@ public class TaxonNameDescription extends DescriptionBase<IIdentifiableEntityCac
         return description;
     }
 
+// ********************** CONSTRUCTOR ***************************************/
+    
     /**
      * Class constructor: creates a new empty taxon name description instance.
      */
-    public TaxonNameDescription() {
+    private TaxonNameDescription() {
         super();
         this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy();
     }
 
-    /**
-     * Creates a new empty taxon name description instance.
-     */
-    public static TaxonNameDescription NewInstance(){
-        return new TaxonNameDescription();
-    }
+//************************* GETTER /SETTER ***************************************/
 
     /**
      * Returns the {@link TaxonNameBase taxon name} to which <i>this</i> taxon name description

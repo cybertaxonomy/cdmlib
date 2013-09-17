@@ -1,7 +1,4 @@
-/**
- * 
- */
-package eu.etaxonomy.cdm.api.service;
+package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
 import static org.junit.Assert.assertTrue;
 
@@ -11,21 +8,17 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.service.statistics.Statistics;
-import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
-import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
-import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
@@ -43,56 +36,30 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.view.context.AuditEventContextHolder;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
+import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-/**
- * @author s.buers
- * 
- */
-@SuppressWarnings({ "rawtypes", "serial" })
-public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
+public class StatisticsDaoHibernateImplTest extends
+		CdmTransactionalIntegrationTest {
 
-	// constant if you want to printout the database content to console:
-	// only recommended for a small probe
 	private static final boolean PRINTOUT = true;
 
-	// ************constants to set up the expected results for all:
-	// ********************
+	@SpringBeanByType
+	private IStatisticsDao statisticsDao;
 
-	// ............................................
+	private UUID nodeUuid;
 
-	// here is the list of the types that will be test counted in the
-	// parts (ALL, CLASSIFICATION)
-	private static final List<StatisticsTypeEnum> TYPES = Arrays
-			.asList(new StatisticsTypeEnum[] {
-					StatisticsTypeEnum.CLASSIFICATION,
-					StatisticsTypeEnum.ACCEPTED_TAXA,
-					StatisticsTypeEnum.ALL_TAXA,
-					StatisticsTypeEnum.ALL_REFERENCES, // this functionality
-					// for
-					// classifications is still missing for in the Statistics
-					// Service
-					StatisticsTypeEnum.SYNONYMS,
-					StatisticsTypeEnum.TAXON_NAMES,
-					StatisticsTypeEnum.NOMECLATURAL_REFERENCES,
-					StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES });
+	private List<Classification> classifications;
 
-	// private static final String[] TYPES = { "CLASSIFICATION",
-	// "ACCEPTED_TAXA",
-	// "ALL_TAXA", "ALL_REFERENCES" };
-
-	// ................parts ..............................
-
-	private static final List<String> PARTS = Arrays.asList(new String[] {
-			"ALL", "CLASSIFICATION" });
-	// .........................................................
-
-	// part= null means search all DB
-	private static final IdentifiableEntity PARTS_ALL = null;
-
-	// here is the number of items that will be created for the test count:
-	// please only change the numbers
-	// but do not replace or add a number to any constants on the right.
+	private static final Logger logger = Logger
+			.getLogger(StatisticsDaoHibernateImplTest.class);
 
 	// choose a number
 	private static final int NO_OF_ACCEPTED_TAXA = 10;
@@ -157,69 +124,74 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	private static final Map<String, List<Long>> typeCountMap_CLASSIFICATION = new HashMap<String, List<Long>>() {
 		{
-			put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
+			put("CLASSIFICATION",
 					new ArrayList<Long>(Arrays.asList((Long) null, null, null)));
-			put(StatisticsTypeEnum.ALL_TAXA.getLabel(), no_of_all_taxa_c);
-			put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
-					no_of_accepted_taxa_c);
-			put(StatisticsTypeEnum.SYNONYMS.getLabel(), no_of_synonyms_c);
-			put(StatisticsTypeEnum.TAXON_NAMES.getLabel(), no_of_taxon_names_c);
-			put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
+			put("ALL_TAXA", no_of_all_taxa_c);
+			put("ACCEPTED_TAXA", no_of_accepted_taxa_c);
+			put("SYNONYMS", no_of_synonyms_c);
+			put("TAXON_NAMES", no_of_taxon_names_c);
+			put("DESCRIPTIVE_SOURCE_REFERENCES",
 					no_of_descriptive_source_references_c);
-			put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
-					no_of_all_references_c);
-			put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
-					no_of_nomenclatural_references_c);
+			put("ALL_REFERENCES", no_of_all_references_c);
+			put("NOMECLATURAL_REFERENCES", no_of_nomenclatural_references_c);
 		}
 	};
 
-	private static final Logger logger = Logger
-			.getLogger(StatisticsServiceImplTest.class);
-
-	private List<Classification> classifications;
-
 	// ****************** services: ************************
 	@SpringBeanByType
-	private IStatisticsService service;
+	private IStatisticsDao service;
 	@SpringBeanByType
-	private IClassificationService classificationService;
+	private IClassificationDao classificationDao;
 	@SpringBeanByType
-	private ITaxonService taxonService;
+	private ITaxonDao taxonDao;
 	@SpringBeanByType
-	private IReferenceService referenceService;
+	private IReferenceDao referenceDao;
 	@SpringBeanByType
-	private IDescriptionService descriptionService;
-
-	// *************** more members: *****************+
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * create some testdata
-	 * 
-	 * @throws java.lang.Exception
-	 */
+	private IDescriptionDao descriptionDao;
+	@SpringBeanByType
+	private IDescriptionElementDao descriptionElementDao;
+	@SpringBeanByType
+	private ITaxonNodeDao taxonNodeDao;
+	
+	private UUID rootUuid;
 
 	@Before
-//	@DataSet
-	public void setUp() throws Exception {
+	public void setUp() {
+		// nodeUuid =UUID.fromString("46cd7e78-f7d5-4c31-937b-2bc5074618c4");
+		nodeUuid = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
 
-		// missing in this example data:
-		// synonyms, that are attached to several taxa (same or different
-		// classification)
+		AuditEventContextHolder.clearContext();
 
+	}
+
+	@After
+	public void tearDown() {
+		AuditEventContextHolder.clearContext();
+	}
+
+	@Test
+	// @DataSet
+	public void testGetAllChildNodes() {
+		List<UUID> result;
+		createDataSet();
+		for (Classification classification : classifications) {
+			TaxonNode root;
+			root= createTaxTree(classification);
+			result=statisticsDao.getAllChildNodeIds(root.getUuid());
+			System.out.println("classification "+ classification.getName()+": ");
+			System.out.println("result: "+result.toString());
+			System.out.println("");
+		}
+		if (PRINTOUT) {
+			print();
+		}
+		// result=statisticsDao.getAllTaxonIds(nodeUuid);
+		// statisticsDao.getAllTaxonIds();
+		assertTrue(true);
+		// fail("Not yet implemented");
+	}
+
+	private void createDataSet() {
 		// create NO_OF_CLASSIFICATIONS classifications
 		classifications = new ArrayList<Classification>();
 
@@ -227,7 +199,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 			Classification classification = Classification
 					.NewInstance("European Abies" + i);
 			classifications.add(classification);
-			classificationService.save(classification);
+			classificationDao.save(classification);
 		}
 		// create all taxa, references and synonyms and attach them to one or
 		// more classifications
@@ -280,7 +252,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					tNomRefFlag = true;
 					Reference nomRef = ReferenceFactory.newBook();
 					name.setNomenclaturalReference(nomRef);
-					referenceService.save(nomRef);
+					referenceDao.save(nomRef);
 					nomRefCounter++;
 				}
 
@@ -305,16 +277,17 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 							"Veilchen" + taxonCounter, Language.GERMAN());
 					TextData textElement = new TextData();
 					Reference nameElementRef = ReferenceFactory.newArticle();
-					Reference textElementRef = ReferenceFactory.newBookSection();
+					Reference textElementRef = ReferenceFactory
+							.newBookSection();
 					nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
 					textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
 					nameDescr.addElement(nameElement);
 					nameDescr.addElement(textElement);
 					name.addDescription(nameDescr);
 					// taxon.getName().addDescription(nameDescr);
-					referenceService.save(nameElementRef);
-					referenceService.save(textElementRef);
-					descriptionService.save(nameDescr);
+					referenceDao.save(nameElementRef);
+					referenceDao.save(textElementRef);
+					descriptionDao.save(nameDescr);
 
 					// create descriptions, description sources and their
 					// references
@@ -329,25 +302,26 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						descriptionElementSource.setCitation(article);
 						descriptionElement.addSource(descriptionElementSource);
 						taxonDescription.addElement(descriptionElement);
-						referenceService.save(article);
-						descriptionService.saveDescriptionElement(descriptionElement);
+						referenceDao.save(article);
+						descriptionElementDao.save(descriptionElement);
 
 					}
-					descriptionService.save(taxonDescription);
+					descriptionDao.save(taxonDescription);
 					taxon.addDescription(taxonDescription);
 
 					// create a Specimen for taxon with description, descr.
 					// element and referece
-//
-//					Specimen specimen = Specimen.NewInstance();
-//					SpecimenDescription specimenDescription = SpecimenDescription.NewInstance(specimen);
-//					DescriptionElementBase descrElement = new TextData();
-//					Reference specimenRef = ReferenceFactory.newArticle();
-//					descrElement.addSource(null, null, specimenRef, null);
-//					
-//					
-//					descriptionService.save(specimenDescription);
-//					taxon.add(specimen);
+					//
+					// Specimen specimen = Specimen.NewInstance();
+					// SpecimenDescription specimenDescription =
+					// SpecimenDescription.NewInstance(specimen);
+					// DescriptionElementBase descrElement = new TextData();
+					// Reference specimenRef = ReferenceFactory.newArticle();
+					// descrElement.addSource(null, null, specimenRef, null);
+					//
+					//
+					// descriptionService.save(specimenDescription);
+					// taxon.add(specimen);
 
 					no_of_descriptive_source_references += descriptiveElementsPerTaxon + 2 + 1;
 
@@ -370,7 +344,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						sNomRefFlag = true;
 						Reference nomRef = ReferenceFactory.newBook();
 						name.setNomenclaturalReference(nomRef);
-						referenceService.save(nomRef);
+						referenceDao.save(nomRef);
 						nomRefCounter++;
 					}
 
@@ -384,19 +358,17 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 								.NewInstance("anderes Veilchen" + taxonCounter,
 										Language.GERMAN());
 						TextData textElement = new TextData();
-						Reference nameElementRef = ReferenceFactory
-								.newArticle();
-						Reference textElementRef = ReferenceFactory
-								.newBookSection();
-						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
-						textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
+						Reference nameElementRef = ReferenceFactory.newArticle();
+						Reference textElementRef = ReferenceFactory.newBookSection();
+						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef,"name: ");
+						textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef,"text: ");
 						nameDescr.addElement(nameElement);
 						nameDescr.addElement(textElement);
 						name.addDescription(nameDescr);
 						// taxon.getName().addDescription(nameDescr);
-						referenceService.save(nameElementRef);
-						referenceService.save(textElementRef);
-						descriptionService.save(nameDescr);
+						referenceDao.save(nameElementRef);
+						referenceDao.save(textElementRef);
+						descriptionDao.save(nameDescr);
 						no_of_descriptive_source_references += 2;
 					}
 
@@ -405,7 +377,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						sec = createSecReference(classiCounter, taxonCounter);
 					}
 					Synonym synonym = Synonym.NewInstance(name, sec);
-					taxonService.save(synonym);
+					taxonDao.save(synonym);
 					taxon.addSynonym(synonym,
 							SynonymRelationshipType.SYNONYM_OF());
 
@@ -423,12 +395,12 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					// classifications:
 					secondClassificationForTaxonFlag = true;
 					sharedClassification++;
-					classificationService.saveOrUpdate(classifications
+					classificationDao.saveOrUpdate(classifications
 							.get(classiCounter + 1));
 				}
 
-				taxonService.save(taxon);
-				classificationService.saveOrUpdate(classifications
+				taxonDao.save(taxon);
+				classificationDao.saveOrUpdate(classifications
 						.get(classiCounter));
 
 				// count the data created with this taxon:
@@ -489,6 +461,9 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		merge(no_of_accepted_taxa_c, no_of_synonyms_c, no_of_all_taxa_c);
 		merge(no_of_all_references_c, no_of_nomenclatural_references_c,
 				no_of_all_references_c);
+
+		// TODO Auto-generated method stub
+
 	}
 
 	/**
@@ -502,9 +477,24 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		Reference sec;
 		sec = ReferenceFactory.newBook();
 		sec.setTitle("book " + classiCounter + "." + taxonCounter);
-		referenceService.save(sec);
+		referenceDao.save(sec);
 		no_of_all_references++;
 		return sec;
+	}
+
+	/**
+	 * @param no_of_sth
+	 * @param inClassification
+	 * @param increase
+	 */
+	private void increment(List<Long> no_of_sth, int inClassification,
+			int increase) {
+		no_of_sth.set(inClassification, (no_of_sth.get(inClassification))
+				+ increase);
+	}
+
+	private void increment(List<Long> no_of_sth, int inClassification) {
+		increment(no_of_sth, inClassification, 1);
 	}
 
 	private void merge(List<Long> no_of_sth1, List<Long> no_of_sth2,
@@ -517,70 +507,28 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 	}
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@After
-	public void tearDown() throws Exception {
-	}
-
-	// ****************** tests *****************
-	/**
-	 * Test method for
-	 * {@link eu.etaxonomy.cdm.api.service.StatisticsServiceImpl#getCountStatistics(java.util.List)}
-	 * .
-	 */
-	@Test
-	public void testGetCountStatistics() {
-
-		// create maps to compare the testresults with:
-		List<Map<String, Number>> expectedCountmapList = new ArrayList<Map<String, Number>>();
-		if (PARTS.contains("ALL")) {
-			expectedCountmapList.add(createExpectedCountMap_ALL());
-		}
-		if (PARTS.contains("CLASSIFICATION")) {
-			expectedCountmapList
-					.addAll(createExpectedCountMaps_CLASSIFICATION());
-		}
-
-		// create configurator needed to call
-		// StatisticsService.getCountStatistics:
-		List<StatisticsConfigurator> configuratorList = createConfiguratorList(
-				(String[]) PARTS.toArray(), TYPES);
-
-		// run method of StatisticsService
-		List<Statistics> statisticsList = service
-				.getCountStatistics(configuratorList);
-
-		// print out the: expected and the result:
-
-		logger.info("expected: ");
-
-		for (Map<String, Number> map : expectedCountmapList) {
-			logger.info(map.toString());
-		}
-		logger.info("statistics: ");
-		for (Statistics statistics : statisticsList) {
-			logger.info(statistics.getCountMap().toString());
-
-		}
-
-		// check the result with the expected values:
-		// as we cannot be sure the order of the statisticsList
-		// matches the order of the expectedCountmapList
-		// we have to work arround a little:
-		for (Statistics statistics : statisticsList) {
-			Boolean orCompare = false;
-			for (Map<String, Number> map : expectedCountmapList) {
-				orCompare = orCompare || statistics.getCountMap().equals(map);
+	private TaxonNode createTaxTree(Classification classification) {
+		Random rand = new Random();
+		
+			Set<TaxonNode> nodes = classification.getAllNodes();
+			ArrayList<TaxonNode> children = new ArrayList<TaxonNode>();
+			TaxonNode parent = nodes.iterator().next();
+			
+			TaxonNode root = parent;
+			nodes.remove(parent);
+			while (!nodes.isEmpty()) {
+				int n = rand.nextInt(2) + 1;
+				for (int i = 1; i <= n && !(nodes.isEmpty()); i++) {
+					TaxonNode nextNode = nodes.iterator().next();
+					parent.getChildNodes().add(nextNode);
+					children.add(nextNode);
+					nodes.remove(nextNode);
+				}
+				taxonNodeDao.save(parent);
+				parent = children.get(0);
+				children.remove(0);
 			}
-			// assertTrue(orCompare);
-			assertTrue(true);
-		}
-		if (PRINTOUT) {
-			print();
-		}
-
+		return root;
 	}
 
 	/**
@@ -590,9 +538,15 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		for (Classification classification : classifications) {
 			System.out.println("Classification:" + classification.toString());
 			for (TaxonNode node : classification.getAllNodes()) {
-				System.out.println("\tTaxon: " + node.getTaxon().toString());
+				System.out.println("\tTaxon: " + node.getTaxon().toString()+" node UUID: "+ node.getUuid());
 				System.out.println(" \t(Name: "
 						+ node.getTaxon().getName().toString() + ")");
+				System.out.print("\tChildren: ");
+				for (TaxonNode childNode : node.getChildNodes()) {
+					System.out.print(/*childNode.getTaxon().getName() + */" node UUID: "+ node.getUuid()+"   ");
+				}
+				System.out.println();
+
 				if (node.getTaxon().getName().getNomenclaturalReference() != null) {
 					System.out.println(" \t(Nomencl. Ref.: "
 							+ node.getTaxon().getName()
@@ -616,135 +570,4 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		System.out.println("end!");
 
 	}
-
-	// ************************** private methods ****************************+
-
-	/**
-	 * @param no_of_sth
-	 * @param inClassification
-	 * @param increase
-	 */
-	private void increment(List<Long> no_of_sth, int inClassification,
-			int increase) {
-		no_of_sth.set(inClassification, (no_of_sth.get(inClassification))
-				+ increase);
-	}
-
-	private void increment(List<Long> no_of_sth, int inClassification) {
-		increment(no_of_sth, inClassification, 1);
-	}
-
-	private Map<String, Number> createExpectedCountMap_ALL() {
-		Map<String, Number> countMap = new HashMap<String, Number>();
-		createMap_ALL();
-		for (StatisticsTypeEnum type : TYPES) {
-			// System.out.println(""+typeMap_ALL.get(type.getLabel()));
-			countMap.put(type.getLabel(), typeMap_ALL.get(type.getLabel()));
-		}
-		return countMap;
-	}
-
-	private List<Map<String, Number>> createExpectedCountMaps_CLASSIFICATION() {
-
-		List<Map<String, Number>> mapList = new ArrayList<Map<String, Number>>();
-
-		for (int i = 0; i < NO_OF_CLASSIFICATIONS; i++) {
-
-			Map<String, Number> countMap = new HashMap<String, Number>();
-
-			for (StatisticsTypeEnum type : TYPES) {
-				countMap.put(type.getLabel(),
-						typeCountMap_CLASSIFICATION.get(type.getLabel()).get(i));
-
-			}
-			mapList.add(countMap);
-		}
-
-		return mapList;
-	}
-
-	/**
-	 * 
-	 */
-	private void createMap_ALL() {
-		typeMap_ALL = new HashMap<String, Long>() {
-			{
-				put(StatisticsTypeEnum.CLASSIFICATION.getLabel(),
-						Long.valueOf(NO_OF_CLASSIFICATIONS));
-				put(StatisticsTypeEnum.ALL_TAXA.getLabel(),
-						Long.valueOf(NO_OF_ALLTAXA));
-				put(StatisticsTypeEnum.ACCEPTED_TAXA.getLabel(),
-						Long.valueOf(NO_OF_ACCEPTED_TAXA));
-				put(StatisticsTypeEnum.SYNONYMS.getLabel(),
-						Long.valueOf(NO_OF_SYNONYMS));
-				put(StatisticsTypeEnum.TAXON_NAMES.getLabel(),
-						Long.valueOf(NO_OF_TAXON_NAMES));
-				// put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
-				// Long.valueOf(NO_OF_DESCRIPTIVE_SOURCE_REFERENCES));
-				put(StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES.getLabel(),
-						Long.valueOf(no_of_descriptive_source_references));
-				// put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
-				// Long.valueOf(NO_OF_ALL_REFERENCES));
-				put(StatisticsTypeEnum.ALL_REFERENCES.getLabel(),
-						no_of_all_references);
-				put(StatisticsTypeEnum.NOMECLATURAL_REFERENCES.getLabel(),
-						Long.valueOf(NO_OF_NOMECLATURAL_REFERENCES));
-			}
-		};
-	}
-
-	private List<StatisticsConfigurator> createConfiguratorList(String[] part,
-			List<StatisticsTypeEnum> types) {
-
-		ArrayList<StatisticsConfigurator> configuratorList = new ArrayList<StatisticsConfigurator>();
-
-		// 1. get types for configurators:
-		// in our case all the configurators will have the same types
-		// so we calculate the types once and save them in a helperConfigurator
-		StatisticsConfigurator helperConfigurator = new StatisticsConfigurator();
-
-		if (types != null) {
-			for (StatisticsTypeEnum type : types) {
-				helperConfigurator.addType(type);
-			}
-		} else {
-			for (StatisticsTypeEnum enumValue : StatisticsTypeEnum.values()) {
-				helperConfigurator.addType(enumValue);
-			}
-		}
-
-		// 2. determine the entities and put each of them in a configurator:
-
-		// if no part was given:
-		if (part == null) {
-			helperConfigurator.addFilter(PARTS_ALL);
-			configuratorList.add(helperConfigurator);
-		}
-		// else parse list of parts and create configurator for each:
-		else {
-			for (String string : part) {
-				if (string.equals(StatisticsPartEnum.ALL.toString())) {
-					helperConfigurator.addFilter(PARTS_ALL);
-					configuratorList.add(helperConfigurator);
-				} else if (string.equals(StatisticsPartEnum.CLASSIFICATION
-						.toString())) {
-					List<Classification> classificationsList = classificationService
-							.listClassifications(null, 0, null, null);
-					for (Classification classification : classificationsList) {
-
-						StatisticsConfigurator newConfigurator = new StatisticsConfigurator();
-						newConfigurator.setType(helperConfigurator.getType());
-						newConfigurator.getFilter().addAll(
-								helperConfigurator.getFilter());
-						newConfigurator.addFilter(classification);
-						configuratorList.add(newConfigurator);
-					}
-				}
-			}
-
-		}
-
-		return configuratorList;
-	}
-
 }

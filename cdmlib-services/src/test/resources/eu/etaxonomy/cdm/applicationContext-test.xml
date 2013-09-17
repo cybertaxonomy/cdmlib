@@ -71,16 +71,16 @@
                     globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator
                  -->
                 <prop key="optimizer">none</prop>
-                <prop key="initial_value">1000</prop>
+                <prop key="initial_value">5000</prop><!-- must be higher than any term id in TermsDataSet.xml -->
             </props>
         </property>
     </bean>
 
 
 <!--
- 	We do not use spelling suggestions anymore. This one relates to springmodules which is
-    somewhat outdated. Once we work again with spelling suggestions we better use a modern
-    approache, e.g. annotation based.
+   We do not use spelling suggestions anymore. This one relates to spring modules which is
+    somewhat out-dated. Once we work again with spelling suggestions we better use a modern
+    approach, e.g. annotation based.
     <bean id="taxonSpellingDirectory" class="org.springmodules.lucene.index.support.FSDirectoryFactoryBean">
       <property name="location" value="file:./target/index/eu.etaxonomy.cdm.model.taxon.TaxonBase_spelling"/>
       <property name="create" value="true"/>

@@ -54,7 +54,7 @@
             <props>
                 <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
                 <prop key="optimizer">none</prop>
-                <prop key="initial_value">3000</prop>
+                <prop key="initial_value">5000</prop><!-- must be higher than any term id in TermsDataSet.xml -->
             </props>
         </property>
     </bean>

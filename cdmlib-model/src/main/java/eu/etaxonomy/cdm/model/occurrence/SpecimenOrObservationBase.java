@@ -388,11 +388,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
 		this.kindOfUnit = kindOfUnit;
 	}
-
-	@Override
-	public String generateTitle(){
-		return getCacheStrategy().getTitleCache(this);
-	}
+//
+//	@Override
+//	public String generateTitle(){
+//		return getCacheStrategy().getTitleCache(this);
+//	}
 
 	public Integer getIndividualCount() {
 		return individualCount;

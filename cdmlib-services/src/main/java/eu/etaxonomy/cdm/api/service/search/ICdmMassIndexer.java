@@ -16,9 +16,10 @@ public interface ICdmMassIndexer {
     /**
      * Reindex all cdm entities listed in {@link ICdmMassIndexer#indexedClasses()}.
      * Re-indexing will not purge the index.
+     * @param types TODO
      * @param monitor TODO
      */
-    public abstract void reindex(IProgressMonitor monitor);
+    public abstract void reindex(Set<Class<? extends CdmBase>> types, IProgressMonitor monitor);
 
     /**
      * This will wipe out the index.
@@ -31,25 +32,14 @@ public interface ICdmMassIndexer {
      * @return a List of {@link CdmBase} sub classes
      */
     public Set<Class<? extends CdmBase>> indexedClasses();
-    
-    /**
-     * Adds to the current list of (sub-classes of CdmBase) classes to be indexed.
-     *
-     * @param cdmBaseClass sub-class of CdmBase class to add
-     */
-    public void addToIndexedClasses(Class<? extends CdmBase> cdmBaseClass);
-    
-    /**
-     * Clears the current list of (sub-classes of CdmBase) classes to be indexed.     
-     */
-    public void clearIndexedClasses();
+
     /**
      * Create (spell-checking) dictionary listed in {@link ICdmMassIndexer#dictionaryClasses()}.
      * This action will not purge the dictionary.
      * @param monitor TODO
      */
     public abstract void createDictionary(IProgressMonitor monitor);
-    
+
     public Class[] dictionaryClasses();
 
 }

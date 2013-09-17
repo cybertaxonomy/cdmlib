@@ -5,7 +5,7 @@
 *
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
-*/ 
+*/
 
 package eu.etaxonomy.cdm.api.service;
 
@@ -15,7 +15,6 @@ import java.util.UUID;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -26,7 +25,6 @@ import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -36,20 +34,21 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 
 	private IIdentificationKeyDao identificationKeyDao;
 	private ITaxonDao taxonDao;
-	
+
 //	private IPolytomousKeyNodeDao nodeDao;
 
 
-	@Autowired
+	@Override
+    @Autowired
 	protected void setDao(IPolytomousKeyDao dao) {
 		this.dao = dao;
 	}
-	
+
 	@Autowired
 	protected void setDao(IIdentificationKeyDao identificationKeyDao) {
 		this.identificationKeyDao = identificationKeyDao;
 	}
-	
+
 	@Autowired
 	protected void setDao(ITaxonDao taxonDao) {
 		this.taxonDao = taxonDao;
@@ -71,36 +70,37 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IFeatureTreeService#loadWithNodes(java.util.UUID, java.util.List, java.util.List)
 	 */
-	public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
-		
+	@Override
+    public PolytomousKey loadWithNodes(UUID uuid, List<String> propertyPaths, List<String> nodePaths) {
+
 		if(nodePaths == null){
 			nodePaths = new ArrayList<String>();
 		}
 		nodePaths.add("children");
-		
+
 		List<String> rootPaths = new ArrayList<String>();
 		rootPaths.add("root");
 		for(String path : nodePaths) {
 			rootPaths.add("root." + path);
 		}
-		
-		if(propertyPaths != null) { 
+
+		if(propertyPaths != null) {
 		    rootPaths.addAll(propertyPaths);
 		}
-		
+
 		PolytomousKey polytomousKey = load(uuid, rootPaths);
 		dao.loadNodes(polytomousKey.getRoot(),nodePaths);
 		return polytomousKey;
 	}
-	
+
 	/**
 	 * Returns the polytomous key specified by the given <code>uuid</code>.
-	 *  
+	 *
 	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#load(java.util.UUID, java.util.List)
 	 */
 	@Override
@@ -116,19 +116,19 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 	public Pager<PolytomousKey> findByTaxonomicScope(
 			TaxonBase taxon, Integer pageSize,
 			Integer pageNumber, List<String> propertyPaths, List<String> nodePaths) {
-		
+
 		List<PolytomousKey> list = new ArrayList<PolytomousKey>();
 		taxon = taxonDao.findById(taxon.getId());
-		Integer numberOfResults = identificationKeyDao.countByTaxonomicScope(taxon, PolytomousKey.class).intValue();
+		Long numberOfResults = identificationKeyDao.countByTaxonomicScope(taxon, PolytomousKey.class);
 		if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
 			list = identificationKeyDao.findByTaxonomicScope(taxon, PolytomousKey.class, pageSize, pageNumber, propertyPaths);
 		}
 		if (nodePaths != null) {
 			for (PolytomousKey polytomousKey : list) {
-				dao.loadNodes(polytomousKey.getRoot(), nodePaths);				
+				dao.loadNodes(polytomousKey.getRoot(), nodePaths);
 			}
 		}
-		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults, pageSize, list);
+		Pager<PolytomousKey> pager = new DefaultPagerImpl<PolytomousKey>(pageNumber, numberOfResults.intValue(), pageSize, list);
 
 		return pager;
 	}
@@ -138,12 +138,12 @@ public class PolytomousKeyServiceImpl extends IdentifiableServiceBase<Polytomous
 //	 */
 //	@Override
 //	public UUID delete(PolytomousKey key) {
-//		
+//
 ////		nodeDao.deleteForKey(key);
-//		
+//
 //		return super.delete(key);
 //	}
-	
-	
-	
+
+
+
 }
