@@ -84,7 +84,25 @@ public class XMLHarvester {
 				UUID uuid = XMLHelper.getUuid(childNode);
 				Element featureNodeElement = factory.getFeatureNode(uuid);
 				Element featureElement = factory.getFeatureForFeatureNode(uuid);
-				featureElement.setName(featureElement.getName().toLowerCase(Locale.FRENCH));//We set it to French here but all the names are in English
+				
+				
+				try {
+					Element featureTitleCache = (Element) XPath.selectSingleNode(featureElement, "//Feature/titleCache");
+					
+					logger.info("The featureNode uuid is " + uuid);
+					logger.info("The feature element name is " + featureTitleCache.getValue());
+					logger.info("The feature title cache text french is " + featureTitleCache.getText().toLowerCase(Locale.FRENCH));
+					logger.info("The feature title cache value french is " + featureTitleCache.getValue().toLowerCase(Locale.FRENCH));
+					
+					featureTitleCache.setText(featureTitleCache.getText().toLowerCase(Locale.FRENCH));
+					
+				} catch (JDOMException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+								
+				////We set it to French here but this isn't the correct place the Feature/titleCache
+				featureElement.setName(featureElement.getName().toLowerCase(Locale.FRENCH));
 				SimplifiedFeatureNode simplifiedFeatureNode = new SimplifiedFeatureNode(featureElement, featureTreeRecursive(featureNodeElement));				
 				result.add(simplifiedFeatureNode);
 			}
@@ -245,7 +263,15 @@ public class XMLHarvester {
 			populateChildren(taxonNodeElement);
 		}
 		
+		try {
+			populateReferences(fullTaxonElement);
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
 		populateTypeDesignations(fullTaxonElement);
+		
 		progressMonitor.worked(1);
 		
 	}	
@@ -264,6 +290,31 @@ public class XMLHarvester {
 		for(Element typeDesignation: typeDesignations){
 			XMLHelper.addContent(typeDesignation, "typeDesignations", nameElement);
 		}
+	}
+	
+	private void populateReferences(Element fullTaxonElement) throws JDOMException {
+
+		//get the references from the taxonElement
+		//String referencePattern = "//name/nomenclaturalReference";
+		String referencePattern = "/Taxon/name/nomenclaturalReference";
+
+		//but there could be many references
+		Element referenceElement = (Element) XPath.selectSingleNode(fullTaxonElement, referencePattern); //Mon 1st july do we get the /Taxon/name/nomenclaturalReference from the taxon node - is this working
+		//List<Element> descriptionElementElements = XPath.selectNodes(context, featurePattern + "/..");
+
+		List<Element> elementList = null;
+
+		if(referenceElement != null){  //the referencePattern was found in the taxonElement
+
+			List<Element> refs = factory.getReferences(referenceElement);//getReferences
+
+			fullTaxonElement.removeChild("nomenclaturalReference");//remove the references
+
+			for(Element ref: refs){
+				XMLHelper.addContent(ref, "nomenclaturalReference", fullTaxonElement);
+			}
+		}		
+
 	}
 
 	/**
@@ -309,18 +360,33 @@ public class XMLHarvester {
 		taxonElement.removeChild("descriptions");
 		
 		Element rawDescriptions = factory.getDescriptions(taxonElement);
+		
+		Element featureTitleCache;
+		try {
+			//featureTitleCache = (Element) XPath.selectSingleNode(rawDescriptions, "//feature/representation_L10n");			
+			List descs = XPath.selectNodes(rawDescriptions, "//feature/representation_L10n");			
+			for(Object des : descs){
+				logger.info("The descriptions //feature/representation_L10n is " + ((Element) des).getValue());
+			}			
+			
+		} catch (JDOMException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+
 		//logger.setLevel(Level.DEBUG);
 		
 		logger.debug("The taxonElement is " + XMLHelper.getUuid(taxonElement) + " name " + XMLHelper.getTitleCache(taxonElement));
 				
-		Element descriptions = new Element("descriptions");		
-		Element features = new Element("features");		
+		Element descriptionsElement = new Element("descriptions");		
+		Element featuresElement = new Element("features");		
 	
 		for(SimplifiedFeatureNode simplifiedFeatureNode : simplifiedFeatureTree){ 
 			
 			try {
 				
-				processFeatureNode(simplifiedFeatureNode, rawDescriptions, features);
+				processFeatureNode(simplifiedFeatureNode, rawDescriptions, featuresElement);
 				
 				//UUID featureUuid = XMLHelper.getUuid(simplifiedFeatureNode.getFeatureElement());
 				//String featureTitleCache = XMLHelper.getTitleCache(simplifiedFeatureNode.getFeatureElement());
@@ -331,11 +397,11 @@ public class XMLHarvester {
 				logger.error(e);
 			}
 		}
-		XMLHelper.addContent(features, descriptions);
-		XMLHelper.addContent(descriptions, taxonElement);
+		XMLHelper.addContent(featuresElement, descriptionsElement);
+		XMLHelper.addContent(descriptionsElement, taxonElement);
 	}
 	
-	private void processFeatureNode(SimplifiedFeatureNode featureNode, Object context, Element parentElement)  throws JDOMException{
+	private void processFeatureNode(SimplifiedFeatureNode featureNode, Object context, Element parentFeatureElement)  throws JDOMException{
 		
 		// gets the feature elements with the current feature uuid	
 		UUID featureUuid = XMLHelper.getUuid(featureNode.getFeatureElement());	
@@ -363,14 +429,14 @@ public class XMLHarvester {
 				XMLHelper.addContent(descriptionElementElement, "descriptionelements", feature);
 				
 			}
-			XMLHelper.addContent(feature, parentElement);
+			XMLHelper.addContent(feature, parentFeatureElement);
 		}else if(featureNode.getChildren().size() > 0){
 			
 			Element featureElement = featureNode.getFeatureElement();
 			Element featureElementClone = (Element) featureElement.clone();
 			feature = (Element) featureElementClone.detach();
 			
-			XMLHelper.addContent(feature, parentElement); 
+			XMLHelper.addContent(feature, parentFeatureElement); 
 		}		
 		
 		// recurse into children

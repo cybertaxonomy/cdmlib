@@ -313,10 +313,10 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 			
 			HttpResponse response = UriUtils.getResponse(newUri, requestHeaders);
 			
-			if(UriUtils.isOk(response)){
+			logger.info("Firing request for URI: " + newUri);
 			
-				logger.info("Firing request for URI: " + newUri);
-				
+			if(UriUtils.isOk(response)){
+						
 				// get the content at the resource
 				InputStream content = UriUtils.getContent(response);
 				
