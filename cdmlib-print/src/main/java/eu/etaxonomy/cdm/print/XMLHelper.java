@@ -136,6 +136,7 @@ public class XMLHelper {
 	 * @param parentElement
 	 */
 	public static void addContent(Element elementToAdd, String childElementName, Element parentElement){
+				
 		if(elementToAdd == null){
 			logger.warn("Retrieved a null element. Not adding it.");
 			return;

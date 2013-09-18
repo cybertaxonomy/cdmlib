@@ -519,4 +519,13 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 
         return new Element("somethingWentWrong");
     }
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getReferences(org.jdom.Element)
+	 */
+	@Override
+	public List<Element> getReferences(Element referenceElement) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

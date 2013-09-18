@@ -1639,6 +1639,8 @@ cdmlib-print/src/main/resources/log4j.properties -text
 cdmlib-print/src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl -text
 cdmlib-print/src/main/resources/stylesheets/mediawiki/multipages.xsl -text
 cdmlib-print/src/main/resources/stylesheets/odf/cdmToOdfText.xsl -text
+cdmlib-print/src/main/resources/stylesheets/pdf/Untitled21212.xml -text
+cdmlib-print/src/main/resources/stylesheets/pdf/caryophyllales.xsl -text
 cdmlib-print/src/main/resources/stylesheets/pdf/flora-malesiana.xsl -text
 cdmlib-print/src/main/resources/stylesheets/pdf/flore-afrique-centrale.xsl -text
 cdmlib-print/src/site/apt/download.apt -text

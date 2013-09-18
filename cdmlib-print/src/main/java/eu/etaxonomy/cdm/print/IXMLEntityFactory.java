@@ -96,6 +96,14 @@ public interface IXMLEntityFactory {
 	public Element getAcceptedTaxonElement(Element taxonElement);
 	
 	/**
+	 * Fully initializes a reference
+	 * 
+	 * @param referenceElement
+	 * @return an element
+	 */
+	public List<Element> getReferences(Element referenceElement);
+	
+	/**
 	 * Initializes the complete synonym for an accepted taxon
 	 * 
 	 * @param taxonElement
