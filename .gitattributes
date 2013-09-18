@@ -50,6 +50,7 @@ cdmlib-ext/pom.xml -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/IBciServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQuery.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryGenerator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseResponseSchemaAdapter.java -text

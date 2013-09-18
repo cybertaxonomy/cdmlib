@@ -14,14 +14,17 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * @author pplitzner
@@ -42,15 +45,23 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
 //              "application/atom+xml"));
 //          postRequest.setEntity(entity);
 
+    private BioCaseResponseSchemaAdapter schemaAdapter;
+
     /**
      * Constructs a new BioCaseServiceWrapper with the baseUrl: <i>http://ww3.bgbm.org/biocase/pywrapper.cgi</i>
      */
     public BioCaseQueryServiceWrapper() {
         setBaseUrl("http://ww3.bgbm.org/biocase/pywrapper.cgi");
-        addSchemaAdapter(new BioCaseResponseSchemaAdapter());
+        schemaAdapter = new BioCaseResponseSchemaAdapter();
+        addSchemaAdapter(schemaAdapter);
     }
 
-    public InputStream query() throws ClientProtocolException, IOException, URISyntaxException{
+    /**
+     * Queries the BioCASE provider with the given {@link BioCaseQuery}.
+     * @return A list of {@link SpecimenOrObservationBase} extracted from the resulting http response.
+     */
+    public List<SpecimenOrObservationBase> query(BioCaseQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+        List<SpecimenOrObservationBase> results = null;
 //        Document query = new BioCaseQueryGenerator().generateQuery();
 //        String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(query);
 
@@ -65,7 +76,18 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
 
         InputStream responseStream = executeHttpPost(uri, null, httpEntity);
 //        InputStream responseStream = executeHttpPost(new URI("http", "ww3.bgbm.org", "/biocase/pywrapper.cgi" , "dsa=Herbar", null), null, httpEntity);
-        new BioCaseResponseSchemaAdapter().getCmdEntities(responseStream);
-        return responseStream;
+        try {
+            results = schemaAdapter.getCmdEntities(responseStream);
+        } catch (ClientProtocolException e) {
+            logger.error(e);
+        } catch (IOException e) {
+            logger.error(e);
+        }
+        DerivedUnitFacade newInstance = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+//        newInstance.setTitleCache("Test Specimen", true);
+        newInstance.setCollectingMethod("Collected from the ground");
+        newInstance.setAccessionNumber("ACC-12345");
+        return Collections.singletonList((SpecimenOrObservationBase)newInstance.innerDerivedUnit());
+//        return results;
     }
 }

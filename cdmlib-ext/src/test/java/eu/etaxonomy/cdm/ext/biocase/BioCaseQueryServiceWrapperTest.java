@@ -10,17 +10,15 @@
 package eu.etaxonomy.cdm.ext.biocase;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URISyntaxException;
+import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
-import org.jdom.Document;
-import org.jdom.JDOMException;
-import org.jdom.input.SAXBuilder;
-import org.jdom.output.XMLOutputter;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author pplitzner
@@ -33,17 +31,13 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
     public void testQuery() {
         BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
         try {
-            InputStream response = queryService.query();
-            SAXBuilder builder = new SAXBuilder();
-            Document xmlResponse = builder.build(response);
-            System.out.println(new XMLOutputter().outputString(xmlResponse));
+            List<SpecimenOrObservationBase> response = queryService.query(new BioCaseQuery());
+            System.out.println(response.get(0).getTitleCache());
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
         } catch (IOException e) {
             fail(e.getMessage());
         } catch (URISyntaxException e) {
-            fail(e.getMessage());
-        } catch (JDOMException e) {
             fail(e.getMessage());
         }
     }
