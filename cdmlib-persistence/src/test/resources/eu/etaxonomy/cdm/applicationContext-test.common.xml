@@ -53,7 +53,7 @@
                 <prop key="hibernate.format_sql">false</prop>
                 <prop key="hibernate.search.default.directory_provider">org.hibernate.search.store.impl.FSDirectoryProvider</prop>
                 <prop key="hibernate.search.default.indexBase">./target/index</prop>
-                
+
  <!--                temp for h4 migration testing
                 <prop key="hibernate.connection.driver_class">org.h2.Driver</prop>
                 <prop key="hibernate.connection.url">jdbc:h2:mem:cdm</prop>
@@ -61,7 +61,7 @@
                 <prop key="hibernate.connection.password"></prop>
                 <prop key="hibernate.search.lucene_version">LUCENE_36</prop>
                 end temp for h4 migration testing
- -->                
+ -->
             </props>
         </property>
     </bean>
@@ -72,7 +72,7 @@
             <props>
                 <!-- globally overriding id generation settings see: eu.etaxonomy.cdm.persistence.hibernate.TableGenerator -->
                 <prop key="optimizer">none</prop>
-                <prop key="initial_value">1000</prop>
+                <prop key="initial_value">5000</prop><!-- must be higher than any term id in TermsDataSet.xml -->
             </props>
         </property>
     </bean>
@@ -85,7 +85,7 @@
         </property>
     </bean>
 
-<!--     
+<!--
     We do not use spelling suggestions anymore. This one relates to springmodules which is
     somewhat outdated. Once we work again with spelling suggestions we better use a modern
     approache, e.g. annotation based.

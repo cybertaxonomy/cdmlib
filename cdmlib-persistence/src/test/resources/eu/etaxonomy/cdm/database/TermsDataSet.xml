@@ -6468,14 +6468,10 @@
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="26" REPRESENTATIONS_ID="2086"/>
   <TERMVOCABULARY_REPRESENTATION TERMVOCABULARY_ID="27" REPRESENTATIONS_ID="2087"/>
 
-  <!--
-       need to set some hibernate_sequences here, thus the initial_value of
-       eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride is set to 1000
-       in applicationContext-test.xml
-       DefinedTermBase and Representation initally have already more that 1000 entities.
+  <!-- 
+      HIBERNATE_SEQUENCES must not be added to this dataset, rather increase the initial_value 
+      of eu.etaxonomy.cdm.persistence.hibernate.TableGeneratorGlobalOverride which is set
+      in applicationContext-test.xml
   -->
-  <HIBERNATE_SEQUENCES SEQUENCE_NAME="DefinedTermBase" NEXT_VAL="3000"/>
-  <HIBERNATE_SEQUENCES SEQUENCE_NAME="Representation" NEXT_VAL="3000"/>
-  <HIBERNATE_SEQUENCES SEQUENCE_NAME="TermVocabulary" NEXT_VAL="41"/><!-- not needed: TODO delete -->
 
 </dataset>
