@@ -9,7 +9,9 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
-import org.hibernate.StatelessSession;
+import org.hibernate.Criteria;
+import org.hibernate.Session;
+import org.hibernate.criterion.Projections;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmPreference;
@@ -24,20 +26,39 @@ public class PreferenceDaoImpl extends DaoBase implements IPreferenceDao  {
 	
 	@Override
 	public CdmPreference get(CdmPreference.PrefKey key){
-		//TODO check if stateless is ok here
-		StatelessSession session = getSessionFactory().openStatelessSession();
-		return (CdmPreference) session.get(CdmPreference.class, key);
+		Session session = getSession();
+		return (CdmPreference)session.get(CdmPreference.class, key);
+
+		//old
+//		StatelessSession session = getSessionFactory().openStatelessSession();
+//		return (CdmPreference) session.get(CdmPreference.class, key);
+
 	}
 	
 	@Override
 	public void set(CdmPreference preference){
 		CdmPreference pref = get(preference.getKey());
-		if (pref == null){
-			getSessionFactory().openStatelessSession().insert(preference);
-		}else{
-			getSessionFactory().openStatelessSession().update(preference);
+		//maybe 
+		//TODO maybe there is better way to allow updates without allowing to write CdmPref.value
+		if (pref != null){
+			getSession().delete(pref);
 		}
+		getSession().save(preference);
+		
+		//old
+//		if (pref == null){
+//			getSessionFactory().openStatelessSession().insert(preference);
+//		}else{
+//			getSessionFactory().openStatelessSession().update(preference);
+//		}
 	}
 	
+	@Override
+	public int count(){
+		Criteria crit = getSession().createCriteria(CdmPreference.class);
+        crit.setProjection(Projections.rowCount());
+        int result = ((Number)crit.list().get(0)).intValue();
+        return result;
+	}
 	
 }

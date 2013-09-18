@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
+package eu.etaxonomy.cdm.api.service;
 
 import org.junit.Assert;
 import org.junit.Test;
@@ -23,29 +23,29 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @author a.mueller
  *
  */
-public class PreferenceDaoTest  extends CdmIntegrationTest {
+public class PreferenceServiceImplTest  extends CdmIntegrationTest {
 
 	@SpringBeanByType
-	IPreferenceDao dao;
+	IPreferenceService service;
 	
 /************ TESTS ********************************/
 
     @Test
     @DataSet
-    public void testDao() {
-    	Assert.assertNotNull(dao);
+    public void testService() {
+    	Assert.assertNotNull(service);
     }
 
     @Test
     @DataSet
     public void testGet() {
         PrefKey key = new PrefKey("DB", "NomCode");
-        CdmPreference pref = dao.get(key);
+        CdmPreference pref = service.get(key);
         Assert.assertNotNull("CdmPreference for given key must exist", pref);
         Assert.assertEquals("ICNAFP", pref.getValue());
         
         key = new PrefKey("DB", "xyz");
-        pref = dao.get(key);
+        pref = service.get(key);
         Assert.assertNull("CdmPreference for given key must not exist", pref);
     }
     
@@ -53,26 +53,26 @@ public class PreferenceDaoTest  extends CdmIntegrationTest {
     @Test
     @DataSet
     public void testCount() {
-    	 int countStart = dao.count();
+    	 int countStart = service.count();
          Assert.assertEquals("There should be 1 preference in the CDM store", 1, countStart);
     }
 	
     @Test
     @DataSet
     public void testSet() {
-    	 int countStart = dao.count();
+    	 int countStart = service.count();
          Assert.assertEquals(1, countStart);
     	
     	CdmPreference pref = CdmPreference.NewInstance("DB", "xyz", "200");
-        dao.set(pref);
-	   	int count = dao.count();
+    	service.set(pref);
+	   	int count = service.count();
 	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
 
         
         pref = CdmPreference.NewInstance("DB", "NomCode", "ICZN");
-        dao.set(pref);
+        service.set(pref);
         
-	   	count = dao.count();
+	   	count = service.count();
 	    Assert.assertEquals("There should be only 1 new preference", countStart + 1, count);
         
     }

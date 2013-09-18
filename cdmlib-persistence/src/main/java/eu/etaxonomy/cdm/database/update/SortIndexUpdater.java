@@ -27,31 +27,34 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
 	
 	private String tableName;
 	private String sortIndexColumn;
 	private String parentColumn;
+	private String idColumn = "id";
 	private boolean includeAudTable;
 	private Integer baseValue = 0;
 	
 	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
-		return new SortIndexUpdater(stepName, tableName, parentColumn, sortIndexColumn, includeAudTable, 0);
+		return new SortIndexUpdater(stepName, tableName, parentColumn, sortIndexColumn, "id", includeAudTable, 0);
 	}
+
+	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable){
+		return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, idColumn, includeAudTable, 0);
+	}
+
 	
-	protected SortIndexUpdater(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable, Integer baseValue) {
+	protected SortIndexUpdater(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable, Integer baseValue) {
 		super(stepName);
 		this.tableName = tableName;
 		this.parentColumn = parentColumn;
 		this.sortIndexColumn = sortIndexColumn;
+		this.idColumn = idColumn;
 		this.includeAudTable = includeAudTable;
 		this.baseValue = baseValue;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
@@ -81,22 +84,22 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 	 * @throws SQLException
 	 */
 	private Map<Integer, Set<Integer>> makeIndexMap(ICdmDataSource datasource) throws SQLException {
-		String resulsetQuery = "SELECT id, @parentColumn " +
+		String resulsetQuery = "SELECT @id as id, @parentColumn " +
 				" FROM @tableName " +
 				" WHERE @parentColumn IS NOT NULL " + 
-				" ORDER BY @parentColumn, id";
+				" ORDER BY @parentColumn,    @id";
 		resulsetQuery = resulsetQuery.replace("@tableName", tableName);
 		resulsetQuery = resulsetQuery.replace("@parentColumn", parentColumn);
+		resulsetQuery = resulsetQuery.replace("@id", idColumn);
 
 		ResultSet rs = datasource.executeQuery(resulsetQuery);
 		Integer index = baseValue;
 		int oldParentId = -1;
 		
 		
+		//increase index with each row, set to 0 if parent is not the same as the previous one
 		Map<Integer, Set<Integer>> indexMap = new HashMap<Integer, Set<Integer>>(); 
-		Integer counter = 0;
 		while (rs.next() ){
-			counter++;
 			int id = rs.getInt("id");
 			Object oParentId = rs.getObject(parentColumn);
 			if (oParentId != null){
@@ -123,11 +126,12 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 			Set<Integer> set = indexMap.get(index);
 			String idSetString = makeIdSetString(set);
 			
-			String updateQuery = "UPDATE @tableName SET @sortIndexColumn = @index WHERE id IN (@idList) ";
+			String updateQuery = "UPDATE @tableName SET @sortIndexColumn = @index WHERE @id IN (@idList) ";
 			updateQuery = updateQuery.replace("@tableName", tableName);
 			updateQuery = updateQuery.replace("@sortIndexColumn", sortIndexColumn);
 			updateQuery = updateQuery.replace("@index", index.toString());
 			updateQuery = updateQuery.replace("@idList", idSetString);
+			updateQuery = updateQuery.replace("@id", idColumn);
 			datasource.executeUpdate(updateQuery);
 		}
 	}
@@ -140,6 +144,9 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 		return result.substring(0, result.length() - 1);
 	}
 
+	/**
+	 * Adds the id to the index (each id is attached to an (sort)index) 
+	 */
 	private void putIndex(Integer id, Integer index, Map<Integer, Set<Integer>> indexMap) {
 		Set<Integer> set = indexMap.get(index);
 		if (set == null){

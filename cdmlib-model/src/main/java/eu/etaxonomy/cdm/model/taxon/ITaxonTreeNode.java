@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.model.taxon;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.IAnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableEntity {
 
 	/**
-	 * Adds a taxon node as a child of the ITreeNode
+	 * Adds a taxon node as a child of the ITreeNode at the last position.
 	 * 
 	 * @param childNode
 	 * @param citation
@@ -32,17 +33,38 @@ public interface ITaxonTreeNode extends /*ITreeNode<TaxonNode>, */ IAnnotatableE
 	 * @return the child node 
 	 */
 	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation);
+
+	/**
+	 * Adds a taxon node as a child of this {@link ITreeNode} at the index position.
+	 * @param childNode
+	 * @param index
+	 * @param citation
+	 * @param microCitation
+	 * @return
+	 */
+	public TaxonNode addChildNode(TaxonNode childNode, int index, Reference citation, String microCitation);
+
 	
 	/**
-	 * Adds a taxon as a child of the ITreeNode
+	 * Adds a taxon as a child of the ITreeNode at the last position.
 	 * 
 	 * @param taxon
 	 * @param citation
 	 * @param microCitation
-	 * @param synonymToBeUsed
 	 * @return the child node
 	 */
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation);
+	
+	
+	/**
+	 * Adds a taxon as a child of the ITreeNode at the index position.
+	 * 
+	 * @param taxon
+	 * @param citation
+	 * @param microCitation
+	 * @return the child node
+	 */
+	public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation);
 	
 	/**
 	 * Whether this TreeNode has child nodes attached

@@ -9,7 +9,9 @@
  */
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -30,7 +32,6 @@ import eu.etaxonomy.cdm.database.DataSourceInfo;
 import eu.etaxonomy.cdm.database.DataSourceReloader;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.controller.util.ProgressMonitorUtil;
-import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 
 @Controller
@@ -59,7 +60,7 @@ public class ManagementController {
 	public void initIndexClassBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
 	}
-	
+
 	@InitBinder
 	public void initIndexArrayBinder(WebDataBinder binder) {
 		binder.registerCustomEditor(Class[].class, new CdmTypePropertyEditor());
@@ -68,7 +69,7 @@ public class ManagementController {
     /*
      * return page not found http error (404) for unknown or incorrect UUIDs
      * (non-Javadoc)
-	 * 
+     *
 	 * @see
 	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
 	 * (javax.servlet.http.HttpServletRequest,
@@ -100,11 +101,11 @@ public class ManagementController {
     }
 
     /**
-	 * 
+     *
 	 * Reindex all cdm entities listed in
 	 * {@link ICdmMassIndexer#indexedClasses()}. Re-indexing will not purge the
 	 * index.
-	 * 
+     *
 	 * @param frontendBaseUrl
 	 *            if the CDM server is running behind a reverse proxy you need
      *            to supply the base URL of web service front-end which is
@@ -115,22 +116,15 @@ public class ManagementController {
      * @throws Exception
      */
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
-    public ModelAndView doReindex(
+    public synchronized ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
 			@RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
              @RequestParam(value = "priority", required = false) Integer priority,
 			HttpServletRequest request, HttpServletResponse response)
 			throws Exception {
-		
-		indexer.clearIndexedClasses();
-		if(types != null) {
-			for (Class<? extends CdmBase> type : types) {
-				if(type != null) {
-					indexer.addToIndexedClasses(type);
-				}
-			}
-		}
-		
+
+        final Set<Class<? extends CdmBase>> typeSet = asList(types);
+
         String processLabel = "Re-indexing";
 		ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
 				progressMonitorController);
@@ -140,8 +134,7 @@ public class ManagementController {
 			Thread subThread = new Thread() {
                 @Override
 				public void run() {
-					indexer.reindex(progressMonitorController
-							.getMonitor(indexMonitorUuid));
+                    indexer.reindex(typeSet, progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
 			if (priority == null) {
@@ -156,11 +149,27 @@ public class ManagementController {
     }
 
     /**
-	 * 
+     * @param types
+     */
+    private Set<Class<? extends CdmBase>> asList(Class<? extends CdmBase>[] types) {
+        Set<Class<? extends CdmBase>> typeSet = null;
+        if(types != null) {
+            typeSet = new HashSet<Class<? extends CdmBase>>();
+            for (Class<? extends CdmBase> type : types) {
+                if(type != null) {
+                    typeSet.add(type);
+                }
+            }
+        }
+        return typeSet;
+    }
+
+    /**
+     *
 	 * Create dictionaries for all cdm entities listed in
 	 * {@link ICdmMassIndexer#dictionaryClasses()}. Re-dicting will not purge
 	 * the dictionaries.
-	 * 
+     *
 	 * @param frontendBaseUrl
 	 *            if the CDM server is running behind a reverse proxy you need
     *            to supply the base URL of web service front-end which is
@@ -171,7 +180,7 @@ public class ManagementController {
     * @throws Exception
     */
    @RequestMapping(value = { "redict" }, method = RequestMethod.GET)
-   public ModelAndView doRedict(
+    public synchronized ModelAndView doRedict(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
 			HttpServletRequest request, HttpServletResponse response)
@@ -203,14 +212,14 @@ public class ManagementController {
 
     /**
      * This will wipe out the index.
-	 * 
+     *
      * @param request
      * @param respone
      * @return
      * @throws Exception
      */
     @RequestMapping(value = { "purge" }, method = RequestMethod.GET)
-    public ModelAndView doPurge(
+    public synchronized ModelAndView doPurge(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
 			HttpServletRequest request, HttpServletResponse response)
@@ -241,7 +250,7 @@ public class ManagementController {
 		return progressUtil.respondWithMonitor(frontendBaseUrl, request,
 				response, processLabel, indexMonitorUuid);
     }
-	
-	
+
+
 
 }

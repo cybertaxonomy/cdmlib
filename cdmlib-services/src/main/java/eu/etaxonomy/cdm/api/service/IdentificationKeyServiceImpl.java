@@ -5,7 +5,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -27,6 +26,7 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
         this.dao = dao;
     }
 
+    @Override
     public Pager<IIdentificationKey> page(Integer pageSize, Integer pageNumber,	List<String> propertyPaths) {
         Integer numberOfResults = dao.count();
         List<IIdentificationKey> results = new ArrayList<IIdentificationKey>();
@@ -39,16 +39,17 @@ public class IdentificationKeyServiceImpl implements IIdentificationKeyService {
     }
 
 
+    @Override
     public <T extends IIdentificationKey> Pager<T> findKeysConvering(TaxonBase taxon,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-        Integer numberOfResults = dao.countByTaxonomicScope(taxon, type).intValue();
+        Long numberOfResults = dao.countByTaxonomicScope(taxon, type);
         List<T> results = new ArrayList<T>();
         if(AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)){
             results = dao.findByTaxonomicScope(taxon, type, pageSize, pageNumber, propertyPaths);
         }
-        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults.intValue(), pageSize, results);
     }
 
 }

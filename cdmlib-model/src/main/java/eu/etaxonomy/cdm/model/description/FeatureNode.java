@@ -22,6 +22,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -36,7 +37,6 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -93,9 +93,8 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
-//    @IndexColumn(name="sortIndex", base = 0)
     @Cascade(CascadeType.SAVE_UPDATE)
-	@JoinColumn(name="parent_id" /*, insertable=false, updatable=false, nullable=false*/)
+	@JoinColumn(name="parent_id")
 	private FeatureNode parent;
     
     
@@ -105,22 +104,14 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-//    @OrderColumn("sortIndex")  //JPA 2.0 same as @IndexColumn
-    // @IndexColumn does not work because not every FeatureNode has a parent. But only NotNull will solve the problem (otherwise 
-    // we will need a join table 
-    // http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
-    // http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
-    //see also https://forum.hibernate.org/viewtopic.php?p=2392563
-    //http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
-    // reading works, but writing doesn't
-    //
-    @IndexColumn(name="sortIndex", base = 0) 
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    @OrderColumn(name="sortIndex") 
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
 
-    //see comment on children @IndexColumn
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
     
 	@XmlElementWrapper(name = "OnlyApplicableIf")

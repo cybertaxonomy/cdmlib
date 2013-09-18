@@ -22,6 +22,7 @@ import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
+import org.apache.lucene.search.SortField;
 import org.hibernate.search.Search;
 import org.hibernate.search.SearchFactory;
 import org.hibernate.search.indexes.IndexReaderAccessor;
@@ -40,28 +41,62 @@ public class LuceneMultiSearch extends LuceneSearch {
 
     public static final Logger logger = Logger.getLogger(LuceneMultiSearch.class);
 
-    private Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
+    private final Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
 
 
     /**
      * @param luceneSearch the searches to execute together as a union like search
+     * @throws Exception
      */
-    public LuceneMultiSearch(LuceneSearch... luceneSearch) {
-        session = luceneSearch[0].session;
+    public LuceneMultiSearch(LuceneSearch... luceneSearch) throws LuceneMultiSearchException {
 
+        session = luceneSearch[0].session;
+        groupByField = null; //reset
         BooleanQuery query = new BooleanQuery();
 
         Set<String> highlightFields = new HashSet<String>();
+        List<SortField> multiSearcherSortFields = new ArrayList<SortField>();
 
         for(LuceneSearch search : luceneSearch){
+
             this.directorySelectClasses.add(search.getDirectorySelectClass());
             query.add(search.getQuery(), Occur.SHOULD);
+
+            // add the highlightFields from each of the sub searches
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
+
+            // set the class for each of the sub searches
+            if(search.clazz != null){
+                if(clazz != null && !clazz.equals(search.clazz)){
+                    throw new LuceneMultiSearchException(
+                            "LuceneMultiSearch can only handle once class restriction, but multiple given: " +
+                            getClazz() + ", " + search.getClazz());
+                }
+                setClazz(search.getClazz());
+            }
+
+            // set the groupByField for each of the sub searches
+            if(search.groupByField != null){
+                if(groupByField != null && !groupByField.equals(search.groupByField)){
+                    throw new LuceneMultiSearchException(
+                            "LuceneMultiSearch can only handle once groupByField, but multiple given: " +
+                            groupByField + ", " + search.groupByField);
+                }
+                groupByField = search.groupByField;
+            }
+
+
+            // add the sort field from each of the sub searches
+            for(SortField addField : search.getSortFields()){
+                if(! multiSearcherSortFields.contains(addField)) {
+                    multiSearcherSortFields.add(addField);
+                }
+            }
         }
 
+        this.sortFields = multiSearcherSortFields.toArray(new SortField[multiSearcherSortFields.size()]);
         this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
         this.query = query;
-
     }
 
     /**
@@ -75,15 +110,15 @@ public class LuceneMultiSearch extends LuceneSearch {
             SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
             List<IndexReader> readers = new ArrayList<IndexReader>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
-            	   //OLD
+                   //OLD
 //                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
 //                logger.info(directoryProviders[0].getDirectory().toString());
 
 //                ReaderProvider readerProvider = searchFactory.getReaderProvider();
-            	IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor(); 
-            	IndexReader reader = ira.open(type);
+                IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor();
+                IndexReader reader = ira.open(type);
 //            	readers.add(readerProvider.openReader(directoryProviders[0]));
-            	readers.add(reader);
+                readers.add(reader);
             }
             if(readers.size() > 1){
                 MultiReader multireader = new MultiReader(readers.toArray(new IndexReader[readers.size()]), true);

@@ -15,7 +15,7 @@ import java.util.StringTokenizer;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.model.common.AbstractStringComparator;
+import eu.etaxonomy.cdm.common.AbstractStringComparator;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
  *
  */
 @Component
-public class TaxonNodeByNameComparator extends AbstractStringComparator implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
+public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNode> implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
 
 	private static final String HYBRID_SIGN = "\u00D7";
 

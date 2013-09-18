@@ -4,6 +4,7 @@
 cdmlib-commons/LICENSE.TXT -text
 cdmlib-commons/README.TXT -text
 cdmlib-commons/pom.xml -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AbstractStringComparator.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/AccountStore.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/CdmUtils.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/DOI.java -text
@@ -739,7 +740,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Team.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/TeamOrPersonBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/package.html -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AbstractStringComparator.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotatableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Annotation.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/AnnotationType.java -text
@@ -1418,6 +1418,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/occurrence/CollectionDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/occurrence/OccurrenceDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/reference/ReferenceDaoHibernateImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/statistics/StatisticsDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/ClassificationDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonAlternativeSpellingSuggestionParser.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImpl.java -text
@@ -1433,6 +1434,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITypeDesi
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/occurrence/ICollectionDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/occurrence/IOccurrenceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/reference/IReferenceDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/statistics/IStatisticsDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/IClassificationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonNodeDao.java -text
@@ -1540,6 +1542,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TypeDesignationDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/occurrence/OccurrenceDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/reference/ReferenceDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/statistics/StatisticsDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplBenchmark.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.java -text
@@ -1599,6 +1602,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/DefinedTermDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/GroupDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/IdentifiableDaoBaseTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/PreferenceDaoTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/TermVocabularyDaoImplTest.testListVocabularyEmpty.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/TermVocabularyDaoImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/common/UserDaoHibernateImplTest.xml -text
@@ -1663,6 +1667,7 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XMLHelper.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XmlEntityFactoryBase.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/IPublishOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/PublishOutputModuleBase.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/MediawikiOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/DocumentCreator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/IStyleNames.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModule.java -text
@@ -2078,7 +2083,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/INaturalLanguageTextD
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPreferencesService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPreferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IStatisticsService.java -text
@@ -2106,6 +2111,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxaAndNamesSearchMode.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TaxonServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/TermServiceImpl.java -text
@@ -2154,6 +2160,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/DocumentSearch
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ICdmMassIndexer.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/ISearchResultBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearch.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneMultiSearchException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/LuceneSearch.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/QueryFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/search/SearchResult.java -text
@@ -2194,6 +2201,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGene
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityWithTransaction.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImplTest.java -text
@@ -2248,6 +2256,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/NameServiceImplT
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.tif -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PreferenceServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/SecurityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest-indexing.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.xml -text

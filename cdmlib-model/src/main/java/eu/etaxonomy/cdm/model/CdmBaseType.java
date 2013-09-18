@@ -33,6 +33,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  */
 public enum CdmBaseType {
 
+    /**
+     * refers to the baseClass {@link TaxonBase}
+     */
     TAXON(TaxonBase.class),
     NONVIRALNAME(TaxonNameBase.class),
     DESCRIPTION_ELEMENT(DescriptionElementBase.class),

@@ -1,10 +1,7 @@
 package eu.etaxonomy.cdm.api.service;
 
-import java.util.Arrays;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,23 +10,18 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
-import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
-import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionElementDao;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
+import eu.etaxonomy.cdm.persistence.dao.statistics.IStatisticsDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 
@@ -45,16 +37,24 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private static final Logger logger = Logger
 			.getLogger(StatisticsServiceImpl.class);
 
-	private static final List<String> DESCRIPTION_SOURCE_REF_STRATEGIE = Arrays
-			.asList(new String[] { "sources.citation" });
-	// "descriptionSources", "citation"
 
-	private static final List<String> DESCR_ELEMENT_REF_STRATEGIE = Arrays
-			.asList(new String[] { "sources.citation", });;
 
-	private StatisticsConfigurator configurator;
+	// this does not make sense, we just count nothing if no type is given. 
+	// the one who calls this service should check that there are types given!
+//	private static final StatisticsTypeEnum DEFAULT_TYPE=StatisticsTypeEnum.ALL_TAXA; 
+	//TODO create a list with all types.
 
-	private Statistics statistics;
+	// this constant can also be used by the ones that use the service
+	
+	private static final IdentifiableEntity<?> ALL_DB = null;
+	
+	@Override
+	@Transactional
+	public IdentifiableEntity<?> getFilterALL_DB(){
+		return ALL_DB;
+	}
+
+	private ArrayList<Statistics> statisticsList;
 
 	@Autowired
 	private ITaxonDao taxonDao;
@@ -69,150 +69,171 @@ public class StatisticsServiceImpl implements IStatisticsService {
 	private IReferenceDao referenceDao;
 
 	@Autowired
-	private IDescriptionDao descriptionDao;
-
+	private IStatisticsDao statisticsDao;
+	
 	@Autowired
-	private IDescriptionElementDao descrElementDao;
+	private IDescriptionDao descriptionDao;
 
 	/**
 	 * counts all the elements referenced in the configurator from the part of
 	 * the database referenced in the configurator
+	 * 
+	 * @param configurators
+	 * @return be aware that a Statistics.countMap might contain "null"
+	 *         {@link Number} values, if the count failed (, if the value is "0"
+	 *         the count succeeded in counting zero elements.)
 	 */
 	@Override
 	@Transactional
-	public Statistics getCountStatistics(StatisticsConfigurator configurator) {
-		this.configurator = configurator;
-		this.statistics = new Statistics(configurator);
-		// TODO use "about" parameter of Statistics element
-		calculateParts();
-		return this.statistics;
-		// return new Statistics(null);
+	public List<Statistics> getCountStatistics(
+			List<StatisticsConfigurator> configurators) {
+
+		statisticsList = new ArrayList<Statistics>();
+
+		for (StatisticsConfigurator statisticsConfigurator : configurators) {
+			// create a Statistics element for each configurator
+			countStatisticsPart(statisticsConfigurator);
+		}
+		return this.statisticsList;
 	}
 
-	private void calculateParts() {
-		for (StatisticsPartEnum part : configurator.getPart()) {
-			switch (part) {
-			case ALL:
-				countAll();
-				break;
-
-			case CLASSIFICATION:
-				// TODO
-				break;
-			}
+	@Transactional
+	private void countStatisticsPart(StatisticsConfigurator configurator) {
+		// get last element of configurator.filter (the node that is the root
+		// for the count):
+		IdentifiableEntity filter = configurator.getFilter().get(
+				(configurator.getFilter().size()) - 1);
+		if (filter == getFilterALL_DB()) {
+			countAll(configurator);
+		} else { // check for classtype classification
+			countPart(configurator, filter);
 		}
 
 	}
 
-	@Transactional
-	private void countAll() {
+	/**
+	 * @param configurator
+	 */
+	private void countAll(StatisticsConfigurator configurator) {
+		Statistics statistics = new Statistics(configurator);
 
 		for (StatisticsTypeEnum type : configurator.getType()) {
-			Integer number = 0;
+			Long counter = null;
 			switch (type) {
 
 			case ALL_TAXA:
-				number += taxonDao.count(Taxon.class);
+				counter = Long.valueOf(taxonDao.count(TaxonBase.class));
+				break;
 			case SYNONYMS:
-				number += taxonDao.count(Synonym.class);
+				counter = Long.valueOf(taxonDao.count(Synonym.class));
 				break;
 			case ACCEPTED_TAXA:
-				number += taxonDao.count(Taxon.class);
+				counter = Long.valueOf(taxonDao.count(Taxon.class));
 				break;
 			case ALL_REFERENCES:
-				number += referenceDao
-						.count(eu.etaxonomy.cdm.model.reference.Reference.class);
+				counter = Long
+						.valueOf(referenceDao
+								.count(eu.etaxonomy.cdm.model.reference.Reference.class));
 				break;
 
 			case NOMECLATURAL_REFERENCES:
-				number += (referenceDao.getAllNomenclaturalReferences()).size();
+
+				counter = statisticsDao.countNomenclaturalReferences();
 				break;
 
 			case CLASSIFICATION:
-				number += classificationDao.count(Classification.class);
+				counter = Long.valueOf(classificationDao
+						.count(Classification.class));
 
 				break;
 
 			case TAXON_NAMES:
-				number += taxonNameDao.count(TaxonNameBase.class);
+				counter = Long.valueOf(taxonNameDao.count(TaxonNameBase.class));
 				break;
 
-//			case DESCRIPTIVE_SOURCE_REFERENCES:
-				// TODO create statistics DAO
-				// number += getDescriptiveSourceReferences();
-//				break;
-			}
-			statistics.addCount(type, number);
-		}
+			case DESCRIPTIVE_SOURCE_REFERENCES:
 
+				counter = statisticsDao.countDescriptiveSourceReferences();
+
+				break;
+			case DESCRIPTIONS:
+
+				counter = Long.valueOf(descriptionDao.count(DescriptionBase.class));
+
+				break;
+			}
+
+			statistics.addCount(type, counter);
+		}
+		statisticsList.add(statistics);
 	}
 
-	private Integer getDescriptiveSourceReferences() {
-		// int counter = 0;
+	@Transactional
+	private void countPart(StatisticsConfigurator configurator,
+			IdentifiableEntity filter) {
+		// TODO maybe remove redundant parameter filter
+		Statistics statistics = new Statistics(configurator);
 
-		// count references from each description:
-		// TODO test this function or write dao and delete it
+		Long counter = null;
 
-		// // we need the set to get off the doubles:
+		if (filter instanceof Classification) {
 
-		/*
-		 * TODO >>> better performance and more reliabale deduplication with
-		 * Set<UUID> referenceUuids = new HashSet<UUID>();
-		 */
-		Set<UUID> referenceUuids = new HashSet<UUID>();
-		Set<eu.etaxonomy.cdm.model.reference.Reference<?>> references = new HashSet<eu.etaxonomy.cdm.model.reference.Reference<?>>();
-		// TODO second param 0?:
+			for (StatisticsTypeEnum type : configurator.getType()) {
 
-		/*
-		 * TODO >>>> it should not be necessary to use init stratgies >>>>
-		 * listDescriptions(null, null, null, null, null, null, null, null);
-		 * would list all descriptions
-		 */
-		List<DescriptionBase> descriptions = descriptionDao.listDescriptions(
-				TaxonDescription.class, null, null, null, null, null, null,
-				DESCRIPTION_SOURCE_REF_STRATEGIE);
-		descriptions.addAll(descriptionDao.listDescriptions(
-				TaxonNameDescription.class, null, null, null, null, null, null,
-				DESCRIPTION_SOURCE_REF_STRATEGIE));
-		descriptions.addAll(descriptionDao.listDescriptions(
-				SpecimenDescription.class, null, null, null, null, null, null,
-				DESCRIPTION_SOURCE_REF_STRATEGIE));
-		// list(null, 0);
-		for (DescriptionBase<?> description : descriptions) {
+				switch (type) {
+				case CLASSIFICATION:
+					logger.info("there should not be any classification "
+							+ "nested in an other classification");
+					// so do nothing
+					break;
+				case ACCEPTED_TAXA:
+					counter = statisticsDao.countTaxaInClassification(
+							Taxon.class, (Classification) filter);
+					break;
 
-			// get all sources of the description
-			Set<IdentifiableSource> sources = description.getSources();
-			for (IdentifiableSource source : sources) {
-				if (source.getCitation() != null)
+				case ALL_TAXA:
+					counter = statisticsDao.countTaxaInClassification(
+							TaxonBase.class, (Classification) filter);
+					break;
+				case SYNONYMS:
+					counter = statisticsDao.countTaxaInClassification(
+							Synonym.class, (Classification) filter);
+					break;
+				case TAXON_NAMES:
+					counter = statisticsDao
+							.countTaxonNames((Classification) filter);
+					break;
+				case ALL_REFERENCES:
+					counter = statisticsDao.countReferencesInClassification((Classification) filter);
+					break;
+				case DESCRIPTIVE_SOURCE_REFERENCES:
+					counter = statisticsDao
+							.countDescriptive(true, (Classification) filter);
+					break;
+				case DESCRIPTIONS:
+					counter = statisticsDao
+							.countDescriptive(false, (Classification) filter);
+					break;
+				case NOMECLATURAL_REFERENCES:
+					counter = statisticsDao
+							.countNomenclaturalReferences((Classification) filter);
+					break;
 
-					references.add(source.getCitation());
+				}
+
+				statistics.addCount(type, counter);
 			}
-
-			/*
-			 * TODO >>>> get all description elements from the description
-			 * 
-			 * e.g: for (DescriptionElementBase element :
-			 * description.getElements()) { for (DescriptionElementSource source
-			 * : element.getSources()) {
-			 * 
-			 * } }
-			 */
+		} else if(filter instanceof Taxon) {
+			//TODO get all taxa of the tree:
+			do{
+				filter.getUuid();
+				statisticsDao.getTaxonTree(filter);
+			}while(true);
+		}else {
+			// we just return null as count for the statistics
+			// element, if the filter is neither classification nor null.
 		}
 
-		// this part still provokes an error:
-		// count references from each description element:
-		List<DescriptionElementBase> descrElements = descrElementDao.list(null,
-				0, null, DESCR_ELEMENT_REF_STRATEGIE);
-		for (DescriptionElementBase descriptionElement : descrElements) {
-			Set<DescriptionElementSource> elementSources = descriptionElement
-					.getSources();
-			for (DescriptionElementSource source : elementSources) {
-				if (source.getCitation() != null)
-					references.add(source.getCitation());
-			}
-		}
-
-		return references.size();
+		statisticsList.add(statistics);
 	}
-
 }

@@ -18,6 +18,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -45,12 +46,13 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private ITaxonDao taxonDao;
 
     private UUID uuid1;
-    private UUID uuid2;
     private UUID uuid3;
+    private UUID uuid2;
 
     @Before
     public void setUp(){
-        uuid1 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
+    	uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
+        uuid3 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
         uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
         AuditEventContextHolder.clearContext();
     }
@@ -71,8 +73,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet
     public void testFindByUuid() {
-        TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
-        Classification.class.getDeclaredConstructors();
+        TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
         assertNotNull("findByUuid should return a taxon node", taxonNode);
     }
 
@@ -84,7 +85,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
         assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
-        TaxonNode taxNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
+        TaxonNode taxNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
         TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.findByUuid(uuid2);
         Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 
@@ -99,11 +100,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
 
         Taxon taxon2 = taxNode2.getTaxon();
         Taxon taxon = taxNode.getTaxon();
-        UUID uuidTaxon = taxon.getUuid();
-        UUID uuidTaxon2 = taxon2.getUuid();
-
+        
         List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be only two taxa", 5, taxa.size());
+        assertEquals("there should be only 5 taxa", 5, taxa.size());
 
         taxonNodeDao.delete(taxNode2);
 
@@ -114,6 +113,23 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         assertEquals("The tree should be null", null, classification);
 
-
+    }
+    
+    @Test
+    @DataSet
+    public void testSortIndex() {
+    	TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
+        TaxonNode node2 = taxonNode.getChildNodes().get(1);
+        Assert.assertEquals(uuid2, node2.getUuid());
+        //move node
+        taxonNode.addChildNode(node2, 0, null, null);
+        taxonNodeDao.saveOrUpdate(taxonNode);
+        commitAndStartNewTransaction(new String[]{"TAXONNODE","CLASSIFICATION_TAXONNODE"});
+        taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
+        node2 = taxonNode.getChildNodes().get(0);
+        Assert.assertEquals("node2 must now be first in the list", uuid2, node2.getUuid());
+        TaxonNode node1 = taxonNode.getChildNodes().get(1);
+        Assert.assertEquals("node1 must now be second in the list", uuid1, node1.getUuid());
+        
     }
 }

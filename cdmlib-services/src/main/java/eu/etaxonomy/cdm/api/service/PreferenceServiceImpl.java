@@ -56,7 +56,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @Service
 @Transactional(readOnly = true)
-public class PreferenceServiceImpl implements IPreferencesService {
+public class PreferenceServiceImpl implements IPreferenceService {
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(PreferenceServiceImpl.class);
 
@@ -71,6 +71,11 @@ public class PreferenceServiceImpl implements IPreferencesService {
 	@Override
 	public void set(CdmPreference preference) {
 		dao.set(preference);
+	}
+
+	@Override
+	public int count() {
+		return dao.count();
 	}
 
 

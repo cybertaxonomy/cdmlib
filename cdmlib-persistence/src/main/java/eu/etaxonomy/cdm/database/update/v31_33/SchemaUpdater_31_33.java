@@ -172,6 +172,18 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		SortIndexUpdater updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, parentIdColumn, sortIndexColumn, INCLUDE_AUDIT);
 		stepList.add(updateSortIndex);
 
+		//Classification root nodes sort index
+		stepName = "Create classification root node sort index column";
+		tableName = "Classification_TaxonNode";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, columnName, INCLUDE_AUDIT, false, null);
+		stepList.add(step);
+
+		stepName = "Update sort index on classification child nodes";
+		parentIdColumn = "Classification_id";
+		String idColumn = "rootnodes_id";
+		updateSortIndex = SortIndexUpdater.NewInstance(stepName, tableName, parentIdColumn, sortIndexColumn, idColumn, INCLUDE_AUDIT);
+		stepList.add(updateSortIndex);
+
 		
 		//create feature node tree index
 		stepName = "Create feature node tree index";
@@ -437,7 +449,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "CdmPreference";
 		TableCreator stepPref = TableCreator.NewInstance(stepName, tableName, 
 				new String[]{"key_subject", "key_predicate","value"},  //colNames 
-				new String[]{"string_100", "string_200","string_1023",},  // columnTypes
+				new String[]{"string_100", "string_100","string_1023",},  // columnTypes
 				new String[]{null, "DefinedTermBase",null},  //referencedTables 
 				! INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);

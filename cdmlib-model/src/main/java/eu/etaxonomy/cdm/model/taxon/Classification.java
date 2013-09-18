@@ -16,12 +16,14 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -33,6 +35,7 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.apache.poi.poifs.property.Child;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -77,7 +80,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    @OneToMany(fetch=FetchType.LAZY)
+	@OrderColumn(name="sortIndex")
+	@OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
 //    @NotNull // avoids creating a UNIQUE key for this field
@@ -101,6 +105,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 //	 */
 //	private AlternativeViewRoot alternativeViewRoot;
 	
+// ********************** FACTORY METHODS *********************************************/
 	
 	public static Classification NewInstance(String name){
 		return NewInstance(name, null, Language.DEFAULT());
@@ -117,6 +122,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public static Classification NewInstance(String name, Reference reference, Language language){
 		return new Classification(name, reference, language);
 	}
+
+// **************************** CONSTRUCTOR *********************************/
+	
+	//for hibernate use only, protected required by Javassist
+	protected Classification(){super();}
 	
 	protected Classification(String name, Reference reference, Language language){
 		this();
@@ -125,15 +135,17 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		setReference(reference);
 	}
 	
-	protected Classification(){
-		super();
-	}
+//********************** xxxxxxxxxxxxx ******************************************/	
 	
-
 	@Override
 	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation) {
+		return addChildNode(childNode, rootNodes.size(), citation, microCitation);
+	}
+	
+	@Override
+	public TaxonNode addChildNode(TaxonNode childNode, int index, Reference citation, String microCitation) {
 		
-		childNode.setParentTreeNode(this);
+		childNode.setParentTreeNode(this, index);
 		
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
@@ -144,10 +156,14 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
 	@Override
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
-		return addChildNode(new TaxonNode(taxon), citation, microCitation);
+		return addChildTaxon(taxon, this.rootNodes.size() ,citation, microCitation);
 	}
 	
-
+	@Override
+	public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
+		return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
+	}
+	
 	@Override
 	public boolean deleteChildNode(TaxonNode node) {
 		boolean result = removeChildNode(node);

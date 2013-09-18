@@ -16,7 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -37,6 +36,8 @@ import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -47,7 +48,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -61,8 +64,8 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-//		String database = "cdm_test";
-		String database = "test";
+		String database = "cdm_test";
+//		String database = "test";
 		String username = "edit";
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 		
@@ -85,11 +88,48 @@ public class Datasource {
 		CdmApplicationController appCtr;
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
-		String taxonNameStr = StringUtils.repeat("a", 750);
-		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
-		name.setTitleCache(taxonNameStr, true);
-		appCtr.getNameService().save(name);
+//		insertSomeData(appCtr);
+		
+		
+		
 		appCtr.close();
+	}
+
+	private void insertSomeData(CdmApplicationController appCtr) {
+		Classification cl = Classification.NewInstance("myClass");
+		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(null), null), null, null);
+		appCtr.getClassificationService().save(cl);
+		
+		Taxon t2 = Taxon.NewInstance(null, null);
+		t2.setTitleCache("Taxon2", true);
+		TaxonNode node2 = node1.addChildTaxon(t2, null, null);
+		
+		Taxon t3 = Taxon.NewInstance(null, null);
+		t3.setTitleCache("Taxon3", true);
+		TaxonNode node3 = node1.addChildTaxon(t3, 0, null, null);
+		
+		appCtr.getTaxonNodeService().saveOrUpdate(node1);
+		
+		cl.addChildNode(node3, 0, null, null);
+		appCtr.getTaxonNodeService().saveOrUpdate(node3);
+		appCtr.getClassificationService().saveOrUpdate(cl);
+		
+		FeatureTree ft1 = FeatureTree.NewInstance();
+		FeatureNode fn1 = FeatureNode.NewInstance(null);
+		ft1.getRoot().addChild(fn1);
+		appCtr.getFeatureNodeService().save(fn1);
+		
+		FeatureNode fn2 = FeatureNode.NewInstance(null);
+		fn1.addChild(fn2);
+		
+		FeatureNode fn3 = FeatureNode.NewInstance(null);
+		fn1.addChild(fn2, 0);
+		
+		appCtr.getFeatureNodeService().saveOrUpdate(fn1);
+		
+		ft1.getRoot().addChild(fn3, 0);
+		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
+		appCtr.getFeatureTreeService().saveOrUpdate(ft1);
 	}
 	
 	private void testDatabaseChange() throws DataSourceNotFoundException{

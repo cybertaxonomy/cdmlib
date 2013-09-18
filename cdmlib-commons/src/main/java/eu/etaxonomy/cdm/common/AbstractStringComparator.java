@@ -7,16 +7,12 @@
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.common;
 
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
-
-import org.springframework.stereotype.Component;
-
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
  * Abstract Comparator for Strings which allows define substitution rules which
@@ -30,8 +26,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @author a.kohlbecker
  * @date 24.06.2009
  */
-@Component
-public abstract class AbstractStringComparator implements Comparator<TaxonNode> {
+public abstract class AbstractStringComparator<T extends Object> implements Comparator<T> {
 
 	protected Map<Pattern, String> substitutionRules = null;
 
