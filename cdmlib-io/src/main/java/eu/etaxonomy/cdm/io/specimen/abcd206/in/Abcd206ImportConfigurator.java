@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 
 
+import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
 import java.util.Map;
@@ -17,6 +18,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.IMatchingImportConfigurator;
@@ -32,7 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 20.10.2008
  * @version 1.0
  */
-public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState, URI> implements IImportConfigurator, IMatchingImportConfigurator {
+public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState, InputStream> implements IImportConfigurator, IMatchingImportConfigurator {
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
     
     private static String sourceReferenceTitle = null;
@@ -55,6 +57,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
     //TODO
     private static IInputTransformer defaultTransformer = null;
+    
+    private URI sourceUri;
 
     @Override
     @SuppressWarnings("unchecked")
@@ -65,9 +69,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         };
     };
 
-    public static Abcd206ImportConfigurator NewInstance(URI uri,
-            ICdmDataSource destination){
-        return new Abcd206ImportConfigurator(uri, destination);
+    public static Abcd206ImportConfigurator NewInstance(URI uri,ICdmDataSource destination){
+        return new Abcd206ImportConfigurator(null, uri, destination, false);
     }
 
     /**
@@ -77,30 +80,33 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
      * @return
      */
     public static Abcd206ImportConfigurator NewInstance(URI uri, ICdmDataSource destination, boolean interact) {
-        return new Abcd206ImportConfigurator(uri, destination,interact);
+        return new Abcd206ImportConfigurator(null, uri, destination, interact);
     }
 
+    /**
+     * @param uri
+     * @param object
+     * @param b
+     * @return
+     */
+    public static Abcd206ImportConfigurator NewInstance(InputStream stream, ICdmDataSource destination, boolean interact) {
+        return new Abcd206ImportConfigurator(stream, null, destination, interact);
+    }
 
+    
+    
     /**
      * @param berlinModelSource
      * @param sourceReference
      * @param destination
      */
-    private Abcd206ImportConfigurator(URI uri, ICdmDataSource destination) {
+    private Abcd206ImportConfigurator(InputStream stream, URI uri, ICdmDataSource destination, boolean interact) {
         super(defaultTransformer);
-        setSource(uri);
-        setDestination(destination);
-        setSourceReferenceTitle("ABCD classic");
-    }
-
-    /**
-     * @param berlinModelSource
-     * @param sourceReference
-     * @param destination
-     */
-    private Abcd206ImportConfigurator(URI uri, ICdmDataSource destination, boolean interact) {
-        super(defaultTransformer);
-        setSource(uri);
+        if (stream != null){
+        	setSource(stream);
+        }else{
+        	this.sourceUri = uri;
+        }
         setDestination(destination);
         setSourceReferenceTitle("ABCD classic");
         setInteractWithUser(interact);
@@ -120,16 +126,41 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
 
 
     @Override
-    public URI getSource(){
-        return super.getSource();
+    public InputStream getSource(){
+        if (super.getSource() != null){
+        	return super.getSource();
+        }else if (this.sourceUri != null){
+        	try {
+				InputStream is = UriUtils.getInputStream(sourceUri);
+				setSource(is);
+				return is;
+			} catch (Exception e) {
+				throw new RuntimeException(e);
+			}
+        }else{
+        	return null;
+        }
     }
 
     /**
      * @param file
      */
     @Override
-    public void setSource(URI uri) {
-        super.setSource(uri);
+    public void setSource(InputStream is) {
+    	this.sourceUri = null;
+    	super.setSource(is);
+    }
+    
+    public URI getSourceUri(){
+    	return this.sourceUri;
+    }
+    
+    /**
+     * @param file
+     */
+    public void setSourceUri(URI sourceUri) {
+        this.sourceUri = sourceUri;
+        super.setSource(null);
     }
 
 

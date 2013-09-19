@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -33,6 +32,7 @@ import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
@@ -206,8 +206,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
         }
 
-        URI sourceName = state.getConfig().getSource();
-        NodeList unitsList = getUnitsNodeList(sourceName);
+        InputStream source = state.getConfig().getSource();
+        NodeList unitsList = getUnitsNodeList(source);
 
         if (unitsList != null) {
             String message = "nb units to insert: " + unitsList.getLength();
@@ -240,20 +240,28 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     }
 
 
+    protected NodeList getUnitsNodeList(URI source) {
+        try {
+        	InputStream is = UriUtils.getInputStream(source);
+            return getUnitsNodeList(is);
+        } catch (Exception e) {
+            logger.warn(e);
+            throw new RuntimeException(e);
+        }
+    }
+    
     /**
      * Return the list of root nodes for an ABCD 2.06 XML file
      * @param fileName: the file's location
      * @return the list of root nodes ("Unit")
      */
-    protected NodeList getUnitsNodeList(URI urlFileName) {
+    protected NodeList getUnitsNodeList(InputStream inputStream) {
         NodeList unitList = null;
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
-            URL url = urlFileName.toURL();
-            Object o = url.getContent();
-            InputStream is = (InputStream) o;
-            Document document = builder.parse(is);
+ 
+            Document document = builder.parse(inputStream);
             Element root = document.getDocumentElement();
             unitList = root.getElementsByTagName("Unit");
             if (unitList.getLength() == 0) {
@@ -378,6 +386,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      */
     private void save(CdmBase cdmBase, Abcd206ImportState state) {
 		ICdmApplicationConfiguration cdmRepository = state.getConfig().getCdmAppController();
+		if (cdmRepository == null){
+			cdmRepository = this;
+		}
 		
 		if (cdmBase.isInstanceOf(LanguageString.class)){
 			cdmRepository.getTermService().saveLanguageData(CdmBase.deproxy(cdmBase, LanguageString.class));
