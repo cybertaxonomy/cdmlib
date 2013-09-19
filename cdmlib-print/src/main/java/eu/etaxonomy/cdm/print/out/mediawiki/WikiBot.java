@@ -864,6 +864,9 @@ public class WikiBot {
 		return edit(p.title, p.text, p.summary);
 	}
 
+	/*
+	 * @author l.morris
+	 */
 	public synchronized boolean importPages(String title, File xml, String summary) throws IOException, LoginException {
 
 		long timeStart = System.currentTimeMillis();
