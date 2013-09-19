@@ -1066,6 +1066,12 @@
                 <artifactId>xom</artifactId>
                 <version>1.0</version>
             </dependency>
+	<!-- ******* SAXON ******* -->
+	<dependency>
+		<groupId>net.sf.saxon</groupId>
+		<artifactId>Saxon-HE</artifactId>
+		<version>9.5.1-2</version>
+	</dependency>
             <!-- ******* HIBERNATE / EJB3 ******* -->
        <dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>

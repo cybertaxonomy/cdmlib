@@ -1,8 +1,8 @@
 <!DOCTYPE xsl:stylesheet [<!ENTITY hyphen "&#45;" > <!ENTITY ndash "&#x2013;" >]> 
 <xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform"
-    xmlns:functx="http://www.functx.com">
+    xmlns:functx="http://www.functx.com" xmlns:fn="http://www.w3.org/2005/xpath-functions" >
 
-    <xsl:import href="functx-1.0-doc-2007-01.xsl"/>
+    <xsl:import href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl"/>
     <!--<xsl:output method="xml" indent="yes"/>-->
     <xsl:strip-space elements="text"/>
 

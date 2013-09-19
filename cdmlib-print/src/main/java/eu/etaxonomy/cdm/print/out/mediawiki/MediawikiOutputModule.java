@@ -67,6 +67,9 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 			out = new java.io.BufferedOutputStream(out);
 
 			// validate namespace
+			
+//			System.setProperty("javax.xml.parsers.DocumentBuilderFactory",
+//		             "net.sf.saxon.om.DocumentBuilderFactoryImpl");
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			factory.setNamespaceAware(true);
@@ -91,7 +94,8 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 				// Setup XSLT
 				// InputStream xslt = getXsltInputStream();
-				TransformerFactory tfactory = TransformerFactory.newInstance();
+//				TransformerFactory tfactory = TransformerFactory.newInstance();
+				TransformerFactory tfactory = new net.sf.saxon.TransformerFactoryImpl();
 				Transformer transformer = tfactory.newTransformer(inputSource);// (xslt));
 
 				// new
