@@ -9,14 +9,20 @@
  */
 package eu.etaxonomy.cdm.print.out.mediawiki;
 
+import java.io.BufferedReader;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
+import javax.security.auth.login.LoginException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
@@ -34,6 +40,7 @@ import org.jdom.transform.JDOMSource;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.print.PublishConfigurator;
 import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
+
 
 /**
  * @author l.morris
@@ -73,20 +80,20 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 			DocumentBuilderFactory factory = DocumentBuilderFactory
 					.newInstance();
 			factory.setNamespaceAware(true);
-//			factory.setValidating(true);
+			//			factory.setValidating(true);
 			DocumentBuilder builder = factory.newDocumentBuilder();
 
 			org.w3c.dom.Document namespDocument = builder.parse(new File(
 					STYLESHEET_RESOURCE_DEFAULT));
-			
-			
+
+
 			// get StreamSource out of namespDocument!!!
 
 			DOMSource domSource = new DOMSource(namespDocument);
 			StringWriter xmlAsWriter = new StringWriter();
 			StreamResult domResult = new StreamResult(xmlAsWriter);
 			TransformerFactory.newInstance().newTransformer()
-					.transform(domSource, domResult);
+			.transform(domSource, domResult);
 			StringReader xmlReader = new StringReader(xmlAsWriter.toString());
 			StreamSource inputSource = new StreamSource(xmlReader);
 
@@ -138,6 +145,90 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 		} catch (Exception e) {
 			logger.error("Could not generate document", e);
 		}
+
+	}
+
+	/*
+	 * @author l.morris
+	 */
+	private void uploadToMediwiki() {
+
+		// export via API
+		String urlWiki = "http://biowikifarm.net/testwiki";
+		String loginWiki = "Lorna Morris";
+		boolean uploadImagesWiki = true;
+
+		WikiBot myBot = new WikiBot(urlWiki, loginWiki, "dolfin_69");
+
+		try {
+
+			//myBot.login();
+			if (!myBot.login()) {
+				System.out.println("Login failed");
+				return;
+			}
+
+			//myBot.edit("lornatest", "lorna text", "lorna summary");
+
+			FileInputStream fstream = new FileInputStream("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\Mediwiki7.xml");
+
+			DataInputStream in = new DataInputStream(fstream);
+			BufferedReader br = new BufferedReader(new InputStreamReader(in));
+			String strLine;
+			String wikitext = "";
+			//Read File Line By Line
+			while ((strLine = br.readLine()) != null)   {
+				// Print the content on the console
+				//System.out.println (strLine);
+				wikitext = wikitext + strLine;
+			}
+			//Close the input stream
+			in.close();	 
+
+			URL url = new URL("http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg");
+			
+
+			//File file = new File("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\palm_tc_14568_4.jpg");//palm_tc_14494_1.jpg //mediwiki8.xml");
+			File file2 = new File("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\Mediwiki7.xml");
+
+			// this works but all the XML metadata is added to a single page, we want to import the XML file.
+			// this one works
+			//TODO: Try to call edit() for each page from XML file 
+			//myBot.edit("lornatest2", wikitext, "lorna summary"); 
+			myBot.importPages("Mediwiki7b.xml", file2, "lorna summary");//problems
+			//myBot.importPages("Internal:Cichorium", file2, "lorna summary");
+
+			//this uploadAFile works to upload an image
+			//you need to have the image e.g. palm_tc_14566_1.jpg
+			//so http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg doesn't work
+			File file = new File("http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg");
+			//File file = new File(url.toURI());
+			myBot.uploadAFile(file, "palm_tc_14566_1.jpg", "my text", "my comment");
+
+			//need to get a list of image paths. Xper2 use Base.getAllResources to get these.
+			//myBot.uploadAFile(file, filename, text, comment);
+			//List<WikiPage>
+			//create Wiki page - name, content, comments
+			// e.g. new WikiPage('taxonName', wikitext, comments)
+
+			/*for (int i = 0; i < listOfpages.size(); i++) {
+
+					if (myBot.importPage(listOfpages.get(i))) {
+						pagesOK++;
+					} else {
+						pagesKO++;
+					}
+			}*/
+
+		} catch (LoginException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+			e.getMessage();
+			return;
+		} 
 
 	}
 
