@@ -13,33 +13,35 @@ import static org.junit.Assert.*;
 
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
+
 public class CdmPreferencesSubjectTest {
 
 	@Test
 	public void test() {
-		CdmPreferencesSubject databaseType = CdmPreferencesSubject.Database;
-		assertEquals(CdmPreferencesSubject.getByKey("DB"), databaseType);
+		PreferenceSubject databaseType = PreferenceSubject.Database;
+		assertEquals(PreferenceSubject.getByKey("DB"), databaseType);
 	}
 	
 	@Test
 	public void testKindOf(){
-		assertSame(CdmPreferencesSubject.Database, CdmPreferencesSubject.Classification.getKindOf());
-		assertSame(CdmPreferencesSubject.Classification, CdmPreferencesSubject.TaxonSubTree.getKindOf());
+		assertSame(PreferenceSubject.Database, PreferenceSubject.Classification.getKindOf());
+		assertSame(PreferenceSubject.Classification, PreferenceSubject.TaxonSubTree.getKindOf());
 	}
 	
 	@Test
 	public void testGeneralisationOf(){
-		assertTrue(CdmPreferencesSubject.Database.getGeneralizationOf().contains(CdmPreferencesSubject.Classification));
+		assertTrue(PreferenceSubject.Database.getGeneralizationOf().contains(PreferenceSubject.Classification));
 		assertFalse("generalisationOf may contain only contain only direct children, but taxonSubTree is a grandchild",
-				CdmPreferencesSubject.Database.getGeneralizationOf().contains(CdmPreferencesSubject.TaxonSubTree));	
+				PreferenceSubject.Database.getGeneralizationOf().contains(PreferenceSubject.TaxonSubTree));	
 	}
 	
 	@Test
 	public void testGeneralisationOfRecursive(){
 		boolean recursive = true;
-		assertTrue(CdmPreferencesSubject.Database.getGeneralizationOf(recursive).contains(CdmPreferencesSubject.Classification));
-		assertTrue(CdmPreferencesSubject.Database.getGeneralizationOf(recursive).contains(CdmPreferencesSubject.TaxonSubTree));
-		assertFalse(CdmPreferencesSubject.Database.getGeneralizationOf(!recursive).contains(CdmPreferencesSubject.TaxonSubTree));		
+		assertTrue(PreferenceSubject.Database.getGeneralizationOf(recursive).contains(PreferenceSubject.Classification));
+		assertTrue(PreferenceSubject.Database.getGeneralizationOf(recursive).contains(PreferenceSubject.TaxonSubTree));
+		assertFalse(PreferenceSubject.Database.getGeneralizationOf(!recursive).contains(PreferenceSubject.TaxonSubTree));		
 	}
 	
 

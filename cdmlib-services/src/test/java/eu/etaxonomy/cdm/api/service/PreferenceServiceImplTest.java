@@ -14,9 +14,10 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.CdmPreference;
-import eu.etaxonomy.cdm.model.common.CdmPreference.PrefKey;
-import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.PreferencePredicate;
+import eu.etaxonomy.cdm.model.metadata.PreferenceSubject;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -39,12 +40,12 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
     @Test
     @DataSet
     public void testGet() {
-        PrefKey key = new PrefKey("DB", "NomCode");
+        PrefKey key = CdmPreference.NewKey(PreferenceSubject.Database, PreferencePredicate.NomenclaturalCode);
         CdmPreference pref = service.get(key);
         Assert.assertNotNull("CdmPreference for given key must exist", pref);
         Assert.assertEquals("ICNAFP", pref.getValue());
         
-        key = new PrefKey("DB", "xyz");
+        key = CdmPreference.NewKey(PreferenceSubject.Database, PreferencePredicate.Test);
         pref = service.get(key);
         Assert.assertNull("CdmPreference for given key must not exist", pref);
     }
@@ -63,13 +64,13 @@ public class PreferenceServiceImplTest  extends CdmIntegrationTest {
     	 int countStart = service.count();
          Assert.assertEquals(1, countStart);
     	
-    	CdmPreference pref = CdmPreference.NewInstance("DB", "xyz", "200");
+    	CdmPreference pref = CdmPreference.NewInstance(PreferenceSubject.Database, PreferencePredicate.Test, "200");
     	service.set(pref);
 	   	int count = service.count();
 	    Assert.assertEquals("There should be 1 new preference", countStart + 1, count);
 
         
-        pref = CdmPreference.NewInstance("DB", "NomCode", "ICZN");
+        pref = CdmPreference.NewInstance(PreferenceSubject.Database, PreferencePredicate.NomenclaturalCode, "ICZN");
         service.set(pref);
         
 	   	count = service.count();

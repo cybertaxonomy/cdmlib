@@ -8,7 +8,7 @@
 */ 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
-import eu.etaxonomy.cdm.model.common.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 
 /**
  * @author a.mueller

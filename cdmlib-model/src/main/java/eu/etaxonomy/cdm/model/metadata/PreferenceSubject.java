@@ -6,33 +6,37 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.metadata;
 
 import java.util.Set;
 import java.util.UUID;
+
+import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.common.IEnumTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * @author a.mueller
  * @created 2013-09-09
  *
  */
-public enum CdmPreferencesSubject implements IEnumTerm<CdmPreferencesSubject>{
+public enum PreferenceSubject implements IEnumTerm<PreferenceSubject>{
 	Database(UUID.fromString("50b25ae6-62fe-46a1-830e-545702e895f7"), "Database", "DB", null),
 	Classification(UUID.fromString("1e103ff5-c58f-4e40-8a60-6a36c32c08cf"),"Classification","CL", Database),
 	TaxonSubTree(UUID.fromString("2f2c0fd4-9c49-4584-89ba-53f8d201d37c"),"Taxonomic Subtree","TST", Classification)
 	;
 	
-	private CdmPreferencesSubject(UUID uuid, String defaultString, String key, CdmPreferencesSubject parent){
+	private PreferenceSubject(UUID uuid, String defaultString, String key, PreferenceSubject parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
 	// *************************** DELEGATE **************************************/	
 	
-	private static EnumeratedTermVoc<CdmPreferencesSubject> delegateVoc;
-	private IEnumTerm<CdmPreferencesSubject> delegateVocTerm;
+	private static EnumeratedTermVoc<PreferenceSubject> delegateVoc;
+	private IEnumTerm<PreferenceSubject> delegateVocTerm;
 
 	static {
-		delegateVoc = EnumeratedTermVoc.getVoc(CdmPreferencesSubject.class);
+		delegateVoc = EnumeratedTermVoc.getVoc(PreferenceSubject.class);
 	}
 	
 	@Override
@@ -49,18 +53,18 @@ public enum CdmPreferencesSubject implements IEnumTerm<CdmPreferencesSubject>{
     public UUID getUuid() {return delegateVocTerm.getUuid();}
 
 	@Override
-    public CdmPreferencesSubject getKindOf() {return delegateVocTerm.getKindOf();}
+    public PreferenceSubject getKindOf() {return delegateVocTerm.getKindOf();}
 	
 	@Override
-    public Set<CdmPreferencesSubject> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+    public Set<PreferenceSubject> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
 	@Override
-	public boolean isKindOf(CdmPreferencesSubject ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+	public boolean isKindOf(PreferenceSubject ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
 
 	@Override
-    public Set<CdmPreferencesSubject> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+    public Set<PreferenceSubject> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
 
-	public static CdmPreferencesSubject getByKey(String key){return delegateVoc.getByKey(key);}
-    public static CdmPreferencesSubject getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+	public static PreferenceSubject getByKey(String key){return delegateVoc.getByKey(key);}
+    public static PreferenceSubject getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
 
 }

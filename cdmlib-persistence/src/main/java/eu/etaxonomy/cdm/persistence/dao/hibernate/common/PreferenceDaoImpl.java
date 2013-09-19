@@ -14,7 +14,7 @@ import org.hibernate.Session;
 import org.hibernate.criterion.Projections;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.model.common.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
 
 /**

@@ -11,44 +11,16 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
-import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.model.common.CdmPreference;
-import eu.etaxonomy.cdm.model.common.CdmPreference.PrefKey;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.media.MediaRepresentation;
-import eu.etaxonomy.cdm.model.media.MediaUtils;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
-import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+import eu.etaxonomy.cdm.model.metadata.CdmPreference.PrefKey;
 import eu.etaxonomy.cdm.persistence.dao.common.IPreferenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
-import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * @author a.mueller
@@ -65,6 +37,10 @@ public class PreferenceServiceImpl implements IPreferenceService {
 
 	@Override
 	public CdmPreference get(PrefKey key) {
+		List<PrefKey> keys = new ArrayList<CdmPreference.PrefKey>(){};
+		keys.add(key);
+//		while(key.)  TODO
+		
 		return dao.get(key);
 	}
 

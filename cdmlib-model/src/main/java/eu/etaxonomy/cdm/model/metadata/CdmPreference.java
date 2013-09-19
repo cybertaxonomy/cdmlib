@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.metadata;
 
 import java.io.Serializable;
 
@@ -16,6 +16,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 
 import org.hibernate.validator.constraints.Length;
+
 
 /**
  * This class may hold all prefrences data for a CDM database.
@@ -46,8 +47,12 @@ public final class CdmPreference implements Serializable {
 	private static final long serialVersionUID = 4307599154287181582L;
 
 	
-	public static final CdmPreference NewInstance(String subject, String predicate, String value){
+	public static final CdmPreference NewInstance(PreferenceSubject subject, PreferencePredicate predicate, String value){
 		return new CdmPreference(subject, predicate, value);
+	}
+	
+	public static PrefKey NewKey(PreferenceSubject subject, PreferencePredicate predicate){
+		return new PrefKey(subject, predicate);
 	}
 	
 	@Embeddable
@@ -61,15 +66,14 @@ public final class CdmPreference implements Serializable {
 		private String predicate;
 		
 		//for hibernate use only
-		@SuppressWarnings("unused")
 		private PrefKey(){}
 		
 
-		public PrefKey(CdmPreferencesSubject subject, CdmPreferencesPredicateEnum predicate){
+		private PrefKey(PreferenceSubject subject, PreferencePredicate predicate){
 			this(subject.getKey(), predicate.getKey());
 		}
 		
-		public PrefKey(String subject, String predicate){
+		private PrefKey(String subject, String predicate){
 			if (subject == null) throw new IllegalArgumentException("Subject must not be null for preference");
 			if (predicate == null) throw new IllegalArgumentException("Predicate must not be null for preference");
 			if (subject.length() > 255) throw new IllegalArgumentException("Subject must not be longer then 255 for preference");
@@ -123,7 +127,7 @@ public final class CdmPreference implements Serializable {
 	 * @param predicate must not be null and must not be longer then 255 characters.
 	 * @param value must not be longer then 1023 characters.
 	 */
-	public CdmPreference(CdmPreferencesSubject subject, CdmPreferencesPredicateEnum predicate, String value){
+	public CdmPreference(PreferenceSubject subject, PreferencePredicate predicate, String value){
 		this.key = new PrefKey(subject, predicate);
 		//TODO are null values allowed?		assert predicate != null : "value must not be null for preference";
 		if (value != null && value.length() > 1023) {throw new IllegalArgumentException(

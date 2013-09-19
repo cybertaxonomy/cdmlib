@@ -13,6 +13,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.metadata.CdmPreference;
+
 /**
  * @author a.mueller
  * @created 2013-07-03
@@ -35,7 +37,7 @@ public class CdmPreferencesTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmPreference#CdmPreferences(java.lang.String, java.lang.String, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmPreference#CdmPreferences(java.lang.String, java.lang.String, java.lang.String)}.
 	 */
 	@Test
 	public void testCdmPreferences() {
