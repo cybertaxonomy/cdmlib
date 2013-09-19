@@ -36,7 +36,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @created 29.01.2009
- * @version 1.0
  */
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
@@ -55,7 +54,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator configurator2;
-	private IImportConfigurator configurator3;
 
 	@Before
 	public void setUp() {
