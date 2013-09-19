@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206ImportState, URI> implements IImportConfigurator, IMatchingImportConfigurator {
     private static final Logger logger = Logger.getLogger(Abcd206ImportConfigurator.class);
+    
     private static String sourceReferenceTitle = null;
     private boolean parseNameAutomatically = false;
     private boolean reuseExistingMetadata = true;
@@ -47,6 +48,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private String defaultAuthor="";
     private boolean allowReuseOtherClassifications =true;
 
+    
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
 
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();

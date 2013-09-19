@@ -36,17 +36,15 @@ import eu.etaxonomy.cdm.model.location.Country;
 /**
  * @author p.kelbert
  * @created 20.10.2008
- * @version 1.0
  */
 public class UnitsGatheringArea {
+    private static final Logger logger = Logger.getLogger(UnitsGatheringArea.class);
 
     private static final boolean DEBUG = false;
     private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
     private boolean useTDWGarea = false;
-    //    private ITermService termService;
-    //    private IOccurrenceService occurrenceService;
-    private DefinedTermBase<?> wbc = null;
-    Logger logger = Logger.getLogger(this.getClass());
+
+    private DefinedTermBase<?> wbc;
 
 
     public UnitsGatheringArea(){
