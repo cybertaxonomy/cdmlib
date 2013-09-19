@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -24,7 +24,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
-import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.apache.log4j.Logger;
@@ -34,7 +33,6 @@ import com.ibm.lsid.MalformedLSIDException;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -55,19 +53,19 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 @Component
 public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements IBciServiceWrapper{
 	private static final Logger logger = Logger.getLogger(BciServiceWrapper.class);
-	
+
 	 private enum ServiceType{
 		 AUTHOR,
 		 NAME,
 		 PUBLICATION,
 	 }
-		
-	 
+
+
 //	private URL serviceUrl;
-	 
+
 // ******************************** CONSTRUCTOR **************************************
-	   
-	   
+
+
 //	/**
 //	 * Creates new instance of this factory and connects it to the given
 //	 * CDM Community Stores access point.
@@ -78,56 +76,54 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 //		this.serviceUrl = webserviceUrl;
 //	}
 
-// ****************************** METHODS ****************************************************/	
-	
+// ****************************** METHODS ****************************************************/
+
 	/**
 	 *
 	 * @param restRequest
 	 * @return
 	 */
-	public List<Collection> getCollectionsByCode(String code, ICdmApplicationConfiguration appConfig){
-		
+	@Override
+    public List<Collection> getCollectionsByCode(String code, ICdmApplicationConfiguration appConfig){
+
 		SchemaAdapterBase<Collection> schemaAdapter = schemaAdapterMap.get("recordSchema");
 		if(schemaAdapter == null){
 			logger.error("No SchemaAdapter found for " + "recordSchema");
 		}
-		
+
 		String SruOperation = "searchRetrieve";
-		
+
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
 		pairs.add(new BasicNameValuePair("code", SruOperation));
-		
+
 		Map<String, String> requestHeaders = new HashMap<String, String>();
 		requestHeaders.put("Accept-Charset", "UTF-8");
-		
+
 		try {
 			URI requestUri = createUri(null, pairs);
-			
-			
+
+
 			InputStream stream = executeHttpGet(requestUri, requestHeaders);
 			return schemaAdapter.getCmdEntities(stream);
-			
-		} catch (IOException e) { 
+
+		} catch (IOException e) {
 			// thrown by doHttpGet
 			logger.error(e);
 		} catch (URISyntaxException e) {
 			// thrown by createUri
 			logger.error(e);
-		} catch (HttpException e){
-			// thrown by createUri
-			logger.error(e);
 		}
-		
+
 //		return null;
-	
-		
-		
+
+
+
 		code = normalizeParameter(code);
 		String request = code;
-		
+
 		return (List)queryService(request, appConfig, getServiceUrl(IBciServiceWrapper.LOOKUP_CODE_REST), ServiceType.AUTHOR);
 	}
-	       
+
 
 	/**
 	 *
@@ -140,21 +136,21 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
             URL newUrl = new URL(serviceUrl.getProtocol(),
                                                      serviceUrl.getHost(),
                                                      serviceUrl.getPort(),
-                                                     serviceUrl.getPath() 
+                                                     serviceUrl.getPath()
                                                      + "" + request);
             // open a connection
             HttpURLConnection connection = (HttpURLConnection) newUrl.openConnection();
             // set the accept property to XML so we can use jdom to handle the content
             //connection.setRequestProperty("Accept", "text/xml");
-   
-           
+
+
             logger.info("Firing request for URL: " + newUrl);
-                   
+
             int responseCode = connection.getResponseCode();
-           
+
             // get the content at the resource
             InputStream content = (InputStream) connection.getContent();
-           
+
             // build the result
             List<? extends IdentifiableEntity> result;
             if (serviceType.equals(ServiceType.AUTHOR)){
@@ -171,25 +167,25 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
             }else if(responseCode == HttpURLConnection.HTTP_MULT_CHOICE){
                     return result;
             }else{
-                //TODO error handling    
+                //TODO error handling
             	logger.error("No Http_OK");
             }
-               
+
         } catch (IOException e) {
                 logger.error("No content for request: " + request);
         }
-       
+
         // error
         return null;
     }
 
 
 	private List<Collection> buildCollectionList(InputStream content, ICdmApplicationConfiguration appConfig) throws IOException {
-		List<Collection> result = new ArrayList<Collection>(); 
+		List<Collection> result = new ArrayList<Collection>();
 		BufferedReader reader = new BufferedReader (new InputStreamReader(content));
-		
+
 		String headerLine = reader.readLine();
-		
+
 		String line = reader.readLine();
 		while (StringUtils.isNotBlank(line)){
 			Collection collection = getCollectionFromLine(line, appConfig);
@@ -203,17 +199,17 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 
 	private Collection getCollectionFromLine(String line, ICdmApplicationConfiguration appConfig) {
 		//urn:lsid:biocol.org:col:15727	http://biocol.org/urn:lsid:biocol.org:col:15727	University of Bergen Herbarium
-		String[] splits = line.split("\t");  
+		String[] splits = line.split("\t");
 		if (splits.length != 3){
 			logger.warn("Unknwon BCI line format: " + line);
 			return null;
 		}
-		String lsidString = splits[0]; 
-		String urlString = splits[1]; 
+		String lsidString = splits[0];
+		String urlString = splits[1];
 		String collectionName = splits[2];
-		
+
 		Collection result = Collection.NewInstance();
-		
+
 		//LSID
 		LSID lsid = null;
 		try {
@@ -224,18 +220,18 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 
 		result.setLsid(lsid);
 		String id = getCollectionId(lsid);
-		
+
 		result.setName(collectionName);
-		
+
 		//id, citation
 		Reference citation = getBciCitation(appConfig);
 		result.addSource(OriginalSourceType.Lineage, id, null, citation, null);
-		
-		
+
+
 		return result;
 	}
 
-	
+
 	private String getCollectionId(LSID lsid) {
 		String result = lsid == null? null : lsid.getObject();
 		return result;
@@ -276,14 +272,15 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		return result;
 	}
 
-	
-	
+
+
 	/**
 	 * The service url
 	 *
 	 * @return the serviceUrl
 	 */
-	public URL getServiceUrl(String url) {
+	@Override
+    public URL getServiceUrl(String url) {
 		URL serviceUrl;
 		try {
 			serviceUrl = new URL(url);
@@ -293,6 +290,6 @@ public class BciServiceWrapper extends ServiceWrapperBase<Collection> implements
 		return serviceUrl;
 	}
 
-		
-	
+
+
 }
