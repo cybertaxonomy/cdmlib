@@ -10,6 +10,9 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.hql.internal.ast.util.SessionFactoryHelper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
@@ -21,9 +24,17 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
+import org.vaadin.haijian.ExcelExporter;
+import org.vaadin.teemu.wizards.Wizard;
+import org.vaadin.teemu.wizards.event.WizardCancelledEvent;
+import org.vaadin.teemu.wizards.event.WizardCompletedEvent;
+import org.vaadin.teemu.wizards.event.WizardProgressListener;
+import org.vaadin.teemu.wizards.event.WizardStepActivationEvent;
+import org.vaadin.teemu.wizards.event.WizardStepSetChangedEvent;
 
 import ru.xpoft.vaadin.VaadinView;
 
+import com.google.gwt.user.client.ui.Widget;
 import com.vaadin.annotations.PreserveOnRefresh;
 import com.vaadin.annotations.Theme;
 import com.vaadin.data.Container;
@@ -32,8 +43,10 @@ import com.vaadin.data.Property.ValueChangeListener;
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
 import com.vaadin.server.ThemeResource;
 import com.vaadin.server.VaadinRequest;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.AbsoluteLayout;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
@@ -59,6 +72,7 @@ import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
 
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -66,7 +80,9 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
+import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -86,7 +102,7 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 @SuppressWarnings("serial")
 @VaadinView(HelloWorld.NAME)
 @PreserveOnRefresh
-public class HelloWorld extends UI implements View{
+public class HelloWorld extends UI implements View, WizardProgressListener{
 	
 	private static final Logger logger = Logger.getLogger(HelloWorld.class);
 	public static final String NAME = "main";
@@ -125,6 +141,7 @@ public class HelloWorld extends UI implements View{
 	private final Button sendButton = new Button();;
 	private final Button logoutButton= new Button("Logout");;
 	private final Button editButton = new Button("Edit");
+	
 	private Button saveSynonymButton;
 	private Button cancelSynonymButton;
 	private NativeButton cancelTaxonButton;
@@ -139,9 +156,12 @@ public class HelloWorld extends UI implements View{
 	@SuppressWarnings("rawtypes")
 	private TaxonBase selectedTaxonBase; 
 	private boolean isEditable = false;
+	private boolean isSidebar = true;
 	
-	private NativeSelect select;
-	private ComboBox comboBox;
+	private ExcelExporter exporter = new ExcelExporter();
+	private Wizard wizard;
+	private boolean isWizard = true;
+	
 	@Override 	
 	protected void init(VaadinRequest request) {
 		context = SecurityContextHolder.getContext();
@@ -156,8 +176,17 @@ public class HelloWorld extends UI implements View{
 	}
 
 	protected void mainLayout() {
+		
+		
 		VerticalLayout verticalLayout = new VerticalLayout();
 		verticalLayout.setSizeFull();
+		if(isWizard ){
+			initWizard();
+			verticalLayout.addComponent(wizard);
+			verticalLayout.setComponentAlignment(wizard, Alignment.TOP_CENTER);
+			setContent(verticalLayout);
+		}else{
+		
 		verticalLayout.addComponent(initToolbar());
 		horizontalSplitPanel.addStyleName(Runo.SPLITPANEL_SMALL);
 		verticalLayout.addComponent(horizontalSplitPanel);
@@ -169,23 +198,55 @@ public class HelloWorld extends UI implements View{
 		initTaxonTree();
 		initTaxonDetailView();
 		
-		horizontalSplitPanel.setFirstComponent(classificationTree);
+//		horizontalSplitPanel.setFirstComponent(classificationTree);
+		horizontalSplitPanel.setFirstComponent(initSideBar());
 		horizontalSplitPanel.setSecondComponent(rightLayout);
 		
-		classificationTree.setSizeFull();
-		classificationOverviewTable.setSizeFull();
 		
+//		classificationTree.setSizeFull();
+		classificationOverviewTable.setSizeFull();
+
 
 		classificationTree.setImmediate(true);
 		classificationTree.setSelectable(true);
 		//set content to screen
 		setContent(verticalLayout);
+		}
+	}
+	
+	private void initWizard(){
+
+        // create the Wizard component and add the steps
+        wizard = new Wizard();
+        wizard.setUriFragmentEnabled(true);
+        wizard.addListener(this);
+        wizard.addStep(new IntroStep(), "intro");
+//        wizard.addStep(new SetupStep(), "setup");
+//        wizard.addStep(new ListenStep(), "listen");
+//        wizard.addStep(new LastStep(wizard), "last");
+        wizard.setHeight("600px");
+        wizard.setWidth("800px");
+	}
+	
+	private VerticalLayout initSideBar(){
+		VerticalLayout verticalLayout = new VerticalLayout();
+		verticalLayout.addComponentAsFirst(classificationTree);
+		classificationTree.setSizeFull();
+
+//		verticalLayout.addComponent(hideSideBarButton);
+		
+		return verticalLayout;
 	}
 	
     private HorizontalLayout initToolbar() {
         HorizontalLayout leftLayout = new HorizontalLayout();
         leftLayout.addComponent(editButton);
-        editButton.setIcon(new ThemeResource("icons/32/document-edit.png"));
+        leftLayout.addComponent(exporter);
+    	
+        exporter.setCaption("Export");
+    	exporter.setIcon(new ThemeResource("icons/32/document-xsl.png"));
+
+    	editButton.setIcon(new ThemeResource("icons/32/document-edit.png"));
         logoutButton.setIcon(new ThemeResource("icons/32/cancel.png"));
         leftLayout.setStyleName("toolbar");
         //lo.addComponent(logoutButton);
@@ -244,7 +305,6 @@ public class HelloWorld extends UI implements View{
 //		classificationOverviewTable.addContainerProperty("Etablierungsstatus", NativeSelect.class, null);
 //		classificationOverviewTable.setEditable(true);
 		
-		initSelect();
 		
 		
 		taxonDetailTable = new Table();
@@ -266,20 +326,11 @@ public class HelloWorld extends UI implements View{
 //		taxonDetailTable.setStyleName("big striped");
 		
 	}
-	
-	private void initSelect(){
-		select = new NativeSelect("Planets");
-		// Put some example data in it
-		select.addItem("Mercury");
-		select.addItem("Venus");
-		select.addItem("Earth");
-		select.addItem("Mars");
-	}		
 
 	@Transactional
 	private void initTaxonTree() {
 		classifications = classificationService.listClassifications(null, null, null, VOC_CLASSIFICATION_INIT_STRATEGY);
-		classificationTree = new Tree("Classifications");
+		classificationTree = new Tree("Classifications:");
 		classificationTree.addContainerProperty("Classification", Classification.class, null);
 		classificationTree.addContainerProperty("Taxon", Taxon.class, null);
 		classificationTree.setNullSelectionAllowed(false);
@@ -321,46 +372,63 @@ public class HelloWorld extends UI implements View{
 									//get taxon description
 									State population = null;
 									//get aktuelle Bestandssituation
-									Hibernate.initialize(taxonNode);
-									List<DescriptionElementBase> listDescriptionElements = descriptionService.getDescriptionElementsForTaxon(taxon, null, null, null, null, NODE_INIT_STRATEGY);
-//									List<DescriptionElementBase> listDescriptionElements = descriptionService.listDescriptionElementsForTaxon(taxonNode.getTaxon(), null, null, null, null, NODE_INIT_STRATEGY);
+									taxon = (Taxon) taxonService.load(taxon.getUuid());
+//									List<DescriptionElementBase> listDescriptionElements = descriptionService.getDescriptionElementsForTaxon(taxon, null, null, null, null, NODE_INIT_STRATEGY);
+									List<DescriptionElementBase> listDescriptionElements = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
 									for(DescriptionElementBase deb:listDescriptionElements){
 										if(deb instanceof CategoricalData){
-//											Feature feature = deb.getFeature();
-//											if(feature.toString().equalsIgnoreCase("aktuelle Bestandssituation")){
-//												for(State state :((CategoricalData) deb).getStatesOnly()){
-//													population = state;
-//												}
-//											}
+											Feature feature = deb.getFeature();
+											if(feature.toString().equalsIgnoreCase("aktuelle Bestandsstituation")){
+												List<State> stateList = ((CategoricalData) deb).getStatesOnly();//((CategoricalData) deb).getStates();
+												for(State state :stateList){
+													population = state;
+												}
+											}
 										}
 									}
 									if(taxon.hasSynonyms()){
 										for(Synonym s : taxon.getSynonyms()){
 											synonym = s;
 											if(!isPrintedFirst){
-												classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), s.toString(), "test"}, synonym.getId());
+												classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), s.toString(), population.toString()}, synonym.getId());
 												isPrintedFirst = true;
 											}
-											classificationOverviewTable.addItem(new Object[]{null, s.toString(), null}, synonym.getId());
+											classificationOverviewTable.addItem(new Object[]{null, s.toString(), population.toString()}, synonym.getId());
 										}
 									}else{
-										classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), null, null}, taxon.getId());
+										classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), null, population.toString()}, taxon.getId());
 									}
 								}
 
 							}
+							exporter.setTableToBeExported(classificationOverviewTable);
+							exporter.setDownloadFileName(classificationTree.getValue().toString());
 						}
 					}else if(classificationTree.getValue() instanceof Taxon){
 						classificationOverviewTable.setVisible(false);
 						taxonDetailTable.setVisible(true);
 						if(taxonDetailTable.removeAllItems()){
+							State population = null;
 							Taxon selectedTaxon = (Taxon) classificationTree.getValue();
-							Taxon taxon = (Taxon) taxonService.load(selectedTaxon.getUuid(), TAXON_NODE_INIT_STRATEGY);
+							Taxon taxon = (Taxon) taxonService.load(selectedTaxon.getUuid(), NODE_INIT_STRATEGY);
+							List<DescriptionElementBase> listDescriptionElements = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
+							for(DescriptionElementBase deb:listDescriptionElements){
+								if(deb instanceof CategoricalData){
+									Feature feature = deb.getFeature();
+									if(feature.toString().equalsIgnoreCase("aktuelle Bestandsstituation")){
+										List<State> stateList = ((CategoricalData) deb).getStatesOnly();//((CategoricalData) deb).getStates();
+										for(State state :stateList){
+											population = state;
+										}
+									}
+								}
+							}
 							for(Synonym s : taxon.getSynonyms()){
-								taxonDetailTable.addItem(new Object[]{s, null}, s.getId());
+								taxonDetailTable.addItem(new Object[]{s, population}, s.getId());
 							}
 						}
 						taxonDetailTable.setSelectable(true);
+						exporter.setTableToBeExported(taxonDetailTable);
 					}
 				}catch(Table.CacheUpdateException tc){
 					logger.info(tc.getCause().toString());
@@ -398,7 +466,7 @@ public class HelloWorld extends UI implements View{
 		}
 
 	}
-
+	@Transactional
 	private void sortTaxonNodeList(List<TaxonNode> listTaxonNodes) {
 		Collections.sort(listTaxonNodes, new Comparator<TaxonNode>() {
 
@@ -529,7 +597,7 @@ public class HelloWorld extends UI implements View{
 	/*
 	 * Helper Methods
 	 */
-	
+	@Transactional
 	private void handleButtonLogic() {
 		sendButton.addClickListener(new ClickListener() {
 			@Override
@@ -550,7 +618,7 @@ public class HelloWorld extends UI implements View{
 				}
 			}
 		});
-
+		
 		editButton.addClickListener(new ClickListener() {
 			@Override
 			public void buttonClick(ClickEvent event) {
@@ -598,7 +666,7 @@ public class HelloWorld extends UI implements View{
 				setContent(loginLayout);
 			}
 		});
-
+		
 	}
 
 	@Override
@@ -741,7 +809,23 @@ public class HelloWorld extends UI implements View{
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
     		"classification",
+    		"descriptions",
     		"descriptions.*",
+    		"description.state",
+    		"feature",
+    		"feature.*",
+    		"State",
+    		"state",
+    		"states",
+    		"stateData",
+    		"stateData.*",
+    		"stateData.state",
+    		"categoricalData",
+    		"categoricalData.*",
+    		"categoricalData.states.state",
+    		"categoricalData.States.State",
+    		"categoricalData.states.*",
+    		"categoricalData.stateData.state",
     		"childNodes",
     		"childNodes.taxon",
     		"childNodes.taxon.name",
@@ -754,9 +838,73 @@ public class HelloWorld extends UI implements View{
     		"taxon.sec",
     		"taxon.name.*",
     		"taxon.synonymRelations",
-    		"terms"
+    		"terms",
+    		"$",
+            "elements.$",
+            "elements.states.$",
+            "elements.sources.citation.authorTeam",
+            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.multilanguageText",
+            "elements.media",
+            "name.$",
+            "name.rank.representations",
+            "name.status.type.representations",
+            "sources.$"
+    		
     });
     
-    private static final  List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] {"synonymRelations","descriptions"});
+    protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+    		 "$",
+    		 "states.$",
+    		 "sources.citation.authorTeam",
+    		 "sources.nameUsedInSource.originalNameString",
+    		 "multilanguageText",
+    		 "media",
+    });
+    
+    private static final  List<String> TAXON_NODE_INIT_STRATEGY = Arrays.asList(new String[] {"synonymRelations","descriptions, features, categoricalData"});
+
+	@Override
+	public void activeStepChanged(WizardStepActivationEvent event) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void stepSetChanged(WizardStepSetChangedEvent event) {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void wizardCompleted(WizardCompletedEvent event) {
+		// TODO Auto-generated method stub
+		isWizard = false;
+		mainLayout();
+	}
+
+	@Override
+	public void wizardCancelled(WizardCancelledEvent event) {
+		// TODO Auto-generated method stub
+		isWizard = false;
+		mainLayout();
+	}
+    private void endWizard(String message) {
+        wizard.setVisible(false);
+        Notification.show(message);
+        Page.getCurrent().setTitle(message);
+        Button startOverButton = new Button("Run the demo again",
+                new Button.ClickListener() {
+                    public void buttonClick(ClickEvent event) {
+                        // Close the session and reload the page.
+                        VaadinSession.getCurrent().close();
+                        Page.getCurrent().setLocation("");
+                    }
+                });
+//        mainLayout.addComponent(startOverButton);
+//        mainLayout.setComponentAlignment(startOverButton, Alignment.MIDDLE_CENTER);
+        isWizard = false;
+        mainLayout();
+    }
 
 }

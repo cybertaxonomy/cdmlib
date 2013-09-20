@@ -132,6 +132,16 @@
 	<artifactId>spring-vaadin-integration</artifactId>
       </dependency>
 
+      <dependency>
+   	<groupId>org.vaadin.addons</groupId>
+   	<artifactId>exporter</artifactId>
+      </dependency>
+	
+      <dependency>
+   	<groupId>org.vaadin.addons</groupId>
+   	<artifactId>wizards-for-vaadin</artifactId>
+      </dependency>
+
       <!--  SQL Profiling  -->
       <dependency>
         <groupId>p6spy</groupId>
