@@ -1709,8 +1709,12 @@ cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/user.png -te
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/users.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/vseparator.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/vseparator1.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/wizard/OSStack.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/wizard/arrow-down.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/wizard/arrow-up.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/wizard/red_nose_reindeer.jpg -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/wizard/reindeer.jpg -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/wizard/vaadin.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/images/document-edit.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/images/gradient.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/images/logo.png -text
