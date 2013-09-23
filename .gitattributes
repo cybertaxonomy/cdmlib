@@ -1662,8 +1662,11 @@ cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/EditWindow.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/ExportWindow.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/HelloWorld.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/IntroStep.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/LoginWindow.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/wizard/FourthStep.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/wizard/IntroStep.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/wizard/SetupStep.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/wizard/ThirdStep.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/widgetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/favicon.ico -text

@@ -90,6 +90,10 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.remote.webapp.view.ui.wizard.FourthStep;
+import eu.etaxonomy.cdm.remote.webapp.view.ui.wizard.IntroStep;
+import eu.etaxonomy.cdm.remote.webapp.view.ui.wizard.SetupStep;
+import eu.etaxonomy.cdm.remote.webapp.view.ui.wizard.ThirdStep;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
@@ -199,7 +203,7 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 		initTaxonDetailView();
 		
 //		horizontalSplitPanel.setFirstComponent(classificationTree);
-		horizontalSplitPanel.setFirstComponent(initSideBar());
+		horizontalSplitPanel.setFirstComponent(classificationTree);
 		horizontalSplitPanel.setSecondComponent(rightLayout);
 		
 		
@@ -221,7 +225,9 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
         wizard.setUriFragmentEnabled(true);
         wizard.addListener(this);
         wizard.addStep(new IntroStep(), "intro");
-//        wizard.addStep(new SetupStep(), "setup");
+        wizard.addStep(new SetupStep(), "vaadin");
+        wizard.addStep(new ThirdStep(), "oSStack");
+        wizard.addStep(new FourthStep(), "advantages");
 //        wizard.addStep(new ListenStep(), "listen");
 //        wizard.addStep(new LastStep(wizard), "last");
         wizard.setHeight("600px");

@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.webapp.view.ui;
+package eu.etaxonomy.cdm.remote.webapp.view.ui.wizard;
 
 import org.springframework.context.annotation.Scope;
 import org.vaadin.teemu.wizards.WizardStep;
@@ -24,12 +24,20 @@ public class IntroStep implements WizardStep {
         content.setSizeFull();
         content.setMargin(true);
 
+
+        
         Label text = getText();
         content.addComponent(text);
 
-        Embedded arrow = getArrow();
-        content.addComponent(arrow);
+//        Embedded arrow = getArrow();
+//        content.addComponent(arrow);
 
+        Embedded reeindeer = getReeindeer();
+        content.addComponent(reeindeer);
+        
+//        Embedded vaadinLogo = getLogo();
+//        content.addComponent(vaadinLogo);
+        
         return content;
     }
 
@@ -50,7 +58,20 @@ public class IntroStep implements WizardStep {
         arrow.setStyleName("intro-arrow");
         return arrow;
     }
-
+    
+    private Embedded getLogo() {
+        Embedded logo = new Embedded("", new ThemeResource("icons/wizard/vaadin.png"));
+//        arrow.setStyleName("intro-arrow");
+        return logo;
+    }
+    
+    
+    private Embedded getReeindeer() {
+        Embedded logo = new Embedded("", new ThemeResource("icons/wizard/reindeer.jpg"));
+//        arrow.setStyleName("intro-arrow");
+        return logo;
+    }
+    
     public boolean onAdvance() {
         return true;
     }
