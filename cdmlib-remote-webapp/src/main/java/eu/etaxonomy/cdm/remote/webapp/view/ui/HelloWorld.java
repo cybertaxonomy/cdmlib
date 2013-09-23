@@ -8,6 +8,7 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 import org.hibernate.Session;
@@ -372,40 +373,48 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 							for (TaxonNode node : allNodes){
 								TaxonNode taxonNode = taxonNodeService.load(node.getUuid(), NODE_INIT_STRATEGY);
 								boolean isPrintedFirst = false;
-								if(taxonNode.getClassification().equals(selectedValue)){
-									taxon = taxonNode.getTaxon();
-									String taxonName = taxon.getName().toString();
-									//get taxon description
-									State population = null;
-									//get aktuelle Bestandssituation
-									taxon = (Taxon) taxonService.load(taxon.getUuid());
-//									List<DescriptionElementBase> listDescriptionElements = descriptionService.getDescriptionElementsForTaxon(taxon, null, null, null, null, NODE_INIT_STRATEGY);
-									List<DescriptionElementBase> listDescriptionElements = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
-									for(DescriptionElementBase deb:listDescriptionElements){
-										if(deb instanceof CategoricalData){
-											Feature feature = deb.getFeature();
-											if(feature.toString().equalsIgnoreCase("aktuelle Bestandsstituation")){
-												List<State> stateList = ((CategoricalData) deb).getStatesOnly();//((CategoricalData) deb).getStates();
-												for(State state :stateList){
-													population = state;
+								if(taxonNode.getClassification()!= null){
+									if(taxonNode.getClassification().equals(selectedValue)){
+										taxon = taxonNode.getTaxon();
+										String taxonName = taxon.getName().toString();
+										//get taxon description
+										State population = null;
+										//get aktuelle Bestandssituation
+										taxon = (Taxon) taxonService.load(taxon.getUuid());
+										//									List<DescriptionElementBase> listDescriptionElements = descriptionService.getDescriptionElementsForTaxon(taxon, null, null, null, null, NODE_INIT_STRATEGY);
+										List<DescriptionElementBase> listDescriptionElements = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
+										for(DescriptionElementBase deb:listDescriptionElements){
+											if(deb instanceof CategoricalData){
+												Feature feature = deb.getFeature();
+												if(feature.toString().equalsIgnoreCase("aktuelle Bestandsstituation")){
+													List<State> stateList = ((CategoricalData) deb).getStatesOnly();//((CategoricalData) deb).getStates();
+													for(State state :stateList){
+														population = state;
+													}
 												}
 											}
 										}
-									}
-									if(taxon.hasSynonyms()){
-										for(Synonym s : taxon.getSynonyms()){
-											synonym = s;
-											if(!isPrintedFirst){
-												classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), s.toString(), population.toString()}, synonym.getId());
-												isPrintedFirst = true;
-											}
-											classificationOverviewTable.addItem(new Object[]{null, s.toString(), population.toString()}, synonym.getId());
+										String popString;
+										if(population != null)
+											popString = population.toString();
+										else{
+											popString = StringUtils.EMPTY;
 										}
-									}else{
-										classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), null, population.toString()}, taxon.getId());
+										if(taxon.hasSynonyms()){
+											for(Synonym s : taxon.getSynonyms()){
+												synonym = s;
+												if(!isPrintedFirst){
+													classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), s.toString(), popString}, synonym.getId());
+													isPrintedFirst = true;
+												}
+												classificationOverviewTable.addItem(new Object[]{null, s.toString(), popString}, synonym.getId());
+											}
+										}else{
+											classificationOverviewTable.addItem(new Object[]{taxonNode.getTaxon().getName(), StringUtils.EMPTY, popString}, taxon.getId());
+										}
 									}
-								}
 
+								}
 							}
 							exporter.setTableToBeExported(classificationOverviewTable);
 							exporter.setDownloadFileName(classificationTree.getValue().toString());
