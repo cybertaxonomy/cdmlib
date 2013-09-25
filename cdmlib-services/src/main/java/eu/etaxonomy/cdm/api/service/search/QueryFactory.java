@@ -24,6 +24,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
@@ -33,6 +34,7 @@ import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
 import org.apache.lucene.search.join.JoinUtil;
+import org.hibernate.search.ProjectionConstants;
 import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.hibernate.search.spatial.impl.SpatialQueryBuilderFromPoint;
@@ -332,9 +334,39 @@ public class QueryFactory {
      * @return
      * @throws IOException
      */
-    public Query newJoinQuery(String fromField, String toField, BooleanQuery joinFromQuery,
+    public Query newJoinQuery(String fromField, String toField, Query joinFromQuery,
             Class<? extends CdmBase> fromType) throws IOException {
             return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(fromType));
+    }
+
+    /**
+     * Creates a class restriction query and wraps the class restriction
+     * query and the given <code>query</code> into a BooleanQuery where both must match.
+     * <p>
+     * TODO instead of using a BooleanQuery for the class restriction it would be much more
+     *  performant to use a {@link Filter} instead.
+     *
+     * @param cdmTypeRestriction
+     * @param query
+     * @return
+     */
+    public static Query addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
+
+        Query fullQuery;
+        BooleanQuery filteredQuery = new BooleanQuery();
+        BooleanQuery classFilter = new BooleanQuery();
+
+        Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypeRestriction.getName());
+        TermQuery termQuery = new TermQuery(t);
+
+        classFilter.setBoost(0);
+        classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
+
+        filteredQuery.add(query, BooleanClause.Occur.MUST);
+        filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+
+        fullQuery = filteredQuery;
+        return fullQuery;
     }
 
     /**

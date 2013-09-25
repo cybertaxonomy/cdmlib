@@ -1633,7 +1633,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Query byCommonNameJoinQuery = descriptionElementQueryFactory.newJoinQuery(
                     "inDescription.taxon.id",
                     "id",
-                    createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory),
+                    QueryFactory.addTypeRestriction(
+                                createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory)
+                                , CommonTaxonName.class
+                                ),
                     CommonTaxonName.class);
             logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
