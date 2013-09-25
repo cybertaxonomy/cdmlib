@@ -984,6 +984,26 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
 
+        // FIXME #3730 (Taxon.removeTaxonRelation() raises error on update)
+        /* ----------------------------------------------- START
+        // and now also test if updating of the index works properly
+        // 1. remove existing taxon relation
+        Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
+        Set<TaxonRelationship> relsTo = t_abies_balsamea.getRelationsToThisTaxon();
+        Assert.assertEquals(Integer.valueOf(1), Integer.valueOf(relsTo.size()));
+        TaxonRelationship taxonRelation = relsTo.iterator().next();
+        t_abies_balsamea.removeTaxonRelation(taxonRelation);
+        taxonService.saveOrUpdate(t_abies_balsamea);
+        commitAndStartNewTransaction(null);
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", Integer.valueOf(0), pager.getCount());
+
+        // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in russia: ABSENT
+        // TODO
+        // ---------------------------------------------- END */
 
     }
 
