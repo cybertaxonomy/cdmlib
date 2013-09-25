@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.metadata;
 
 import org.junit.Assert;
 import org.junit.Before;
@@ -20,7 +20,7 @@ import eu.etaxonomy.cdm.model.metadata.CdmPreference;
  * @created 2013-07-03
  *
  */
-public class CdmPreferencesTest {
+public class CdmPreferenceTest {
 
 	private String subject;
 	private String predicate;

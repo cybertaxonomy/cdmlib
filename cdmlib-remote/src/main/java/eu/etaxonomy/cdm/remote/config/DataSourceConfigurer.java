@@ -34,8 +34,8 @@ import org.springframework.jndi.JndiObjectFactoryBean;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.common.CdmMetaData;
-import eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 
 /**
  * The <code>DataSourceConfigurer</code> can be used as a replacement for a xml configuration in the application context.

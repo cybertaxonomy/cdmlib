@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.metadata;
 
 import static org.junit.Assert.*;
 
@@ -17,6 +17,8 @@ import org.junit.Assert;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
  * @author e.-m.lee
@@ -33,7 +35,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#getSchemaVersion()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getSchemaVersion()}.
 	 */
 	@Test
 	public void testGetSchemaVersion() {
@@ -41,7 +43,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#propertyList()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#propertyList()}.
 	 */
 	@Test
 	public void testPropertyList() {
@@ -50,7 +52,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#CdmMetaData(eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName, java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#CdmMetaData(eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName, java.lang.String)}.
 	 */
 	@Test
 	public void testCdmMetaData() {
@@ -58,7 +60,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#getPropertyName()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getPropertyName()}.
 	 */
 	@Test
 	public void testGetPropertyName() {
@@ -66,7 +68,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#setPropertyName(eu.etaxonomy.cdm.model.common.CdmMetaData.MetaDataPropertyName)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#setPropertyName(eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName)}.
 	 */
 	@Test
 	public void testSetPropertyName() {
@@ -74,7 +76,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#getValue()}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getValue()}.
 	 */
 	@Test
 	public void testGetValue() {
@@ -82,7 +84,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#setValue(java.lang.String)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#setValue(java.lang.String)}.
 	 */
 	@Test
 	public void testSetValue() {
@@ -90,7 +92,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#getCurrentSchemaVersion(int)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getCurrentSchemaVersion(int)}.
 	 */
 	@Test
 	public void testGetDbSchemaVersion() {
@@ -103,7 +105,7 @@ public class CdmMetaDataTest {
 	}
 
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.CdmMetaData#getDatabaseSchemaVersion(java.util.Map, int)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.metadata.CdmMetaData#getDatabaseSchemaVersion(java.util.Map, int)}.
 	 */
 	@Test
 	public void testGetDatabaseSchemaVersion() {

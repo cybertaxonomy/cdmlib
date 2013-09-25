@@ -79,7 +79,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 	private static final Logger logger = Logger.getLogger(SchemaUpdater_31_33.class);
 	private static final String startSchemaVersion = "3.0.1.0.201104190000";
-	private static final String endSchemaVersion = "3.3.0.0.201308010000";
+	private static final String endSchemaVersion = "3.3.0.0.201309240000";
 	
 // ********************** FACTORY METHOD *******************************************
 	
@@ -119,7 +119,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 		
-		//TODO Does it throw exception if table does not exist?
 		//Was in Schemaupdater_301_31 which was never used and later deleted (r18331).
 		//drop TypeDesignationBase_TaxonNameBase   //from schemaUpdater 301_31
 		stepName = "Drop duplicate TypeDesignation-TaxonName table";
@@ -616,7 +615,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				new String[]{"int","int","int","int","string_3","int"},  // columnTypes
 				new String[]{"Amplification","MaterialOrMethodEvent", "Primer","Media", null, null},  //referencedTables 
 				INCLUDE_AUDIT);
-		//TODO length sequence_string
 		stepList.add(step);
 		
 		//sequence - consensussequence_string  #3360
@@ -1238,7 +1236,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 //		ORDER BY descriptions_id, describedspecimenorobservations_id
 		
 		//TODO test for H2, Postgresql AND SQLServer (later will need TOP 1)
-		String stepName = "update Description - Specimen relation data  ";
+		String stepName = "UPDATE Description - Specimen relation data  ";
 		String sql = " UPDATE DescriptionBase db " +
 		" SET db.specimen_id =  " +
 		" (SELECT  MN.describedspecimenorobservations_id " +
@@ -1246,7 +1244,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		" WHERE MN.descriptions_id = db.id " +
 		" LIMIT 1 " +
 		")";
-		//TODO _AUD
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, sql);
 		stepList.add(step);
 		
@@ -1298,8 +1295,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	}
 
 	private void removeOldSequenceColumns(List<ISchemaUpdaterStep> stepList) {
-		//TODO also remove Identifiable attributes ??
-		
+
 		//remove citation microreference
 		String stepName = "Remove citationmicroreference column";
 		String tableName = "Sequence";
@@ -1342,7 +1338,51 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		columnName = "barcode";
 		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
 		stepList.add(step);	
-	}
+
+		//identifiable columns
+		//remove lsid_authority
+		stepName = "Remove lsid_authority";
+		columnName = "lsid_authority";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+
+		//remove lsid_lsid
+		stepName = "Remove lsid_lsid";
+		columnName = "lsid_lsid";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+		
+		//remove lsid_namespace
+		stepName = "Remove lsid_namespace";
+		columnName = "lsid_namespace";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+
+		//remove lsid_object
+		stepName = "Remove lsid_object";
+		columnName = "lsid_object";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+		
+		//remove lsid_revision
+		stepName = "Remove lsid_revision";
+		columnName = "lsid_revision";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+		
+		//remove protectedTitleCache
+		stepName = "Remove protectedTitleCache";
+		columnName = "protectedTitleCache";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+		
+		//remove titleCache
+		stepName = "Remove titleCache";
+		columnName = "titleCache";
+		step = ColumnRemover.NewInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);	
+
+}
 
 	private void updateIdInVocabulary(List<ISchemaUpdaterStep> stepList) {
 		String tableName = "DefinedTermBase";
@@ -1706,7 +1746,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		}
 		
 		String tableName = "TermVocabulary";
-		//TODO _AUD
 		//Natural Language Terms
 		String stepName = "Updater termType for NaturalLanguageTerms";
 		String query = "UPDATE TermVocabulary voc " + 
@@ -2124,8 +2163,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create absoluteElevationText column";
 		tableName = "GatheringEvent";
 		columnName = "absoluteElevationText";
-		//TODO size
-		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		int size = 30;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//retype distanceToGround 
@@ -2147,8 +2186,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create distanceToGroundText column";
 		tableName = "GatheringEvent";
 		columnName = "distanceToGroundText";
-		//TODO size
-		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		size = 30;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT);
 		stepList.add(step);
 		
 		//retype distanceToGround 
@@ -2170,8 +2209,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Create distanceToWaterSurfaceText column";
 		tableName = "GatheringEvent";
 		columnName = "distanceToWaterSurfaceText";
-		//TODO size
-		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, 255, INCLUDE_AUDIT);
+		size = 30;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, columnName, size, INCLUDE_AUDIT);
 		stepList.add(step);
 
 	}

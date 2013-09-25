@@ -8,7 +8,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.model.common;
+package eu.etaxonomy.cdm.model.metadata;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
@@ -47,7 +48,7 @@ public class CdmMetaData extends CdmBase{
 	 * The last number represents the date of change.
 	 */
 //	private static final String dbSchemaVersion = "3.0.1.0.201104190000";	
-	private static final String dbSchemaVersion = "3.3.0.0.201309010000";	
+	private static final String dbSchemaVersion = "3.3.0.0.201309240000";	
 	
 	
 
