@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * @version 1.0
  * @created 26 Jul 2013
  */
-public class AcceptedTaxonBridge implements FieldBridge {
+public class AcceptedTaxonBridge implements FieldBridge { // TODO inherit from AbstractClassBridge since this base class provides presets for id fields?
 
     public final static String ACCEPTED_TAXON_UUID_LIST_SEP = ",";
     private final static String DOC_KEY_UUID_SUFFIX = ".uuids"; // TODO do not use the plural for the field name
