@@ -1157,10 +1157,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
         taxonService.save(t_abies_alba);
 
+        BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
+        n_abies_subalpina.setNameCache("Abies subalpina", true);
+        Synonym s_abies_subalpina = Synonym.NewInstance(n_abies_subalpina, sec);
+        taxonService.save(s_abies_subalpina);
+
         BotanicalName n_abies_balsamea = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
+        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymRelationshipType.SYNONYM_OF());
         taxonService.save(t_abies_balsamea);
 
         BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
@@ -1180,15 +1186,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
         taxonService.saveOrUpdate(t_abies_kawakamii_sensu_komarov);
 
-        BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
-        n_abies_subalpina.setNameCache("Abies subalpina", true);
-        Synonym s_abies_subalpina = Synonym.NewInstance(n_abies_subalpina, sec);
-        taxonService.save(s_abies_subalpina);
-
         BotanicalName n_abies_lasiocarpa = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
         Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
-        t_abies_lasiocarpa.addSynonym(s_abies_subalpina, SynonymRelationshipType.SYNONYM_OF());
         taxonService.save(t_abies_lasiocarpa);
 
         // add taxa to classifications
