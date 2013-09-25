@@ -26,6 +26,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
@@ -42,6 +43,7 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.DocIdBitSetPrinter;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
@@ -1611,7 +1613,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
             }
             */
-            if(searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
+            if(addDistributionFilter && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
                 // add additional area filter for synonyms
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
                 String toField = "accTaxon.id"; // id in TaxonBase index
@@ -1667,19 +1669,53 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             // finds the misapplied name (Taxon B) which is an misapplication for
             // a related Taxon A.
             //
-            // A distribiution filter must two joins in this case:
-            // Distribution.inDescription.taxon.id -join-> TaxonRelationship.relatedFrom.id in MISAPPLIED_NAME_FOR -join-> taxon.id
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
                     queryString, classification, languages, highlightFragments));
             idFieldMap.put(CdmBaseType.TAXON, "id");
+
+            if(addDistributionFilter){
+                String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+
+                /*
+                 * Here java seems to have a wired and nasty bug which took me bugging be really for hours until I found this solution:
+                 *
+                 * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()
+                 * directly:
+                 *
+                 *    String toField = "relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id";
+                 *
+                 * The byDistributionQuery fails, however when the uuid is first stored in another string variable the query
+                 * will execute as expected:
+                 *
+                 *    String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
+                 *    String toField = "relation." + misappliedNameForUuid +".to.id";
+                 *
+                 * Comparing both strings by the String.equals method returns true, so both String are identical.
+                 */
+                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
+                String toField = "relation." + misappliedNameForUuid +".to.id";
+                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
+                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
+
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+
+                QueryWrapperFilter filter = new QueryWrapperFilter(taxonAreaJoinQuery);
+                DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
+                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
+                luceneIndexToolProvider.getIndexReaderFor(Taxon.class);
+
+                multiIndexByAreaFilter.add(filter, Occur.SHOULD);
+            }
         }
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider,
                 luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
 
 
-        if(addDistributionFilter){
+        if(false && addDistributionFilter){
 
             // B)
             // in this case we need a filter which uses a join query

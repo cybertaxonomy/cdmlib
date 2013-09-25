@@ -97,7 +97,7 @@ public class QueryFactory {
      * @param fieldName
      * @param queryString
      * @param isTextField whether this field is a field containing free text in contrast to e.g. ID fields.
-     *     If <code>isTextField</code> to <code>true</code> the <code>queryString</code> will be parsed by
+     *     If <code>isTextField</code> is set <code>true</code> the <code>queryString</code> will be parsed by
      *     using the according analyzer.
      * @return the resulting <code>TermQuery</code> or <code>null</code> in case of an <code>ParseException</code>
      *
@@ -328,13 +328,13 @@ public class QueryFactory {
      * @param fromField
      * @param toField
      * @param joinFromQuery
-     * @param clazz
+     * @param fromType
      * @return
      * @throws IOException
      */
     public Query newJoinQuery(String fromField, String toField, BooleanQuery joinFromQuery,
-            Class<? extends CdmBase> clazz) throws IOException {
-            return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(clazz));
+            Class<? extends CdmBase> fromType) throws IOException {
+            return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(fromType));
     }
 
     /**
