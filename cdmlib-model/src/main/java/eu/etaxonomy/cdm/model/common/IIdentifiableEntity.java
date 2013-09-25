@@ -25,8 +25,11 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public String getTitleCache();
 
     /**
-     * Sets the title cache without changing the <code>protectCache</code> flag
+     * Sets the title cache without changing the <code>protectCache</code> flag.
+     * If this flag is <code>false</code> the titleCache may be recomputed with the
+     * next call of {@link #getTitleCache()}
      * @see #setTitleCache(String, boolean)
+     * @see #getTitleCache()
      * @param titleCache
      */
     public void setTitleCache(String titleCache);

@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -123,7 +124,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
 					TextData featurePlaceholder = docImport.getFeaturePlaceholder(state, description, feature, true);
 					for (Reference<?> citation : refs) {
-						featurePlaceholder.addSource(null, null, citation, null);
+						featurePlaceholder.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, null);
 					}
 				} else {
 					String message = "No reference found in references";

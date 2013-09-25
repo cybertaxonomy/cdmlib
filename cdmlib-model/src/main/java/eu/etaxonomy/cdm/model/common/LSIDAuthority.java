@@ -17,7 +17,6 @@ import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.MapKeyColumn;
-import javax.persistence.MapKeyJoinColumn;
 import javax.persistence.Transient;
 import javax.wsdl.Definition;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -50,10 +49,6 @@ import eu.etaxonomy.cdm.jaxb.NamespacesAdapter;
 @Entity
 @TypeDefs(@TypeDef(name="wsdlDefinitionUserType", typeClass=WSDLDefinitionUserType.class))
 public class LSIDAuthority extends CdmBase {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 9168994979216936689L;
 
 	public static final String AUTHORITY_ID_PREFIX = "lsidauth:";

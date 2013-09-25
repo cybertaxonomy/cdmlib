@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
@@ -75,7 +75,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
         stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
         stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-        stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
+        stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
     }
 
     /* (non-Javadoc)

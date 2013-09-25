@@ -8,6 +8,7 @@
 */
 package eu.etaxonomy.cdm.model.common;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -45,17 +46,19 @@ public class DefaultTermInitializer implements ITermInitializer {
 	
 	protected void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<?> vocabulary) {
 		DefinedTermBase newInstance;
+		newInstance = getInstance(clazz);
+		newInstance.setDefaultTerms(vocabulary);
+	}
+	
+	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
 		try {
-			newInstance = clazz.newInstance();
-			newInstance.setDefaultTerms(vocabulary);
-		} catch (InstantiationException e) {
-			// TODO Exception type
-			throw new RuntimeException("NewInstance could not be initialized in term initializer", e);
-		} catch (IllegalAccessException e) {
-			// TODO Exception type
-			throw new RuntimeException("NewInstance could not be accessed in term initializer", e);
+			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
+			c.setAccessible(true);
+			T termInstance = c.newInstance();
+			return termInstance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
-		
 	}
 
 

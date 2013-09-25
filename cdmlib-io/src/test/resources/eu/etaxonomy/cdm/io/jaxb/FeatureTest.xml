@@ -272,7 +272,6 @@
       <description:FeatureTree  uuid="urn-uuid-6509b4ca-a872-45cc-b743-a0fe50fc8bb7">
            <common:TitleCache>Feature Tree</common:TitleCache>
            <common:ProtectedTitleCache>true</common:ProtectedTitleCache>
-            <description:IsDescriptionSeparated>false</description:IsDescriptionSeparated>
             <description:Root  uuid="urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc">
               <description:Feature>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</description:Feature>
               <description:Children>

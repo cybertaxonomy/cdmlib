@@ -23,7 +23,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 /**
  * @author a.babadshanjan
@@ -48,7 +48,7 @@ public class SpecimenTypeDesignationTest {
 	public void setUp() {
 		term1 = new SpecimenTypeDesignation();
 		term2 = 
-			new SpecimenTypeDesignation(Specimen.NewInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
+			new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
 					null, null, null, false);
 	}
 	
@@ -69,9 +69,9 @@ public class SpecimenTypeDesignationTest {
 	
 	@Test
 	public void testBidirectionalRelationship(){
-		term2 = new SpecimenTypeDesignation(Specimen.NewInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
+		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
 				null, null, null, false);
-		Specimen specimen = (Specimen) term2.getTypeSpecimen();
+		DerivedUnit specimen = (DerivedUnit) term2.getTypeSpecimen();
 		Set<SpecimenTypeDesignation> set = specimen.getSpecimenTypeDesignations();
 		boolean contains = false;
 		for (SpecimenTypeDesignation spec: set){

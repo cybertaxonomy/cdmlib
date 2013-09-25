@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -84,13 +85,15 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -830,7 +833,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             for (SpecimenOrObservationBase occurrence : specimensOrObservations) {
 
-                taxonMedia.addAll(occurrence.getMedia());
+//            	direct media removed from specimen #3597
+//              taxonMedia.addAll(occurrence.getMedia());
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
@@ -846,17 +850,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
 
                 // Collection
-                if (occurrence instanceof DerivedUnitBase) {
-                    if (((DerivedUnitBase) occurrence).getCollection() != null){
-                        taxonMedia.addAll(((DerivedUnitBase) occurrence).getCollection().getMedia());
+                //TODO why may collections have media attached? #
+                if (occurrence.isInstanceOf(DerivedUnit.class)) {
+                	DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    if (derivedUnit.getCollection() != null){
+                        taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
                 }
 
-                // Chromatograms
-                if (occurrence instanceof DnaSample) {
-                    Set<Sequence> sequences = ((DnaSample) occurrence).getSequences();
-                    for (Sequence sequence : sequences) {
-                        taxonMedia.addAll(sequence.getChromatograms());
+                // pherograms & gelPhotos
+                if (occurrence.isInstanceOf(DnaSample.class)) {
+                	DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
+                	Set<Sequence> sequences = dnaSample.getSequences();
+                	//we do show only those gelPhotos which lead to a consensus sequence
+                	for (Sequence sequence : sequences) {
+                		Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                    	for (SingleRead singleRead : sequence.getSingleReads()){
+                    		Amplification amplification = singleRead.getAmplification();
+                    		dnaRelatedMedia.add(amplification.getGelPhoto());
+                    		dnaRelatedMedia.add(singleRead.getPherogram());
+                    		dnaRelatedMedia.remove(null);
+                    	}
+                    	taxonMedia.addAll(dnaRelatedMedia);
                     }
                 }
 
@@ -973,7 +988,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             //FIXME check if description is ALWAYS deletable
                             descriptionService.delete(desc);
                         }else{
-                            if (desc.getDescribedSpecimenOrObservations().size()>0){
+                            if (desc.getDescribedSpecimenOrObservation() != null){
                                 String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
                                         " which also describes specimens or abservations";
                                     throw new ReferencedObjectUndeletableException(message);
@@ -988,7 +1003,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //IIdentificationKeys (Media, Polytomous, MultiAccess)
                 if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
                     String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
                     throw new ReferencedObjectUndeletableException(message);
                 }
 
@@ -1967,10 +1982,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("states.state", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
 
         // area field from Distribution
         textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
@@ -2394,9 +2409,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String idInSourceSyn= getIdInSource(syn);
 
         if (idInSourceParent != null && idInSourceSyn != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
             potentialCombination.addSource(originalSource);
         }
 
@@ -2457,19 +2472,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // Add the original source
         if (idInSourceSyn != null && idInSourceTaxon != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
 
         }else{
             logger.error("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
         }
@@ -2559,11 +2578,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
 
-        IdentifiableSource originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);
 
-        originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredSynName.addSource(originalSource);
 

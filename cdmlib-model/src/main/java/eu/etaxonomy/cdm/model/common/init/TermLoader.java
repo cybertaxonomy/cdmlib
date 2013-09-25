@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common.init;
 
+import java.lang.reflect.Constructor;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -32,16 +34,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 public class TermLoader implements ITermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
-	private Map<Class<? extends DefinedTermBase>,String> termFileNames = new HashMap<Class<? extends DefinedTermBase>,String>();
-	
-	public TermLoader() {
-		this.termFileNames.put(NamedArea.class, "TdwgArea.csv");
-	}
-	
-	public void setTermFileNames(Map<Class<? extends DefinedTermBase>,String> termFileNames) {
-		this.termFileNames = termFileNames;
-	}
-	
 	public void unloadAllTerms(){
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
 //			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
@@ -51,16 +43,8 @@ public class TermLoader implements ITermLoader {
 
 	private <T extends DefinedTermBase> void unloadVocabularyType(VocabularyEnum vocType){
 		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
-		try {
-			T termInstance = ((Class<T>)termClass).newInstance();
-			termInstance.resetTerms();
-			
-		} catch (InstantiationException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		} 
-
+		getInstance(termClass).resetTerms();
+		return;
 	}
 
 	
@@ -68,15 +52,6 @@ public class TermLoader implements ITermLoader {
 	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
 		
 		String filename = vocType.name()+".csv";
-//		termClass.getSimpleName()+".csv";
-		
-//		/**
-//		 * Check to see if a non-standard filename should be used 
-//		 * ( The file should still reside in the same directory )
-//		 */ 
-//		if(termFileNames.containsKey(termClass)) {
-//			filename = termFileNames.get(termClass);
-//		}
 		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
 		
 		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
@@ -84,24 +59,26 @@ public class TermLoader implements ITermLoader {
 		
 		try {
 			CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
+			String [] nextLine = reader.readNext();
 			
 			//vocabulary
-			TermVocabulary<T> voc = null;
-			String labelAbbrev = null;
-			
+			TermVocabulary<T> voc;
+			TermType termType = TermType.Unknown;
 			if (OrderedTermBase.class.isAssignableFrom(termClass)){
-				voc = OrderedTermVocabulary.NewInstance(termClass.getCanonicalName(), termClass.getSimpleName(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = OrderedTermVocabulary.NewInstance(termType);
 			}else{
-				voc = TermVocabulary.NewInstance(termClass.getCanonicalName(), vocType.name(), labelAbbrev, URI.create(termClass.getCanonicalName()));
+				voc = TermVocabulary.NewInstance(termType);
 			}
 			
-			String [] nextLine = reader.readNext();
 			if (nextLine != null){
 				voc.readCsvLine(arrayedLine(nextLine));
 			}
+			termType = voc.getTermType();
+			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
 			
 			// Ugly, I know, but I don't think we can use a static method here . . 
-			T termInstance = ((Class<T>)termClass).newInstance(); 
+			
+			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance(); 
 			
 			while ((nextLine = reader.readNext()) != null) {
 				// nextLine[] is an array of values from the line
@@ -109,7 +86,8 @@ public class TermLoader implements ITermLoader {
 					continue;
 				}
 
-				T term = (T) termInstance.readCsvLine(termClass,arrayedLine(nextLine), terms);
+				T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms, abbrevAsId);
+				term.setTermType(termType);
 				terms.put(term.getUuid(), term);
 				voc.addTerm(term);
 			}
@@ -122,6 +100,17 @@ public class TermLoader implements ITermLoader {
 			throw new RuntimeException(e);
 		}
 		
+	}
+
+	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+		try {
+			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
+			c.setAccessible(true);
+			T termInstance = c.newInstance();
+			return termInstance;
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
 	}
 
 	private List<String> arrayedLine(String [] nextLine){

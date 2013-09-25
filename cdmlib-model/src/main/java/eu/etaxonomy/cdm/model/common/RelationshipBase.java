@@ -120,7 +120,7 @@ public abstract class RelationshipBase<FROM extends IRelated, TO extends IRelate
     /**
      * A boolean flag that marks the relationship between two objects as doubtful
      * Please be aware that this flag should not be used to mark any status of the
-     * objects themselfs. E.g. when marking a synonym relationship as doubtful
+     * objects themselves. E.g. when marking a synonym relationship as doubtful
      * this means that it is doubtful that the synonym is really a synonym to the
      * taxon. It does not mean that the synonym is doubtfully a synonym.
      * @return true, if the relationship is doubtful, false otherwise

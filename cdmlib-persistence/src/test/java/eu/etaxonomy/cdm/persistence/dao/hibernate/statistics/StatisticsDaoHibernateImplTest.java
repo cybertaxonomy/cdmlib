@@ -19,10 +19,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -271,15 +272,15 @@ public class StatisticsDaoHibernateImplTest extends
 
 					// create a description and 2 description elements with
 					// references for taxon name
-					TaxonNameDescription nameDescr = new TaxonNameDescription();
+					TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
 					CommonTaxonName nameElement = CommonTaxonName.NewInstance(
 							"Veilchen" + taxonCounter, Language.GERMAN());
 					TextData textElement = new TextData();
 					Reference nameElementRef = ReferenceFactory.newArticle();
 					Reference textElementRef = ReferenceFactory
 							.newBookSection();
-					nameElement.addSource(null, null, nameElementRef, "name: ");
-					textElement.addSource(null, null, textElementRef, "text: ");
+					nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
+					textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
 					nameDescr.addElement(nameElement);
 					nameDescr.addElement(textElement);
 					name.addDescription(nameDescr);
@@ -295,7 +296,7 @@ public class StatisticsDaoHibernateImplTest extends
 					for (int i = 0; i < descriptiveElementsPerTaxon; i++) {
 						DescriptionElementBase descriptionElement = new TextData();
 						DescriptionElementSource descriptionElementSource = DescriptionElementSource
-								.NewInstance();
+								.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 						Reference article = ReferenceFactory.newArticle();
 
 						descriptionElementSource.setCitation(article);
@@ -327,8 +328,7 @@ public class StatisticsDaoHibernateImplTest extends
 				}
 
 				// add taxon to classification
-				classifications.get(classiCounter).addChildTaxon(taxon, null,
-						null, null);
+				classifications.get(classiCounter).addChildTaxon(taxon, null, null);
 
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < NO_OF_SYNONYMS) {
@@ -353,19 +353,15 @@ public class StatisticsDaoHibernateImplTest extends
 
 						// create a description and 2 description elements with
 						// references for synonym name
-						TaxonNameDescription nameDescr = new TaxonNameDescription();
+						TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
 						CommonTaxonName nameElement = CommonTaxonName
 								.NewInstance("anderes Veilchen" + taxonCounter,
 										Language.GERMAN());
 						TextData textElement = new TextData();
-						Reference nameElementRef = ReferenceFactory
-								.newArticle();
-						Reference textElementRef = ReferenceFactory
-								.newBookSection();
-						nameElement.addSource(null, null, nameElementRef,
-								"name: ");
-						textElement.addSource(null, null, textElementRef,
-								"text: ");
+						Reference nameElementRef = ReferenceFactory.newArticle();
+						Reference textElementRef = ReferenceFactory.newBookSection();
+						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef,"name: ");
+						textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef,"text: ");
 						nameDescr.addElement(nameElement);
 						nameDescr.addElement(textElement);
 						name.addDescription(nameDescr);
@@ -393,8 +389,7 @@ public class StatisticsDaoHibernateImplTest extends
 				// we add the taxon to the next class in the list too.
 				if (classiCounter < NO_OF_CLASSIFICATIONS
 						&& sharedClassification < NO_OF_SHARED_TAXA) {
-					classifications.get(classiCounter + 1).addChildTaxon(taxon,
-							null, null, null);
+					classifications.get(classiCounter + 1).addChildTaxon(taxon, null, null);
 
 					// we remember that this taxon is attached to 2
 					// classifications:

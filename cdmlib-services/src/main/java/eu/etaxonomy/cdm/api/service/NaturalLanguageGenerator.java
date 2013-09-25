@@ -300,7 +300,7 @@ public class NaturalLanguageGenerator implements INaturalLanguageGenerator {
 			for (Iterator<FeatureNode> ifn = children.iterator() ; ifn.hasNext() ;){
 				previousTextData = featureName; // this allows to keep track of the name of the feature one level up in the tree
 				FeatureNode fn = ifn.next();
-				listTextData.addAll(buildBranchesDescr(fn.getChildren(),fn,description, languages, floor));
+				listTextData.addAll(buildBranchesDescr(fn.getChildNodes(),fn,description, languages, floor));
 			}
 		}
 		else { //once a leaf is reached

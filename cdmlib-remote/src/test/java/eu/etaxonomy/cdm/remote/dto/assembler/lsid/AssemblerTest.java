@@ -166,10 +166,10 @@ public class AssemblerTest extends UnitilsJUnit4 {
         book.setUri(new URI("http://persitent.books.foo/myBook"));
         book.setUuid(UUID.randomUUID());
         book.setVolume("Volume 1");
-        book.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/1"));
+        book.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/1"));
 
         bookSection = ReferenceFactory.newBookSection();
-        bookSection.setInReference((Reference)book);
+        bookSection.setInReference((Reference<?>)book);
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
         bookSection.setAuthorTeam(authorTeam);
@@ -179,14 +179,14 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setUri(new URI("http://persitent.books.foo/myBookSection"));
         bookSection.setUuid(UUID.randomUUID());
         bookSection.addCredit(Credit.NewInstance(authorTeam, "Credits to the authorTeam"));
-        bookSection.addSource(IdentifiableSource.NewInstance("http://persitent.IdentifiableSources.foo/2"));
+        bookSection.addSource(IdentifiableSource.NewDataImportInstance("http://persitent.IdentifiableSources.foo/2"));
     }
 
     @Test
     public void testDeepMapping() {
         for(int i = 0; i < 3; i++) {
-            Synonym synonym = Synonym.NewInstance(name,(Reference)sec);
-            taxon.addSynonym(synonym,new SynonymRelationshipType());
+            Synonym synonym = Synonym.NewInstance(name,(Reference<?>)sec);
+            taxon.addSynonym(synonym, SynonymRelationshipType.SYNONYM_OF());
         }
 
         if(!UriUtils.isInternetAvailable(null)){
@@ -223,7 +223,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
             return;
         }
 
-        IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference)sec);
+        IBook proxy = getUninitializedDetachedProxy(Reference.class,(Reference<?>)sec);
         assert !Hibernate.isInitialized(proxy);
         Field secField = TaxonBase.class.getDeclaredField("sec");
         secField.setAccessible(true);
@@ -280,8 +280,8 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         assertNotNull(simpleDarwinRecord.getModified());
         assertEquals(taxon.getName().getTitleCache(), simpleDarwinRecord.getScientificName());
-        assertEquals(((NonViralName)taxon.getName()).getAuthorshipCache(), simpleDarwinRecord.getScientificNameAuthorship());
-        assertEquals(((NonViralName)taxon.getName()).getCitationString(), simpleDarwinRecord.getNamePublishedIn());
+        assertEquals(((NonViralName<?>)taxon.getName()).getAuthorshipCache(), simpleDarwinRecord.getScientificNameAuthorship());
+        assertEquals(((NonViralName<?>)taxon.getName()).getCitationString(), simpleDarwinRecord.getNamePublishedIn());
         assertEquals(Rank.SPECIES().getLabel(), simpleDarwinRecord.getTaxonRank());
     }
 

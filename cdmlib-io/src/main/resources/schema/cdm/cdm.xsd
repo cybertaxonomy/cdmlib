@@ -68,13 +68,11 @@ http://www.w3.org/2001/XMLSchema
             <xs:choice minOccurs="0" maxOccurs="unbounded">
               <xs:element ref="description:AbsenceTerm"/>
               <xs:element ref="common:AnnotationType"/>
-              <xs:element ref="location:Continent"/>
               <xs:element ref="occurrence:DerivationEventType"/>
               <xs:element ref="occurrence:DeterminationModifier"/>
               <xs:element ref="common:ExtensionType"/>
               <xs:element ref="description:Feature"/>
               <xs:element ref="name:HybridRelationshipType"/>
-              <xs:element ref="agent:InstitutionType"/>
               <xs:element ref="common:Language"/>
               <xs:element ref="common:MarkerType"/>
               <xs:element ref="description:MeasurementUnit"/>
@@ -90,7 +88,7 @@ http://www.w3.org/2001/XMLSchema
               <xs:element ref="occurrence:PreservationMethod"/>
               <xs:element ref="name:Rank"/>
               <xs:element ref="location:ReferenceSystem"/>
-              <xs:element ref="media:RightsTerm"/>
+              <xs:element ref="media:RightsType"/>
               <xs:element ref="description:Scope"/>
               <xs:element ref="description:Sex"/>
               <xs:element ref="name:SpecimenTypeDesignationStatus"/>
@@ -100,7 +98,7 @@ http://www.w3.org/2001/XMLSchema
               <xs:element ref="taxon:SynonymRelationshipType"/>
               <xs:element ref="taxon:TaxonRelationshipType"/>
               <xs:element ref="description:TextFormat"/>
-              <xs:element ref="location:WaterbodyOrCountry"/>
+              <xs:element ref="location:Country"/>
             </xs:choice>
           </xs:sequence>
         </xs:complexType>
@@ -139,11 +137,7 @@ http://www.w3.org/2001/XMLSchema
             <xs:choice minOccurs="0" maxOccurs="unbounded">
               <xs:element ref="occurrence:DerivedUnit"/>
               <xs:element ref="occurrence:DnaSample"/>
-              <xs:element ref="occurrence:FieldObservation"/>
-              <xs:element ref="occurrence:Fossil"/>
-              <xs:element ref="occurrence:LivingBeing"/>
-              <xs:element ref="occurrence:Observation"/>
-              <xs:element ref="occurrence:Specimen"/>
+              <xs:element ref="occurrence:FieldUnit"/>
             </xs:choice>
           </xs:sequence>
         </xs:complexType>

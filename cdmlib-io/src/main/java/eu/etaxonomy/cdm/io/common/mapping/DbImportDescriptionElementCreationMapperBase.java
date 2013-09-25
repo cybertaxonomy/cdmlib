@@ -14,11 +14,13 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -74,7 +76,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 			logger.info("Taxon could not be determined. Description element was not add to any description or taxon");
 		}
 		//Source
-		if (CdmUtils.isNotEmpty(dbCitationAttribute)){
+		if (StringUtils.isNotBlank(dbCitationAttribute)){
 			addSource(rs, element);
 		}
 		return element;
@@ -89,7 +91,7 @@ public abstract class DbImportDescriptionElementCreationMapperBase<ELEMENT exten
 	private void addSource(ResultSet rs, ELEMENT element) throws SQLException {
 		String microCitation = getStringDbValue(rs, dbMicroCitationAttribute);
 		Reference<?> citation = (Reference<?>) getState().getRelatedObject(sourceNamespace, String.valueOf(rs.getObject(dbCitationAttribute)));
-		element.addSource(null, null, citation, microCitation);
+		element.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation);
 	}
 
 	/**

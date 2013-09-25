@@ -43,6 +43,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -58,7 +59,6 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -73,7 +73,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IDatabase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -109,10 +109,10 @@ public class SDDDocumentBuilder {
 	private final Map<State, String> states = new HashMap<State, String>();
 	private final Map<Reference<?>, String> articles = new HashMap<Reference<?>, String>();
 	private final Map<VersionableEntity, String> featuretrees = new HashMap<VersionableEntity, String>();
-	private final Map<Modifier, String> modifiers = new HashMap<Modifier, String>();
+	private final Map<DefinedTerm, String> modifiers = new HashMap<DefinedTerm, String>();
 	private final Map<TaxonNode, String> taxonNodes = new HashMap<TaxonNode, String>();
 	private final Map<NamedArea, String> namedAreas = new HashMap<NamedArea, String>();
-	private final Map<Specimen, String> specimens = new HashMap<Specimen, String>();
+	private final Map<DerivedUnit, String> specimens = new HashMap<DerivedUnit, String>();
 	
 	private final Map<VersionableEntity, String> features = new HashMap<VersionableEntity, String>();
 	private int agentsCount = 0;
@@ -679,15 +679,13 @@ public class SDDDocumentBuilder {
 										.isEmpty()) {
 									ElementImpl elModifiers = new ElementImpl(
 											document, "Modifiers");
-									for (Iterator<TermVocabulary<Modifier>> menum = feature
+									for (Iterator<TermVocabulary<DefinedTerm>> menum = feature
 											.getRecommendedModifierEnumeration()
 											.iterator(); menum.hasNext();) {
-										TermVocabulary<Modifier> termVoc = menum
-												.next();
-										Set<Modifier> sm = termVoc.getTerms();
-										for (Iterator<Modifier> modif = sm
-												.iterator(); modif.hasNext();) {
-											Modifier modifier = modif.next();
+										TermVocabulary<DefinedTerm> termVoc = menum.next();
+										Set<DefinedTerm> sm = termVoc.getTerms();
+										for (Iterator<DefinedTerm> modif = sm.iterator(); modif.hasNext();) {
+											DefinedTerm modifier = modif.next();
 											ElementImpl elModifier = new ElementImpl(
 													document, "Modifier");
 											modifiersCount = buildReference(
@@ -922,7 +920,7 @@ public class SDDDocumentBuilder {
 		Feature feature = categoricalData.getFeature();
 		buildReference(feature, characters, REF, categorical, "c",
 				charactersCount);
-		List<StateData> states = categoricalData.getStates();
+		List<StateData> states = categoricalData.getStateData();
 		for (Iterator<StateData> sd = states.iterator(); sd.hasNext();) {
 			StateData stateData = sd.next();
 			State s = stateData.getState();
@@ -1207,21 +1205,16 @@ public class SDDDocumentBuilder {
 							.iterator(); tn.hasNext();) {
 						TaxonNode taxonnode = tn.next();
 						if (taxonnode.isTopmostNode()) {
-							ElementImpl elNode = new ElementImpl(document,
-									"Node");
+							ElementImpl elNode = new ElementImpl(document, "Node");
 							taxonNodesCount = buildReference(taxonnode,
-									taxonNodes, ID, elNode, "tn",
-									taxonNodesCount);
-							ElementImpl elTaxonName = new ElementImpl(document,
-									TAXON_NAME);
-							taxonNamesCount = buildReference(taxonnode
-									.getTaxon().getName(), taxonNames, REF,
-									elTaxonName, "t", taxonNamesCount);
+									taxonNodes, ID, elNode, "tn", taxonNodesCount);
+							ElementImpl elTaxonName = new ElementImpl(document, TAXON_NAME);
+							taxonNamesCount = buildReference(taxonnode.getTaxon().getName(), 
+									taxonNames, REF, elTaxonName, "t", taxonNamesCount);
 							elNode.appendChild(elTaxonName);
 							elTaxonHierarchy.appendChild(elNode);
-							if (taxonnode.hasChildNodes()) {
-								buildTaxonBranches(taxonnode.getChildNodes(),
-										taxonnode, elTaxonHierarchy);
+							if (taxonnode.hasChildNodes()) {buildTaxonBranches(
+									taxonnode.getChildNodes(), taxonnode, elTaxonHierarchy);
 							}
 						}
 					}
@@ -1232,7 +1225,7 @@ public class SDDDocumentBuilder {
 		}
 	}
 
-	private void buildTaxonBranches(Set<TaxonNode> children, TaxonNode parent,
+	private void buildTaxonBranches(List<TaxonNode> children, TaxonNode parent,
 			ElementImpl elTaxonHierarchy) {
 		if (children != null) {
 			for (Iterator<TaxonNode> tn = children.iterator(); tn.hasNext();) {
@@ -1260,7 +1253,7 @@ public class SDDDocumentBuilder {
 
 	public void buildBranches(FeatureNode parent, ElementImpl element,
 			boolean isRoot) {
-		List<FeatureNode> children = parent.getChildren();
+		List<FeatureNode> children = parent.getChildNodes();
 		if (!parent.isLeaf()) {
 			ElementImpl elCharNode = new ElementImpl(document, NODE);
 			charnodeCount = buildReference(parent, featuretrees, ID,
@@ -1503,11 +1496,9 @@ public class SDDDocumentBuilder {
 
 			for (int i = 0; i < cdmSource.getOccurrences().size(); i++) {
 				ElementImpl elSpecimen = new ElementImpl(document, "Specimen");
-				SpecimenOrObservationBase sob = cdmSource.getOccurrences().get(
-						i);
-				if (sob instanceof Specimen) {
-					specimenCount = buildReference(sob, specimens, ID,
-							elSpecimen, "s", specimenCount);
+				SpecimenOrObservationBase<?> sob = cdmSource.getOccurrences().get(i);
+				if (sob.getRecordBasis().isPreservedSpecimen()) {
+					specimenCount = buildReference(sob, specimens, ID, elSpecimen, "s", specimenCount);
 					buildRepresentation(elSpecimen, sob);
 					elSpecimens.appendChild(elSpecimen);
 				}

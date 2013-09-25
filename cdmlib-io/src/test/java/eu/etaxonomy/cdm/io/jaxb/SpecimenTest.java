@@ -20,14 +20,14 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
-import eu.etaxonomy.cdm.model.description.Sex;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 public class SpecimenTest {
@@ -39,8 +39,9 @@ public class SpecimenTest {
 	        CdmDocumentBuilder cdmDocumentBuilder = new CdmDocumentBuilder();
 	        URI uri = new URI(URIEncoder.encode(this.getClass().getResource(resource).toString()));
 	        DataSet dataSet = cdmDocumentBuilder.unmarshal(DataSet.class, new InputStreamReader(this.getClass().getResourceAsStream(resource)),uri.toString());
-			
-			Specimen specimen = (Specimen)dataSet.getOccurrences().get(0);	
+//	        List<SpecimenOrObservationBase> occurrences = dataSet.getOccurrences();
+	        
+			DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);	
 			assertNotNull("Specimen must not be null",specimen);
 			
 			Institution institution = (Institution)dataSet.getAgents().get(0);
@@ -49,15 +50,15 @@ public class SpecimenTest {
 			assertNotNull("Person must not be null", person);
 			Taxon taxon = (Taxon)dataSet.getTaxonBases().get(0);
 			assertNotNull("Taxon must not be null",taxon);
-			TaxonNameBase name = dataSet.getTaxonomicNames().get(0);
+			TaxonNameBase<?,?> name = dataSet.getTaxonomicNames().get(0);
 			assertNotNull("TaxonNameBase must not be null",name);
-			Sex sex = (Sex)dataSet.getTerms().get(1);
+			DefinedTerm sex = (DefinedTerm)dataSet.getTerms().get(1);
 			
 			Collection collection = (Collection)dataSet.getCollections().get(0);
 			assertNotNull("Collection must not be null", collection);
 			
-			FieldObservation fieldObservation = (FieldObservation)dataSet.getOccurrences().get(1);
-			assertNotNull("FieldObservation must not be null", fieldObservation);
+			FieldUnit fieldUnit = (FieldUnit)dataSet.getOccurrences().get(1);
+			assertNotNull("FieldUnit must not be null", fieldUnit);
 			assertEquals("Specimen.collection must equal Collection",collection, specimen.getCollection());
 			assertEquals("Collection.institute must equal Institution",institution,collection.getInstitute());
 			
@@ -75,7 +76,7 @@ public class SpecimenTest {
 			DerivationEvent derivationEvent = (DerivationEvent)dataSet.getEventBases().get(1);
 			assertNotNull("DerivationEvent must not be null",derivationEvent);
 			
-			assertEquals("GatheringEvent must be equal to FieldObservation.getGatheringEvent()",gatheringEvent, fieldObservation.getGatheringEvent());
+			assertEquals("GatheringEvent must be equal to FieldUnit.getGatheringEvent()",gatheringEvent, fieldUnit.getGatheringEvent());
 			assertTrue("DerivationEvent.derivatives must contain Specimen",derivationEvent.getDerivatives().contains(specimen));
 			assertEquals("DerivationEvent must equal Specimen.derivedFrom",derivationEvent,specimen.getDerivedFrom());
 	    }

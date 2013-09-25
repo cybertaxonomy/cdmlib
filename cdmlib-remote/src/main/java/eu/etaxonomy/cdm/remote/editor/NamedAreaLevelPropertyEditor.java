@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 public class NamedAreaLevelPropertyEditor extends PropertyEditorSupport {
 	@Override
     public void setAsText(String text) {
-		NamedAreaLevel value = new NamedAreaLevel();
+		NamedAreaLevel value = NamedAreaLevel.NewInstance();
 		if (NamedAreaLevel.isTDWG_LEVEL1(text)) {
 			value = NamedAreaLevel.TDWG_LEVEL1();
 		}else if (NamedAreaLevel.isTDWG_LEVEL2(text)) {

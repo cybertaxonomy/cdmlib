@@ -44,7 +44,6 @@ public class UnitsGatheringEvent {
     private static final Logger logger = Logger.getLogger(UnitsGatheringEvent.class);
     private static final boolean DEBUG = false;
     private final GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
-    private final boolean useTDWGarea = false;
 
     /*
      * Constructor
@@ -106,37 +105,16 @@ public class UnitsGatheringEvent {
         }
     }
 
-    /**
-     *
-     */
-    public UnitsGatheringEvent() {
-        // TODO Auto-generated constructor stub
-    }
-
-    /**
-     * @param termService
-     * @param locality
-     * @param object
-     * @param object2
-     * @param object3
-     * @param collector
-     */
-    public UnitsGatheringEvent(ITermService termService, String locality, Object object, Object object2,
-            Object object3, String collector) {
-        // TODO Auto-generated constructor stub
-    }
-
     public GatheringEvent getGatheringEvent(){
         return this.gatheringEvent;
     }
 
-    /*
+    /**
      * Set the locality for the current GatheringEvent
      * @param locality
      * @param langageIso
      */
     public void setLocality(ITermService termService, String locality, String languageIso){
-        //        System.out.println("SET LOCALITY");
         LanguageString loc = null;
         List<LanguageString> languages = termService.getAllLanguageStrings(0, 0);
         boolean locFound=false;

@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.strategy.merge.IMergable;
  * <li> Reference according to the ABCD schema
  * </ul>
  */
-public interface IReference extends IIdentifiableEntity, IParsable, IMergable, IMatchable{
+public interface IReference extends IIdentifiableEntity, IParsable, IMergable, IMatchable, Cloneable {
 
 	/**
 	 * Returns the reference type
@@ -64,11 +64,25 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	 */
 	public String getTitle();
 	
+	
+	/**
+	 * Returns the references title
+	 */
+	public String getAbbrevTitle();
+		
 	/**
 	 * Sets the references title
 	 * @param title
 	 */
 	public void setTitle(String title);
+
+	
+	/**
+	 * Sets the references abbreviated title
+	 * @param title
+	 */
+	public void setAbbrevTitle(String abbrevTitle);
+
 	
 	/**
 	 * Returns the date when the reference was published as a {@link TimePeriod}
@@ -120,5 +134,10 @@ public interface IReference extends IIdentifiableEntity, IParsable, IMergable, I
 	 */
 	void setCacheStrategy(IReferenceBaseCacheStrategy cacheStrategy);
 	
+	/**
+	 * @see Cloneable
+	 * @return
+	 */
+	public Object clone();
 
 }

@@ -107,7 +107,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Column(length=255, name="titleCache")
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
-    @Size(max = 255)
+    @Size(max = 800)  //see #1592
     @Fields({
         @Field(store=Store.YES),
         @Field(name = "titleCache__sort", analyze = Analyze.NO, store=Store.YES)
@@ -241,9 +241,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     @Transient
     protected String getTruncatedCache(String cache) {
-        if (cache != null && cache.length() > 255){
+        if (cache != null && cache.length() > 1023){
             logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
-            cache = cache.substring(0, 252) + "...";
+            cache = cache.substring(0, 1020) + "...";
         }
         return cache;
     }
@@ -444,11 +444,25 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
      */
     @Override
-    public IdentifiableSource addSource(String id, String idNamespace, Reference citation, String microCitation) {
+    public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
-        IdentifiableSource source = IdentifiableSource.NewInstance(id, idNamespace, citation, microCitation);
+        IdentifiableSource source = IdentifiableSource.NewInstance(type, id, idNamespace, citation, microCitation);
+        addSource(source);
+        return source;
+    }
+    
+    
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
+     */
+    @Override
+    public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+        if (id == null && idNamespace == null && citation == null && microCitation == null){
+            return null;
+        }
+        IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
         addSource(source);
         return source;
     }

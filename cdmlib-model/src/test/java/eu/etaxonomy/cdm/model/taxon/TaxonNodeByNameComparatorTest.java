@@ -66,10 +66,10 @@ public class TaxonNodeByNameComparatorTest {
         botname_4.setNameCache(nameCache_4, true);
         Taxon taxon_4 = Taxon.NewInstance(botname_4, sec);
 
-        classification.addChildTaxon(taxon_1, sec, null, null);
-        classification.addChildTaxon(taxon_2, sec, null, null);
-        classification.addChildTaxon(taxon_3, sec, null, null);
-        classification.addChildTaxon(taxon_4, sec, null, null);
+        classification.addChildTaxon(taxon_1, sec, null);
+        classification.addChildTaxon(taxon_2, sec, null);
+        classification.addChildTaxon(taxon_3, sec, null);
+        classification.addChildTaxon(taxon_4, sec, null);
 
         classification.getChildNodes();
         ArrayList<TaxonNode> taxonNodes = new ArrayList<TaxonNode>();

@@ -35,12 +35,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 
 /**
  * The class for individual properties (also designed as character, type or
@@ -68,7 +69,6 @@ import eu.etaxonomy.cdm.model.occurrence.Specimen;
  * schema.
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -116,7 +116,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 */
 	@OneToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DefinedTermBase_RecommendedModifierEnumeration")
-	private Set<TermVocabulary<Modifier>> recommendedModifierEnumeration = new HashSet<TermVocabulary<Modifier>>();
+	private Set<TermVocabulary<DefinedTerm>> recommendedModifierEnumeration = new HashSet<TermVocabulary<DefinedTerm>>();
 	
 	
 	@ManyToMany(fetch = FetchType.LAZY)
@@ -138,13 +138,10 @@ public class Feature extends DefinedTermBase<Feature> {
 	
 /* ***************** CONSTRUCTOR AND FACTORY METHODS **********************************/
 	
-
-	/** 
-	 * Class constructor: creates a new empty feature instance.
-	 * 
-	 * @see #Feature(String, String, String)
-	 */
-	public Feature() {
+	//for hibernate use only
+	@Deprecated
+	protected Feature() {
+		super(TermType.Feature);
 	}
 	
 	/** 
@@ -159,7 +156,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see 				 #Feature()
 	 */
 	protected Feature(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.Feature, term, label, labelAbbrev);
 	}
 
 	/** 
@@ -347,7 +344,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	@XmlElement(name = "RecommendedModifierEnumeration")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
-	public Set<TermVocabulary<Modifier>> getRecommendedModifierEnumeration() {
+	public Set<TermVocabulary<DefinedTerm>> getRecommendedModifierEnumeration() {
 		return recommendedModifierEnumeration;
 	}
 
@@ -360,7 +357,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see    	   								#getRecommendedModifierEnumeration()
 	 */
 	public void addRecommendedModifierEnumeration(
-			TermVocabulary<Modifier> recommendedModifierEnumeration) {
+			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.add(recommendedModifierEnumeration);
 	}
 	/** 
@@ -372,7 +369,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     								#addRecommendedModifierEnumeration(TermVocabulary)
 	 */
 	public void removeRecommendedModifierEnumeration(
-			TermVocabulary<Modifier> recommendedModifierEnumeration) {
+			TermVocabulary<DefinedTerm> recommendedModifierEnumeration) {
 		this.recommendedModifierEnumeration.remove(recommendedModifierEnumeration);
 	}
 
@@ -586,8 +583,8 @@ public class Feature extends DefinedTermBase<Feature> {
 	 * @see     		#NewInstance(String, String, String)
 	 */
 	@Override
-	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-		Feature newInstance = super.readCsvLine(termClass, csvLine, terms); 
+	public Feature readCsvLine(Class<Feature> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+		Feature newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId); 
 		String text = (String)csvLine.get(4);
 		if (text != null && text.length() >= 6){
 			if ("1".equals(text.substring(0, 1))){newInstance.setSupportsTextData(true);};

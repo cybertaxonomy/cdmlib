@@ -30,14 +30,13 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 10.05.2011
- * @version 1.0
  */
 public class ExcelSpecimenImportExampleTest extends
 		CdmTransactionalIntegrationTest {
@@ -61,7 +60,7 @@ public class ExcelSpecimenImportExampleTest extends
 				+ "' does not exist", url);
 		try {
 			configurator = SpecimenCdmExcelImportConfigurator.NewInstance(url.toURI(), null,false);
-			configurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
+			configurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
 		} catch (URISyntaxException e) {
 			e.printStackTrace();
 			Assert.fail();
@@ -83,9 +82,9 @@ public class ExcelSpecimenImportExampleTest extends
 		 boolean result = defaultImport.invoke(configurator);
 		 assertTrue("Return value for import.invoke should be true", result);
 		 assertEquals("Number of specimen should be 3", 3,
-		 occurrenceService.count(DerivedUnitBase.class));
-		 assertEquals("Number of field observations should be 3", 3,
-		 occurrenceService.count(FieldObservation.class));
+		 occurrenceService.count(DerivedUnit.class));
+		 assertEquals("Number of field units should be 3", 3,
+		 occurrenceService.count(FieldUnit.class));
 
 		 printDataSet(System.out, new String[]{"SpecimenOrObservationBase","GatheringEvent","DerivationEvent"});
 
@@ -94,12 +93,11 @@ public class ExcelSpecimenImportExampleTest extends
 	@Test
 	@DataSet
 	@ExpectedDataSet
-//	@Ignore
 	public void testResultSet() {
 		boolean result = defaultImport.invoke(configurator);
 		assertTrue("Return value for import.invoke should be true", result);
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
-		assertEquals("Number of field observations should be 3", 3, occurrenceService.count(FieldObservation.class));
+		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
+		assertEquals("Number of field units should be 3", 3, occurrenceService.count(FieldUnit.class));
 
 //		try {
 //			String filePath = System.getProperty("java.io.tmpdir")

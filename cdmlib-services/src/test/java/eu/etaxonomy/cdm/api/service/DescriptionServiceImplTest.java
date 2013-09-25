@@ -53,7 +53,6 @@ public class DescriptionServiceImplTest extends CdmIntegrationTest {
 
     @Test
     public void testGetDefaultFeatureVocabulary() {
-
         service.getDefaultFeatureVocabulary();
     }
 

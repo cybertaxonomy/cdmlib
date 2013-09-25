@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  *
  */
 public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TableNameChanger.class);
 	
 	private String oldName;
@@ -41,21 +40,20 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 		this.includeAudTable = includeAudTable;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		boolean result = true;
-		result &= renameTable(oldName, newName, datasource, monitor);
+		result &= invokeOnTable(oldName, newName, datasource, monitor);
+		updateHibernateSequence(datasource, monitor, newName, oldName); //no result&= as hibernateSequence problems may not lead to a complete fail
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= renameTable(oldName + aud, newName + aud, datasource, monitor);
+			result &= invokeOnTable(oldName + aud, newName + aud, datasource, monitor);
 		}
 		return (result == true )? 0 : null;
 	}
 
-	private boolean renameTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	//does not support AuditedSchemaUpdaterStepBase signature
+	private boolean invokeOnTable(String oldName, String newName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String updateQuery;
 		if (type.equals(DatabaseTypeEnum.MySQL)){
@@ -73,11 +71,36 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 		updateQuery = updateQuery.replace("@oldName", oldName);
 		updateQuery = updateQuery.replace("@newName", newName);
 		try {
-			datasource.executeQuery(updateQuery);
+			datasource.executeUpdate(updateQuery);
 		} catch (SQLException e) {
+			String message = "Could not perform rename table operation";
 			monitor.warning("Could not perform rename table operation", e);
+			logger.warn(message+ ": "  + e.getMessage());
+			return false;
 		}
 		return true;
+	}
+
+	/**
+	 * 
+	 * @param datasource
+	 * @param monitor
+	 * @param table
+	 * @param oldVal
+	 * @return
+	 */
+	private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor, String newName, String oldName){
+		try{
+			String sql = " UPDATE hibernate_sequences SET sequence_name = '%s' WHERE sequence_name = '%s'";	
+			datasource.executeUpdate(String.format(sql, newName ,oldName));
+			return true;
+		} catch (Exception e) {
+			String message = "Exception occurred when trying to read or update hibernate_sequences table for value " + this.newName + ": " + e.getMessage();
+			monitor.warning(message, e);
+			logger.error(message);
+			return false;
+		}
+		
 	}
 
 }

@@ -163,62 +163,62 @@ public abstract class AbstractPagerImpl<T> implements Pager<T>, Serializable {
 	}
 
 	@Override
-    public Integer getPagesAvailable() {
+	public Integer getPagesAvailable() {
 		return pagesAvailable;
 	}
 
 	@Override
-    public Integer getNextIndex() {
+	public Integer getNextIndex() {
 		return nextIndex;
 	}
 
 	@Override
-    public Integer getPrevIndex() {
+	public Integer getPrevIndex() {
 		return prevIndex;
 	}
 
 	@Override
-    public Integer getCurrentIndex() {
+	public Integer getCurrentIndex() {
 		return currentIndex;
 	}
 
 	@Override
-    public String getPageNumber(int index) {
+	public String getPageNumber(int index) {
 		return pageNumbers.get(index);
 	}
 
 	@Override
-    public List<Integer> getIndices() {
+	public List<Integer> getIndices() {
 		return indices;
 	}
 
 	@Override
-    public Integer getCount() {
+	public Integer getCount() {
 		return count;
 	}
 
 	@Override
-    public Integer getFirstRecord() {
+	public Integer getFirstRecord() {
 		return firstRecord;
 	}
 
 	@Override
-    public Integer getLastRecord() {
+	public Integer getLastRecord() {
 		return lastRecord;
 	}
 
 	@Override
-    public List<T> getRecords() {
+	public List<T> getRecords() {
 		return records;
 	}
 
 	@Override
-    public String getSuggestion() {
+	public String getSuggestion() {
 		return suggestion;
 	}
 
 	@Override
-    public Integer getPageSize() {
+	public Integer getPageSize() {
 		return pageSize;
 	}
 

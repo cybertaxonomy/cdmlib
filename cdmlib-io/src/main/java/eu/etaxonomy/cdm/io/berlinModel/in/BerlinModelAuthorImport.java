@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -117,7 +118,7 @@ public class BerlinModelAuthorImport extends BerlinModelImportBase {
 					String dates = rs.getString("dates");
 					if (dates != null){
 						dates.trim();
-						TimePeriod lifespan = TimePeriod.parseString(dates);
+						TimePeriod lifespan = TimePeriodParser.parseString(dates);
 						author.setLifespan(lifespan);
 					}
 					

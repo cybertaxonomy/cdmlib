@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.hibernate.dialect.DB2Dialect;
+import org.hibernate.dialect.Dialect;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
@@ -33,7 +36,7 @@ public class Db2DatabaseType extends DatabaseTypeBase {
     //port
     private int defaultPort = 50000;
     //hibernate dialect
-    private String hibernateDialect = "DB2Dialect";
+    private Dialect hibernateDialect = new DB2Dialect();
 
     private static String dbSeparator = "/";
     

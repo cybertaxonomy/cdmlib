@@ -419,7 +419,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 
 		Properties props = new Properties();
 		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
-		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
+		props.setProperty("hibernate.dialect", dbtype.getHibernateDialectCanonicalName());
 		props.setProperty("hibernate.cache.region.factory_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
 		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));

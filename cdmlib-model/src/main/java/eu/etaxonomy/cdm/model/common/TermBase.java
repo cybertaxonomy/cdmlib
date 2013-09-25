@@ -15,12 +15,15 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.persistence.Column;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlSeeAlso;
@@ -35,7 +38,6 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
 
-import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
@@ -43,12 +45,12 @@ import eu.etaxonomy.cdm.strategy.cache.common.TermDefaultCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TermBase", propOrder = {
     "uri",
+    "termType",
     "representations"
 })
 @XmlSeeAlso({
     DefinedTermBase.class,
-    TermVocabulary.class,
-    FeatureTree.class
+    TermVocabulary.class
 })
 @MappedSuperclass
 @Audited
@@ -61,6 +63,18 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     @Field(analyze = Analyze.NO)
     @Type(type="uriUserType")
     private URI uri;
+    
+	/**
+	 * The {@link TermType type} of this term. Needs to be the same type in a {@link DefinedTermBase defined term} 
+	 * and in it's {@link TermVocabulary vocabulary}.
+	 */
+	@XmlAttribute(name ="TermType")
+	@Column(name="termType")
+	@NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.common.TermType")}
+    )
+	private TermType termType;
 
     @XmlElementWrapper(name = "Representations")
     @XmlElement(name = "Representation")
@@ -69,19 +83,40 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 
-    public TermBase(){
+//******************* CONSTRUCTOR *************************************/    
+    
+    //for JAXB only, TODO needed?
+    @Deprecated
+    protected TermBase(){}
+    
+    protected TermBase(TermType type){
         super();
+        if (type == null){
+        	throw new IllegalArgumentException("TermType must not be null");
+        }else{
+        	this.termType = type;
+        }
         initCacheStrategy();
-
     }
+
+    protected TermBase(TermType type, String term, String label, String labelAbbrev) {
+        this(type);
+        this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
+    }
+
     private void initCacheStrategy() {
         this.cacheStrategy = new TermDefaultCacheStrategy<TermBase>();
     }
-    public TermBase(String term, String label, String labelAbbrev) {
-        super();
-        initCacheStrategy();
-        this.addRepresentation(new Representation(term, label, labelAbbrev, Language.DEFAULT()) );
-    }
+    
+//******************** GETTER /SETTER ********************************/
+    
+	public TermType getTermType() {
+		return termType;
+	}
+	public void setTermType(TermType termType) {
+		this.termType = termType;
+	}
+
 
     public Set<Representation> getRepresentations() {
         return this.representations;
@@ -90,7 +125,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
     public void addRepresentation(Representation representation) {
         this.representations.add(representation);
         // this is just a preliminary solution (see ticket #3148)
-        if(representation.language!=null && representation.language.equals(Language.DEFAULT())){
+        if(representation.language !=null && representation.language.equals(Language.DEFAULT())){
         	this.regenerateTitleCache();
         }
     }
@@ -270,10 +305,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
             result.representations.add((Representation)rep.clone());
         }
 
-
-
         return result;
-
     }
 
 }

@@ -52,12 +52,12 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -120,7 +120,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * move to termService
      */
     @Override
-    public WaterbodyOrCountry getCountryByIso(String iso639) {
+    public Country getCountryByIso(String iso639) {
         return this.definedTermDao.getCountryByIso(iso639);
 
     }
@@ -130,11 +130,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * move to termService
      */
     @Override
-    public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name) {
-        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(WaterbodyOrCountry.class, name, null, null, null, null, null, null) ;
-        List<WaterbodyOrCountry> countries = new ArrayList<WaterbodyOrCountry>();
+    public List<Country> getCountryByName(String name) {
+        List<? extends DefinedTermBase> terms = this.definedTermDao.findByTitle(Country.class, name, null, null, null, null, null, null) ;
+        List<Country> countries = new ArrayList<Country>();
         for (int i=0;i<terms.size();i++){
-            countries.add((WaterbodyOrCountry)terms.get(i));
+            countries.add((Country)terms.get(i));
         }
         return countries;
     }
@@ -197,21 +197,21 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache() {
-        return dao.getDerivedUnitBaseUuidAndTitleCache();
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache() {
+        return dao.getDerivedUnitUuidAndTitleCache();
     }
 
     @Override
-    public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache() {
-        return dao.getFieldObservationUuidAndTitleCache();
+    public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache() {
+        return dao.getFieldUnitUuidAndTitleCache();
     }
 
     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getDerivedUnitFacade(eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getDerivedUnitFacade(eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
      */
     @Override
-    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
-        derivedUnit = (DerivedUnitBase<?>)dao.load(derivedUnit.getUuid(), null);
+    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException {
+        derivedUnit = (DerivedUnit)dao.load(derivedUnit.getUuid(), null);
         DerivedUnitFacadeConfigurator config = DerivedUnitFacadeConfigurator.NewInstance();
         config.setThrowExceptionForNonSpecimenPreservationMethodRequest(false);
         DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(derivedUnit, config);
@@ -235,9 +235,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 tempIndividualsAssociation = (IndividualsAssociation)element;
                 if(tempIndividualsAssociation.getAssociatedSpecimenOrObservation() != null){
                     tempSpecimenOrObservationBase = HibernateProxyHelper.deproxy(tempIndividualsAssociation.getAssociatedSpecimenOrObservation(), SpecimenOrObservationBase.class);
-                    if(tempSpecimenOrObservationBase instanceof DerivedUnitBase){
+                    if(tempSpecimenOrObservationBase instanceof DerivedUnit){
                         try {
-                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance((DerivedUnitBase)tempSpecimenOrObservationBase));
+                            derivedUnitFacadeList.add(DerivedUnitFacade.NewInstance((DerivedUnit)tempSpecimenOrObservationBase));
                         } catch (DerivedUnitFacadeNotSupportedException e) {
                             logger.warn(tempIndividualsAssociation.getAssociatedSpecimenOrObservation().getTitleCache() + " : " +e.getMessage());
                         }
@@ -341,8 +341,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, FieldObservation.class);
-        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(FieldObservation.class);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, FieldUnit.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(FieldUnit.class);
 
         // --- criteria
         luceneSearch.setCdmTypRestriction(clazz);

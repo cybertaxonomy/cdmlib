@@ -18,12 +18,9 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
-import org.xml.sax.InputSource;
 
-import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.ext.common.SchemaAdapterBase;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -77,51 +74,51 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
             logger.error("No SchemaAdapter found for " + query.schemaShortName);
         }
 
-        addNewPairNN(pairs, "format", "xml");
-        addNewPairNN(pairs, "url_ver", urlVersion);
+        addNameValuePairTo(pairs, "format", "xml");
+        addNameValuePairTo(pairs, "url_ver", urlVersion);
         /* info:ofi/fmt:kev:mtx:book or info:ofi/fmt:kev:mtx:journal */
-        addNewPairNN(pairs, "rft_val_fmt", "info:ofi/fmt:kev:mtx:" + query.refType);
+        addNameValuePairTo(pairs, "rft_val_fmt", "info:ofi/fmt:kev:mtx:" + query.refType);
         /* Book title */
-        addNewPairNN(pairs, "rft.btitle", query.bookTitle);
+        addNameValuePairTo(pairs, "rft.btitle", query.bookTitle);
         /* Journal title */
-        addNewPairNN(pairs, "rft.jtitle", query.journalTitle);
+        addNameValuePairTo(pairs, "rft.jtitle", query.journalTitle);
         /* Author name ("last, first" or "corporation") */
-        addNewPairNN(pairs, "rft.au", query.authorName);
+        addNameValuePairTo(pairs, "rft.au", query.authorName);
         /* Author last name */
-        addNewPairNN(pairs, "rft.aulast", query.authorLastName);
+        addNameValuePairTo(pairs, "rft.aulast", query.authorLastName);
         /* Author first name */
-        addNewPairNN(pairs, "rft.aufirst", query.authorFirstName);
+        addNameValuePairTo(pairs, "rft.aufirst", query.authorFirstName);
         /* Author name (corporation) */
-        addNewPairNN(pairs, "rft.aucorp", query.authorNameCorporation);
+        addNameValuePairTo(pairs, "rft.aucorp", query.authorNameCorporation);
         /* Publication details */
-        addNewPairNN(pairs, "rft.publisher", query.publicationDetails);
+        addNameValuePairTo(pairs, "rft.publisher", query.publicationDetails);
         /* Publisher name */
-        addNewPairNN(pairs, "rft.pub", query.publisherName);
+        addNameValuePairTo(pairs, "rft.pub", query.publisherName);
         /* Publication place */
-        addNewPairNN(pairs, "rft.place", query.publicationPlace);
+        addNameValuePairTo(pairs, "rft.place", query.publicationPlace);
         /* Publication date (YYYY or YYYY-MM or YYYY-MM-DD) */
-        addNewPairNN(pairs, "rft.date", query.publicationDate);
+        addNameValuePairTo(pairs, "rft.date", query.publicationDate);
         /* ISSN */
-        addNewPairNN(pairs, "rft.issn", query.ISSN);
+        addNameValuePairTo(pairs, "rft.issn", query.ISSN);
         /* ISBN */
-        addNewPairNN(pairs, "rft.isbn", query.ISBN);
+        addNameValuePairTo(pairs, "rft.isbn", query.ISBN);
         /* CODEN */
-        addNewPairNN(pairs, "rft.coden", query.CODEN);
+        addNameValuePairTo(pairs, "rft.coden", query.CODEN);
         /* Abbreviation = abbreviated Title */
-        addNewPairNN(pairs, "rft.stitle", query.abbreviation);
+        addNameValuePairTo(pairs, "rft.stitle", query.abbreviation);
         /* Volume */
-        addNewPairNN(pairs, "rft.volume", query.volume);
+        addNameValuePairTo(pairs, "rft.volume", query.volume);
         /* Issue */
-        addNewPairNN(pairs, "rft.issue", query.issue);
+        addNameValuePairTo(pairs, "rft.issue", query.issue);
         /* Start page */
         if(query.startPage != null){
             Integer page = parsePageNumber(query.startPage);
-            addNewPairNN(pairs, "rft.spage", page.toString());
+            addNameValuePairTo(pairs, "rft.spage", page.toString());
         }
         /* BHL title ID (where XXXX is the ID value)*/
-        addNewPairNN(pairs, "rft_id" , query.bhlTitleURI);
+        addNameValuePairTo(pairs, "rft_id" , query.bhlTitleURI);
         /* BHL page ID (where XXXX is the ID value)*/
-        addNewPairNN(pairs, "rft_id", query.bhlPageURI);
+        addNameValuePairTo(pairs, "rft_id", query.bhlPageURI);
 
         /* OCLC number (where XXXX is the ID value)*/
         if(query.oclcNumber != null){
@@ -157,9 +154,6 @@ public class MobotOpenUrlServiceWrapper extends ServiceWrapperBase<OpenUrlRefere
             logger.error(e);
         } catch (URISyntaxException e) {
             // thrown by createUri
-            logger.error(e);
-        } catch (HttpException e) {
-            // thrown by executeHttpGet
             logger.error(e);
         }
 

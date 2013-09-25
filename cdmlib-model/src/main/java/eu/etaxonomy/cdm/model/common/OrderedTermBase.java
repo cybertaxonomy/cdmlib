@@ -20,7 +20,6 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -30,7 +29,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -39,7 +37,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 })
 @XmlSeeAlso({
 	RelationshipTermBase.class,
-	Modifier.class,
 	PresenceAbsenceTermBase.class,
 	State.class,
 	NamedArea.class,
@@ -69,13 +66,21 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
 	public int getOrderIndex() {
 		return orderIndex;
 	}
-		
-	public OrderedTermBase() {
-		super();
+
+// *********************** CONSTRUCTOR *************************/
+	
+	//for JAXB only, TODO needed?
+    @Deprecated
+    protected OrderedTermBase(){}
+	
+	protected OrderedTermBase(TermType type) {
+		super(type);
 	}
-	public OrderedTermBase(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	public OrderedTermBase(TermType type, String term, String label, String labelAbbrev) {
+		super(type, term, label, labelAbbrev);
 	}	
+	
+// **************************** METHODS ******************************/	
 	
 	/**
 	 * Compares this OrderedTermBase with the specified OrderedTermBase for

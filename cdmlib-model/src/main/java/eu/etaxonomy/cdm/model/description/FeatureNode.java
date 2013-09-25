@@ -22,8 +22,9 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
-import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -36,9 +37,9 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.IndexColumn;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 
 /**
@@ -51,7 +52,6 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
  * the node N1.
  * 
  * @author  m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
 @SuppressWarnings("serial")
@@ -60,15 +60,16 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 		"featureTree",
 		"feature",
 		"parent",
-		"children",
+		"treeIndex",
 		"sortIndex",
+		"children",
 		"onlyApplicableIf",
 		"inapplicableIf"
 })
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
-public class FeatureNode extends VersionableEntity implements Cloneable {
+public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureNode>, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	
     //This is the main key a node belongs to. Although other keys may also reference
@@ -77,7 +78,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE_ORPHAN}) //TODO this usage is incorrect, needed only for OneToMany, check why it is here, can it be removed??
 	 //TODO Val #3379
 //    @NotNull
 	private FeatureTree featureTree;
@@ -92,29 +93,25 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY, targetEntity=FeatureNode.class)
-//    @IndexColumn(name="sortIndex", base = 0)
     @Cascade(CascadeType.SAVE_UPDATE)
-	@JoinColumn(name="parent_id" /*, insertable=false, updatable=false, nullable=false*/)
+	@JoinColumn(name="parent_id")
 	private FeatureNode parent;
+    
+    
+    @XmlElement(name = "treeIndex")
+    @Size(max=255)
+    private String treeIndex;
     
     @XmlElementWrapper(name = "Children")
     @XmlElement(name = "Child")
-//    @OrderColumn("sortIndex")  //JPA 2.0 same as @IndexColumn
-    // @IndexColumn does not work because not every FeatureNode has a parent. But only NotNull will solve the problem (otherwise 
-    // we will need a join table 
-    // http://stackoverflow.com/questions/2956171/jpa-2-0-ordercolumn-annotation-in-hibernate-3-5
-    // http://docs.jboss.org/hibernate/stable/annotations/reference/en/html_single/#entity-hibspec-collection-extratype-indexbidir
-    //see also https://forum.hibernate.org/viewtopic.php?p=2392563
-    //http://opensource.atlassian.com/projects/hibernate/browse/HHH-4390
-    // reading works, but writing doesn't
-    //
-    @IndexColumn(name="sortIndex", base = 0) 
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    @OrderColumn(name="sortIndex") 
     @OrderBy("sortIndex")
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="parent")
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private List<FeatureNode> children = new ArrayList<FeatureNode>();
 
-    //see comment on children @IndexColumn
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex;
     
 	@XmlElementWrapper(name = "OnlyApplicableIf")
@@ -197,7 +194,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	/** 
 	 * Returns the feature node <i>this</i> feature node is a child of.
 	 * 
-	 * @see	#getChildren()
+	 * @see	#getChildNodes()
 	 */
 	public FeatureNode getParent() {
 		return parent;
@@ -220,7 +217,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	 * Returns the (ordered) list of feature nodes which are children nodes of
 	 * <i>this</i> feature node.
 	 */
-	public List<FeatureNode> getChildren() {
+	public List<FeatureNode> getChildNodes() {
 		return children;
 	}
 
@@ -230,7 +227,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	 * assign <i>this</i> feature node as the parent of the given child.
 	 * 
 	 * @param	child	the feature node to be added 
-	 * @see				#getChildren() 
+	 * @see				#getChildNodes() 
 	 * @see				#setChildren(List)
 	 * @see				#addChild(FeatureNode, int) 
 	 * @see				#removeChild(FeatureNode)
@@ -249,7 +246,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	 * @param	child	the feature node to be added 
 	 * @param	index	the integer indicating the position at which the child
 	 * 					should be added 
-	 * @see				#getChildren() 
+	 * @see				#getChildNodes() 
 	 * @see				#setChildren(List)
 	 * @see				#addChild(FeatureNode) 
 	 * @see				#removeChild(FeatureNode)
@@ -272,11 +269,11 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 		child.sortIndex = index;
 	}
 	/** 
-	 * Removes the given feature node from the list of {@link #getChildren() children}
+	 * Removes the given feature node from the list of {@link #getChildNodes() children}
 	 * of <i>this</i> feature node.
 	 *
 	 * @param  child	the feature node which should be removed
-	 * @see     		#getChildren()
+	 * @see     		#getChildNodes()
 	 * @see				#addChild(FeatureNode, int) 
 	 * @see				#addChild(FeatureNode) 
 	 * @see				#removeChild(int) 
@@ -289,12 +286,12 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	}
 	/** 
 	 * Removes the feature node placed at the given (index + 1) position from
-	 * the list of {@link #getChildren() children} of <i>this</i> feature node.
+	 * the list of {@link #getChildNodes() children} of <i>this</i> feature node.
 	 * If the given index is out of bounds no child will be removed. 
 	 *
 	 * @param  index	the integer indicating the position of the feature node to
 	 * 					be removed
-	 * @see     		#getChildren()
+	 * @see     		#getChildNodes()
 	 * @see				#addChild(FeatureNode, int) 
 	 * @see				#addChild(FeatureNode) 
 	 * @see				#removeChild(FeatureNode) 
@@ -315,11 +312,11 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 
 	/** 
 	 * Returns the feature node placed at the given (childIndex + 1) position
-	 * within the list of {@link #getChildren() children} of <i>this</i> feature node.
+	 * within the list of {@link #getChildNodes() children} of <i>this</i> feature node.
 	 * If the given index is out of bounds no child will be returned. 
 	 * 
 	 * @param  childIndex	the integer indicating the position of the feature node
-	 * @see     			#getChildren()
+	 * @see     			#getChildNodes()
 	 * @see					#addChild(FeatureNode, int) 
 	 * @see					#removeChild(int) 
 	 */
@@ -330,7 +327,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	/** 
 	 * Returns the number of children nodes of <i>this</i> feature node.
 	 * 
-	 * @see	#getChildren()
+	 * @see	#getChildNodes()
 	 */
 	@Transient
 	public int getChildCount() {
@@ -339,7 +336,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 
 	/** 
 	 * Returns the integer indicating the position of the given feature node
-	 * within the list of {@link #getChildren() children} of <i>this</i> feature node.
+	 * within the list of {@link #getChildNodes() children} of <i>this</i> feature node.
 	 * If the list does not contain this node then -1 will be returned. 
 	 * 
 	 * @param  node	the feature node the position of which is being searched
@@ -359,7 +356,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 	 * children (false) or not (true). A node without children is at the
 	 * bottommost level of a tree and is called a leaf.
 	 * 
-	 * @see	#getChildren()
+	 * @see	#getChildNodes()
 	 * @see	#getChildCount()
 	 */
 	@Transient
@@ -513,7 +510,7 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 		
 		features.add(feature);
 		
-		for(FeatureNode childNode : this.getChildren()){
+		for(FeatureNode childNode : this.getChildNodes()){
 			features.addAll(childNode.getDistinctFeaturesRecursive(features));
 		}
 		
@@ -524,9 +521,9 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 		FeatureNode clone = (FeatureNode)this.clone();
 		FeatureNode childClone;
 				
-		for(FeatureNode childNode : this.getChildren()){
+		for(FeatureNode childNode : this.getChildNodes()){
 			childClone = (FeatureNode) childNode.clone();
-			for (FeatureNode childChild:childNode.getChildren()){
+			for (FeatureNode childChild:childNode.getChildNodes()){
 				childClone.addChild(childChild.cloneDescendants());
 			}
 			clone.addChild(childClone);
@@ -562,6 +559,26 @@ public class FeatureNode extends VersionableEntity implements Cloneable {
 		
 		
 		
+	}
+
+// ********************** TREE NODE METHODS ******************************/
+	
+	@Override
+	public String treeIndex() {
+		return this.treeIndex;
+	}
+
+	@Override
+	@Deprecated 
+	public void setTreeIndex(String newTreeIndex) {
+		this.treeIndex = newTreeIndex;
+	}
+
+
+	@Override
+	@Deprecated
+	public int treeId() {
+		return this.featureTree.getId();
 	}
 
 	

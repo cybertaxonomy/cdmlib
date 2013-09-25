@@ -17,6 +17,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -24,7 +25,6 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -117,7 +117,7 @@ public class GbifDistributionCsv2CdmConverter extends PartitionableConverterBase
 		List<NamedArea> result = state.get(namespace, locationId, NamedArea.class);
 		if (result.isEmpty()){
 			//try to find in cdm
-			NamedArea newArea = TdwgArea.getAreaByTdwgAbbreviation(locationId);
+			NamedArea newArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(locationId);
 			if (newArea == null){
 //				state.getCurrentIO().getTermService().findByAreaCode
 			}

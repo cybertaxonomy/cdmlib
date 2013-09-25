@@ -2,7 +2,6 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.statistics;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -18,9 +17,6 @@ import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -157,7 +153,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// // 1. via determinations
 	// queryStrings
 	// .add("select distinct des.citation.id from DescriptionBase db, TaxonNode tn "
-	// + "join db.describedSpecimenOrObservations as so "
+	// + "join db.describedSpecimenOrObservation as so "
 	// + "join so.determinations as det "
 	// + "join db.descriptionElements as de "
 	// + "join de.sources as des "
@@ -256,7 +252,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// 1. via determinations
 		queryStrings.add("select distinct " + selection
 				+ "from DescriptionBase d, TaxonNode tn "
-				+ "join d.describedSpecimenOrObservations as so "
+				+ "join d.describedSpecimenOrObservation as so "
 				+ "join so.determinations as det " + sourceRefJoins
 				+ "where tn.classification=:classification "
 				+ "and tn.taxon=det.taxon " + sourceRefWhere);
@@ -571,22 +567,22 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// which has a citation
 
 		queryStrings
-				.add("select distinct cit.id, seq.publishedIn.id from TaxonNode tn "
+				.add("select distinct cit.id " +
+						" from TaxonNode tn "
 						+ "join tn.taxon.descriptions as db "
 
-						+ "join db.describedSpecimenOrObservations as so "
+						+ "join db.describedSpecimenOrObservation as so "
 						+ "join so.sequences as seq "
 						+ "join seq.citations as cit "
 
 						+ "where so.class=:dnaSample "
 						+ "and tn.classification=:classification "
-						+ "and cit is not null "
-						+ "and seq.publishedIn is not null ");
+						+ "and cit is not null ");
 
 		// traverse to specimenOrObservation via individualsAssociation
 
 		queryStrings
-				.add("select distinct cit.id, seq.publishedIn.id from TaxonNode tn "
+				.add("select distinct cit.id from TaxonNode tn "
 						+ "join tn.taxon.descriptions as db "
 						+ "join db.descriptionElements as ia "
 						+ "join ia.associatedSpecimenOrObservation as so "
@@ -596,8 +592,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 						+ "where so.class=:dnaSample "
 						+ "and ia.class=:individualsAssociation "
 						+ "and tn.classification=:classification "
-						+ "and cit is not null "
-						+ "and seq.publishedIn is not null ");
+						+ "and cit is not null ");
 
 		// we do assume, that a name description would not have a
 		// SpecimenOrObservation element
@@ -606,158 +601,166 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		parameters.put("dnaSample", "DnaSample");
 		parameters.put("individualsAssociation", "IndividualsAssociation");
 
-		// media
-		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
-				+ "join tn.taxon.descriptions as db "
-				+ "join db.describedSpecimenOrObservations as so "
-				+ "join so.sequences as seq " + "join seq.chromatograms as me "
+// TODO v3.3, preliminary removed for adaptation to model v3.3		
+//		// media
+//		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
+//				+ "join tn.taxon.descriptions as db "
+//				+ "join db.describedSpecimenOrObservation as so "
+//				+ "join so.sequences as seq "
+//				+ "join seq.chromatograms as me "
+//
+//				+ "where so.class=:dnaSample "
+//				+ "and me.class=:referencedMediaBase "
+//				+ "and tn.classification=:classification "
+//
+//				+ "and me.citation is not null ");
+//
+//		// traverse to specimenOrObservation via individualsAssociation
+//
+//		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
+//				+ "join tn.taxon.descriptions as db "
+//				+ "join db.descriptionElements as ia "
+//				+ "join ia.associatedSpecimenOrObservation as so "
+//				+ "join so.sequences as seq " 
+//				+ "join seq.chromatograms as me "
+//				+ "where so.class=:dnaSample "
+//				+ "and ia.class=:individualsAssociation "
+//				+ "and me.class=:referencedMediaBase "
+//				+ "and tn.classification=:classification "
+//
+//				+ "and me.citation is not null ");
 
-				+ "where so.class=:dnaSample "
-				+ "and me.class=:referencedMediaBase "
-				+ "and tn.classification=:classification "
-
-				+ "and me.citation is not null ");
-
-		// traverse to specimenOrObservation via individualsAssociation
-
-		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
-				+ "join tn.taxon.descriptions as db "
-				+ "join db.descriptionElements as ia "
-				+ "join ia.associatedSpecimenOrObservation as so "
-				+ "join so.sequences as seq " + "join seq.chromatograms as me "
-				+ "where so.class=:dnaSample "
-				+ "and ia.class=:individualsAssociation "
-				+ "and me.class=:referencedMediaBase "
-				+ "and tn.classification=:classification "
-
-				+ "and me.citation is not null ");
-
-		// via media via name description
-		// Taxa:
-		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
-				+ "join tn.taxon.name.descriptions as d "
-				+ "join d.descriptionElements as de " + "join de.media as me "
-				+ "where tn.classification=:classification "
-				+ "and tn.taxon.name is not null "
-				+ "and me.class=:referencedMediaBase "
-				+ "and me.citation is not null " + "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null ");
-
-		// synonyms:
-		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
-				+ "join tn.taxon.synonymRelations as syr "
-				+ "join syr.relatedFrom as sy "
-				+ "join sy.name.descriptions as d "
-				+ "join d.descriptionElements as de " + "join de.media as me "
-				+ "where tn.classification=:classification "
-				+ "and sy.name is not null "
-				+ "and me.class=:referencedMediaBase "
-				+ "and me.citation is not null " + "and tn.taxon is not null "
-				+ "and tn.taxon.name is not null ");
-
-		// get all "Media" from everywhere because it could be
-		// of the subtype "ReferencedMediaBase"
-		// which has a citation
-
-		// TODO do we need the media from DefinedTermBase???
-		// what can be a Feature!
-
-		// from description element
-		queryStrings.add("select distinct me.citation.id from TaxonNode as tn "
-				+ "join tn.taxon.descriptions as d "
-				+ "join d.descriptionElements as de " + "join de.media as me "
-				+ "where tn.classification=:classification "
-				+ "and me.class=:referencedMediaBase "
-				+ "and me.citation is not null ");
-
-		// via NamedArea that has 2 media parameter
-		// and a waterbodyOrContinet that has media parameter and has continent
-		// parameter
-		// which also has media parameter:
-
-		// from CommonTaxonName or Distribution
-		queryStrings
-				.add("select distinct de.area.shape.citation.id, me1.citation.id, "
-						+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
-						+ "join tn.taxon.descriptions as d "
-						+ "join d.descriptionElements as de "
-						+ "join de.area.media as me1 "
-						+ "join de.area.waterbodiesOrCountries as wboc "
-						+ "join wboc.media as me2 "
-						+ "join wboc.continents as co "
-						+ "join co.media as me3 "
-						+ "where tn.classification=:classification "
-						+ "and (de.class=:commonTaxonName or de.class=:distribution) "
-						+ "and me1.class=:referencedMediaBase "
-						+ "and me1.citation is not null "
-						+ "and me2.class=:referencedMediaBase "
-						+ "and me2.citation is not null "
-						+ "and me3.class=:referencedMediaBase "
-						+ "and me3.citation is not null "
-						+ "and de.area.shape.class=:referencedMediaBase "
-						+ "and de.area is not null "
-						+ "and de.area.shape is not null ");
-
-		parameters.put("commonTaxonName", "CommonTaxonName");
-		parameters.put("distribution", "Distribution");
-
-		// from TaxonDescription:
-		queryStrings
-				.add("select distinct na.shape.citation.id, me1.citation.id, "
-						+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
-						+ "join tn.taxon.descriptions as d "
-						+ "join d.geoScopes as na " + "join na.media as me1 "
-						+ "join na.waterbodiesOrCountries as wboc "
-						+ "join wboc.media as me2 "
-						+ "join wboc.continents as co "
-						+ "join co.media as me3 "
-						+ "where tn.classification=:classification "
-						+ "and me1.class=:referencedMediaBase "
-						+ "and me1.citation is not null "
-						+ "and me2.class=:referencedMediaBase "
-						+ "and me2.citation is not null "
-						+ "and me3.class=:referencedMediaBase "
-						+ "and me3.citation is not null "
-						+ "and na.shape.class=:referencedMediaBase "
-						+ "and na.shape is not null ");
-
-		// from gathering event
-		queryStrings
-				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id from TaxonNode tn "
-						+ "join tn.taxon.descriptions as db "
-						+ "join db.describedSpecimenOrObservations as fo "
-						+ "join fo.gatheringEvent.collectingAreas as ca "
-						+ "where fo.class=:fieldObservation "
-						+ "and fo.gatheringEvent is not null "
-						+ "and fo.gatheringEvent.country is not null "
-						+ "and fo.gatheringEvent.country.shape is not null "
-						+ "and ca.shape is not null "
-						+ "and ca.shape.class=:referencedMediaBase "
-						+ "and ca.shape.citation is not null "
-						+ "and fo.gatheringEvent.country.shape.class=:referencedMediaBase "
-						+ " and fo.gatheringEvent.country.shape.citation is not null "
-						+ "and tn.classification=:classification ");
-
-		// traverse to specimenOrObservation via individualsAssociation
-
-		queryStrings
-				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id "
-						+ "from TaxonNode tn "
-						+ "join tn.taxon.descriptions as db "
-						+ "join db.descriptionElements as ia "
-						+ "join ia.associatedSpecimenOrObservation as fo "
-						+ "join fo.gatheringEvent.collectingAreas as ca "
-						+ "where fo.class=:fieldObservation "
-						+ "and fo.gatheringEvent is not null "
-						+ "and fo.gatheringEvent.country is not null "
-						+ "and fo.gatheringEvent.country.shape is not null "
-						+ "and ca.shape is not null "
-						+ "and ca.shape.class=:referencedMediaBase "
-						+ "and ca.shape.citation is not null "
-						+ "and fo.gatheringEvent.country.shape.class=:referencedMediaBase "
-						+ " and fo.gatheringEvent.country.shape.citation is not null "
-						+ "and ia.class=:individualsAssociation "
-						+ "and tn.classification=:classification ");
+// TODO v3.3, preliminary  removed for adaptation to model v3.3, Media.citation does not exist anymore, use OriginalSource instead	
+//		// via media via name description
+//		// Taxa:
+//		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
+//				+ "join tn.taxon.name.descriptions as d "
+//				+ "join d.descriptionElements as de "
+//				+ "join de.media as me "
+//				+ "where tn.classification=:classification "
+//				+ "and tn.taxon.name is not null "
+//				+ "and me.class=:referencedMediaBase "
+//				+ "and me.citation is not null " + "and tn.taxon is not null "
+//				+ "and tn.taxon.name is not null ");
+//
+//		// synonyms:
+//		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
+//				+ "join tn.taxon.synonymRelations as syr "
+//				+ "join syr.relatedFrom as sy "
+//				+ "join sy.name.descriptions as d "
+//				+ "join d.descriptionElements as de "
+//				+ "join de.media as me "
+//				+ "where tn.classification=:classification "
+//				+ "and sy.name is not null "
+//				+ "and me.class=:referencedMediaBase "
+//				+ "and me.citation is not null " + "and tn.taxon is not null "
+//				+ "and tn.taxon.name is not null ");
+//
+//		// get all "Media" from everywhere because it could be
+//		// of the subtype "ReferencedMediaBase"
+//		// which has a citation
+//
+//		// TODO do we need the media from DefinedTermBase???
+//		// what can be a Feature!
+//
+//		// from description element
+//		queryStrings.add("select distinct me.citation.id from TaxonNode as tn "
+//				+ "join tn.taxon.descriptions as d "
+//				+ "join d.descriptionElements as de " 
+//				+ "join de.media as me "
+//				+ "where tn.classification=:classification "
+//				+ "and me.class=:referencedMediaBase "
+//				+ "and me.citation is not null ");
+//
+//		// via NamedArea that has 2 media parameter
+//		// and a waterbodyOrContinet that has media parameter and has continent
+//		// parameter
+//		// which also has media parameter:
+//
+//		// from CommonTaxonName or Distribution
+//		queryStrings
+//				.add("select distinct de.area.shape.citation.id, me1.citation.id, "
+//						+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
+//						+ "join tn.taxon.descriptions as d "
+//						+ "join d.descriptionElements as de "
+//						+ "join de.area.media as me1 "
+//						+ "join de.area.waterbodiesOrCountries as wboc "
+//						+ "join wboc.media as me2 "
+//						+ "join wboc.continents as co "
+//						+ "join co.media as me3 "
+//						+ "where tn.classification=:classification "
+//						+ "and (de.class=:commonTaxonName or de.class=:distribution) "
+//						+ "and me1.class=:referencedMediaBase "
+//						+ "and me1.citation is not null "
+//						+ "and me2.class=:referencedMediaBase "
+//						+ "and me2.citation is not null "
+//						+ "and me3.class=:referencedMediaBase "
+//						+ "and me3.citation is not null "
+//						+ "and de.area.shape.class=:referencedMediaBase "
+//						+ "and de.area is not null "
+//						+ "and de.area.shape is not null ");
+//
+//		parameters.put("commonTaxonName", "CommonTaxonName");
+//		parameters.put("distribution", "Distribution");
+//
+//		// from TaxonDescription:
+//		queryStrings
+//				.add("select distinct na.shape.citation.id, me1.citation.id, "
+//						+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
+//						+ "join tn.taxon.descriptions as d "
+//						+ "join d.geoScopes as na " + "join na.media as me1 "
+//						+ "join na.waterbodiesOrCountries as wboc "
+//						+ "join wboc.media as me2 "
+//						+ "join wboc.continents as co "
+//						+ "join co.media as me3 "
+//						+ "where tn.classification=:classification "
+//						+ "and me1.class=:referencedMediaBase "
+//						+ "and me1.citation is not null "
+//						+ "and me2.class=:referencedMediaBase "
+//						+ "and me2.citation is not null "
+//						+ "and me3.class=:referencedMediaBase "
+//						+ "and me3.citation is not null "
+//						+ "and na.shape.class=:referencedMediaBase "
+//						+ "and na.shape is not null ");
+//
+//		// from gathering event
+//		queryStrings
+//				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id " +
+//						" from TaxonNode tn "
+//						+ "join tn.taxon.descriptions as db "
+//						+ "join db.describedSpecimenOrObservation as fo "
+//						+ "join fo.gatheringEvent.collectingAreas as ca "
+//						+ "where fo.class=:fieldObservation "
+//						+ "and fo.gatheringEvent is not null "
+//						+ "and fo.gatheringEvent.country is not null "
+//						+ "and fo.gatheringEvent.country.shape is not null "
+//						+ "and ca.shape is not null "
+//						+ "and ca.shape.class=:referencedMediaBase "
+//						+ "and ca.shape.citation is not null "
+//						+ "and fo.gatheringEvent.country.shape.class=:referencedMediaBase "
+//						+ " and fo.gatheringEvent.country.shape.citation is not null "
+//						+ "and tn.classification=:classification ");
+//
+//		// traverse to specimenOrObservation via individualsAssociation
+//
+//		queryStrings
+//				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id "
+//						+ "from TaxonNode tn "
+//						+ "join tn.taxon.descriptions as db "
+//						+ "join db.descriptionElements as ia "
+//						+ "join ia.associatedSpecimenOrObservation as fo "
+//						+ "join fo.gatheringEvent.collectingAreas as ca "
+//						+ "where fo.class=:fieldObservation "
+//						+ "and fo.gatheringEvent is not null "
+//						+ "and fo.gatheringEvent.country is not null "
+//						+ "and fo.gatheringEvent.country.shape is not null "
+//						+ "and ca.shape is not null "
+//						+ "and ca.shape.class=:referencedMediaBase "
+//						+ "and ca.shape.citation is not null "
+//						+ "and fo.gatheringEvent.country.shape.class=:referencedMediaBase "
+//						+ " and fo.gatheringEvent.country.shape.citation is not null "
+//						+ "and ia.class=:individualsAssociation "
+//						+ "and tn.classification=:classification ");
 
 		parameters.put("fieldObservation", "FieldObservation");
 		parameters.put("referencedMediaBase", "ReferencedMediaBase");
@@ -791,8 +794,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		// which inherits from ReferencedEntityBase
 		// which has a citation
 
-		ids.addAll(processQueriesWithIdDistinctListResult(queryStrings,
-				parameters));
+		ids.addAll(processQueriesWithIdDistinctListResult(queryStrings,	parameters));
 
 		// TODO get sources of all references from ids and add the references of
 		// the sources...

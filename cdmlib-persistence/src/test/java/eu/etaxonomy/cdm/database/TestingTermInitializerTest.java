@@ -16,7 +16,6 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.util.UUID;
 
-import org.aspectj.weaver.IEclipseSourceContext;
 import org.dbunit.dataset.filter.ExcludeTableFilter;
 import org.junit.Before;
 import org.junit.Test;

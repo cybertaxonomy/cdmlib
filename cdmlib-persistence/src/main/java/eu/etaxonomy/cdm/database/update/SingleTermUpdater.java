@@ -17,7 +17,10 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 
 /**
  * Creates a new term if a term with the same given uuid does not exist yet
@@ -29,9 +32,18 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermUpdater.class);
 	
+	/**
+	 * @Deprecated use {@link #NewInstance(String, TermType, UUID, String, String, String, String, UUID, UUID, boolean, UUID)} instead
+	 */
+	@Deprecated
 	public static final SingleTermUpdater NewInstance(String stepName, UUID uuidTerm, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
-		return new SingleTermUpdater(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
+		return new SingleTermUpdater(stepName, null, uuidTerm, null, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
 	}
+
+	public static final SingleTermUpdater NewInstance(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String description,  String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm){
+		return new SingleTermUpdater(stepName, termType, uuidTerm, idInVocabulary, description, label, abbrev, dtype, uuidVocabulary, uuidLanguage, isOrdered, uuidAfterTerm);	
+	}
+
 	
 	private UUID uuidTerm ;
 	private String description;
@@ -45,11 +57,18 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	private String reverseDescription;
 	private String reverseLabel;
 	private String reverseAbbrev;
+	private RankClass rankClass;
+	private TermType termType;
+	private String idInVocabulary;
+	private boolean symmetric = false;
+	private boolean transitive = false;
 	
 	
 
-	private SingleTermUpdater(String stepName, UUID uuidTerm, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
+	private SingleTermUpdater(String stepName, TermType termType, UUID uuidTerm, String idInVocabulary, String description, String label, String abbrev, String dtype, UUID uuidVocabulary, UUID uuidLanguage, boolean isOrdered, UUID uuidAfterTerm) {
 		super(stepName);
+		this.termType = termType;
+		this.idInVocabulary = idInVocabulary;
 		this.abbrev = abbrev;
 		this.description = description;
 		this.dtype = dtype;
@@ -61,17 +80,13 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		this.uuidLanguage = uuidLanguage;
 	}
 
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.monitor.IProgressMonitor)
-	 */
+	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
  		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
 		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
 		if (n != 0){
 			monitor.warning("Term already exists: " + label + "(" + uuidTerm + ")");
-			return null;
+			return -1;
 		}
 		
 		//vocabulary id
@@ -98,7 +113,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 		
 		String id = Integer.toString(termId);
-		String created = "2010-09-16 10:15:00";
+		String created = getNowString();
 		String defaultColor = "null";
 		String protectedTitleCache = getBoolean(false, datasource);
 		String orderIndex;
@@ -108,11 +123,14 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 			orderIndex = "null";
 		}
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
-		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
-				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
+		String idInVocStr = idInVocabulary == null ? "NULL" : "'" + idInVocabulary + "'";
+		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, termtype, idInVocabulary, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
+				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', '" + termType.getKey() + "', " + idInVocStr +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
 		datasource.executeUpdate(sqlInsertTerm);
 		
 		updateFeatureTerms(termId, datasource, monitor);
+		updateRelationshipTerms(termId, datasource, monitor);
+		updateRanks(termId, datasource, monitor);
 		
 //
 //		INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id) 
@@ -163,12 +181,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 					" VALUES ("+ termId +"," +reverseRepId+ " )";		
 			
 			datasource.executeUpdate(sqlReverseInsertMN);
-		}
-				
+		}			
 		
 		return termId;
 	}
-
 
 	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		if (dtype.equals(Feature.class.getSimpleName())){
@@ -185,6 +201,29 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 	}
 
+	private void updateRelationshipTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		if (dtype.contains("Relationship")){
+			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
+				" symmetrical = " + getBoolean(symmetric, datasource) + ", " + 
+				" transitive = " + getBoolean(transitive, datasource) + " " + 
+				" WHERE id = " + termId;
+			datasource.executeUpdate(sqlUpdate);
+		}
+	}
+	
+	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+		if (dtype.equals(Rank.class.getSimpleName())){
+			String sqlUpdate = "UPDATE DefinedTermBase  " + 
+				" SET rankClass = '" + rankClass.getKey() + "'" +  
+				" WHERE id = " + termId;
+			datasource.executeUpdate(sqlUpdate);
+		}
+	}
+	
+	public SingleTermUpdater setRankClass(RankClass rankClass) {
+		this.rankClass = rankClass;
+		return this;
+	}
 
 
 
@@ -211,7 +250,6 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}else{
 			String warning = "The previous term has not been found in vocabulary. Put term to the end";
 			monitor.warning(warning);
-			return "null";
 		}
 		if (intOrderIndex == null){
 			String sqlMaxOrderIndex = " SELECT max(orderindex) FROM DefinedTermBase WHERE vocabulary_id = " + vocId + "";
@@ -221,18 +259,11 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 			}else{
 				String warning = "No term was found in vocabulary or vocabulary does not exist. Use order index '0'.";
 				monitor.warning(warning);
-				return "0";
+				intOrderIndex =0;
 			}
 		}
 		
 		return intOrderIndex.toString();
-//			-- absence term max orderindex
-//			SELECT (@maxAbsenceOrderIndex := max(orderindex)) AS b FROM DefinedTermBase WHERE DTYPE = 'AbsenceTerm';
-//
-//			-- native reported in error
-//			SELECT (@presenceOrderIndex := orderindex) AS a FROM DefinedTermBase WHERE uuid = '4ba212ef-041e-418d-9d43-2ebb191b61d8';
-//			UPDATE DefinedTermBase SET uuid = '61cee840-801e-41d8-bead-015ad866c2f1', DTYPE = 'AbsenceTerm', vocabulary_id = 18, orderindex = @maxAbsenceOrderIndex + 1 WHERE uuid = '4ba212ef-041e-418d-9d43-2ebb191b61d8';
-//			UPDATE DefinedTermBase SET orderindex = orderindex -1 WHERE DTYPE = 'PresenceTerm' AND orderindex > @presenceOrderIndex ;
 	}
 
 	
@@ -246,6 +277,11 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		this.reverseAbbrev = reverseAbbrev;
 		return this;
 	}
-
+	
+	public SingleTermUpdater setSymmetricTransitiv(boolean symmetric, boolean transitive){
+		this.symmetric = symmetric;
+		this.transitive = transitive;
+		return this;
+	}
 
 }

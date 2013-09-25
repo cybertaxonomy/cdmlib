@@ -27,7 +27,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -89,8 +89,8 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
         List<String> initStrategy = DEFAULT_INIT_STRATEGY;
 
         SpecimenOrObservationBase sob = getCdmBaseInstance(uuid, response, initStrategy);
-        if(sob instanceof DerivedUnitBase){
-            DerivationEvent derivationEvent = ((DerivedUnitBase)sob).getDerivedFrom();
+        if(sob instanceof DerivedUnit){
+            DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
             mv.addObject(derivationEvent);
         }
         return mv;

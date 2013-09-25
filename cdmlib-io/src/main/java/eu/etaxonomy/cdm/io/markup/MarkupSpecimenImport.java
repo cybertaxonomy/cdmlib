@@ -23,7 +23,6 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -34,18 +33,19 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser;
 import eu.etaxonomy.cdm.strategy.parser.SpecimenTypeParser.TypeInfo;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -122,7 +122,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			firstName = CdmBase.deproxy(names.iterator().next(),NonViralName.class);
 		}
 
-		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		String text = "";
 		String collectionAndType = "";
 		// elements
@@ -188,9 +188,9 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			Collection collection = createCollection(typeInfo.collectionString);
 
 			// TODO improve cache strategy handling
-			DerivedUnitBase typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
+			DerivedUnit typeSpecimen = facade.addDuplicate(collection, null, null, null, null);
 			typeSpecimen.setCacheStrategy(new DerivedUnitFacadeCacheStrategy());
-			name.addSpecimenTypeDesignation((Specimen) typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
+			name.addSpecimenTypeDesignation(typeSpecimen, typeStatus, null, null, null, false, addToAllNamesInGroup);
 		}
 	}
 	
@@ -305,7 +305,7 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 				return result;
 			} else if (isStartingElement(next, FULL_DATE)) {
 				String fullDate = getCData(state, reader, next, true);
-				result = TimePeriod.parseString(fullDate);
+				result = TimePeriodParser.parseString(fullDate);
 				if (result.getFreeText() != null){
 					fireWarningEvent(String.format(parseMessage, FULL_DATE, fullDate), parent, 1);
 				}
@@ -445,14 +445,14 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 			} else if (isStartingElement(next, BR) || isEndingElement(next, BR)) {
 				//do nothing
 			} else if (isStartingElement(next, GATHERING)) {
-				DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit.DerivedUnit);
+				DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.DerivedUnit);
 				addCurrentAreas(state, next, facade);
 				handleGathering(state, reader, next, facade);
 				SpecimenOrObservationBase<?> specimen;
 				if (facade.innerDerivedUnit() != null){
 					specimen = facade.innerDerivedUnit();
 				}else{
-					specimen = facade.innerFieldObservation();
+					specimen = facade.innerFieldUnit();
 				}
 				IndividualsAssociation individualsAssociation = IndividualsAssociation.NewInstance();
 				individualsAssociation.setAssociatedSpecimenOrObservation(specimen);
@@ -479,7 +479,7 @@ private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUni
 		for (NamedArea area : state.getCurrentAreas()){
 			if (area == null){
 				continue;
-			}else if (area.isInstanceOf(WaterbodyOrCountry.class)){
+			}else if (area.isInstanceOf(Country.class)){
 				facade.setCountry(area);
 			}else{
 				String message = "Current area %s is not country. This is not expected for currently known data.";
@@ -529,11 +529,11 @@ private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUni
 				//gabon specific
 				if (text.contains("gabonais ")){
 					text = text.replace("gabonais ", "");
-					state.addCurrentArea(WaterbodyOrCountry.GABONGABONESEREPUBLIC());
+					state.addCurrentArea(Country.GABONGABONESEREPUBLIC());
 				}
 				if (text.contains(" pour le Gabon")){
 					text = text.replace(" pour le Gabon", "");
-					state.addCurrentArea(WaterbodyOrCountry.GABONGABONESEREPUBLIC());
+					state.addCurrentArea(Country.GABONGABONESEREPUBLIC());
 				}
 				
 				//update feature
@@ -562,12 +562,12 @@ private void addCurrentAreas(MarkupImportState state, XMLEvent event, DerivedUni
 
 
 	public String handleInLineGathering(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException {
-		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.DerivedUnit.FieldObservation);
+		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit);
 		handleGathering(state, reader, parentEvent, facade);
-		SpecimenOrObservationBase<?> specimen  = facade.innerFieldObservation();
+		SpecimenOrObservationBase<?> specimen  = facade.innerFieldUnit();
 		if (specimen == null){
 			specimen = facade.innerDerivedUnit();
-			String message = "Inline gaterhing has no field observation";
+			String message = "Inline gaterhing has no field unit";
 			fireWarningEvent(message, parentEvent, 2);
 		}
 		

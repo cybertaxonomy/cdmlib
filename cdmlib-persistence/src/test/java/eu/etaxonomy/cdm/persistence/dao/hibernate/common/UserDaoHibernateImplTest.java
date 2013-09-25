@@ -30,6 +30,7 @@ public class UserDaoHibernateImplTest extends CdmIntegrationTest {
 	
 	@SpringBeanByType
 	IUserDao userDao;
+ 
 	
 	@Test
 	public void testFindUserByUsername() {
@@ -56,9 +57,6 @@ public class UserDaoHibernateImplTest extends CdmIntegrationTest {
 		pageSize = 2;
 		list = userDao.findByUsername(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
 		assertNotNull("A list should be returned", list);
-		assertEquals("2 users should be returned", 2, list.size());
-
-		
+		assertEquals("2 users should be returned", 2, list.size());	
 	}
-
 }

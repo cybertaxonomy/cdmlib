@@ -30,13 +30,12 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 29.01.2009
- * @version 1.0
  */
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
@@ -55,7 +54,6 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	private IImportConfigurator configurator;
 	private IImportConfigurator configurator2;
-	private IImportConfigurator configurator3;
 
 	@Before
 	public void setUp() {
@@ -117,7 +115,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         boolean result = defaultImport.invoke(configurator2);
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
+        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnit.class));
 //        try {
 //            writeDbUnitDataSetFile(new String[] {
 //                    "TAXONBASE", "TAXONNAMEBASE",
@@ -146,6 +144,8 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //            e.printStackTrace();
 //        }
 
+		assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+		assertEquals("Number of specimen is incorrect", 10, occurrenceService.count(DerivedUnit.class));
 
     }
 }

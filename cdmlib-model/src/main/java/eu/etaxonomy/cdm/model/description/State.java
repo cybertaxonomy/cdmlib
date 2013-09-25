@@ -26,6 +26,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -50,13 +51,13 @@ public class State extends OrderedTermBase<State> {
 
 	protected static Map<UUID, State> termMap = null;	
 	
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty state.
-	 * 
-	 * @see #State(String, String, String)
-	 */
-	public State() {
+	
+//********************************** Constructor *******************************************************************/	
+
+	//for hibernate use only
+	@Deprecated
+	protected State() {
+		super(TermType.State);
 	}
 
 	/** 
@@ -70,8 +71,8 @@ public class State extends OrderedTermBase<State> {
 	 * 						 new state to be created
 	 * @see 				 #State()
 	 */
-	public State(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	private State(String term, String label, String labelAbbrev) {
+		super(TermType.State, term, label, labelAbbrev);
 	}
 	
 	//********* METHODS **************************************/

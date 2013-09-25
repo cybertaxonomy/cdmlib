@@ -65,12 +65,12 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 	
 
 	@Override
-	protected String getNomRefTitleWithoutYearAndAuthor(T genericReference){
+	protected String getTitleWithoutYearAndAuthor(T genericReference, boolean isAbbrev){
 		if (genericReference == null){
 			return null;
 		}
 		//TODO
-		String titelAbbrev = CdmUtils.Nz(genericReference.getTitle()).trim();
+		String titel = CdmUtils.getPreferredNonEmptyString(genericReference.getTitle(), genericReference.getAbbrevTitle(), isAbbrev, true);
 		String edition = CdmUtils.Nz(genericReference.getEdition());
 		//TODO
 		String series = CdmUtils.Nz(genericReference.getSeries()).trim(); //nomenclaturalReference.getSeries();
@@ -81,10 +81,10 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 		Integer len;
 		String lastChar ="";
 		String character =".";
-		len = titelAbbrev.length();
-		if (len > 0){lastChar = titelAbbrev.substring(len-1, len);}
+		len = titel.length();
+		if (len > 0){lastChar = titel.substring(len-1, len);}
 		//lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
-		lastCharIsDouble = titelAbbrev.equals(character);
+		lastCharIsDouble = titel.equals(character);
 
 //		if(lastCharIsDouble  && edition.length() == 0 && series.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
 //			titelAbbrev =  titelAbbrev.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
@@ -93,9 +93,9 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 		
 		boolean needsComma = false;
 		//titelAbbrev
-		if (!"".equals(titelAbbrev) ){
+		if (titel.length() > 0 ){
 			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
-			nomRefCache = titelAbbrev + postfix; 
+			nomRefCache = titel + postfix; 
 		}
 		//edition
 		String editionPart = "";
@@ -138,8 +138,6 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 		while (nomRefCache.endsWith(".")){
 			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
 		}
-		
-		
 		
 
 		

@@ -22,6 +22,7 @@ import javax.persistence.InheritanceType;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -41,9 +42,13 @@ import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Analyze;
 import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.hibernate.search.annotations.IndexedEmbedded;
 import org.hibernate.validator.constraints.Length;
 
+import eu.etaxonomy.cdm.common.DOI;
+import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
+import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -56,7 +61,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.GenericDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.IReferenceBaseCacheStrategy;
 import eu.etaxonomy.cdm.strategy.cache.reference.JournalDefaultCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceBaseDefaultCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.reference.ReferenceDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
 import eu.etaxonomy.cdm.strategy.merge.Merge;
@@ -77,17 +82,19 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:47
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Reference", propOrder = {
 	"type",
 	"uri",
+    "abbrevTitleCache",
+    "protectedAbbrevTitleCache",
 	"nomenclaturallyRelevant",
     "authorTeam",
     "referenceAbstract",
     "title",
+    "abbrevTitle",
     "editor",
 	"volume",
 	"pages",
@@ -95,6 +102,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "edition",
     "isbn",
     "issn",
+    "doi",
     "seriesPart",
     "datePublished",
     "publisher",
@@ -103,24 +111,24 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "school",
     "organization",
     "inReference"
-//    ,"fullReference",
-//    "abbreviatedReference"
 })
 @XmlRootElement(name = "Reference")
 @Entity
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Audited
-//@javax.persistence.Table(name="Reference")
 @Table(appliesTo="Reference", indexes = { @org.hibernate.annotations.Index(name = "ReferenceTitleCacheIndex", columnNames = { "titleCache" }) })
 @InReference(groups = Level2.class)
 @ReferenceCheck(groups = Level2.class)
-//public abstract class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements IParsable, IMergable, IMatchable, IArticle, IBook, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage {
 public class Reference<S extends IReferenceBaseCacheStrategy> extends IdentifiableMediaEntity<S> implements INomenclaturalReference, IArticle, IBook, IPatent, IDatabase, IJournal, IBookSection,ICdDvd,IGeneric,IInProceedings, IProceedings, IPrintSeries, IReport, IThesis,IWebPage, IPersonalCommunication, IReference, Cloneable {
 	private static final long serialVersionUID = -2034764545042691295L;
 	private static final Logger logger = Logger.getLogger(Reference.class);
 
 	@XmlAttribute(name ="type")
 	@Column(name="refType")
+	@NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+    	parameters = {@org.hibernate.annotations.Parameter(name  = "enumClass", value = "eu.etaxonomy.cdm.model.reference.ReferenceType")}
+    )
 	protected ReferenceType type;
 
 	//Title of the reference
@@ -131,8 +139,29 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Match(MatchMode.EQUAL_REQUIRED)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 4096)
+	@Length(max = 4096)  //TODO is the length attribute really requried twice (see @Column)??
 	private String title;
+	
+	//Title of the reference
+	@XmlElement(name ="AbbrevTitle" )
+	@Field
+	@Match(MatchMode.EQUAL)  //TODO check if this is correct
+	@NullOrNotEmpty
+	@Length(max = 255)
+	private String abbrevTitle;
+	
+	//Title of the reference
+	@XmlElement(name ="AbbrevTitleCache" )
+	@Field
+	@Match(MatchMode.CACHE)
+    //TODO Val #3379
+//	@NotNull
+	@Length(max = 1024)
+	private String abbrevTitleCache;
+	
+	@XmlElement(name = "protectedAbbrevTitleCache")
+	@Merge(MergeMode.OR)
+	private boolean protectedAbbrevTitleCache;
 
 //********************************************************/
 
@@ -179,6 +208,14 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Length(max = 255)
 	@Pattern(regexp = "(?=.{13}$)\\d{1,5}([- ])\\d{1,7}\\1\\d{1,6}\\1(\\d|X)$", groups = Level2.class, message = "{eu.etaxonomy.cdm.model.reference.Reference.isbn.message}")
 	protected String isbn;
+
+    @XmlElement(name = "Doi")
+    @Field
+    @FieldBridge(impl = DoiBridge.class)
+    @Type(type="doiUserType")
+    @Column(length=DOI.MAX_LENGTH)
+    protected DOI doi;
+
 
 	@XmlElement(name = "ISSN")
     @Field
@@ -240,7 +277,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 //    @IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
    // @InReference(groups=Level2.class)
-   	protected Reference inReference;
+   	protected Reference<?> inReference;
 
 //    @XmlElement(name = "FullReference")
 //    @XmlIDREF
@@ -324,9 +361,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	private boolean cacheStrategyRectified = false;
 
     protected Reference(){
-		super();
-		this.type = ReferenceType.Generic;
-		this.cacheStrategy =(S)this.type.getCacheStrategy();
+		this(ReferenceType.Generic);
 	}
 
 	protected Reference(ReferenceType type) {
@@ -336,10 +371,59 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 
 //*************************** GETTER / SETTER ******************************************/
+	
+
+	@Override
+	public String getAbbrevTitleCache() {
+		if (protectedAbbrevTitleCache){
+            return this.abbrevTitleCache;
+        }
+        // is title dirty, i.e. equal NULL?
+        if (abbrevTitleCache == null){
+            this.abbrevTitleCache = generateAbbrevTitle();
+            this.abbrevTitleCache = getTruncatedCache(this.abbrevTitleCache) ;
+        }
+        return abbrevTitleCache;	
+	}
+
+	@Override
+	@Deprecated
+	public void setAbbrevTitleCache(String abbrevTitleCache) {
+		this.abbrevTitleCache = abbrevTitleCache;
+	}
+	
+	@Override
+	public void setAbbrevTitleCache(String abbrevTitleCache, boolean isProtected) {
+		this.protectedAbbrevTitleCache = isProtected;	
+		setAbbrevTitleCache(abbrevTitleCache);
+	}
+	
+	@Override
+	public boolean isProtectedAbbrevTitleCache() {
+		return protectedAbbrevTitleCache;
+	}
+
+	@Override
+	public void setProtectedAbbrevTitleCache(boolean protectedAbbrevTitleCache) {
+		this.protectedAbbrevTitleCache = protectedAbbrevTitleCache;
+	}
+
+	@Override
+	public String getAbbrevTitle() {
+		return abbrevTitle;
+	}
+
+	@Override
+	public void setAbbrevTitle(String abbrevTitle) {
+		this.abbrevTitle = abbrevTitle;
+	}
+	
+
 	@Override
     public String getEditor() {
 		return editor;
 	}
+
 
 	@Override
     public void setEditor(String editor) {
@@ -404,6 +488,16 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Override
     public void setIssn(String issn) {
 		this.issn = issn;
+	}
+	
+    @Override
+	public DOI getDoi() {
+		return doi;
+	}
+
+    @Override
+	public void setDoi(DOI doi) {
+		this.doi = doi;
 	}
 
 	@Override
@@ -788,6 +882,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     public String generateTitle() {
 		rectifyCacheStrategy();
 		return super.generateTitle();
+	}
+	
+    public String generateAbbrevTitle() {
+		rectifyCacheStrategy();
+		return this.cacheStrategy.getAbbrevTitleCache(this);
 	}
 
 	/**
@@ -1174,7 +1273,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.cacheStrategy = (S) cacheStrategy;
 	}
 
-	public void setCacheStrategy(ReferenceBaseDefaultCacheStrategy cacheStrategy) {
+	public void setCacheStrategy(ReferenceDefaultCacheStrategy cacheStrategy) {
 		this.cacheStrategy = (S)cacheStrategy;
 
 	}
@@ -1203,6 +1302,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return null;
 		}
 	}
+
 
 }
 

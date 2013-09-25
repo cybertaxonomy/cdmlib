@@ -21,6 +21,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -67,7 +68,7 @@ public class BookDefaultCacheStrategyTest {
 		book1.setEdition("ed. 3");
 		Assert.assertEquals("Unexpected title cache.", "Book Author, My book, ed. 3. 1975", book1.getTitleCache());
 		
-		TimePeriod newDatePublished = TimePeriod.parseString("1975 (after Aug.)");
+		TimePeriod newDatePublished = TimePeriodParser.parseString("1975 (after Aug.)");
 		book1.setDatePublished(newDatePublished);
 		book1.setTitleCache(null, false);
 		//TODO this behaviour needs to be discussed. Maybe better the complete date published string should be returned.

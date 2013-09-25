@@ -10,8 +10,6 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:import namespace="http://etaxonomy.eu/cdm/model/media/1.0" schemaLocation="media.xsd"/>
 
-  <xs:element name="Continent" type="location:Continent"/>
-
   <xs:element name="NamedArea" type="location:NamedArea"/>
 
   <xs:element name="NamedAreaLevel" type="location:NamedAreaLevel"/>
@@ -24,9 +22,9 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:element name="TdwgArea" type="location:TdwgArea"/>
 
-  <xs:element name="WaterbodyOrCountry" type="location:WaterbodyOrCountry"/>
+  <xs:element name="Country" type="location:Country"/>
 
-  <xs:complexType name="WaterbodyOrCountry">
+  <xs:complexType name="Country">
     <xs:complexContent>
       <xs:extension base="location:NamedArea">
         <xs:sequence>
@@ -54,24 +52,16 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
           <xs:element name="ValidPeriod" type="common:TimePeriod" minOccurs="0"/>
           <xs:element name="Shape" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="PointApproximation" type="location:Point" minOccurs="0"/>
-          <xs:element name="WaterbodiesOrCountries" minOccurs="0">
+          <xs:element name="Countries" minOccurs="0">
             <xs:complexType>
               <xs:sequence>
-                <xs:element name="WaterbodiesOrCountry" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
+                <xs:element name="Country" type="xs:IDREF" minOccurs="0" maxOccurs="unbounded"/>
               </xs:sequence>
             </xs:complexType>
           </xs:element>
           <xs:element name="NamedAreaType" type="xs:IDREF" minOccurs="0"/>
           <xs:element name="NamedAreaLevel" type="xs:IDREF" minOccurs="0"/>
         </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="Continent">
-    <xs:complexContent>
-      <xs:extension base="location:NamedArea">
-        <xs:sequence/>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>

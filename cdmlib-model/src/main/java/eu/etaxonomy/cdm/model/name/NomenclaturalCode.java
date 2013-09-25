@@ -10,9 +10,6 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -23,10 +20,9 @@ import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 
-import au.com.bytecode.opencsv.CSVWriter;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IDefinedTerm;
-import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.common.EnumeratedTermVoc;
+import eu.etaxonomy.cdm.model.common.IEnumTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * The class for the five nomenclature codes (ICNB, ICBN, ICNCP, ICZN and ICVCN)
@@ -49,23 +45,37 @@ import eu.etaxonomy.cdm.model.media.Media;
 
 @XmlType(name = "NomenclaturalCode")
 @XmlEnum
-public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serializable {
+public enum NomenclaturalCode implements IEnumTerm<NomenclaturalCode>, Serializable {
+	//0
 	/**
 	 * International Code of Nomenclature of Bacteria
 	*/
-	@XmlEnumValue("ICNB") ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"), 
+	@XmlEnumValue("ICNB") 
+	ICNB(UUID.fromString("ff4b0979-7abf-4b40-95c0-8b8b1e8a4d5e"), "ICNB"), 
+	
+	//1
 	/**
-	 * International Code of Botanical Nomenclature
+	 * International Code of Nomenclature for algae, fungi, and plants
+	 * Former International Code of Botanical Nomenclature
 	 */
-	@XmlEnumValue("ICBN") ICBN(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICBN"), 
+	@XmlEnumValue("ICNAFP") 
+	ICNAFP(UUID.fromString("540fc02a-8a8e-4813-89d2-581dad4dd482"), "ICNAFP"), 
+	
+	//2
 	/**
 	 * International Code of Cultivated Plants
 	 */
-	@XmlEnumValue("ICNCP") ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"), 
+	@XmlEnumValue("ICNCP") 
+	ICNCP(UUID.fromString("65a432b5-92b1-4c9a-8090-2a185e423d2e"),"ICNCP"), 
+	
+	//3
 	/**
 	 * International Code of Zoological Nomenclature
 	 */
-	@XmlEnumValue("ICZN") ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"), 
+	@XmlEnumValue("ICZN") 
+	ICZN(UUID.fromString("b584c2f8-dbe5-4454-acad-2b45e63ec11b"), "ICZN"), 
+	
+	//4
 	/**
 	 * International Code for Virus Classification and Nomenclature
 	 */
@@ -73,34 +83,22 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 
 	private static final Logger logger = Logger.getLogger(NomenclaturalCode.class);
 	
-	private UUID uuid;
-
-	private String titleCache;
-	
 	public String getTitleCache() {
-		return titleCache;
+		return getMessage();
 	}
 	
 	private NomenclaturalCode(UUID uuid, String titleCache){
-		this.uuid = uuid;
-		this.titleCache = titleCache;
+		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, titleCache, titleCache, null);
 	}
 	
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getUuid()
-	 */
-	public UUID getUuid(){
-		return this.uuid;
-	}
 	
 	/* (non-Javadoc)
 	 * @see java.lang.Enum#toString()
 	 */
 	@Override
 	public String toString() {
-		return "NomenclaturalCode" + " <" + uuid + "> " + this.name();
+		return "NomenclaturalCode" + " <" + getUuid() + "> " + this.name();
 	}
 
 	public static NomenclaturalCode fromString(String string){
@@ -109,72 +107,10 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 				return code;
 			}
 		}
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getByUuid(java.util.UUID)
-	 */
-	public NomenclaturalCode getByUuid(UUID uuid) {
-		for (NomenclaturalCode nomCode : NomenclaturalCode.values()){
-			if (nomCode.getUuid().equals(uuid)){
-				return nomCode;
-			}
+		if ("ICBN".equals(string)){ //former name of the ICNAFP
+			return ICNAFP;
 		}
 		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getGeneralizationOf()
-	 */
-	public Set<NomenclaturalCode> getGeneralizationOf() {
-		return new HashSet<NomenclaturalCode>();
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIncludes()
-	 */
-	public Set<NomenclaturalCode> getIncludes() {
-		return new HashSet<NomenclaturalCode>();
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
-	 */
-	public NomenclaturalCode getKindOf() {
-		return null;
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getPartOf()
-	 */
-	public NomenclaturalCode getPartOf() {
-		return null;
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getMedia()
-	 */
-	public Set<Media> getMedia() {
-		// TODO add links to codes
-		return new HashSet<Media>();
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#readCsvLine(java.lang.Class, java.util.List, java.util.Map)
-	 */
-	public NomenclaturalCode readCsvLine(Class<NomenclaturalCode> termClass,
-			List<String> csvLine, Map<UUID, DefinedTermBase> terms) {
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.ILoadableTerm#writeCsvLine(au.com.bytecode.opencsv.CSVWriter, eu.etaxonomy.cdm.model.common.IDefinedTerm)
-	 */
-	public void writeCsvLine(CSVWriter writer, NomenclaturalCode term) {
-		logger.warn("write csvLine not yet implemented");
 	}
 
 	/**
@@ -191,10 +127,9 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public TaxonNameBase<?,?> getNewTaxonNameInstance(Rank rank){
 		TaxonNameBase<?,?> result;
-		NomenclaturalCode nomCode = this;
 		
 		switch (this){
-		case ICBN:
+		case ICNAFP:
 			result = BotanicalName.NewInstance(rank);
 			break;
 		case ICZN:
@@ -232,7 +167,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	public <T extends TaxonNameBase> Class<? extends T> getCdmClass(){
 		Class<? extends T> result;
 		switch (this){
-		case ICBN:
+		case ICNAFP:
 			result = (Class<T>)BotanicalName.class;
 			break;
 		case ICZN:
@@ -260,7 +195,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public String acceptedTaxonStatusLabel(){
 		switch(this){
-		case ICBN:
+		case ICNAFP:
 			return "accepted";
 		case ICZN:
 			return "valid";
@@ -276,7 +211,7 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 	 */
 	public String synonymStatusLabel(){
 		switch(this){
-		case ICBN:
+		case ICNAFP:
 			return "synonym";
 		case ICZN:
 			return "invalid";
@@ -284,6 +219,45 @@ public enum NomenclaturalCode implements IDefinedTerm<NomenclaturalCode>, Serial
 			logger.error("Not implemented yet");
 			return "synonym";
 		}
-	}	
-}
+	}
 
+// *************************** DELEGATE **************************************/	
+	
+	private static EnumeratedTermVoc<NomenclaturalCode> delegateVoc;
+	private IEnumTerm<NomenclaturalCode> delegateVocTerm;
+
+	static {
+		delegateVoc = EnumeratedTermVoc.getVoc(NomenclaturalCode.class);
+	}
+	
+	@Override
+	public String getKey(){return delegateVocTerm.getKey();}
+	
+	@Override
+    public String getMessage(){return delegateVocTerm.getMessage();}
+
+	@Override
+    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
+
+		
+	@Override
+    public UUID getUuid() {return delegateVocTerm.getUuid();}
+
+	@Override
+    public NomenclaturalCode getKindOf() {return delegateVocTerm.getKindOf();}
+	
+	@Override
+    public Set<NomenclaturalCode> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
+
+	@Override
+	public boolean isKindOf(NomenclaturalCode ancestor) {return delegateVocTerm.isKindOf(ancestor);	}
+
+	@Override
+    public Set<NomenclaturalCode> getGeneralizationOf(boolean recursive) {return delegateVocTerm.getGeneralizationOf(recursive);}
+
+	
+	public static NomenclaturalCode getByKey(String key){return delegateVoc.getByKey(key);}
+    public static NomenclaturalCode getByUuid(UUID uuid) {return delegateVoc.getByUuid(uuid);}
+	
+	
+}

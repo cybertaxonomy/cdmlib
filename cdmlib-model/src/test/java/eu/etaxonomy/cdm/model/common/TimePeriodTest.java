@@ -14,43 +14,40 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
-import org.junit.Assert;
+
+import java.util.Calendar;
 
 import org.apache.log4j.Logger;
 import org.joda.time.DateTimeFieldType;
+import org.joda.time.MutableDateTime;
 import org.joda.time.Partial;
+import org.joda.time.ReadableInstant;
 import org.junit.After;
-import org.junit.AfterClass;
+import org.junit.Assert;
 import org.junit.Before;
-import org.junit.BeforeClass;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.strategy.cache.common.TimePeriodPartialFormatter;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
  *
  */
 public class TimePeriodTest {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TimePeriodTest.class);
 	
 	private TimePeriod onlyStartYear;
 	private TimePeriod onlyEndYear;
 	private TimePeriod startAndEndYear;
 	private TimePeriod noStartAndEndYear;
+	private static final Integer year = 1982;
+	private static final Integer month = 1;
+	private static final Integer day = 5;
 	
-	
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
-	}
+		
 
-	/**
-	 * @throws java.lang.Exception
-	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
 
 	/**
 	 * @throws java.lang.Exception
@@ -80,7 +77,9 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testNewInstance() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = TimePeriod.NewInstance();
+		Assert.assertNotNull(tp);
+		Assert.assertTrue("Timeperiod should be empty",tp.isEmpty());
 	}
 
 	/**
@@ -88,7 +87,9 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testNewInstancePartial() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = TimePeriod.NewInstance(new Partial().with(DateTimeFieldType.dayOfWeek(), 5));
+		Assert.assertNotNull(tp);
+		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
 	}
 
 	/**
@@ -96,7 +97,10 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testNewInstancePartialPartial() {
-		logger.warn("Not yet implemented");
+		TimePeriod tp = TimePeriod.NewInstance(new Partial().with(DateTimeFieldType.dayOfMonth(),day));
+		Assert.assertNotNull(tp);
+		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
+		Assert.assertEquals("Timeperiod's should not be empty", day, tp.getStartDay());
 	}
 
 	/**
@@ -126,15 +130,12 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testNewInstanceCalendar() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#NewInstance(org.joda.time.ReadableInstant)}.
-	 */
-	@Test
-	public void testNewInstanceReadableInstant() {
-		logger.warn("Not yet implemented");
+		Calendar cal = Calendar.getInstance();
+		cal.set(1982, 1, day);
+		TimePeriod tp = TimePeriod.NewInstance(cal);
+		Assert.assertNotNull(tp);
+		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
+		Assert.assertEquals("Timeperiod's should not be empty", day, tp.getStartDay());
 	}
 
 	/**
@@ -142,7 +143,37 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testNewInstanceCalendarCalendar() {
-		logger.warn("Not yet implemented");
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month, day);
+		Calendar cal2 = Calendar.getInstance();
+		Integer day2 = 20;
+		Integer month2 = 7;
+		Integer year2 = 1985;
+		cal2.set(year2, month2, day2);
+		TimePeriod tp = TimePeriod.NewInstance(cal, cal2);
+		Assert.assertNotNull(tp);
+		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
+		Assert.assertEquals("Timeperiod's start should not be equal with cal1", year, tp.getStartYear());
+		//Calendar starts counting months with 0
+		Assert.assertEquals("Timeperiod's start should not be equal with cal1 ", (Integer)(month +1), tp.getStartMonth());
+		Assert.assertEquals("Timeperiod's start should not be equal with cal1", day, tp.getStartDay());
+
+		Assert.assertEquals("Timeperiod's start should not be equal with cal2", year2, tp.getEndYear());
+		//Calendar starts counting months with 0
+		Assert.assertEquals("Timeperiod's start should not be equal with cal2", (Integer)(month2+1), tp.getEndMonth());
+		Assert.assertEquals("Timeperiod's end should not be equal with cal2", day2, tp.getEndDay());
+	}
+
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#NewInstance(org.joda.time.ReadableInstant)}.
+	 */
+	@Test
+	public void testNewInstanceReadableInstant() {
+		ReadableInstant readInst = new MutableDateTime();
+		TimePeriod tp = TimePeriod.NewInstance(readInst);
+		Assert.assertNotNull(tp);
+		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
+		Assert.assertEquals("Timeperiod's should not be empty", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), (Integer)tp.getStartDay());
 	}
 
 	/**
@@ -150,7 +181,15 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testNewInstanceReadableInstantReadableInstant() {
-		logger.warn("Not yet implemented");
+		ReadableInstant readInst = new MutableDateTime();
+		ReadableInstant readInst2 = new MutableDateTime();
+		((MutableDateTime)readInst).addDays(5);
+		TimePeriod tp = TimePeriod.NewInstance(readInst, readInst2);
+		
+		Assert.assertNotNull(tp);
+		Assert.assertFalse("Timeperiod should not be empty",tp.isEmpty());
+		Assert.assertEquals("Timeperiod's day should not be equal to readable instant", (Integer)readInst.get(DateTimeFieldType.dayOfMonth()), tp.getStartDay());
+		Assert.assertEquals("Timeperiod's day should not be equal to readable instant", (Integer)readInst2.get(DateTimeFieldType.dayOfMonth()), tp.getEndDay());
 	}
 
 	/**
@@ -158,7 +197,10 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testCalendarToPartial() {
-		logger.warn("Not yet implemented");
+		Calendar cal = Calendar.getInstance();
+		cal.set(year, month, day);
+		Partial part = TimePeriod.calendarToPartial(cal);
+		Assert.assertEquals("Partial's day should not be equal to calednars day", day, (Integer)part.get(DateTimeFieldType.dayOfMonth()));
 	}
 
 	/**
@@ -166,7 +208,10 @@ public class TimePeriodTest {
 	 */
 	@Test
 	public void testReadableInstantToPartial() {
-		logger.warn("Not yet implemented");
+		ReadableInstant readInst = new MutableDateTime();
+		Partial part = TimePeriod.readableInstantToPartial(readInst);
+		part.get(DateTimeFieldType.dayOfMonth());
+		Assert.assertEquals("Partial's day should not be equal to calednars day", (Integer)part.get(DateTimeFieldType.dayOfMonth()), (Integer)part.get(DateTimeFieldType.dayOfMonth()));
 	}
 
 	/**
@@ -196,7 +241,7 @@ public class TimePeriodTest {
 		Assert.assertTrue("Setting the partial should change the string representation of the TimePeriod", !startString.equals(changedString));
 		
 		//
-		tp = TimePeriod.parseString("1752");
+		tp = TimePeriodParser.parseString("1752");
 		assertNull("Freetext should be not set", tp.getFreeText());
 		startString = tp.toString();
 		tp.setStart(newStartDate);
@@ -204,7 +249,7 @@ public class TimePeriodTest {
 		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
 
 		//
-		tp = TimePeriod.parseString("any strange date");
+		tp = TimePeriodParser.parseString("any strange date");
 		assertNotNull("Freetext should be set", tp.getFreeText());
 		startString = tp.toString();
 		tp.setStart(newStartDate);
@@ -213,29 +258,13 @@ public class TimePeriodTest {
 
 		
 		//
-//		tp = TimePeriod.parseString("15.12.1730"); //TODO currently not parsed
+//		tp = TimePeriodParser.parseString("15.12.1730"); //TODO currently not parsed
 //		
 //		startString = tp.toString();
 //		tp.setStart(newStartDate);
 //		changedString = tp.toString();
 //				
 //		Assert.assertTrue("Setting a partial for a parsed time period should change the string representation of the TimePeriod	", !startString.equals(changedString));
-	}
-	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#TimePeriod(org.joda.time.Partial)}.
-	 */
-	@Test
-	public void testTimePeriodPartial() {
-		logger.warn("Not yet implemented");
-	}
-
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#TimePeriod(org.joda.time.Partial, org.joda.time.Partial)}.
-	 */
-	@Test
-	public void testTimePeriodPartialPartial() {
-		logger.warn("Not yet implemented");
 	}
 
 	/**
@@ -289,127 +318,11 @@ public class TimePeriodTest {
 		tp.setEndYear(2002);
 		Assert.assertEquals("Year should be 1999-2002", "1999-2002", tp.getYear());
 	}
-
-
-	
-	@Test
-	public void testParseSingleDateString() {
-		String strDate = "1756";
-		Partial date = TimePeriod.parseSingleDate(strDate);
-		assertNotNull(date);
-		Assert.assertEquals(Integer.parseInt(strDate), date.get(DateTimeFieldType.year()));
-		try {
-			date.get(DateTimeFieldType.monthOfYear());
-			assertFalse(true); //should not be reached
-		} catch (Exception e) {
-			assertTrue(e instanceof IllegalArgumentException);
-		}
-		try {
-			date.get(DateTimeFieldType.dayOfMonth());
-			assertFalse(true); //should not be reached
-		} catch (Exception e) {
-			assertTrue(e instanceof IllegalArgumentException);
-		}
-		//to be continued
-	}
 	
 	
 	/**
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.TimePeriod#parseString(java.lang.String)}.
+	 * TODO should be partly moved to a test class for {@link TimePeriodPartialFormatter}	
 	 */
-	@Test
-	public void testParseStringString() {
-		String strTimePeriod = "1756";
-		TimePeriod tp1 = TimePeriod.parseString(strTimePeriod);
-		assertNotNull(tp1);
-		Assert.assertEquals(strTimePeriod, tp1.getYear());
-		Assert.assertEquals(strTimePeriod, String.valueOf(tp1.getStartYear()));
-		assertNull(tp1.getEnd());
-		assertNull(tp1.getStartMonth());
-		strTimePeriod = "1756-88";
-		tp1 = TimePeriod.parseString(strTimePeriod);
-		assertNotNull(tp1);
-		Assert.assertEquals("1756-1788", tp1.getYear());
-		Assert.assertEquals("1756", String.valueOf(tp1.getStartYear()));
-		Assert.assertEquals("1788", String.valueOf(tp1.getEndYear()));
-		assertNull(tp1.getEndMonth());
-		assertNull(tp1.getStartMonth());
-		//unparsable
-		String strUnparsablePeriod = "wef 1809-78";
-		TimePeriod tpUnparsable = TimePeriod.parseString(strUnparsablePeriod);
-		assertNotNull(tpUnparsable);
-		Assert.assertEquals(strUnparsablePeriod, tpUnparsable.getFreeText());
-		
-		//"1806"[1807]
-		String strCorrectedPeriod = "\"1806\"[1807]";
-		TimePeriod tpcorrected = TimePeriod.parseString(strCorrectedPeriod);
-		assertNotNull(tpcorrected);
-		Assert.assertEquals(strCorrectedPeriod, tpcorrected.getFreeText());
-		Assert.assertEquals("1807", tpcorrected.getYear());
-		
-		
-		//fl. 1806
-		String strFlPeriod = "fl.  1806?";
-		TimePeriod tpFl = TimePeriod.parseString(strFlPeriod);
-		assertNotNull(tpFl);
-		Assert.assertEquals(strFlPeriod, tpFl.getFreeText());
-		Assert.assertEquals("1806", tpFl.getYear());
-		
-		String strCPeriod = "c.  1806-1810";
-		TimePeriod tpC = TimePeriod.parseString(strCPeriod);
-		assertNotNull(tpC);
-		Assert.assertEquals(strCPeriod, tpC.getFreeText());
-		Assert.assertEquals(Integer.valueOf(1806), tpC.getStartYear());
-		Assert.assertEquals(Integer.valueOf(1810), tpC.getEndYear());
-		Assert.assertEquals("1806-1810", tpC.getYear());
-		
-		//1.1.2011
-		String strDotDate = "1.2.2011";
-		TimePeriod tp = TimePeriod.parseString(strDotDate);
-		assertNotNull(tp);
-		Assert.assertEquals(strDotDate, tp.toString());
-		Assert.assertEquals("2011", tp.getYear());
-		Assert.assertEquals(Integer.valueOf(2), tp.getStartMonth());
-		Assert.assertEquals(Integer.valueOf(1), tp.getStartDay());
-		
-		strDotDate = "31.03.2012";
-		tp = TimePeriod.parseString(strDotDate);
-		assertNotNull(tp);
-		Assert.assertEquals("31.3.2012", tp.toString());
-		Assert.assertEquals("2012", tp.getYear());
-		Assert.assertEquals(Integer.valueOf(3), tp.getStartMonth());
-		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
-		
-		strDotDate = "00.04.2013";
-		tp = TimePeriod.parseString(strDotDate);
-		assertNotNull(tp);
-		Assert.assertEquals("4.2013", tp.toString());
-		Assert.assertEquals("2013", tp.getYear());
-		Assert.assertEquals(Integer.valueOf(4), tp.getStartMonth());
-		Assert.assertEquals(null, tp.getStartDay());
-		
-		strDotDate = "13.00.2014";
-		tp = TimePeriod.parseString(strDotDate);
-		assertNotNull(tp);
-		Assert.assertEquals("13.xx.2014", tp.toString());
-		Assert.assertEquals("2014", tp.getYear());
-		Assert.assertEquals(null, tp.getStartMonth());
-		Assert.assertEquals(Integer.valueOf(13), tp.getStartDay());
-		
-		strDotDate = "31.12.2015 - 02.01.2016";
-		tp = TimePeriod.parseString(strDotDate);
-		assertNotNull(tp);
-		Assert.assertEquals("31.12.2015-2.1.2016", tp.toString());
-		Assert.assertEquals("2015-2016", tp.getYear());
-		Assert.assertEquals(Integer.valueOf(2015), tp.getStartYear());
-		Assert.assertEquals(Integer.valueOf(12), tp.getStartMonth());
-		Assert.assertEquals(Integer.valueOf(31), tp.getStartDay());
-		Assert.assertEquals(Integer.valueOf(2016), tp.getEndYear());
-		Assert.assertEquals(Integer.valueOf(1), tp.getEndMonth());
-		Assert.assertEquals(Integer.valueOf(2), tp.getEndDay());
-		
-	}
-	
 	@Test
 	public void testToStringTimePeriod() {
 		TimePeriod tp1 = TimePeriod.NewInstance(1788,1799);
@@ -457,9 +370,7 @@ public class TimePeriodTest {
 	public void testEquals() {
 		Integer startYear = 1788;
 		Integer startMonth = 6;
-		Integer startDay = 25;
 		Integer endDay = 21;
-		Integer endMonth = 12;
 		Integer endYear = 1799;
 		String freeText = "A free period";
 		

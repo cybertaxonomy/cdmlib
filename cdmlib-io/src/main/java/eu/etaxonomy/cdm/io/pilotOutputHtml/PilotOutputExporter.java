@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author h.fradin (from a.babadshanjan)
  * @created 10.12.2008
- * @versoin 1.0
  */
 @Component("pilotOutputExporter")
 public class PilotOutputExporter extends CdmExportBase<PilotOutputExportConfigurator, PilotOutputExportState, IExportTransformer> implements ICdmExport<PilotOutputExportConfigurator, PilotOutputExportState> {

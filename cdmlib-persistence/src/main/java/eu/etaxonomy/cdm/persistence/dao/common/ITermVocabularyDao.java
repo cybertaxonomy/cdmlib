@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -42,6 +43,15 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	public <T extends DefinedTermBase> List<T> getTerms(TermVocabulary<T> termVocabulary, Integer pageSize, Integer pageNumber);
 	
 	public <T extends DefinedTermBase> TermVocabulary<T> findByUri(String termSourceUri, Class<T> clazz);
+	
+	/**
+	 * Return a List of vocabularies that belong to the term type supplied
+	 * 
+	 * @param termType The term type corresoponding to the vocabularies of interest
+	 * @return a List of vocabularies
+	 */
+	
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType);
 
 	/**
 	 * Return a List of terms that belong to the termVocabulary supplied
@@ -78,4 +88,6 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 
 	
 	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
+
+
 }

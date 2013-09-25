@@ -14,7 +14,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
-//import eu.etaxonomy.cdm.model.reference.CdDvd;
 
 public class CdDvdDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
 	private static final Logger logger = Logger.getLogger(CdDvdDefaultCacheStrategy.class);
@@ -51,23 +50,22 @@ public class CdDvdDefaultCacheStrategy <T extends Reference> extends NomRefDefau
 	private CdDvdDefaultCacheStrategy(){
 		super();
 	}
-
-
+	
 	@Override
-	public String getNomRefTitleWithoutYearAndAuthor(T nomenclaturalReference){
-		if (nomenclaturalReference == null){
+	protected String getTitleWithoutYearAndAuthor(T ref, boolean isAbbrev){
+		if (ref == null){
 			return null;
 		}
 		String nomRefCache = "";
 		//TODO
-		String titelAbbrev = CdmUtils.Nz(nomenclaturalReference.getTitle()).trim();
+		String titel = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
 //		String publisher = CdmUtils.Nz(nomenclaturalReference.getPublisher());
 		
 		boolean needsComma = false;
 		//titelAbbrev
 		String titelAbbrevPart = "";
-		if (!"".equals(titelAbbrev)){
-			nomRefCache = titelAbbrev + blank; 
+		if (titel.length() > 0){
+			nomRefCache = titel + blank; 
 		}
 //		//publisher
 //		String publisherPart = "";
@@ -97,7 +95,5 @@ public class CdDvdDefaultCacheStrategy <T extends Reference> extends NomRefDefau
 		}
 		
 	}
-
-
 
 }

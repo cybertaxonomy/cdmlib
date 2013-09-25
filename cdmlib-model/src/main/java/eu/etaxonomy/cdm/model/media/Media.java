@@ -366,10 +366,10 @@ public class Media extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> 
         this.description.put(description.getLanguage(), description);
     }
 
-    public void addDescription(String text, Language language){
+    public void putDescription(Language language, String text){
         this.description.put(language, LanguageString.NewInstance(text, language));
     }
-
+    
     public void removeDescription(Language language){
         this.description.remove(language);
     }
