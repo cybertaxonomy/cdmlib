@@ -940,9 +940,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         present_native.add(PresenceTerm.PRESENT());
         present_native.add(PresenceTerm.NATIVE());
 
-        /* disabled for debugging ----------
-         *
-
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
@@ -980,27 +977,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
                 "Tanne", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("ByCommonNames with area filter", Integer.valueOf(1), pager.getCount());
-         *         * */
-
-        /* FIXME below ...
-         * */
-        // FIXME only for debugging:
-        pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                "Abies", null, null, null, null, true, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
-        Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
 
         // abies_kawakamii_sensu_komarov as misapplied name for t_abies_balsamea
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
-        // FIXME area filter is not working for misapplied names
 
-
-
-// -->
 
     }
 

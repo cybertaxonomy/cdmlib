@@ -1678,7 +1678,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
 
                 /*
-                 * Here java seems to have a wired and nasty bug which took me bugging be really for hours until I found this solution:
+                 * Here i was facing wired and nasty bug which took me bugging be really for hours until I found this solution.
+                 * Maybe this is a but in java itself java.
                  *
                  * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()
                  * directly:
@@ -1692,20 +1693,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                  *    String toField = "relation." + misappliedNameForUuid +".to.id";
                  *
                  * Comparing both strings by the String.equals method returns true, so both String are identical.
+                 *
+                 * The bug occurs when running eu.etaxonomy.cdm.api.service.TaxonServiceSearchTest in eclipse and in maven and seems to to be
+                 * dependent from a specific jvm (openjdk6  6b27-1.12.6-1ubuntu0.13.04.2, openjdk7 7u25-2.3.10-1ubuntu0.13.04.2,  oracle jdk1.7.0_25 tested)
+                 * The bug is persistent after a reboot of the development computer.
                  */
-                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
-                String toField = "relation." + misappliedNameForUuid +".to.id";
-                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
-                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
+//                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
+//                String toField = "relation." + misappliedNameForUuid +".to.id";
+                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
+//                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
+//                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
 
                 BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
-
                 Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
-
                 QueryWrapperFilter filter = new QueryWrapperFilter(taxonAreaJoinQuery);
+
+//                debug code for bug described above
                 DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
                 System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
-                luceneIndexToolProvider.getIndexReaderFor(Taxon.class);
 
                 multiIndexByAreaFilter.add(filter, Occur.SHOULD);
             }
@@ -1715,7 +1720,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
 
 
-        if(false && addDistributionFilter){
+        if(addDistributionFilter){
 
             // B)
             // in this case we need a filter which uses a join query
