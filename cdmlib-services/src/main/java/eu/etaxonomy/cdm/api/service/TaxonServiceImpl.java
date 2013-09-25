@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
@@ -1510,9 +1511,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString, Classification classification,
-            Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus, List<Language> languages, boolean highlightFragments, Integer pageSize,
+            Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus, List<Language> languages,
+            boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        if(highlightFragments){
+            logger.warn("findTaxaAndNamesByFullText() : fragment highlighting is " +
+                    "currently not fully supported by this method and thus " +
+                    "may not work with common names and misapplied names.");
+        }
 
         // convert sets to lists
         List<NamedArea> namedAreaList = null;
@@ -1531,10 +1539,50 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             searchModes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa);
         }
 
+        boolean addDistributionFilter = namedAreas != null && namedAreas.size() > 0;
+
         List<LuceneSearch> luceneSearches = new ArrayList<LuceneSearch>();
         Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
 
+        /*
+          ======== filtering by distribution , HOWTO ========
 
+           - http://www.javaranch.com/journal/2009/02/filtering-a-lucene-search.html
+           - http://stackoverflow.com/questions/17709256/lucene-solr-using-complex-filters -> QueryWrapperFilter
+          add Filter to search as http://lucene.apache.org/core/3_6_0/api/all/org/apache/lucene/search/Filter.html
+          which will be put into a FilteredQuersy  in the end ?
+
+
+          3. how does it work in spatial?
+          see
+           - http://www.nsshutdown.com/projects/lucene/whitepaper/locallucene_v2.html
+           - http://www.infoq.com/articles/LuceneSpatialSupport
+           - http://www.mhaller.de/archives/156-Spatial-search-with-Lucene.html
+          ------------------------------------------------------------------------
+
+          strategies:
+          A) use a separate distribution filter per index sub-query/search:
+           - byTaxonSyonym (query TaxaonBase):
+               use a join area filter (Distribution -> TaxonBase)
+           - byCommonName (query DescriptionElementBase): use an area filter on
+               DescriptionElementBase !!! PROBLEM !!!
+               This cannot work since the distributions are different entities than the
+               common names and thus these are different lucene documents.
+           - byMisaplliedNames (join query TaxonRelationship -> TaxaonBase):
+               use a join area filter (Distribution -> TaxonBase)
+
+          B) use a common distribution filter for all index sub-query/searches:
+           - use a common join area filter (Distribution -> TaxonBase)
+           - also implement the byCommonName as join query (CommonName -> TaxonBase)
+           PROBLEM in this case: we are losing the fragment highlighting for the
+           common names, since the returned documents are always TaxonBases
+        */
+
+
+        BooleanFilter multiIndexByAreaFilter = new BooleanFilter();
+
+
+        // search for taxa or synonyms
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
             Class taxonBaseSubclass = TaxonBase.class;
             if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
@@ -1544,11 +1592,57 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments));
             idFieldMap.put(CdmBaseType.TAXON, "id");
+            /* A) does not work!!!!
+            if(addDistributionFilter){
+                // in this case we need a filter which uses a join query
+                // to get the TaxonBase documents for the DescriptionElementBase documents
+                // which are matching the areas in question
+                Query taxonAreaJoinQuery = createByDistributionJoinQuery(
+                        namedAreaList,
+                        distributionStatusList,
+                        luceneIndexToolProvider.newQueryFactoryFor(Distribution.class)
+                        );
+                multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+            }
+            */
         }
+
+        // search by CommonTaxonName
         if(searchModes.contains(TaxaAndNamesSearchMode.doTaxaByCommonNames)) {
-            luceneSearches.add(prepareByDescriptionElementFullTextSearch(CommonTaxonName.class, queryString, classification, null, languages, highlightFragments));
+            // B)
+            QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
+            Query byCommonNameJoinQuery = descriptionElementQueryFactory.newJoinQuery(
+                    "inDescription.taxon.id",
+                    "id",
+                    createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory),
+                    CommonTaxonName.class);
+            logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
+            LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
+            byCommonNameSearch.setCdmTypRestriction(Taxon.class);
+            byCommonNameSearch.setQuery(byCommonNameJoinQuery);
+            idFieldMap.put(CdmBaseType.TAXON, "id");
+
+            luceneSearches.add(byCommonNameSearch);
+
+            /* A) does not work!!!!
+            luceneSearches.add(
+                    prepareByDescriptionElementFullTextSearch(CommonTaxonName.class,
+                            queryString, classification, null, languages, highlightFragments)
+                        );
             idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
+            if(addDistributionFilter){
+                // in this case we are able to use DescriptionElementBase documents
+                // which are matching the areas in question directly
+                BooleanQuery byDistributionQuery = createByDistributionQuery(
+                        namedAreaList,
+                        distributionStatusList,
+                        luceneIndexToolProvider.newQueryFactoryFor(Distribution.class)
+                        );
+                multiIndexByAreaFilter.add(new QueryWrapperFilter(byDistributionQuery), Occur.SHOULD);
+            } */
         }
+
+        // search by misapplied names
         if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames)) {
             // NOTE:
             // prepareFindByTaxonRelationFullTextSearch() is making use of JoinUtil.createJoinQuery()
@@ -1559,27 +1653,26 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             idFieldMap.put(CdmBaseType.TAXON, "id");
         }
 
-        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider,
+                luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
 
-        if(namedAreas != null && namedAreas.size() > 0){
-            //  - http://www.javaranch.com/journal/2009/02/filtering-a-lucene-search.html
-            //  - http://stackoverflow.com/questions/17709256/lucene-solr-using-complex-filters -> QueryWrapperFilter
-            // add Filter to search as http://lucene.apache.org/core/3_6_0/api/all/org/apache/lucene/search/Filter.html
-            // which will be put into a FilteredQuersy  in the end ?
 
-            //
-            // 3. how does it work in spatial?
-            // see
-            //  - http://www.nsshutdown.com/projects/lucene/whitepaper/locallucene_v2.html
-            //  - http://www.infoq.com/articles/LuceneSpatialSupport
-            //  - http://www.mhaller.de/archives/156-Spatial-search-with-Lucene.html
-
-            QueryFactory distributionQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Distribution.class);
-
-            Query taxonAreaJoinQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, distributionQueryFactory);
-            multiSearch.setFilter(new QueryWrapperFilter(taxonAreaJoinQuery));
+        if(addDistributionFilter){
+            // B)
+            // in this case we need a filter which uses a join query
+            // to get the TaxonBase documents for the DescriptionElementBase documents
+            // which are matching the areas in question
+            Query taxonAreaJoinQuery = createByDistributionJoinQuery(
+                    namedAreaList,
+                    distributionStatusList,
+                    luceneIndexToolProvider.newQueryFactoryFor(Distribution.class)
+                    );
+            multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
         }
 
+        if (addDistributionFilter){
+            multiSearch.setFilter(multiIndexByAreaFilter);
+        }
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
@@ -1600,12 +1693,30 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @return
      * @throws IOException
      */
-    protected Query createByDistributionJoinQuery(List<NamedArea> namedAreaList, List<PresenceAbsenceTermBase<?>> distributionStatusList,
-            QueryFactory queryFactory) throws IOException {
+    protected Query createByDistributionJoinQuery(
+            List<NamedArea> namedAreaList,
+            List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            QueryFactory queryFactory
+            ) throws IOException {
 
         String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
         String toField = "id"; // id in TaxonBase index
 
+        BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, queryFactory);
+
+        Query taxonAreaJoinQuery = queryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+
+        return taxonAreaJoinQuery;
+    }
+
+    /**
+     * @param namedAreaList
+     * @param distributionStatusList
+     * @param queryFactory
+     * @return
+     */
+    private BooleanQuery createByDistributionQuery(List<NamedArea> namedAreaList,
+            List<PresenceAbsenceTermBase<?>> distributionStatusList, QueryFactory queryFactory) {
         BooleanQuery areaQuery = new BooleanQuery();
         // area field from Distribution
         areaQuery.add(queryFactory.newEntityIdsQuery("area.id", namedAreaList), Occur.MUST);
@@ -1615,11 +1726,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             areaQuery.add(queryFactory.newEntityIdsQuery("status.id", distributionStatusList), Occur.MUST);
         }
 
-        logger.debug("prepareByAreaSearch() query: " + areaQuery.toString());
-
-        Query taxonAreaJoinQuery = queryFactory.newJoinQuery(fromField, toField, areaQuery, Distribution.class);
-
-        return taxonAreaJoinQuery;
+        logger.debug("createByDistributionQuery() query: " + areaQuery.toString());
+        return areaQuery;
     }
 
     /**
@@ -1736,17 +1844,37 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz,
             String queryString, Classification classification, List<Feature> features,
             List<Language> languages, boolean highlightFragments) {
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
         QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.STRING, false)};
-        luceneSearch.setSortFields(sortFields);
 
-        // ---- search criteria
+        BooleanQuery finalQuery = createByDescriptionElementFullTextQuery(queryString, classification, features,
+                languages, descriptionElementQueryFactory);
+
+        luceneSearch.setSortFields(sortFields);
         luceneSearch.setCdmTypRestriction(clazz);
+        luceneSearch.setQuery(finalQuery);
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(descriptionElementQueryFactory.getTextFieldNamesAsArray());
+        }
+
+        return luceneSearch;
+    }
+
+    /**
+     * @param queryString
+     * @param classification
+     * @param features
+     * @param languages
+     * @param descriptionElementQueryFactory
+     * @return
+     */
+    private BooleanQuery createByDescriptionElementFullTextQuery(String queryString, Classification classification,
+            List<Feature> features, List<Language> languages, QueryFactory descriptionElementQueryFactory) {
+        BooleanQuery finalQuery = new BooleanQuery();
+        BooleanQuery textQuery = new BooleanQuery();
         textQuery.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
         // common name
@@ -1797,12 +1925,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         finalQuery.add(descriptionElementQueryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
         logger.info("prepareByDescriptionElementFullTextSearch() query: " + finalQuery.toString());
-        luceneSearch.setQuery(finalQuery);
-
-        if(highlightFragments){
-            luceneSearch.setHighlightFields(descriptionElementQueryFactory.getTextFieldNamesAsArray());
-        }
-        return luceneSearch;
+        return finalQuery;
     }
 
     /**

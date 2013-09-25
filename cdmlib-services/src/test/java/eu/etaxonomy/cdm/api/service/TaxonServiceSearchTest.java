@@ -940,46 +940,51 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         present_native.add(PresenceTerm.PRESENT());
         present_native.add(PresenceTerm.NATIVE());
 
+        /* disabled for debugging ---------- */
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
-        Assert.assertEquals("Expecting 2 entities", Integer.valueOf(2), pager.getCount());
+        Assert.assertEquals("with matching area filter: expecting 2 entities", Integer.valueOf(2), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
-     // FIXME area filter is not working for misapplied names
+        Assert.assertEquals("with matching area & status filter:  expecting 2 entities", Integer.valueOf(2), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
-        // FIXME area filter is not working for synonyms
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_russia, present, null, true, null, null, null, null);
+        Assert.assertEquals("with non matching area & status filter", Integer.valueOf(0), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, present, null, true, null, null, null, null);
         Assert.assertEquals(Integer.valueOf(1), pager.getCount());
 
-        /* FIXME
-        pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals(Integer.valueOf(2), pager.getCount());
-
-        pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, a_russia, present, null, true, null, null, null, null);
-        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
-
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
                 "Tanne", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
-        */
+        Assert.assertEquals("ByCommonNames with area filter", Integer.valueOf(1), pager.getCount());
+
+        /* FIXME below ...
+
+        // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
+        // FIXME area filter is not working for misapplied names
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
+        // FIXME area filter is not working for synonyms
+         * */
+
+// -->
 
     }
 
@@ -1169,7 +1174,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         t_abies_kawakamii.getTitleCache();
         taxonService.save(t_abies_kawakamii);
 
-        // missapplied name for t_abies_balsamea
+        // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
         Taxon t_abies_kawakamii_sensu_komarov = Taxon.NewInstance(n_abies_kawakamii, sec_sensu);
         taxonService.save(t_abies_kawakamii_sensu_komarov);
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
@@ -1267,18 +1272,18 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     }
 
     /**
-         *
-         */
-        private void refreshLuceneIndex() {
+     *
+     */
+    private void refreshLuceneIndex() {
 
-    //        commitAndStartNewTransaction(null);
-            commit();
-            endTransaction();
-            indexer.purge(DefaultProgressMonitor.NewInstance());
-            indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
-            startNewTransaction();
-    //        commitAndStartNewTransaction(null);
-        }
+//        commitAndStartNewTransaction(null);
+        commit();
+        endTransaction();
+        indexer.purge(DefaultProgressMonitor.NewInstance());
+        indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
+        startNewTransaction();
+//        commitAndStartNewTransaction(null);
+    }
 
     /**
      * @param numberOfNew

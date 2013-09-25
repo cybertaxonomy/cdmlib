@@ -85,9 +85,11 @@ public class LuceneMultiSearch extends LuceneSearch {
 
 
             // add the sort field from each of the sub searches
-            for(SortField addField : search.getSortFields()){
-                if(! multiSearcherSortFields.contains(addField)) {
-                    multiSearcherSortFields.add(addField);
+            if(search.getSortFields() != null) {
+                for(SortField addField : search.getSortFields()){
+                    if(! multiSearcherSortFields.contains(addField)) {
+                        multiSearcherSortFields.add(addField);
+                    }
                 }
             }
         }
