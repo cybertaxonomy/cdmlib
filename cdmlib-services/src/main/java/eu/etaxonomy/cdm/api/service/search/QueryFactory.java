@@ -45,6 +45,21 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
+ * QueryFactory creates queries for a specific lucene index that means queries
+ * specific to the various CDM base types. Therefore the QueryFactory hold a
+ * reference to a {@link LuceneSearch} instance which has been created for a
+ * CDM base type.<br>
+ * The field names used in queries created on free text fields are remembered
+ * and can be accessed by {@link #getTextFieldNames()} or {@link #getTextFieldNamesAsArray()}.
+ * This is useful for highlighting the matches with {@link LuceneSearch#setHighlightFields(String[])}
+ * <p>
+ * The index specific methods from {@link LuceneSearch} which are
+ * used by QueryFactory directly or indirectly are:
+ * <ul>
+ * <li>{@link LuceneSearch#getAnalyzer()}</li>
+ * </ul>
+ *
+ *
  * @author a.kohlbecker
  * @date Sep 14, 2012
  *
@@ -53,13 +68,13 @@ public class QueryFactory {
 
     public static final Logger logger = Logger.getLogger(QueryFactory.class);
 
-    private final LuceneSearch luceneSearch;
+    protected ILuceneIndexToolProvider toolProvider;
 
     Set<String> textFieldNames = new HashSet<String>();
 
     Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<Class<? extends CdmBase>, IndexSearcher>();
 
-    private BooleanQuery finalQuery;
+    private final Class<? extends CdmBase> cdmBaseType;
 
     public Set<String> getTextFieldNames() {
         return textFieldNames;
@@ -69,9 +84,9 @@ public class QueryFactory {
         return textFieldNames.toArray(new String[textFieldNames.size()]);
     }
 
-
-    public QueryFactory(LuceneSearch luceneSearch){
-        this.luceneSearch = luceneSearch;
+    public QueryFactory(ILuceneIndexToolProvider toolProvider, Class<? extends CdmBase> cdmBaseType){
+        this.cdmBaseType = cdmBaseType;
+        this.toolProvider = toolProvider;
     }
 
     /**
@@ -96,7 +111,7 @@ public class QueryFactory {
             // in order to support the full query syntax we must use the parser
             // here
             try {
-                return luceneSearch.parse(luceneQueryString);
+                return toolProvider.getQueryParserFor(cdmBaseType).parse(luceneQueryString);
             } catch (ParseException e) {
                 logger.error(e);
             }
@@ -219,7 +234,7 @@ public class QueryFactory {
      * @param entity
      * @return
      */
-    private Query newEntityUuidQuery(String uuidFieldName, IdentifiableEntity entity) {
+    public Query newEntityUuidQuery(String uuidFieldName, IdentifiableEntity entity) {
         return newTermQuery(uuidFieldName, entity.getUuid().toString(), false);
     }
 
@@ -259,18 +274,6 @@ public class QueryFactory {
             }
         }
         return uuidInQuery;
-    }
-
-    public void setFinalQuery(BooleanQuery finalQuery) {
-        this.finalQuery = finalQuery;
-    }
-
-    public BooleanQuery getFinalQuery(){
-        return finalQuery;
-    }
-
-    public LuceneSearch getLuceneSearch() {
-        return luceneSearch;
     }
 
 
@@ -341,7 +344,7 @@ public class QueryFactory {
     private IndexSearcher indexSearcherFor(Class<? extends CdmBase> clazz) {
         if(indexSearcherMap.get(clazz) == null){
 
-            IndexReader indexReader = luceneSearch.getIndexReaderFor(clazz);
+            IndexReader indexReader = toolProvider.getIndexReaderFor(clazz);
             IndexSearcher searcher = new IndexSearcher(indexReader);
             searcher.setDefaultFieldSortScoring(true, true);
             indexSearcherMap.put(clazz, searcher);

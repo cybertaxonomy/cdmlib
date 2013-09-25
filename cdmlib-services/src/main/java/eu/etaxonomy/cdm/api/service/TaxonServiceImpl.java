@@ -25,7 +25,6 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
-import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
@@ -42,6 +41,7 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
@@ -150,7 +150,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Autowired
     private AbstractBeanInitializer beanInitializer;
 
-    private static IndexSearcher taxonRelationshipSearcher;
+    @Autowired
+    private ILuceneIndexToolProvider luceneIndexToolProvider;
+
 
     /**
      * Constructor
@@ -1409,27 +1411,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
+        QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
-        luceneSearch.setClazz(clazz);
+        luceneSearch.setCdmTypRestriction(clazz);
 
-        textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-        textQuery.add(queryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
 
         if(classification != null){
-            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
         luceneSearch.setQuery(finalQuery);
 
         if(highlightFragments){
-            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+            luceneSearch.setHighlightFields(taxonBaseQueryFactory.getTextFieldNamesAsArray());
         }
         return luceneSearch;
     }
@@ -1475,13 +1477,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         BooleanQuery finalQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonBase.class);
+        QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         BooleanQuery joinFromQuery = new BooleanQuery();
-        joinFromQuery.add(queryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
-        joinFromQuery.add(queryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
-        Query joinQuery = queryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
+        joinFromQuery.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
+        joinFromQuery.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
+        Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
         luceneSearch.setSortFields(sortFields);
@@ -1489,12 +1491,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         finalQuery.add(joinQuery, Occur.MUST);
 
         if(classification != null){
-            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
         luceneSearch.setQuery(finalQuery);
 
         if(highlightFragments){
-            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+            luceneSearch.setHighlightFields(taxonBaseQueryFactory.getTextFieldNamesAsArray());
         }
         return luceneSearch;
     }
@@ -1557,7 +1559,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             idFieldMap.put(CdmBaseType.TAXON, "id");
         }
 
-        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
 
         if(namedAreas != null && namedAreas.size() > 0){
             //  - http://www.javaranch.com/journal/2009/02/filtering-a-lucene-search.html
@@ -1572,11 +1574,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //  - http://www.infoq.com/articles/LuceneSpatialSupport
             //  - http://www.mhaller.de/archives/156-Spatial-search-with-Lucene.html
 
+            QueryFactory distributionQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Distribution.class);
 
-            // TODO can't we use a static QueryFactory field?
-            QueryFactory queryFactory = new QueryFactory(luceneSearches.get(0));
-
-            Query taxonAreaJoinQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, queryFactory);
+            Query taxonAreaJoinQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, distributionQueryFactory);
             multiSearch.setFilter(new QueryWrapperFilter(taxonAreaJoinQuery));
         }
 
@@ -1639,19 +1639,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         BooleanQuery finalQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
+
+        // FIXME is this query factory using the wrong type?
+        QueryFactory taxonQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Taxon.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false)};
         luceneSearch.setSortFields(sortFields);
 
 
-        Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, queryFactory);
+        Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, taxonQueryFactory);
 
         finalQuery.add(byAreaQuery, Occur.MUST);
 
         if(classification != null){
-            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(taxonQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
 
         logger.info("prepareByAreaSearch() query: " + finalQuery.toString());
@@ -1700,7 +1702,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
         LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);
 
-        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
@@ -1737,68 +1739,68 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
+        QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.STRING, false)};
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
-        luceneSearch.setClazz(clazz);
-        textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        luceneSearch.setCdmTypRestriction(clazz);
+        textQuery.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
         // common name
         Query nameQuery;
         if(languages == null || languages.size() == 0){
-            nameQuery = queryFactory.newTermQuery("name", queryString);
+            nameQuery = descriptionElementQueryFactory.newTermQuery("name", queryString);
         } else {
             nameQuery = new BooleanQuery();
             BooleanQuery languageSubQuery = new BooleanQuery();
             for(Language lang : languages){
-                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
+                languageSubQuery.add(descriptionElementQueryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
             }
-            ((BooleanQuery) nameQuery).add(queryFactory.newTermQuery("name", queryString), Occur.MUST);
+            ((BooleanQuery) nameQuery).add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
             ((BooleanQuery) nameQuery).add(languageSubQuery, Occur.MUST);
         }
         textQuery.add(nameQuery, Occur.SHOULD);
 
 
         // text field from TextData
-        textQuery.add(queryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        textQuery.add(queryFactory.newDefinedTermQuery("states.state", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("states.state", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        textQuery.add(queryFactory.newDefinedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
 
         // area field from Distribution
-        textQuery.add(queryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
 
         // status field from Distribution
-        textQuery.add(queryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
         // --- classification ----
 
         if(classification != null){
-            finalQuery.add(queryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
         }
 
         // --- IdentifieableEntity fields - by uuid
         if(features != null && features.size() > 0 ){
-            finalQuery.add(queryFactory.newEntityUuidsQuery("feature.uuid", features), Occur.MUST);
+            finalQuery.add(descriptionElementQueryFactory.newEntityUuidsQuery("feature.uuid", features), Occur.MUST);
         }
 
         // the description must be associated with a taxon
-        finalQuery.add(queryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
+        finalQuery.add(descriptionElementQueryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
         logger.info("prepareByDescriptionElementFullTextSearch() query: " + finalQuery.toString());
         luceneSearch.setQuery(finalQuery);
 
         if(highlightFragments){
-            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+            luceneSearch.setHighlightFields(descriptionElementQueryFactory.getTextFieldNamesAsArray());
         }
         return luceneSearch;
     }
