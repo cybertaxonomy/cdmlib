@@ -118,20 +118,20 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
         assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
-        try {
-            writeDbUnitDataSetFile(new String[] {
-                    "TAXONBASE", "TAXONNAMEBASE",
-                    "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
-                    "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
-                    "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
-                    "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
-                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT",
-                    "HIBERNATE_SEQUENCES",
-             });
-        } catch (FileNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
+//        try {
+//            writeDbUnitDataSetFile(new String[] {
+//                    "TAXONBASE", "TAXONNAMEBASE",
+//                    "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
+//                    "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+//                    "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
+//                    "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
+//                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT",
+//                    "HIBERNATE_SEQUENCES",
+//             });
+//        } catch (FileNotFoundException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 //                File file = new File("./ABCDPart1Dataset.xml");
 //        FileOutputStream fos;
 //        try {
