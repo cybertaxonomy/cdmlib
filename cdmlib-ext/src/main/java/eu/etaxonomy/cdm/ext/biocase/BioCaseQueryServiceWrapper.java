@@ -23,6 +23,7 @@ import org.apache.http.client.entity.UrlEncodedFormEntity;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
@@ -87,6 +88,8 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
 //        newInstance.setTitleCache("Test Specimen", true);
         newInstance.setCollectingMethod("Collected from the ground");
         newInstance.setAccessionNumber("ACC-12345");
+        newInstance.setLocality("locality");
+        newInstance.setCountry(NamedArea.EUROPE());
         return Collections.singletonList((SpecimenOrObservationBase)newInstance.innerDerivedUnit());
 //        return results;
     }
