@@ -78,14 +78,14 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 @ClassBridges({
-	@ClassBridge(name="classInfo",
-			index = org.hibernate.search.annotations.Index.YES, 
-			store = Store.YES,
-			impl = ClassInfoBridge.class),
-	@ClassBridge(name="accTaxon",
-			index = org.hibernate.search.annotations.Index.YES, 
-			store = Store.YES,
-			impl = AcceptedTaxonBridge.class)
+    @ClassBridge(name="classInfo",
+            index = org.hibernate.search.annotations.Index.YES,
+            store = Store.YES,
+            impl = ClassInfoBridge.class),
+    @ClassBridge(name="accTaxon",
+            index = org.hibernate.search.annotations.Index.YES,
+            store = Store.YES,
+            impl = AcceptedTaxonBridge.class)
 })
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
@@ -294,7 +294,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     public void setUseNameCache(boolean useNameCache) {
         this.useNameCache = useNameCache;
     }
-    
+
     @Transient
     public abstract boolean isOrphaned();
 //*********************** CLONE ********************************************************/

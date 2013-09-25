@@ -940,33 +940,50 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         present_native.add(PresenceTerm.PRESENT());
         present_native.add(PresenceTerm.NATIVE());
 
-        /* disabled for debugging ---------- */
+        /* disabled for debugging ----------
+         *
+         *         * */
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
+                "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
+        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("taxa with matching area filter", Integer.valueOf(2), pager.getCount());
+
+        // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("synonyms with matching area filter", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
-//        logPagerRecords(pager, Level.DEBUG);
-        Assert.assertEquals("with matching area filter: expecting 2 entities", Integer.valueOf(2), pager.getCount());
+        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("taxa and synonyms with matching area filter", Integer.valueOf(3), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals("with matching area & status filter:  expecting 2 entities", Integer.valueOf(2), pager.getCount());
-
-        pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, a_russia, present, null, true, null, null, null, null);
-        Assert.assertEquals("with non matching area & status filter", Integer.valueOf(0), pager.getCount());
+        Assert.assertEquals("taxa and synonyms with matching area & status filter 1", Integer.valueOf(3), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, present, null, true, null, null, null, null);
-        Assert.assertEquals(Integer.valueOf(1), pager.getCount());
+        Assert.assertEquals("taxa and synonyms with matching area & status filter 2", Integer.valueOf(2), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_russia, present, null, true, null, null, null, null);
+        Assert.assertEquals("taxa and synonyms with non matching area & status filter", Integer.valueOf(0), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
                 "Tanne", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("ByCommonNames with area filter", Integer.valueOf(1), pager.getCount());
+
+
+
 
         /* FIXME below ...
 
@@ -976,13 +993,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
         // FIXME area filter is not working for misapplied names
-
-        pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
-        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
-        // FIXME area filter is not working for synonyms
          * */
+
+
 
 // -->
 

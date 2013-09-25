@@ -1560,7 +1560,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
            - http://www.mhaller.de/archives/156-Spatial-search-with-Lucene.html
           ------------------------------------------------------------------------
 
-          strategies:
+          filter strategies:
           A) use a separate distribution filter per index sub-query/search:
            - byTaxonSyonym (query TaxaonBase):
                use a join area filter (Distribution -> TaxonBase)
@@ -1578,6 +1578,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
            common names, since the returned documents are always TaxonBases
         */
 
+        /* The QueryFactory for creating filter queries on Distributions should
+         * The query factory used for the common names query cannot be reused
+         * for this case, since we want to only record the text fields which are
+         * actually used in the primary query
+         */
+        QueryFactory distributionFilterQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Distribution.class);
 
         BooleanFilter multiIndexByAreaFilter = new BooleanFilter();
 
@@ -1600,11 +1606,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 Query taxonAreaJoinQuery = createByDistributionJoinQuery(
                         namedAreaList,
                         distributionStatusList,
-                        luceneIndexToolProvider.newQueryFactoryFor(Distribution.class)
+                        distributionFilterQueryFactory
                         );
                 multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
             }
             */
+            if(searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
+                // add additional area filter for synonyms
+                String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+                String toField = "accTaxon.id"; // id in TaxonBase index
+
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+                multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+
+            }
         }
 
         // search by CommonTaxonName
@@ -1636,7 +1653,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 BooleanQuery byDistributionQuery = createByDistributionQuery(
                         namedAreaList,
                         distributionStatusList,
-                        luceneIndexToolProvider.newQueryFactoryFor(Distribution.class)
+                        distributionFilterQueryFactory
                         );
                 multiIndexByAreaFilter.add(new QueryWrapperFilter(byDistributionQuery), Occur.SHOULD);
             } */
@@ -1647,6 +1664,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             // NOTE:
             // prepareFindByTaxonRelationFullTextSearch() is making use of JoinUtil.createJoinQuery()
             // which allows doing query time joins
+            // finds the misapplied name (Taxon B) which is an misapplication for
+            // a related Taxon A.
+            //
+            // A distribiution filter must two joins in this case:
+            // Distribution.inDescription.taxon.id -join-> TaxonRelationship.relatedFrom.id in MISAPPLIED_NAME_FOR -join-> taxon.id
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
                     queryString, classification, languages, highlightFragments));
@@ -1658,14 +1680,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 
         if(addDistributionFilter){
+
             // B)
             // in this case we need a filter which uses a join query
             // to get the TaxonBase documents for the DescriptionElementBase documents
             // which are matching the areas in question
+            //
+            // for toTaxa, doByCommonName
             Query taxonAreaJoinQuery = createByDistributionJoinQuery(
                     namedAreaList,
                     distributionStatusList,
-                    luceneIndexToolProvider.newQueryFactoryFor(Distribution.class)
+                    distributionFilterQueryFactory
                     );
             multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
         }
