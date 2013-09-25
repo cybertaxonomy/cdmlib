@@ -225,10 +225,10 @@ public class CdmMassIndexer implements ICdmMassIndexer {
         fullTextSession.purgeAll(type);
 
         // TODO
-        // toggle on off flag doSpellIndex introduced for debugging, see ticket:
+        // toggle on/off flag doSpellIndex introduced for debugging, see ticket:
         //  #3721 (CdmMassIndexer.purge throwing errors due to LockObtainFailedException)
         // remove once this is fixed
-        boolean doSpellIndex = true;
+        boolean doSpellIndex = false;
 
         if(doSpellIndex){
             SearchFactoryImplementor searchFactory = (SearchFactoryImplementor)fullTextSession.getSearchFactory();
