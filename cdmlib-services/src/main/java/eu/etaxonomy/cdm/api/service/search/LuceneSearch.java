@@ -14,17 +14,13 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
@@ -32,7 +28,6 @@ import org.apache.lucene.search.grouping.TermAllGroupsCollector;
 import org.apache.lucene.search.grouping.TermFirstPassGroupingCollector;
 import org.apache.lucene.search.grouping.TermSecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
-import org.hibernate.search.ProjectionConstants;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -73,11 +68,11 @@ public class LuceneSearch {
     /**
      * classFilter
      */
-    protected Class<? extends CdmBase> cdmTypRestriction;
+    protected Class<? extends CdmBase> cdmTypeRestriction;
 
 
     public Class<? extends CdmBase> getCdmTypRestriction() {
-        return cdmTypRestriction;
+        return cdmTypeRestriction;
     }
 
     /**
@@ -109,7 +104,7 @@ public class LuceneSearch {
         if(clazz != null && clazz.equals(directorySelectClass)){
             clazz = null;
         }
-        this.cdmTypRestriction = clazz;
+        this.cdmTypeRestriction = clazz;
     }
 
     /**
@@ -203,7 +198,7 @@ public class LuceneSearch {
 
     /**
      * @param luceneQueryString
-     * @param cdmTypRestriction the type as additional filter criterion
+     * @param cdmTypeRestriction the type as additional filter criterion
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
      * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
      * @return
@@ -315,24 +310,13 @@ public class LuceneSearch {
     }
 
     /**
-     * @param cdmTypRestriction
+     * expands the query by adding a type restriction if the
+     * <code>cdmTypeRestriction</code> is not <code>NULL</code>
      */
     protected Query expandQuery() {
         Query fullQuery;
-        if(cdmTypRestriction != null){
-            BooleanQuery filteredQuery = new BooleanQuery();
-            BooleanQuery classFilter = new BooleanQuery();
-
-            Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypRestriction.getName());
-            TermQuery termQuery = new TermQuery(t);
-
-            classFilter.setBoost(0);
-            classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
-
-            filteredQuery.add(this.query, BooleanClause.Occur.MUST);
-            filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
-
-            fullQuery = filteredQuery;
+        if(cdmTypeRestriction != null){
+            fullQuery = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
         } else {
             fullQuery = this.query;
         }

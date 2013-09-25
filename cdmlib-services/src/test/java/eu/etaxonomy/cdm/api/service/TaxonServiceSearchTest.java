@@ -886,6 +886,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
+
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, null, null, null, true, null, null, null, null);
@@ -897,10 +898,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
+
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
                 "Abies", null, null, null, null, true, null, null, null, null);
-// FIXME       Assert.assertEquals("Expecting 0 entity", Integer.valueOf(0), pager.getCount());
+        Assert.assertEquals("Expecting 0 entity", Integer.valueOf(0), pager.getCount());
 
 
         pager = taxonService.findTaxaAndNamesByFullText(

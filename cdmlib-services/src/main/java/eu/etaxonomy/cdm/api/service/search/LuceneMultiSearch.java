@@ -64,8 +64,8 @@ public class LuceneMultiSearch extends LuceneSearch {
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
 
             // set the class for each of the sub searches
-            if(search.cdmTypRestriction != null){
-                if(cdmTypRestriction != null && !cdmTypRestriction.equals(search.cdmTypRestriction)){
+            if(search.cdmTypeRestriction != null){
+                if(cdmTypeRestriction != null && !cdmTypeRestriction.equals(search.cdmTypeRestriction)){
                     throw new LuceneMultiSearchException(
                             "LuceneMultiSearch can only handle once class restriction, but multiple given: " +
                             getCdmTypRestriction() + ", " + search.getCdmTypRestriction());
