@@ -9,23 +9,30 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.FilteredQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.join.JoinUtil;
 import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.hibernate.search.spatial.impl.SpatialQueryBuilderFromPoint;
@@ -49,6 +56,8 @@ public class QueryFactory {
     private final LuceneSearch luceneSearch;
 
     Set<String> textFieldNames = new HashSet<String>();
+
+    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<Class<? extends CdmBase>, IndexSearcher>();
 
     private BooleanQuery finalQuery;
 
@@ -184,11 +193,35 @@ public class QueryFactory {
 
     /**
      * @param idFieldName
+     * @param entitiy
+     * @return
+     */
+    public Query newEntityIdsQuery(String idFieldName, List<? extends CdmBase> entities){
+        BooleanQuery idInQuery = new BooleanQuery();
+        if(entities != null && entities.size() > 0 ){
+            for(CdmBase entity : entities){
+                idInQuery.add(newEntityIdQuery(idFieldName, entity), Occur.SHOULD);
+            }
+        }
+        return idInQuery;
+    }
+
+    /**
+     * @param idFieldName
      * @return
      */
     public Query newIsNotNullQuery(String idFieldName){
         return new TermQuery(new Term(NotNullAwareIdBridge.notNullField(idFieldName), NotNullAwareIdBridge.NOT_NULL_VALUE));
-  }
+    }
+
+    /**
+     * @param uuidFieldName
+     * @param entity
+     * @return
+     */
+    private Query newEntityUuidQuery(String uuidFieldName, IdentifiableEntity entity) {
+        return newTermQuery(uuidFieldName, entity.getUuid().toString(), false);
+    }
 
     /**
      * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the uuid
@@ -197,12 +230,32 @@ public class QueryFactory {
      * @param entities
      * @return
      */
-    public Query newEntityUuidQuery(String uuidFieldName, List<? extends IdentifiableEntity> entities){
+    public Query newEntityUuidsQuery(String uuidFieldName, List<? extends IdentifiableEntity> entities){
 
         BooleanQuery uuidInQuery = new BooleanQuery();
         if(entities != null && entities.size() > 0 ){
             for(IdentifiableEntity entity : entities){
-                uuidInQuery.add(newTermQuery(uuidFieldName, entity.getUuid().toString(), false), Occur.SHOULD);
+                uuidInQuery.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
+            }
+        }
+        return uuidInQuery;
+    }
+
+
+    /**
+     * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the
+     * supplied <code>uuids</code>
+     * the sql equivalent of this is <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
+     * @param uuidFieldName
+     * @param entities
+     * @return
+     */
+    public Query newUuidQuery(String uuidFieldName, List<UUID> uuids){
+
+        BooleanQuery uuidInQuery = new BooleanQuery();
+        if(uuids != null && uuids.size() > 0 ){
+            for(UUID uuid : uuids){
+                uuidInQuery.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
             }
         }
         return uuidInQuery;
@@ -265,6 +318,36 @@ public class QueryFactory {
                 new MatchAllDocsQuery(),
                 new QueryWrapperFilter( boxQuery )
         );
+    }
+
+    /**
+     *
+     * @param fromField
+     * @param toField
+     * @param joinFromQuery
+     * @param clazz
+     * @return
+     * @throws IOException
+     */
+    public Query newJoinQuery(String fromField, String toField, BooleanQuery joinFromQuery,
+            Class<? extends CdmBase> clazz) throws IOException {
+            return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(clazz));
+    }
+
+    /**
+     * @param clazz
+     * @return
+     */
+    private IndexSearcher indexSearcherFor(Class<? extends CdmBase> clazz) {
+        if(indexSearcherMap.get(clazz) == null){
+
+            IndexReader indexReader = luceneSearch.getIndexReaderFor(clazz);
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+            searcher.setDefaultFieldSortScoring(true, true);
+            indexSearcherMap.put(clazz, searcher);
+        }
+        IndexSearcher indexSearcher = indexSearcherMap.get(clazz);
+        return indexSearcher;
     }
 
 }

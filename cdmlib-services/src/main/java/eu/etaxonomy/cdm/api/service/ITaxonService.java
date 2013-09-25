@@ -37,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -576,6 +577,38 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
+
+    /**
+     * @param areaFilter
+     * @param statusFilter
+     * @param classification
+     *            Additional filter criterion: If a taxonomic classification
+     *            three is specified here the result set will only contain taxa
+     *            of the given classification
+     * @param highlightFragments
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPath
+     *            Common properties to initialize the instances of the
+     *            CDM types ({@link Taxon} and {@link Synonym}
+     *            this method can return - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a paged list of instances of {@link Taxon} instances
+     * @throws IOException
+     * @throws ParseException
+     */
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+            Classification classification,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException;
+
     /**
      * Searches for TaxonBase instances using the TaxonBase free text index.
      *
@@ -623,7 +656,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes,
-            String queryString, Classification classification, Set<NamedArea> namedAreas,
+            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
 

@@ -20,6 +20,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.queryParser.QueryParser;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
@@ -69,6 +70,8 @@ public class LuceneSearch {
 
     private Class<? extends CdmBase> directorySelectClass;
 
+    private Filter filter = null;
+
     protected Class<? extends CdmBase> getDirectorySelectClass() {
         return pushAbstractBaseTypeDown(directorySelectClass);
     }
@@ -81,6 +84,20 @@ public class LuceneSearch {
 
     public Class<? extends CdmBase> getClazz() {
         return clazz;
+    }
+
+    /**
+     * @return the filter
+     */
+    public Filter getFilter() {
+        return filter;
+    }
+
+    /**
+     * @param filter the filter to set
+     */
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
     /**
@@ -250,12 +267,10 @@ public class LuceneSearch {
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
         Query fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
-        return getSearcher().search(fullQuery, maxNoOfHits);
+        return getSearcher().search(fullQuery, filter, maxNoOfHits);
 
     }
     /**
-     * @param luceneQuery
-     * @param clazz the type as additional filter criterion
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
      * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
      * @return
@@ -299,7 +314,8 @@ public class LuceneSearch {
         }
         // - first pass
         TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
-        getSearcher().search(fullQuery, firstPassCollector);
+
+        getSearcher().search(fullQuery, filter , firstPassCollector);
         Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
@@ -313,7 +329,7 @@ public class LuceneSearch {
         TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(
                 groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields
                 );
-        getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
+        getSearcher().search(fullQuery, filter, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
         TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 

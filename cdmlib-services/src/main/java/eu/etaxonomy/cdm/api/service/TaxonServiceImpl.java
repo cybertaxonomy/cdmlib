@@ -22,14 +22,13 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
-import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.join.JoinUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -69,9 +68,11 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
@@ -417,7 +418,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
      */
     @Override
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz,
+            String uninomial,	String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<TaxonBase>();
@@ -427,6 +430,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
     }
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#listTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
@@ -1368,6 +1372,29 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
+    @Override
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+            Classification classification,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException {
+
+        LuceneSearch luceneSearch = prepareByDistributionSearch(areaFilter, statusFilter, classification);
+
+        // --- execute search
+        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.TAXON, "id");
+
+        // ---  initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
+
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+    }
+
     /**
      * @param clazz
      * @param queryString
@@ -1424,11 +1451,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param languages
      * @param highlightFragments
      * @return
+     * @throws IOException
      */
     protected LuceneSearch prepareFindByTaxonRelationFullTextSearch(TaxonRelationshipEdge edge, String queryString, Classification classification, List<Language> languages,
-            boolean highlightFragments) {
+            boolean highlightFragments) throws IOException {
 
-        String idField;
+        String fromField;
         String queryTermField;
         String toField = "id"; // TaxonBase.uuid
 
@@ -1436,36 +1464,24 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             throw new RuntimeException("Bidirectional joining not supported!");
         }
         if(edge.isEvers()){
-            idField = "relatedFrom.id";
+            fromField = "relatedFrom.id";
             queryTermField = "relatedFrom.titleCache";
         } else if(edge.isInvers()) {
-            idField = "relatedTo.id";
+            fromField = "relatedTo.id";
             queryTermField = "relatedTo.titleCache";
         } else {
             throw new RuntimeException("Invalid direction: " + edge.getDirections());
         }
 
         BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery joinFromQuery = new BooleanQuery();
-        Query joinQuery = null;
 
         LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
         QueryFactory queryFactory = new QueryFactory(luceneSearch);
 
+        BooleanQuery joinFromQuery = new BooleanQuery();
         joinFromQuery.add(queryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
         joinFromQuery.add(queryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
-        try {
-            // TODO move into QueryFactory if possible
-            if(taxonRelationshipSearcher == null){
-                IndexReader taxonRelationshipReader = luceneSearch.getIndexReaderFor(TaxonRelationship.class);
-                taxonRelationshipSearcher = new IndexSearcher(taxonRelationshipReader);
-                taxonRelationshipSearcher.setDefaultFieldSortScoring(true, true);
-            }
-            joinQuery = JoinUtil.createJoinQuery(idField, toField, joinFromQuery, taxonRelationshipSearcher);
-            // end of possible move
-        } catch (IOException e) {
-            logger.error(e);
-        }
+        Query joinQuery = queryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
         luceneSearch.setSortFields(sortFields);
@@ -1492,9 +1508,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString, Classification classification,
-            Set<NamedArea> namedAreas, List<Language> languages, boolean highlightFragments, Integer pageSize,
+            Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus, List<Language> languages, boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        // convert sets to lists
+        List<NamedArea> namedAreaList = null;
+        List<PresenceAbsenceTermBase<?>>distributionStatusList = null;
+        if(namedAreas != null){
+            namedAreaList = new ArrayList<NamedArea>(namedAreas.size());
+            namedAreaList.addAll(namedAreas);
+        }
+        if(distributionStatus != null){
+            distributionStatusList = new ArrayList<PresenceAbsenceTermBase<?>>(distributionStatus.size());
+            distributionStatusList.addAll(distributionStatus);
+        }
 
         // set default if parameter is null
         if(searchModes == null){
@@ -1529,9 +1557,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             idFieldMap.put(CdmBaseType.TAXON, "id");
         }
 
-        // TODO implement area filter
-
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
+
+        if(namedAreas != null && namedAreas.size() > 0){
+            //  - http://www.javaranch.com/journal/2009/02/filtering-a-lucene-search.html
+            //  - http://stackoverflow.com/questions/17709256/lucene-solr-using-complex-filters -> QueryWrapperFilter
+            // add Filter to search as http://lucene.apache.org/core/3_6_0/api/all/org/apache/lucene/search/Filter.html
+            // which will be put into a FilteredQuersy  in the end ?
+
+            //
+            // 3. how does it work in spacial?
+            // see
+            //  - http://www.nsshutdown.com/projects/lucene/whitepaper/locallucene_v2.html
+            //  - http://www.infoq.com/articles/LuceneSpatialSupport
+            //  - http://www.mhaller.de/archives/156-Spatial-search-with-Lucene.html
+
+
+            // TODO can't we use a static QueryFactory field?
+            QueryFactory queryFactory = new QueryFactory(luceneSearches.get(0));
+
+            Query taxonAreaJoinQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, queryFactory);
+            multiSearch.setFilter(new QueryWrapperFilter(taxonAreaJoinQuery));
+        }
 
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
@@ -1546,6 +1593,74 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
+
+    /**
+     * @param namedAreaList at least one area must be in the list
+     * @param distributionStatusList optional
+     * @return
+     * @throws IOException
+     */
+    protected Query createByDistributionJoinQuery(List<NamedArea> namedAreaList, List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            QueryFactory queryFactory) throws IOException {
+
+        String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+        String toField = "id"; // id in TaxonBase index
+
+        BooleanQuery areaQuery = new BooleanQuery();
+        // area field from Distribution
+        areaQuery.add(queryFactory.newEntityIdsQuery("area.id", namedAreaList), Occur.MUST);
+
+        // status field from Distribution
+        if(distributionStatusList != null && distributionStatusList.size() > 0){
+            areaQuery.add(queryFactory.newEntityIdsQuery("status.id", distributionStatusList), Occur.MUST);
+        }
+
+        logger.debug("prepareByAreaSearch() query: " + areaQuery.toString());
+
+        Query taxonAreaJoinQuery = queryFactory.newJoinQuery(fromField, toField, areaQuery, Distribution.class);
+
+        return taxonAreaJoinQuery;
+    }
+
+    /**
+     * This method has been primarily created for testing the area join query but might
+     * also be useful in other situations
+     *
+     * @param namedAreaList
+     * @param distributionStatusList
+     * @param classification
+     * @param highlightFragments
+     * @return
+     * @throws IOException
+     */
+    protected LuceneSearch prepareByDistributionSearch(
+            List<NamedArea> namedAreaList, List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            Classification classification) throws IOException {
+
+        BooleanQuery finalQuery = new BooleanQuery();
+
+        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
+        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false)};
+        luceneSearch.setSortFields(sortFields);
+
+
+        Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, queryFactory);
+
+        finalQuery.add(byAreaQuery, Occur.MUST);
+
+        if(classification != null){
+            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+        }
+
+        logger.info("prepareByAreaSearch() query: " + finalQuery.toString());
+        luceneSearch.setQuery(finalQuery);
+
+        return luceneSearch;
+    }
+
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findByDescriptionElementFullText(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List, java.util.List, boolean, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
@@ -1616,7 +1731,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param directorySelectClass
      * @return
      */
-    protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Feature> features,
+    protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz,
+            String queryString, Classification classification, List<Feature> features,
             List<Language> languages, boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
@@ -1672,7 +1788,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // --- IdentifieableEntity fields - by uuid
         if(features != null && features.size() > 0 ){
-            finalQuery.add(queryFactory.newEntityUuidQuery("feature.uuid", features), Occur.MUST);
+            finalQuery.add(queryFactory.newEntityUuidsQuery("feature.uuid", features), Occur.MUST);
         }
 
         // the description must be associated with a taxon
@@ -2190,9 +2306,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Reference<?> sourceReference = syn.getSec();
 
         if (sourceReference == null){
-            logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon");
-            //TODO:Remove
-            System.out.println("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());
+            logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());
             sourceReference = taxon.getSec();
         }
 

@@ -152,6 +152,7 @@ public class LuceneMultiSearch extends LuceneSearch {
         return analyzer;
     }
 
+
     /**
      * @param analyzer
      * @param a

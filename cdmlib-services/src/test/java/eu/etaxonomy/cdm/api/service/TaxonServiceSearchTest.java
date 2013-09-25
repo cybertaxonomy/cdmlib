@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -46,12 +47,14 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -99,6 +102,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
 
+
+
     @SpringBeanByType
     private ITaxonService taxonService;
     @SpringBeanByType
@@ -118,6 +123,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private Set<Class<? extends CdmBase>> typesToIndex = null;
 
+    NamedArea germany;
+    NamedArea france ;
+    NamedArea russia ;
+    NamedArea canada ;
+
     /**
      * @throws java.lang.Exception
      */
@@ -128,7 +138,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         typesToIndex.add(TaxonBase.class);
         typesToIndex.add(TaxonRelationship.class);
 
-
+        germany =  WaterbodyOrCountry.GERMANY();
+        france = WaterbodyOrCountry.FRANCEFRENCHREPUBLIC();
+        russia = WaterbodyOrCountry.RUSSIANFEDERATION();
+        canada = WaterbodyOrCountry.CANADA();
 
     }
 
@@ -850,7 +863,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // synonym in classification ???
     }
 
-//    @Test
+    @Test
+    @DataSet
+    public final void testPrepareByAreaSearch() throws IOException, ParseException {
+
+        List<PresenceAbsenceTermBase<?>> statusFilter = new ArrayList<PresenceAbsenceTermBase<?>>();
+        List<NamedArea> areaFilter = new ArrayList<NamedArea>();
+        areaFilter.add(germany);
+        areaFilter.add(canada);
+        areaFilter.add(russia);
+
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDistribution(areaFilter, statusFilter, null, 20, 0, null, null);
+        Assert.assertEquals("Expecting 2 entities", Integer.valueOf(2), Integer.valueOf(pager.getRecords().size()));
+
+    }
+
+    @Test
     @DataSet
     public final void testFindTaxaAndNamesByFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
@@ -860,30 +888,89 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, true, null, null, null, null);
+                "Abies", null, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("Expecting 8 entities", Integer.valueOf(8), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, true, null, null, null, null);
+                "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
-                "Abies", null, null, null, true, null, null, null, null);
+                "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 0 entity", Integer.valueOf(0), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
-                "balsam", null, null, null, true, null, null, null, null);
+                "balsam", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                "kawakamii", null, null, null, true, null, null, null, null);
+                "kawakamii", null, null, null, null, true, null, null, null, null);
         logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+    }
+
+    @Test
+    @DataSet
+    public final void testFindTaxaAndNamesByFullText_AreaFilter() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        Set<NamedArea> a_germany_canada_russia = new HashSet<NamedArea>();
+        a_germany_canada_russia.add(germany);
+        a_germany_canada_russia.add(canada);
+        a_germany_canada_russia.add(russia);
+
+        Set<NamedArea> a_russia = new HashSet<NamedArea>();
+        a_russia.add(russia);
+
+        Set<PresenceAbsenceTermBase<?>> present = new HashSet<PresenceAbsenceTermBase<?>>();
+        present.add(PresenceTerm.PRESENT());
+
+        Set<PresenceAbsenceTermBase<?>> present_native = new HashSet<PresenceAbsenceTermBase<?>>();
+        present_native.add(PresenceTerm.PRESENT());
+        present_native.add(PresenceTerm.NATIVE());
+
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("Expecting 2 entities", Integer.valueOf(2), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
+     // TODO area filter is not working for misapplied names
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
+        // TODO area filter is not working for synonyms
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present, null, true, null, null, null, null);
+        Assert.assertEquals(Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals(Integer.valueOf(2), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_russia, present, null, true, null, null, null, null);
+        Assert.assertEquals(Integer.valueOf(0), pager.getCount());
 
     }
 
@@ -1082,15 +1169,6 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         classificationService.saveOrUpdate(europeanAbiesClassification);
         classificationService.saveOrUpdate(alternativeClassification);
 
-
-        //
-        // prepare namedAreas
-        //
-        NamedArea germany =  WaterbodyOrCountry.GERMANY();
-        NamedArea france = WaterbodyOrCountry.FRANCEFRENCHREPUBLIC();
-        NamedArea russia = WaterbodyOrCountry.RUSSIANFEDERATION();
-        NamedArea canada = WaterbodyOrCountry.CANADA();
-
         //
         // Description
         //
@@ -1104,6 +1182,15 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // CommonTaxonName
         d_abies_alba.addElement(CommonTaxonName.NewInstance("Weißtanne", Language.GERMAN()));
         d_abies_alba.addElement(CommonTaxonName.NewInstance("silver fir", Language.ENGLISH()));
+        d_abies_alba.addElement(Distribution
+                .NewInstance(
+                        germany,
+                        PresenceTerm.NATIVE()));
+        d_abies_alba.addElement(Distribution
+                .NewInstance(
+                        russia,
+                        AbsenceTerm.ABSENT()));
+
         // TextData
         d_abies_balsamea
             .addElement(TextData
@@ -1121,6 +1208,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 .NewInstance(
                         canada,
                         PresenceTerm.PRESENT()));
+
+        d_abies_balsamea
+        .addElement(Distribution
+                .NewInstance(
+                        germany,
+                        PresenceTerm.NATIVE()));
 
         d_abies_balsamea
                 .addElement(TextData
