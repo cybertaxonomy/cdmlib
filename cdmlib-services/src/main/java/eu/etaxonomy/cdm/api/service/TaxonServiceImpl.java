@@ -1566,7 +1566,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             // which will be put into a FilteredQuersy  in the end ?
 
             //
-            // 3. how does it work in spacial?
+            // 3. how does it work in spatial?
             // see
             //  - http://www.nsshutdown.com/projects/lucene/whitepaper/locallucene_v2.html
             //  - http://www.infoq.com/articles/LuceneSpatialSupport
