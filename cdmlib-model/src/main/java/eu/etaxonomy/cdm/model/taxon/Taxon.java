@@ -41,6 +41,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -48,6 +49,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -84,7 +86,10 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 @Configurable
-@ClassBridge(impl=GroupByTaxonClassBridge.class)
+@ClassBridges({
+    @ClassBridge(impl = GroupByTaxonClassBridge.class),
+    @ClassBridge(impl = TaxonRelationshipClassBridge.class)
+})
 public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
@@ -465,10 +470,12 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         Set<TaxonRelationship> relations = new HashSet<TaxonRelationship>();
 
         for(TaxonRelationship relationship : getTaxonRelations()){
-            if(relationship.getFromTaxon().equals(possiblyRelatedTaxon))
+            if(relationship.getFromTaxon().equals(possiblyRelatedTaxon)) {
                 relations.add(relationship);
-            if(relationship.getToTaxon().equals(possiblyRelatedTaxon))
+            }
+            if(relationship.getToTaxon().equals(possiblyRelatedTaxon)) {
                 relations.add(relationship);
+            }
         }
 
         return relations.size() > 0 ? relations : null;
@@ -590,6 +597,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
      */
+    @Override
     @Deprecated //for inner use by RelationshipBase only
     public void addRelationship(RelationshipBase rel){
         if (rel instanceof TaxonRelationship){
@@ -1527,17 +1535,18 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return unplaced;
     }
 
+    @Override
     @Transient
     public boolean isOrphaned() {
-    	
-    	if(taxonNodes == null || taxonNodes.isEmpty()) {
-    		if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
-				return true;
-	    	}
-    	}
-    	return false;
+
+        if(taxonNodes == null || taxonNodes.isEmpty()) {
+            if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
-    
+
     public void setUnplaced(boolean unplaced) {
         this.unplaced = unplaced;
     }

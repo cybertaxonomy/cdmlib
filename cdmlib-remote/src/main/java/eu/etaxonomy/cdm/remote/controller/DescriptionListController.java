@@ -241,6 +241,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
                 HttpStatusMessage.UUID_NOT_FOUND.send(response);
             }
         }
+
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features.asSet(), type, pageSize,
                 pageNumber, getInitializationStrategy());
 

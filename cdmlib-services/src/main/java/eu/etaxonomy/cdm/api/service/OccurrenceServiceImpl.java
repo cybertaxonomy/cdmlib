@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
@@ -92,6 +93,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Autowired
     private ITaxonDao taxonDao;
 
+    @Autowired
+    private ILuceneIndexToolProvider luceneIndexToolProvider;
 
 
     public OccurrenceServiceImpl() {
@@ -338,11 +341,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), FieldUnit.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, FieldUnit.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(FieldUnit.class);
 
         // --- criteria
-        luceneSearch.setClazz(clazz);
+        luceneSearch.setCdmTypRestriction(clazz);
         if(queryString != null){
             textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
             finalQuery.add(textQuery, Occur.MUST);
