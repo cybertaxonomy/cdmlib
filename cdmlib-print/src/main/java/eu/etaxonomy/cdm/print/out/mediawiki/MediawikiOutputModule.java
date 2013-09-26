@@ -9,20 +9,15 @@
  */
 package eu.etaxonomy.cdm.print.out.mediawiki;
 
-import java.io.BufferedReader;
-import java.io.DataInputStream;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.StringReader;
 import java.io.StringWriter;
 import java.net.URL;
 
-import javax.security.auth.login.LoginException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.transform.Source;
@@ -35,6 +30,8 @@ import javax.xml.transform.stream.StreamSource;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
+import org.jdom.JDOMException;
+import org.jdom.input.SAXBuilder;
 import org.jdom.transform.JDOMSource;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -43,7 +40,7 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 
 /**
- * @author l.morris
+ * @author l.morris, s.buers
  * @date Sep 11, 2013
  * 
  */
@@ -53,12 +50,41 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 			.getLogger(MediawikiOutputModule.class);
 
 	public static String STYLESHEET_RESOURCE_DEFAULT = "src/main/resources/stylesheets/mediawiki/multipages.xsl";
+	
+	
+	// default wiki - exportparameter
+	public String prefix="";
+	public String username="CDM Mediawiki Exporter"; 
+	
+	public MediawikiOutputModule(String mediaWikiPagePrefix){
+		super();
+		this.prefix=mediaWikiPagePrefix+":";
+	}
+	
+	
+	public MediawikiOutputModule() {
+		// TODO Auto-generated constructor stub
+	}
+
+
+	public void setPrefix(String prefix) {
+		this.prefix = prefix;
+	}
+
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
 
 	public void output(Document document, File exportFolder,
 			IProgressMonitor progressMonitor) {
 
+		
 		super.output(document, exportFolder, progressMonitor);
-
+		
+		
+		
 		try {
 
 			// URL xslURL = new
@@ -87,7 +113,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 					STYLESHEET_RESOURCE_DEFAULT));
 
 
-			// get StreamSource out of namespDocument!!!
+			// get StreamSource out of namespDocument
 
 			DOMSource domSource = new DOMSource(namespDocument);
 			StringWriter xmlAsWriter = new StringWriter();
@@ -108,8 +134,8 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 				// new
 				// DOMSource source = new DOMSource(builder.parse(document));
 
-				// JDOMBuilder jdomBuilder = new JDOMBuilder();
-				// Document doc = domBuilder.build(document);
+//				 JDOMBuilder jdomBuilder= new JDOMBuilder();
+//				 Document doc = domBuilder.build(document);
 
 				JDOMSource source = new JDOMSource(document);
 				Source xmlSource = new DOMSource();
@@ -123,7 +149,9 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 				// Result result = new SAXResult();
 				StreamResult result = new StreamResult(out);
 
-				// Start XSLT transformation and FOP processing
+				// Run XSLT transformation 
+				transformer.setParameter("prefix", prefix);
+				transformer.setParameter("username", username);
 				transformer.transform(source, result);
 
 				// get the wikitext of the generated file
@@ -148,89 +176,25 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 	}
 
-	/*
-	 * @author l.morris
+	/**
+	 * @return
 	 */
-	private void uploadToMediwiki() {
-
-		// export via API
-		String urlWiki = "http://biowikifarm.net/testwiki";
-		String loginWiki = "Lorna Morris";
-		boolean uploadImagesWiki = true;
-
-		WikiBot myBot = new WikiBot(urlWiki, loginWiki, "dolfin_69");
-
+	private static Document useExternalXMLSource() {
+		SAXBuilder testbuilder = new SAXBuilder();
+		  File xmlFile = new File("/home/sybille/development/mediawiki/kick_off/ericaceae_source.xml");
+		  Document document1=null;
 		try {
-
-			//myBot.login();
-			if (!myBot.login()) {
-				System.out.println("Login failed");
-				return;
-			}
-
-			//myBot.edit("lornatest", "lorna text", "lorna summary");
-
-			FileInputStream fstream = new FileInputStream("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\Mediwiki7.xml");
-
-			DataInputStream in = new DataInputStream(fstream);
-			BufferedReader br = new BufferedReader(new InputStreamReader(in));
-			String strLine;
-			String wikitext = "";
-			//Read File Line By Line
-			while ((strLine = br.readLine()) != null)   {
-				// Print the content on the console
-				//System.out.println (strLine);
-				wikitext = wikitext + strLine;
-			}
-			//Close the input stream
-			in.close();	 
-
-			URL url = new URL("http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg");
-			
-
-			//File file = new File("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\palm_tc_14568_4.jpg");//palm_tc_14494_1.jpg //mediwiki8.xml");
-			File file2 = new File("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\Mediwiki7.xml");
-
-			// this works but all the XML metadata is added to a single page, we want to import the XML file.
-			// this one works
-			//TODO: Try to call edit() for each page from XML file 
-			//myBot.edit("lornatest2", wikitext, "lorna summary"); 
-			myBot.importPages("Mediwiki7b.xml", file2, "lorna summary");//problems
-			//myBot.importPages("Internal:Cichorium", file2, "lorna summary");
-
-			//this uploadAFile works to upload an image
-			//you need to have the image e.g. palm_tc_14566_1.jpg
-			//so http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg doesn't work
-			File file = new File("http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg");
-			//File file = new File(url.toURI());
-			myBot.uploadAFile(file, "palm_tc_14566_1.jpg", "my text", "my comment");
-
-			//need to get a list of image paths. Xper2 use Base.getAllResources to get these.
-			//myBot.uploadAFile(file, filename, text, comment);
-			//List<WikiPage>
-			//create Wiki page - name, content, comments
-			// e.g. new WikiPage('taxonName', wikitext, comments)
-
-			/*for (int i = 0; i < listOfpages.size(); i++) {
-
-					if (myBot.importPage(listOfpages.get(i))) {
-						pagesOK++;
-					} else {
-						pagesKO++;
-					}
-			}*/
-
-		} catch (LoginException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		} catch (Exception e) {
-			e.printStackTrace();
-			e.getMessage();
-			return;
-		} 
-
+			document1 = (Document) testbuilder.build(xmlFile);
+		} catch (JDOMException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		return document1;
 	}
+
 
 	/*
 	 * (non-Javadoc)
@@ -254,7 +218,9 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 		PublishConfigurator configurator = PublishConfigurator
 				.NewRemoteInstance();
 		configurator.setExportFolder(new File("src/main/resources/tmp"));
-		Document document = new Document();
+		// try out my own xml:
+				
+		Document document = useExternalXMLSource();
 
 		outputModule.output(document, configurator.getExportFolder(),
 				configurator.getProgressMonitor());
