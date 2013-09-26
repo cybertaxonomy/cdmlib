@@ -37,7 +37,10 @@ public enum MatchMode {
      */
     END("LIKE");
 
+    private static final char STAR_WILDCARD = '*';
+    private static final char SQL_WILDCARD = '%';
     private String matchOperator;
+    private final String wildcardStr = "" + SQL_WILDCARD;
 
     MatchMode(String matchOperator){
         this.matchOperator = matchOperator;
@@ -47,7 +50,7 @@ public enum MatchMode {
         if(queryString == null){
             return "";
         }
-        queryString = queryString.replace('*', '%');
+        queryString = queryString.replace(STAR_WILDCARD, SQL_WILDCARD);
         switch(this){
             case BEGINNING:
                 queryString = appendWildcard(queryString);
@@ -71,8 +74,8 @@ public enum MatchMode {
      * @return
      */
     private String prependWildcard(String queryString) {
-        if(!queryString.startsWith("%")){
-            queryString += "%";
+        if(!queryString.startsWith(wildcardStr)){
+            queryString += wildcardStr;
         }
         return queryString;
     }
@@ -82,8 +85,8 @@ public enum MatchMode {
      * @return
      */
     private String appendWildcard(String queryString) {
-        if(!queryString.endsWith("%")){
-            queryString += "%";
+        if(!queryString.endsWith(wildcardStr)){
+            queryString += wildcardStr;
         }
         return queryString;
     }
