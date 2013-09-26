@@ -46,11 +46,6 @@ public class TermUpdater_314_315 extends TermUpdaterBase implements ITermUpdater
 		super(startTermVersion, endTermVersion);
 	}
 	
-// 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#invoke()
-	 */
 	@Override
 	protected List<ITermUpdaterStep> getUpdaterList() {
 		List<ITermUpdaterStep> list = new ArrayList<ITermUpdaterStep>();
