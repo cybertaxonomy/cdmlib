@@ -369,7 +369,13 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
-			props.addPropertyValue(key, persistentProperties.getProperty(key));
+			
+			if (key.equals("nomenclaturalCode") && persistentProperties.getProperty(key).equals("ICBN")){
+				//bugfix for old nomenclatural codes, remove if fixed elsewhere, see https://dev.e-taxonomy.eu/trac/ticket/3658
+				props.addPropertyValue(key, NomenclaturalCode.ICNAFP.name());
+			}else{
+				props.addPropertyValue(key, persistentProperties.getProperty(key));
+			}
 		}
 
 		bd.setPropertyValues(props);
