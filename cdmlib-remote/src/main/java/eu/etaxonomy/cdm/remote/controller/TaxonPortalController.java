@@ -388,7 +388,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
              throws IOException, ParseException, LuceneMultiSearchException {
 
 
-        logger.info("search : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("search : " + requestPathAndQuery(request) );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
@@ -433,6 +433,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      * @throws IOException
      * @throws ParseException
      */
+    @SuppressWarnings("rawtypes")
     @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/findByDescriptionElementFullText"})
     public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
             @RequestParam(value = "clazz", required = false) Class clazz,
@@ -448,7 +449,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             )
              throws IOException, ParseException {
 
-         logger.info("findByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByDescriptionElementFullText : " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -502,7 +503,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         if(request != null){
-            logger.info("doGetSynonymy() " + request.getRequestURI());
+            logger.info("doGetSynonymy() " + requestPathAndQuery(request));
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -535,7 +536,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 throws IOException {
 
         if(request != null){
-            logger.info("getAccepted() " + request.getRequestURI());
+            logger.info("getAccepted() " + requestPathAndQuery(request));
         }
 
         TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
@@ -618,7 +619,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public List<TaxonRelationship> doGetTaxonRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetTaxonRelations()" + request.getRequestURI());
+        logger.info("doGetTaxonRelations()" + requestPathAndQuery(request));
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
         List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
@@ -673,7 +674,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<NameRelationship> doGetFromNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameFromNameRelations()" + request.getRequestURI());
+        logger.info("doGetNameFromNameRelations()" + requestPathAndQuery(request));
 
         TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
@@ -745,7 +746,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
         if(request != null){
-            logger.info("doGetDescriptions()" + request.getRequestURI());
+            logger.info("doGetDescriptions()" + requestPathAndQuery(request));
         }
         List<DefinedTermBase> markerTypeTerms = null;
         Set<UUID> sMarkerTypeUUIDs = null;
@@ -795,7 +796,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElements() - " + request.getRequestURI());
+        logger.info("doGetDescriptionElements() - " + requestPathAndQuery(request));
 
         //ModelAndView mv = new ModelAndView();
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -829,7 +830,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
+        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
         ModelAndView mv = new ModelAndView();
 

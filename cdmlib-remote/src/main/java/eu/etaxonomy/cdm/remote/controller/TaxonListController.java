@@ -138,7 +138,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
              throws IOException, ParseException, LuceneMultiSearchException {
 
 
-        logger.info("search : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("search : " + requestPathAndQuery(request) );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
@@ -197,7 +197,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException {
 
-         logger.info("findByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByDescriptionElementFullText : " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -240,7 +240,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException {
 
-         logger.info("findByFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByFullText : " + requestPathAndQuery(request)  );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -274,7 +274,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException, LuceneMultiSearchException {
 
-         logger.info("findByEverythingFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByEverythingFullText : " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
