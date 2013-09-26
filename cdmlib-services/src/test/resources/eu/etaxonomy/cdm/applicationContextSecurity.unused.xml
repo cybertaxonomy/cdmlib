@@ -117,7 +117,7 @@
     </bean>
 
 
-    <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
+    <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TitleCacheAutoInitializer"></bean>
 
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">
 	   <property name="beanAutoInitializers">

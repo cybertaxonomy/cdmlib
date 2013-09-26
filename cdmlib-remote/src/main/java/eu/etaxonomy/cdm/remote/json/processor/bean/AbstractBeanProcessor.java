@@ -30,7 +30,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 
 /**
  * @author a.kohlbecker

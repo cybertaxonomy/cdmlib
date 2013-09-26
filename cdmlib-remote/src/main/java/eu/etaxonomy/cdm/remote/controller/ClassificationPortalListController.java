@@ -150,7 +150,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
         }
         rank = findRank(rankUuid);
 
-        return service.loadRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
+        return service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
     }
 
 

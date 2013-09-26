@@ -16,7 +16,7 @@ import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
 import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
 
-import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 
 /**
  * @author a.kohlbecker

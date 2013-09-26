@@ -9,9 +9,9 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.description.IIdentificationKeyDao;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.DaoBase;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 
 @Repository
 public class IdentificationKeyDaoImpl extends DaoBase implements IIdentificationKeyDao {
