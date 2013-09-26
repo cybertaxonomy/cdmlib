@@ -1495,7 +1495,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         BooleanQuery finalQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         BooleanQuery joinFromQuery = new BooleanQuery();

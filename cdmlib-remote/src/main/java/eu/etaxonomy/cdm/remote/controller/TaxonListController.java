@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,6 +20,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -29,8 +31,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
-import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -38,12 +39,12 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -113,56 +114,59 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      *            weather to search for instances of {@link Synonym} - <i>optional parameter</i>
      * @param doTaxaByCommonNames
      *            for instances of {@link Taxon} by a common name used - <i>optional parameter</i>
-     * @param matchMode
-     *           valid values are "EXACT", "BEGINNING", "ANYWHERE", "END" (case sensitive !!!)
      * @return a Pager on a list of {@link IdentifiableEntity}s initialized by
      *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
      * @throws IOException
+     * @throws LuceneMultiSearchException
+     * @throws ParseException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"})
-    public Pager<IdentifiableEntity> doFindTaxaAndNames(
+    @RequestMapping(method = RequestMethod.GET, value={"search"})
+    public Pager<SearchResult<TaxonBase>> doFindTaxaAndNames(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,
+            @RequestParam(value = "status", required = false) Set<PresenceAbsenceTermBase<?>> status,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
             @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
             @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
             @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
             @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
-            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException {
+             throws IOException, ParseException, LuceneMultiSearchException {
 
 
-        logger.info("findTaxaAndNames : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("search : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
-        IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
-
-        config.setTaxonPropertyPath(initializationStrategy);
-
-        config.setPageNumber(pagerParams.getPageIndex());
-        config.setPageSize(pagerParams.getPageSize());
-        config.setTitleSearchString(query);
-        config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
-        config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );
-        config.setDoMisappliedNames(doMisappliedNames != null ? doMisappliedNames : Boolean.FALSE);
-        config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
-        config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
-//        config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
-        config.setNamedAreas(areas);
-        if(treeUuid != null){
-            Classification classification = classificationService.find(treeUuid);
-            config.setClassification(classification);
+        // TODO change type of do* parameters  to TaxaAndNamesSearchMode
+        EnumSet<TaxaAndNamesSearchMode> searchModes = EnumSet.noneOf(TaxaAndNamesSearchMode.class);
+        if(BooleanUtils.toBoolean(doTaxa)) {
+            searchModes.add(TaxaAndNamesSearchMode.doTaxa);
+        }
+        if(BooleanUtils.toBoolean(doSynonyms)) {
+            searchModes.add(TaxaAndNamesSearchMode.doSynonyms);
+        }
+        if(BooleanUtils.toBoolean(doMisappliedNames)) {
+            searchModes.add(TaxaAndNamesSearchMode.doMisappliedNames);
+        }
+        if(BooleanUtils.toBoolean(doTaxaByCommonNames)) {
+            searchModes.add(TaxaAndNamesSearchMode.doTaxaByCommonNames);
         }
 
-        return service.findTaxaAndNames(config);
+        Classification classification = null;
+        if(treeUuid != null){
+            classification = classificationService.find(treeUuid);
+        }
 
+        return service.findTaxaAndNamesByFullText(searchModes, query,
+                classification, areas, status, null,
+                false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                null, initializationStrategy);
     }
 
     /**

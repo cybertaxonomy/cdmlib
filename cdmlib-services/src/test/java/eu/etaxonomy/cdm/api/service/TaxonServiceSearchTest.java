@@ -886,12 +886,26 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
+        Classification alternateClassification = classificationService.find(UUID.fromString(CLASSIFICATION_ALT_UUID));
+
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
-        Assert.assertEquals("Expecting 8 entities", Integer.valueOf(8), pager.getCount());
+        Assert.assertEquals("doTaxa & doSynonyms", Integer.valueOf(8), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.allOf(TaxaAndNamesSearchMode.class),
+                "Abies", null, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("all search modes", Integer.valueOf(8), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.allOf(TaxaAndNamesSearchMode.class),
+                "Abies", alternateClassification, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("all search modes, filtered by alternateClassification", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
