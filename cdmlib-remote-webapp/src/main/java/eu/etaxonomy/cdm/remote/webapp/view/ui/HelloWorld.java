@@ -124,7 +124,7 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 	@Autowired
 	private AuthenticationManager authenticationManager;
 	@Autowired
-	private ApplicationContext applicationContext;
+	private transient ApplicationContext applicationContext;
 
 	private SecurityContext context;
 	private Authentication authentication;
@@ -166,7 +166,7 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 	private ExcelExporter exporter = new ExcelExporter();
 	private Wizard wizard;
 	private boolean isWizard = true;
-	
+		
 	@Override 	
 	protected void init(VaadinRequest request) {
 		context = SecurityContextHolder.getContext();
