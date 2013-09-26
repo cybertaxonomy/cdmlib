@@ -14,12 +14,14 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.jdom.Document;
+import org.jdom.output.Format;
+import org.jdom.output.XMLOutputter;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
@@ -46,51 +48,62 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
 //              "application/atom+xml"));
 //          postRequest.setEntity(entity);
 
-    private BioCaseResponseSchemaAdapter schemaAdapter;
+    private final BioCaseResponseSchemaAdapter schemaAdapter;
 
     /**
      * Constructs a new BioCaseServiceWrapper with the baseUrl: <i>http://ww3.bgbm.org/biocase/pywrapper.cgi</i>
      */
     public BioCaseQueryServiceWrapper() {
-        setBaseUrl("http://ww3.bgbm.org/biocase/pywrapper.cgi");
+        setBaseUrl("http://ww3.bgbm.org");
         schemaAdapter = new BioCaseResponseSchemaAdapter();
         addSchemaAdapter(schemaAdapter);
     }
 
     /**
      * Queries the BioCASE provider with the given {@link BioCaseQuery}.
-     * @return A list of {@link SpecimenOrObservationBase} extracted from the resulting http response.
+     * @return The response as an {@link InputStream}
      */
-    public List<SpecimenOrObservationBase> query(BioCaseQuery query) throws ClientProtocolException, IOException, URISyntaxException{
-        List<SpecimenOrObservationBase> results = null;
-//        Document query = new BioCaseQueryGenerator().generateQuery();
-//        String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(query);
+    public InputStream query(BioCaseQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+        Document doc = new BioCaseQueryGenerator().generateXMLQuery(query);
+        String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
         List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
         addNameValuePairTo(queryParamsPOST, "Submit", "Submit");
-        addNameValuePairTo(queryParamsPOST, "query", new BioCaseQueryGenerator().generateStringQuery());
+        addNameValuePairTo(queryParamsPOST, "query", xmlOutputString);
         UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
-//        httpEntity.setContentType(new BasicHeader("Content-Type", "application/xml"));
         List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
         addNameValuePairTo(queryParamsGET, "dsa", "herbar");
         URI uri = createUri("/biocase/pywrapper.cgi", queryParamsGET);
 
-        InputStream responseStream = executeHttpPost(uri, null, httpEntity);
+        return executeHttpPost(uri, null, httpEntity);
 //        InputStream responseStream = executeHttpPost(new URI("http", "ww3.bgbm.org", "/biocase/pywrapper.cgi" , "dsa=Herbar", null), null, httpEntity);
-        try {
-            results = schemaAdapter.getCmdEntities(responseStream);
-        } catch (ClientProtocolException e) {
-            logger.error(e);
-        } catch (IOException e) {
-            logger.error(e);
-        }
-        DerivedUnitFacade newInstance = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
-//        newInstance.setTitleCache("Test Specimen", true);
-        newInstance.setCollectingMethod("Collected from the ground");
-        newInstance.setAccessionNumber("ACC-12345");
-        newInstance.setLocality("locality");
-        newInstance.setCountry(NamedArea.EUROPE());
-        return Collections.singletonList((SpecimenOrObservationBase)newInstance.innerDerivedUnit());
+//        try {
+//            results = schemaAdapter.getCmdEntities(responseStream);
+//        } catch (ClientProtocolException e) {
+//            logger.error(e);
+//        } catch (IOException e) {
+//            logger.error(e);
+//        }
 //        return results;
+    }
+
+    public List<SpecimenOrObservationBase> dummyData(){
+        List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
+        DerivedUnitFacade unit1 = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+//        newInstance.setTitleCache("Test Specimen", true);
+        unit1.setCollectingMethod("Collected from the ground");
+        unit1.setAccessionNumber("ACC-12345");
+        unit1.setLocality("locality");
+        unit1.setCountry(NamedArea.EUROPE());
+
+        DerivedUnitFacade unit2 = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+        unit1.setTitleCache("Test Specimen 2", false);
+        unit2.setCollectingMethod("Collected from the ground");
+        unit2.setAccessionNumber("ACC-67890");
+        unit2.setLocality("solid ground close to car park");
+        unit2.setCountry(NamedArea.EUROPE());
+        results.add(unit1.innerDerivedUnit());
+        results.add(unit2.innerDerivedUnit());
+        return results;
     }
 }

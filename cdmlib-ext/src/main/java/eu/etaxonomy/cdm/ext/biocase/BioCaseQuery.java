@@ -162,28 +162,28 @@ public class BioCaseQuery {
     public String toString() {
         String string = "BioCaseQuery ";
         if(taxonName!=null){
-            string += "[taxonName=" + taxonName;
+            string += " taxonName=" + taxonName;
         }
         if(collector!=null){
-            string += ", collector=" + collector;
+            string += " collector=" + collector;
         }
         if(collectorsNumber!=null){
-            string += ", collectorsNumber=" + collectorsNumber;
+            string += " collectorsNumber=" + collectorsNumber;
         }
         if(accessionNumber!=null){
-            string += ", accessionNumber=" + accessionNumber;
+            string += " accessionNumber=" + accessionNumber;
         }
         if(herbarium!=null){
-            string += ", herbarium=" + herbarium;
+            string += " herbarium=" + herbarium;
         }
         if(country!=null){
-            string += ", country=" + country;
+            string += " country=" + country;
         }
         if(locality!=null){
-            string += ", locality=" + locality;
+            string += " locality=" + locality;
         }
         if(date!=null){
-            string += ", date=" + date;
+            string += " date=" + date;
         }
         return string;
     }

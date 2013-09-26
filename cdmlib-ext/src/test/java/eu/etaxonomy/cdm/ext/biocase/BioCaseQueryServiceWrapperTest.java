@@ -9,16 +9,16 @@
 */
 package eu.etaxonomy.cdm.ext.biocase;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URISyntaxException;
-import java.util.List;
 
 import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
 import org.junit.Test;
-
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
  * @author pplitzner
@@ -31,8 +31,17 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
     public void testQuery() {
         BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
         try {
-            List<SpecimenOrObservationBase> response = queryService.query(new BioCaseQuery());
-            System.out.println(response.get(0).getTitleCache());
+            BioCaseQuery query = new BioCaseQuery();
+            query.taxonName = "Campanula*";
+            InputStream response = queryService.query(query);
+            BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+            String line = null;
+            do {
+                if(line!=null){
+                    System.out.println(line);
+                }
+                line = reader.readLine();
+            } while (line!=null);
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
         } catch (IOException e) {

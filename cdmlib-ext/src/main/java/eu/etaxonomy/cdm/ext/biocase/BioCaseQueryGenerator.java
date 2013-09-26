@@ -34,51 +34,57 @@ public class BioCaseQueryGenerator {
 </request>
 */
 
-    private Document query;
+    private static final String FALSE = "false";
+    private static final String taxonNamePath_ABCD_2_0 = "/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
+    private static final String PATH = "path";
+    private static final String LIMIT = "limit";
+    private static final String START = "start";
+    private static final String ABCD_SCHEMA_2_0 = "http://www.tdwg.org/schemas/abcd/2.06";
+    private static final String COUNT = "count";
+    private static final String LIKE = "like";
+    private static final String FILTER = "filter";
+    private static final String RESPONSE_FORMAT = "responseFormat";
+    private static final String REQUEST_FORMAT = "requestFormat";
+    private static final String SEARCH = "search";
+    private static final String TYPE = "type";
+    private static final String HEADER = "header";
+    private static final String REQUEST = "request";
+    private static final String NAMESPACE = "http://www.biocase.org/schemas/protocol/1.3";
 
-    public String generateStringQuery(){
-        return "<?xml version='1.0' encoding='UTF-8'?><request xmlns='http://www.biocase.org/schemas/protocol/1.3'><header><type>search</type></header><search><requestFormat>http://www.tdwg.org/schemas/abcd/2.06</requestFormat><responseFormat start='0' limit='10'>http://www.tdwg.org/schemas/abcd/2.06</responseFormat><filter><like path='/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString'>A*</like></filter><count>false</count></search></request>";
-    }
+    public Document generateXMLQuery(BioCaseQuery query){
+        Document document = new Document();
+        Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
+        Element elHeader = new Element(HEADER);
+        Element elType = new Element(TYPE);
+        Element elSearch = new Element(SEARCH);
+        Element elRequestFormat = new Element(REQUEST_FORMAT);
+        Element elResponseFormat = new Element(RESPONSE_FORMAT);
+        Element elFilter = new Element(FILTER);
+        Element elLike = new Element(LIKE);
+        Element elCount = new Element(COUNT);
 
-    //TODO BioCASE seems to NOT like double quotation marks (") for the arguments. They have to be single (')
-    public Document generateQuery(){
-        query = new Document();
-        Element elRequest = new Element("request", Namespace.getNamespace("http://www.biocase.org/schemas/protocol/1.3"));
-        Element elHeader = new Element("header");
-        Element elType = new Element("type");
-        Element elSearch = new Element("search");
-        Element elRequestFormat = new Element("requestFormat");
-        Element elResponseFormat = new Element("responseFormat");
-        Element elFilter = new Element("filter");
-        Element elLike = new Element("like");
-        Element elCount = new Element("count");
-
-        query.setRootElement(elRequest);
+        document.setRootElement(elRequest);
         elRequest.addContent(elHeader);
-
         elHeader.addContent(elType);
-        elType.addContent("search");
+        elType.addContent(SEARCH);
 
         elRequest.addContent(elSearch);
-
         elSearch.addContent(elRequestFormat);
-        elRequestFormat.addContent("http://www.tdwg.org/schemas/abcd/2.06");
+        elRequestFormat.addContent(ABCD_SCHEMA_2_0);
 
-        elRequest.addContent(elResponseFormat);
+        elSearch.addContent(elResponseFormat);
+        elResponseFormat.setAttribute(START, "0");
+        elResponseFormat.setAttribute(LIMIT, "10");
+        elResponseFormat.addContent(ABCD_SCHEMA_2_0);
 
-        elResponseFormat.setAttribute("start", "0");
-        elResponseFormat.setAttribute("limit", "10");
-        elResponseFormat.addContent("http://www.tdwg.org/schemas/abcd/2.06");
-        elResponseFormat.addContent(elFilter);
-
+        elSearch.addContent(elFilter);
         elFilter.addContent(elLike);
+        elLike.setAttribute(PATH, taxonNamePath_ABCD_2_0);
+        elLike.addContent(query.taxonName);
 
-        elLike.setAttribute("path", "/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString");
-        elLike.addContent("A*");
+        elSearch.addContent(elCount);
+        elCount.addContent(FALSE);
 
-        elResponseFormat.addContent(elCount);
-        elCount.addContent("false");
-
-        return query;
+        return document;
     }
 }
