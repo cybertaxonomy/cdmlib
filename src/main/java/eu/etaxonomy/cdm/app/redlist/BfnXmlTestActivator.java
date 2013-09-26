@@ -39,7 +39,7 @@ public class BfnXmlTestActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 //	static final String tcsSource = TcsSources.tcsXml_cichorium();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_redlist_localhost();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_redlist_lumbricidae();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_testDB_localhost();
 
 
@@ -47,7 +47,7 @@ public class BfnXmlTestActivator {
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "TestBfn";
 	
-	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/bfnXmlTest-input.xml";
+	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/Regenwuermer2013.xml";
 //	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/rldb_Myxo.xml";
 	static final boolean includeNormalExplicit = true; 
 	
@@ -78,7 +78,7 @@ public class BfnXmlTestActivator {
 			
 			BfnXmlImportConfigurator bfnImportConfigurator = BfnXmlImportConfigurator.NewInstance(source,  destination);
 			
-			bfnImportConfigurator.setClassificationName("RoteListe Myxo");
+			bfnImportConfigurator.setClassificationName("RoteListe 2013 Lumbricidae");
 			bfnImportConfigurator.setClassificationUuid(treeUuid);
 			bfnImportConfigurator.setSourceSecId(sourceSecId);
 			
