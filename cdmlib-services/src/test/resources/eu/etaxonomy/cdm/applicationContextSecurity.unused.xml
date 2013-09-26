@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xmlns:context="http://www.springframework.org/schema/context"
-	xmlns:tx="http://www.springframework.org/schema/tx"
-	xmlns:security="http://www.springframework.org/schema/security"
-	xsi:schemaLocation="http://www.springframework.org/schema/beans
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xmlns:security="http://www.springframework.org/schema/security"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
     http://www.springframework.org/schema/beans/spring-beans-3.1.xsd
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.1.xsd
     http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.1.xsd
@@ -26,35 +26,35 @@
      <!--<import resource="classpath:/eu/etaxonomy/cdm/persistence.xml"/>   -->
 
     <context:component-scan base-package="eu/etaxonomy/cdm/persistence_security">
-   		<context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
+       <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.persistence\.dao\.hibernate\.taxon\.TaxonAlternativeSpellingSuggestionParser"/>
     </context:component-scan>
     <context:component-scan base-package="eu/etaxonomy/cdm/database"/>
 
-    	<!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/service">
-		<!--  <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/> -->
-	</context:component-scan>
+      <!-- includes service beans e.g. in eu/etaxonomy/cdm/api -->
+  <context:component-scan base-package="eu/etaxonomy/cdm/api/service">
+    <!--  <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.api\.service\.UserService"/> -->
+  </context:component-scan>
 
-	<context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
+  <context:component-scan base-package="eu/etaxonomy/cdm/api/application"/>
 
- 	<!-- enable the configuration of transactional behavior based on annotations -->
-	<tx:annotation-driven transaction-manager="transactionManager"/>
+   <!-- enable the configuration of transactional behavior based on annotations -->
+  <tx:annotation-driven transaction-manager="transactionManager"/>
 
-  	 <bean id="transactionManager"
+     <bean id="transactionManager"
           class="org.springframework.orm.hibernate4.HibernateTransactionManager">
         <property name="sessionFactory" ref="sessionFactory"/>
     </bean>
 
-   	<bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
-	    <property name="namingStrategy">
-	    	<bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
-	    </property>
+     <bean id="sessionFactory" class="org.springframework.orm.hibernate4.LocalSessionFactoryBean">
+      <property name="namingStrategy">
+        <bean class="org.hibernate.cfg.DefaultComponentSafeNamingStrategy" />
+      </property>
 
-	    <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
-	    <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
-	    <property name="dataSource" ref="dataSource"/>
-	    <property name="hibernateProperties" ref="hibernateProperties"/>
-	</bean>
+      <property name="configLocation" value="classpath:eu/etaxonomy/cdm/hibernate.cfg.xml"/>
+      <property name="configurationClass" value="org.hibernate.cfg.AnnotationConfiguration"/>
+      <property name="dataSource" ref="dataSource"/>
+      <property name="hibernateProperties" ref="hibernateProperties"/>
+  </bean>
 
 
     <bean id="dataSource" class="org.unitils.database.UnitilsDataSourceFactoryBean"/>
@@ -97,19 +97,19 @@
     </bean>
 
     <security:global-method-security pre-post-annotations="enabled">
-		<security:expression-handler ref="expressionHandler"/>
-	</security:global-method-security>
+    <security:expression-handler ref="expressionHandler"/>
+  </security:global-method-security>
 
-	<bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
+  <bean id="expressionHandler" class="org.springframework.security.access.expression.method.DefaultMethodSecurityExpressionHandler">
         <property name="permissionEvaluator" ref="cdmPermissionEvaluator"/>
-	</bean>
+  </bean>
 
 
- 	<bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
+   <bean class="eu.etaxonomy.cdm.permission.CdmPermissionEvaluator" id="cdmPermissionEvaluator"/>
 
       <bean id="userService" class="eu.etaxonomy.cdm.api.service.UserService">
 
-    	</bean>
+      </bean>
 
 
     <bean id="groupService" class="eu.etaxonomy.cdm.api.service.GroupServiceImpl">
@@ -117,13 +117,13 @@
     </bean>
 
 
-    <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TitleCacheAutoInitializer"></bean>
+    <bean id="titleAndNameCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TitleAndNameCacheAutoInitializer"></bean>
 
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">
-	   <property name="beanAutoInitializers">
-	       <map>
-	           <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleCacheAutoInitializer" />
-	       </map>
-	   </property>
-	</bean>
+     <property name="beanAutoInitializers">
+         <map>
+             <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleAndNameCacheAutoInitializer" />
+         </map>
+     </property>
+  </bean>
 </beans>
