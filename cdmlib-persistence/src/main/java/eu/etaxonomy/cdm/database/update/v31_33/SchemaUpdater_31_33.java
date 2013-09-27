@@ -338,6 +338,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// Reference
 		updateAbbrevTitle(stepList);
 
+		//remove figure #2539
+		stepName = "Remove Figure class";
+		query = "UPDATE Media SET DTYPE = 'Media' WHERE DTYPE = 'Figure'";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "Media");
+		stepList .add(step);
+		
 		// add doi to reference
 		stepName = "Add doi to Reference";
 		tableName = "Reference";
@@ -535,6 +541,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "Sequence_Extension";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
+		
+		//remove table Sequence_Media #3360
+		stepName = "Remove table Sequence_Media";
+		tableName = "Sequence_Media";
+		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
+		stepList.add(step);
 
 		// remove table Sequence_OriginalSourceBase #3360
 		stepName = "Remove table Sequence_OriginalSourceBase";
@@ -570,7 +582,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// add timeperiod to columns to description element base #3312
 		addTimeperiodToDescriptionElement(stepList);
 
-		// move specimen imdages
+		// move specimen images
 		stepName = "Move images from SpecimenOrObservationBase_Media to image gallery";
 		step = SpecimenMediaMoverUpdater.NewInstance();
 		stepList.add(step);
@@ -2049,15 +2061,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String stepName = "Update termType for NamedAreas";
 		String tableName = "DefinedTermBase";
 
-		// NamedArea
-		String query = " UPDATE DefinedTermBase " + " SET termType = '"
-				+ TermType.NamedArea.getKey() + "' " + " WHERE DTYPE = '"
-				+ NamedArea.class.getSimpleName()
-				+ "' OR DTYPE = 'TdwgArea' OR DTYPE = '"
-				+ Country.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
-		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep
-				.NewNonAuditedInstance(stepName, query).setDefaultAuditing(
-						tableName);
+		//NamedArea
+		String query = " UPDATE DefinedTermBase " + 
+				" SET termType = '" + TermType.NamedArea.getKey() + "' " +
+				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' " +
+						"OR DTYPE = 'WaterbodyOrCountry' OR DTYPE = '"+ Country.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
+		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query).setDefaultAuditing(tableName);
 		stepList.add(step);
 
 		// Lanugage
