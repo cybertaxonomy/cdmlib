@@ -123,7 +123,7 @@ public enum DatabaseTypeEnum {
 	}
     
 	/**
-	 * Returns the DataSource class that that the datasource needs to create a spring bean
+	 * Returns the DataSource class that the datasource needs to create a spring bean
 	 * @return the DataSource class
 	 */
 	public Class<? extends DataSource> getDataSourceClass(){
