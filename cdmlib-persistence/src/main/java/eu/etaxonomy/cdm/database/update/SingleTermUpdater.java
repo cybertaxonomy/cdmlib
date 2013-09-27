@@ -159,7 +159,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		//standard representation
 		UUID uuidRepresentation = UUID.randomUUID();
 		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
-				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "',  '" + abbrev +  "', " + langId + ")"; 
+				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', " + nullSafeStr(description) +  ", " +nullSafeStr( label) +  ", " + nullSafeStr(abbrev) +  ", " + langId + ")"; 
 		
 		datasource.executeUpdate(sqlInsertRepresentation);
 		
@@ -173,7 +173,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 			int reverseRepId = repId + 1;
 			UUID uuidReverseRepresentation = UUID.randomUUID();
 			String sqlInsertReverseRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
-					"VALUES (" + reverseRepId + ", '" + created + "', '" + uuidReverseRepresentation + "', '" + reverseDescription +  "', '" + reverseLabel +  "',  '" + reverseAbbrev +  "', " + langId + ")"; 
+					"VALUES (" + reverseRepId + ", '" + created + "', '" + uuidReverseRepresentation + "', " + nullSafeStr(reverseDescription) +  ", " + nullSafeStr(reverseLabel) +  ",  " + nullSafeStr(reverseAbbrev) +  ", " + langId + ")"; 
 			
 			datasource.executeUpdate(sqlInsertReverseRepresentation);
 			
@@ -184,6 +184,14 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}			
 		
 		return termId;
+	}
+
+	private String nullSafeStr(String str) {
+		if (str == null){
+			return " NULL ";
+		}else{
+			return "'" + str + "'";
+		}
 	}
 
 	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
