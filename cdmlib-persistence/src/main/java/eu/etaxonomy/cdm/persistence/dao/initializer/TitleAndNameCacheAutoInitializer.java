@@ -47,12 +47,34 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             } else if(!bean.isProtectedTitleCache()){
                 n.getTitleCache();
             } else if(!n.isProtectedNameCache())  {
-                n.getNameCache();
+                // n.getNameCache(); not needed here
+                // since this is covered by
+                // getTaggedName special case  below
             } else if(!n.isProtectedAuthorshipCache()){
                 n.getAuthorshipCache();
             }
+
+            if(!n.isProtectedFullTitleCache() || !bean.isProtectedTitleCache() || !n.isProtectedNameCache()){
+                /* getTaggedName special case
+                 *
+                 * if the name cache already is non null the generateNameCache()
+                 * method will not be executed and no initialization of the name cache
+                 * cascade will happen, therefore me must call the getTaggedName()
+                 * explicitly in order to trigger the cascade. Otherwise a
+                 * LazyInitializationException can occur:
+                 *   > failed to lazily initialize a collection of role:
+                 *   > eu.etaxonomy.cdm.model.name.TaxonNameBase.relationsToThisName
+                 * --------------------------------------------
+                 * according code snipped from cachestrategy:
+                 *  if (nameCache == null){
+                 *    this.nameCache = generateNameCache();
+                 *  }
+                 * --------------------------------------------
+                 */
+                n.getTaggedName();
+            }
         } else if(bean instanceof TaxonNameBase) {
-            // ---> TaxonNameBase
+             // ---> TaxonNameBase
             TaxonNameBase<?,?> n = (TaxonNameBase<?,?>)bean;
             if(!n.isProtectedFullTitleCache())  {
                 n.getFullTitleCache();
