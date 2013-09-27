@@ -12,13 +12,11 @@ package eu.etaxonomy.cdm.model.description;
 import java.util.HashSet;
 import java.util.Set;
 
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Inheritance;
 import javax.persistence.InheritanceType;
 import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
@@ -87,14 +85,6 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     private static final long serialVersionUID = 5504218413819040193L;
     private static final Logger logger = Logger.getLogger(DescriptionBase.class);
 
-//    @XmlElementWrapper(name = "DescribedSpecimenOrObservations")
-//    @XmlElement(name = "DescribedSpecimenOrObservation")
-//    @XmlIDREF
-//    @XmlSchemaType(name="IDREF")
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @Cascade(CascadeType.SAVE_UPDATE)
-//    private Set<SpecimenOrObservationBase> describedSpecimenOrObservations = new HashSet<SpecimenOrObservationBase>();
-
     @XmlElement( name = "DescribedSpecimenOrObservation")
     @ManyToOne(fetch = FetchType.LAZY)
     @XmlIDREF
@@ -103,7 +93,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @JoinColumn(name="specimen_id")
     @IndexedEmbedded
     //TODO maybe move down to specific classes SpecimenDescription (with Cascade.Delete) and TaxonDescription (without Cascade)
-    private SpecimenOrObservationBase describedSpecimenOrObservation;
+    private SpecimenOrObservationBase<?> describedSpecimenOrObservation;
     
     
     @XmlElementWrapper(name = "DescriptionSources")
