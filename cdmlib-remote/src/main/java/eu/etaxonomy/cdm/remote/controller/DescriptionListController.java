@@ -219,7 +219,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/descriptionElement/byTaxon", method = RequestMethod.GET)
+    @RequestMapping(value = "/descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST})
     public <T extends DescriptionElementBase> Pager<T> getDescriptionElementsForTaxon(
             @RequestParam(value = "taxon", required = true) UUID taxon_uuid,
             @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
