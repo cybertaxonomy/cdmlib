@@ -46,6 +46,8 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
+import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -331,6 +333,47 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     }
      */
 
+    @RequestMapping(method = RequestMethod.GET,
+            value = {"/portal/taxon/find"}) //TODO map to path /*/portal/taxon/
+    public Pager<IdentifiableEntity> doFind(
+            @RequestParam(value = "query", required = false) String query,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "area", required = false) Set<NamedArea> areas,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
+            @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
+            @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
+            @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException {
+
+        logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
+        config.setPageNumber(pagerParams.getPageIndex());
+        config.setPageSize(pagerParams.getPageSize());
+        config.setTitleSearchString(query);
+        config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
+        config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );
+        config.setDoMisappliedNames(doMisappliedNames != null ? doMisappliedNames : Boolean.FALSE);
+        config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
+        config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
+        config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
+        config.setNamedAreas(areas);
+        if(treeUuid != null){
+            Classification classification = classificationService.find(treeUuid);
+            config.setClassification(classification);
+        }
+
+        return service.findTaxaAndNames(config);
+    }
 
     /**
      * <b>NOTE and TODO</b>: this method is a direct copy of the same method in {@link TaxonListController},
@@ -371,7 +414,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      * @throws ParseException
      */
     @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/search"})
-    public Pager<SearchResult<TaxonBase>> doFindTaxaAndNames(
+    public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,

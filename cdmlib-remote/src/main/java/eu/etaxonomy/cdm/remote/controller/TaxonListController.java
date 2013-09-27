@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
+import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -45,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -121,7 +124,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @throws ParseException
      */
     @RequestMapping(method = RequestMethod.GET, value={"search"})
-    public Pager<SearchResult<TaxonBase>> doFindTaxaAndNames(
+    public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,
@@ -168,6 +171,88 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 null, initializationStrategy);
     }
+
+    /**
+     * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;find</b>
+     *
+     * @param query
+     *            the string to query for. Since the wildcard character '*'
+     *            internally always is appended to the query string, a search
+     *            always compares the query string with the beginning of a name.
+     *            - <i>required parameter</i>
+     * @param treeUuid
+     *            the {@link UUID} of a {@link Classification} to which the
+     *            search is to be restricted. - <i>optional parameter</i>
+     * @param areas
+     *            restrict the search to a set of geographic {@link NamedArea}s.
+     *            The parameter currently takes a list of TDWG area labels.
+     *            - <i>optional parameter</i>
+     * @param pageNumber
+     *            the number of the page to be returned, the first page has the
+     *            pageNumber = 1 - <i>optional parameter</i>
+     * @param pageSize
+     *            the maximum number of entities returned per page (can be -1
+     *            to return all entities in a single page) - <i>optional parameter</i>
+     * @param doTaxa
+     *            weather to search for instances of {@link Taxon} - <i>optional parameter</i>
+     * @param doSynonyms
+     *            weather to search for instances of {@link Synonym} - <i>optional parameter</i>
+     * @param doTaxaByCommonNames
+     *            for instances of {@link Taxon} by a common name used - <i>optional parameter</i>
+     * @param matchMode
+     *           valid values are "EXACT", "BEGINNING", "ANYWHERE", "END" (case sensitive !!!)
+     * @return a Pager on a list of {@link IdentifiableEntity}s initialized by
+     *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
+     * @throws IOException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"})
+    public Pager<IdentifiableEntity> doFindTaxaAndNames(
+            @RequestParam(value = "query", required = true) String query,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "area", required = false) Set<NamedArea> areas,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
+            @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
+            @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
+            @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
+            @RequestParam(value = "matchMode", required = false) MatchMode matchMode,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException {
+
+
+        logger.info("findTaxaAndNames : " + request.getRequestURI() + "?" + request.getQueryString() );
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
+
+        config.setTaxonPropertyPath(initializationStrategy);
+
+        config.setPageNumber(pagerParams.getPageIndex());
+        config.setPageSize(pagerParams.getPageSize());
+        config.setTitleSearchString(query);
+        config.setDoTaxa(doTaxa!= null ? doTaxa : Boolean.FALSE );
+        config.setDoSynonyms(doSynonyms != null ? doSynonyms : Boolean.FALSE );
+        config.setDoMisappliedNames(doMisappliedNames != null ? doMisappliedNames : Boolean.FALSE);
+        config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
+        config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
+//        config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
+        config.setNamedAreas(areas);
+        if(treeUuid != null){
+            Classification classification = classificationService.find(treeUuid);
+            config.setClassification(classification);
+        }
+
+        return service.findTaxaAndNames(config);
+
+    }
+
 
     /**
      * @param clazz
