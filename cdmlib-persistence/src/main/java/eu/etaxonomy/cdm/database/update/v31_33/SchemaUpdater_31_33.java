@@ -1299,7 +1299,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 
 		stepName = "Change length of TaxonBase title cache";
-		tableName = "TaxonNameBase";
+		tableName = "TaxonBase";
 		columnName = "titleCache";
 		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
 				columnName, size, INCLUDE_AUDIT);
