@@ -36,13 +36,13 @@ public class BioCaseQueryGenerator {
 */
 
     private static final String FALSE = "false";
-    private static final String TAXON_NAME_PATH_ABCD_2_0 = "/DataSets/DataSet/Units/Unit/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
     private static final String PATH = "path";
     private static final String LIMIT = "limit";
     private static final String START = "start";
     private static final String ABCD_SCHEMA_2_0 = "http://www.tdwg.org/schemas/abcd/2.06";
     private static final String COUNT = "count";
     private static final String LIKE = "like";
+    private static final String AND = "and";
     private static final String FILTER = "filter";
     private static final String RESPONSE_FORMAT = "responseFormat";
     private static final String REQUEST_FORMAT = "requestFormat";
@@ -51,12 +51,14 @@ public class BioCaseQueryGenerator {
     private static final String HEADER = "header";
     private static final String REQUEST = "request";
     private static final String NAMESPACE = "http://www.biocase.org/schemas/protocol/1.3";
-    private static final String LOCALITY_PATH_ABCD_2_0 = null;
-    private static final String HERBARIUM_PATH_ABCD_2_0 = null;
-    private static final String COUNTRY_PATH_ABCD_2_0 = null;
-    private static final String COLLECTOR_NUMBER_PATH_ABCD_2_0 = null;
-    private static final String COLLECTOR_PATH_ABCD_2_0 = null;
-    private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = null;
+    private static final String UNIT_PATH = "/DataSets/DataSet/Units/Unit";
+    private static final String TAXON_NAME_PATH_ABCD_2_0 = UNIT_PATH + "/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
+    private static final String LOCALITY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/LocalityText";
+    private static final String HERBARIUM_PATH_ABCD_2_0 = UNIT_PATH + "/SourceID";
+    private static final String COUNTRY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Country";
+    private static final String COLLECTOR_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/CollectorsFieldNumber";
+    private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgent";
+    private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -72,6 +74,7 @@ public class BioCaseQueryGenerator {
         Element elRequestFormat = new Element(REQUEST_FORMAT);
         Element elResponseFormat = new Element(RESPONSE_FORMAT);
         Element elFilter = new Element(FILTER);
+        Element elAnd = new Element(AND);
         Element elCount = new Element(COUNT);
 
         document.setRootElement(elRequest);
@@ -89,65 +92,38 @@ public class BioCaseQueryGenerator {
         elResponseFormat.addContent(ABCD_SCHEMA_2_0);
 
         elSearch.addContent(elFilter);
+        elFilter.addContent(elAnd);
 
         if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
-            addAccessionNumberFilter(elFilter, query.accessionNumber);
+            addFilter(elAnd, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
         }
         if(query.collector!=null && !query.collector.trim().isEmpty()){
-            addCollectorFilter(elFilter, query.collector);
+            addFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
         }
         if(query.collectorsNumber!=null && !query.collectorsNumber.trim().isEmpty()){
-            addCollectorsNumberFilter(elFilter, query.collectorsNumber);
+            addFilter(elAnd, query.collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);
         }
         if(query.country!=null && !query.country.trim().isEmpty()){
-            addCountryFilter(elFilter, query.country);
+            addFilter(elAnd, query.country, COUNTRY_PATH_ABCD_2_0);
         }
         //TODO: implement
 //        if(query.date!=null){
-//            addDateFilter(elFilter, query.date);
+//            addFilter(elFilter, query.date);
 //        }
         if(query.herbarium!=null && !query.herbarium.trim().isEmpty()){
-            addHerbariumFilter(elFilter, query.herbarium);
+            addFilter(elAnd, query.herbarium, HERBARIUM_PATH_ABCD_2_0);
         }
         if(query.locality!=null && !query.locality.trim().isEmpty()){
-            addLocalityFilter(elFilter, query.locality);
+            addFilter(elAnd, query.locality, LOCALITY_PATH_ABCD_2_0);
         }
         if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
-            addTaxonNameFilter(elFilter, query.taxonName);
+            addFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
         }
 
         elSearch.addContent(elCount);
         elCount.addContent(FALSE);
 
         return document;
-    }
-
-    private void addLocalityFilter(Element elFilter, String locality) {
-        addFilter(elFilter, locality, LOCALITY_PATH_ABCD_2_0);
-    }
-
-    private void addHerbariumFilter(Element elFilter, String herbarium) {
-        addFilter(elFilter, herbarium, HERBARIUM_PATH_ABCD_2_0);
-    }
-
-    private void addCountryFilter(Element elFilter, String country) {
-        addFilter(elFilter, country, COUNTRY_PATH_ABCD_2_0);
-    }
-
-    private void addCollectorsNumberFilter(Element elFilter, String collectorsNumber) {
-        addFilter(elFilter, collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);
-    }
-
-    private void addCollectorFilter(Element elFilter, String collector) {
-        addFilter(elFilter, collector, COLLECTOR_PATH_ABCD_2_0);
-    }
-
-    private void addAccessionNumberFilter(Element elFilter, String accessionNumber) {
-        addFilter(elFilter, accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
-    }
-
-    private void addTaxonNameFilter(Element filterElement, String taxonName){
-        addFilter(filterElement, taxonName, TAXON_NAME_PATH_ABCD_2_0);
     }
 
     private void addFilter(Element filterElement, String taxonName, String path){
