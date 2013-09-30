@@ -90,29 +90,29 @@ public class BioCaseQueryGenerator {
 
         elSearch.addContent(elFilter);
 
-        if(query.accessionNumber!=null || !query.accessionNumber.trim().isEmpty()){
+        if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
             addAccessionNumberFilter(elFilter, query.accessionNumber);
         }
-        if(query.collector!=null || !query.collector.trim().isEmpty()){
+        if(query.collector!=null && !query.collector.trim().isEmpty()){
             addCollectorFilter(elFilter, query.collector);
         }
-        if(query.collectorsNumber!=null || !query.collectorsNumber.trim().isEmpty()){
+        if(query.collectorsNumber!=null && !query.collectorsNumber.trim().isEmpty()){
             addCollectorsNumberFilter(elFilter, query.collectorsNumber);
         }
-        if(query.country!=null || !query.country.trim().isEmpty()){
+        if(query.country!=null && !query.country.trim().isEmpty()){
             addCountryFilter(elFilter, query.country);
         }
         //TODO: implement
 //        if(query.date!=null){
 //            addDateFilter(elFilter, query.date);
 //        }
-        if(query.herbarium!=null || !query.herbarium.trim().isEmpty()){
+        if(query.herbarium!=null && !query.herbarium.trim().isEmpty()){
             addHerbariumFilter(elFilter, query.herbarium);
         }
-        if(query.locality!=null || !query.locality.trim().isEmpty()){
+        if(query.locality!=null && !query.locality.trim().isEmpty()){
             addLocalityFilter(elFilter, query.locality);
         }
-        if(query.taxonName!=null || !query.taxonName.trim().isEmpty()){
+        if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
             addTaxonNameFilter(elFilter, query.taxonName);
         }
 
