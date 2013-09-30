@@ -30,23 +30,13 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
+ * This service provides access to BioCASe providers.<br>
+ * It sends a {@link BioCaseQuery} via HTTP POST to a given provider
  * @author pplitzner
  * @date 13.09.2013
  *
  */
 public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase>{
-//    String content =
-//          "<entry xmlns='http://www.w3.org/2005/Atom'>"
-//          + "<content>" + comment + "</content>"
-//          + "<category scheme='http://schemas.google.com/g/2005#kind'"
-//          + " term='http://schemas.google.com/photos/2007#comment'/>"
-//          + "</entry>";
-//
-//      try {
-//          StringEntity entity = new StringEntity(content);
-//          entity.setContentType(new BasicHeader("Content-Type",
-//              "application/atom+xml"));
-//          postRequest.setEntity(entity);
 
     private final BioCaseResponseSchemaAdapter schemaAdapter;
 
