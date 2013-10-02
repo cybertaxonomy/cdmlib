@@ -55,7 +55,7 @@ public class CaryoImportConfigurator extends DbImportConfiguratorBase<CaryoImpor
 
 
 	private CaryoImportConfigurator(Source source, ICdmDataSource destination) {
-	   super(source, destination, NomenclaturalCode.ICBN, defaultTransformer);
+	   super(source, destination, NomenclaturalCode.ICNAFP, defaultTransformer);
 	}
 
 

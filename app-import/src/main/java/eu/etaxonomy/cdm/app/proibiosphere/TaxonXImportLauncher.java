@@ -280,7 +280,7 @@ public class TaxonXImportLauncher {
             //            String tnomenclature = askQuestion("ICBN or ICZN ?");
 
             if (tnomenclature.equalsIgnoreCase("ICBN")) {
-                taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICBN);
+                taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
                 //                taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
             }
             if(tnomenclature.equalsIgnoreCase("ICZN")){

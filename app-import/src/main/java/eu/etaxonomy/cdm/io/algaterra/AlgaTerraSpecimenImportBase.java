@@ -24,9 +24,11 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -36,9 +38,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -98,9 +100,9 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 			TransactionStatus txStatus = this.startTransaction();
 		
 			boolean isOrdered = true;
-			OrderedTermVocabulary<State> climateVoc = (OrderedTermVocabulary)getVocabulary(uuidVocAlgaTerraClimate, "Climate", "Climate", abbrevLabel, uri, isOrdered, null);
-			OrderedTermVocabulary<State> habitatVoc = (OrderedTermVocabulary)getVocabulary(uuidVocAlgaTerraHabitat, "Habitat", "Habitat", abbrevLabel, uri, isOrdered, null);
-			OrderedTermVocabulary<State> lifeformVoc = (OrderedTermVocabulary)getVocabulary(uuidVocAlgaTerraLifeForm, "Lifeform", "Lifeform", abbrevLabel, uri, isOrdered, null);
+			OrderedTermVocabulary<State> climateVoc = (OrderedTermVocabulary)getVocabulary(TermType.State, uuidVocAlgaTerraClimate, "Climate", "Climate", abbrevLabel, uri, isOrdered, null);
+			OrderedTermVocabulary<State> habitatVoc = (OrderedTermVocabulary)getVocabulary(TermType.State, uuidVocAlgaTerraHabitat, "Habitat", "Habitat", abbrevLabel, uri, isOrdered, null);
+			OrderedTermVocabulary<State> lifeformVoc = (OrderedTermVocabulary)getVocabulary(TermType.State, uuidVocAlgaTerraLifeForm, "Lifeform", "Lifeform", abbrevLabel, uri, isOrdered, null);
 			
 			
 			Feature feature = getFeature(state, uuidFeatureAlgaTerraClimate, "Climate","Climate", null, null);
@@ -174,7 +176,7 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 			String geoCodeMethod = rs.getString("GeoCodeMethod");
 			
 			Integer altitude = nullSafeInt(rs, "Altitude");
-			Integer lowerAltitude = nullSafeInt(rs,"AltitudeLowerValue");
+			Integer lowerAltitude = nullSafeInt(rs, "AltitudeLowerValue");
 			String altitudeUnit = rs.getString("AltitudeUnit");
 			Double depth = nullSafeDouble(rs, "Depth");
 			Double depthLow = nullSafeDouble(rs, "DepthLow");
@@ -201,22 +203,15 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 				if (lowerAltitude == null){
 					facade.setAbsoluteElevation(altitude);
 				}else{
-			   		if (! facade.isEvenDistance(lowerAltitude, altitude)){
-			   			//FIXME there is a ticket for this
-			   			altitude = altitude + 1;
-			   			logger.info("Current implementation of altitude does not allow uneven distances");
-			   		}
 					facade.setAbsoluteElevationRange(lowerAltitude,altitude);
 			   	}
 			}
 			if ( depth != null){
-				//FIXME needs model change to accept double #3072
-				Integer intDepth = depth.intValue();
 				if (depthLow == null){
-					facade.setDistanceToWaterSurface(intDepth);
+					facade.setDistanceToWaterSurface(depth);
 				}else{
-					//FIXME range not yet in model #3074
-			   		facade.setDistanceToWaterSurface(intDepth);
+					//TODO which direction is correct?
+					facade.setDistanceToWaterSurfaceRange(depth, depthLow);
 			   	}
 			}
 			
@@ -234,9 +229,9 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 			
 			//id, created, updated, notes
 			if (unitId != null){
-				this.doIdCreatedUpdatedNotes(state, facade.innerFieldObservation(), rs, unitId, getFieldObservationNameSpace());
+				this.doIdCreatedUpdatedNotes(state, facade.innerFieldUnit(), rs, unitId, getFieldObservationNameSpace());
 			}else{
-				logger.warn("FieldObservation has no unitId: " +  facade.innerFieldObservation() + ": " + getFieldObservationNameSpace());
+				logger.warn("FieldObservation has no unitId: " +  facade.innerFieldUnit() + ": " + getFieldObservationNameSpace());
 			}
 		} catch (Exception e) {
 			throw new RuntimeException(e);
@@ -276,13 +271,13 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	
 
 	protected DescriptionBase getFieldObservationDescription(DerivedUnitFacade facade) {
-		Set<DescriptionBase> descriptions = facade.innerFieldObservation().getDescriptions();
+		Set<DescriptionBase> descriptions = facade.innerFieldUnit().getDescriptions();
 		for (DescriptionBase desc : descriptions){
 			if (desc.isImageGallery() == false){
 				return desc;
 			}
 		}
-		SpecimenDescription specDesc = SpecimenDescription.NewInstance(facade.innerFieldObservation());
+		SpecimenDescription specDesc = SpecimenDescription.NewInstance(facade.innerFieldUnit());
 		descriptions.add(specDesc);
 		return specDesc;
 	}
@@ -295,14 +290,14 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	   		NamedArea tdwgArea;
 	   		String tdwg4 = rs.getString("L4Code");
 	   		if (isNotBlank(tdwg4)){
-	   			tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwg4);
+	   			tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwg4);
 	   		}else{
 	   			String tdwg3 = rs.getString("L3Code");
 	   			if (isNotBlank(tdwg3)){
-	   				tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwg3);
+	   				tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwg3);
 	   			}else{
 	   				Integer tdwg2 = rs.getInt("L2Code");   				
-	   				tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(String.valueOf(tdwg2));
+	   				tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(String.valueOf(tdwg2));
 		   		}
 	   		}
 	   		if (tdwgArea == null){
@@ -312,11 +307,11 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	   		}
 	   		
 	   		//Countries
-	   		WaterbodyOrCountry country = null;
+	   		Country country = null;
 	   		String isoCountry = rs.getString("ISOCountry");
 	   		String countryStr = rs.getString("Country");
 	   		if (isNotBlank(isoCountry)){
-		   		country = WaterbodyOrCountry.getWaterbodyOrCountryByIso3166A2(isoCountry);
+		   		country = Country.getCountryByIso3166A2(isoCountry);
 	   		}else if (isNotBlank(countryStr)){
 	   			logger.warn("Country exists but no ISO code");
 	   		}
@@ -329,11 +324,11 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	   	}
 	    
 	   	//Waterbody
-	   	WaterbodyOrCountry waterbody = null;
+	   	NamedArea waterbody = null;
 	   	String waterbodyStr = rs.getString("WaterBody");
 	   	if (isNotBlank(waterbodyStr)){
 	   		if (waterbodyStr.equals("Atlantic Ocean")){
-	   			waterbody = WaterbodyOrCountry.ATLANTICOCEAN();
+	   			waterbody = NamedArea.ATLANTICOCEAN();
 	   		}else{
 	   			logger.warn("Waterbody not recognized: " + waterbody);
 	   		}
@@ -348,8 +343,47 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	}
 
 
-	
+	protected SpecimenOrObservationType makeDerivedUnitType(String recordBasis) {
+		SpecimenOrObservationType result = null;
+		if (StringUtils.isBlank(recordBasis)){
+			result = SpecimenOrObservationType.DerivedUnit;
+		} else if (recordBasis.equalsIgnoreCase("FossileSpecimen")){
+			result = SpecimenOrObservationType.Fossil;
+		}else if (recordBasis.equalsIgnoreCase("HumanObservation")){
+			result = SpecimenOrObservationType.HumanObservation;
+		}else if (recordBasis.equalsIgnoreCase("Literature")){
+			//FIXME
+			logger.warn("Literature record basis not yet supported");
+			result = SpecimenOrObservationType.DerivedUnit;
+		}else if (recordBasis.equalsIgnoreCase("LivingSpecimen")){
+			result = SpecimenOrObservationType.LivingSpecimen;
+		}else if (recordBasis.equalsIgnoreCase("MachineObservation")){
+			result = SpecimenOrObservationType.MachineObservation;
+		}else if (recordBasis.equalsIgnoreCase("Observation")){
+			result = SpecimenOrObservationType.Observation;
+		}else if (recordBasis.equalsIgnoreCase("LivingCulture")){
+			//FIXME
+			logger.warn("LivingCulture record basis not yet supported");
+			result = SpecimenOrObservationType.DerivedUnit;
+		}else if (recordBasis.equalsIgnoreCase("PreservedSpecimen")){
+			result = SpecimenOrObservationType.PreservedSpecimen;
+		}
+		return result;
+	}
 
+
+	protected Feature makeFeature(SpecimenOrObservationType type) {
+		if (type.equals(SpecimenOrObservationType.DerivedUnit)){
+			return Feature.INDIVIDUALS_ASSOCIATION();
+		}else if (type.isFeatureObservation()){
+			return Feature.OBSERVATION();
+		}else if (type.isPreservedSpecimen()){
+			return Feature.SPECIMEN();
+		}
+		logger.warn("No feature defined for derived unit type: " + type);
+		return null;
+	}
+	
 	private ReferenceSystem makeRefrenceSystem(String geoCodeMethod, AlgaTerraImportState state) {
 		if (StringUtils.isBlank(geoCodeMethod)){
 			return null;

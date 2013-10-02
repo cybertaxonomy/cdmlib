@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -115,7 +114,7 @@ public class AlgaTerraTypeImagesImport  extends AlgaTerraImageImportBase {
 					//source ref
 					Reference<?> sourceRef = state.getTransactionalSourceReference();
 				
-					DerivedUnitBase<?> derivedUnit = typeSpecimenMap.get(String.valueOf(typeSpecimenFk));
+					DerivedUnit derivedUnit = typeSpecimenMap.get(String.valueOf(typeSpecimenFk));
 					
 					if (derivedUnit == null){
 						logger.warn("Could not find type specimen (" + typeSpecimenFk +") for specimen figure " +  figureId);

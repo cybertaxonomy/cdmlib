@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 
@@ -85,7 +85,7 @@ public class AlgaTerraVoucherImagesImport  extends AlgaTerraImageImportBase {
 		
 		Set<SpecimenOrObservationBase> unitsToSave = new HashSet<SpecimenOrObservationBase>();
 		
-		Map<String, DerivedUnitBase> ecoFactMap = (Map<String, DerivedUnitBase>) partitioner.getObjectMap(AlgaTerraSpecimenImportBase.ECO_FACT_DERIVED_UNIT_NAMESPACE);
+		Map<String, DerivedUnit> ecoFactMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(AlgaTerraSpecimenImportBase.ECO_FACT_DERIVED_UNIT_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -106,7 +106,7 @@ public class AlgaTerraVoucherImagesImport  extends AlgaTerraImageImportBase {
 				
 				try {
 					
-					DerivedUnitBase<?> derivedUnit = ecoFactMap.get(String.valueOf(ecoFactFk));
+					DerivedUnit derivedUnit = ecoFactMap.get(String.valueOf(ecoFactFk));
 					
 					if (derivedUnit == null){
 						logger.warn("Could not find eco fact specimen (" + ecoFactFk +") for voucher image " +  figureId);
@@ -168,9 +168,9 @@ public class AlgaTerraVoucherImagesImport  extends AlgaTerraImageImportBase {
 			
 			//type specimen map
 			nameSpace = AlgaTerraSpecimenImportBase.ECO_FACT_DERIVED_UNIT_NAMESPACE;
-			cdmClass = DerivedUnitBase.class;
+			cdmClass = DerivedUnit.class;
 			idSet = ecoFactIdSet;
-			Map<String, DerivedUnitBase> specimenMap = (Map<String,DerivedUnitBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, DerivedUnit> specimenMap = (Map<String,DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, specimenMap);
 
 			

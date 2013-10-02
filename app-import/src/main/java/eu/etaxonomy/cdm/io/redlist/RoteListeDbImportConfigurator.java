@@ -61,7 +61,7 @@ public class RoteListeDbImportConfigurator extends DbImportConfiguratorBase<Rote
 
 
 	private RoteListeDbImportConfigurator(Source source, ICdmDataSource destination) {
-	   super(source, destination, NomenclaturalCode.ICBN, defaultTransformer);
+	   super(source, destination, NomenclaturalCode.ICNAFP, defaultTransformer);
 	}
 	
 

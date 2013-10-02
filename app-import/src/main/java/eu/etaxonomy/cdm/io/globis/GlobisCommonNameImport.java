@@ -25,11 +25,12 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -134,7 +135,7 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 						if (language == null){
 							logger.warn("No language found for common name ID: " + id);
 						}
-						NamedArea area = WaterbodyOrCountry.getWaterbodyOrCountryByIso3166A2(strCountryCode);
+						NamedArea area = Country.getCountryByIso3166A2(strCountryCode);
 						if (area == null){
 							logger.warn("No country found for common name ID: " + id);
 						}
@@ -147,7 +148,7 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 						if (ref == null && refID != null){
 							logger.warn("No reference found for common name ID: " + id);
 						}else{
-							commonName.addSource(String.valueOf(refID), "reference", sourceRef, null);
+							commonName.addSource(OriginalSourceType.Import, String.valueOf(refID), "reference", sourceRef, null);
 						}
 						
 						objectsToSave.add(taxon); 

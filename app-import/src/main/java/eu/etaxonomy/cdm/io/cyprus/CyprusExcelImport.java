@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
@@ -31,7 +32,6 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -196,7 +196,7 @@ public class CyprusExcelImport extends ExcelImporterBase<CyprusImportState> {
     }
 	
 	private static INonViralNameParser nameParser = NonViralNameParserImpl.NewInstance();
-	private static NomenclaturalCode nc = NomenclaturalCode.ICBN;
+	private static NomenclaturalCode nc = NomenclaturalCode.ICNAFP;
 	private Feature redBookCategory;
 	private Feature endemism;
 	private PresenceTerm indigenous;
@@ -470,7 +470,7 @@ public class CyprusExcelImport extends ExcelImporterBase<CyprusImportState> {
 				status = null;
 			}
 			TaxonDescription td = this.getTaxonDescription(mainTaxon, false, true);
-			NamedArea area = TdwgArea.getAreaByTdwgAbbreviation("CYP");
+			NamedArea area = TdwgAreaProvider.getAreaByTdwgAbbreviation("CYP");
 			Distribution distribution = Distribution.NewInstance(area, status);
 			td.addElement(distribution);
 			

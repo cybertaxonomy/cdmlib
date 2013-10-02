@@ -44,23 +44,26 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -286,9 +289,9 @@ public class UseImport {
 		MarkerType useMarkerType = (MarkerType) termService.find(UUID.fromString("2e6e42d9-e92a-41f4-899b-03c0ac64f039"));
 		Feature featureUseRecord = (Feature) termService.find(UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599"));
 		Feature featureUseSummary = (Feature) termService.find(UUID.fromString("6acb0348-c070-4512-a37c-67bcac016279"));
-		Pager<DefinedTermBase>  notAvailModPager = (Pager<DefinedTermBase> ) termService.findByTitle(Modifier.class, "N/A", null, null, null, null, null, null);
+		Pager<DefinedTermBase>  notAvailModPager = (Pager<DefinedTermBase> ) termService.findByTitle(DefinedTerm.class, "N/A", null, null, null, null, null, null);
 		Pager<DefinedTermBase>  notAvailStatePager = (Pager<DefinedTermBase> ) termService.findByTitle(State.class, "N/A", null, null, null, null, null, null);
-		Modifier notAvailMod = (Modifier) notAvailModPager.getRecords().get(0);
+		DefinedTerm notAvailMod = (DefinedTerm) notAvailModPager.getRecords().get(0);
 		State notAvailState = (State) notAvailStatePager.getRecords().get(0);
 		
 		int i = 0;
@@ -309,7 +312,7 @@ public class UseImport {
 					} else if(reference.getCount() > 0 ) {
 						useReference = reference.getRecords().get(0);
 					}
-					IdentifiableSource source =IdentifiableSource.NewInstance(useReference, null);
+					IdentifiableSource source =IdentifiableSource.NewPrimarySourceInstance(useReference, null);  //is type correct?
 					source.setOriginalNameString(taxon.getName().toString());
 					newUseDescription.addSource(source);
 					TextData useSummary = TextData.NewInstance(featureUseSummary);
@@ -336,7 +339,7 @@ public class UseImport {
 								stateCatData.setState(useCategory);
 								stateCatData.putModifyingText(Language.ENGLISH(), "Use Category");
 								modifyingText += useCategory.toString() + ";";
-								useRecord.addState(stateCatData);
+								useRecord.addStateData(stateCatData);
 								
 								 
 								//useRecord.addState(stateData);
@@ -346,7 +349,7 @@ public class UseImport {
 								stateCatData.setState(useCategory);
 								stateCatData.putModifyingText(Language.ENGLISH(), "Use Category");
 								modifyingText += useCategory.toString() + ";";
-								useRecord.addState(stateCatData);
+								useRecord.addStateData(stateCatData);
 								
 							}
 							
@@ -363,7 +366,7 @@ public class UseImport {
 								stateSubCatData.setState(useSubCategory);
 								stateSubCatData.putModifyingText(Language.ENGLISH(), "Use SubCategory");
 								modifyingText += useSubCategory.toString() + ";";
-								useRecord.addState(stateSubCatData);
+								useRecord.addStateData(stateSubCatData);
 								
 							}
 							else {
@@ -372,60 +375,60 @@ public class UseImport {
 								stateSubCatData.setState(useSubCategory);
 								stateSubCatData.putModifyingText(Language.ENGLISH(), "Use SubCategory");
 								modifyingText += useSubCategory.toString() + ";";
-								useRecord.addState(stateSubCatData);
+								useRecord.addStateData(stateSubCatData);
 								
 							}
 							if(lstUseRecord.get(5) != null && lstUseRecord.get(5).length() > 0) {
-								Pager<DefinedTermBase> countryPager = termService.findByTitle(Modifier.class, lstUseRecord.get(5), null, null, null, null, null, null);
-								Modifier country = null;
+								Pager<DefinedTermBase> countryPager = termService.findByTitle(DefinedTerm.class, lstUseRecord.get(5), null, null, null, null, null, null);
+								DefinedTerm country = null;
 								if(countryPager.getCount() > 0) {
-									country = (Modifier) countryPager.getRecords().get(0);
+									country = (DefinedTerm) countryPager.getRecords().get(0);
 								} else {
 									country = notAvailMod;
 								}
 								modifyingText += country.toString() + ";";
 								useRecord.addModifier(country);
 							} else {
-								Modifier country = notAvailMod;
+								DefinedTerm country = notAvailMod;
 								modifyingText += country.toString() + ";";
 								useRecord.addModifier(country);
 							}
 							
 							if(lstUseRecord.get(6) != null && lstUseRecord.get(6).length() > 0) {
-								Pager<DefinedTermBase> plantPartPager = termService.findByTitle(Modifier.class, lstUseRecord.get(6), null, null, null, null, null, null);
-								Modifier plantPart = null;
+								Pager<DefinedTermBase> plantPartPager = termService.findByTitle(DefinedTerm.class, lstUseRecord.get(6), null, null, null, null, null, null);
+								DefinedTerm plantPart = null;
 								if(plantPartPager.getCount() > 0) {
-									plantPart = (Modifier) plantPartPager.getRecords().get(0);
+									plantPart = (DefinedTerm) plantPartPager.getRecords().get(0);
 								} else {
 									plantPart = notAvailMod;
 								}
 								modifyingText += plantPart.toString() + ";";
 								useRecord.addModifier(plantPart);
 							}else {
-								Modifier plantPart = notAvailMod;
+								DefinedTerm plantPart = notAvailMod;
 								modifyingText += plantPart.toString() + ";";
 								useRecord.addModifier(plantPart);
 							}
 							if(lstUseRecord.get(7) != null && lstUseRecord.get(7).length() > 0) {
-								Pager<DefinedTermBase> humanGroupPager = termService.findByTitle(Modifier.class, lstUseRecord.get(7), null, null, null, null, null, null);
-								Modifier humanGroup = null;
+								Pager<DefinedTermBase> humanGroupPager = termService.findByTitle(DefinedTerm.class, lstUseRecord.get(7), null, null, null, null, null, null);
+								DefinedTerm humanGroup = null;
 								if(humanGroupPager.getCount() > 0) {
-									humanGroup = (Modifier) humanGroupPager.getRecords().get(0);
+									humanGroup = (DefinedTerm) humanGroupPager.getRecords().get(0);
 								} else {
 									humanGroup = notAvailMod;
 								}
 								modifyingText += humanGroup.toString() + ";";
 								useRecord.addModifier(humanGroup);
 							} else {
-								Modifier humanGroup = notAvailMod;
+								DefinedTerm humanGroup = notAvailMod;
 								modifyingText += humanGroup.toString() + ";";
 								useRecord.addModifier(humanGroup);
 							}
 							if(lstUseRecord.get(8) != null && lstUseRecord.get(8).length() > 0) {
-								Pager<DefinedTermBase> ethnicGroupPager = termService.findByTitle(Modifier.class, lstUseRecord.get(8), null, null, null, null, null, null);
-								Modifier ethnicGroup = null;
+								Pager<DefinedTermBase> ethnicGroupPager = termService.findByTitle(DefinedTerm.class, lstUseRecord.get(8), null, null, null, null, null, null);
+								DefinedTerm ethnicGroup = null;
 								if(ethnicGroupPager.getCount() > 0) {
-									ethnicGroup = (Modifier) ethnicGroupPager.getRecords().get(0);
+									ethnicGroup = (DefinedTerm) ethnicGroupPager.getRecords().get(0);
 									modifyingText += ethnicGroup.toString() + ";";
 								} else {
 									ethnicGroup = notAvailMod;
@@ -433,7 +436,7 @@ public class UseImport {
 								useRecord.addModifier(ethnicGroup);
 							}
 							else {
-								Modifier ethnicGroup = notAvailMod;
+								DefinedTerm ethnicGroup = notAvailMod;
 								modifyingText += ethnicGroup.toString() + ";";
 								useRecord.addModifier(ethnicGroup);
 							}
@@ -504,9 +507,9 @@ public class UseImport {
 		IReferenceService referenceService = applicationController.getReferenceService();	
 		
 		TermVocabulary<State> stateVocabulary =  (TermVocabulary<State>) vocabularyService.find(UUID.fromString("67430d7c-fd43-4e9d-af5e-d0dca3f74931")); 
-		TermVocabulary<Modifier> countryVocabulary = (TermVocabulary<Modifier>) vocabularyService.find(UUID.fromString("116c51f1-e63a-46f7-a258-e1149a42868b"));  
-		TermVocabulary<Modifier> plantPartVocabulary = (TermVocabulary<Modifier>) vocabularyService.find(UUID.fromString("369914fe-d54b-4063-99ce-abc81d30ad35"));  
-		TermVocabulary<Modifier> humanGroupVocabulary =  (TermVocabulary<Modifier>) vocabularyService.find(UUID.fromString("ca46cea5-bdf7-438d-9cd8-e2793d2178dc"));
+		TermVocabulary<DefinedTermBase<?>> countryVocabulary = (TermVocabulary<DefinedTermBase<?>>) vocabularyService.find(UUID.fromString("116c51f1-e63a-46f7-a258-e1149a42868b"));  
+		TermVocabulary<DefinedTerm> plantPartVocabulary = (TermVocabulary<DefinedTerm>) vocabularyService.find(UUID.fromString("369914fe-d54b-4063-99ce-abc81d30ad35"));  
+		TermVocabulary<DefinedTerm> humanGroupVocabulary =  (TermVocabulary<DefinedTerm>) vocabularyService.find(UUID.fromString("ca46cea5-bdf7-438d-9cd8-e2793d2178dc"));
 		
 		IDescriptionService descService = applicationController.getDescriptionService();
 		InputStream inputStream = null;
@@ -580,20 +583,20 @@ public class UseImport {
 				
 				//case 1: = HumanGroup
 				case 1:
-					Pager<Modifier> humanGroupPager = termService.findByRepresentationText(lstUpdate.get(1), Modifier.class, null, null);
+					Pager<DefinedTerm> humanGroupPager = termService.findByRepresentationText(lstUpdate.get(1), DefinedTerm.class, null, null);
 					
-					Modifier humanGroup = null;
-					Modifier ethnicGroup = null;
+					DefinedTerm humanGroup = null;
+					DefinedTerm ethnicGroup = null;
 					if(humanGroupPager.getCount()>0) {
 						humanGroup = humanGroupPager.getRecords().get(0);
 					}
 					
 					if(humanGroup == null) {
-						humanGroup = Modifier.NewInstance(lstUpdate.get(1), lstUpdate.get(1), null);
+						humanGroup = DefinedTerm.NewModifierInstance(lstUpdate.get(1), lstUpdate.get(1), null);
 					}
 					
 					if(lstUpdate.size() >2) {
-						ethnicGroup = Modifier.NewInstance(lstUpdate.get(2), lstUpdate.get(2), null);
+						ethnicGroup = DefinedTerm.NewModifierInstance(lstUpdate.get(2), lstUpdate.get(2), null);
 						humanGroup.addIncludes(ethnicGroup);
 					}
 					humanGroupVocabulary.addTerm(humanGroup);
@@ -603,15 +606,15 @@ public class UseImport {
 				
 				//case 2: = Country
 				case 2:
-					Pager<Modifier> countryPager = termService.findByRepresentationText(lstUpdate.get(1), Modifier.class, null, null);
-					Modifier country = null;
+					Pager<DefinedTerm> countryPager = termService.findByRepresentationText(lstUpdate.get(1), DefinedTerm.class, null, null);
+					DefinedTermBase country = null;
 					
 					if(countryPager.getCount()>0) {
 						country = countryPager.getRecords().get(0);
 					}
 					
 					if(country == null) {
-						country = Modifier.NewInstance(lstUpdate.get(1), lstUpdate.get(1), null);
+						country = NamedArea.NewInstance(lstUpdate.get(1), lstUpdate.get(1), null);
 						countryVocabulary.addTerm(country);
 						vocabularyService.saveOrUpdate(countryVocabulary);
 					}
@@ -620,15 +623,15 @@ public class UseImport {
 				
 				//case 3: //plantPart
 				case 3:
-					Pager<Modifier> plantPartPager = termService.findByRepresentationText(lstUpdate.get(1), Modifier.class, null, null);
-					Modifier plantPart = null;
+					Pager<DefinedTerm> plantPartPager = termService.findByRepresentationText(lstUpdate.get(1), DefinedTerm.class, null, null);
+					DefinedTerm plantPart = null;
 					
 					if(plantPartPager.getCount()>0) {
 						plantPart = plantPartPager.getRecords().get(0);
 					}
 					
 					if(plantPart == null) {
-						plantPart = Modifier.NewInstance(lstUpdate.get(1), lstUpdate.get(1), null);
+						plantPart = DefinedTerm.NewModifierInstance(lstUpdate.get(1), lstUpdate.get(1), null);
 						plantPartVocabulary.addTerm(plantPart);
 						vocabularyService.saveOrUpdate(plantPartVocabulary);
 					}
@@ -717,10 +720,10 @@ public class UseImport {
 		Feature featureUseRecord = (Feature) termService.find(UUID.fromString("8125a59d-b4d5-4485-89ea-67306297b599"));
 		Feature featureUseSummary = (Feature) termService.find(UUID.fromString("6acb0348-c070-4512-a37c-67bcac016279"));
 		TermVocabulary<State> stateVocabulary =  (TermVocabulary<State>) vocabularyService.find(UUID.fromString("67430d7c-fd43-4e9d-af5e-d0dca3f74931")); 
-		TermVocabulary<Modifier> countryVocabulary = (TermVocabulary<Modifier>) vocabularyService.find(UUID.fromString("116c51f1-e63a-46f7-a258-e1149a42868b"));  
-		TermVocabulary<Modifier> plantPartVocabulary = (TermVocabulary<Modifier>) vocabularyService.find(UUID.fromString("369914fe-d54b-4063-99ce-abc81d30ad35"));  
-		TermVocabulary<Modifier> humanGroupVocabulary =  (TermVocabulary<Modifier>) vocabularyService.find(UUID.fromString("ca46cea5-bdf7-438d-9cd8-e2793d2178dc"));
-		Pager<DefinedTermBase>  notAvailModPager = (Pager<DefinedTermBase> ) termService.findByTitle(Modifier.class, "N/A", null, null, null, null, null, null);
+		TermVocabulary<DefinedTerm> countryVocabulary = (TermVocabulary<DefinedTerm>) vocabularyService.find(UUID.fromString("116c51f1-e63a-46f7-a258-e1149a42868b"));  
+		TermVocabulary<DefinedTerm> plantPartVocabulary = (TermVocabulary<DefinedTerm>) vocabularyService.find(UUID.fromString("369914fe-d54b-4063-99ce-abc81d30ad35"));  
+		TermVocabulary<DefinedTerm> humanGroupVocabulary =  (TermVocabulary<DefinedTerm>) vocabularyService.find(UUID.fromString("ca46cea5-bdf7-438d-9cd8-e2793d2178dc"));
+		Pager<DefinedTermBase>  notAvailModPager = (Pager<DefinedTermBase> ) termService.findByTitle(DefinedTerm.class, "N/A", null, null, null, null, null, null);
 		Pager<DefinedTermBase>  notAvailStatePager = (Pager<DefinedTermBase> ) termService.findByTitle(State.class, "N/A", null, null, null, null, null, null);
 		
 		conversation.startTransaction();
@@ -740,7 +743,7 @@ public class UseImport {
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			stateVocabulary = TermVocabulary.NewInstance("Use Category", "Use Category", null, termSourceUri);
+			stateVocabulary = TermVocabulary.NewInstance(TermType.State, "Use Category", "Use Category", null, termSourceUri);
 			stateVocabulary.setUuid(UUID.fromString("67430d7c-fd43-4e9d-af5e-d0dca3f74931"));
 			vocabularyService.saveOrUpdate(stateVocabulary);
 			conversation.commit(true);
@@ -748,11 +751,11 @@ public class UseImport {
 		if (countryVocabulary == null) {
 			URI termSourceUri = null;
 			try {
-				termSourceUri = new URI("eu.etaxonomy.cdm.model.description.Modifier");
+				termSourceUri = new URI("eu.etaxonomy.cdm.model.description.DefinedTerm");
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			countryVocabulary = TermVocabulary.NewInstance("Country", "Country", null, termSourceUri);
+			countryVocabulary = TermVocabulary.NewInstance(TermType.NamedArea, "Country", "Country", null, termSourceUri);
 			countryVocabulary.setUuid(UUID.fromString("116c51f1-e63a-46f7-a258-e1149a42868b"));
 			
 			vocabularyService.saveOrUpdate(countryVocabulary);
@@ -761,11 +764,11 @@ public class UseImport {
 		if (plantPartVocabulary == null) {
 			URI termSourceUri = null;
 			try {
-				termSourceUri = new URI("eu.etaxonomy.cdm.model.description.Modifier");
+				termSourceUri = new URI("eu.etaxonomy.cdm.model.description.DefinedTerm");
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			plantPartVocabulary = TermVocabulary.NewInstance("Plant Part", "Plant Part", null, termSourceUri);
+			plantPartVocabulary = TermVocabulary.NewInstance(TermType.Modifier, "Plant Part", "Plant Part", null, termSourceUri);
 			plantPartVocabulary.setUuid(UUID.fromString("369914fe-d54b-4063-99ce-abc81d30ad35"));
 			vocabularyService.saveOrUpdate(plantPartVocabulary);
 			conversation.commit(true);
@@ -773,11 +776,11 @@ public class UseImport {
 		if (humanGroupVocabulary == null) {
 			URI termSourceUri = null;
 			try {
-				termSourceUri = new URI("eu.etaxonomy.cdm.model.description.Modifier");
+				termSourceUri = new URI("eu.etaxonomy.cdm.model.description.DefinedTerm");
 			} catch (URISyntaxException e) {
 				e.printStackTrace();
 			}
-			humanGroupVocabulary = TermVocabulary.NewInstance("Human Group", "Human Group", null, termSourceUri);
+			humanGroupVocabulary = TermVocabulary.NewInstance(TermType.Modifier, "Human Group", "Human Group", null, termSourceUri);
 			humanGroupVocabulary.setUuid(UUID.fromString("ca46cea5-bdf7-438d-9cd8-e2793d2178dc"));
 			vocabularyService.saveOrUpdate(humanGroupVocabulary);
 			conversation.commit(true);
@@ -813,7 +816,7 @@ public class UseImport {
 			
 		}
 		if(notAvailModPager.getCount() == 0) {
-			Modifier notAvailMod = Modifier.NewInstance("N/A", "N/A", null);
+			DefinedTerm notAvailMod = DefinedTerm.NewInstance(TermType.Modifier, "N/A", "N/A", null);
 			termService.saveOrUpdate(notAvailMod);
 			conversation.commit(true);
 		}

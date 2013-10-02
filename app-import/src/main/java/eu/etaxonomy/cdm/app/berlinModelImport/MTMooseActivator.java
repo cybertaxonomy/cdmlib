@@ -59,7 +59,7 @@ public class MTMooseActivator {
 
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 // ****************** ALL *****************************************
 	

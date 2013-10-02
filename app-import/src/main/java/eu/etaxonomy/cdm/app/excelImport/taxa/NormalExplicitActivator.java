@@ -32,7 +32,7 @@ public class NormalExplicitActivator {
 //		new String("D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\NormalExplicit.xls");
 	
 	private static URI source  = 
-		URI.create("file:/C:/localCopy/meetings_workshops/2011_Göttingen/GermanSL12/GermanSL.xls");
+		URI.create("file:/C:/localCopy/meetings_workshops/2011_Gï¿½ttingen/GermanSL12/GermanSL.xls");
 
 	private static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 	
@@ -41,7 +41,7 @@ public class NormalExplicitActivator {
     
     public static void main(String[] args) {
 
-    	NomenclaturalCode code = NomenclaturalCode.ICBN;
+    	NomenclaturalCode code = NomenclaturalCode.ICNAFP;
     	URI uri = source;
 		NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
     		NormalExplicitImportConfigurator.NewInstance(uri, destinationDb, code,dbSchemaValidation);

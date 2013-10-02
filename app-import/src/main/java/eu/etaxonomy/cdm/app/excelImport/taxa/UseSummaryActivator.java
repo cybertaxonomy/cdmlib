@@ -39,7 +39,7 @@ public class UseSummaryActivator {
     
     public static void main(String[] args) {
 
-    	NomenclaturalCode code = NomenclaturalCode.ICBN;
+    	NomenclaturalCode code = NomenclaturalCode.ICNAFP;
     	URI uri;
 //		try {
 			File file = new File(fileName);

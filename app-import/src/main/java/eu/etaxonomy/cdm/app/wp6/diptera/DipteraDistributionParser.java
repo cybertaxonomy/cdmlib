@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -41,7 +42,6 @@ import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
@@ -122,10 +122,10 @@ public class DipteraDistributionParser {
 						}
 						word = adaptWordsToTdwg(word);
 						
-						if (! "".equals(word) && ! TdwgArea.isTdwgAreaLabel(word) && ! TdwgArea.isTdwgAreaAbbreviation(word) && ! isDoubleArea(word)){
+						if (! "".equals(word) && ! TdwgAreaProvider.isTdwgAreaLabel(word) && ! TdwgAreaProvider.isTdwgAreaAbbreviation(word) && ! isDoubleArea(word)){
 							for (countSkip = 1; countSkip <= 6; countSkip++){
 								word = word.trim();
-								if (! TdwgArea.isTdwgAreaLabel(word) && ! TdwgArea.isTdwgAreaAbbreviation(word) && ! isDoubleArea(word)){
+								if (! TdwgAreaProvider.isTdwgAreaLabel(word) && ! TdwgAreaProvider.isTdwgAreaAbbreviation(word) && ! isDoubleArea(word)){
 									if (words.length > i + countSkip){
 										word = word + " " + words[i + countSkip];
 									}
@@ -144,7 +144,7 @@ public class DipteraDistributionParser {
 						}
 						if ("".equals(word)){
 							//countSkip = countSkip;
-						}else if (! TdwgArea.isTdwgAreaLabel(word)  && ! TdwgArea.isTdwgAreaAbbreviation(word) &&  ! isDoubleArea(word)  ){
+						}else if (! TdwgAreaProvider.isTdwgAreaLabel(word)  && ! TdwgAreaProvider.isTdwgAreaAbbreviation(word) &&  ! isDoubleArea(word)  ){
 							if (word.contains("?")){
 								logger.warn("XXX");
 							}
@@ -168,10 +168,10 @@ public class DipteraDistributionParser {
 								}
 							}else{
 								NamedArea area;
-								if (TdwgArea.isTdwgAreaLabel(word)){
-									area = TdwgArea.getAreaByTdwgLabel(word);
+								if (TdwgAreaProvider.isTdwgAreaLabel(word)){
+									area = TdwgAreaProvider.getAreaByTdwgLabel(word);
 								}else{
-									area = TdwgArea.getAreaByTdwgAbbreviation(word);
+									area = TdwgAreaProvider.getAreaByTdwgAbbreviation(word);
 								}
 								if (isDoubtful){
 									term = PresenceTerm.INTRODUCED_PRESENCE_QUESTIONABLE();
@@ -204,14 +204,14 @@ public class DipteraDistributionParser {
 	private NamedArea[] getDoubleArea(String word){
 		NamedArea[] result = new NamedArea[2];
 		if ("Canary and Madeira Is.".equalsIgnoreCase(word)){
-			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("CNY");
-			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("MDR");
+			 result[0] = TdwgAreaProvider.getAreaByTdwgAbbreviation("CNY");
+			 result[1] = TdwgAreaProvider.getAreaByTdwgAbbreviation("MDR");
 		}else if ("southern Europe".equalsIgnoreCase(word)){
-			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("12");
-			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("13");
+			 result[0] = TdwgAreaProvider.getAreaByTdwgAbbreviation("12");
+			 result[1] = TdwgAreaProvider.getAreaByTdwgAbbreviation("13");
 		}else if ("former USSR: North and Central European territory".equalsIgnoreCase(word)){
-			 result[0] = TdwgArea.getAreaByTdwgAbbreviation("RUN-OO");
-			 result[1] = TdwgArea.getAreaByTdwgAbbreviation("RUC-OO");
+			 result[0] = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUN-OO");
+			 result[1] = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUC-OO");
 		}else{
 			logger.warn("Double area not recognized");
 		}
