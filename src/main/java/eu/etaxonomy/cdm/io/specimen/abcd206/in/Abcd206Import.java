@@ -45,10 +45,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-//<<<<<<< .courant
-import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 //=======
 import eu.etaxonomy.cdm.model.common.LanguageString;
+//<<<<<<< .courant
+import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 //>>>>>>> .fusion-droit.r19057
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -260,14 +260,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     protected NodeList getUnitsNodeList(URI source) {
         try {
-        	InputStream is = UriUtils.getInputStream(source);
+            InputStream is = UriUtils.getInputStream(source);
             return getUnitsNodeList(is);
         } catch (Exception e) {
             logger.warn(e);
             throw new RuntimeException(e);
         }
     }
-    
+
     /**
      * Return the list of root nodes for an ABCD 2.06 XML file
      * @param fileName: the file's location
@@ -278,7 +278,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         try {
             DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
             DocumentBuilder builder = factory.newDocumentBuilder();
- 
+
             Document document = builder.parse(inputStream);
             Element root = document.getDocumentElement();
             unitList = root.getElementsByTagName("Unit");
@@ -370,13 +370,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             //			for (NamedArea area : otherAreas) {
             //				getTermService().saveOrUpdate(area);// merge it sooner (foreach area)
             //			}
-            
+
             save(unitsGatheringEvent.getLocality(), state);
-            
+
             // handle collection data
             setCollectionData(state, derivedUnitFacade);
 
-//<<<<<<< .courant
+            //<<<<<<< .courant
             //Reference stuff
             SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
             Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
@@ -397,7 +397,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 System.out.println("reference has problem?" +reference.hasProblem());
 
 
-                IdentifiableSource sour = IdentifiableSource.NewInstance(reference,citationDetail);
+                IdentifiableSource sour = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
                 try{
                     dataHolder.docSources.add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
                 }catch(Exception e){
@@ -450,8 +450,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if(sour.isInstanceOf(IdentifiableSource.class)){
                         derivedUnitFacade.addSource((IdentifiableSource)sour.clone());
                     }else{
-                        IdentifiableSource t = IdentifiableSource.NewInstance(sour.getCitation(),sour.getCitationMicroReference());
-                        derivedUnitFacade.addSource(t);
+                        derivedUnitFacade.addSource(OriginalSourceType.Import,sour.getCitation(),sour.getCitationMicroReference(), ioName);
                     }
                 }
             }else{
@@ -459,17 +458,16 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     if(sr.isInstanceOf(IdentifiableSource.class)){
                         derivedUnitFacade.addSource((IdentifiableSource)sr.clone());
                     }else{
-                        IdentifiableSource t = IdentifiableSource.NewInstance(sr.getCitation(),sr.getCitationMicroReference());
-                        derivedUnitFacade.addSource(t);
+                        derivedUnitFacade.addSource(OriginalSourceType.Import,sr.getCitation(),sr.getCitationMicroReference(), ioName);
                     }
                 }
             }
 
             getOccurrenceService().saveOrUpdate(derivedUnitBase);
 
-//=======
+            //=======
             save(derivedUnitBase, state);
-            
+
             // handle identifications
             handleIdentifications(state, derivedUnitFacade);
 
@@ -487,45 +485,45 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     }
 
     /**
-     * Very fast and dirty implementation to allow handling of transient objects as described in 
+     * Very fast and dirty implementation to allow handling of transient objects as described in
      * https://dev.e-taxonomy.eu/trac/ticket/3726
-     * 
+     *
      * Not yet complete.
-     * 
+     *
      * @param cdmBase
      * @param state
      */
     private void save(CdmBase cdmBase, Abcd206ImportState state) {
-		ICdmApplicationConfiguration cdmRepository = state.getConfig().getCdmAppController();
-		if (cdmRepository == null){
-			cdmRepository = this;
-		}
-		
-		if (cdmBase.isInstanceOf(LanguageString.class)){
-			cdmRepository.getTermService().saveLanguageData(CdmBase.deproxy(cdmBase, LanguageString.class));
-		}else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
-			cdmRepository.getOccurrenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class));
-		}else if (cdmBase.isInstanceOf(Reference.class)){
-			cdmRepository.getReferenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, Reference.class));
-		}else if (cdmBase.isInstanceOf(Classification.class)){
-			cdmRepository.getClassificationService().saveOrUpdate(CdmBase.deproxy(cdmBase, Classification.class));
-		}else if (cdmBase.isInstanceOf(AgentBase.class)){
-			cdmRepository.getAgentService().saveOrUpdate(CdmBase.deproxy(cdmBase, AgentBase.class));
-		}else if (cdmBase.isInstanceOf(Collection.class)){
-			cdmRepository.getCollectionService().saveOrUpdate(CdmBase.deproxy(cdmBase, Collection.class));
-		}else if (cdmBase.isInstanceOf(DescriptionBase.class)){
-			cdmRepository.getDescriptionService().saveOrUpdate(CdmBase.deproxy(cdmBase, DescriptionBase.class));
-		}else if (cdmBase.isInstanceOf(TaxonBase.class)){
-			cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
-		}else if (cdmBase.isInstanceOf(TaxonNameBase.class)){
-			cdmRepository.getNameService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNameBase.class));
-		}else{
-			throw new IllegalArgumentException("Class not supported in save method: " + CdmBase.deproxy(cdmBase, CdmBase.class).getClass().getSimpleName());
-		}
-        
+        ICdmApplicationConfiguration cdmRepository = state.getConfig().getCdmAppController();
+        if (cdmRepository == null){
+            cdmRepository = this;
+        }
+
+        if (cdmBase.isInstanceOf(LanguageString.class)){
+            cdmRepository.getTermService().saveLanguageData(CdmBase.deproxy(cdmBase, LanguageString.class));
+        }else if (cdmBase.isInstanceOf(SpecimenOrObservationBase.class)){
+            cdmRepository.getOccurrenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, SpecimenOrObservationBase.class));
+        }else if (cdmBase.isInstanceOf(Reference.class)){
+            cdmRepository.getReferenceService().saveOrUpdate(CdmBase.deproxy(cdmBase, Reference.class));
+        }else if (cdmBase.isInstanceOf(Classification.class)){
+            cdmRepository.getClassificationService().saveOrUpdate(CdmBase.deproxy(cdmBase, Classification.class));
+        }else if (cdmBase.isInstanceOf(AgentBase.class)){
+            cdmRepository.getAgentService().saveOrUpdate(CdmBase.deproxy(cdmBase, AgentBase.class));
+        }else if (cdmBase.isInstanceOf(Collection.class)){
+            cdmRepository.getCollectionService().saveOrUpdate(CdmBase.deproxy(cdmBase, Collection.class));
+        }else if (cdmBase.isInstanceOf(DescriptionBase.class)){
+            cdmRepository.getDescriptionService().saveOrUpdate(CdmBase.deproxy(cdmBase, DescriptionBase.class));
+        }else if (cdmBase.isInstanceOf(TaxonBase.class)){
+            cdmRepository.getTaxonService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonBase.class));
+        }else if (cdmBase.isInstanceOf(TaxonNameBase.class)){
+            cdmRepository.getNameService().saveOrUpdate(CdmBase.deproxy(cdmBase, TaxonNameBase.class));
+        }else{
+            throw new IllegalArgumentException("Class not supported in save method: " + CdmBase.deproxy(cdmBase, CdmBase.class).getClass().getSimpleName());
+        }
+
     }
 
-	/**
+    /**
      * setCollectionData : store the collection object into the
      * derivedUnitFacade
      *
@@ -554,36 +552,36 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @return DerivedUnitFacade
      */
     private DerivedUnitFacade getFacade() {
-		if(DEBUG) {
-			logger.info("getFacade()");
-		}
-		SpecimenOrObservationType type = null;
+        if(DEBUG) {
+            logger.info("getFacade()");
+        }
+        SpecimenOrObservationType type = null;
 
-		// create specimen
-		if (NB((dataHolder.recordBasis)) != null) {
-			if (dataHolder.recordBasis.toLowerCase().startsWith("s") || dataHolder.recordBasis.toLowerCase().contains("specimen")) {// specimen
-				type = SpecimenOrObservationType.PreservedSpecimen;
-			}
-			if (dataHolder.recordBasis.toLowerCase().startsWith("o")) {
-				type = SpecimenOrObservationType.Observation;
-			}
-			if (dataHolder.recordBasis.toLowerCase().contains("fossil")){
-				type = SpecimenOrObservationType.Fossil;
-			}
-			if (dataHolder.recordBasis.toLowerCase().startsWith("l")) {
-				type = SpecimenOrObservationType.LivingSpecimen;
-			}
-			if (type == null) {
-				logger.info("The basis of record does not seem to be known: " + dataHolder.recordBasis);
-				type = SpecimenOrObservationType.DerivedUnit;
-			}
-			// TODO fossils?
-		} else {
-			logger.info("The basis of record is null");
-			type = SpecimenOrObservationType.DerivedUnit;
-		}
-		DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
-		return derivedUnitFacade;
+        // create specimen
+        if (NB((dataHolder.recordBasis)) != null) {
+            if (dataHolder.recordBasis.toLowerCase().startsWith("s") || dataHolder.recordBasis.toLowerCase().contains("specimen")) {// specimen
+                type = SpecimenOrObservationType.PreservedSpecimen;
+            }
+            if (dataHolder.recordBasis.toLowerCase().startsWith("o")) {
+                type = SpecimenOrObservationType.Observation;
+            }
+            if (dataHolder.recordBasis.toLowerCase().contains("fossil")){
+                type = SpecimenOrObservationType.Fossil;
+            }
+            if (dataHolder.recordBasis.toLowerCase().startsWith("l")) {
+                type = SpecimenOrObservationType.LivingSpecimen;
+            }
+            if (type == null) {
+                logger.info("The basis of record does not seem to be known: " + dataHolder.recordBasis);
+                type = SpecimenOrObservationType.DerivedUnit;
+            }
+            // TODO fossils?
+        } else {
+            logger.info("The basis of record is null");
+            type = SpecimenOrObservationType.DerivedUnit;
+        }
+        DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
+        return derivedUnitFacade;
     }
 
     private void getCollectorsFromXML(Element root, Abcd206XMLFieldGetter abcdFieldGetter) {
@@ -774,33 +772,33 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         for (String[] fullReference : dataHolder.referenceList) {
             try{
-            System.out.println(fullReference);
-            List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
+                System.out.println(fullReference);
+                List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
 
-            String strReference=fullReference[0];
-            String citationDetail = fullReference[1];
-            String citationURL = fullReference[2];
+                String strReference=fullReference[0];
+                String citationDetail = fullReference[1];
+                String citationURL = fullReference[2];
 
-            if (isNotBlank(strReference)){
-                Reference<?> reference = null;
-                for (Reference<?> refe: references) {
-                    if (refe.getTitleCache().equalsIgnoreCase(strReference)) {
-                        reference =refe;
+                if (isNotBlank(strReference)){
+                    Reference<?> reference = null;
+                    for (Reference<?> refe: references) {
+                        if (refe.getTitleCache().equalsIgnoreCase(strReference)) {
+                            reference =refe;
+                        }
                     }
-                }
-                if (reference ==null){
-                    reference = ReferenceFactory.newGeneric();
-/*<<<<<<< .courant
+                    if (reference ==null){
+                        reference = ReferenceFactory.newGeneric();
+                        /*<<<<<<< .courant
                     reference.setTitleCache(strReference);
                     System.out.println("reference hasproblem2 "+reference.hasProblem());
                     IdentifiableSource sour = IdentifiableSource.NewInstance(reference,citationDetail);
                     getReferenceService().saveOrUpdate(sour.getCitation());
 =======*/
-                    reference.setTitleCache(strReference, true);
-                    save(reference, state);
+                        reference.setTitleCache(strReference, true);
+                        save(reference, state);
+                    }
+                    determinationEvent.addReference(reference);
                 }
-                determinationEvent.addReference(reference);
-            }
             }catch(Exception e){logger.warn("pv getReferenceList "+e);}
         }
         save(derivedUnitBase, state);
@@ -898,14 +896,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                             logger.warn("no cloning?");
                         }
                     }else{
-                        IdentifiableSource t = IdentifiableSource.NewInstance(sour.getCitation(),sour.getCitationMicroReference());
-                        taxonDescription.addSource(t);
+                        taxonDescription.addSource(OriginalSourceType.Import,null, null, sour.getCitation(),sour.getCitationMicroReference());
                     }
                 }
             }
         }
         else {
-            taxonDescription.addSource(null, null, ref, null);
+            taxonDescription.addSource(OriginalSourceType.Import,null, null, ref, null);
         }
 
         IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
@@ -913,7 +910,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
         indAssociation.setFeature(feature);
 
-//<<<<<<< .courant
+        //<<<<<<< .courant
         if (state.getConfig().isInteractWithUser()){
             sourceMap = new HashMap<String, OriginalSourceBase<?>>();
 
@@ -961,19 +958,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                                 logger.warn("clone forbidden?");
                             }
                         }else{
-                            DescriptionElementSource t = DescriptionElementSource.NewInstance(source.getCitation(),source.getCitationMicroReference());
-                            indAssociation.addSource(t);
+                            indAssociation.addSource(OriginalSourceType.Import,null, null, source.getCitation(),source.getCitationMicroReference());
                         }
 
                     }
                 }
             }
         }else {
-            indAssociation.addSource(null, null, ref, null);
-//=======
-        for (Reference<?> citation : determinationEvent.getReferences()) {
-            indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
-//>>>>>>> .fusion-droit.r19057
+            indAssociation.addSource(OriginalSourceType.Import,null, null, ref, null);
+            //=======
+            for (Reference<?> citation : determinationEvent.getReferences()) {
+                indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
+                //>>>>>>> .fusion-droit.r19057
+            }
         }
 
         taxonDescription.addElement(indAssociation);
@@ -991,19 +988,19 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @return the corresponding Feature
      */
     private Feature makeFeature(SpecimenOrObservationBase<?> unit) {
-		SpecimenOrObservationType type = unit.getRecordBasis();
-		if (type.isFeatureObservation()){
-			return Feature.OBSERVATION();
-		}else if (type.isFeatureSpecimen()){
-			return Feature.SPECIMEN();
-		}else if (type == SpecimenOrObservationType.DerivedUnit){
-			return Feature.INDIVIDUALS_ASSOCIATION();
-		}else{
-			String message = "Unhandled record basis '%s' for defining individuals association feature type. Use default.";
-			logger.warn(String.format(message, type.getMessage()));
-			return Feature.INDIVIDUALS_ASSOCIATION();
-		}
-	}
+        SpecimenOrObservationType type = unit.getRecordBasis();
+        if (type.isFeatureObservation()){
+            return Feature.OBSERVATION();
+        }else if (type.isFeatureSpecimen()){
+            return Feature.SPECIMEN();
+        }else if (type == SpecimenOrObservationType.DerivedUnit){
+            return Feature.INDIVIDUALS_ASSOCIATION();
+        }else{
+            String message = "Unhandled record basis '%s' for defining individuals association feature type. Use default.";
+            logger.warn(String.format(message, type.getMessage()));
+            return Feature.INDIVIDUALS_ASSOCIATION();
+        }
+    }
 
     /**
      *  getTaxon : search for an existing taxon in the database
@@ -1194,8 +1191,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             String prefix = nvname.getGenusOrUninomial();
             genus = getTaxon(state, prefix, -1, Rank.GENUS());
             if (preferredFlag) {
-            parent = saveOrUpdateClassification(null, genus, state);
-}
+                parent = saveOrUpdateClassification(null, genus, state);
+            }
 
         }
         if (rank.isLower(Rank.SUBGENUS())){
@@ -1204,8 +1201,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             if (name != null){
                 subgenus = getTaxon(state, prefix+" "+name, -1, Rank.SUBGENUS());
                 if (preferredFlag) {
-                parent = saveOrUpdateClassification(genus, subgenus, state);
-}            }
+                    parent = saveOrUpdateClassification(genus, subgenus, state);
+                }            }
         }
         if (rank.isLower(Rank.SPECIES())){
             if (subgenus!=null){
@@ -1215,8 +1212,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (spe != null){
                     species = getTaxon(state, prefix+" "+name+" "+spe, -1, Rank.SPECIES());
                     if (preferredFlag) {
-                    parent = 	saveOrUpdateClassification(subgenus, species, state);
-}
+                        parent = 	saveOrUpdateClassification(subgenus, species, state);
+                    }
                 }
             }
             else{
@@ -1225,20 +1222,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (name != null){
                     species = getTaxon(state, prefix+" "+name, -1, Rank.SPECIES());
                     if (preferredFlag) {
-                    parent = 	saveOrUpdateClassification(genus, species, state);
-}
+                        parent = 	saveOrUpdateClassification(genus, species, state);
+                    }
                 }
             }
         }
         if (rank.isInfraSpecific()){
             subspecies = getTaxon(state, nvname.getFullTitleCache(), -1, Rank.SUBSPECIES());
             if (preferredFlag) {
-            parent = 	saveOrUpdateClassification(species, subspecies, state);
-}
+                parent = 	saveOrUpdateClassification(species, subspecies, state);
+            }
         }
         if (preferredFlag) {
-        saveOrUpdateClassification(parent, taxon, state);
-}
+            saveOrUpdateClassification(parent, taxon, state);
+        }
     }
 
     /**
@@ -1246,24 +1243,24 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param parent: the higher Taxon
      * @param child : the lower (or current) Taxon
      * return the Taxon from the new created Node
-     * @param state 
+     * @param state
      */
     private Taxon saveOrUpdateClassification(Taxon parent, Taxon child, Abcd206ImportState state) {
-		System.out.println("ADD CLASSIFICATION parent child "+parent+"," +child);
-		TaxonNode node =null;
-		if (parent != null) {
-			parent = (Taxon) getTaxonService().find(parent.getUuid());
-			child = (Taxon) getTaxonService().find(child.getUuid());
-			node = classification.addParentChild(parent, child, ref, "");
-		}
-		if (parent == null) {
-			child = (Taxon) getTaxonService().find(child.getUuid());
-			node =classification.addChildTaxon(child, ref, null);
-		}
-		save(classification, state);
-		return node.getTaxon();
+        System.out.println("ADD CLASSIFICATION parent child "+parent+"," +child);
+        TaxonNode node =null;
+        if (parent != null) {
+            parent = (Taxon) getTaxonService().find(parent.getUuid());
+            child = (Taxon) getTaxonService().find(child.getUuid());
+            node = classification.addParentChild(parent, child, ref, "");
+        }
+        if (parent == null) {
+            child = (Taxon) getTaxonService().find(child.getUuid());
+            node =classification.addChildTaxon(child, ref, null);
+        }
+        save(classification, state);
+        return node.getTaxon();
     }
-    
+
     /**
      * Parse automatically the scientific name
      * @param scientificName: the scientific name to parse
@@ -1665,7 +1662,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         if(!personToadd.isEmpty()){
             for (Person agent: personToadd){
-            	save(agent, state);
+                save(agent, state);
                 titleCachePerson.put(agent.getTitleCache(),CdmBase.deproxy(agent, Person.class) );
             }
         }
@@ -1691,8 +1688,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         if(!teamToAdd.isEmpty()){
-        	for (Team agent: teamToAdd){
-            	save(agent, state);
+            for (Team agent: teamToAdd){
+                save(agent, state);
                 titleCacheTeam.put(agent.getTitleCache(), CdmBase.deproxy( agent,Team.class) );
             }
         }

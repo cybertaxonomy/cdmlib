@@ -35,6 +35,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -253,7 +254,7 @@ public class SpecimenUserInteraction implements ItemListener {
                     iReferenceService.saveOrUpdate(re);
                 }
 
-                dess.add(IdentifiableSource.NewInstance(re,micro));
+                dess.add(IdentifiableSource.NewInstance(OriginalSourceType.Import,null, null, re,micro));
             }
         }
         return dess;

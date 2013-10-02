@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -72,6 +73,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
+
 
 /**
  * @author pkelbert
@@ -145,18 +147,18 @@ public class TaxonXExtractor {
             if (nbRef==0){
                 acceptedTaxon.getName().setNomenclaturalReference(reference);
                 if(!sourceExists) {
-                    acceptedTaxon.addSource(null,null,refMods,null);
+                    acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
                 }
             }else{
                 TaxonDescription taxonDescription =importer.getTaxonDescription(acceptedTaxon, false, true);
                 acceptedTaxon.addDescription(taxonDescription);
                 if(!sourceExists) {
-                    acceptedTaxon.addSource(null,null,refMods,null);
+                    acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
                 }
 
                 TextData textData = TextData.NewInstance(Feature.CITATION());
 
-                textData.addSource(null, null, reference, null, acceptedTaxon.getName(), ref);
+                textData.addSource(OriginalSourceType.Import, null,null, reference, null, acceptedTaxon.getName(), ref);
                 taxonDescription.addElement(textData);
 
                 sourceExists=false;
@@ -169,7 +171,7 @@ public class TaxonXExtractor {
                     }
                 }
                 if(!sourceExists) {
-                    taxonDescription.addSource(null,null,refMods,null);
+                    taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
                 }
 
                 importer.getDescriptionService().saveOrUpdate(taxonDescription);
@@ -483,16 +485,16 @@ public class TaxonXExtractor {
         	return null;
         }
         SpecimenOrObservationType type = unit.getRecordBasis();
-    	
+
     	if (type.isFeatureObservation()){
         	return Feature.OBSERVATION();
-        }else if (type.isPreservedSpecimen() || 
+        }else if (type.isPreservedSpecimen() ||
         		type == SpecimenOrObservationType.LivingSpecimen ||
         	    type == SpecimenOrObservationType.OtherSpecimen
         		){
         	return Feature.SPECIMEN();
-        }else if (type == SpecimenOrObservationType.Unknown || 
-        		type == SpecimenOrObservationType.DerivedUnit 
+        }else if (type == SpecimenOrObservationType.Unknown ||
+        		type == SpecimenOrObservationType.DerivedUnit
         		) {
             return Feature.INDIVIDUALS_ASSOCIATION();
         }

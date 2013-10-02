@@ -32,7 +32,6 @@ import com.ibm.lsid.MalformedLSIDException;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -403,7 +402,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
             }
             if(!sourceExists) {
-                t.addSource(null,null,refMods,null);
+                t.addSource(OriginalSourceType.Import,null,null,refMods,null);
             }
 
             if (!myname.getIdentifier().isEmpty() && (myname.getIdentifier().length()>2)){
@@ -730,7 +729,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     indAssociation.setFeature(feature);
                     indAssociation.addSource(OriginalSourceType.Import, null, null, refMods, null);
 
-                    sourceExists=false;
+                   /* sourceExists=false;
                     Set<DescriptionElementSource> dsources = indAssociation.getSources();
                     for (DescriptionElementSource src : dsources){
                         String micro = src.getCitationMicroReference();
@@ -742,12 +741,14 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if(!sourceExists) {
                         indAssociation.addSource(null, null, refMods, null);
                     }
+                    */
+                    indAssociation.addSource(OriginalSourceType.Import, null,null,refMods,null);
 
                     taxonDescription.addElement(indAssociation);
                     taxonDescription.setTaxon(acceptedTaxon);
                     taxonDescription.addSource(OriginalSourceType.Import, null,null,refMods,null);
 
-                    sourceExists=false;
+                    /*sourceExists=false;
                     sources = taxonDescription.getSources();
                     for (IdentifiableSource src : sources){
                         String micro = src.getCitationMicroReference();
@@ -757,8 +758,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         }
                     }
                     if(!sourceExists) {
-                        taxonDescription.addSource(null,null,refMods,null);
-                    }
+                        taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
+                    }*/
                     importer.getDescriptionService().saveOrUpdate(taxonDescription);
                     importer.getTaxonService().saveOrUpdate(acceptedTaxon);
                     td.setDescribedSpecimenOrObservation(soo.getDerivedUnitBase());
@@ -899,7 +900,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         indAssociation.setFeature(feature);
                         indAssociation.addSource(OriginalSourceType.Import,null, null, refMods, null);
 
-                        sourceExists=false;
+                        /*sourceExists=false;
                         Set<DescriptionElementSource> dsources = indAssociation.getSources();
                         for (DescriptionElementSource src : dsources){
                             String micro = src.getCitationMicroReference();
@@ -911,12 +912,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         if(!sourceExists) {
                             indAssociation.addSource(null, null, refMods, null);
                         }
+                        */
 
                         taxonDescription.addElement(indAssociation);
                         taxonDescription.setTaxon(acceptedTaxon);
                         taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
 
-                        sourceExists=false;
+                        /*sourceExists=false;
                         sources = taxonDescription.getSources();
                         for (IdentifiableSource src : sources){
                             String micro = src.getCitationMicroReference();
@@ -926,13 +928,13 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             }
                         }
                         if(!sourceExists) {
-                            taxonDescription.addSource(null,null,refMods,null);
-                        }
+                            taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
+                        }*/
                         importer.getDescriptionService().saveOrUpdate(taxonDescription);
                         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
                     }
                     if (!rawAssociation.isEmpty() && !added){
-                        DerivedUnitFacade derivedUnitFacade = getFacade(rawAssociation.replaceAll(";",""),DerivedUnitType.DerivedUnit);
+                        DerivedUnitFacade derivedUnitFacade = getFacade(rawAssociation.replaceAll(";",""),SpecimenOrObservationType.DerivedUnit);
                         derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
 
                         TaxonDescription taxonDescription = importer.getTaxonDescription(acceptedTaxon, false, true);
@@ -948,7 +950,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         indAssociation.setFeature(feature);
                         indAssociation.addSource(OriginalSourceType.Import, null, null, refMods, null);
 
-                        boolean sourceExists=false;
+                        /*boolean sourceExists=false;
                         Set<DescriptionElementSource> dsources = indAssociation.getSources();
                         for (DescriptionElementSource src : dsources){
                             String micro = src.getCitationMicroReference();
@@ -959,13 +961,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         }
                         if(!sourceExists) {
                             indAssociation.addSource(null, null, refMods, null);
-                        }
-
+                        }*/
                         taxonDescription.addElement(indAssociation);
                         taxonDescription.setTaxon(acceptedTaxon);
                         taxonDescription.addSource(OriginalSourceType.Import, null,null,refMods,null);
 
-                        sourceExists=false;
+                        /*sourceExists=false;
                         Set<IdentifiableSource> sources = taxonDescription.getSources();
                         for (IdentifiableSource src : sources){
                             String micro = src.getCitationMicroReference();
@@ -975,8 +976,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             }
                         }
                         if(!sourceExists) {
-                            taxonDescription.addSource(null,null,refMods,null);
-                        }
+                            taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
+                        }*/
 
                         importer.getDescriptionService().saveOrUpdate(taxonDescription);
                         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -1045,7 +1046,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         indAssociation.setFeature(feature);
         indAssociation.addSource(OriginalSourceType.Import, null, null, refMods, null);
 
-        sourceExists=false;
+       /* sourceExists=false;
         Set<DescriptionElementSource> dsources = indAssociation.getSources();
         for (DescriptionElementSource src : dsources){
             String micro = src.getCitationMicroReference();
@@ -1057,12 +1058,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         if(!sourceExists) {
             indAssociation.addSource(null, null, refMods, null);
         }
-
+*/
         taxonDescription.addElement(indAssociation);
         taxonDescription.setTaxon(acceptedTaxon);
         taxonDescription.addSource(OriginalSourceType.Import, null,null,refMods,null);
 
-        sourceExists=false;
+      /*  sourceExists=false;
         sources = taxonDescription.getSources();
         for (IdentifiableSource src : sources){
             String micro = src.getCitationMicroReference();
@@ -1072,9 +1073,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
         }
         if(!sourceExists) {
-            taxonDescription.addSource(null,null,refMods,null);
+            taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
         }
-
+*/
         importer.getDescriptionService().saveOrUpdate(taxonDescription);
         importer.getTaxonService().saveOrUpdate(acceptedTaxon);
 
@@ -1408,16 +1409,16 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         TextData textData = TextData.NewInstance();
         textData.setFeature(currentFeature);
-        textData.addSource(null,null,refMods,null);
+        textData.addSource(OriginalSourceType.Import,null,null,refMods,null);
 
         textData.putText(Language.UNKNOWN_LANGUAGE(), descr+"<br/>");
 
         if(! descr.isEmpty() && (acceptedTaxon!=null)){
             TaxonDescription td =importer.getTaxonDescription(acceptedTaxon, false, true);
             td.addElement(textData);
-            td.addSource(null,null,refMods,null);
+            td.addSource(OriginalSourceType.Import,null,null,refMods,null);
             if(currentRef != refMods) {
-                td.addSource(null,null,currentRef,null);
+                td.addSource(OriginalSourceType.Import,null,null,currentRef,null);
             }
             acceptedTaxon.addDescription(td);
             importer.getDescriptionService().saveOrUpdate(td);
@@ -1440,9 +1441,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             defaultTaxon.addDescription(td);
             td.addElement(textData);
             if(currentRef != refMods) {
-                td.addSource(null,null,refMods,null);
+                td.addSource(OriginalSourceType.Import,null,null,refMods,null);
             }
-            td.addSource(null,null,currentRef,null);
+            td.addSource(OriginalSourceType.Import,null,null,currentRef,null);
             importer.getDescriptionService().saveOrUpdate(td);
             importer.getTaxonService().saveOrUpdate(defaultTaxon);
         }
@@ -1560,7 +1561,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         NodeList children = refgroup.getChildNodes();
         NonViralName<?> nameToBeFilled = null;
-        if (nomenclaturalCode.equals(NomenclaturalCode.ICBN)){
+        if (nomenclaturalCode.equals(NomenclaturalCode.ICNCP)){
             nameToBeFilled = BotanicalName.NewInstance(null);
         }
         if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
@@ -1608,32 +1609,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         String refString="";
         NomenclaturalStatusType statusType = null;
 
-//<<<<<<< .courant
         for (int j=0;j<references.getLength();j++){
             //no bibref tag inside
             MyName myName = new MyName();
             logger.info("references.item(j).getNodeName()"+references.item(j).getNodeName());
             if (references.item(j).getNodeName().equalsIgnoreCase("tax:name")){
-//=======
-                        INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
-                        if (nomenclaturalCode.equals(NomenclaturalCode.ICNAFP)){
-                            nameToBeFilled = BotanicalName.NewInstance(null);
-                        }
-                        if (nomenclaturalCode.equals(NomenclaturalCode.ICZN)){
-                            nameToBeFilled = ZoologicalName.NewInstance(null);
-                        }
-                        if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)){
-                            nameToBeFilled = BacterialName.NewInstance(null);
-                        }
-                        if (accepted){
-                            acceptedTaxon.getName().setNomenclaturalReference(reference);
-                            nameToBeFilled.setNomenclaturalReference(reference);
-                            acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
-                        }else{
-                            TaxonDescription td =importer.getTaxonDescription(acceptedTaxon, false, true);
-                            acceptedTaxon.addDescription(td);
-                            acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
-//>>>>>>> .fusion-droit.r19057
 
                 try {
                     myName = extractScientificName(references.item(j));
@@ -1648,7 +1628,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     logger.warn(e);
                 }
 
-//<<<<<<< .courant
 //                name=name.trim();
             }
             if (references.item(j).getNodeName().equalsIgnoreCase("#text")){
@@ -1662,16 +1641,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         statusType = nomStatusString2NomStatus(myName.getStatus());
                     } catch (UnknownCdmTypeException e) {
                         logger.warn("Problem with status");
-//=======
-                            textData.addSource(OriginalSourceType.Import, null, null, reference, null, acceptedTaxon.getName(), ref);
-                            td.addElement(textData);
-                            td.addSource(OriginalSourceType.Import, null,null,refMods,null);
-
-                            importer.getDescriptionService().saveOrUpdate(td);
-                        }
-                        importer.getTaxonService().saveOrUpdate(acceptedTaxon);
-                        //                        logger.warn("BWAAHHHH: "+nameToBeFilled.getParsingProblems()+", "+ref);
-                        nbRef++;
                     }
                 }
 
@@ -1732,7 +1701,6 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 Synonym synonym = Synonym.NewInstance(nameTBF, refMods);
 
 
-//<<<<<<< .courant
                 if (!myName.getIdentifier().isEmpty() && (myName.getIdentifier().length()>2)){
                     String id = myName.getIdentifier().split("__")[0];
                     String source = myName.getIdentifier().split("__")[1];
@@ -1744,28 +1712,17 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
-//=======
-                                }
-                                else{
-                                    //TODO ADD ORIGINAL SOURCE ID
-                                    IdentifiableSource os = IdentifiableSource.NewInstance(OriginalSourceType.Import);
-                                    os.setIdInSource(id);
-                                    Reference<?> re = ReferenceFactory.newGeneric();
-                                    re.setTitle(source);
-                                    os.setCitation(re);
-                                    synonym.addSource(os);
-                                }
-                            }
-//>>>>>>> .fusion-droit.r19057
 
                     }
                     else{
                         //TODO ADD ORIGINAL SOURCE ID
-                        IdentifiableSource os = IdentifiableSource.NewInstance();
-                        os.setIdInSource(id);
                         Reference<?> re = ReferenceFactory.newGeneric();
                         re.setTitle(source);
-                        os.setCitation(re);
+
+                        IdentifiableSource os = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null,re,null);
+                        os.setIdInSource(id);
+//
+//                        os.setCitation(re);
                         synonym.addSource(os);
                     }
                 }
