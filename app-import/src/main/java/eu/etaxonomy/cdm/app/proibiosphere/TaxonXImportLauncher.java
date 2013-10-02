@@ -53,8 +53,8 @@ public class TaxonXImportLauncher {
     //    private static final Logger log = Logger.getLogger(CdmEntityDaoBase.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
 
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
@@ -68,15 +68,15 @@ public class TaxonXImportLauncher {
 
     public static void main(String[] args) {
 
-        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&taxonomicName.taxonomicName=";
-        String plaziUrlDoc = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&MODS.ModsDocID=";
+        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2Fresources%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&taxonomicName.taxonomicName=";
+        String plaziUrlDoc = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2Fresources%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&MODS.ModsDocID=";
         //        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/xslt/E01DD5BE427421156E0C0BAC56389E0D?xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FLinkers%2FXmlDocumentLinkerData%2Fgg2taxonx.xsl";
-        List<String> sourcesStr =  new ArrayList<String>();
-        boolean plaziNotServer=false;
+//        List<String> sourcesStr =  new ArrayList<String>();
+//        boolean plaziNotServer=false;
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
-//        plaziUrl=plaziUrl+"Anochetus grandidieri";
-       plaziUrl=plaziUrlDoc+"21401";
+        plaziUrl=plaziUrl+"Chenopodium";
+//       plaziUrl=plaziUrlDoc+"FlNordica_chenop";
 
         /*HOW TO HANDLE SECUNDUM REFERENCE*/
         boolean reuseSecundum = askIfReuseSecundum();
@@ -85,7 +85,7 @@ public class TaxonXImportLauncher {
             secundum = askForSecundum();
         }
 
-        String tnomenclature = "ICZN";
+        String tnomenclature = "ICBN";
         URL plaziURL;
         try {
             plaziURL = new URL(plaziUrl);
@@ -99,7 +99,7 @@ public class TaxonXImportLauncher {
             String taxon;
             String link;
             //TODO lastUpdate field
-            if(!plaziNotServer){
+//            if(!plaziNotServer){
                 while ((inputLine = in.readLine()) != null) {
                     if (inputLine.startsWith("<treatment ")){
                         taxon = inputLine.split("taxon=\"")[1].split("\"")[0];
@@ -115,7 +115,7 @@ public class TaxonXImportLauncher {
                         documents.put(docID,docList);
                     }
                 }
-            }
+//            }
             for (String docId:documents.keySet()){
                 in = new BufferedReader(new InputStreamReader(new URL(plaziUrlDoc+docId).openStream()));
                 while ((inputLine = in.readLine()) != null) {
@@ -134,10 +134,10 @@ public class TaxonXImportLauncher {
                     }
                 }
             }
-            if(plaziNotServer) {
-                sourcesStr.add(plaziUrl);
-            }
-            in.close();
+//            if(plaziNotServer) {
+//                sourcesStr.add(plaziUrl);
+//            }
+//            in.close();
         } catch (MalformedURLException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -150,11 +150,8 @@ public class TaxonXImportLauncher {
 
         //        sourcesStr.add("/home/pkelbert/Documents/Proibiosphere/ChenopodiumXML/1362148061170_Chenopodium_K_hn_U_1993_tx.xml");
 
+        HashMap<String,List<URI>>documentMap = new HashMap<String, List<URI>>();
         for (String docId : documents.keySet()){
-            /*remove documents bad quality*/
-            log.info(docId);
-            //            if (!docId.equalsIgnoreCase("3891-7797-6564")){
-            log.info("document "+docId);
             List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
 
             Map<Integer, List<String>> startPages = new HashMap<Integer, List<String>>();
@@ -208,32 +205,39 @@ public class TaxonXImportLauncher {
 
             }
             else{
+                List<URI> uritmp = documentMap.get(docId);
+                if (uritmp == null) {
+                 uritmp = new ArrayList<URI>();
+                }
                 for (int page:pages) {
                     for (String treatment: startPages.get(page)) {
-                        sourcesStr.add(treatment);
+                        try {
+                            uritmp.add(new URL(treatment).toURI());
+                        } catch (MalformedURLException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        } catch (URISyntaxException e) {
+                            // TODO Auto-generated catch block
+                            e.printStackTrace();
+                        }
                     }
                 }
+                documentMap.put(docId, uritmp);
             }
-            //            }
-        }
-        log.info("NB SOURCES : "+sourcesStr.size());
-        //        sourcesStr = new ArrayList<String>();
-        //        sourcesStr.add("http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/4E7390346C05780D32283CCF6F5E4431_tx.xml");
 
-        List<URI> sources = new ArrayList<URI>();
-        for (String src: sourcesStr){
-            URI uri;
-            try {
-                uri = new URL(src).toURI();
-                sources.add(new URI(uri.toString()));
-            } catch (MalformedURLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            } catch (URISyntaxException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
-            }
+
+
+
         }
+//////        log.info("NB SOURCES : "+sourcesStr.size());
+//        List<URI> sourcesStr = new ArrayList<URI>();
+//        try {
+//            sourcesStr.add(new URI("http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/B1B975E804E7EF4C836E2B218A8F608F_tx.xml"));
+//            documentMap.put("singlesource", sourcesStr);
+//        } catch (URISyntaxException e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
+//        }
 
         log.info("Start import from  TaxonX Data");
 
@@ -257,7 +261,9 @@ public class TaxonXImportLauncher {
         //        taxonxImportConfigurator.setDoMatchTaxa(true);
         //        taxonxImportConfigurator.setReUseTaxon(true);
 
-        for (URI source:sources){
+        for (String document:documentMap.keySet()){
+        if (doImportDocument(document, documentMap.get(document).size())){
+        for (URI source:documentMap.get(document)){
             System.out.println("START : "+source.getPath());
             taxonxImportConfigurator.setSource(source);
 
@@ -281,6 +287,10 @@ public class TaxonXImportLauncher {
                 taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICZN);
                 //                taxonxImportConfigurator.setClassificationName("Ants");
             }
+            if(tnomenclature.equalsIgnoreCase("ICNB")){
+                taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNB);
+                //                taxonxImportConfigurator.setClassificationName("Bacteria");
+            }
 
             //   taxonxImportConfigurator.setTaxonReference(null);
 
@@ -296,11 +306,42 @@ public class TaxonXImportLauncher {
             //            count = app.getReferenceService().deduplicate(Reference.class, null, null);
             //            logger.warn("Deduplicated " + count + " references.");
         }
+        }
+        }
 
 
     }
 
 
+
+    /**
+     * @param document
+     * @return
+     */
+    private static boolean doImportDocument(String document, int nbtreatments) {
+//        List<String> docDone = Arrays.asList(new String[]{"3540555099", "0910-2878-5652", "5012-9059-4108",
+//                "3784-0748-2261","3-201-00728-5", "FloNuttDuWin1838", "FlNordica_chenop","2580-1363-7530",
+//                "1842460692","5161-7797-8064","FlCaboVerde_Chen","2819-9661-8339","2626-3794-9273"});//,
+//               // "8776-7797-8303"});
+//        if (docDone.contains(document)) {
+//            return false;
+//        }
+
+        JTextArea textArea = new JTextArea("Should this document be imported ("+nbtreatments+")? \n'"+document+"'");
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 700, 70 ) );
+
+        //        JFrame frame = new JFrame("I have a question");
+        //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        int s = JOptionPane.showConfirmDialog(null, scrollPane);
+        if (s==0) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
     /**
      * @return

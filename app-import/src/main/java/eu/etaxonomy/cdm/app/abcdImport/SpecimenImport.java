@@ -25,16 +25,16 @@ public class SpecimenImport {
     private static Logger logger = Logger.getLogger(SpecimenImport.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
     //  final static String xmlSource = "/home/patricia/Desktop/multiABCD.xml";
     //final static String xmlSource = "D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\specimen\\Picris pauciflora\\B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
 //    final static String xmlSource = "/home/pkelbert/workspace/proibiosphere/cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 
-    final static String xmlSource = "/home/pkelbert/Documents/Proibiosphere/Presentations/Demo/ABCD/calvum.xml";
+    final static String xmlSource = "/home/pkelbert/Bureau/CLD33-a.xml";
 //    final static String xmlSource = "/home/pkelbert/workspacetrunk/cdmlib/cdmlib-io/target/test-classes/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 
 
-    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
+    static final ICdmDataSource cdmDestination = CdmDestinations.mon_corvids();
 //    static final ICdmDataSource cdmDestination = CdmDestinations.makeDestination(DatabaseTypeEnum.H2, "localhost", "abcd_import_test", 8082, "root", "root");
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
