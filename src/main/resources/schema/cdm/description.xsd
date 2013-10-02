@@ -99,7 +99,6 @@ xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0">
     <xs:complexContent>
       <xs:extension base="common:TermBase">
         <xs:sequence>
-          <xs:element name="IsDescriptionSeparated" type="xs:boolean"/>
           <xs:element name="Root" type="description:FeatureNode" minOccurs="0"/>
         </xs:sequence>
       </xs:extension>

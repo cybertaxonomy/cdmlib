@@ -110,6 +110,7 @@ src/main/java/eu/etaxonomy/cdm/io/common/ResultSetPartitioner.java -text
 src/main/java/eu/etaxonomy/cdm/io/common/ResultSetProxy.java -text
 src/main/java/eu/etaxonomy/cdm/io/common/Source.java -text
 src/main/java/eu/etaxonomy/cdm/io/common/SourceConnectionException.java -text
+src/main/java/eu/etaxonomy/cdm/io/common/TdwgAreaProvider.java -text
 src/main/java/eu/etaxonomy/cdm/io/common/XmlExportConfiguratorBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/common/XmlExportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/common/XmlImportBase.java -text
@@ -338,11 +339,13 @@ src/main/java/eu/etaxonomy/cdm/io/markup/FootnoteDataHolder.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/LookAheadEventReader.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupDocumentImportNoComponent.java -text
+src/main/java/eu/etaxonomy/cdm/io/markup/MarkupFeatureImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportBase.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportConfigurator.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupImportState.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupInputStream.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupKeyImport.java -text
+src/main/java/eu/etaxonomy/cdm/io/markup/MarkupModsImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupNomenclatureImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupSpecimenImport.java -text
 src/main/java/eu/etaxonomy/cdm/io/markup/MarkupTransformer.java -text

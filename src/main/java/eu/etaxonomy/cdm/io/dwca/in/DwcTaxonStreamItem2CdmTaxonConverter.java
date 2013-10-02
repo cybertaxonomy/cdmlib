@@ -33,12 +33,12 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -91,7 +91,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		
 		//original source
 		String id = csvTaxonRecord.get(ID);
-		IdentifiableSource source = taxonBase.addSource(id, "Taxon", sourceReference, sourceReferenceDetail);
+		IdentifiableSource source = taxonBase.addSource(OriginalSourceType.Import, id, "Taxon", sourceReference, sourceReferenceDetail);
 		MappedCdmBase mappedSource = new MappedCdmBase(csvTaxonRecord.get(ID), source);
 		resultList.add(mappedSource);
 		csvTaxonRecord.remove(ID);
@@ -106,6 +106,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		
 		//nameAccordingTo
 		MappedCdmBase<Reference> sec = getNameAccordingTo(csvTaxonRecord, resultList);
+		
 		if (sec == null && state.getConfig().isUseSourceReferenceAsSec()){
 			sec = new MappedCdmBase<Reference>(state.getTransactionalSourceReference());
 		}
@@ -189,7 +190,14 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	 * @param taxonBase
 	 */
 	private void handleIdentifiableObjects(StreamItem item,TaxonBase<?> taxonBase) {
+		
+		
 		String references = item.get(TermUri.DC_REFERENCES);
+		
+		if (references == null || references == "") {
+			references = item.get(TermUri.DWC_NAME_PUBLISHED_IN_ID);//lorna temporary until Scratchpads move the reference to the correct place.
+		}
+		
 		if (StringUtils.isNotBlank(references)){
 			URI uri = makeUriIfIs(references);
 			if (uri != null){
@@ -209,7 +217,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			Reference<?> ref = ReferenceFactory.newGeneric();
 			ref.setTitle(reference);
 			Taxon taxon = (Taxon) taxonBase;
-			taxon.addSource(id, idNamespace, ref, null);
+			taxon.addSource(OriginalSourceType.Import, id, idNamespace, ref, null);
 		}
 		
 		
@@ -263,6 +271,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	private void handleTdwgArea(StreamItem item, TaxonBase<?> taxonBase) {
 		// TODO Auto-generated method stub
 		String tdwg_area = item.get(TermUri.DWC_COUNTRY_CODE);
+		if (tdwg_area != null){
 		if(taxonBase instanceof Synonym){
 			Synonym synonym = CdmBase.deproxy(taxonBase, Synonym.class);
 			Set<Taxon> acceptedTaxaList = synonym.getAcceptedTaxa();
@@ -272,10 +281,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			}else{
 				for(Taxon taxon : acceptedTaxaList){
 					TaxonDescription td = getTaxonDescription(taxon, false);
-					NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
-
+					NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
+	
 					if (area == null){
-						area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
+						area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 					}
 					if (area != null){
 						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
@@ -287,16 +296,17 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		if(!(taxonBase instanceof Synonym)){
 			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 			TaxonDescription td = getTaxonDescription(taxon, false);
-			NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg_area);
-
+			NamedArea area = NamedArea.getAreaByTdwgAbbreviation(tdwg_area);
+	
 			if (area == null){
-				area = TdwgArea.getAreaByTdwgLabel(tdwg_area);
+				area = NamedArea.getAreaByTdwgLabel(tdwg_area);
 			}
 			if (area != null){
 				Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
 				td.addElement(distribution);
 			}
 		}
+	}
 	}
 
 
@@ -364,14 +374,15 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			//if not exists, create new
 			if (! classificationExists){
 				String classificationName = StringUtils.isBlank(datasetName)? datasetId : datasetName;
-				if (classificationName.equals(NO_DATASET)){
-					classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
+				if (classificationName.equals(NO_DATASET)){					
+					classificationName = config.getClassificationName();
+					//classificationName = "Classification (no name)";  //TODO define by config or zipfile or metadata
 				}
 				
 				String classificationId = StringUtils.isBlank(datasetId)? datasetName : datasetId;
 				Classification classification = Classification.NewInstance(classificationName);
 				//source
-				IdentifiableSource source = classification.addSource(classificationId, "Dataset", sourceReference, sourceReferecenDetail);
+				IdentifiableSource source = classification.addSource(OriginalSourceType.Import, classificationId, "Dataset", sourceReference, sourceReferecenDetail);
 				//add to result
 				resultList.add(new MappedCdmBase(idTerm, datasetId, classification));
 				resultList.add(new MappedCdmBase(strTerm, datasetName, classification));
@@ -389,7 +400,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					taxonBase.setSec(ref);
 				}else{
 					//dataset as original source
-					taxonBase.addSource(null, null, ref, null);
+					taxonBase.addSource(OriginalSourceType.Import, null, null, ref, null);
 				}
 			}
 		}else{
@@ -440,9 +451,9 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		String strKingdom = getValue(item, TermUri.DWC_KINGDOM);
 		if (strKingdom != null){
 			if (strKingdom.equalsIgnoreCase("Plantae")){
-				nomCode = NomenclaturalCode.ICBN;
+				nomCode = NomenclaturalCode.ICNAFP;
 			}else if (strKingdom.equalsIgnoreCase("Fungi")){
-				nomCode = NomenclaturalCode.ICBN;
+				nomCode = NomenclaturalCode.ICNAFP;
 			}else if (strKingdom.equalsIgnoreCase("Animalia")){
 				nomCode = NomenclaturalCode.ICZN;
 			}else if (strKingdom.equalsIgnoreCase("Protozoa")){
@@ -482,7 +493,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		if (strScientificNameId != null){
 			if (config.isScientificNameIdAsOriginalSourceId()){
 				if (name != null){
-					IdentifiableSource source = IdentifiableSource.NewInstance(strScientificNameId, TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference, null);
+					IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, strScientificNameId, TermUri.DWC_SCIENTIFIC_NAME_ID.toString(), sourceReference, null);
 					name.addSource(source);
 				}
 			}else{
@@ -534,10 +545,10 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 					if (! idIsInternal){
 						//references should already exist in store if not linking to external links like URLs
 						String message = "External namePublishedInIDs are not yet supported";
-						fireWarningEvent(message, item, 4);
+						fireWarningEvent(message, item, 4);//set to DEBUG
 					}else{
 						newRef = ReferenceFactory.newGeneric();  //TODO handle other types if possible
-						newRef.addSource(refId, idTerm.toString(), sourceCitation, null);
+						newRef.addSource(OriginalSourceType.Import, refId, idTerm.toString(), sourceCitation, null);
 						MappedCdmBase<Reference> idResult = new MappedCdmBase<Reference>(idTerm, refId, newRef);
 						resultList.add(idResult);
 					}
@@ -603,7 +614,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 			try {
 				rank = Rank.getRankByEnglishName(strRank, nomCode, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
-					rank = Rank.getRankByNameOrAbbreviation(strRank, USE_UNKNOWN);
+					rank = Rank.getRankByNameOrIdInVoc(strRank, USE_UNKNOWN);
 					if (rank.equals(Rank.UNKNOWN_RANK())){
 						String message = "Rank can not be defined for '%s'";
 						message = String.format(message, strRank);
@@ -617,7 +628,7 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 		}
 		if ( (rank == null || rank.equals(Rank.UNKNOWN_RANK())) && strVerbatimRank != null){
 			try {
-				rank = Rank.getRankByNameOrAbbreviation(strVerbatimRank, USE_UNKNOWN);
+				rank = Rank.getRankByNameOrIdInVoc(strVerbatimRank, USE_UNKNOWN);
 				if (rank.equals(Rank.UNKNOWN_RANK())){
 					String message = "Rank can not be defined for '%s'";
 					message = String.format(message, strVerbatimRank);

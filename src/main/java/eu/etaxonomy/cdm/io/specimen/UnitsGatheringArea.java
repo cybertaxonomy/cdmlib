@@ -30,24 +30,21 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 
 /**
  * @author p.kelbert
  * @created 20.10.2008
- * @version 1.0
  */
 public class UnitsGatheringArea {
+    private static final Logger logger = Logger.getLogger(UnitsGatheringArea.class);
 
     private static final boolean DEBUG = false;
     private final ArrayList<DefinedTermBase> areas = new ArrayList<DefinedTermBase>();
     private boolean useTDWGarea = false;
-    //    private ITermService termService;
-    //    private IOccurrenceService occurrenceService;
-    private DefinedTermBase<?> wbc = null;
-    Logger logger = Logger.getLogger(this.getClass());
+
+    private DefinedTermBase<?> wbc;
 
 
     public UnitsGatheringArea(){
@@ -83,11 +80,10 @@ public class UnitsGatheringArea {
     @SuppressWarnings("rawtypes")
     public void setAreaNames(List<String> namedAreas, ImportConfiguratorBase<?, ?> config, ITermService termService){
         List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(Continent.class, 0, 0, null, null));
-        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+        termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         if (DEBUG) {
-            logger.info(termService.list(Continent.class, 0, 0, null, null));
+            logger.info(termService.list(NamedArea.class, 0, 0, null, null));
         }
 
         HashSet<String> areaToAdd= new HashSet<String>();
@@ -171,7 +167,7 @@ public class UnitsGatheringArea {
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
             IOccurrenceService occurrenceService){
         List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
-        termsList.addAll(termService.list(WaterbodyOrCountry.class, 0, 0, null, null));
+        termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();
 

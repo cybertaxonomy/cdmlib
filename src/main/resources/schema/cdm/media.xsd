@@ -25,7 +25,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
 
   <xs:element name="Rights" type="media:Rights"/>
 
-  <xs:element name="RightsTerm" type="media:RightsTerm"/>
+  <xs:element name="RightsType" type="media:RightsType"/>
 
   <xs:complexType name="Media">
     <xs:complexContent>
@@ -76,7 +76,7 @@ xmlns:xs="http://www.w3.org/2001/XMLSchema">
     </xs:complexContent>
   </xs:complexType>
 
-  <xs:complexType name="RightsTerm">
+  <xs:complexType name="RightsType">
     <xs:complexContent>
       <xs:extension base="common:DefinedTermBase">
         <xs:sequence/>

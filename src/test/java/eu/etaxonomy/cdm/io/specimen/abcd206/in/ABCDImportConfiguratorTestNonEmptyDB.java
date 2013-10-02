@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -83,7 +83,7 @@ public class ABCDImportConfiguratorTestNonEmptyDB extends CdmTransactionalIntegr
         boolean result = defaultImport.invoke(configurator);
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-        assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnitBase.class));
+        assertEquals("Number of specimen is incorrect", 11, occurrenceService.count(DerivedUnit.class));
 
     }
 }

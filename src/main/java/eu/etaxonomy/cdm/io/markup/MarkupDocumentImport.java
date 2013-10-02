@@ -76,8 +76,6 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 	public void doInvoke(MarkupImportState state) { 
 		fireProgressEvent("Start import markup document", "Before start of document");
 		
-		Queue<CdmBase> outputStream = new LinkedList<CdmBase>();
-
 		TransactionStatus tx = startTransaction();
 		// FIXME reset state
 		doAllTheOldOtherStuff(state);

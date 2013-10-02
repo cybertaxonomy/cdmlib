@@ -26,9 +26,10 @@ import eu.etaxonomy.cdm.io.stream.StreamItem;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.LSID;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -186,7 +188,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	private void createCitation(TaxonDescription desc, Reference ref, TaxonNameBase nameUsedInSource) {
 		Feature feature = Feature.CITATION();
 		TextData textData = TextData.NewInstance(feature);
-		DescriptionElementSource source = DescriptionElementSource.NewInstance(ref, null, nameUsedInSource, null);
+		DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(ref, null, nameUsedInSource, null);
 		textData.addSource(source);
 		desc.addElement(textData);
 	}
@@ -225,7 +227,7 @@ public class GbifReferenceCsv2CdmConverter extends PartitionableConverterBase<Dw
 	
 
 	private TimePeriod handleDate(String strDate) {
-		TimePeriod tp = TimePeriod.parseString(strDate);
+		TimePeriod tp = TimePeriodParser.parseString(strDate);
 		return tp;
 	}
 

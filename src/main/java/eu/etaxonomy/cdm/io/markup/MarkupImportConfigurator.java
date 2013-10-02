@@ -38,6 +38,9 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 	
 	private boolean allowCapitalSpeciesEpithet = false;  //set to true if you want to allow specific epithets with capital letter at the beginning. This was allowed by the code for epithets referring to persons such as Beilschmiedia Zenkeri.
 
+	private boolean handlePagesAsDetailWhereNeeded = true;  //often details in publications and citations are tagged as pages, not as details. If value is true, pages are handled as details where possible 
+
+	private boolean useEditorAsInAuthorWhereNeeded = true;  //often the inAuthor is stored as "Editor" in citations, atleast in FM.
 	
 	//TODO
 	private static IInputTransformer defaultTransformer = null;
@@ -104,6 +107,8 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 		if (this.isReuseExistingState() == true){
 			if (this.state == null){
 				this.state = new MarkupImportState(this);
+			}else{
+				state.reset();
 			}
 			return this.state;
 		}else{
@@ -215,6 +220,22 @@ public class MarkupImportConfigurator extends XmlImportConfiguratorBase<MarkupIm
 
 	public void setAllowCapitalSpeciesEpithet(boolean allowCapitalSpeciesEpithet) {
 		this.allowCapitalSpeciesEpithet = allowCapitalSpeciesEpithet;
+	}
+
+	public boolean isHandlePagesAsDetailWhereNeeded() {
+		return this.handlePagesAsDetailWhereNeeded;
+	}
+	
+	public void setHandlePagesAsDetailWhereNeeded(boolean handlePagesAsDetailWhereNeeded) {
+		this.handlePagesAsDetailWhereNeeded = handlePagesAsDetailWhereNeeded;
+	}
+
+	public boolean isUseEditorAsInAuthorWhereNeeded() {
+		return useEditorAsInAuthorWhereNeeded;
+	}
+
+	public void setUseEditorAsInAuthorWhereNeeded(boolean useEditorAsInAuthorWhereNeeded) {
+		this.useEditorAsInAuthorWhereNeeded = useEditorAsInAuthorWhereNeeded;
 	}
 
 	

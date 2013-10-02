@@ -8,8 +8,6 @@
 */
 package eu.etaxonomy.cdm.io.jaxb;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.InputStreamReader;
@@ -17,8 +15,6 @@ import java.net.URI;
 
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.Media;
 
 public class LanguageStringTest {

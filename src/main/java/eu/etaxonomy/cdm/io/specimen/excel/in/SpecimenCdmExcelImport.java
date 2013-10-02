@@ -19,7 +19,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -44,7 +43,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -54,8 +53,9 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -232,7 +233,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		
 		
 		} else if(keyValue.key.matches(SOURCE_COLUMN)) {
-			row.putSourceReference(keyValue.index, getOrMakeReference(state, value));	
+			row.putSourceReference(keyValue.index, getOrMakeReference(state, value) );	
 		} else if(keyValue.key.matches(ID_IN_SOURCE_COLUMN)) {
 			row.putIdInSource(keyValue.index, value);		
 		} else if(keyValue.key.matches(EXTENSION_COLUMN)) {
@@ -256,12 +257,12 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		SpecimenRow row = state.getCurrentRow();
 		
 		//basis of record
-		DerivedUnitType type = DerivedUnitType.valueOf2(row.getBasisOfRecord());
+		SpecimenOrObservationType type = SpecimenOrObservationType.valueOf2(row.getBasisOfRecord());
 		if (type == null){
 			String message = "%s is not a valid BasisOfRecord. 'Unknown' is used instead in line %d.";
 			message = String.format(message, row.getBasisOfRecord(), state.getCurrentLine());
 			logger.warn(message);
-			type = DerivedUnitType.DerivedUnit;
+			type = SpecimenOrObservationType.DerivedUnit;
 		}
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(type);
 		
@@ -428,13 +429,13 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 				getTaxonService().saveOrUpdate(taxon);
 				if (state.getConfig().isMakeIndividualAssociations() && taxon != null){
 					IndividualsAssociation indivAssociciation = IndividualsAssociation.NewInstance();
-					DerivedUnitBase<?> du = facade.innerDerivedUnit();
+					DerivedUnit du = facade.innerDerivedUnit();
 					indivAssociciation.setAssociatedSpecimenOrObservation(du);
 					getTaxonDescription(taxon).addElement(indivAssociciation);
 					Feature feature = Feature.INDIVIDUALS_ASSOCIATION();
-					if (facade.getType().equals(DerivedUnitType.Specimen)){
+					if (facade.getType().isPreservedSpecimen()){
 						feature = Feature.SPECIMEN();
-					}else if (facade.getType().equals(DerivedUnitType.Observation)){
+					}else if (facade.getType().isFeatureObservation()){
 						feature = Feature.OBSERVATION();
 					}
 					if (state.getConfig().isUseMaterialsExaminedForIndividualsAssociations()){
@@ -474,7 +475,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		//rank
 		Rank rank;
 		try {
-			rank = StringUtils.isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrAbbreviation(commonDetermination.rank, true);
+			rank = StringUtils.isBlank(commonDetermination.rank) ? null : Rank.getRankByNameOrIdInVoc(commonDetermination.rank, true);
 		} catch (UnknownCdmTypeException e) {
 			rank = null;
 		}
@@ -649,7 +650,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		try {
 			if (StringUtils.isNotBlank(determinationLight.rank) ){
-				name.setRank(Rank.getRankByNameOrAbbreviation(determinationLight.rank, nc, true));
+				name.setRank(Rank.getRankByNameOrIdInVoc(determinationLight.rank, nc, true));
 			}
 		} catch (UnknownCdmTypeException e) {
 			String message = "Rank not found: %s: ";
@@ -694,7 +695,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		event.setTaxon(taxon);
 		
 		//date
-		TimePeriod date = TimePeriod.parseString(determination.determinedWhen);
+		TimePeriod date = TimePeriodParser.parseString(determination.determinedWhen);
 		event.setTimeperiod(date);
 		//by
 		//FIXME bracketAuthors and teams not yet implemented!!!
@@ -931,7 +932,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			}
 		}
 		if (StringUtils.isNotBlank(row.getCountry())){
-			List<WaterbodyOrCountry> countries = getOccurrenceService().getWaterbodyOrCountryByName(row.getCountry());
+			List<Country> countries = getOccurrenceService().getCountryByName(row.getCountry());
 			if (countries.size() >0){
 				facade.setCountry(countries.get(0));
 			}else{

@@ -22,13 +22,14 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -37,7 +38,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -74,7 +75,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 	private Map<UUID, State> stateTermMap = new HashMap<UUID, State>();
 	private Map<UUID, MeasurementUnit> measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
 	private Map<UUID, StatisticalMeasure> statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
-	private Map<UUID, Modifier> modifierMap = new HashMap<UUID, Modifier>();
+	private Map<UUID, DefinedTerm> modifierMap = new HashMap<UUID, DefinedTerm>();
 	
 	private Map<UUID, PresenceTerm> presenceTermMap = new HashMap<UUID, PresenceTerm>();;
 	private Map<UUID, Language> languageMap = new HashMap<UUID, Language>();
@@ -96,7 +97,7 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase<?,?>>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
-		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<Specimen>(service));
+		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
 		
 		if (getTransformer() == null){
 			IInputTransformer newTransformer = config.getTransformer();
@@ -105,7 +106,36 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 //			}
 			setTransformer(newTransformer);
 		}
+		
 	}
+	
+	
+	
+	/**
+	 * Resets (empties) all maps which map a uuid to a {@link DefinedTermBase term}.
+	 * This is usually needed when a a new transaction is opened and user defined terms are reused.
+	 */
+	public void resetUuidTermMaps(){
+		extensionTypeMap = new HashMap<UUID, ExtensionType>();
+		markerTypeMap = new HashMap<UUID, MarkerType>();
+		annotationTypeMap = new HashMap<UUID, AnnotationType>();
+		
+		namedAreaMap = new HashMap<UUID, NamedArea>();
+		namedAreaLevelMap = new HashMap<UUID, NamedAreaLevel>();
+		featureMap = new HashMap<UUID, Feature>();
+		stateTermMap = new HashMap<UUID, State>();
+		measurementUnitMap = new HashMap<UUID, MeasurementUnit>();
+		statisticalMeasureMap = new HashMap<UUID, StatisticalMeasure>();
+		modifierMap = new HashMap<UUID, DefinedTerm>();
+		
+		presenceTermMap = new HashMap<UUID, PresenceTerm>();;
+		languageMap = new HashMap<UUID, Language>();
+		taxonRelationshipTypeMap = new HashMap<UUID, TaxonRelationshipType>();
+		
+		referenceSystemMap = new HashMap<UUID, ReferenceSystem>();
+		rankMap = new HashMap<UUID, Rank>();
+	}
+	
 	
 	//different type of stores that are used by the known imports
 	protected Map<String, MapWrapper<? extends CdmBase>> stores = new HashMap<String, MapWrapper<? extends CdmBase>>();
@@ -168,8 +198,6 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		return treeUuidMap.size();
 	}
 
-	
-	
 	
 	/**
 	 * Adds a classification uuid to the classification uuid map,
@@ -278,11 +306,11 @@ public abstract class ImportStateBase<CONFIG extends ImportConfiguratorBase, IO 
 		measurementUnitMap.put(unit.getUuid(), unit);
 	}
 	
-	public Modifier getModifier(UUID uuid){
+	public DefinedTerm getModifier(UUID uuid){
 		return modifierMap.get(uuid);
 	}
 	
-	public void putModifier(Modifier unit){
+	public void putModifier(DefinedTerm unit){
 		modifierMap.put(unit.getUuid(), unit);
 	}
 	

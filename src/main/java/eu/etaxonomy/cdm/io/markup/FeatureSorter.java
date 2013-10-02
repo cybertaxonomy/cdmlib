@@ -9,13 +9,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 /**
  * This class is supposed to find the best sorting order for features (descriptive and other).
+ * Currently it is not yet very sophisticated.
+ * 
  * @author a.mueller
  *
  */
@@ -62,7 +63,9 @@ public class FeatureSorter {
 			Map<UUID,FeatureStatistic> statisticMap = computeStatistic(listMap);
 			FeatureStatistic best = findBest(statisticMap);
 			result.add(best.uuid);
-			removeFromLists(listMap, best.uuid);
+			Map<String, List<FeatureSorterInfo>> subFeatures = removeFromLists(listMap, best.uuid);
+			List<UUID> subFeatureOrder = getSortOrder(subFeatures);
+			result.addAll(subFeatureOrder);
 		}
 		return result;
 	}
@@ -88,17 +91,21 @@ public class FeatureSorter {
 	 * @param orderLists
 	 * @param uuid
 	 */
-	private void removeFromLists(Map<String, List<FeatureSorterInfo>> orderLists, UUID uuid) {
+	private Map<String, List<FeatureSorterInfo>> removeFromLists(Map<String, List<FeatureSorterInfo>> orderListsMap, UUID uuid) {
+		Map<String, List<FeatureSorterInfo>> childLists = new HashMap<String, List<FeatureSorterInfo>>();
 		
-		Set<String> keySet = orderLists.keySet();
+		Set<String> keySet = orderListsMap.keySet();
 		Iterator<String> keySetIterator = keySet.iterator();
 		while (keySetIterator.hasNext()){
 			String key = keySetIterator.next();
-			List<FeatureSorterInfo> list = orderLists.get(key);			
+			List<FeatureSorterInfo> list = orderListsMap.get(key);			
 			Iterator<FeatureSorterInfo> it = list.listIterator();
 			while (it.hasNext()){
 				FeatureSorterInfo info = it.next();
 				if (info.getUuid().equals(uuid)){
+					if (! info.getSubFeatures().isEmpty()){
+						childLists.put(key, info.getSubFeatures());
+					}
 					it.remove();
 					if (list.isEmpty()){
 						keySetIterator.remove();
@@ -106,6 +113,7 @@ public class FeatureSorter {
 				}
 			}
 		}
+		return childLists;
 	}
 
 

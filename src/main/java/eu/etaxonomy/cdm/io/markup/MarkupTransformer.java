@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -24,7 +25,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.mueller
@@ -1304,26 +1304,26 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
-		}else if (key.equalsIgnoreCase("Kalimantan")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-KA");
-		}else if (key.equalsIgnoreCase("Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR");
-		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
-			}else if (key.equalsIgnoreCase("Malay Peninsula")){return TdwgArea.getAreaByTdwgAbbreviation("MLY-PM");
-		}else if (key.equalsIgnoreCase("Java")){return TdwgArea.getAreaByTdwgAbbreviation("JAW-OO");
-		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return TdwgArea.getAreaByTdwgAbbreviation("BIS-OO");
-		}else if (key.equalsIgnoreCase("Sumatra")){return TdwgArea.getAreaByTdwgAbbreviation("SUM-OO");
-		}else if (key.equalsIgnoreCase("Sabah")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-SB");
-			}else if (key.equalsIgnoreCase("North Borneo")){return TdwgArea.getAreaByTdwgAbbreviation("BOR-SB");
+		}else if (key.equalsIgnoreCase("Kalimantan")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR-KA");
+		}else if (key.equalsIgnoreCase("Borneo")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR");
+		}else if (key.equalsIgnoreCase("Peninsular Malaysia")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MLY-PM");
+			}else if (key.equalsIgnoreCase("Malay Peninsula")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MLY-PM");
+		}else if (key.equalsIgnoreCase("Java")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("JAW-OO");
+		}else if (key.equalsIgnoreCase("Bismarck Archipelago")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BIS-OO");
+		}else if (key.equalsIgnoreCase("Sumatra")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUM-OO");
+		}else if (key.equalsIgnoreCase("Sabah")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR-SB");
+			}else if (key.equalsIgnoreCase("North Borneo")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BOR-SB");
 		
-		}else if (key.equalsIgnoreCase("Bali")){return TdwgArea.getAreaByTdwgAbbreviation("LSI-BA");
-		}else if (key.equalsIgnoreCase("Moluccas")){return TdwgArea.getAreaByTdwgAbbreviation("MOL-OO");
+		}else if (key.equalsIgnoreCase("Bali")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("LSI-BA");
+		}else if (key.equalsIgnoreCase("Moluccas")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("MOL-OO");
 		
-		}else if (key.equalsIgnoreCase("Indochina")){return TdwgArea.getAreaByTdwgAbbreviation("41");
-		}else if (key.equalsIgnoreCase("Lesser Sunda Islands")){return TdwgArea.getAreaByTdwgAbbreviation("LSI");
-		}else if (key.equalsIgnoreCase("Sulawesi")){return TdwgArea.getAreaByTdwgAbbreviation("SUL-OO");
-			}else if (key.equalsIgnoreCase("Celebes")){return TdwgArea.getAreaByTdwgAbbreviation("SUL-OO");
+		}else if (key.equalsIgnoreCase("Indochina")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("41");
+		}else if (key.equalsIgnoreCase("Lesser Sunda Islands")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("LSI");
+		}else if (key.equalsIgnoreCase("Sulawesi")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUL-OO");
+			}else if (key.equalsIgnoreCase("Celebes")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SUL-OO");
 		
-		}else if (key.equalsIgnoreCase("south-east United States")){return TdwgArea.getAreaByTdwgAbbreviation("78");
-		}else if (key.equalsIgnoreCase("West Indies")){return TdwgArea.getAreaByTdwgAbbreviation("81");
+		}else if (key.equalsIgnoreCase("south-east United States")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("78");
+		}else if (key.equalsIgnoreCase("West Indies")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("81");
 		
 		}else{
 			return null;

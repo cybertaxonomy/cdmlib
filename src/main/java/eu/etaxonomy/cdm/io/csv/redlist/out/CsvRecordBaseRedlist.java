@@ -29,13 +29,12 @@ import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -342,7 +341,7 @@ public abstract class CsvRecordBaseRedlist {
 		}
 	}
 	
-	protected String getSex(Sex sex) {
+	protected String getSex(DefinedTerm sex) {
 		String result = CsvTaxExportTransformerRedlist.transformToGbifSex(sex);
 		if (result == null){
 			if (sex == null){
@@ -355,7 +354,7 @@ public abstract class CsvRecordBaseRedlist {
 		}
 	}
 	
-	protected String getLifeStage(Stage stage) {
+	protected String getLifeStage(DefinedTerm stage) {
 		String result = CsvTaxExportTransformerRedlist.transformToGbifLifeStage(stage);
 		if (result == null){
 			if (stage == null){

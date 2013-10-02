@@ -138,7 +138,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
         //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, code);
         String dataSourceName = "cdm_test2";
         String password = CdmUtils.readInputLine("Password: ");
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_test2", 3306, "ljm", password, NomenclaturalCode.ICBN);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_test2", 3306, "ljm", password, NomenclaturalCode.ICNAFP);
         //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_test", 3306, "edit", password, NomenclaturalCode.ICBN);
         boolean connectionAvailable;
         try {
@@ -160,7 +160,7 @@ public class SDDImportExportTest extends CdmTransactionalIntegrationTest {
 //			CdmApplicationController.NewInstance(loadedDataSource, DbSchemaValidation.CREATE);
             NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
 
-            Assert.assertEquals(NomenclaturalCode.ICBN, loadedCode);
+            Assert.assertEquals(NomenclaturalCode.ICNAFP, loadedCode);
         } catch (DataSourceNotFoundException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();

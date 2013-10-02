@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -51,8 +52,10 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -60,7 +63,6 @@ import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
@@ -78,7 +80,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -115,8 +117,8 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Map<String,MeasurementUnit> units = new HashMap<String,MeasurementUnit>();
 	private Map<String,TaxonNode> taxonNodes = new HashMap<String,TaxonNode>();
 	private Map<String,NamedArea> namedAreas = new HashMap<String,NamedArea>();
-	private Map<String,Specimen> specimens = new HashMap<String,Specimen>();
-	private Map<String,Modifier> modifiers = new HashMap<String,Modifier>();
+	private Map<String,DerivedUnit> specimens = new HashMap<String,DerivedUnit>();
+	private Map<String,DefinedTerm> modifiers = new HashMap<String,DefinedTerm>();
 	
 	private Set<MarkerType> markerTypes = new HashSet<MarkerType>();
 	private Set<TermVocabulary> vocabularies = new HashSet<TermVocabulary>();
@@ -162,25 +164,6 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 	public boolean doCheck(SDDImportState state){
 		boolean result = true;
 		makeIoClassList();
-
-//		for (Class<ICdmIO> ioClass: ioClassList){
-//			try {
-//				String ioBeanName = CdmApplicationAwareDefaultImport.getComponentBeanName(ioClass);
-//				ICdmIO cdmIo = (ICdmIO)getTermService().getBean(ioBeanName, ICdmIO.class);
-//				if (cdmIo != null){
-////					result &= cdmIo.invoke(config, stores);
-//					state.setCurrentIO(cdmIo);
-//					result &= cdmIo.invoke(state);
-//				}else{
-//					logger.error("cdmIO was null");
-//					result = false;
-//				}
-//			} catch (Exception e) {
-//					logger.error(e);
-//					e.printStackTrace();
-//					result = false;
-//			}
-//		}
 		logger.warn("No check implemented for SDD");
 		return result;
 	}
@@ -362,17 +345,17 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 	
 	/**
 	 * 
-	 * @param ve
+	 * @param media
 	 * @param langLabDet
 	 */
-	private void makeRepresentationForMedia(Media m, Map<Language, List<String>> langLabDet) {
+	private void makeRepresentationForMedia(Media media, Map<Language, List<String>> langLabDet) {
 		for (Language lang : langLabDet.keySet()){
 			List<String> labDet = langLabDet.get(lang);
 			if (labDet.get(0) != null){
-				m.putTitle(LanguageString.NewInstance(labDet.get(0), lang));
+				media.putTitle(LanguageString.NewInstance(labDet.get(0), lang));
 			}
 			if (labDet.size()>1) {
-				m.addDescription(labDet.get(1), lang);
+				media.putDescription(lang, labDet.get(1));
 			}
 		}
 	}
@@ -421,7 +404,8 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					} else {
 						Reference<?> descriptionSource = ReferenceFactory.newGeneric();
 						sources.add(descriptionSource);
-						td.addSource(null, null, descriptionSource, null);
+						//TODO type
+						td.addSource(OriginalSourceType.Unknown, null, null, descriptionSource, null);
 						this.associateImageWithCdmBase(ref,descriptionSource);
 					}
 				} else {
@@ -637,7 +621,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 		for (String ref : taxonDescriptions.keySet()){
 			TaxonDescription td = taxonDescriptions.get(ref);
 			if (citations.containsKey(ref)) {
-				Reference publication = publications.get(citations.get(ref));
+				Reference<?> publication = publications.get(citations.get(ref));
 				if (locations.containsKey(ref)) {
 					Annotation location = Annotation.NewInstance(locations.get(ref), datasetLanguage);
 					AnnotationType annotationType = AnnotationType.NewInstance("", "location", "");
@@ -645,7 +629,8 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					location.setAnnotationType(annotationType);
 					(publication).addAnnotation(location);
 				}
-				td.addSource(null, null, publication, null);
+				//TODO type
+				td.addSource(OriginalSourceType.Unknown, null, null, publication, null);
 			}
 		}
 		logger.info("end makeTaxonDescriptions ...");
@@ -674,7 +659,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 		for (Classification classification : classifications) {
 			getClassificationService().save(classification);
 		}
-		for (Specimen specimen : specimens.values()) {
+		for (DerivedUnit specimen : specimens.values()) {
 			getOccurrenceService().save(specimen);
 		}
 		logger.info("end of persistence ...");
@@ -736,7 +721,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 	}
 
 	private void saveModifiers() {
-		for (Modifier modifier : modifiers.values() ){
+		for (DefinedTerm modifier : modifiers.values() ){
 			getTermService().save(modifier);
 		}
 	}
@@ -779,9 +764,9 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 			int j = 0;
 			for (Element elSpecimen : listSpecimens) {
 				String id = elSpecimen.getAttributeValue("id");
-				Specimen specimen = null;
+				DerivedUnit specimen = null;
 				if (!id.equals("")) {
-					specimen = Specimen.NewInstance();
+					specimen = DerivedUnit.NewPreservedSpecimenInstance();
 					specimens.put(id,specimen);
 					importRepresentation(elSpecimen, sddNamespace, specimen, id, cdmState);
 				}
@@ -912,12 +897,11 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 				if (!id.equals("")) {
 					tnb = NonViralName.NewInstance(null);
 					IdentifiableSource source = null;
-					if (uri != null) {
-						if (!uri.equals("")) {
-							source = IdentifiableSource.NewInstance(id, "TaxonName", ReferenceFactory.newGeneric(), uri);
-						}
+					if (isNotBlank(uri)) {
+						//TODO type
+						source = IdentifiableSource.NewInstance(OriginalSourceType.Unknown, id, "TaxonName", ReferenceFactory.newGeneric(), uri);
 					} else {
-						source = IdentifiableSource.NewInstance(id, "TaxonName");
+						source = IdentifiableSource.NewDataImportInstance(id, "TaxonName");
 					}
 					tnb.addSource(source);
 					taxonNameBases.put(id,tnb);
@@ -977,7 +961,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 
 				// <StateDefinition id="s1">
 				List<Element> elStateDefinitions = elStates.getChildren("StateDefinition",sddNamespace);
-				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(null, null, null, null);
+				TermVocabulary<State> termVocabularyState = TermVocabulary.NewInstance(TermType.State, null, null, null, null);
 				
 				vocabularies.add(termVocabularyState);
 				
@@ -1216,9 +1200,9 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 	private Taxon handleCDNoScope(Namespace sddNamespace,
 			SDDImportState cdmState, Element elCodedDescription	) {
 		Taxon taxon = null;
-		NonViralName nonViralName = NonViralName.NewInstance(null);
+		NonViralName<?> nonViralName = NonViralName.NewInstance(null);
 		String id = new String("" + taxonNamesCount);
-		IdentifiableSource source = IdentifiableSource.NewInstance(id, "TaxonName");
+		IdentifiableSource source = IdentifiableSource.NewDataImportInstance( id, "TaxonName");
 		importRepresentation(elCodedDescription, sddNamespace, nonViralName, id, cdmState);
 		
 		if(cdmState.getConfig().isReuseExistingTaxaWhenPossible()){
@@ -1423,12 +1407,12 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					List<Element> elModifiers = elState.getChildren("Modifier", sddNamespace);
 					for (Element elModifier : elModifiers){
 						ref = elModifier.getAttributeValue("ref");
-						Modifier modifier = modifiers.get(ref);
+						DefinedTerm modifier = modifiers.get(ref);
 						if (modifier != null) {
 							stateData.addModifier(modifier);
 						}
 					}
-					categoricalData.addState(stateData);
+					categoricalData.addStateData(stateData);
 				}
 				taxonDescription.addElement(categoricalData);
 			}
@@ -1457,7 +1441,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 					//  </Representation>
 					Person person = Person.NewInstance();
 					importRepresentation(elAgent, sddNamespace, person, idA, cdmState);
-					person.addSource(IdentifiableSource.NewInstance(idA, "Agent"));
+					person.addSource(IdentifiableSource.NewDataImportInstance(idA, "Agent"));
 
 					/*XIM <Links>
 					Element elLinks = elAgent.getChild("Links",sddNamespace);
@@ -1702,18 +1686,18 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 						Element elModifiers = elDescriptiveConcept.getChild("Modifiers", sddNamespace);
 					if (elModifiers !=null){
 						List<Element> listModifiers = elModifiers.getChildren("Modifier", sddNamespace);
-							TermVocabulary<Modifier> termVocabularyState = TermVocabulary.NewInstance(null, null, null, null);
+							TermVocabulary<DefinedTerm> termVocabularyState = TermVocabulary.NewInstance(TermType.Modifier, null, null, null, null);
 						for (Element elModifier : listModifiers) {
-								Modifier modif = Modifier.NewInstance();
-								String idmod = elModifier.getAttributeValue("id");
-								importRepresentation(elModifier, sddNamespace, modif, idmod, cdmState);
-								termVocabularyState.addTerm(modif);
-								//termVocabularyStates.add(termVocabularyState);
-								getVocabularyService().save(termVocabularyState);//XIM
-								modifiers.put(idmod, modif);
+							DefinedTerm modif = DefinedTerm.NewModifierInstance(null, null, null);
+							String idmod = elModifier.getAttributeValue("id");
+							importRepresentation(elModifier, sddNamespace, modif, idmod, cdmState);
+							termVocabularyState.addTerm(modif);
+							//termVocabularyStates.add(termVocabularyState);
+							getVocabularyService().save(termVocabularyState);//XIM
+							modifiers.put(idmod, modif);
 						}
-							feature.addRecommendedModifierEnumeration(termVocabularyState);
-				}
+						feature.addRecommendedModifierEnumeration(termVocabularyState);
+					}
 
 					}
 				}
@@ -1885,7 +1869,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 						Classification classification =  Classification.NewInstance(label);
 						importRepresentation(elTaxonHierarchy, sddNamespace, classification, "", cdmState);
 					
-						Set<TaxonNode> root = classification.getChildNodes();
+						List<TaxonNode> root = classification.getChildNodes();
 						Element elNodes = elTaxonHierarchy.getChild("Nodes", sddNamespace); // There can be only one <Nodes> block for TaxonHierarchies
 						List<Element> listNodes = elNodes.getChildren("Node", sddNamespace);
 						
@@ -1902,12 +1886,14 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 									String refP = elParent.getAttributeValue("ref");
 									if (!refP.equals("")) {
 										TaxonNode parent = taxonNodes.get(refP);
-										TaxonNode child = parent.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec));
+										TaxonNode child = parent.addChildTaxon(taxon, sec, null);
+										child.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec)); //TODO is this required??
 										taxonNodes.put(idN,child);
 									}
 								}
 								else {
-									TaxonNode tn = classification.addChildTaxon(taxon, sec, "", Synonym.NewInstance(tnb, sec)); // if no parent found or the reference is broken, add the node to the root of the tree
+									TaxonNode tn = classification.addChildTaxon(taxon, sec, null); // if no parent found or the reference is broken, add the node to the root of the tree
+									tn.setSynonymToBeUsed( Synonym.NewInstance(tnb, sec));  //TODO is this required??
 									taxonNodes.put(idN,tn);
 								}
 							}
@@ -1940,7 +1926,7 @@ public class SDDDataSetImport extends CdmImportBase<SDDImportConfigurator, SDDIm
 			for (Element elGeographicArea : listGeographicAreas){
 
 				String id = elGeographicArea.getAttributeValue("id");
-				NamedArea na = new NamedArea();
+				NamedArea na = NamedArea.NewInstance();
 				importRepresentation(elGeographicArea, sddNamespace, na, id, cdmState);
 				namedAreas.put(id,na);
 								}
