@@ -25,6 +25,7 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.UIManager;
 import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
@@ -47,9 +48,12 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
@@ -88,6 +92,101 @@ public class TaxonXExtractor {
     private final Map<String,Rank>ranksAsked = new HashMap<String, Rank>();
 
     Logger logger = Logger.getLogger(this.getClass());
+
+    public class ReferenceBuilder{
+        private int nbRef=0;
+        private boolean foundBibref=false;
+
+
+        /**
+         * @return the foundBibref
+         */
+        public boolean isFoundBibref() {
+            return foundBibref;
+        }
+
+        /**
+         * @param foundBibref the foundBibref to set
+         */
+        public void setFoundBibref(boolean foundBibref) {
+            this.foundBibref = foundBibref;
+        }
+
+        /**
+         * @param ref
+         * @param refMods
+         */
+        @SuppressWarnings({ "unused" })
+        public void builReference(String mref, String treatmentMainName, NomenclaturalCode nomenclaturalCode,
+                Taxon acceptedTaxon, Reference<?> refMods) {
+            System.out.println("builReference "+mref);
+            this.setFoundBibref(true);
+
+            String ref= mref;
+            if ( (ref.endsWith(";") ||ref.endsWith(",")  ) && ((ref.length())>1)) {
+                ref=ref.substring(0, ref.length()-1)+".";
+            }
+            if (ref.startsWith(treatmentMainName) && !ref.endsWith(treatmentMainName)) {
+                ref=ref.replace(treatmentMainName, "");
+                ref=ref.trim();
+                while (ref.startsWith(".") || ref.startsWith(",")) {
+                    ref=ref.replace(".","").replace(",","").trim();
+                }
+            }
+
+            //                        logger.info("Current reference :"+nbRef+", "+ref+", "+treatmentMainName+"--"+ref.indexOf(treatmentMainName));
+            Reference<?> reference = ReferenceFactory.newGeneric();
+            reference.setTitleCache(ref);
+
+            boolean sourceExists=false;
+            Set<IdentifiableSource> sources = acceptedTaxon.getSources();
+            for (IdentifiableSource src : sources){
+                String micro = src.getCitationMicroReference();
+                Reference r = src.getCitation();
+                if (r.equals(refMods)) {
+                    sourceExists=true;
+                }
+            }
+            System.out.println("sourceExists?:"+sourceExists);
+            if (nbRef==0){
+                acceptedTaxon.getName().setNomenclaturalReference(reference);
+                if(!sourceExists) {
+                    acceptedTaxon.addSource(null,null,refMods,null);
+                }
+            }else{
+                TaxonDescription taxonDescription =importer.getTaxonDescription(acceptedTaxon, false, true);
+                acceptedTaxon.addDescription(taxonDescription);
+                if(!sourceExists) {
+                    acceptedTaxon.addSource(null,null,refMods,null);
+                }
+
+                TextData textData = TextData.NewInstance(Feature.CITATION());
+
+                textData.addSource(null, null, reference, null, acceptedTaxon.getName(), ref);
+                taxonDescription.addElement(textData);
+
+                sourceExists=false;
+                sources = taxonDescription.getSources();
+                for (IdentifiableSource src : sources){
+                    String micro = src.getCitationMicroReference();
+                    Reference r = src.getCitation();
+                    if (r.equals(refMods) && micro == null) {
+                        sourceExists=true;
+                    }
+                }
+                if(!sourceExists) {
+                    taxonDescription.addSource(null,null,refMods,null);
+                }
+
+                importer.getDescriptionService().saveOrUpdate(taxonDescription);
+            }
+            importer.getTaxonService().saveOrUpdate(acceptedTaxon);
+            //                        logger.warn("BWAAHHHH: "+nameToBeFilled.getParsingProblems()+", "+ref);
+            nbRef++;
+
+        }
+
+    }
 
     public class MySpecimenOrObservation{
         String descr="";
@@ -282,6 +381,7 @@ public class TaxonXExtractor {
         derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
         derivedUnitFacade.setCollector(gatheringEvent.getCollector());
         derivedUnitFacade.setCountry((NamedArea)areaCountry);
+        derivedUnitFacade.setGatheringEvent(gatheringEvent);
 
         for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
             derivedUnitFacade.addCollectingArea((NamedArea) area);
@@ -349,7 +449,7 @@ public class TaxonXExtractor {
         }
     }
     protected DerivedUnitFacade getFacade(String recordBasis, DerivedUnitType defaultAssoc) {
-//        System.out.println("getFacade() for "+recordBasis);
+        //        System.out.println("getFacade() for "+recordBasis);
         DerivedUnitType type = null;
 
         // create specimen
@@ -551,7 +651,7 @@ public class TaxonXExtractor {
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     null,
-                    fullname);
+                    atomised);
             namesAsked.put(k, s);
             return s;
         }
@@ -559,10 +659,10 @@ public class TaxonXExtractor {
 
 
     protected int askAddParent(String s){
-//        boolean hack=true;
-//        if (hack) {
-//            return 1;
-//        }
+        //        boolean hack=true;
+        //        if (hack) {
+        //            return 1;
+        //        }
         JTextArea textArea = new JTextArea("If you want to add a parent taxa for "+s+", click \"Yes\"." +
                 " If it is a root for this classification, click \"No\" or \"Cancel\".");
         JScrollPane scrollPane = new JScrollPane(textArea);
@@ -570,7 +670,18 @@ public class TaxonXExtractor {
         textArea.setWrapStyleWord(true);
         scrollPane.setPreferredSize( new Dimension( 600, 70 ) );
 
-        int addTaxon = JOptionPane.showConfirmDialog(null,scrollPane);
+        Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
+                UIManager.getString("OptionPane.noButtonText")};
+
+
+        int addTaxon = JOptionPane.showOptionDialog(null,
+                scrollPane,
+                "",
+                JOptionPane.YES_NO_OPTION,
+                0,
+                null,
+                options,
+                options[1]);
         return addTaxon;
     }
 
@@ -651,37 +762,49 @@ public class TaxonXExtractor {
             return ranksAsked.get(fullname);
         }
         else{
-            JTextArea textArea = new JTextArea("What is the correct rank for "+fullname+"?");
-            JScrollPane scrollPane = new JScrollPane(textArea);
-            textArea.setLineWrap(true);
-            textArea.setWrapStyleWord(true);
-            scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
-
-            List<Rank> rankList = new ArrayList<Rank>();
-            rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
-
-            List<String> rankListStr = new ArrayList<String>();
-            for (Rank r:rankList) {
-                rankListStr.add(r.toString());
-            }
-            String s = (String)JOptionPane.showInputDialog(
-                    null,
-                    scrollPane,
-                    "The rank extracted from the TaxonX file is "+rank.toString(),
-                    JOptionPane.PLAIN_MESSAGE,
-                    null,
-                    rankListStr.toArray(),
-                    rank.toString());
-
+            boolean np=false;
+            int npi=0;
             Rank cR = null;
-            try {
-                cR = Rank.getRankByEnglishName(s,nomenclaturalCode,true);
-            } catch (UnknownCdmTypeException e) {
-                logger.warn("Unknown rank ?!"+s);
-                logger.warn(e);
+
+            while (!np && npi<2)
+            {
+
+
+                JTextArea textArea = new JTextArea("What is the correct rank for "+fullname+"?");
+                JScrollPane scrollPane = new JScrollPane(textArea);
+                textArea.setLineWrap(true);
+                textArea.setWrapStyleWord(true);
+                scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
+
+                List<Rank> rankList = new ArrayList<Rank>();
+                rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
+
+                List<String> rankListStr = new ArrayList<String>();
+                for (Rank r:rankList) {
+                    rankListStr.add(r.toString());
+                }
+                String s = (String)JOptionPane.showInputDialog(
+                        null,
+                        scrollPane,
+                        "The rank extracted from the TaxonX file is "+rank.toString(),
+                        JOptionPane.PLAIN_MESSAGE,
+                        null,
+                        rankListStr.toArray(),
+                        rank.toString());
+
+
+                try {
+                    npi++;
+                    cR = Rank.getRankByEnglishName(s,nomenclaturalCode,true);
+                    np=true;
+                } catch (UnknownCdmTypeException e) {
+                    logger.warn("Unknown rank ?!"+s);
+                    logger.warn(e);
+                }
             }
             ranksAsked.put(fullname,cR);
             return cR;
+
         }
     }
 
@@ -710,7 +833,7 @@ public class TaxonXExtractor {
         textArea.setWrapStyleWord(true);
         scrollPane.setPreferredSize( new Dimension( 600, 400 ) );
 
-        String[] possiblities = {"synonyms","material examined","distribution","image caption","other"};
+        String[] possiblities = {"synonyms","material examined","distribution","image caption","other","vernacular name","type status"};
 
 
         String s = (String)JOptionPane.showInputDialog(
@@ -981,24 +1104,24 @@ public class TaxonXExtractor {
     //TypeDesignation
     protected  SpecimenTypeDesignationStatus typeStatusId2TypeStatus (int typeStatusId)  throws UnknownCdmTypeException{
         switch (typeStatusId){
-            case 0: return null;
-            case 1: return SpecimenTypeDesignationStatus.HOLOTYPE();
-            case 2: return SpecimenTypeDesignationStatus.LECTOTYPE();
-            case 3: return SpecimenTypeDesignationStatus.NEOTYPE();
-            case 4: return SpecimenTypeDesignationStatus.EPITYPE();
-            case 5: return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
-            case 6: return SpecimenTypeDesignationStatus.ISONEOTYPE();
-            case 7: return SpecimenTypeDesignationStatus.ISOTYPE();
-            case 8: return SpecimenTypeDesignationStatus.PARANEOTYPE();
-            case 9: return SpecimenTypeDesignationStatus.PARATYPE();
-            case 10: return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
-            case 11: return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
-            case 12: return SpecimenTypeDesignationStatus.SYNTYPE();
-            case 21: return SpecimenTypeDesignationStatus.ICONOTYPE();
-            case 22: return SpecimenTypeDesignationStatus.PHOTOTYPE();
-            default: {
-                throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
-            }
+        case 0: return null;
+        case 1: return SpecimenTypeDesignationStatus.HOLOTYPE();
+        case 2: return SpecimenTypeDesignationStatus.LECTOTYPE();
+        case 3: return SpecimenTypeDesignationStatus.NEOTYPE();
+        case 4: return SpecimenTypeDesignationStatus.EPITYPE();
+        case 5: return SpecimenTypeDesignationStatus.ISOLECTOTYPE();
+        case 6: return SpecimenTypeDesignationStatus.ISONEOTYPE();
+        case 7: return SpecimenTypeDesignationStatus.ISOTYPE();
+        case 8: return SpecimenTypeDesignationStatus.PARANEOTYPE();
+        case 9: return SpecimenTypeDesignationStatus.PARATYPE();
+        case 10: return SpecimenTypeDesignationStatus.SECOND_STEP_LECTOTYPE();
+        case 11: return SpecimenTypeDesignationStatus.SECOND_STEP_NEOTYPE();
+        case 12: return SpecimenTypeDesignationStatus.SYNTYPE();
+        case 21: return SpecimenTypeDesignationStatus.ICONOTYPE();
+        case 22: return SpecimenTypeDesignationStatus.PHOTOTYPE();
+        default: {
+            throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(typeStatusId).toString() + ")");
+        }
         }
     }
 

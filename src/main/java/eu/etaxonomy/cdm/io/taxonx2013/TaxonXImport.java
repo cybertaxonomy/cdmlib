@@ -116,7 +116,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 nodeList.toArray(),
-                classificationName);
+                "Goosefoot");
         if (!classifDic.containsKey(s)){
             System.out.println("Classif inconnue ?? "+s+", "+classifDic);
             if (s.equalsIgnoreCase("Other classification - add a new one")){
@@ -311,7 +311,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
                 JOptionPane.PLAIN_MESSAGE,
                 null,
                 rankListStr.toArray(),
-                rankListStr.get(0));
+                "Suprageneric Taxon");
 
         Rank cR = null;
         try {
