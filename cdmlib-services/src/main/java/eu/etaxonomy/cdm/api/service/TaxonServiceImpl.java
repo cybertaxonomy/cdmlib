@@ -43,7 +43,6 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.api.service.search.DocIdBitSetPrinter;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
@@ -852,7 +851,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 // Collection
                 //TODO why may collections have media attached? #
                 if (occurrence.isInstanceOf(DerivedUnit.class)) {
-                	DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
                     if (derivedUnit.getCollection() != null){
                         taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
@@ -860,18 +859,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                 // pherograms & gelPhotos
                 if (occurrence.isInstanceOf(DnaSample.class)) {
-                	DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
-                	Set<Sequence> sequences = dnaSample.getSequences();
-                	//we do show only those gelPhotos which lead to a consensus sequence
-                	for (Sequence sequence : sequences) {
-                		Set<Media> dnaRelatedMedia = new HashSet<Media>();
-                    	for (SingleRead singleRead : sequence.getSingleReads()){
-                    		Amplification amplification = singleRead.getAmplification();
-                    		dnaRelatedMedia.add(amplification.getGelPhoto());
-                    		dnaRelatedMedia.add(singleRead.getPherogram());
-                    		dnaRelatedMedia.remove(null);
-                    	}
-                    	taxonMedia.addAll(dnaRelatedMedia);
+                    DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
+                    Set<Sequence> sequences = dnaSample.getSequences();
+                    //we do show only those gelPhotos which lead to a consensus sequence
+                    for (Sequence sequence : sequences) {
+                        Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                        for (SingleRead singleRead : sequence.getSingleReads()){
+                            Amplification amplification = singleRead.getAmplification();
+                            dnaRelatedMedia.add(amplification.getGelPhoto());
+                            dnaRelatedMedia.add(singleRead.getPherogram());
+                            dnaRelatedMedia.remove(null);
+                        }
+                        taxonMedia.addAll(dnaRelatedMedia);
                     }
                 }
 
@@ -1731,7 +1730,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 //                debug code for bug described above
                 DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
-                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
+//                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
 
                 multiIndexByAreaFilter.add(filter, Occur.SHOULD);
             }
@@ -2475,23 +2474,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // Add the original source
         if (idInSourceSyn != null && idInSourceTaxon != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
 
         }else{
             logger.error("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
         }
@@ -2581,13 +2580,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
 
-        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);
 
-        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredSynName.addSource(originalSource);
 
