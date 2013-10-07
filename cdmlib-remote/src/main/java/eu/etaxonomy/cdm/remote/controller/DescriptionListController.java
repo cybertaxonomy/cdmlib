@@ -247,4 +247,20 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
         return pager;
     }
+
+    @RequestMapping(value = "namedAreasInUse", method = RequestMethod.GET)
+    public Pager<NamedArea> doPageNamedAreasInUse(
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doPageNamedAreasInUse : " + requestPathAndQuery(request));
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        Pager<NamedArea> pager = service.pageNamedAreasInUse(pageSize, pageNumber, getInitializationStrategy());
+
+        return pager;
+    }
 }
