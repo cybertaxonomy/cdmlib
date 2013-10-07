@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -507,4 +508,22 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
 
+    /**
+     * Pager method to get all {@link NamedAreas} instances which are currently used
+     * by {@link Distribution} elements.
+     *
+     * @param pageSize
+     *            The maximum number of description elements returned
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a Pager for all NamedAreas instances which are currently in use.
+     *
+     */
+    public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths);
 }

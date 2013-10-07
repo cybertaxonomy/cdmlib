@@ -853,6 +853,29 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao#listNamedAreasInUse(java.lang.Integer, java.lang.Integer, java.util.List)
+     */
+    @Override
+    public List<NamedArea> listNamedAreasInUse(Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+
+        String queryString = "select distinct d.area from Distribution as d";
+        Query query = getSession().createQuery(queryString);
+
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            }
+        }
+
+        List<NamedArea> results = query.list();
+
+        defaultBeanInitializer.initializeAll(results, propertyPaths);
+
+        return results;
+    }
+
 
 
 }

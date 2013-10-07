@@ -608,5 +608,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         }
     }
 
+    @Override
+    public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths){
+
+        List<NamedArea> results = dao.listNamedAreasInUse(pageSize, pageNumber, propertyPaths);
+        return new DefaultPagerImpl<NamedArea>(pageNumber, results.size(), pageSize, results);
+    }
+
 
 }
