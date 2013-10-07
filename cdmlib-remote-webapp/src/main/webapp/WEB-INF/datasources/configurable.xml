@@ -17,7 +17,7 @@
         <property name="properties"><!-- This configures default hibernate properties -->
             <props>
               <!--
-                the hibernate.dialect will be set by the JndiDataSourceConfig accorging to the
+                the hibernate.dialect will be set by the JndiDataSourceConfig according to the
                 according WebAppContext attributes or to the environment variable
               -->
               <prop key="hibernate.hbm2ddl.auto">validate</prop><!-- !!! must never be set to 'update' !!! -->
@@ -30,6 +30,7 @@
               <!-- disabling hibernate search for testing (speed up and lesser heap usage)
               <prop key="hibernate.search.autoregister_listeners">false</prop>
               -->
+
             </props>
         </property>
     </bean>
