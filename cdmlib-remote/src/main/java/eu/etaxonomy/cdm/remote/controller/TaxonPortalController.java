@@ -440,6 +440,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         if(areaList != null){
             areaSet = new HashSet<NamedArea>(areaList.size());
             areaSet.addAll(areaList);
+            TaxonListController.includeAllSubAreas(areaSet, termService);
         }
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);

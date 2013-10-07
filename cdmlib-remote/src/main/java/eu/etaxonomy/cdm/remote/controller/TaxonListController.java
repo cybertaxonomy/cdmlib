@@ -158,6 +158,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         if(areaList != null){
             areaSet = new HashSet<NamedArea>(areaList.size());
             areaSet.addAll(areaList);
+            TaxonListController.includeAllSubAreas(areaSet, termService);
         }
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
@@ -395,5 +396,23 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
                 pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 ((List<OrderHint>)null), initializationStrategy);
         return pager;
+    }
+
+    /**
+     * @param areaSet
+     */
+    static public void includeAllSubAreas(Set<NamedArea> areaSet, ITermService termService) {
+        Set<NamedArea> tmpAreaSet = areaSet;
+        // expand all areas to include also the sub areas
+        Pager<NamedArea> pager = null;
+        while(true){
+            pager = termService.getIncludes(tmpAreaSet, 1000, null, null);
+            if(pager.getCount() == 0){
+                break;
+            }
+            tmpAreaSet = (Set<NamedArea>) pager.getRecords();
+            areaSet.addAll(tmpAreaSet);
+
+        }
     }
 }
