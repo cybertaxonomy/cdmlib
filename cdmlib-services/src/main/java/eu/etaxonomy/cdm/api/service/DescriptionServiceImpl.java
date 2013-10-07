@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -609,10 +608,5 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         }
     }
 
-    public void aggregateDistributions(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank) {
-
-//        transmissionEngineDistribution engine = new transmissionEngineDistribution(superAreas, lowerRank, upperRank);
-
-    }
 
 }
