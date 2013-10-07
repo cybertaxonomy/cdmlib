@@ -207,7 +207,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"})
+    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"}) // TODO should be find, see TaxonListPortaController
     public Pager<IdentifiableEntity> doFindTaxaAndNames(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
