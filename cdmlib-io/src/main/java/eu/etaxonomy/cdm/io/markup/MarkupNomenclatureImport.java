@@ -1015,6 +1015,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 						//handle pages as detail, this is at least true for Flora Malesiana
 						refMap.put(DETAILS, pages); 
 					}
+				}else{
+					if (! pages.contains("-")){
+						String message = "There are pages and detail available where pages may also hold details information.";
+						fireWarningEvent(message, parentEvent, 8);
+					}
+					reference.setPages(pages);
 				}
 			}
 		}
