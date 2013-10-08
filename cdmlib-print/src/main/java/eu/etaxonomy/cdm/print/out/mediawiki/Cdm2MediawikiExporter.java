@@ -19,6 +19,7 @@ import org.jdom.input.SAXBuilder;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.print.IXMLEntityFactory;
 import eu.etaxonomy.cdm.print.PublishConfigurator;
 import eu.etaxonomy.cdm.print.Publisher;
@@ -36,11 +37,9 @@ import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
  */
 public class Cdm2MediawikiExporter {
 
-	private static final String CDM_EXPORTED_XML = "cdm_output.xml";
+	private static final String CDM_EXPORT_FILE_NAME = "cdm_output";
 
 	private static final String PAGE_SUMMARY = "automatic import from CDM";
-
-	private static final String TMP_OUTPUTFOLDER = "src/main/resources/tmp/";
 
 	private static final Logger logger = Logger
 			.getLogger(Cdm2MediawikiExporter.class);
@@ -53,16 +52,17 @@ public class Cdm2MediawikiExporter {
 	private static String mediawikiFilePath = null;
 
 	// where the cdm exported xml can be stored
-	private static String cdm_output_file =null;
-	
+	private static String cdm_output_file = null;
+
 	// TODO delete these constants
 	// palmweb
 	// private final String
 	// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/palmae/";
 
 	// flora of c a
-//	private static final String webServiceUrl = "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
-	
+	// private static final String webServiceUrl =
+	// "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
+
 	// private static final String rootNode =
 	// "0044aae4-721b-4726-85ff-752a89cff748";
 	// private static final String featureTree =
@@ -72,20 +72,24 @@ public class Cdm2MediawikiExporter {
 	// private static final String
 	// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/cichorieae/";
 	// // Ericaceae:
-//	private static final String featureTree = "051d35ee-22f1-42d8-be07-9e9bfec5bcf7";
-//	private static final String rootNode = "a605e87e-113e-4ebd-ad97-f086b734b4da";
-//	
-	//palmae
+	// private static final String featureTree =
+	// "051d35ee-22f1-42d8-be07-9e9bfec5bcf7";
+	// private static final String rootNode =
+	// "a605e87e-113e-4ebd-ad97-f086b734b4da";
+	//
+	// palmae
 	private static final String webServiceUrl = "http://dev.e-taxonomy.eu/cdmserver/palmae/";
-	//Acrocomia
+	// Acrocomia
 	private static final String rootNode = "f8f8a7ba-4bd7-4fdc-871c-99494439143d";
 	private static final String featureTree = "72ccce05-7cc8-4dab-8e47-bf3f5fd848a0";
-	
+
 	// these parameter have a senseful default parameter, you only use
 	private Document inputDocument = null;
 	private Document externalDocument = null;
-	
+
 	private MediawikiOutputModule wikiOutputModule;
+
+	private File tmporaryExportFolder=null;
 
 	/**
 	 * TODO delete this method.
@@ -102,29 +106,29 @@ public class Cdm2MediawikiExporter {
 		 "http://biowikifarm.net/testwiki", "Sybille Bürs", "ssetakil3?",
 		 "Internal", true, false, true);
 
+		
+
 		// do only wiki import
 		// exporter.uploadToMediawiki("/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/20130926-2347-output.xml",
 		// "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
 		// false);
 
 		// do export from file:
-//		parameters: String serviceUrl, String taxonName, String wikiUrl,
-//				String wikiLoginUid, String passwd, String wikiPageNamespace,
-//				boolean import2Mediawiki, boolean deleteOutputFiles,
-//				boolean importImages
-		
-		
+		// parameters: String serviceUrl, String taxonName, String wikiUrl,
+		// String wikiLoginUid, String passwd, String wikiPageNamespace,
+		// boolean import2Mediawiki, boolean deleteOutputFiles,
+		// boolean importImages
+
 		/*
-		 * String filename, String serviceUrl,
-			String taxonName, String wikiUrl, String wikiLoginUid,
-			String passwd, String wikiPageNamespace, boolean import2Mediawiki,
-			boolean deleteOutputFiles, boolean importImages
+		 * String filename, String serviceUrl, String taxonName, String wikiUrl,
+		 * String wikiLoginUid, String passwd, String wikiPageNamespace, boolean
+		 * import2Mediawiki, boolean deleteOutputFiles, boolean importImages
 		 */
-//		exporter.exportFromXmlFile(
-//				"/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/document1.xml",
-//				webServiceUrl, "Restionaceae",
-//				"http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
-//				"Internal", true, false, false);
+		// exporter.exportFromXmlFile(
+		// "/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/document1.xml",
+		// webServiceUrl, "Restionaceae",
+		// "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
+		// "Internal", true, false, false);
 
 	}
 
@@ -185,6 +189,17 @@ public class Cdm2MediawikiExporter {
 			boolean importImages, boolean usePublisher)
 			throws MalformedURLException {
 
+		// create folder for (tmp) output files
+		tmporaryExportFolder = CdmUtils.getCdmSubDir("mediawiki_tmp");
+		if (tmporaryExportFolder != null) {
+			logger.info("using "
+					+ tmporaryExportFolder.getAbsolutePath()+" as temporary directory.");
+		}
+		else {
+			logger.error("could not create directory" + tmporaryExportFolder.getAbsolutePath());
+			return;
+		}
+		
 		// setup configurator
 		configurator = PublishConfigurator.NewRemoteInstance();
 		configurator.setWebserviceUrl(serviceUrl);
@@ -200,10 +215,10 @@ public class Cdm2MediawikiExporter {
 		// TODO get feature tree from taxon name/taxon node
 		configurator.setFeatureTree(UUID.fromString(featureTree));
 
-		File exportFolder = new File(TMP_OUTPUTFOLDER);
-		configurator.setExportFolder(exportFolder);
+		
+		configurator.setExportFolder(tmporaryExportFolder);
 
-//		MediawikiOutputModule wikiOutputModule;
+		// MediawikiOutputModule wikiOutputModule;
 		if (wikiPageNamespace == null
 				|| wikiPageNamespace.replaceAll(" ", "").equals("")) {
 			wikiOutputModule = new MediawikiOutputModule();
@@ -212,7 +227,6 @@ public class Cdm2MediawikiExporter {
 		}
 		((MediawikiOutputModule) wikiOutputModule).setUsername(wikiLoginUid);
 
-		
 		if (usePublisher) {
 			List<IPublishOutputModule> modules = new ArrayList<IPublishOutputModule>();
 			modules.add(wikiOutputModule);
@@ -221,7 +235,8 @@ public class Cdm2MediawikiExporter {
 			// do export from cdm to mediawiki xml file
 			Publisher.publish(configurator);
 			if (importImages) {
-				// the cdm out put where we want to fetch the urls of the images:
+				// the cdm out put where we want to fetch the urls of the
+				// images:
 				inputDocument = ((MediawikiOutputModule) wikiOutputModule)
 						.getInputDocument();
 			}
@@ -230,22 +245,26 @@ public class Cdm2MediawikiExporter {
 					configurator.getExportFolder(),
 					configurator.getProgressMonitor());
 		}
-		mediawikiFilePath = ((MediawikiOutputModule) wikiOutputModule).getFilePath();
+		mediawikiFilePath = ((MediawikiOutputModule) wikiOutputModule)
+				.getFilePath();
 
-		
 		if (usePublisher && !deleteOutputFiles) {
-			saveCdmXmlExportedDocument(exportFolder, inputDocument);
+			saveCdmXmlExportedDocument(tmporaryExportFolder, inputDocument);
 		}
 		// import into mediawiki
 		if (import2Mediawiki) {
-			uploadToMediawiki(wikiUrl, wikiLoginUid, passwd, deleteOutputFiles);
+			uploadToMediawiki(wikiUrl, wikiLoginUid, passwd);
 		}
 
+		if (deleteOutputFiles) {
+			deleteOutputFiles();
+			logger.info("deleted temporary file(s)");
+		}
 	}
 
 	private void getUuidFromTaxonName(String rootnode2) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/**
@@ -256,9 +275,9 @@ public class Cdm2MediawikiExporter {
 			Document inputDocument) {
 		XMLOutputter xmlOutput = new XMLOutputter();
 
-		cdm_output_file=exportFolder
-				+ File.separator + wikiOutputModule.generateFilenameWithDate(CDM_EXPORTED_XML);
-		
+		cdm_output_file = exportFolder + File.separator
+				+ wikiOutputModule.generateFilenameWithDate(CDM_EXPORT_FILE_NAME);
+
 		// display nice nice
 		xmlOutput.setFormat(Format.getPrettyFormat());
 		try {
@@ -267,6 +286,7 @@ public class Cdm2MediawikiExporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		logger.info("created CDM output file: "+cdm_output_file+".");
 	}
 
 	private void deleteOutputFiles() {
@@ -284,16 +304,16 @@ public class Cdm2MediawikiExporter {
 	 * @param deleteOutputFile
 	 */
 	public void uploadToMediawiki(String inputFilePath, String wikiUrl,
-			String wikiUser, String passwd, boolean deleteOutputFile) {
+			String wikiUser, String passwd) {
 		mediawikiFilePath = inputFilePath;
-		uploadToMediawiki(wikiUrl, wikiUser, passwd, deleteOutputFile);
+		uploadToMediawiki(wikiUrl, wikiUser, passwd);
 	}
 
 	/*
 	 * @author l.morris
 	 */
 	private void uploadToMediawiki(String wikiUrl, String wikiUser,
-			String passwd, boolean deleteOutputFile) {
+			String passwd) {
 
 		WikiBot myBot = new WikiBot(wikiUrl, wikiUser, passwd);
 
@@ -339,10 +359,6 @@ public class Cdm2MediawikiExporter {
 			// delete xml-output
 			// MAYDO do this in a saver way: only clean the actual xml file
 			// TODO do we want to delete output file?
-			if (deleteOutputFile) {
-				deleteOutputFiles();
-				logger.info("deleted temporary file(s)");
-			}
 
 			/*
 			 * URL url = new URL(
