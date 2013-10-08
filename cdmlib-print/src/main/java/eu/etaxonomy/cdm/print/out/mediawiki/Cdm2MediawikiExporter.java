@@ -56,32 +56,25 @@ public class Cdm2MediawikiExporter {
 
 	// TODO delete these constants
 	// palmweb
-	// private final String
-	// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/palmae/";
+	// private final String webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/palmae/";
 
 	// flora of c a
-	// private static final String webServiceUrl =
-	// "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
+	private static final String webServiceUrl = "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
 
-	// private static final String rootNode =
-	// "0044aae4-721b-4726-85ff-752a89cff748";
-	// private static final String featureTree =
-	// "051d35ee-22f1-42d8-be07-9e9bfec5bcf7";
+	//private static final String webServiceUrl = "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
 
 	// //cichoriae
 	// private static final String
 	// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/cichorieae/";
 	// // Ericaceae:
-	// private static final String featureTree =
-	// "051d35ee-22f1-42d8-be07-9e9bfec5bcf7";
-	// private static final String rootNode =
-	// "a605e87e-113e-4ebd-ad97-f086b734b4da";
-	//
-	// palmae
-	private static final String webServiceUrl = "http://dev.e-taxonomy.eu/cdmserver/palmae/";
+
+	//private static final String featureTree = "051d35ee-22f1-42d8-be07-9e9bfec5bcf7";
+	//private static final String rootNode = "a605e87e-113e-4ebd-ad97-f086b734b4da";
+
 	// Acrocomia
-	private static final String rootNode = "f8f8a7ba-4bd7-4fdc-871c-99494439143d";
-	private static final String featureTree = "72ccce05-7cc8-4dab-8e47-bf3f5fd848a0";
+	//private static final String rootNode = "f8f8a7ba-4bd7-4fdc-871c-99494439143d";
+	//private static final String featureTree = "72ccce05-7cc8-4dab-8e47-bf3f5fd848a0";
+
 
 	// these parameter have a senseful default parameter, you only use
 	private Document inputDocument = null;
@@ -102,10 +95,14 @@ public class Cdm2MediawikiExporter {
 		Cdm2MediawikiExporter exporter = new Cdm2MediawikiExporter();
 
 		// do complete export
-		 exporter.export(webServiceUrl, "Restionaceae",
-		 "http://biowikifarm.net/testwiki", "Sybille Bürs", "ssetakil3?",
-		 "Internal", true, false, true);
 
+		 exporter.export(webServiceUrl, "Restionaceae",
+		 "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
+		 "Internal", true, true, true);
+
+		 //exporter.export(webServiceUrl, "Restionaceae",
+		 //"http://biowikifarm.net/testwiki", "Sybille Bürs", "ssetakil3?",
+		 //"Internal", true, false, true);
 		
 
 		// do only wiki import
@@ -113,22 +110,18 @@ public class Cdm2MediawikiExporter {
 		// "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
 		// false);
 
+		// do export from file
+		/*exporter.exportFromXmlFile(
+				"/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/document1.xml",
+				webServiceUrl, "Restionaceae",
+				"http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
+				"Internal", true, false, false);*/
+
 		// do export from file:
 		// parameters: String serviceUrl, String taxonName, String wikiUrl,
 		// String wikiLoginUid, String passwd, String wikiPageNamespace,
 		// boolean import2Mediawiki, boolean deleteOutputFiles,
 		// boolean importImages
-
-		/*
-		 * String filename, String serviceUrl, String taxonName, String wikiUrl,
-		 * String wikiLoginUid, String passwd, String wikiPageNamespace, boolean
-		 * import2Mediawiki, boolean deleteOutputFiles, boolean importImages
-		 */
-		// exporter.exportFromXmlFile(
-		// "/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/document1.xml",
-		// webServiceUrl, "Restionaceae",
-		// "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
-		// "Internal", true, false, false);
 
 	}
 
@@ -205,14 +198,21 @@ public class Cdm2MediawikiExporter {
 		configurator.setWebserviceUrl(serviceUrl);
 		factory = configurator.getFactory();
 
-		// TODO get uuid from taxon name
-		UUID taxonNodeUuid = UUID.fromString(rootNode);// restionaceae
-		getUuidFromTaxonName(taxonName);
+		//UUID taxonNodeUuid = UUID.fromString(rootNode);// restionaceae
+		//Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
+		
+		Element taxonNodeElement = factory.getTaxonNodesByName(taxonName);
 
-		Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
+		//Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
+
 		configurator.addSelectedTaxonNodeElements(taxonNodeElement);
 
 		// TODO get feature tree from taxon name/taxon node
+		List<Element> featureTrees = factory.getFeatureTrees();
+		for(Element featureTreeElement : featureTrees){
+			featureTreeElement.getChild("uuid");
+		}
+		String featureTree = featureTrees.get(0).getChild("uuid").getValue();
 		configurator.setFeatureTree(UUID.fromString(featureTree));
 
 		

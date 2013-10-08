@@ -22,6 +22,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.print.XMLHelper.EntityType;
  * a remote machine. API call will be executed by accessing the servers REST API.
  * 
  * @author n.hoffmann
+ * @author l.morris
  * @created Apr 6, 2010
  * @version 1.0
  */
@@ -64,15 +66,19 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	private static final String TAXONNODE_CHILD_NODES = "taxonNode/" + UUID + "/childNodes/";
 	private static final String TAXONNODE =  "taxonNode/" + UUID;
 	private static final String TAXONNODE_TAXON = TAXONNODE + "/taxon";
+	//private static final String TAXONNODES = TAXONNODE + "/taxon";
+	private static final String TAXA_AND_NAMES = "taxon/findTaxaAndNames";
+	private static final String TAXONNODES = "taxon/" + UUID + "/taxonNodes";
+	//http://dev.e-taxonomy.eu/cdmserver/palmae/portal/taxon/d58c0b44-29f8-4071-aa49-32baa185296f/taxonNodes
 	
-	private static final String FEATURETREES = "featuretrees";
+	private static final String FEATURETREES = "featureTree";
 	private static final String FEATURETREE = "featureTree/" + UUID;
 	private static final String FEATURENODE = "featureNode/" + UUID;
 	private static final String FEATURENODE_FEATURE = FEATURENODE + "/feature";
 	
 	private static final String NAME_TYPE_DESIGNATIONS = "name/" + UUID + "/typeDesignations";
 	
-	//TAXON_ACCEPTED should populate references but authorTeam is not always populated so call the reference contoller directly
+	//TAXON_ACCEPTED should populate references but authorTeam is not always populated so call the reference controller directly
 	private static final String REFERENCES = "portal/reference/" + UUID; 
 	
 	private static final String TAXON_ACCEPTED = "portal/taxon/" + UUID;
@@ -132,12 +138,58 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	}
 	
 	/*
+	 * Returns the taxonNode for a specific taxon name string.
+	 */	
+	public Element getTaxonNodesByName(String taxonName) {
+		
+		//1-To find the uuid of a Taxon name:
+		//http://dev.e-taxonomy.eu/cdmserver/palmae/taxon/findTaxaAndNames.json?doTaxa=1&matchMode=EXACT&query=Acrocomia
+		//2-Then get the taxonNodes for this name:
+		//http://dev.e-taxonomy.eu/cdmserver/palmae/portal/taxon/d58c0b44-29f8-4071-aa49-32baa185296f/taxonNodes
+		Element taxonNodes = null;
+
+		List<NameValuePair> params = Arrays.asList(new NameValuePair[]{
+				new BasicNameValuePair("doTaxa", "1"),
+				new BasicNameValuePair("matchMode", "EXACT"),
+				new BasicNameValuePair("query", taxonName)	
+		});
+		
+		Element element = queryServiceWithParameters(TAXA_AND_NAMES, params);
+		
+		Element taxonNodeString = null;
+		UUID taxonNodeUuid = null;
+		
+		try {
+			
+			//TODO: we only get the first Taxon to match this name - we should get all Taxons to match the name
+			Element taxonUuid= (Element)XPath.selectSingleNode(element, "//records/e[1]");			
+			taxonNodes = queryService(taxonUuid, TAXONNODES);	
+			
+			taxonNodeString = (Element)XPath.selectSingleNode(taxonNodes, "//PersistentSet/e[1]/uuid");
+			String val = taxonNodeString.getValue();
+			taxonNodeUuid = java.util.UUID.fromString(taxonNodeString.getValue());
+			
+		} catch (JDOMException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}				
+		return getTaxonNode(taxonNodeUuid);
+		//TODO: Should be return a set of taxonNodes if there is more than one for the name
+		//public List<Element> getTaxonNodesByName(String taxonName) {
+		//return taxonNodes;
+	}
+	
+	
+	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getFeatureTree(java.util.UUID)
 	 */
 	public Element getFeatureTree(UUID featureTreeUuid) {
 		return queryService(featureTreeUuid, FEATURETREE);
 	}
+	
+
+	
 	
 	/*
 	 * (non-Javadoc)
