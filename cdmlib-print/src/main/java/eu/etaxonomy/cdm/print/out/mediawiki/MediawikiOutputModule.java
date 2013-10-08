@@ -126,8 +126,6 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 			try {
 
 				// Setup XSLT
-				// InputStream xslt = getXsltInputStream();
-//				TransformerFactory tfactory = TransformerFactory.newInstance();
 				TransformerFactory tfactory = new net.sf.saxon.TransformerFactoryImpl();
 				Transformer transformer = tfactory.newTransformer(inputSource);// (xslt));
 
@@ -225,6 +223,12 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 		outputModule.output(document, configurator.getExportFolder(),
 				configurator.getProgressMonitor());
 
+	}
+
+	// like this or change modifier in abstract superclass?
+	public String generateFilenameWithDate(String name) {
+		return super.generateFilenameWithDate(name);
+		
 	}
 
 }
