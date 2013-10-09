@@ -73,7 +73,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	
 	private static final String FEATURETREES = "featureTree";
 	private static final String FEATURETREE = "featureTree/" + UUID;
-	private static final String FEATURENODE = "featureNode/" + UUID;
+	private static final String FEATURENODE = "featureNode/" + UUID + "/childNodes";
 	private static final String FEATURENODE_FEATURE = FEATURENODE + "/feature";
 	
 	private static final String NAME_TYPE_DESIGNATIONS = "name/" + UUID + "/typeDesignations";
@@ -88,6 +88,9 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	private static final String POLYTOMOUS_KEY = "dto/polytomousKey/linkedStyle?findByTaxonomicScope=" + UUID;
 	//dto/polytomousKey/linkedStyle.json?findByTaxonomicScope=f820f533-06f2-4116-87e9-c9319c0c1cbf
 	
+	//images /portal/taxon/{uuid}
+	private static final String TAXON_MEDIA = "portal/taxon/" + UUID + "/media";
+	//http://test.e-taxonomy.eu/cdmserver/palmae/portal/media/bb49e8f0-49bc-41f7-9674-1cb36eb716fb
 	
 	/**
 	 * Creates new instance of this factory and connects it to the given 
@@ -304,6 +307,28 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 		return elementList;
 	}
 	
+	/*
+	 * 
+	 */
+	public List<Element> getMedia(Element taxonElement) {
+
+		Element result = queryService(taxonElement, TAXON_MEDIA);
+
+		List<Element> elementList = new ArrayList<Element>();
+
+		for(Object child : result.getChildren()){
+			if(child instanceof Element){
+				Element childElement = (Element) ((Element)child).clone();
+
+				childElement.detach();
+
+				elementList.add(childElement);
+			}
+		}
+
+		return elementList;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.printpublisher.IXMLEntityFactory#getTypeDesignations(org.jdom.Element)
