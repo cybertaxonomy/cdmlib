@@ -34,7 +34,7 @@ public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 	
 
 	private ChildHandling childHandling = ChildHandling.DELETE;
-
+	
 
 	public void setChildHandling(ChildHandling childHandling) {
 		this.childHandling = childHandling;

@@ -24,6 +24,9 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -36,6 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
 /**
@@ -52,6 +56,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	private IBeanInitializer defaultBeanInitializer;
 	
 	private Comparator<? super TaxonNode> taxonNodeComparator;
+	
+	@Autowired
+	private ITaxonService taxonService;
+	
 	@Autowired
 	public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
 		this.taxonNodeComparator = (Comparator<? super TaxonNode>) taxonNodeComparator;
@@ -83,7 +91,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	 * @see eu.etaxonomy.cdm.api.service.ITaxonService#makeTaxonSynonym(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Taxon)
 	 */
 	@Transactional(readOnly = false)
-	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) {
+	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) throws DataChangeNoRollbackException {
 
 		// TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
 		// in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -99,7 +107,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 		Taxon newAcceptedTaxon = (Taxon) HibernateProxyHelper.deproxy(newAcceptedTaxonNode.getTaxon());
 		
 		// Move oldTaxon to newTaxon
-		TaxonNameBase<?,?> synonymName = oldTaxon.getName();
+		//TaxonNameBase<?,?> synonymName = oldTaxon.getName();
+		TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
 		if (synonymRelationshipType == null){
 			if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
 				synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -156,6 +165,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			taxonRelationship.setFromTaxon(null);
 			
 			
+			
+			
 		}
 
 		
@@ -167,8 +178,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 			description.setTitleCache(message, true);
 			newAcceptedTaxon.addDescription(description);
 		}
-				
-		oldTaxonNode.delete();		
+		
+		TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
+		conf.setDeleteSynonymsIfPossible(false);
+		taxonService.deleteTaxon(oldTaxon, conf, null);
+					
+		//oldTaxonNode.delete();		
 		return synonmyRelationship.getSynonym();
 	}
 }

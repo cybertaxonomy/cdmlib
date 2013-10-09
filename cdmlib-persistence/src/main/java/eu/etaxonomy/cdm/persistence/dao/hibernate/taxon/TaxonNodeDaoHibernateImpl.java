@@ -53,14 +53,19 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		Query query = session.createQuery("from TaxonNode t where t.taxon = :taxon");
 		query.setParameter("taxon", taxon);
 		List result = query.list();
-		persistentObject.delete();
-		super.delete(persistentObject);
-		
 		if (result.size()==1){
+			TaxonNode node = (TaxonNode)result.get(0);
+			taxon.removeTaxonNode(node);
 			taxonDao.delete(taxon);
 		}
+
+		//persistentObject.delete();
 		
-		taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
+		super.delete(persistentObject);
+		
+		
+		
+		//taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
 		return persistentObject.getUuid();
 	}
 

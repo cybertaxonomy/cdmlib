@@ -268,13 +268,38 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	@Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-
-        node.getTaxon().removeTaxonNode(node);
+        Taxon taxon = node.getTaxon();
+        taxon.removeTaxonNode(node);
         node.setTaxon(null);
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
             node.deleteChildNode(childNode);
+        }
+
+//		// two iterations because of ConcurrentModificationErrors
+//        Set<TaxonNode> removeNodes = new HashSet<TaxonNode>();
+//        for (TaxonNode grandChildNode : node.getChildNodes()) {
+//                removeNodes.add(grandChildNode);
+//        }
+//        for (TaxonNode childNode : removeNodes) {
+//                childNode.deleteChildNode(node);
+//        }
+
+        return result;
+    }
+    
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+     */
+    public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
+        boolean result = removeChildNode(node);
+               
+        if (deleteChildren){
+	        ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+	        for(TaxonNode childNode : childNodes){
+	            node.deleteChildNode(childNode);
+	        }
         }
 
 //		// two iterations because of ConcurrentModificationErrors
@@ -297,7 +322,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @return
      */
     protected boolean removeChildNode(TaxonNode childNode){
-        boolean result = false;
+        boolean result = true;
        
 	    if(childNode == null){
 	    	throw new IllegalArgumentException("TaxonNode may not be null");
@@ -305,6 +330,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         int index = childNodes.indexOf(childNode);
 		if (index >= 0){
 			removeChild(index);
+		} else {
+			result = false;
 		}
         
 
@@ -378,6 +405,19 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return getParent().deleteChildNode(this);
         }
     }
+    
+    /**
+     * Remove this taxonNode From its taxonomic parent
+     *
+     * @return true on success
+     */
+    public boolean delete(boolean deleteChildren){
+        if(isTopmostNode()){
+            return classification.deleteChildNode(this, deleteChildren);
+        }else{
+            return getParent().deleteChildNode(this, deleteChildren);
+        }
+    }
 
 //*********** GETTER / SETTER ***********************************/
 
@@ -411,7 +451,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Transient
     public ITaxonTreeNode getParentTreeNode() {
         if(isTopmostNode()){
-            return getClassification();
+        	return getClassification();
         }
         return parent;
     }

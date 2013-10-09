@@ -10,6 +10,10 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -19,9 +23,12 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -46,14 +53,17 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	@SpringBeanByType
 	private ITermService termService;
+	
+	@SpringBeanByType
+	private ITaxonService taxonService;
 
-//	private static final UUID t2Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
-//	private static final UUID t3Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
+	private static final UUID t1Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
+	private static final UUID t2Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
 	private static final UUID classificationUuid = UUID.fromString("6c2bc8d9-ee62-4222-be89-4a8e31770878");
 	private static final UUID classification2Uuid = UUID.fromString("43d67247-936f-42a3-a739-bbcde372e334");
 	private static final UUID referenceUuid = UUID.fromString("de7d1205-291f-45d9-9059-ca83fc7ade14");
-	private static final UUID node2Uuid= UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
-	private static final UUID node3Uuid = UUID.fromString("2d41f0c2-b785-4f73-a436-cc2d5e93cc5b");
+	private static final UUID node1Uuid= UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
+	private static final UUID node2Uuid = UUID.fromString("2d41f0c2-b785-4f73-a436-cc2d5e93cc5b");
 //	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
@@ -65,7 +75,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private Reference<?> reference;
 	private String referenceDetail;
 	private Classification classification;
-	private TaxonNode node3;
+	private TaxonNode node1;
 	private TaxonNode node2;
 
 	/**
@@ -82,8 +92,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	@DataSet
 	public final void testMakeTaxonNodeASynonymOfAnotherTaxonNode() {
 		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
-		node3 = taxonNodeService.load(node3Uuid);
 		reference = referenceService.load(referenceUuid);
 //		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
 		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHomotypicSynonymOf), SynonymRelationshipType.class) ;
@@ -95,18 +105,37 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //		printDataSet(System.err, new String [] {"TaxonNode"});
 
 		// descriptions
-		t1 = node2.getTaxon();
-		t2 = node3.getTaxon();
-		Assert.assertEquals(2, t1.getDescriptions().size());
+		t1 = node1.getTaxon();
+		TaxonNameBase nameT1 = t1.getName();
+		UUID t1UUID = t1.getUuid();
+		t2 = node2.getTaxon();
+		assertEquals(2, t1.getDescriptions().size());
 		Assert.assertTrue(t2.getSynonyms().isEmpty());
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
-
-		taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node2, node3, synonymRelationshipType, reference, referenceDetail);
+		assertEquals(1,t1.getSynonyms().size());
+		UUID synUUID = null;
+		Synonym syn;
+		try {
+			syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+			synUUID = syn.getUuid();
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
 		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		Assert.assertEquals(2, t2.getDescriptions().size());
-	}
+		assertEquals(2,t2.getSynonyms().size());
+		assertEquals(2, t2.getDescriptions().size());
 	
+		
+		assertNull(taxonService.find(t1Uuid));
+		syn = (Synonym)taxonService.find(synUUID);
+		assertNotNull(syn);
+		Taxon tax = syn.getAcceptedTaxa().iterator().next();
+		assertEquals(tax, t2);
+		TaxonNameBase name = syn.getName();
+		assertEquals(name, nameT1);
+	}	
+		
 	@Test
 	@DataSet(value="TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexCreateNode() {
@@ -128,35 +157,35 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	public final void testIndexMoveNode() {
 		//in classification
 		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(node2Uuid);
-		node3 = taxonNodeService.load(node3Uuid);
-		node3.addChildNode(node2, null, null);
-		taxonNodeService.saveOrUpdate(node2);
+		node2.addChildNode(node1, null, null);
+		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		TaxonNode node6 = taxonNodeService.load(node6Uuid);
-		Assert.assertEquals("Node6 treeindex is not correct", node3.treeIndex() + "2#4#6#", node6.treeIndex());
+		Assert.assertEquals("Node6 treeindex is not correct", node2.treeIndex() + "2#4#6#", node6.treeIndex());
 
 		//root of new classification
 		Classification classification2 = classificationService.load(classification2Uuid);
-		node2 = taxonNodeService.load(node2Uuid);
-		classification2.addChildNode(node2, null, null);
-		taxonNodeService.saveOrUpdate(node2);
+		node1 = taxonNodeService.load(node1Uuid);
+		classification2.addChildNode(node1, null, null);
+		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
-		node2 = taxonNodeService.load(node2Uuid);
-		Assert.assertEquals("Node2 treeindex is not correct", "#t2#2#", node2.treeIndex());
+		node1 = taxonNodeService.load(node1Uuid);
+		Assert.assertEquals("Node1 treeindex is not correct", "#t2#2#", node1.treeIndex());
 		node6 = taxonNodeService.load(node6Uuid);
 		Assert.assertEquals("Node6 treeindex is not correct", "#t2#2#4#6#", node6.treeIndex());
 
 		//into new classification
-		node3 = taxonNodeService.load(node3Uuid);
+		node2 = taxonNodeService.load(node2Uuid);
 		TaxonNode node5 = taxonNodeService.load(node5Uuid);
-		node5.addChildNode(node3, null, null);
+		node5.addChildNode(node2, null, null);
 		taxonNodeService.saveOrUpdate(node5);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
-		node3 = taxonNodeService.load(node3Uuid);
-		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node3.treeIndex());
+		node2 = taxonNodeService.load(node2Uuid);
+		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node2.treeIndex());
 
-	}
+}
 
 	@Test  //here we may have a test for testing delete of a node and attaching the children
 	//to its parents, however this depends on the way delete is implemented and therefore needs

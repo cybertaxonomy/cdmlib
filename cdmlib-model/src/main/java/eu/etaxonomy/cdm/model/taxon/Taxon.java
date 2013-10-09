@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -97,7 +98,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @ContainedIn
     private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
@@ -311,8 +312,75 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     protected void addTaxonNode(TaxonNode taxonNode){
         taxonNodes.add(taxonNode);
     }
-    protected void removeTaxonNode(TaxonNode taxonNode){
-        taxonNodes.remove(taxonNode);
+    
+    public boolean removeTaxonNode(TaxonNode taxonNode){
+    	if (!taxonNodes.contains(taxonNode)){
+    		return false;
+    	}
+        TaxonNode parent = taxonNode.getParent();
+        if (parent != null){
+        	parent.removeChildNode(taxonNode);
+        }
+        taxonNode.setTaxon(null);
+    	return taxonNodes.remove(taxonNode);
+        
+    }
+    
+    public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
+    	TaxonNode parent = taxonNode.getParent();
+    	boolean success = true; 
+    	
+		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
+			
+			taxonNode.delete();
+			
+		} else if (!taxonNode.isTopmostNode()){
+			List<TaxonNode> children =  taxonNode.getChildNodes();
+			
+			for (TaxonNode childNode: children){
+				
+				children.remove(childNode);
+				parent.addChildNode(childNode, null, null);
+				
+			}	
+			
+			taxonNode.delete();
+			
+		} else if (taxonNode.isTopmostNode()){
+			success = false;
+		}
+		return success;
+    }
+    
+    public boolean removeTaxonNodes(boolean deleteChildren){
+    	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
+    	TaxonNode node;
+    	TaxonNode parent;
+    	boolean success = false;
+    	while (nodesIterator.hasNext()){
+    		node = nodesIterator.next();
+    		if (!deleteChildren){
+    			List<TaxonNode> children = node.getChildNodes();
+    			Iterator<TaxonNode> childrenIterator = children.iterator();
+    			parent = node.getParent();
+    			while (childrenIterator.hasNext()){
+    				TaxonNode childNode = childrenIterator.next();
+    				childrenIterator.remove();
+    				if (parent != null){
+    					parent.addChildNode(childNode, null, null);
+    				}else{
+    					childNode.setParent(null);
+    				}
+    			}	
+    			
+    			
+    		}
+    		success = node.delete(deleteChildren);
+    		node.setTaxon(null);
+			nodesIterator.remove();
+    	}
+    	return success;
+    	
     }
 
 
@@ -427,6 +495,22 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return relationsToThisTaxon;
     }
     /**
+	 * Returns the set of all {@link TaxonRelationship taxon relationships}
+	 * between two taxa in which <i>this</i> taxon is involved either as a source or
+	 * as a target.
+	 *
+	 * @see    #getRelationsFromThisTaxon()
+	 * @see    #getRelationsToThisTaxon()
+	 */
+	@Transient
+	public Set<TaxonRelationship> getTaxonRelations() {
+	    Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
+	    rels.addAll(getRelationsToThisTaxon());
+	    rels.addAll(getRelationsFromThisTaxon());
+	    return rels;
+	}
+
+	/**
      * @see    #getRelationsToThisTaxon()
      */
     protected void setRelationsToThisTaxon(Set<TaxonRelationship> relationsToThisTaxon) {
@@ -438,22 +522,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
      */
     protected void setRelationsFromThisTaxon(Set<TaxonRelationship> relationsFromThisTaxon) {
         this.relationsFromThisTaxon = relationsFromThisTaxon;
-    }
-
-    /**
-     * Returns the set of all {@link TaxonRelationship taxon relationships}
-     * between two taxa in which <i>this</i> taxon is involved either as a source or
-     * as a target.
-     *
-     * @see    #getRelationsFromThisTaxon()
-     * @see    #getRelationsToThisTaxon()
-     */
-    @Transient
-    public Set<TaxonRelationship> getTaxonRelations() {
-        Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
-        rels.addAll(getRelationsToThisTaxon());
-        rels.addAll(getRelationsFromThisTaxon());
-        return rels;
     }
 
     /**
@@ -515,13 +583,21 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
             }
         }
         //delete Relationship from other related Taxon
-        if (fromTaxon != null && fromTaxon != this){
+        if (fromTaxon != this){
             rel.setToTaxon(null);  //remove this Taxon from relationship
-            fromTaxon.removeTaxonRelation(rel);
+            if (fromTaxon != null){
+            	if (fromTaxon.getTaxonRelations().contains(rel)){
+            		fromTaxon.removeTaxonRelation(rel);
+            	}
+            }
         }
-        if (toTaxon != null && toTaxon != this){
+        if (toTaxon != this ){
             rel.setFromTaxon(null); //remove this Taxon from relationship
-            toTaxon.removeTaxonRelation(rel);
+           if (toTaxon != null){
+	           if (toTaxon.getTaxonRelations().contains(rel)) {
+	        	   toTaxon.removeTaxonRelation(rel);
+	           }
+           }
         }
     }
 

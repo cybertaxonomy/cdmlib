@@ -20,13 +20,13 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 /**
  * This class is used to configure taxon node deletion.
  * 
- * @see ITaxonNodeService#delete(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+ * @see ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon)
  * 
  * @author a.mueller
  * @date 09.11.2011
  *
  */
-public class TaxonDeletionConfigurator extends DeleteConfiguratorBase {
+public class TaxonDeletionConfigurator extends TaxonBaseDeletionConfigurator {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonDeletionConfigurator.class);
 
@@ -34,16 +34,33 @@ public class TaxonDeletionConfigurator extends DeleteConfiguratorBase {
 	
 	private boolean deleteSynonymsIfPossible = true;
 	
+	private boolean deleteMisappliedNamesAndInvalidDesignations = true;
+
 	private boolean deleteNameIfPossible = true;
 	
 	private NameDeletionConfigurator nameDeletionConfig = new NameDeletionConfigurator();
-
-	private boolean deleteTaxonNodes = false;
 	
-	private boolean deleteTaxonRelationships = false; 
+	
+	private TaxonNodeDeletionConfigurator taxonNodeConfig = new TaxonNodeDeletionConfigurator();
+
+	
+	private boolean deleteTaxonNodes = true;
+	
+	private boolean deleteTaxonRelationships = true; 
 	
 	private boolean deleteDescriptions = true;
 	
+	private boolean deleteInAllClassifications = true;
+
+
+	public boolean isDeleteInAllClassifications() {
+		return deleteInAllClassifications;
+	}
+
+
+	public void setDeleteInAllClassifications(boolean deleteInAllClassifications) {
+		this.deleteInAllClassifications = deleteInAllClassifications;
+	}
 
 	/**
 	 * If true the taxons name will be deleted if this is possible.
@@ -75,6 +92,43 @@ public class TaxonDeletionConfigurator extends DeleteConfiguratorBase {
 
 	public void setNameDeletionConfig(NameDeletionConfigurator nameDeletionConfig) {
 		this.nameDeletionConfig = nameDeletionConfig;
+	}
+
+	
+	/**
+	 * If <code>true</code> related taxa with  {@link TaxonRelationshipType} misappliedName or invalidDesignation will be removed if possible 
+	 * It is possible to remove a related taxon if it is not used in any other context, e.g. any 
+	 * other @link {@link TaxonRelationship} or in another @link {@link Classification}
+	 * @return
+	 */
+	public boolean isDeleteMisappliedNamesAndInvalidDesignations() {
+		return deleteMisappliedNamesAndInvalidDesignations;
+	}
+
+
+	public void setDeleteMisappliedNamesAndInvalidDesignations(
+			boolean deleteMisappliedNamesAndInvalidDesignations) {
+		this.deleteMisappliedNamesAndInvalidDesignations = deleteMisappliedNamesAndInvalidDesignations;
+	}
+	
+
+
+	
+	/**
+	 * The configurator for node deletion. Only evaluated if {@link #isDeleteNode()}
+	 * is <code>true</code>.
+	 * @see TaxonNodeDeletionConfigurator
+	 * @see #isDeleteNode()
+	 * @see #isDeleteSynonymsIfPossible()
+	 * @return
+	 */
+	
+	public TaxonNodeDeletionConfigurator getTaxonNodeConfig() {
+		return taxonNodeConfig;
+	}
+
+	public void setTaxonNodeConfig(TaxonNodeDeletionConfigurator taxonNodeConfig) {
+		this.taxonNodeConfig = taxonNodeConfig;
 	}
 
 

@@ -39,6 +39,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
@@ -48,6 +50,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -99,6 +102,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     @SpringBeanByType
     private IUserService userService;
 
+    @SpringBeanByType
+    private IClassificationService classificationService;
 
     @TestDataSource
     protected DataSource dataSource;
@@ -129,6 +134,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     private UsernamePasswordAuthenticationToken tokenForUserManager;
 
+	
 
     @Before
     public void setUp(){
@@ -438,7 +444,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -455,7 +461,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
     }
 
@@ -474,7 +480,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         context.setAuthentication(authentication);
 
-        TaxonBase<?>  taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?>  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -491,7 +497,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
     }
 
@@ -507,7 +513,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
 
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
@@ -526,7 +532,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
     }
 
@@ -565,11 +571,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      * test with admin account - should succeed
      */
     @Test
-    @Ignore
-    /*FIXME fails due to org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade (remove deleted object from associations)
-     *       see ticket #3086
-     */
-    public final void testTaxonDeleteAllow_2() {
+   public final void testTaxonDeleteAllow_2() {
 
         SecurityContext context = SecurityContextHolder.getContext();
 
@@ -577,9 +579,13 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTINII);
+        Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
-            taxonService.delete(taxon);
+            try {
+				taxonService.deleteTaxon(taxon, null, null);
+			} catch (DataChangeNoRollbackException e) {
+				Assert.fail();
+			}
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -592,7 +598,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTINII);
+
+        taxon = (Taxon)taxonService.find(UUID_ACHERONTINII);
         Assert.assertNull("The taxon must be deleted", taxon);
     }
 
@@ -851,7 +858,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         RuntimeException securityException = null;
-
+        Classification classification = classificationService.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         // test for success
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();
