@@ -417,7 +417,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		if (parent.getNodeNumber() != null) {		
 			maxNumber = (maxNumber < parent.getNodeNumber()) ? parent.getNodeNumber() : maxNumber;
 			for (PolytomousKeyNode child : parent.getChildren()) {				
-				maxNumber = getMaxNodeNumber(maxNumber, child);
+				if (parent == child){
+					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating the max node number.");
+				}else{
+					maxNumber = getMaxNodeNumber(maxNumber, child);
+				}
 			}
 		}
 		return maxNumber;
@@ -445,7 +449,11 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			node.setNodeNumber(nodeN);			
 			newNodeN++;
 			for (PolytomousKeyNode child : node.getChildren()) {												
-				newNodeN = updateNodeNumbering(child, newNodeN);				
+				if (node == child){
+					throw new RuntimeException("Parent and child are the same for the given key node. This will lead to an infinite loop when updating node numbers.");
+				}else{
+					newNodeN = updateNodeNumbering(child, newNodeN);				
+				}
 			}
 		}		
 		return newNodeN;
