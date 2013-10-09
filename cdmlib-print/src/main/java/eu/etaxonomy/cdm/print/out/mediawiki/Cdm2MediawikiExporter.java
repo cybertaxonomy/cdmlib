@@ -94,6 +94,7 @@ public class Cdm2MediawikiExporter {
 
 		Cdm2MediawikiExporter exporter = new Cdm2MediawikiExporter();
 
+		String password = CdmUtils.readInputLine("Password: ");
 		// do complete export
 
 		 exporter.export(webServiceUrl, "Restionaceae",
