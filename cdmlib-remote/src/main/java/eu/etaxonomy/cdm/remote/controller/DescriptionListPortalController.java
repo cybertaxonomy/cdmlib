@@ -75,6 +75,15 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "sources.$",
     });
 
+    protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "states.$",
+            "sources.citation.authorTeam",
+            "sources.nameUsedInSource.originalNameString",
+            "multilanguageText",
+            "media"
+    });
+
 
     public DescriptionListPortalController() {
         super();
@@ -210,7 +219,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
                type,
                pagerParams.getPageSize(),
                pagerParams.getPageIndex(),
-               getInitializationStrategy()
+               DESCRIPTION_ELEMENT_INIT_STRATEGY
               );
 
        return pager;
