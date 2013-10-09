@@ -5,7 +5,7 @@
 
 	<xsl:import
 		href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl" />
-	<xsl:output method="xml" indent="no"/> 
+	<!-- xsl:output method="xml" indent="no"/> -->
 	<xsl:strip-space elements="text" />
 
 	<!-- Authors: Sybille & Lorna -->

@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
  * 
  * TODO would we move this class somewhere else and/or rename it?
  * 
- * @author s.buers
+ * @author s.buers, l.morris
  * 
  */
 public class Cdm2MediawikiExporter {
@@ -54,26 +54,6 @@ public class Cdm2MediawikiExporter {
 	private static String cdm_output_file = null;
 
 	// TODO delete these constants
-	// palmweb
-	// private final String webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/palmae/";
-
-	// flora of c a
-	private static final String webServiceUrl = "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
-
-	//private static final String webServiceUrl = "http://test.e-taxonomy.eu/cdmserver/flora_central_africa/";
-
-	// //cichoriae
-	// private static final String
-	// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/cichorieae/";
-	// // Ericaceae:
-
-	//private static final String featureTree = "051d35ee-22f1-42d8-be07-9e9bfec5bcf7";
-	//private static final String rootNode = "a605e87e-113e-4ebd-ad97-f086b734b4da";
-
-	// Acrocomia
-	//private static final String rootNode = "f8f8a7ba-4bd7-4fdc-871c-99494439143d";
-	//private static final String featureTree = "72ccce05-7cc8-4dab-8e47-bf3f5fd848a0";
-
 
 	// these parameter have a senseful default parameter, you only use
 	private Document inputDocument = null;
@@ -91,40 +71,63 @@ public class Cdm2MediawikiExporter {
 	 */
 	public static void main(String[] args) throws MalformedURLException {
 
+		//*****************portals and nodes ********************
+		
+		// palmweb
+//		String webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/palmae/";
+//		String taxonName="Acrocomia";
+//		String wikiPrefix=null;
+		
+		// flora of c a
+		String webServiceUrl = "http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/";
+		String taxonName="Agarista";
+//		String taxonName="Restionaceae";
+		String wikiPrefix="Internal";
+		
+		// //cichoriae
+		// private static final String
+		// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/cichorieae/";
+		
+		//******************other parameters **********************
+		
+		//..................mediawiki...........................
+		
+		String wikiUrl = "http://biowikifarm.net/testwiki";
+		String loginName= "Lorna Morris";
+
 		Cdm2MediawikiExporter exporter = new Cdm2MediawikiExporter();
 
-		String password = CdmUtils.readInputLine("Password: ");
+//		String password = CdmUtils.readInputLine("Password: ");
+		String password="dolfin_69";
+		
 		// do complete export
 
-		 exporter.export(webServiceUrl, "Restionaceae",
-		 "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
-		 "Internal", true, true, true);
-
-		 //exporter.export(webServiceUrl, "Restionaceae",
-		 //"http://biowikifarm.net/testwiki", "Sybille Bürs", "ssetakil3?",
-		 //"Internal", true, false, true);
-		
+//		 exporter.export(webServiceUrl, taxonName,
+//		 wikiUrl, loginName, password,
+//		 wikiPrefix, true, false, true);
+		 
 
 		// do only wiki import
 		// exporter.uploadToMediawiki("/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/20130926-2347-output.xml",
 		// "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
 		// false);
 
+		
+		
 		// do export from file
 		/*exporter.exportFromXmlFile(
 				"/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/document1.xml",
 				webServiceUrl, "Restionaceae",
 				"http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
 				"Internal", true, false, false);*/
-
-		// do export from file:
-		// parameters: String serviceUrl, String taxonName, String wikiUrl,
-		// String wikiLoginUid, String passwd, String wikiPageNamespace,
-		// boolean import2Mediawiki, boolean deleteOutputFiles,
-		// boolean importImages
-
+		
+		
+		//********************************************
+		
 	}
 
+	
+	
 	/**
 	 * does the whole export process: runs cdm export to mediawiki xml-file and
 	 * wiki import of this file
@@ -138,7 +141,8 @@ public class Cdm2MediawikiExporter {
 	 * @param passwd
 	 *            - password of the above wiki admin
 	 * @param wikiPageNamespace
-	 *            - prefix that, if not null, will be added to all pages
+	 *            - prefix that, will be added to all pages
+	 *              null or "" will make no prefix
 	 * @throws MalformedURLException
 	 * 
 	 *             TODO: make passwd "unplain" MAYDO: pass more parameters e.g.:
@@ -201,6 +205,8 @@ public class Cdm2MediawikiExporter {
 		//UUID taxonNodeUuid = UUID.fromString(rootNode);// restionaceae
 		//Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
 		
+		//TODO get classification name from export() - add a parameter
+		// and use it to choose the right taxon
 		Element taxonNodeElement = factory.getTaxonNodesByName(taxonName);
 
 		//Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
@@ -262,10 +268,7 @@ public class Cdm2MediawikiExporter {
 		}
 	}
 
-	private void getUuidFromTaxonName(String rootnode2) {
-		// TODO Auto-generated method stub
-
-	}
+	
 
 	/**
 	 * @param exportFolder
