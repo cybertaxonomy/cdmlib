@@ -168,7 +168,23 @@ public class Cdm2MediawikiExporter {
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
 				importImages, true);
 	}
-
+/**
+ * if you already have a cdm xml export in some file you put it in here 
+ * the mediawiki xml is created and imported to an mediawiki
+ * does step 2 and 3 out of all 3 export steps
+ * 
+ * @param filename
+ * @param serviceUrl
+ * @param taxonName
+ * @param wikiUrl
+ * @param wikiLoginUid
+ * @param passwd
+ * @param wikiPageNamespace
+ * @param import2Mediawiki
+ * @param deleteOutputFiles
+ * @param importImages
+ * @throws MalformedURLException
+ */
 	public void exportFromXmlFile(String filename, String serviceUrl,
 			String taxonName, String wikiUrl, String wikiLoginUid,
 			String passwd, String wikiPageNamespace, boolean import2Mediawiki,
@@ -178,7 +194,7 @@ public class Cdm2MediawikiExporter {
 		externalDocument = getDocument(filename);
 		export(serviceUrl, taxonName, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
-				importImages, false);
+				importImages, importImages);
 
 	}
 
@@ -326,7 +342,8 @@ public class Cdm2MediawikiExporter {
 	}
 
 	/**
-	 * uploads a given mediawiki xml file to a mediawiki
+	 * uploads a given mediawiki xml file to a mediawiki - does only third (last) step
+	 * of the whole export process
 	 * 
 	 * @param inputFilePath
 	 * @param wikiUrl

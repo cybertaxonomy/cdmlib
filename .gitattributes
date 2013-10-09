@@ -1657,6 +1657,7 @@ cdmlib-print/src/site/site.xml -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PubTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PublisherTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/TransformatorTest.java -text
+cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/mediawiki/Cdm2MediawikiExporterTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModuleTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/pdf/PdfOutputModuleTest.java -text
 cdmlib-print/src/test/resources/20100719-1939-xml_export.xml -text
