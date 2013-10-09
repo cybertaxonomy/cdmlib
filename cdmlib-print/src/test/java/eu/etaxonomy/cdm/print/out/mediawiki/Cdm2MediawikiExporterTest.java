@@ -68,6 +68,9 @@ public class Cdm2MediawikiExporterTest {
 	
 	@Test
 	public void testExportFromXmlFile() throws MalformedURLException {
+		//TODO
+		cdmExported="/home/sybille/.cdmLibrary/mediawiki_tmp/20131009-2041-cdm_output.xml";
+
 		exporter.exportFromXmlFile(
 				  cdmExported ,
 				   webServiceUrl, taxonName, wikiUrl,
@@ -77,6 +80,8 @@ public class Cdm2MediawikiExporterTest {
 	@Test
 	public void testUploadToMediawiki(){
 		 //do only wiki import
+		//TODO
+		wikiFile="/home/sybille/.cdmLibrary/mediawiki_tmp/20131009-2041-output.xml";
 		exporter.uploadToMediawiki(wikiFile,
 		 wikiUrl, loginName, password);
 		 

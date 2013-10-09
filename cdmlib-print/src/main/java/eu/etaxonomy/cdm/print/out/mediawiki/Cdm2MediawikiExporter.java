@@ -38,6 +38,7 @@ import org.apache.commons.io.FileUtils;
  */
 public class Cdm2MediawikiExporter {
 
+	//constants
 	private static final String MEDIAWIKI_CDM_SUB_DIR = "mediawiki_tmp";
 
 	private static final String IMAGE_DIR = MEDIAWIKI_CDM_SUB_DIR
@@ -47,94 +48,29 @@ public class Cdm2MediawikiExporter {
 
 	private static final String PAGE_SUMMARY = "automatic import from CDM";
 
+	//-------------------
+	
 	private static final Logger logger = Logger
 			.getLogger(Cdm2MediawikiExporter.class);
 
-	private static PublishConfigurator configurator;
+	private PublishConfigurator configurator;
 
-	private static IXMLEntityFactory factory;
+	private IXMLEntityFactory factory;
 
 	// where the mediawiki xml code is stored
-	private static String mediawikiFileWithPath = null;
+	private String mediawikiFileWithPath = null;
 
 	// where the cdm exported xml can be stored
-	private static String cdm_output_file = null;
+	private String cdm_output_file = null;
 
-	// TODO delete these constants
-
-	// these parameter have a senseful default parameter, you only use
 	private Document cdmOutputDocument = null;
 	private Document externalDocument = null;
 
 	private MediawikiOutputModule wikiOutputModule;
 
-	private static File temporaryExportFolder = null;
+	private File temporaryExportFolder = null;
 
-	private static File temporaryImageExportFolder;
-
-	/**
-	 * TODO delete this method. - and static modifier
-	 * 
-	 * @param args
-	 * @throws IOException
-	 */
-	public static void main(String[] args) throws IOException {
-
-		// *****************portals and nodes ********************
-
-		// palmweb
-		String webServiceUrl = "http://dev.e-taxonomy.eu/cdmserver/palmae/";
-		String taxonName = "Acrocomia";
-		String wikiPrefix = null;
-
-		// flora of c a
-		// String webServiceUrl =
-		// "http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/";
-		// String taxonName="Agarista";
-		// // String taxonName="Restionaceae";
-		// String wikiPrefix="Internal";
-
-		// //cichoriae
-		// private static final String
-		// webServiceUrl="http://dev.e-taxonomy.eu/cdmserver/cichorieae/";
-
-		// ******************other parameters **********************
-
-		// ..................mediawiki...........................
-
-		String wikiUrl = "http://biowikifarm.net/testwiki";
-		String loginName = "Lorna Morris";
-
-		Cdm2MediawikiExporter exporter = new Cdm2MediawikiExporter();
-
-		// String password = CdmUtils.readInputLine("Password: ");
-		String password = "dolfin_69";
-
-		// do complete export
-		exporter.export(webServiceUrl, taxonName, wikiUrl, loginName, password,
-				wikiPrefix, true, false, true);
-
-		// do only wiki import
-		// exporter.uploadToMediawiki("/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/20130926-2347-output.xml",
-		// "http://biowikifarm.net/testwiki", "Lorna Morris", "dolfin_69",
-		// false);
-
-		// do export from file
-		/*
-		 * exporter.exportFromXmlFile(
-		 * "/home/sybille/workspaces/workspace_b/wiki_statistics/cdmlib-print/src/main/resources/tmp/document1.xml"
-		 * , webServiceUrl, "Restionaceae", "http://biowikifarm.net/testwiki",
-		 * "Lorna Morris", "dolfin_69", "Internal", true, false, false);
-		 */
-
-		// ********************************************
-		// String
-		// url="http://image.br.fgov.be/gallery3/var/albums/Ericaceae/Fig1_AgaristaSalicifolia.jpg";
-		// temporaryImageExportFolder = CdmUtils.getCdmSubDir(IMAGE_DIR);
-		//
-		// downloadImage(url);
-		//
-	}
+	private File temporaryImageExportFolder;
 
 	/**
 	 * does the whole export process: runs cdm export to mediawiki xml-file and
@@ -277,11 +213,12 @@ public class Cdm2MediawikiExporter {
 					configurator.getExportFolder(),
 					configurator.getProgressMonitor());
 		}
-
+		
 		// we get the whole filename that the wikiOutputModule created
 		mediawikiFileWithPath = ((MediawikiOutputModule) wikiOutputModule)
 				.getFilePath();
 
+		logger.info("mediawiki xml file created and saved to"+mediawikiFileWithPath);
 		// if we want to upload images or save the cdm exported document,
 		// we put it to a field
 		if ((usePublisher && !deleteOutputFiles) || importImages) {
@@ -303,6 +240,7 @@ public class Cdm2MediawikiExporter {
 
 		if (importImages) {
 			downloadAllImages();
+			logger.info("images downloaded to "+temporaryImageExportFolder);
 		}
 
 		if (deleteOutputFiles) {
@@ -473,7 +411,7 @@ public class Cdm2MediawikiExporter {
 	 * TODO give a unique id to each image name
 	 * 			but this has to be done also in the wikioutput then
 	 */
-	private static void downloadImage(String url) throws MalformedURLException,
+	private void downloadImage(String url) throws MalformedURLException,
 			IOException {
 		URL imageUrl = new URL(url);
 		String[] arr = url.split(File.separator);

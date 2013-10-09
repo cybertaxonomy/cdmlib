@@ -158,7 +158,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 			} finally {
 				out.close();
-				logger.info("Mediawiki XML file created: " + filePath);
+//				logger.info("Mediawiki XML file created: " + filePath);
 			}
 
 		} catch (TransformerException te) {
