@@ -5,7 +5,7 @@
 
 	<xsl:import
 		href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl" />
-	<!--<xsl:output method="xml" indent="yes"/> -->
+	<xsl:output method="xml" indent="no"/> 
 	<xsl:strip-space elements="text" />
 
 	<!-- Authors: Sybille & Lorna -->
@@ -346,9 +346,10 @@
 			<!-- use the citation-uuid as a unique name for the reference -->
 			<xsl:value-of
 				select="concat('{{EDIT_Reference|name=',$citation-uuid,'|content=')" />
-			<xsl:text>{{aut|</xsl:text>
+			
 			<xsl:choose>
 				<xsl:when test="exists($reference-node/authorTeam/teamMembers)">
+					<xsl:text>{{aut|</xsl:text>
 					<xsl:for-each select="$reference-node/authorTeam/teamMembers/e">
 						<xsl:value-of select="lastname" />
 						<xsl:choose>
@@ -357,12 +358,24 @@
 							</xsl:when>
 						</xsl:choose>
 					</xsl:for-each>
+					<xsl:text>}} </xsl:text>
 				</xsl:when>
 				<xsl:otherwise>
-					<xsl:value-of select="$reference-node/authorTeam/lastname" />
+					<xsl:choose>
+						<xsl:when test="exists($reference-node/authorTeam/lastname)">
+							<xsl:text>{{aut|</xsl:text>
+							<xsl:value-of select="$reference-node/authorTeam/lastname" />
+							<xsl:text>}} </xsl:text>
+						</xsl:when>
+						<xsl:otherwise>
+							<xsl:value-of select="$reference-node/titleCache"></xsl:value-of>
+						</xsl:otherwise>
+					</xsl:choose>
+					
 				</xsl:otherwise>
+				
 			</xsl:choose>
-			<xsl:text>}} </xsl:text>
+			
 			<!-- DEBUGGING display uuid so can check references against those in Tax 
 				Editor -->
 			<!--<xsl:if test="$reference-node/datePublished/start != ''"> <xsl:value-of 
@@ -563,8 +576,15 @@
 			<xsl:call-template name="wiki-newline-comment" />
 			<!--homotypicSynonymsByHomotypicGroup/e/name/nomenclaturalReference -->
 			<!--xsl:apply-templates select="name/nomenclaturalReference"/ -->
+			<xsl:for-each select="name/homotypicalGroup/typifiedNames/e">
 			<xsl:call-template name="reference">
+				<xsl:with-param name="reference-node" select="nomenclaturalReference" />
+			</xsl:call-template>
+			</xsl:for-each>
+				<xsl:call-template name="reference">
 				<xsl:with-param name="reference-node" select="name/nomenclaturalReference" />
+				
+				
 			</xsl:call-template>
 
 			<!--LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
@@ -585,9 +605,22 @@
 			<xsl:text>{{EDIT Heterotypic Synonym|1|</xsl:text>
 			<xsl:apply-templates select="$first-element/name" />
 			<xsl:text>}}</xsl:text>
+			
+			<xsl:call-template name="wiki-newline-comment" />
+			<xsl:call-template name="reference">
+				<xsl:with-param name="reference-node" select="$first-element/name/nomenclaturalReference" />
+			</xsl:call-template>
+			
+			<xsl:for-each select="name/homotypicalGroup/typifiedNames/e">
+				<xsl:call-template name="reference">
+					<xsl:with-param name="reference-node" select="$first-element/nomenclaturalReference" />
+				</xsl:call-template>
+			</xsl:for-each>
+			
 			<!-- take the first one to printout as the head of the homotypic group -->
 			<!--do foreach for the rest -->
 			<xsl:for-each select="e[position() &gt; 1]">
+				<!--xsl:for-each select="e"-->
 				<xsl:text>{{EDIT Homotypic Synonym|2|</xsl:text>
 				<xsl:apply-templates select="name" />
 				<xsl:text>}}</xsl:text>
@@ -595,6 +628,12 @@
 				<xsl:call-template name="reference">
 					<xsl:with-param name="reference-node" select="name/nomenclaturalReference" />
 				</xsl:call-template>
+				
+				<xsl:for-each select="name/homotypicalGroup/typifiedNames/e">
+					<xsl:call-template name="reference">
+						<xsl:with-param name="reference-node" select="nomenclaturalReference" />
+					</xsl:call-template>
+				</xsl:for-each>
 
 				<!--LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
 				<xsl:call-template name="citations">
@@ -623,7 +662,7 @@
 		<xsl:param name="type" />
 		<xsl:choose>
 			<xsl:when test="$type!=''">
-				<xsl:value-of select="concat('{{EDIT_',$type,'|')" />
+				<xsl:value-of select="concat('{{EDIT_',normalize-space($type),'|')" />
 				<xsl:for-each select="e">
 					<xsl:choose>
 						<xsl:when test="type='name'">
@@ -632,7 +671,7 @@
 						</xsl:when>
 						<xsl:when test="type='authors'">
 							<xsl:text>}}</xsl:text>
-							<xsl:value-of select="concat('{{EDIT_',$type,'_Author|')" />
+							<xsl:value-of select="concat('{{EDIT_',normalize-space($type),'_Author|')" />
 							<xsl:apply-templates select="text" />
 							<xsl:text>}}</xsl:text>
 						</xsl:when>

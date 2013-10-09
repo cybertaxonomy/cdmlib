@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.print.IXMLEntityFactory;
 import eu.etaxonomy.cdm.print.PublishConfigurator;
 import eu.etaxonomy.cdm.print.Publisher;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
-import eu.etaxonomy.cdm.print.out.PublishOutputModuleBase;
 
 /**
  * fill in all parameters and you get a complete export from a cdm database to a
