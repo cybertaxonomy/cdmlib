@@ -34,6 +34,7 @@ public class MarkupModsImport extends MarkupImportBase {
 	protected static final String MODS_TITLE = "title";
 	protected static final String MODS_SUBTITLE = "subTitle";
 	protected static final String MODS_PARTNUMBER = "partNumber";
+	protected static final String MODS_PARTNAME = "partName";
 	protected static final String MODS_NAME = "name";
 	protected static final String MODS_ORIGININFO = "originInfo";
 	protected static final String MODS_IDENTIFIER = "identifier";
@@ -100,23 +101,28 @@ public class MarkupModsImport extends MarkupImportBase {
 			throws XMLStreamException {
 		checkNoAttributes(parentEvent);
 
-		
 		String title = null;
 		String subTitle = null;
 		String partNumber = null;
+		String partName = null;
 		
 		while (reader.hasNext()) {
 			XMLEvent next = readNoWhitespace(reader);
 			
 			if (isMyEndingElement(next, parentEvent)) {
 				String all = CdmUtils.concat(" - ", title, subTitle);
-				all = CdmUtils.concat(", ", all, partNumber);
+				//TODO according to http://library.princeton.edu/departments/tsd/metadoc/mods/titleinfo.html
+				//partNumber and partName can be repeated and the order should be kept 
+				String part = CdmUtils.concat(" ", partNumber, partName);
+				all = CdmUtils.concat(", ", all, part);
 				modsRef.setTitle(all);
 				return;
 			}else if (isStartingElement(next, MODS_TITLE)) {
 				title = this.getCData(state, reader, next);
 			}else if (isStartingElement(next, MODS_SUBTITLE)) {
 				subTitle = this.getCData(state, reader, next);
+			}else if (isStartingElement(next, MODS_PARTNAME)) {
+				partName = this.getCData(state, reader, next);
 			}else if (isStartingElement(next, MODS_PARTNUMBER)) {
 				partNumber = this.getCData(state, reader, next);
 			} else {
