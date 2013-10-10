@@ -139,4 +139,11 @@ public interface IXMLEntityFactory {
 	 * @return a list of elements
 	 */
 	public Element getPolytomousKey(Element taxonElement); 
+	
+	/**
+	 * Gets the Media associated with a particular taxon
+	 * @param taxonElement
+	 * @return
+	 */
+	public List<Element> getMedia(Element taxonElement);
 }

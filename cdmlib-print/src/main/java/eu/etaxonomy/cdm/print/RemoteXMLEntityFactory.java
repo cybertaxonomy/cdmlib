@@ -73,7 +73,8 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	
 	private static final String FEATURETREES = "featureTree";
 	private static final String FEATURETREE = "featureTree/" + UUID;
-	private static final String FEATURENODE = "featureNode/" + UUID + "/childNodes";
+	private static final String FEATURENODE = "featurenode/" + UUID;
+	//private static final String FEATURENODE = "featureNode/" + UUID + "/childNodes";
 	private static final String FEATURENODE_FEATURE = FEATURENODE + "/feature";
 	
 	private static final String NAME_TYPE_DESIGNATIONS = "name/" + UUID + "/typeDesignations";
@@ -311,8 +312,18 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 	 * 
 	 */
 	public List<Element> getMedia(Element taxonElement) {
+		
+		List<NameValuePair> params = Arrays.asList(new NameValuePair[]{
+				new BasicNameValuePair("includeTaxonDescriptions", "true"),
+				new BasicNameValuePair("includeOccurrences", "false"),
+				new BasicNameValuePair("includeTaxonNameDescriptions", "false")
+		});
+		
+		UUID uuid = XMLHelper.getUuid(taxonElement);
+		
+		Element result = queryServiceWithParameters(TAXON_MEDIA.replace(UUID, uuid.toString()), params);
 
-		Element result = queryService(taxonElement, TAXON_MEDIA);
+		//Element result = queryService(taxonElement, TAXON_MEDIA);
 
 		List<Element> elementList = new ArrayList<Element>();
 

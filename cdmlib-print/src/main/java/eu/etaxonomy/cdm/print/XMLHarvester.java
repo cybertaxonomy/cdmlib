@@ -169,6 +169,7 @@ public class XMLHarvester {
 		
 		cleanDateFields(result);
 		
+		
 		return result;
 	}
 	
@@ -506,6 +507,7 @@ public class XMLHarvester {
 					
 					if (child2.getChild("name") != null) {
 						populateTypeDesignations(child2);// pass in the name of the synonym from synonymy/e/e/name
+						//populateImages(child2);
 						}
 					
 				}
@@ -518,10 +520,22 @@ public class XMLHarvester {
 	
 	
 	/**
-	 * TODO not implemented yet
+	 * 
 	 * @param taxonElement
 	 */
 	private void populateImages(Element taxonElement){
-		logger.warn("not implemented yet");
+		
+		factory.getMedia(taxonElement);
+		logger.warn("Populating images");
+		//Element nameElement = fullTaxonElement.getChild("name");
+		//Element uuidElement = fullTaxonElement.getChild("uuid");
+		
+		List<Element> mediaElements = factory.getMedia(taxonElement);
+		
+		//nameElement.removeChild("typeDesignations");
+		
+		for(Element media: mediaElements){
+			XMLHelper.addContent(media, "media", taxonElement);
+		}
 	}
 }
