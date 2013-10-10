@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelTypesImport extends BerlinModelImportBase /*implements IIO<BerlinModelImportConfigurator>*/ {
@@ -83,9 +82,8 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 		Map<Integer, DerivedUnit> typeMap = new HashMap<Integer, DerivedUnit>();
 		
 		Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
-		Map<String, Reference> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, Reference> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
-
+		Map<String, Reference> refMap = partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
+		
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
 		
@@ -126,8 +124,8 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 						if (refFkObj != null){
 							String relRefFk = String.valueOf(refFkObj);
 							//get nomRef
-							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, relRefFk);
-							}
+							citation = refMap.get(relRefFk);
+						}
 						
 						DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 						specimen.putDefinition(Language.DEFAULT(), typePhrase);
@@ -197,19 +195,12 @@ public class BerlinModelTypesImport extends BerlinModelImportBase /*implements I
 			Map<String, Person> objectMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, objectMap);
 
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
-
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);

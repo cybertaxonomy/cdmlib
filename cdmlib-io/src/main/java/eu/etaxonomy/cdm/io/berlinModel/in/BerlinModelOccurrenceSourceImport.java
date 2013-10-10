@@ -110,7 +110,8 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
 		ResultSet rs = partitioner.getResultSet();
-
+		Map<String, Reference> refMap = partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
+		
 		Set<DescriptionElementBase> objectsToSave = new HashSet<DescriptionElementBase>();
 		try {
 			int i = 0;
@@ -132,7 +133,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
     			}
     			if (distribution != null){
     				Integer refId = sourceNumberRefIdMap.get(sourceNumber);
-    				Reference<?> ref = getReference(refId, state);
+    				Reference<?> ref = refMap.get(String.valueOf(refId));
 
     				if (ref != null){
     					DescriptionElementSource originalSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
@@ -203,20 +204,12 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 			Map<String, TaxonNameBase> nameMap = (Map<String, TaxonNameBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
 			
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
-
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
-
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -295,31 +288,13 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 		return result;
 	}
 
-	
-
-	private Reference getReference(Integer refId, BerlinModelImportState state) {
-		Reference<?> ref = (Reference)state.getRelatedObject(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE, String.valueOf(refId));
-		if (ref == null){
-			ref = (Reference)state.getRelatedObject(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE, String.valueOf(refId));;
-		}
-		return ref;
-	}
-
-	
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelOccurrenceSourceImportValidator();
 		return validator.validate(state);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		if (! state.getConfig().isDoOccurrence()){
 			return true;

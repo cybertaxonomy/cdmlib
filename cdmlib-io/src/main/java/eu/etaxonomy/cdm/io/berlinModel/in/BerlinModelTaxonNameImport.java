@@ -375,33 +375,19 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 			Map<String, Person> teamMap = (Map<String, Person>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, teamMap);
 
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
-
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 			
-			//nom refDetail map
-			nameSpace = BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE;
+			//refDetail map
+			nameSpace = BerlinModelRefDetailImport.REFDETAIL_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = refDetailIdSet;
-			Map<String, Reference> nomRefDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomRefDetailMap);
-			
-			//biblio refDetail map
-			nameSpace = BerlinModelRefDetailImport.BIBLIO_REFDETAIL_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = refDetailIdSet;
-			Map<String, Reference> biblioRefDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioRefDetailMap);
+			Map<String, Reference> refDetailMap= (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, refDetailMap);
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -476,10 +462,8 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	
 	private boolean makeNomenclaturalReference(IImportConfigurator config, TaxonNameBase taxonNameBase, 
 					int nameId, ResultSet rs, ResultSetPartitioner partitioner) throws SQLException{
-		Map<String, Reference> biblioRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, Reference> nomRefMap = partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
-		Map<String, Reference> biblioRefDetailMap = partitioner.getObjectMap(BerlinModelRefDetailImport.BIBLIO_REFDETAIL_NAMESPACE);
-		Map<String, Reference> nomRefDetailMap = partitioner.getObjectMap(BerlinModelRefDetailImport.NOM_REFDETAIL_NAMESPACE);
+		Map<String, Reference> refMap = partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
+		Map<String, Reference> refDetailMap = partitioner.getObjectMap(BerlinModelRefDetailImport.REFDETAIL_NAMESPACE);
 		
 		Object nomRefFkObj = rs.getObject("NomRefFk");
 		Object nomRefDetailFkObj = rs.getObject("NomRefDetailFk");
@@ -487,14 +471,13 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 		
 		boolean success = true;
 		//nomenclatural Reference
-		if (biblioRefMap != null){
+		if (refMap != null){
 			if (nomRefFkObj != null){
 				String nomRefFk = String.valueOf(nomRefFkObj);
 				String nomRefDetailFk = String.valueOf(nomRefDetailFkObj);
 				//get nomRef
-				Reference nomReference = 
-					getReferenceFromMaps(nomRefDetailMap, biblioRefDetailMap, 
-							nomRefMap, biblioRefMap, nomRefDetailFk, nomRefFk);
+				Reference<?> nomReference = 
+					getReferenceFromMaps(refDetailMap, refMap, nomRefDetailFk, nomRefFk);
 				
 				
 				//setNomRef

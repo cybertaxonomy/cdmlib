@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
  *  
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelRefDetailImport extends BerlinModelImportBase {
@@ -45,7 +45,9 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 
 	public static final String NOM_REFDETAIL_NAMESPACE = "NomRefDetail";
 	public static final String BIBLIO_REFDETAIL_NAMESPACE = "BiblioRefDetail";
-	ReferenceFactory refFactory;
+	public static final String REFDETAIL_NAMESPACE = "RefDetail";
+	
+	private static ReferenceFactory refFactory;
 	
 	
 	
@@ -120,7 +122,7 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 				
 				//nomRef
 				String fullNomRefCache = rs.getString("fullNomRefCache"); 
-				if ( CdmUtils.isNotEmpty(fullNomRefCache) ){
+				if ( StringUtils.isNotBlank(fullNomRefCache) ){
 					Reference genericReference = refFactory.newGeneric();
 					genericReference.setTitleCache(fullNomRefCache, true);
 					nomRefDetailsToSave.put(refDetailId, genericReference);
@@ -133,8 +135,8 @@ public class BerlinModelRefDetailImport extends BerlinModelImportBase {
 				
 				//biblioRef
 				String fullRefCache = rs.getString("fullRefCache"); 
-				if ( CdmUtils.isNotEmpty(fullRefCache) && ! fullRefCache.equals(fullNomRefCache)){
-					Reference genericReference = refFactory.newGeneric();
+				if ( StringUtils.isNotBlank(fullRefCache) && ! fullRefCache.equals(fullNomRefCache)){
+					Reference<?> genericReference = refFactory.newGeneric();
 					genericReference.setTitleCache(fullRefCache, true);
 					biblioRefDetailsToSave.put(refDetailId, genericReference);
 					//year

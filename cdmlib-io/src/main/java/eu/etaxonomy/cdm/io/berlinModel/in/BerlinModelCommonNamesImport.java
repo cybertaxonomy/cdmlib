@@ -44,8 +44,8 @@ import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -177,8 +177,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		Map<String, Taxon> taxonMap = (Map<String, Taxon>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 		Map<String, TaxonNameBase> taxonNameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
 		
-		Map<String, Reference> biblioRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, Reference> nomRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> refMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
 		
 		Map<String, Language> iso6392Map = new HashMap<String, Language>();
 		
@@ -270,7 +269,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					}
 				}
 				
-				Reference<?> reference = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(languageRefRefFk));
+				Reference<?> reference = refMap.get(String.valueOf(languageRefRefFk));
 				String microCitation = null;
 				String originalNameString = null;
 				
@@ -289,7 +288,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 					//Taxon misappliedName = getMisappliedName(biblioRefMap, nomRefMap, misNameRefFk, taxon);
 					Taxon misappliedNameTaxon = null;
 					if (misappliedTaxonId != null){
-						TaxonBase misTaxonBase =  taxonMap.get(String.valueOf(misappliedTaxonId));
+						TaxonBase<?> misTaxonBase =  taxonMap.get(String.valueOf(misappliedTaxonId));
 						if (misTaxonBase == null){
 							logger.warn("MisappliedName not found for misappliedTaxonId " + misappliedTaxonId + "; commonNameId: " + commonNameId);
 						}else if (misTaxonBase.isInstanceOf(Taxon.class)){
@@ -299,7 +298,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 						}
 					}else{
 						
-						Reference<?> sec = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
+						Reference<?> sec = refMap.get(String.valueOf(misNameRefFk));
 						if (nameUsedInSource == null || sec == null){
 							logger.warn("Taxon name or misapplied name reference is null for common name " + commonNameId);
 						}else{
@@ -376,40 +375,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		return success;
 
 	}
-
-
-
-	/**
-	 * Not used anymore. Use MisappliedName RIdentifier instead
-	 * @param biblioRefMap
-	 * @param nomRefMap
-	 * @param misNameRefFk
-	 * @param taxon
-	 */
-	private boolean isFirstMisappliedName = true;
-	private Taxon getMisappliedName(Map<String, Reference> biblioRefMap, Map<String, Reference> nomRefMap, Object misNameRefFk, Taxon taxon) {
-		Taxon misappliedTaxon = null;
-		Reference<?> misNameRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(misNameRefFk));
-		misappliedTaxon = Taxon.NewInstance(taxon.getName(), misNameRef);
-		Set<String> includeProperty = new HashSet<String>();
-		try {
-//			//IMatchStrategy matchStrategy = DefaultMatchStrategy.NewInstance(TaxonBase.class);
-//			//List<TaxonBase> misappliedList1 = getCommonService().findMatching(misappliedTaxon, matchStrategy);
-			List<TaxonBase> misappliedList = getTaxonService().list(misappliedTaxon, includeProperty, null, null, null, null);
-			if (misappliedList.size() > 0){
-				misappliedTaxon = CdmBase.deproxy(misappliedList.get(0), Taxon.class);
-			}
-		} catch (ClassCastException e) {
-			logger.error(e.getMessage());
-			if (isFirstMisappliedName){
-				e.printStackTrace();
-				isFirstMisappliedName = false;
-			}
-		}
-		return misappliedTaxon;
-	}
-
-
 
 	/**
 	 * @param iso6392Map
@@ -718,23 +683,14 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 
 			pos = 9;
 			
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 
 			pos = 10;
-			
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference<?>> biblioReferenceMap = (Map<String, Reference<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
-
-			pos = 11;
 			
 		} catch (SQLException e) {
 			throw new RuntimeException("pos: " +pos, e);

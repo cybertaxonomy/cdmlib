@@ -223,48 +223,21 @@ public abstract class BerlinModelImportBase extends DbImportBase<BerlinModelImpo
 	 * @param nomRefFk
 	 * @return
 	 */
-	protected Reference getReferenceFromMaps(
-			Map<String, Reference> firstDetailMap,
-			Map<String, Reference> secondDetailMap, 
-			Map<String, Reference> firstRefMap,
-			Map<String, Reference> secondRefMap,
+	protected Reference<?> getReferenceFromMaps(
+			Map<String, Reference> detailMap,
+			Map<String, Reference> refMap,
 			String nomRefDetailFk,
 			String nomRefFk) {
-		Reference ref = null;
-		ref = getReferenceDetailFromMaps(firstDetailMap, secondDetailMap, nomRefDetailFk);
+		Reference<?> ref = null;
+		if (detailMap != null){
+			ref = detailMap.get(nomRefDetailFk);
+		}
 		if (ref == null){
-			ref = getReferenceOnlyFromMaps(firstRefMap, secondRefMap, nomRefFk);
+			ref = refMap.get(nomRefFk);
 		}
 		return ref;
 	}
 	
-	/**
-	 * As getReferenceFromMaps but search is performed only on references, not on
-	 * detail maps.
-	 * @param firstRefMap
-	 * @param secondRefMap
-	 * @param nomRefFk
-	 * @return
-	 */
-	protected Reference getReferenceOnlyFromMaps(
-			Map<String, Reference> firstRefMap,
-			Map<String, Reference> secondRefMap,
-			String nomRefFk) {
-		Reference ref = null;
-		if (firstRefMap != null){
-			ref = firstRefMap.get(nomRefFk);
-		}else{
-			logger.warn("First reference map does not exist");
-		}
-		if (ref == null){
-			if (secondRefMap != null){
-				ref = secondRefMap.get(nomRefFk);
-			}else{
-				logger.warn("Second reference map does not exist");		
-			}
-		}
-		return ref;
-	}
 
 	/**
 	 * Searches for a reference in the first detail map. If it does not exist it 

@@ -37,6 +37,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
@@ -73,14 +74,12 @@ import eu.etaxonomy.cdm.model.reference.ReferenceType;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	private static final Logger logger = Logger.getLogger(BerlinModelReferenceImport.class);
 
-	public static final String NOM_REFERENCE_NAMESPACE = "NomReference";
-	public static final String BIBLIO_REFERENCE_NAMESPACE = "BiblioReference";
+	public static final String REFERENCE_NAMESPACE = "Reference";
 	
 	public static final UUID REF_DEPOSITED_AT_UUID = UUID.fromString("23ca88c7-ce73-41b2-8ca3-2cb22f013beb");
 	public static final UUID REF_SOURCE_UUID = UUID.fromString("d6432582-2216-4b08-b0db-76f6c1013141");
@@ -147,10 +146,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	//type to count the references nomReferences that have been created and saved
 	private class RefCounter{
-		RefCounter() {nomRefCount = 0; referenceCount = 0;};
-		int nomRefCount;
-		int referenceCount;
-		public String toString(){return String.valueOf(nomRefCount) + "," +String.valueOf(referenceCount);};
+		RefCounter() {refCount = 0;};
+		int refCount;
+
+		public String toString(){return String.valueOf(refCount) ;};
 	}
 
 
@@ -247,11 +246,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 		boolean success = true;
 
-		Map<Integer, Reference> nomRefToSave = new HashMap<Integer, Reference>();
-		Map<Integer, Reference> biblioRefToSave = new HashMap<Integer, Reference>();
+		Map<Integer, Reference> refToSave = new HashMap<Integer, Reference>();
 		
-		Map<String, Reference> relatedNomReferences = partitioner.getObjectMap(NOM_REFERENCE_NAMESPACE);
-		Map<String, Reference> relatedBiblioReferences = partitioner.getObjectMap(BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> relatedReferences = partitioner.getObjectMap(REFERENCE_NAMESPACE);
 		
 		BerlinModelImportConfigurator config = state.getConfig();
 		
@@ -266,25 +263,21 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				while (rs.next()){
 					if ((i++ % modCount) == 0 && i!= 1 ){ logger.info("References handled: " + (i-1) + " in round -" );}
 				
-					success &= makeSingleReferenceRecord(rs, state, partitioner, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences, refCounter);
+					success &= makeSingleReferenceRecord(rs, state, partitioner, refToSave, relatedReferences, refCounter);
 				} // end resultSet
 								
 				//for the concept reference a fixed uuid may be needed -> change uuid
 				Integer sourceSecId = (Integer)config.getSourceSecId();
-				Reference<?> sec = biblioRefToSave.get(sourceSecId);
-				if (sec == null){
-					sec = nomRefToSave.get(sourceSecId);	
-				}
+				Reference<?> sec = refToSave.get(sourceSecId);
+
 				if (sec != null){
 					sec.setUuid(config.getSecUuid());
 					logger.info("SecUuid changed to: " + config.getSecUuid());
 				}
 				
 				//save and store in map
-				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
-				getReferenceService().saveOrUpdate(nomRefToSave.values());
-				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
-				getReferenceService().saveOrUpdate(biblioRefToSave.values());
+				logger.info("Save references (" + refCounter.refCount + ")");
+				getReferenceService().saveOrUpdate(refToSave.values());
 
 //			}//end resultSetList	
 
@@ -307,11 +300,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	private boolean doPartitionSecondPath(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
 
-		Map<Integer, Reference> nomRefToSave = new HashMap<Integer, Reference>();
-		Map<Integer, Reference> biblioRefToSave = new HashMap<Integer, Reference>();
+		Map<Integer, Reference> refToSave = new HashMap<Integer, Reference>();
 		
-		Map<String, Reference> relatedNomReferences = partitioner.getObjectMap(NOM_REFERENCE_NAMESPACE);
-		Map<String, Reference> relatedBiblioReferences = partitioner.getObjectMap(BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> relatedReferencesMap = partitioner.getObjectMap(REFERENCE_NAMESPACE);
 		
 		try {
 				int i = 0;
@@ -327,49 +318,26 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 					
 					if (inRefFk != null){
 						
-						Reference<?> thisNomRef = getReferenceOnlyFromMaps(relatedNomReferences, relatedBiblioReferences, String.valueOf(refId));
-						Reference<?> thisBiblioRef = getReferenceOnlyFromMaps(relatedBiblioReferences, relatedNomReferences, String.valueOf(refId));
+						Reference<?> thisRef = relatedReferencesMap.get(String.valueOf(refId));
 						
-						Reference<?> nomInReference = relatedNomReferences.get(String.valueOf(inRefFk));
-						Reference<?> biblioInReference = relatedBiblioReferences.get(String.valueOf(inRefFk));
-						boolean inRefExists = false;
-						if (thisNomRef != null){
-							Reference<?> inRef = (nomInReference != null)? nomInReference : biblioInReference;
-							if (inRef == null){
-								logger.warn("No InRef found for nomRef: " + thisNomRef.getTitleCache() + "; RefId: " +  refId + "; inRefFK: " +  inRefFk);
-							}
-							thisNomRef.setInReference(inRef);
-							nomRefToSave.put(refId, thisNomRef);
-							//remember that an in reference exists
-							inRefExists |= (inRef != null);
-							thisNomRef.setTitleCache(null);
-							thisNomRef.getTitleCache();
-						}
-						if (thisBiblioRef != null){
-							Reference<?> inRef = (biblioInReference != null)? biblioInReference : nomInReference ;
-							if (inRef == null){
-								logger.warn("No InRef found for biblioRef: " + thisBiblioRef.getTitleCache() + "; RefId: " +  refId + "; inRefFK: " +  inRefFk);
-							}
-							thisBiblioRef.setInReference(inRef);
-							biblioRefToSave.put(refId, thisBiblioRef);
-							//remember that an in reference exists
-							inRefExists |= (inRef != null);
-							thisBiblioRef.setTitleCache(null);
-							thisBiblioRef.getTitleCache();
-						}
-						if (inRefExists == false){
-							logger.warn("No in reference was saved though an 'inRefFk' is available. RefId " + refId);
-						}
+						Reference<?> inRef = relatedReferencesMap.get(String.valueOf(inRefFk));
 						
+						if (thisRef != null){
+							if (inRef == null){
+								logger.warn("No InRef found for nomRef: " + thisRef.getTitleCache() + "; RefId: " +  refId + "; inRefFK: " +  inRefFk);
+							}
+							thisRef.setInReference(inRef);
+							refToSave.put(refId, thisRef);
+							thisRef.setTitleCache(null);
+							thisRef.getTitleCache();
+						}
 					}
 					
 				} // end resultSet
 
 				//save and store in map
-				logger.info("Save nomenclatural references (" + refCounter.nomRefCount + ")");
-				getReferenceService().saveOrUpdate(nomRefToSave.values());
-				logger.info("Save bibliographical references (" + refCounter.referenceCount +")");
-				getReferenceService().saveOrUpdate(biblioRefToSave.values());
+				logger.info("Save references (" + refCounter.refCount + ")");
+				getReferenceService().saveOrUpdate(refToSave.values());
 				
 //			}//end resultSetList	
 
@@ -411,20 +379,12 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			Map<String, Team> teamMap = (Map<String, Team>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, teamMap);
 
-			
-			//nom reference map
-			nameSpace = NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomRefMap);
-
-			//biblio reference map
-			nameSpace = BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioRefMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioRefMap);
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -448,10 +408,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				ResultSet rs, 
 				BerlinModelImportState state,
 				ResultSetPartitioner<BerlinModelImportState> partitioner,
-				Map<Integer, Reference> biblioRefToSave, 
-				Map<Integer, Reference> nomRefToSave, 
-				Map<String, Reference> relatedBiblioReferences, 
-				Map<String, Reference> relatedNomReferences, 
+				Map<Integer, Reference> refToSave, 
+				Map<String, Reference> relatedReferences, 
 				RefCounter refCounter){
 		boolean success = true;
 
@@ -472,7 +430,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			}else if (categoryFk == REF_JOURNAL){
 				referenceBase = makeJournal(valueMap);
 			}else if(categoryFk == REF_BOOK){
-				referenceBase = makeBook(valueMap, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences);
+				referenceBase = makeBook(valueMap, refToSave, relatedReferences);
 			}else if(categoryFk == REF_DATABASE){
 				referenceBase = makeDatabase(valueMap);
 			}else if(categoryFk == REF_INFORMAL){
@@ -486,11 +444,11 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			}else if(categoryFk == REF_CONFERENCE_PROCEEDINGS){
 				referenceBase = makeProceedings(valueMap);
 			}else if(categoryFk == REF_ARTICLE){
-				referenceBase = makeArticle(valueMap, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences);
+				referenceBase = makeArticle(valueMap, refToSave, relatedReferences);
 			}else if(categoryFk == REF_JOURNAL_VOLUME){
 				referenceBase = makeJournalVolume(valueMap);
 			}else if(categoryFk == REF_PART_OF_OTHER_TITLE){
-				referenceBase = makePartOfOtherTitle(valueMap, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences);
+				referenceBase = makePartOfOtherTitle(valueMap, refToSave, relatedReferences);
 			}else{
 				logger.warn("Unknown categoryFk (" + categoryFk + "). Create 'Generic instead'");
 				referenceBase = ReferenceFactory.newGeneric();
@@ -513,8 +471,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			}
 			
 			//nom&BiblioReference  - must be last because a clone is created
-			success &= makeNomAndBiblioReference(rs, state, partitioner, refId, referenceBase, refCounter, 
-					biblioRefToSave, nomRefToSave );
+			success &= makeNomAndBiblioReference(rs, state, partitioner, refId, referenceBase, refCounter, refToSave);
 
 
 		} catch (Exception e) {
@@ -530,7 +487,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	 * Creates and saves a nom. reference and a biblio. reference after checking necessity
 	 * @param rs
 	 * @param refId
-	 * @param referenceBase
+	 * @param ref
 	 * @param refCounter
 	 * @param biblioRefToSave
 	 * @param nomRefToSave
@@ -544,10 +501,9 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 				BerlinModelImportState state,
 				ResultSetPartitioner partitioner,
 				int refId, 
-				Reference<?> referenceBase,  
+				Reference<?> ref,  
 				RefCounter refCounter, 
-				Map<Integer, Reference> biblioRefToSave, 
-				Map<Integer, Reference> nomRefToSave
+				Map<Integer, Reference> refToSave
 				) throws SQLException{
 		
 		Map<String, Team> teamMap = partitioner.getObjectMap(BerlinModelAuthorTeamImport.NAMESPACE);
@@ -561,72 +517,39 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		Integer nomAuthorTeamFk = rs.getInt("NomAuthorTeamFk");
 		String strNomAuthorTeamFk = String.valueOf(nomAuthorTeamFk);
 		TeamOrPersonBase<?> nomAuthor = teamMap.get(strNomAuthorTeamFk);
-		Reference nomReference = null;
+
+		Reference<?> sourceReference = state.getTransactionalSourceReference();
 		
-		boolean hasNomRef = false;
-		boolean hasBiblioRef = false;
-		Reference sourceReference = state.getTransactionalSourceReference();
+		//preliminary
+		if (isPreliminary){
+			ref.setAbbrevTitleCache(nomRefCache, true);
+			ref.setTitleCache(refCache, true);
+		}
+
+		//title/abbrevTitle
+		if (StringUtils.isNotBlank(nomTitleAbbrev)){
+			ref.setAbbrevTitle(nomTitleAbbrev);
+		}
+		if (StringUtils.isNotBlank(title)){
+			ref.setTitle(title);
+		}
+
+		//author
+		TeamOrPersonBase<?> author = getAuthorTeam(refAuthorString , nomAuthor);
+		ref.setAuthorTeam(author);
 		
-		//is Nomenclatural Reference
-		if ( (CdmUtils.isNotEmpty(nomRefCache) && isPreliminary) || (CdmUtils.isNotEmpty(nomTitleAbbrev) && ! isPreliminary) ){
-			referenceBase.setTitle(nomTitleAbbrev);
-			TeamOrPersonBase<?> author = getAuthorTeam(refAuthorString , nomAuthor, true);
-			referenceBase.setAuthorTeam(author);
-			//referenceBase.setNomenclaturallyRelevant(true);
-			if (isPreliminary){
-				referenceBase.setTitleCache(nomRefCache, true);
-			}
-			if (! nomRefToSave.containsKey(refId)){
-				if (referenceBase == null){
-					logger.warn("refBase is null");
-				}
-				nomRefToSave.put(refId, referenceBase);
-			}else{
-				logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
-			}
-			
-//			???
-//			nomRefToSave.put(refId, referenceBase);
-			hasNomRef = true;
-			nomReference = referenceBase;
-			refCounter.nomRefCount++;
+		//save
+		if (! refToSave.containsKey(refId)){
+			refToSave.put(refId, ref);
+		}else{
+			logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
 		}
-		//is bibliographical Reference
-		if ((CdmUtils.isNotEmpty(refCache) && isPreliminary && ! refCache.equalsIgnoreCase(nomRefCache)) 
-				|| (CdmUtils.isNotEmpty(title) && ! isPreliminary && ! title.equalsIgnoreCase(nomTitleAbbrev)) 
-				|| hasNomRef == false){
-			if (hasNomRef){
-				referenceBase = (Reference)referenceBase.clone();
-				copyCreatedUpdated(referenceBase, nomReference);
-			}
-			referenceBase.setTitle(title);
-			TeamOrPersonBase author = getAuthorTeam(refAuthorString , nomAuthor, false);
-			referenceBase.setAuthorTeam(author);
-			referenceBase.setNomenclaturallyRelevant(false);
-			if (isPreliminary){
-				referenceBase.setTitleCache(refCache, true);
-			}
-			if (! biblioRefToSave.containsKey(refId)){
-				biblioRefToSave.put(refId, referenceBase);
-			}else{
-				logger.warn("Duplicate refId in Berlin Model database. Second reference was not imported !!");
-			}
-			hasBiblioRef = true;
-			
-			//??
-			//biblioRefToSave.put(refId, referenceBase);
-			refCounter.referenceCount++;
-		}
+		refCounter.refCount++;
+		
 		//refId
-		if (hasNomRef){
-			ImportHelper.setOriginalSource(nomReference, sourceReference, refId, NOM_REFERENCE_NAMESPACE);
-		}
-		if (hasBiblioRef){
-			ImportHelper.setOriginalSource(referenceBase, sourceReference, refId, BIBLIO_REFERENCE_NAMESPACE);
-		}
+		ImportHelper.setOriginalSource(ref, sourceReference, refId, REFERENCE_NAMESPACE);
 		
 		return true;
-		
 	}
 	
 	/**
@@ -642,7 +565,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		
 	}
 
-	private Reference<?> makeArticle (Map<String, Object> valueMap, Map<Integer, Reference> biblioRefToSave, Map<Integer, Reference> nomRefToSave, Map<String, Reference> relatedBiblioReferences, Map<String, Reference> relatedNomReferences){
+	private Reference<?> makeArticle (Map<String, Object> valueMap, Map<Integer, Reference> refToSave, Map<String, Reference> relatedReferences){
 		
 		IArticle article = ReferenceFactory.newArticle();
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
@@ -661,7 +584,10 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		return (Reference)article;
 	}
 	
-	private Reference<?> makePartOfOtherTitle (Map<String, Object> valueMap, Map<Integer, Reference> biblioRefToSave, Map<Integer, Reference> nomRefToSave, Map<String, Reference> relatedBiblioReferences, Map<String, Reference> relatedNomReferences){
+	private Reference<?> makePartOfOtherTitle (Map<String, Object> valueMap, 
+			Map<Integer, Reference> refToSave, 
+			Map<String, Reference> relatedReferences){
+		
 		Reference<?> result;
 		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		Integer inRefCategoryFk = (Integer)valueMap.get("inRefCategoryFk".toLowerCase());
@@ -708,15 +634,13 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	 * @param relatedNomReferences
 	 * @return
 	 */
-	private boolean existsInMapOrToSave(Integer inRefFkInt, Map<Integer, Reference> biblioRefToSave, Map<Integer, Reference> nomRefToSave, Map<String, Reference> relatedBiblioReferences, Map<String, Reference> relatedNomReferences) {
+	private boolean existsInMapOrToSave(Integer inRefFkInt, Map<Integer, Reference> refToSave, Map<String, Reference> relatedReferences) {
 		boolean result = false;
 		if (inRefFkInt == null){
 			return false;
 		}
-		result |= nomRefToSave.containsKey(inRefFkInt);
-		result |= biblioRefToSave.containsKey(inRefFkInt);
-		result |= relatedBiblioReferences.containsKey(String.valueOf(inRefFkInt));
-		result |= relatedNomReferences.containsKey(String.valueOf(inRefFkInt));
+		result |= refToSave.containsKey(inRefFkInt);
+		result |= relatedReferences.containsKey(String.valueOf(inRefFkInt));
 		return result;
 	}
 
@@ -771,10 +695,8 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 	
 	private Reference<?> makeBook(
 				Map<String, Object> valueMap, 
-				Map<Integer, Reference> biblioRefToSave, 
-				Map<Integer, Reference> nomRefToSave, 
-				Map<String, Reference> relatedBiblioReferences, 
-				Map<String, Reference> relatedNomReferences){
+				Map<Integer, Reference> refToSave, 
+				Map<String, Reference> relatedReferences){
 		if (logger.isDebugEnabled()){logger.debug("RefType 'Book'");}
 		Reference<?> book = ReferenceFactory.newBook();
 		Integer refId = (Integer)valueMap.get("refId".toLowerCase());
@@ -798,33 +720,7 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 			printSeries = ReferenceFactory.newPrintSeries(series);
 			logger.info("Implementation of printSeries is preliminary");
 		}
-		Object inRefFk = valueMap.get("inRefFk".toLowerCase());
 		//Series (as Reference)
-		if (inRefFk != null && false){  //&&false added for first/second path implementation, following code may be removed if this is successful
-			int inRefFkInt = (Integer)inRefFk;
-			if (existsInMapOrToSave(inRefFkInt, biblioRefToSave, nomRefToSave, relatedBiblioReferences, relatedNomReferences)){
-				Reference<?> inSeries = getReferenceFromMaps(inRefFkInt, nomRefToSave, relatedNomReferences);
-				if (inSeries == null){
-					inSeries = getReferenceFromMaps(inRefFkInt, biblioRefToSave, relatedBiblioReferences);
-					logger.info("inSeries (" + inRefFkInt + ") found in referenceStore instead of nomRefStore.");
-					nomRefToSave.put(inRefFkInt, inSeries);
-				}
-				if (inSeries == null){
-					logger.warn("inSeries for " + inRefFkInt + " is null. "+
-					" InReference relation could not be set");;
-				//}else if (PrintSeries.class.isAssignableFrom(inSeries.getClass())){
-				}else if (inSeries.getType().equals(ReferenceType.PrintSeries)){
-					book.setInSeries((IPrintSeries)inSeries);
-					//TODO
-				}else{
-					logger.warn("inSeries is not of type PrintSeries but of type " + inSeries.getType().getMessage() +
-							". In-reference relation could not be set for refId " + refId + " and inRefFk " + inRefFk);
-				}
-			}else{
-				logger.error("PrintSeries (refId = " + inRefFkInt + ") for book (refID = " + refId +") could not be found in nomRefStore. Inconsistency error. ");
-				//success = false;
-			}
-		}
 		if (book.getInSeries() != null && printSeries != null){
 			logger.warn("Book has series string and inSeries reference. Can not take both. Series string neglected");
 		}else{
@@ -953,42 +849,26 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		}
 		
 		result &= ImportHelper.addMultipleValues(sourceValues, cdmBase, destinationAttribute, classes, NO_OVERWRITE, OBLIGATORY);
-//		//only for testing
-//		if (cdmBase instanceof PublicationBase){
-//			PublicationBase pub = ((PublicationBase)cdmBase);
-//			pub.addPublisher("A new publisher for " + pub.getTitleCache(), "A nice place");
-//		}
 		return result;
 	}
 
 	
-	private static TeamOrPersonBase<?> getAuthorTeam(String authorString, TeamOrPersonBase<?> nomAuthor, boolean preferNomeclaturalAuthor){
+	private static TeamOrPersonBase<?> getAuthorTeam(String authorString, TeamOrPersonBase<?> nomAuthor){
 		TeamOrPersonBase<?> result;
-		if (preferNomeclaturalAuthor){
-			if (nomAuthor != null){
-				result = nomAuthor;
-			}else{
-				if (CdmUtils.isEmpty(authorString)){
-					result = null;
-				}else{
-					TeamOrPersonBase<?> team = Team.NewInstance();
-					//TODO which one to use??
-					team.setNomenclaturalTitle(authorString);
-					team.setTitleCache(authorString, true);
-					result = team;
-				}
-			}
-		}else{ //prefer bibliographic
-			if (CdmUtils.isNotEmpty(authorString)){
-				TeamOrPersonBase<?> team = Team.NewInstance();
-				//TODO which one to use??
-				team.setNomenclaturalTitle(authorString);
-				team.setTitleCache(authorString, true);
-				result = team;
-			}else{
-				result = nomAuthor;
-			}
+		if (nomAuthor != null){
+			result = nomAuthor;
+		} else if (StringUtils.isNotBlank(authorString)){
+//			xx;
+			//FIXME check for existing team / persons
+			TeamOrPersonBase<?> team = Team.NewInstance();
+			team.setNomenclaturalTitle(authorString);
+			team.setTitleCache(authorString, true);
+			team.setNomenclaturalTitle(authorString);
+			result = team;
+		}else{
+			result = null;
 		}
+		
 		return result;
 	}
 	
