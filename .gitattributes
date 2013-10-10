@@ -2228,6 +2228,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServ
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/scripts/FixMultipleTextDataInImageGalleries.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/example/ApplicationExample.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestAgentService.java -text
