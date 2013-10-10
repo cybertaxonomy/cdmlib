@@ -37,20 +37,21 @@ public class ApplicationExample {
 		String username = "sa";
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource);
+		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		app.getTaxonService().save(taxon);
 	}
 	
 	private void testMySql(){
 		
+		//please adapt the following parameters to your local conditions
 		String server = "localhost";
 		String database = "test";
 		String username = "edit";
 		//password will be asked for in console and stored in your home directory
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 		
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource);
+		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		app.getTaxonService().save(taxon);
 	}
@@ -60,7 +61,7 @@ public class ApplicationExample {
 	 */
 	public static void main(String[] args) {
 		new ApplicationExample().testH2();
-		new ApplicationExample().testMySql();
+//		new ApplicationExample().testMySql();
 	}
 
 }
