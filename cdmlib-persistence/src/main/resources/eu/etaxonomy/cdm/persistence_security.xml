@@ -64,7 +64,7 @@
     <!--
       ============================== SECURITY ==============================
     -->
-    <bean id="accessDecisionManager" class="org.springframework.security.access.vote.UnanimousBased">
+    <bean id="accessDecisionManager" class="eu.etaxonomy.cdm.persistence.hibernate.permission.UnanimousBasedUnrevokable">
         <property name="decisionVoters">
             <list>
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.GrantAlwaysVoter" />
