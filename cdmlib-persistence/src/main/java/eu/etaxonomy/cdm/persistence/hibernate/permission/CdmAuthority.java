@@ -31,8 +31,9 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
  * as an upper case string.</li>
  * <li><code>property</code>: The <code>CdmAuthority</code> only applies to instances
  * which satisfy the specified property. Interpretation is up to type specific voters.</li>
- * <li><code>operation</code>: a string which specifies a {@link Operation} on that set of cdm
- * types</li>
+ * <li><code>operation</code>: a string which specifies one {@link Operation} or
+ * multiple on that set of cdm types. Multiple {@link Operation} must be comma
+ * separated and enclosed in brackets <code>[]</code></li>
  * <li><code>targetUuid</code>: The <code>operation</code> may be restricted to a specific cdm entity by adding
  * the entity uuid to the <code>operation</code>. The uuid string is enclosed in curly brackets '<code>{</code>'
  * , '<code>}</code>' and appended to the end of the <code>operation</code>.</li>
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
  * TAXONBASE.UPDATE
  * TAXONBASE.DELETE
  * DESCRIPTIONBASE.UPDATE
+ * DESCRIPTIONBASE.[CREATE,UPDATE,DELETE,READ]
  * DESCRIPTIONELEMENTBASE(Ecology).UPDATE
  * TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
  * </pre>
@@ -122,7 +124,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     }
 
     public void setOperation(EnumSet<CRUD> operation) {
-    	this.operation = operation;
+        this.operation = operation;
     }
 
     public UUID getTargetUUID(){
