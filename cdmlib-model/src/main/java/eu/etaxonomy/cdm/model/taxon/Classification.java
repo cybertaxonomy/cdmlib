@@ -25,6 +25,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -52,7 +53,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author a.mueller
  * @created 31.03.2009
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {
@@ -80,11 +80,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	@OrderColumn(name="sortIndex")
+//	@OrderColumn(name="sortIndex")
 	@OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
-//    @NotNull // avoids creating a UNIQUE key for this field
+//  @NotNull // avoids creating a UNIQUE key for this field
 	private List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
 
 	@XmlElement(name = "reference")
