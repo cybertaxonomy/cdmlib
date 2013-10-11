@@ -10,16 +10,17 @@ package eu.etaxonomy.cdm.io.berlinModel.in;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelUserImportValidator;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -30,7 +31,6 @@ import eu.etaxonomy.cdm.model.common.User;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelUserImport extends BerlinModelImportBase {
@@ -46,18 +46,15 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 		super(dbTableName, pluralString);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelUserImportValidator();
 		return validator.validate(state);
 	}
 	
+	@Override
 	protected void doInvoke(BerlinModelImportState state){
 		boolean success = true;
-		MapWrapper<User> userMap = (MapWrapper<User>)state.getStore(ICdmIO.USER_STORE);
 		
 		BerlinModelImportConfigurator config = state.getConfig();
 		Source source = config.getSource();
@@ -71,7 +68,7 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 				" SELECT *  " +
                 " FROM "+dbTableName+" " ;
 		ResultSet rs = source.getResultSet(strQuery) ;
-		String namespace = dbTableName;
+		Collection<User> users = new ArrayList<User>();
 		
 		int i = 0;
 		//for each reference
@@ -94,16 +91,17 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 					
 					/* 
 					 * this is a crucial call, otherwise the password will not be set correctly
-					 * and the whole authenticataion will not work 
+					 * and the whole authentication will not work 
 					 */
+					authenticate(Configuration.adminLogin, Configuration.adminPassword);
 					getUserService().createUser(user);
+					
 					
 					dbAttrName = "RealName";
 					cdmAttrName = "TitleCache";
 					success &= ImportHelper.addStringValue(rs, person, dbAttrName, cdmAttrName, false);
 	
-	
-					userMap.put(username, user);
+					users.add(user);
 					state.putUser(username, user);
 				}catch(Exception ex){
 					logger.error(ex.getMessage());
@@ -119,7 +117,7 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 		}
 			
 		logger.info("save " + i + " "+pluralString + " ...");
-		getUserService().save(userMap.objects());
+		getUserService().save(users);
 
 		logger.info("end make "+pluralString+" ..." + getSuccessString(success));;
 		if (!success){
@@ -129,31 +127,22 @@ public class BerlinModelUserImport extends BerlinModelImportBase {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoUser();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		return null; // not needed at the moment
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		return true;  // not needed at the moment
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		return null; //not needed at the moment
 	}

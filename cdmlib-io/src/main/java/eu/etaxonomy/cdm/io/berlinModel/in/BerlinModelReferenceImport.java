@@ -858,7 +858,6 @@ public class BerlinModelReferenceImport extends BerlinModelImportBase {
 		if (nomAuthor != null){
 			result = nomAuthor;
 		} else if (StringUtils.isNotBlank(authorString)){
-//			xx;
 			//FIXME check for existing team / persons
 			TeamOrPersonBase<?> team = Team.NewInstance();
 			team.setNomenclaturalTitle(authorString);

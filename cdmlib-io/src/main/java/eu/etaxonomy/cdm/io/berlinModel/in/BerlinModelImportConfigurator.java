@@ -68,6 +68,8 @@ public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<Berl
 	
 	//occurrences
 	private boolean isSplitTdwgCodes = true;
+	
+	private boolean useEmAreaVocabulary = false;
 
 	private boolean includesEmCode = true;  // in Campanula we do not have an EMCOde
 	private boolean allowInfraSpecTaxonRank = true; 
@@ -699,6 +701,18 @@ public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<Berl
 	public void setIncludeAllNonMisappliedRelatedClassifications(
 			boolean includeAllNonMisappliedRelatedClassifications) {
 		this.includeAllNonMisappliedRelatedClassifications = includeAllNonMisappliedRelatedClassifications;
+	}
+
+
+
+	public boolean isUseEmAreaVocabulary() {
+		return useEmAreaVocabulary;
+	}
+
+
+
+	public void setUseEmAreaVocabulary(boolean useEmAreaVocabulary) {
+		this.useEmAreaVocabulary = useEmAreaVocabulary;
 	}
 
 }

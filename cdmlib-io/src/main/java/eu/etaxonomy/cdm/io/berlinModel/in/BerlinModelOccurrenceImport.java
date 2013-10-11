@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.berlinModel.in;
 
+import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import java.util.Set;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -28,12 +30,18 @@ import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelOccurrenceImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ExtensionType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -52,6 +60,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  */
 @Component
 public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
+	private static final String EM_AREA_NAMESPACE = "emArea";
+
 	private static final Logger logger = Logger.getLogger(BerlinModelOccurrenceImport.class);
 
 	public static final String NAMESPACE = "Occurrence";
@@ -66,9 +76,6 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		super(dbTableName, pluralString);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
-	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = " SELECT occurrenceId FROM " + getTableName();
@@ -78,9 +85,6 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String emCode = config.isIncludesAreaEmCode()? ", emArea.EMCode" : "";
@@ -98,9 +102,163 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		return strQuery;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
+	private Map<Integer, NamedArea> euroMedAreas = new HashMap<Integer, NamedArea>();
+	
+	
+	@Override
+	public boolean invoke(BerlinModelImportState state) {
+		if (state.getConfig().isUseEmAreaVocabulary()){
+			try {
+				createEuroMedAreas(state);
+			} catch (Exception e) {
+				logger.error("Exception occurred when trying to create euroMed Areas");
+				e.printStackTrace();
+			}
+		}
+		boolean result = super.invoke(state);
+		euroMedAreas = new HashMap<Integer, NamedArea>();
+		return result;
+	}
+	
+	private TermVocabulary<NamedArea> createEuroMedAreas(BerlinModelImportState state) throws SQLException {
+		Source source = state.getConfig().getSource();
+		Reference<?> sourceReference = state.getConfig().getSourceReference();
+		
+		TransactionStatus txStatus = this.startTransaction();
+		//TODO
+		if (sourceReference.getId() > 0){
+			sourceReference = getReferenceService().find(sourceReference.getUuid());  //just to be sure
+		}		
+		TermVocabulary<NamedArea> euroMedAreas = makeEmptyEuroMedVocabulary();
+		
+		MarkerType eurMarkerType = getMarkerType(state, BerlinModelTransformer.uuidEurArea, "eur", "eur Area", "eur");
+		MarkerType euroMedAreaMarkerType = getMarkerType(state, BerlinModelTransformer.uuidEurMedArea, "EuroMedArea", "EuroMedArea", "EuroMedArea");
+		ExtensionType isoCodeExtType = getExtensionType(state, BerlinModelTransformer.uuidIsoCode, "IsoCode", "IsoCode", "iso");
+		ExtensionType tdwgCodeExtType = getExtensionType(state, BerlinModelTransformer.uuidTdwgAreaCode, "TDWG code", "TDWG Area code", "tdwg");
+		ExtensionType mclCodeExtType = getExtensionType(state, BerlinModelTransformer.uuidMclCode, "MCL code", "MedCheckList code", "mcl");
+		
+		String sql = "SELECT * , CASE WHEN EMCode = 'EM' THEN 'a' ELSE 'b' END as isEM " +
+				" FROM emArea " +
+				" ORDER BY isEM, EMCode"; 
+		ResultSet rs = source.getResultSet(sql);
+		
+		NamedArea euroMedArea = null;
+		NamedArea lastLevel2Area = null;
+		
+		//euroMedArea (EMCode = 'EM')
+		rs.next();
+		euroMedArea = makeSingleEuroMedArea(rs, eurMarkerType, euroMedAreaMarkerType, isoCodeExtType, tdwgCodeExtType, mclCodeExtType, sourceReference, euroMedArea, lastLevel2Area);
+		euroMedAreas.addTerm(euroMedArea);
+		
+		//all other areas
+		while (rs.next()){
+			NamedArea newArea = makeSingleEuroMedArea(rs, eurMarkerType, euroMedAreaMarkerType,
+					isoCodeExtType, tdwgCodeExtType, mclCodeExtType, sourceReference, euroMedArea, lastLevel2Area);
+			euroMedAreas.addTerm(newArea);
+			if (newArea.getPartOf().equals(euroMedArea)){
+				lastLevel2Area = newArea;
+			}
+			getVocabularyService().saveOrUpdate(euroMedAreas);
+		}	
+		
+		commitTransaction(txStatus);
+		return euroMedAreas;
+	}
+
+	/**
+	 * @param eurMarkerType
+	 * @param euroMedAreaMarkerType
+	 * @param isoCodeExtType
+	 * @param tdwgCodeExtType
+	 * @param mclCodeExtType
+	 * @param rs
+	 * @throws SQLException
 	 */
+	private NamedArea makeSingleEuroMedArea(ResultSet rs, MarkerType eurMarkerType,
+			MarkerType euroMedAreaMarkerType, ExtensionType isoCodeExtType,
+			ExtensionType tdwgCodeExtType, ExtensionType mclCodeExtType,
+			Reference<?> sourceReference, NamedArea euroMedArea, NamedArea level2Area) throws SQLException {
+		Integer areaId = rs.getInt("AreaId");
+		String emCode = nullSafeTrim(rs.getString("EMCode"));
+		String isoCode = nullSafeTrim(rs.getString("ISOCode"));
+		String tdwgCode = nullSafeTrim(rs.getString("TDWGCode"));
+		String unit = nullSafeTrim(rs.getString("Unit"));
+//				      ,[Status]
+//				      ,[OutputOrder]
+		boolean eurMarker = rs.getBoolean("eur");
+		boolean euroMedAreaMarker = rs.getBoolean("EuroMedArea");
+		String notes = nullSafeTrim(rs.getString("Notes"));
+		String mclCode = nullSafeTrim(rs.getString("MCLCode"));
+		String geoSearch = nullSafeTrim(rs.getString("NameForGeoSearch"));
+		
+		if (isBlank(emCode)){
+			emCode = unit;
+		}
+		
+		//label
+		NamedArea area = NamedArea.NewInstance(geoSearch, unit, emCode);
+		//code
+		area.setIdInVocabulary(emCode);
+		//notes
+		if (StringUtils.isNotEmpty(notes)){
+			area.addAnnotation(Annotation.NewInstance(notes, AnnotationType.EDITORIAL(), Language.DEFAULT()));
+		}
+		//markers
+		area.addMarker(Marker.NewInstance(eurMarkerType, eurMarker));
+		area.addMarker(Marker.NewInstance(euroMedAreaMarkerType, euroMedAreaMarker));
+		
+		//extensions
+		if (isNotBlank(isoCode)){
+			area.addExtension(isoCode, isoCodeExtType);
+		}
+		if (isNotBlank(tdwgCode)){
+			area.addExtension(tdwgCode, tdwgCodeExtType);
+		}
+		if (isNotBlank(mclCode)){
+			area.addExtension(mclCode, mclCodeExtType);
+		}
+		
+		//source
+		area.addSource(OriginalSourceType.Import, String.valueOf(areaId), EM_AREA_NAMESPACE, sourceReference, null);
+		
+		//parent
+		if (euroMedArea != null){
+			if (emCode.contains("(")){
+				area.setPartOf(level2Area);
+			}else{
+				area.setPartOf(euroMedArea);
+			}
+		}
+		this.euroMedAreas.put(areaId, area);
+		
+		//save
+		getTermService().saveOrUpdate(area);
+		
+		return area;
+	}
+
+	private String nullSafeTrim(String string) {
+		if (string == null){
+			return null;
+		}else{
+			return string.trim();
+		}
+	}
+
+	/**
+	 * 
+	 */
+	private TermVocabulary<NamedArea> makeEmptyEuroMedVocabulary() {
+		TermType type = TermType.NamedArea;
+		String description = "Euro+Med area vocabulary";
+		String label = "E+M areas";
+		String abbrev = null;
+		URI termSourceUri = null;
+		TermVocabulary<NamedArea> result = TermVocabulary.NewInstance(type, description, label, abbrev, termSourceUri);
+		getVocabularyService().save(result);
+		return result;
+	}
+
 	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true;
@@ -127,8 +285,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
                 
                 int occurrenceId = rs.getInt("OccurrenceId");
                 int newTaxonId = rs.getInt("taxonId");
-                String tdwgCodeString = rs.getString("TDWGCode");
-                String emCodeString = state.getConfig().isIncludesAreaEmCode() ? rs.getString("EMCode") : null;
+                
                 Integer emStatusId = nullSafeInt(rs, "emOccurSumCatId");
                 
                 try {
@@ -142,39 +299,12 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 						alternativeStatusString = CdmUtils.concat(",", stringArray);
 					}
                      
-					//Create area list
-					List<NamedArea> areas = new ArrayList<NamedArea>();
-					if (tdwgCodeString != null){
-					
-						String[] tdwgCodes = new String[]{tdwgCodeString};
-						if (state.getConfig().isSplitTdwgCodes()){
-							tdwgCodes = tdwgCodeString.split(";");
-						}
-						
-						for (String tdwgCode : tdwgCodes){
-							NamedArea area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwgCode.trim());
-				        	if (area == null){
-				        		area = getOtherAreas(state, emCodeString, tdwgCodeString);
-				        	}
-				        	if (area != null){
-				        		areas.add(area);
-				        	}
-				    	}
-                     }
-					
-                     Reference<?> sourceRef = state.getTransactionalSourceReference();
+					Reference<?> sourceRef = state.getTransactionalSourceReference();
+                    
+					List<NamedArea> areas = makeAreaList(state, rs,	occurrenceId);
+                     
                      //create description(elements)
                      TaxonDescription taxonDescription = getTaxonDescription(newTaxonId, oldTaxonId, oldDescription, taxonMap, occurrenceId, sourceRef);
-                     if (areas.size()== 0){
-                		 NamedArea area = getOtherAreas(state, emCodeString, tdwgCodeString);
-                		 if (area != null){
-                             areas.add(area);
-                       }
-                	 }
-                     if (areas.size() == 0){
-                    	 String areaId = rs.getString("AreaId");
-                    	 logger.warn("No areas defined for occurrence " + occurrenceId + ". EMCode: " + CdmUtils.Nz(emCodeString).trim() + ". AreaId: " + areaId );
-                     }
                      for (NamedArea area : areas){
                            Distribution distribution = Distribution.NewInstance(area, status);
                            if (status == null){
@@ -226,11 +356,60 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
+	/**
+	 * @param state
+	 * @param rs
+	 * @param occurrenceId
+	 * @param tdwgCodeString
+	 * @param emCodeString
+	 * @return
+	 * @throws SQLException
 	 */
+	//Create area list
+	private List<NamedArea> makeAreaList(BerlinModelImportState state, ResultSet rs, int occurrenceId) throws SQLException {
+		List<NamedArea> areas = new ArrayList<NamedArea>();
+		
+		if (state.getConfig().isUseEmAreaVocabulary()){
+			Integer areaId = rs.getInt("AreaId");
+	        NamedArea area = this.euroMedAreas.get(areaId);
+			areas.add(area);
+		}else{
+	        String tdwgCodeString = rs.getString("TDWGCode");
+	        String emCodeString = state.getConfig().isIncludesAreaEmCode() ? rs.getString("EMCode") : null;
+	
+			if (tdwgCodeString != null){
+			
+				String[] tdwgCodes = new String[]{tdwgCodeString};
+				if (state.getConfig().isSplitTdwgCodes()){
+					tdwgCodes = tdwgCodeString.split(";");
+				}
+				
+				for (String tdwgCode : tdwgCodes){
+					NamedArea area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwgCode.trim());
+			    	if (area == null){
+			    		area = getOtherAreas(state, emCodeString, tdwgCodeString);
+			    	}
+			    	if (area != null){
+			    		areas.add(area);
+			    	}
+				}
+			 }
+			
+			 if (areas.size()== 0){
+				 NamedArea area = getOtherAreas(state, emCodeString, tdwgCodeString);
+				 if (area != null){
+			         areas.add(area);
+			   }
+			 }
+			 if (areas.size() == 0){
+				 String areaId = rs.getString("AreaId");
+				 logger.warn("No areas defined for occurrence " + occurrenceId + ". EMCode: " + CdmUtils.Nz(emCodeString).trim() + ". AreaId: " + areaId );
+			 }
+		}
+		return areas;
+	}
+
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
 		Class cdmClass;
@@ -320,10 +499,6 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		return result;
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelOccurrenceImportValidator();
@@ -331,9 +506,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		if (! state.getConfig().isDoOccurrence()){
 			return true;

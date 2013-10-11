@@ -66,8 +66,6 @@ public class CdmApplicationAwareDefaultExport<T extends IExportConfigurator> imp
 		stores.put(ICdmIO.TEAM_STORE, new MapWrapper<TeamOrPersonBase>(service));
 		stores.put(ICdmIO.REFERENCE_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.NOMREF_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.NOMREF_DETAIL_STORE, new MapWrapper<Reference>(service));
-		stores.put(ICdmIO.REF_DETAIL_STORE, new MapWrapper<Reference>(service));
 		stores.put(ICdmIO.TAXONNAME_STORE, new MapWrapper<TaxonNameBase>(service));
 		stores.put(ICdmIO.TAXON_STORE, new MapWrapper<TaxonBase>(service));
 		stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
