@@ -40,7 +40,6 @@ import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
@@ -134,54 +133,54 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     private UsernamePasswordAuthenticationToken tokenForUserManager;
 
-	
+
 
     @Before
     public void setUp(){
         /* User 'admin':
             - ROLE_ADMIN
-            - TAXONBASE.READ
-            - TAXONBASE.CREATE
-            - TAXONBASE.DELETE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[READ]
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[DELETE]
+            - TAXONBASE.[UPDATE]
         */
         tokenForAdmin = new UsernamePasswordAuthenticationToken(Configuration.adminLogin, PASSWORD_ADMIN);
 
         /* User 'userManager':
             - ROLE_ADMIN
-            - TAXONBASE.READ
-            - TAXONBASE.CREATE
-            - TAXONBASE.DELETE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[READ]
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[DELETE]
+            - TAXONBASE.[UPDATE]
         */
         tokenForUserManager = new UsernamePasswordAuthenticationToken("userManager", PASSWORD_ADMIN);
 
         /* User 'taxonEditor':
-            - TAXONBASE.CREATE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[UPDATE]
         */
         tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
 
         /*  User 'descriptionEditor':
-            - DESCRIPTIONBASE.CREATE
-            - DESCRIPTIONBASE.UPDATE
-            - DESCRIPTIONELEMENT(Ecology).CREATE
-            - DESCRIPTIONELEMENT(Ecology).UPDATE
+            - DESCRIPTIONBASE.[CREATE]
+            - DESCRIPTIONBASE.[UPDATE]
+            - DESCRIPTIONELEMENT(Ecology).[CREATE]
+            - DESCRIPTIONELEMENT(Ecology).[UPDATE]
          */
         tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
 
         /* User 'partEditor':
-            - TAXONBASE.ADMIN
-            - TAXONNODE.CREATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
-            - TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - TAXONBASE.[ADMIN]
+            - TAXONNODE.[CREATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - TAXONNODE.[UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
          */
         tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
 
         /* User 'taxonomist':
-            - TAXONBASE.READ
-            - TAXONBASE.CREATE
-            - TAXONBASE.DELETE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[READ]
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[DELETE]
+            - TAXONBASE.[UPDATE]
          */
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
@@ -582,10 +581,10 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
             try {
-				taxonService.deleteTaxon(taxon, null, null);
-			} catch (DataChangeNoRollbackException e) {
-				Assert.fail();
-			}
+                taxonService.deleteTaxon(taxon, null, null);
+            } catch (DataChangeNoRollbackException e) {
+                Assert.fail();
+            }
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
