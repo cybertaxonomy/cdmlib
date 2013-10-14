@@ -127,11 +127,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		Reference<?> sourceReference = state.getConfig().getSourceReference();
 		
 		TransactionStatus txStatus = this.startTransaction();
-		//TODO
-		Reference<?> persistentSourceReference = getReferenceService().find(sourceReference.getUuid());  //just to be sure
-		if (persistentSourceReference != null){
-			sourceReference = persistentSourceReference;
-		}
+		
+		sourceReference = getSourceReference(sourceReference);
 		
 		TermVocabulary<NamedArea> euroMedAreas = makeEmptyEuroMedVocabulary();
 		
@@ -173,6 +170,18 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		commitTransaction(txStatus);
 		return euroMedAreas;
+	}
+
+	/**
+	 * @param sourceReference
+	 * @return
+	 */
+	private Reference<?> getSourceReference(Reference<?> sourceReference) {
+		Reference<?> persistentSourceReference = getReferenceService().find(sourceReference.getUuid());  //just to be sure
+		if (persistentSourceReference != null){
+			sourceReference = persistentSourceReference;
+		}
+		return sourceReference;
 	}
 
 	/**
