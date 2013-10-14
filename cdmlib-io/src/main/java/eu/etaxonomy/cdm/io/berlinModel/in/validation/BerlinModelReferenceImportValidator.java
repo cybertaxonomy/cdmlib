@@ -263,7 +263,7 @@ public class BerlinModelReferenceImportValidator implements IOValidator<BerlinMo
 				boolean result = true;
 				Source source = config.getSource();
 				String strQuery = "SELECT Reference.RefId, InRef.RefId AS InRefID, Reference.RefCategoryFk, InRef.RefCategoryFk AS InRefCatFk, Reference.RefCache, Reference.NomRefCache, Reference.Title, Reference.NomTitleAbbrev as nomTitleAbbrev, RefCategory.RefCategoryAbbrev, InRefCategory.RefCategoryAbbrev AS InRefCat, InRef.Title AS InRefTitle, InRef.nomTitleAbbrev AS inRefnomTitleAbbrev, InRef.refCache AS inRefCache, InRef.nomRefCache AS inRefnomRefCache, " +
-						"	InInRefCategory.RefCategoryAbbrev AS InInRefCat, InInRef.refCache AS inInRefCache, InInRef.nomRefCache AS inInRefNomRefCache,	" + 
+						"	InInRefCategory.RefCategoryAbbrev AS InInRefCat, InInRef.refCache AS inInRefCache, InInRef.nomRefCache AS inInRefNomRefCache	" + 
 						" FROM Reference " + 
 							" INNER JOIN Reference AS InRef ON Reference.InRefFk = InRef.RefId " +
 						    " INNER JOIN Reference AS InInRef ON InRef.InRefFk = InInRef.RefId " +
