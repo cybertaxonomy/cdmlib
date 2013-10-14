@@ -74,14 +74,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	//map that stores the regions (named areas) and makes them accessible via the regionFk
 	private Map<String, NamedArea> regionMap = new HashMap<String, NamedArea>();
 
-	
-
 	public BerlinModelCommonNamesImport(){
 		super(dbTableName, pluralString);
 	}
 	
-	
-
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = " SELECT CommonNameId FROM emCommonName WHERE (1=1) ";
@@ -92,11 +88,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String recordQuery = "";
@@ -169,7 +160,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state)  {
 		boolean success = true ;
-		BerlinModelImportConfigurator config = state.getConfig();
+		
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		Map<String, Taxon> taxonMap = (Map<String, Taxon>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 		Map<String, TaxonNameBase> taxonNameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
@@ -345,11 +336,10 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				//status
 				if (isNotBlank(status)){
 					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status", null);
-					Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
 					for (CommonTaxonName commonTaxonName : commonTaxonNames){
+						Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
 						commonTaxonName.addAnnotation(annotation);
 					}
-					
 				}
 				
 				//Notes
@@ -383,7 +373,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 */
 	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString, BerlinModelImportState state) {
 		Language language;
-		if (StringUtils.isNotBlank(iso639_2)|| StringUtils.isNotBlank(iso639_1)  ){
+		if (isNotBlank(iso639_2)|| isNotBlank(iso639_1)  ){
 			//TODO test performance, implement in state
 			language = getLanguageFromIsoMap(iso639Map, iso639_2, iso639_1);
 			
@@ -391,7 +381,13 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				language = getTermService().getLanguageByIso(iso639_2);
 				iso639Map.put(iso639_2, language);
 				if (language == null){
-					language = getTermService().getLanguageByIso(iso639_1);
+					try {
+						language = getTermService().getLanguageByIso(iso639_1);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						// TODO remove if problem with duplicate DescElement_Annot id is solved
+						e.printStackTrace();
+					}
 					iso639Map.put(iso639_1, language);
 				}
 				if (language == null){
@@ -465,7 +461,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		ResultSet rs = source.getResultSet(sql);
 		while (rs.next()){
 			String strRegionFks = rs.getString("RegionFks"); 
-			if (StringUtils.isBlank(strRegionFks)){
+			if (isBlank(strRegionFks)){
 				continue;
 			}
 			
@@ -568,8 +564,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		return sqlWhere;
 	}
 
-
-
 	/**
 	 * Returns a map which is filled by the emCode->TdwgCode mapping defined in emArea.
 	 * Some exceptions are defined for emCode 'Ab','Rf','Uk' and some additional mapping is added 
@@ -607,8 +601,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	}
 
 
-
-
 	/**
 	 * Returns the first non-image gallery description. Creates a new one if no description exists.
 	 * @param taxon
@@ -627,40 +619,27 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
 		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
-		int pos = -1;
+		String pos = "0";
 		try{
 			Set<String> taxonIdSet = new HashSet<String>();
 			Set<String> nameIdSet = new HashSet<String>();
 			Set<String> referenceIdSet = new HashSet<String>();
 			while (rs.next()){
-				pos = 0;
 				handleForeignKey(rs, taxonIdSet, "taxonId");
-				pos = 1;
 				handleForeignKey(rs, taxonIdSet, "misappliedTaxonId");
-				pos = 2;
 				handleForeignKey(rs, referenceIdSet, "refId");
-				pos = 3;
 				handleForeignKey(rs, referenceIdSet, "languageRefRefFk");
-				pos = 4;
 				handleForeignKey(rs, nameIdSet, "NameInSourceFk");
-				pos = 5;
 				handleForeignKey(rs, nameIdSet, "PTNameFk");
-				pos = 6;
 				handleForeignKey(rs, referenceIdSet, "MisNameRefFk");
-				pos = -2;
-				
 			}
-			
-			pos = 7;
 			
 			//name map
 			nameSpace = BerlinModelTaxonNameImport.NAMESPACE;
@@ -668,8 +647,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			idSet = nameIdSet;
 			Map<String, TaxonNameBase<?,?>> nameMap = (Map<String, TaxonNameBase<?,?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, nameMap);
-
-			pos = 8;
 			
 			//taxon map
 			nameSpace = BerlinModelTaxonImport.NAMESPACE;
@@ -677,8 +654,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			idSet = taxonIdSet;
 			Map<String, TaxonBase<?>> taxonMap = (Map<String, TaxonBase<?>>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, taxonMap);
-
-			pos = 9;
 			
 			//reference map
 			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
@@ -686,9 +661,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			idSet = referenceIdSet;
 			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, referenceMap);
-
-			pos = 10;
-			
+			// TODO remove if problem with duplicate DescElement_Annot id is solved
 		} catch (SQLException e) {
 			throw new RuntimeException("pos: " +pos, e);
 		} catch (NullPointerException nep){
