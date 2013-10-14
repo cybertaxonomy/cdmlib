@@ -24,14 +24,11 @@ import eu.etaxonomy.cdm.io.common.Source;
 /**
  * @author a.mueller
  * @created 17.02.2010
- * @version 1.0
  */
 public class BerlinModelFactsImportValidator implements IOValidator<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelFactsImportValidator.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+	@Override
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
 		result &= checkDesignationRefsExist(state);

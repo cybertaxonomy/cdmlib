@@ -24,11 +24,11 @@ import eu.etaxonomy.cdm.io.common.Source;
 /**
  * @author a.mueller
  * @created 17.02.2010
- * @version 1.0
  */
 public class BerlinModelTaxonImportValidator implements IOValidator<BerlinModelImportState>{
 	private static final Logger logger = Logger.getLogger(BerlinModelTaxonImportValidator.class);
 
+	@Override
 	public boolean validate(BerlinModelImportState state){
 		boolean result = true;
 		BerlinModelImportConfigurator bmiConfig = state.getConfig();

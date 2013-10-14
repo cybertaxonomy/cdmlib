@@ -18,15 +18,12 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 /**
  * @author a.mueller
  * @created 17.02.2010
- * @version 1.0
  */
 public class BerlinModelAuthorImportValidator implements IOValidator<BerlinModelImportState> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BerlinModelAuthorImportValidator.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+	@Override
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
 		System.out.println("Checking for authors not yet implemented");

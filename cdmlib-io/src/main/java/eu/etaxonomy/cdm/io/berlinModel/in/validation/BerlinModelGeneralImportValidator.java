@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * For validating general consistencies like existence of tables, etc.
  * @author a.mueller
  * @created 10.06.2009
- * @version 1.0
  */
 @Component
 public class BerlinModelGeneralImportValidator extends BerlinModelImportBase implements IOValidator<BerlinModelImportState> {
@@ -38,18 +37,13 @@ public class BerlinModelGeneralImportValidator extends BerlinModelImportBase imp
 		super(null, null);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		return validate(state);
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+	@Override
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
 		BerlinModelImportConfigurator bmiConfig = state.getConfig();

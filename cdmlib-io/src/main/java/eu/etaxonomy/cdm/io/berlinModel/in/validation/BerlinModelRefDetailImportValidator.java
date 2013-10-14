@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.io.common.Source;
 /**
  * @author a.mueller
  * @created 17.02.2010
- * @version 1.0
  */
 public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(BerlinModelRefDetailImportValidator.class);
