@@ -276,7 +276,10 @@ public class Cdm2MediawikiExporter {
 
 		// display nice nice
 		Format format = Format.getPrettyFormat();
-		format.setEncoding("UTF-8");
+
+		//JDOMParseException Invalid byte 2 of 3-byte UTF-8 sequence which occurs for e.g.
+		//with German umlauts and French accents on characters
+		format.setEncoding("ISO-8859-1");//"UTF-8");
 		XMLOutputter xmlOutput = new XMLOutputter(format);	
 		xmlOutput.setFormat(format);		
 

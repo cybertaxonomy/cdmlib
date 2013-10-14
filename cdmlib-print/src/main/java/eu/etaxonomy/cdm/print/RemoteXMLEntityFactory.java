@@ -10,8 +10,10 @@
 
 package eu.etaxonomy.cdm.print;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -23,9 +25,11 @@ import java.util.Map;
 import java.util.UUID;
 
 
+import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
+import org.apache.http.util.EntityUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -408,8 +412,12 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase{
 				// get the content at the resource
 				InputStream content = UriUtils.getContent(response);
 				
+				//specify encoding in the reader
+				BufferedReader in = new BufferedReader(new InputStreamReader(content, "UTF-8"));				
+				
 				// build the jdom document
-				Document document = builder.build(content);
+				Document document = builder.build(in);
+				//Document document = builder.build(content);
 				
 				
 				return document.getRootElement();
