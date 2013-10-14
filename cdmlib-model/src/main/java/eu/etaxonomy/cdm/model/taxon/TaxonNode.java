@@ -511,8 +511,19 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         setClassificationRecursively(classification);
 
         // add this node to the parent child nodes
-        parent.getChildNodes().add(index, this);
-		//TODO workaround (see sortIndex doc)
+        List<TaxonNode> children = parent.getChildNodes();
+        if (children.contains(this)){
+        	//avoid duplicates
+        	if (children.indexOf(this) < index){
+        		index = index -1;
+        	}
+        	children.remove(this);
+        	children.add(index, this);
+        }else{
+        	children.add(index, this);
+        }
+		
+        //TODO workaround (see sortIndex doc)
         //FIXME don't we need to update the parent's childNode index here??
 		for(int i = 0; i < childNodes.size(); i++){
 			childNodes.get(i).sortIndex = i;
