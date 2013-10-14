@@ -76,23 +76,43 @@ public class BerlinModelFactsImportValidator implements IOValidator<BerlinModelI
 			boolean result = true;
 			BerlinModelImportConfigurator config = state.getConfig();
 			Source source = config.getSource();
-			String strQuery = "SELECT Count(*) as n " +
-					" FROM Fact " +
-						"INNER JOIN PTaxon ON Fact.PTNameFk = PTaxon.PTNameFk AND Fact.PTRefFk = PTaxon.PTRefFk" +
-					" WHERE PTaxon.StatusFk IN (2, 3, 4) ";
+			String strQuery = "SELECT f.factId, f.fact, fc.factCategoryId, fc.FactCategory, pt.StatusFk, n.FullNameCache, s.Status, pt.PTRefFk, r.RefCache  " +
+					" FROM Fact f " +
+						" INNER JOIN FactCategory fc ON fc.FactCategoryId = f.factCategoryFk " +
+						" INNER JOIN PTaxon pt ON f.PTNameFk = pt.PTNameFk AND f.PTRefFk = pt.PTRefFk" +
+						" INNER JOIN Name n ON pt.PTNameFk = n.NameId " +
+		                " INNER JOIN Status s ON pt.StatusFk = s.StatusId " +
+		                " LEFT OUTER JOIN Reference r ON pt.PTRefFk = r.RefId " + 
+					" WHERE (pt.StatusFk NOT IN ( 1, 5))  ";
 			
 			if (StringUtils.isNotBlank(config.getFactFilter())){
 				strQuery += String.format(" AND (%s) ", config.getFactFilter()) ; 
 			}
 			
-			ResultSet rs = source.getResultSet(strQuery);
-			rs.next();
-			int count = rs.getInt("n");
-			if (count > 0){
-				System.out.println("========================================================");
-				logger.warn("There are "+count+" Facts with attached synonyms.");
+			ResultSet resulSet = source.getResultSet(strQuery);
+			boolean firstRow = true;
+			while (resulSet.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					System.out.println("There are facts for a taxon that is not accepted!");
+					System.out.println("========================================================");
+				}
+				int factId = resulSet.getInt("FactId");
+				String fact = resulSet.getString("Fact");
+				String factCategory = resulSet.getString("FactCategory");
+				int factCategoryId = resulSet.getInt("FactCategoryId");
+				String status = resulSet.getString("Status");
+				String fullNameCache = resulSet.getString("FullNameCache");
+				String ptRefFk = resulSet.getString("PTRefFk");
+				String ptRef = resulSet.getString("RefCache");
 				
-				System.out.println("========================================================");
+				System.out.println("FactId: " + factId + "\n  Fact: " + fact + 
+						"\n  FactCategory: "  + factCategory + "\n  FactCategoryId: " + factCategoryId +
+						"\n  Status: " + status + 
+						"\n  FullNameCache: " + fullNameCache +  "\n  ptRefFk: " + ptRefFk +
+						"\n  sec: " + ptRef );
+				
+				result = firstRow = false;
 			}
 			return result;
 		} catch (SQLException e) {

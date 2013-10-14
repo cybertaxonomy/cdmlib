@@ -110,8 +110,6 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 		return recordQuery;
 	}
 	
-	
-
 	@Override
 	protected void doInvoke(BerlinModelImportState state) {
 		try {

@@ -36,6 +36,7 @@ public class BerlinModelCommonNamesImportValidator implements IOValidator<Berlin
 		boolean result = true;
 		result &= checkUnreferredNameUsedInSource(state.getConfig());
 		result &= checkUnreferredLanguageRefFk(state.getConfig());
+		result &= checkTaxonIsAccepted(state.getConfig());
 		
 		return result;
 	}
@@ -130,6 +131,53 @@ public class BerlinModelCommonNamesImportValidator implements IOValidator<Berlin
 			return false;
 		}
 
+	}
+	
+	private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator config){
+		try {
+			boolean result = true;
+			Source source = config.getSource();
+			String strQuery = "SELECT cn.CommonNameId, cn.CommonName, pt.StatusFk, n.FullNameCache, s.Status, pt.PTRefFk, r.RefCache " + 
+						" FROM emCommonName cn " +
+							" INNER JOIN PTaxon pt ON cn.PTNameFk = pt.PTNameFk AND cn.PTRefFk = pt.PTRefFk " + 
+			                " INNER JOIN Name n ON pt.PTNameFk = n.NameId " +
+			                " INNER JOIN Status s ON pt.StatusFk = s.StatusId " +
+			                " LEFT OUTER JOIN Reference r ON pt.PTRefFk = r.RefId " + 
+						" WHERE (pt.StatusFk NOT IN ( 1, 5))  ";
+
+			if (StringUtils.isNotBlank(config.getOccurrenceFilter())){
+				strQuery += String.format(" AND (%s) ", config.getCommonNameFilter()) ; 
+			}
+
+			
+			ResultSet resulSet = source.getResultSet(strQuery);
+			boolean firstRow = true;
+			while (resulSet.next()){
+				if (firstRow){
+					System.out.println("========================================================");
+					System.out.println("There are Common Names for a taxon that is not accepted!");
+					System.out.println("========================================================");
+				}
+				int commonNameId = resulSet.getInt("CommonNameId");
+				String commonName = resulSet.getString("CommonName");
+				String status = resulSet.getString("Status");
+				String fullNameCache = resulSet.getString("FullNameCache");
+				String ptRefFk = resulSet.getString("PTRefFk");
+				String ptRef = resulSet.getString("RefCache");
+				
+				System.out.println("CommonNameId: " + commonNameId + "\n CommonName: " + commonName + 
+						"\n  Status: " + status + 
+						"\n  FullNameCache: " + fullNameCache +  "\n  ptRefFk: " + ptRefFk +
+						"\n  sec: " + ptRef );
+				
+				result = firstRow = false;
+			}
+			
+			return result;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return false;
+		}
 	}
 	
 
