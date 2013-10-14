@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public class BerlinModelImportConfigurator extends DbImportConfiguratorBase<BerlinModelImportState> implements IImportConfigurator{
 	private static Logger logger = Logger.getLogger(BerlinModelImportConfigurator.class);

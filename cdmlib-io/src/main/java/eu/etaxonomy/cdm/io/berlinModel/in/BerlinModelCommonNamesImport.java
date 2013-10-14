@@ -55,7 +55,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
  * 
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
@@ -167,9 +166,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state)  {
 		boolean success = true ;
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -210,7 +207,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				String[] regionFkSplit = regionFks.split(",");
 				
 				//commonNameString
-				if (CdmUtils.isBlank(commonNameString)){
+				if (isBlank(commonNameString)){
 					String message = "CommonName is empty or null. Do not import record for taxon " + taxonId;
 					logger.warn(message);
 					continue;
@@ -218,7 +215,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//taxon
 				Taxon taxon = null;
-				TaxonBase taxonBase  = taxonMap.get(String.valueOf(taxonId));
+				TaxonBase<?> taxonBase  = taxonMap.get(String.valueOf(taxonId));
 				if (taxonBase == null){
 					logger.warn("Taxon (" + taxonId + ") could not be found. Common name " + commonNameString + "(" + commonNameId + ") not imported");
 					continue;
@@ -332,21 +329,21 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				
 				//reference extensions
 				if (reference != null){
-					if (CdmUtils.isNotEmpty(refLanguage)){
+					if (StringUtils.isNotBlank(refLanguage)){
 						ExtensionType refLanguageExtensionType = getExtensionType( state, REFERENCE_LANGUAGE_STRING_UUID, "reference language","The language of the reference","ref. lang.");
 						Extension.NewInstance(reference, refLanguage, refLanguageExtensionType);
 					}
 					
-					if (CdmUtils.isNotEmpty(refLanguageIso639_2)){
+					if (StringUtils.isNotBlank(refLanguageIso639_2)){
 						ExtensionType refLanguageIsoExtensionType = getExtensionType( state, REFERENCE_LANGUAGE_ISO639_2_UUID, "reference language iso 639-2","The iso 639-2 code of the references language","ref. lang. 639-2");
 						Extension.NewInstance(reference, refLanguageIso639_2, refLanguageIsoExtensionType);
 					}
-				}else if (CdmUtils.isNotEmpty(refLanguage) || CdmUtils.isNotEmpty(refLanguageIso639_2)){
+				}else if (isNotBlank(refLanguage) || isNotBlank(refLanguageIso639_2)){
 					logger.warn("Reference is null (" + languageRefRefFk + ") but refLanguage (" + CdmUtils.Nz(refLanguage) + ") or iso639_2 (" + CdmUtils.Nz(refLanguageIso639_2) + ") was not null for common name ("+ commonNameId +")");
 				}
 				
 				//status
-				if (CdmUtils.isNotEmpty(status)){
+				if (isNotBlank(status)){
 					AnnotationType statusAnnotationType = getAnnotationType( state, STATUS_ANNOTATION_UUID, "status","The status of this object","status", null);
 					Annotation annotation = Annotation.NewInstance(status, statusAnnotationType, Language.DEFAULT());
 					for (CommonTaxonName commonTaxonName : commonTaxonNames){
@@ -386,7 +383,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 */
 	private Language getAndHandleLanguage(Map<String, Language> iso639Map,	String iso639_2, String iso639_1, String languageString, String originalLanguageString, BerlinModelImportState state) {
 		Language language;
-		if (CdmUtils.isNotEmpty(iso639_2)|| CdmUtils.isNotEmpty(iso639_1)  ){
+		if (StringUtils.isNotBlank(iso639_2)|| StringUtils.isNotBlank(iso639_1)  ){
 			//TODO test performance, implement in state
 			language = getLanguageFromIsoMap(iso639Map, iso639_2, iso639_1);
 			
@@ -434,7 +431,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 	 * @param originalLanguageString
 	 */
 	private void addOriginalLanguage(Language language,	String originalLanguageString) {
-		if (CdmUtils.isBlank(originalLanguageString)){
+		if (isBlank(originalLanguageString)){
 			return;
 		}else if (language == null){
 			logger.warn("Language could not be defined, but originalLanguageString exists: " + originalLanguageString);

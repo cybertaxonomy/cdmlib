@@ -47,6 +47,8 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -126,9 +128,11 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		TransactionStatus txStatus = this.startTransaction();
 		//TODO
-		if (sourceReference.getId() > 0){
-			sourceReference = getReferenceService().find(sourceReference.getUuid());  //just to be sure
-		}		
+		Reference<?> persistentSourceReference = getReferenceService().find(sourceReference.getUuid());  //just to be sure
+		if (persistentSourceReference != null){
+			sourceReference = persistentSourceReference;
+		}
+		
 		TermVocabulary<NamedArea> euroMedAreas = makeEmptyEuroMedVocabulary();
 		
 		MarkerType eurMarkerType = getMarkerType(state, BerlinModelTransformer.uuidEurArea, "eur", "eur Area", "eur");
@@ -136,6 +140,10 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		ExtensionType isoCodeExtType = getExtensionType(state, BerlinModelTransformer.uuidIsoCode, "IsoCode", "IsoCode", "iso");
 		ExtensionType tdwgCodeExtType = getExtensionType(state, BerlinModelTransformer.uuidTdwgAreaCode, "TDWG code", "TDWG Area code", "tdwg");
 		ExtensionType mclCodeExtType = getExtensionType(state, BerlinModelTransformer.uuidMclCode, "MCL code", "MedCheckList code", "mcl");
+		NamedAreaLevel areaLevelTop = getNamedAreaLevel(state, BerlinModelTransformer.uuidAreaLevelTop, "Euro+Med top area level", "Euro+Med top area level. This level is only to be used for the area representing the complete Euro+Med area", "e+m top", null);
+		NamedAreaLevel areaLevelEm1 = getNamedAreaLevel(state, BerlinModelTransformer.uuidAreaLevelFirst, "Euro+Med 1. area level", "Euro+Med 1. area level", "e+m 1.", null);
+		NamedAreaLevel areaLevelEm2 = getNamedAreaLevel(state, BerlinModelTransformer.uuidAreaLevelSecond, "Euro+Med 2. area level", "Euro+Med 2. area level", "Euro+Med 1. area level", null);
+		
 		
 		String sql = "SELECT * , CASE WHEN EMCode = 'EM' THEN 'a' ELSE 'b' END as isEM " +
 				" FROM emArea " +
@@ -147,13 +155,15 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		
 		//euroMedArea (EMCode = 'EM')
 		rs.next();
-		euroMedArea = makeSingleEuroMedArea(rs, eurMarkerType, euroMedAreaMarkerType, isoCodeExtType, tdwgCodeExtType, mclCodeExtType, sourceReference, euroMedArea, lastLevel2Area);
+		euroMedArea = makeSingleEuroMedArea(rs, eurMarkerType, euroMedAreaMarkerType, isoCodeExtType, tdwgCodeExtType, mclCodeExtType, 
+				areaLevelTop, areaLevelEm1 , areaLevelEm2, sourceReference, euroMedArea, lastLevel2Area);
 		euroMedAreas.addTerm(euroMedArea);
 		
 		//all other areas
 		while (rs.next()){
 			NamedArea newArea = makeSingleEuroMedArea(rs, eurMarkerType, euroMedAreaMarkerType,
-					isoCodeExtType, tdwgCodeExtType, mclCodeExtType, sourceReference, euroMedArea, lastLevel2Area);
+					isoCodeExtType, tdwgCodeExtType, mclCodeExtType, 
+					areaLevelTop, areaLevelEm1 , areaLevelEm2, sourceReference, euroMedArea, lastLevel2Area);
 			euroMedAreas.addTerm(newArea);
 			if (newArea.getPartOf().equals(euroMedArea)){
 				lastLevel2Area = newArea;
@@ -172,11 +182,15 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	 * @param tdwgCodeExtType
 	 * @param mclCodeExtType
 	 * @param rs
+	 * @param areaLevelEm2 
+	 * @param areaLevelEm1 
+	 * @param areaLevelTop 
 	 * @throws SQLException
 	 */
 	private NamedArea makeSingleEuroMedArea(ResultSet rs, MarkerType eurMarkerType,
 			MarkerType euroMedAreaMarkerType, ExtensionType isoCodeExtType,
 			ExtensionType tdwgCodeExtType, ExtensionType mclCodeExtType,
+			NamedAreaLevel areaLevelTop, NamedAreaLevel areaLevelEm1, NamedAreaLevel areaLevelEm2, 
 			Reference<?> sourceReference, NamedArea euroMedArea, NamedArea level2Area) throws SQLException {
 		Integer areaId = rs.getInt("AreaId");
 		String emCode = nullSafeTrim(rs.getString("EMCode"));
@@ -218,6 +232,9 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 			area.addExtension(mclCode, mclCodeExtType);
 		}
 		
+		//type
+		area.setType(NamedAreaType.ADMINISTRATION_AREA());
+		
 		//source
 		area.addSource(OriginalSourceType.Import, String.valueOf(areaId), EM_AREA_NAMESPACE, sourceReference, null);
 		
@@ -225,9 +242,13 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		if (euroMedArea != null){
 			if (emCode.contains("(")){
 				area.setPartOf(level2Area);
+				area.setLevel(areaLevelEm2);
 			}else{
 				area.setPartOf(euroMedArea);
+				area.setLevel(areaLevelEm1);
 			}
+		}else{
+			area.setLevel(areaLevelTop);
 		}
 		this.euroMedAreas.put(areaId, area);
 		
