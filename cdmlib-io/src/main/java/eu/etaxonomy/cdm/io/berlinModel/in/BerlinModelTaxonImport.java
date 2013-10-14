@@ -84,11 +84,6 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		super(dbTableName, pluralString);
 	}
 	
-
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
-	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String sqlSelect = " SELECT RIdentifier";
@@ -100,11 +95,6 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 		return sql;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String sqlSelect = " SELECT pt.*  ";
@@ -259,8 +249,8 @@ public class BerlinModelTaxonImport  extends BerlinModelImportBase {
 							misapplied = rs.getBoolean("MA");
 						}
 						
-						if (config.getTaxonPublishMarker().doMark(publishFlag) && ! misapplied){
-							taxonBase.addMarker(Marker.NewInstance(MarkerType.PUBLISH(), publishFlag));
+						if ( ! misapplied){
+							taxonBase.setPublish(publishFlag);
 						}
 					}
 					
