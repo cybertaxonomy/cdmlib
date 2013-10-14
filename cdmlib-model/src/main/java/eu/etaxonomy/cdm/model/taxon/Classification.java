@@ -80,7 +80,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-//	@OrderColumn(name="sortIndex")
+	@OrderColumn(name="sortIndex")
 	@OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
