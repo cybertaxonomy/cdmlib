@@ -160,7 +160,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         //  (\\w*)             -> classname
         //  (?:\\((\\w*)\\))?  -> (property)
         //  \\.?               -> .
-        //  (?:(\\w*))(?:\\{([\\da-z\\-]+)\\})? -> Permmission and targetUuid
+        //  (?:\\[(\\D*)\\])(?:\\{([\\da-z\\-]+)\\})? -> Permission and targetUuid
         //
         String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
         Pattern pattern = Pattern.compile(regex);
