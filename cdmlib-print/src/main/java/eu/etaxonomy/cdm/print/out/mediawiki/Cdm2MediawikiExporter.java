@@ -439,6 +439,7 @@ public class Cdm2MediawikiExporter {
 
 			for(Element uri : media_uris){					
 				String uriValue = uri.getValue();	
+				logger.info("The media uri is " + uriValue);
 				downloadImage(uriValue);
 			}
 
@@ -465,13 +466,16 @@ public class Cdm2MediawikiExporter {
 	private void downloadImage(String url) throws MalformedURLException,
 	IOException {
 		URL imageUrl = new URL(url);
-		String[] arr = url.split(File.separator);
+		String[] arr = url.split("/");
 		String filename = arr[arr.length - 1];
 		System.out.println(filename);
-		String filePath = temporaryImageExportFolder.getAbsolutePath()
-				+ File.separator + filename;
+		//String filePath = temporaryImageExportFolder.getAbsolutePath()
+			//	+ File.separator + filename;
+		String filePath = temporaryExportFolder.getAbsolutePath()
+				+ "/images/" + filename;
+		System.out.println(filePath);
 		File imageFile = new File(filePath);
-		System.out.println(imageFile.getAbsolutePath());
+		logger.info("Downloading image " + imageFile.getAbsolutePath());
 		FileUtils.copyURLToFile(imageUrl, new File(filePath));
 	}
 
