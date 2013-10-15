@@ -25,12 +25,14 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -185,5 +187,23 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 					
 		//oldTaxonNode.delete();		
 		return synonmyRelationship.getSynonym();
+	}
+	
+	@Transactional(readOnly = false)
+	public List<UUID> deleteTaxonNodes(List<TaxonNode> nodes){
+		boolean deleteChildren;
+		List<UUID> deletedUUIDs = new ArrayList<UUID>();
+		for (TaxonNode node:nodes){
+			Classification classification = node.getClassification();
+			if (classification.getChildNodes().contains(node)){
+				classification.deleteChildNode(node);
+			} else {
+				node.getTaxon().removeTaxonNode(node);
+			}
+			deletedUUIDs.add(node.getUuid());
+			dao.delete(node);
+		}
+		return deletedUUIDs;	
+		
 	}
 }

@@ -1002,9 +1002,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
         UUID uuidSameAs=UUID.fromString("c2bb0f01-f2dd-43fb-ba12-2a85727ccb8d");
-        
+        commitAndStartNewTransaction(tableNames);
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
         service.save(testTaxon);
+        commitAndStartNewTransaction(tableNames);
         int nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
         Taxon parent = (Taxon)service.find(TaxonGenerator.GENUS_UUID);
@@ -1015,7 +1016,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	config.setDeleteTaxonNodes(false);
     	config.setDeleteMisappliedNamesAndInvalidDesignations(false);
         try {
-			commitAndStartNewTransaction(tableNames);
+			//commitAndStartNewTransaction(tableNames);
         	
             service.deleteTaxon(child1, config, null);
             Assert.fail("Delete should throw an error as long as name is used in classification.");
@@ -1099,14 +1100,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		try {
 			service.deleteTaxon(speciesTaxon, config, null);
 		} catch (DataChangeNoRollbackException e) {
-			
-			Assert.fail();
 			e.printStackTrace();
+			Assert.fail();
+			
 		}
 		commitAndStartNewTransaction(null);
 		
 		taxonName = (BotanicalName) nameService.find(TaxonGenerator.SPECIES1_NAME_UUID);
 		Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+		
 		//descriptionService.find(descrUUID);
 		assertNull(descriptionService.find(descrUUID));
 		assertNull(descriptionService.getDescriptionElementByUuid(descrElementUUID));
@@ -1218,7 +1220,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		Taxon childTaxon = (Taxon)service.find(childUUID);
 		assertNotNull(tax);
 		node = nodeService.find(childNodeUUID);
-		assertNull(node);
+		assertNotNull(node);
 	}
 	
 	@Test
@@ -1230,7 +1232,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 			
 		Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
 				
-		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+	Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
 		TaxonNode node =nodes.next();
 		Classification classification = node.getClassification();
 		classification.addParentChild(topMost, testTaxon, null, null);
@@ -1270,6 +1272,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				
 		Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
 		TaxonNode node =nodes.next();
+		UUID taxonNodeUUID = node.getUuid();
 		Classification classification = node.getClassification();
 		classification.addParentChild(topMost, testTaxon, null, null);
 		UUID topMostUUID = service.save(topMost);
@@ -1293,7 +1296,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		nodes = topMostNodes.iterator();
 		TaxonNode topMostNode = nodes.next();
 		int size = topMostNode.getChildNodes().size();
-				
+		node = nodeService.find(taxonNodeUUID);
+		assertNull(node);
 		assertEquals(0, size);
 	}
 

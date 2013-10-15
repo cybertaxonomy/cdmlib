@@ -202,7 +202,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	 */
 	protected boolean removeChildNode(TaxonNode node){
 		boolean result = false;
-		
 		if(!rootNodes.contains(node)){
 			throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
 		}

@@ -269,8 +269,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
         Taxon taxon = node.getTaxon();
-        taxon.removeTaxonNode(node);
         node.setTaxon(null);
+        taxon.removeTaxonNode(node);
+        
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
@@ -294,11 +295,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
         boolean result = removeChildNode(node);
-               
+        Taxon taxon = node.getTaxon();
+        node.setTaxon(null);
+        taxon.removeTaxonNode(node);
         if (deleteChildren){
 	        ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
 	        for(TaxonNode childNode : childNodes){
-	            node.deleteChildNode(childNode);
+	            node.deleteChildNode(childNode, deleteChildren);
 	        }
         }
 

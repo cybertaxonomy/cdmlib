@@ -110,7 +110,7 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
         assertEquals("there should be six taxa", 6, taxa.size());
 
-        taxonNodeDao.delete(taxNode2);
+        taxonNodeDao.delete(taxNode2, true);
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         taxa = taxonDao.getAllTaxonBases(10, 0);
         assertEquals("there should be five taxa left", 5, taxa.size());

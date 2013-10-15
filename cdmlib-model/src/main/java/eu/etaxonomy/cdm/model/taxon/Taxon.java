@@ -322,7 +322,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         	parent.removeChildNode(taxonNode);
         }
         taxonNode.setTaxon(null);
-    	return taxonNodes.remove(taxonNode);
+        return taxonNodes.remove(taxonNode);
         
     }
     
@@ -357,6 +357,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     	TaxonNode node;
     	TaxonNode parent;
     	boolean success = false;
+    	List<TaxonNode> removeNodes = new ArrayList<TaxonNode>();
     	while (nodesIterator.hasNext()){
     		node = nodesIterator.next();
     		if (!deleteChildren){
@@ -365,19 +366,27 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     			parent = node.getParent();
     			while (childrenIterator.hasNext()){
     				TaxonNode childNode = childrenIterator.next();
-    				childrenIterator.remove();
     				if (parent != null){
     					parent.addChildNode(childNode, null, null);
     				}else{
     					childNode.setParent(null);
     				}
-    			}	
+    			}
+    			
+    			for (int i = 0; i<node.getChildNodes().size(); i++){
+    				node.removeChild(i);
+    			}
     			
     			
     		}
-    		success = node.delete(deleteChildren);
-    		node.setTaxon(null);
-			nodesIterator.remove();
+    		    		
+    		removeNodes.add(node);
+	 	}
+    	for (int i = 0; i<removeNodes.size(); i++){
+    		TaxonNode removeNode = removeNodes.get(i);
+    		success = removeNode.delete(deleteChildren);
+    		removeNode.setTaxon(null);
+    		removeTaxonNode(removeNode);
     	}
     	return success;
     	

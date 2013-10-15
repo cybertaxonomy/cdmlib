@@ -45,12 +45,15 @@ public class TaxonGenerator {
 	public static UUID SPECIES2_UUID = UUID.fromString("e20eb549-ced6-4e79-9d74-44f0792a4929");
 	public static UUID SYNONYM2_NAME_UUID = UUID.fromString("7c17c811-4201-454b-8108-7be7c91c0938");
 	public static UUID SPECIES5_NAME_UUID = UUID.fromString("0c6ecaac-804d-49e5-a33f-1b7ee77439e3");
+	//public static UUID DESCRIPTION1_UUID = UUID.fromString("f3e061f6-c5df-465c-a253-1e18ab4c7e50");
+	//public static UUID DESCRIPTION2_UUID = UUID.fromString("1b009a40-ebff-4f7e-9f7f-75a850ba995d");
 	
 	
 	
 	private Random rnd = new Random();
 
 	public static Taxon getTestTaxon(){
+		int descrIndex = 6000;
 		Person deCandolle = Person.NewInstance();
 		deCandolle.setTitleCache("DC.", true);
 		Reference<?> sec = ReferenceFactory.newDatabase();
@@ -86,7 +89,9 @@ public class TaxonGenerator {
         botSpecies.setUuid(SPECIES1_NAME_UUID);
         Taxon childTaxon = Taxon.NewInstance(botSpecies, sec); 
         childTaxon.setUuid(SPECIES1_UUID);
-        childTaxon.addDescription(getTestDescription());
+        TaxonDescription taxDesc = getTestDescription(descrIndex++);
+        //taxDesc.setUuid(DESCRIPTION1_UUID);
+        childTaxon.addDescription(taxDesc);
         Classification classification = getTestClassification("TestClassification");
         classification.addParentChild(genusTaxon, childTaxon, citationRef, "456");
 //        childTaxon.setTaxonomicParent(genusTaxon, citationRef, "456"); 
@@ -134,16 +139,18 @@ public class TaxonGenerator {
         missName.setUuid(SPECIES5_NAME_UUID);
         Taxon misappliedName = Taxon.NewInstance(missName, sec); 
         childTaxon2.addMisappliedName(misappliedName, citationRef, "125");
-       
-        genusTaxon.addDescription(getTestDescription());
+        taxDesc = getTestDescription(descrIndex++);
+       // taxDesc.setUuid(DESCRIPTION2_UUID);
+        genusTaxon.addDescription(taxDesc);
        
         
         return genusTaxon; 
 	}
 	
-	public static TaxonDescription getTestDescription(){
+	public static TaxonDescription getTestDescription(int index){
 		TaxonDescription taxonDescription = TaxonDescription.NewInstance();
 		Language language = Language.DEFAULT();
+		//taxonDescription.setId(index);
 		
 		//textData
 		TextData textData = TextData.NewInstance();
