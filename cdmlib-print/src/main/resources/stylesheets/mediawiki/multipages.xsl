@@ -3,8 +3,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:functx="http://www.functx.com"
 	xmlns:fn="http://www.w3.org/2005/xpath-functions">
 
-	<xsl:import
-		href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl" />
+	<xsl:import href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl" />
 	<!-- xsl:output method="xml" indent="no"/> -->
 	<xsl:strip-space elements="text" />
 
@@ -281,7 +280,8 @@
 		<xsl:apply-templates select="key" />
 		<xsl:apply-templates select="descriptions" />
 		<!-- A change to Gallery: uncomment following line: -->
-		<!--<xsl:call-template name="gallery"/> -->
+		<xsl:call-template name="gallery"/>
+		<xsl:call-template name="featureGallery" />
 		<!-- TODO to change to Figure Gallery: call figure gallery in the right 
 			place what else? -->
 	</xsl:template>
@@ -823,7 +823,8 @@
 		<!-- feature is "Figures -->
 		<!-- A Gallery: uncomment following line -->
 		<!--<xsl:apply-templates select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/> -->
-		<!-- A Gallery: comment following line <xsl:call-template name="gallery"/> -->
+		<!-- A Gallery: comment following line -->
+		<!--xsl:call-template name="gallery"/-->
 
 		<xsl:call-template name="wiki-newline" />
 		<xsl:call-template name="wiki-newline" />
@@ -852,7 +853,7 @@
 		<!-- A change to Figure Gallery: uncomment following line -->
 		<!--<xsl:text>{{EDIT_Figure_Gallery|files=</xsl:text> -->
 		<xsl:call-template name="wiki-newline" />
-		<xsl:apply-templates select=".//media/e/representations/e/parts/e/uri" />
+		<xsl:apply-templates select="../media/e/representations/e/parts/e/uri" />
 
 		<xsl:text>}}</xsl:text>
 		<xsl:call-template name="wiki-newline" />
@@ -872,6 +873,9 @@
 		<xsl:text>}}</xsl:text>
 		<xsl:call-template name="wiki-newline" />
 		<xsl:call-template name="wiki-newline" />
+		
+		<xsl:call-template name="gallery_file" />
+		
 	</xsl:template>
 
 
