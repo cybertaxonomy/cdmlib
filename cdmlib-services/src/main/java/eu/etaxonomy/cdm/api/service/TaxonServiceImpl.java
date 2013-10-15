@@ -1054,6 +1054,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		            	}
 	            		if (node != null){
 	            			success =taxon.removeTaxonNode(node, deleteChildren);
+	            			nodeService.delete(node);
 	            		} else {
 	            			message = "Taxon is not used in defined classification";
 	            			throw new DataChangeNoRollbackException(message);
@@ -1143,6 +1144,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	return taxon.getUuid();
             } else{
             	message = "Taxon can't be deleted as it is used in another Taxonnode";
+            	if (!config.isDeleteInAllClassifications() && classification != null) {
+            		message += "The Taxonnode in " + classification.getTitleCache() + " was deleted.";
+            	}
             	throw new ReferencedObjectUndeletableException(message);
             }
             

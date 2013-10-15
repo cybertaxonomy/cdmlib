@@ -20,6 +20,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.joda.time.Seconds;
 import org.junit.Assert;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -1211,7 +1212,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 				service.deleteTaxon(testTaxon, config, secondClassification);
 				Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
 			} catch (DataChangeNoRollbackException e) {
-				
+				logger.debug(e.getMessage());
 			}
 				
 		//commitAndStartNewTransaction(null);
@@ -1220,7 +1221,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 		Taxon childTaxon = (Taxon)service.find(childUUID);
 		assertNotNull(tax);
 		node = nodeService.find(childNodeUUID);
-		assertNotNull(node);
+		assertNull(node);
 	}
 	
 	@Test
