@@ -133,7 +133,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                         logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
                         return ACCESS_GRANTED;
                     }
-                    if ( vr.isUuidMatch  && vr.isClassMatch && vr.isPermissionMatch){
+                    if ( vr.isUuidMatch && vr.isClassMatch && vr.isPermissionMatch ){
                         logger.debug("permission, class and uuid are matching => ACCESS_GRANTED");
                         return ACCESS_GRANTED;
                     }
@@ -142,7 +142,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                     // If the authority contains a property AND the voter is responsible for this class
                     // we must change the fallThroughVote
                     // to ABSTAIN, since no decision can be made in this case at this point
-                    //
+                    // the decision will be delegated to the furtherVotingDescisions() method
                     if(vr.isClassMatch){
                         fallThroughVote = ACCESS_ABSTAIN;
                     }

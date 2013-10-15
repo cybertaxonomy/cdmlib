@@ -181,6 +181,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             - TAXONBASE.[CREATE]
             - TAXONBASE.[DELETE]
             - TAXONBASE.[UPDATE]
+            - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
+            - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
          */
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
@@ -671,6 +673,41 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertNotNull("evaluation should fail since the user is not permitted to edit Taxa", securityException);
         taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         assertTrue(taxon.getDescriptions().contains(description));
+    }
+
+    @Test
+    public void testMoveDescriptionElement(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        context.setAuthentication(authentication);
+
+        RuntimeException securityException = null;
+
+        Taxon t_acherontia_lachesis = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
+        Taxon t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
+
+        TaxonDescription description_acherontia_styx = t_acherontia_styx.getDescriptions().iterator().next();
+        TaxonDescription description_acherontia_lachesis = t_acherontia_lachesis.getDescriptions().iterator().next();
+
+        try {
+            descriptionService.moveDescriptionElementsToDescription(description_acherontia_styx.getElements(), description_acherontia_lachesis, false);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        /*
+         * Expectation:
+         * The user should not be granted to add the Description to a taxon
+         */
+        Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
+
     }
 
     @Test

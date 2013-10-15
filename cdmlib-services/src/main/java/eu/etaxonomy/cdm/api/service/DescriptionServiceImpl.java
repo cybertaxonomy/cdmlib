@@ -594,7 +594,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 //			descriptionElements = descriptionElementsTmp;
         }
         for (DescriptionElementBase element : descriptionElements){
-            DescriptionBase<?> description = element.getInDescription();
+            DescriptionBase description = element.getInDescription();
             try {
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 targetDescription.addElement(newElement);

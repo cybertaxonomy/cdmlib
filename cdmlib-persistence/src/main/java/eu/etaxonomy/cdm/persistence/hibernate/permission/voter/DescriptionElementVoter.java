@@ -6,7 +6,6 @@ import java.util.UUID;
 import org.springframework.security.access.ConfigAttribute;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
@@ -52,9 +51,15 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
                 logger.debug("permission, class and uuid are matching => ACCESS_GRANTED");
                 return ACCESS_GRANTED;
             }
+
+            // the CdmAuthority has a property like but this is not matching the feature name
+            // so access is denied
+            logger.debug("permission, class and uuid are matching => ACCESS_GRANTED");
+            return ACCESS_DENIED;
         }
 
-        return ACCESS_DENIED;
+        // nothing to do here since the CdmAuthority has no property naming a feature
+        return ACCESS_ABSTAIN;
     }
 
 }
