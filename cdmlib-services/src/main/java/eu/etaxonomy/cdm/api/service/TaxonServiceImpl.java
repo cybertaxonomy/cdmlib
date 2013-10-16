@@ -946,19 +946,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             config = new TaxonDeletionConfigurator();
         }
 
-            //    	SynonymRelationShip
+            // --- DeleteSynonymRelations
             if (config.isDeleteSynonymRelations()){
                 boolean removeSynonymNameFromHomotypicalGroup = false;
+                // use tmp Set to avoid concurrent modification
                 Set<SynonymRelationship> synRelsToDelete = new HashSet<SynonymRelationship>();
                 synRelsToDelete.addAll(taxon.getSynonymRelations());
                 for (SynonymRelationship synRel : synRelsToDelete){
                     Synonym synonym = synRel.getSynonym();
                     taxon.removeSynonymRelation(synRel, removeSynonymNameFromHomotypicalGroup);
+
+                    // --- DeleteSynonymsIfPossible
                     if (config.isDeleteSynonymsIfPossible()){
                         //TODO which value
                         boolean newHomotypicGroupIfNeeded = true;
                         SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
-
                         deleteSynonym(synonym, taxon, synConfig);
                     }else{
                         deleteSynonymRelationships(synonym, taxon);
@@ -966,17 +968,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
             }
 
-            //    	TaxonRelationship
+            // --- DeleteTaxonRelationships
             if (! config.isDeleteTaxonRelationships()){
                 if (taxon.getTaxonRelations().size() > 0){
-                    String message = "Taxon can't be deleted as it is related to another taxon. Remove taxon from all relations to other taxa prior to deletion.";
+                    String message = "Taxon can't be deleted as it is related to another taxon. " +
+                            "Remove taxon from all relations to other taxa prior to deletion.";
                     throw new ReferencedObjectUndeletableException(message);
                 }
             } else{
                 for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
-
-
-
                     if (config.isDeleteMisappliedNamesAndInvalidDesignations()){
                         if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) || taxRel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
                             if (taxon.equals(taxRel.getToTaxon())){
@@ -1002,24 +1002,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
             }
 
-
-
-
             //    	TaxonDescription
             if (config.isDeleteDescriptions()){
-                    Set<TaxonDescription> descriptions = taxon.getDescriptions();
+                Set<TaxonDescription> descriptions = taxon.getDescriptions();
 
-                    for (TaxonDescription desc: descriptions){
-                        //TODO use description delete configurator ?
-                        //FIXME check if description is ALWAYS deletable
-                        if (desc.getDescribedSpecimenOrObservation() != null){
-                            String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-                                    " which also describes specimens or abservations";
-                            throw new ReferencedObjectUndeletableException(message);
-                        }
-                        descriptionService.delete(desc);
-                        taxon.removeDescription(desc);
+                for (TaxonDescription desc: descriptions){
+                    //TODO use description delete configurator ?
+                    //FIXME check if description is ALWAYS deletable
+                    if (desc.getDescribedSpecimenOrObservation() != null){
+                        String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
+                                " which also describes specimens or abservations";
+                        throw new ReferencedObjectUndeletableException(message);
                     }
+                    descriptionService.delete(desc);
+                    taxon.removeDescription(desc);
+                }
             }
 
 
@@ -1090,10 +1087,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 }
                             }
 
-
-
                         nodeService.deleteTaxonNodes(nodesList);
-
                     }
                     if (!success){
                          message = "The taxon node could not be deleted.";
@@ -1138,8 +1132,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
                     }
                 }*/
-
-
 
             if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
                 dao.delete(taxon);

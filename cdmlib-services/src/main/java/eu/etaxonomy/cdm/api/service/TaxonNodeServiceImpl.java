@@ -117,13 +117,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
             }
         }
-        SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName, synonymRelationshipType, citation, citationMicroReference);
+        SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
+                synonymRelationshipType, citation, citationMicroReference);
 
         // Move Synonym Relations to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
         for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
             SynonymRelationshipType srt;
-            if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
+            if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null
+                    && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
                 srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
                 srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
