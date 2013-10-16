@@ -22,8 +22,6 @@ import org.apache.lucene.queryParser.ParseException;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
-
-import eu.etaxonomy.cdm.api.service.config.TaxonBaseDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -213,11 +211,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
-     * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
-     * @param syn the synonym
+     * Deletes all synonym relationships of a given synonym. If taxon is given
+     * only those relationships to the taxon are deleted.
+     *
+     * @param syn
+     *            the synonym
      * @param taxon
      * @return
+     * @deprecated This method must no longer being used since the
+     *             SynonymRelationship is annotated at the {@link Taxon} and at
+     *             the {@link Synonym} with <code>orphanDelete=true</code>. Just
+     *             remove the from and to entities from the relationship and
+     *             hibernate will care for the deletion. Using this method can cause
+     *             <code>StaleStateException</code> (see http://dev.e-taxonomy.eu/trac/ticket/3797)
+     *
      */
+    @Deprecated
     public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
     /**
@@ -788,8 +797,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public long deleteSynonymRelationships(Synonym syn);
 
 
-    
-    
+
+
 
     /**
      * Removes a synonym.<BR><BR>
@@ -813,7 +822,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public void deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
-    
+
     /**
      * Returns the SynonymRelationships (of where relationship.type == type, if this argument is supplied)
      * depending on direction, where the supplied taxon is relatedTo or the supplied synonym is relatedFrom.
@@ -866,7 +875,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
 
 
-    
+
     /**
      * Removes a synonym.<BR><BR>
      *
@@ -887,8 +896,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param config
      * @throws DataChangeNoRollbackException
      */
-	void deleteSynonym(Synonym synonym, Taxon taxon,
-			SynonymDeletionConfigurator config);
+    void deleteSynonym(Synonym synonym, Taxon taxon,
+            SynonymDeletionConfigurator config);
 
 
 

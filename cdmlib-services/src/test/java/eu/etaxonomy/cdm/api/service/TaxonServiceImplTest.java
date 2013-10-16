@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -1124,8 +1125,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon speciesTaxon = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
 
+        SynonymRelationship synRel = speciesTaxon.getSynonymRelations().iterator().next();
+        UUID synonymRelationUuid = synRel.getUuid();
+        UUID synonymUuid = synRel.getSynonym().getUuid();
+
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
-        config.setDeleteSynonymRelations(true);
+        config.setDeleteSynonymsIfPossible(false);
 
         try {
             service.deleteTaxon(speciesTaxon, config, null);
@@ -1138,6 +1143,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon taxon = (Taxon)service.find(TaxonGenerator.SPECIES2_UUID);
         assertNull("The deleted taxon should no longer exist", taxon);
+
+        assertNotNull("The synonym should still exist since DeleteSynonymsIfPossible was false", service.find(synonymUuid));
+
+        for(RelationshipBase rel : service.getAllRelationships(1000, 0)){
+            if(rel instanceof SynonymRelationship && rel.getUuid().equals(synonymRelationUuid)){
+                Assert.fail("The SynonymRelationship should no longer exist");
+            }
+        }
     }
 
 

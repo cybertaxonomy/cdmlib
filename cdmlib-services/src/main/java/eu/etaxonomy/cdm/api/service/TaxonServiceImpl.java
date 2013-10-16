@@ -954,6 +954,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 synRelsToDelete.addAll(taxon.getSynonymRelations());
                 for (SynonymRelationship synRel : synRelsToDelete){
                     Synonym synonym = synRel.getSynonym();
+                    // taxon.removeSynonymRelation will set the accepted taxon and the synonym to NULL
+                    // this will cause hibernate to delete the relationship since
+                    // the SynonymRelationship field on both is annotated with removeOrphan
+                    // so no further explicit deleting of the relationship should be done here
                     taxon.removeSynonymRelation(synRel, removeSynonymNameFromHomotypicalGroup);
 
                     // --- DeleteSynonymsIfPossible
@@ -962,9 +966,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         boolean newHomotypicGroupIfNeeded = true;
                         SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
                         deleteSynonym(synonym, taxon, synConfig);
-                    }else{
-                        deleteSynonymRelationships(synonym, taxon);
                     }
+                    // relationship will be deleted by hibernate automatically,
+                    // see comment above and http://dev.e-taxonomy.eu/trac/ticket/3797
+                    // else{
+                    //     deleteSynonymRelationships(synonym, taxon);
+                    // }
                 }
             }
 
