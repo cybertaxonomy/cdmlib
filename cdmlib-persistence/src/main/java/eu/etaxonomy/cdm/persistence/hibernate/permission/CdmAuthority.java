@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -65,6 +67,8 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     private static final long serialVersionUID = 1L;
 
     public static final Logger logger = Logger.getLogger(CdmAuthority.class);
+
+    private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<String, CdmAuthority>();
 
     CdmPermissionClass permissionClass;
     String property;
@@ -224,14 +228,20 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * For details on the syntax please refer to the class
      * documentation above.
      * <p>
-     *
-     *
+     * This method is mainly used by the permission voters ({@link CdmPermissionVoter)}.
+     * In order to improve the voting process this method is caching the <code>CdmAuthority</code>
+     * instances per <code>GrantedAuthority</code> string in a map.
      *
      * @param authority
      * @throws ParsingException
      */
     public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws ParsingException {
-        return new CdmAuthority(authority.getAuthority());
+        CdmAuthority cdmAuthority = grantedAuthorityCache.get(authority.getAuthority());
+        if(cdmAuthority == null){
+            cdmAuthority = new CdmAuthority(authority.getAuthority());
+        }
+        return cdmAuthority;
+//        return  new CdmAuthority(authority.getAuthority());
     }
 
     /* (non-Javadoc)
