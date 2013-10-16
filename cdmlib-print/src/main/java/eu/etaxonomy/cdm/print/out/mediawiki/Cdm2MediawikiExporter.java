@@ -245,15 +245,33 @@ public class Cdm2MediawikiExporter {
 
 		logger.info("CDM xml file created and saved to2 "+ cdm_output_file);
 
+		WikiBot myBot = new WikiBot(wikiUrl, wikiLoginUid, passwd);
+
+		// login to mediawiki
+		try {
+			if (!myBot.login()) {
+				System.out.println("Login failed");
+				return;
+			}
+		} catch (Exception e) {
+			logger.info("Cannot log into Mediwiki: "+wikiUrl);
+			e.printStackTrace();
+		}
+
+		logger.info("logged in to mediawiki " + wikiLoginUid + ".");
+
 		// import into mediawiki
 		if (import2Mediawiki) {
-			uploadToMediawiki(wikiUrl, wikiLoginUid, passwd);
+			uploadToMediawiki(myBot);
 		}
 
 		if (importImages) {
-			downloadAllImages();
+			uploadImagesToMediawiki(myBot);
 			logger.info("images downloaded to "+temporaryImageExportFolder);
 		}
+		
+		// logout
+		myBot.logout();
 
 		if (deleteOutputFiles) {
 			deleteOutputFiles();
@@ -308,27 +326,18 @@ public class Cdm2MediawikiExporter {
 	 * @param passwd
 	 * @param deleteOutputFile
 	 */
-	public void uploadToMediawiki(String inputFilePath, String wikiUrl,
-			String wikiUser, String passwd) {
+	public void uploadToMediawiki(String inputFilePath, WikiBot myBot) {
 		mediawikiFileWithPath = inputFilePath;
-		uploadToMediawiki(wikiUrl, wikiUser, passwd);
+		uploadToMediawiki(myBot);
 	}
 
 	/*
 	 * @author l.morris
 	 */
-	private void uploadToMediawiki(String wikiUrl, String wikiUser,
-			String passwd) {
-
-		WikiBot myBot = new WikiBot(wikiUrl, wikiUser, passwd);
+	private void uploadToMediawiki(WikiBot myBot) {
 
 		// login to mediawiki
 		try {
-			if (!myBot.login()) {
-				System.out.println("Login failed");
-				return;
-			}
-			logger.info("logged in to mediawiki " + wikiUrl + ".");
 
 			// parse wiki xml file and import pages one by one
 			// to mediawiki
@@ -349,8 +358,7 @@ public class Cdm2MediawikiExporter {
 				String text = page.getChild("revision").getChild("text")
 						.getText();
 				myBot.edit(title, text, PAGE_SUMMARY);
-				logger.info("exported page " + i + "/" + length + " " + title
-						+ " to " + wikiUrl + ".");
+				logger.info("exported page " + i + "/" + length + " " + title);
 				i++;
 			}
 
@@ -404,11 +412,6 @@ public class Cdm2MediawikiExporter {
 			// */
 			// -----------
 
-			// logout
-			myBot.logout();
-
-		} catch (LoginException e) {
-			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -419,7 +422,7 @@ public class Cdm2MediawikiExporter {
 
 	}
 
-	private void downloadAllImages() {
+	private void uploadImagesToMediawiki(WikiBot myBot) {
 		//TODO
 		// fetch images from input document and save them tmp
 
@@ -428,11 +431,6 @@ public class Cdm2MediawikiExporter {
 		// get published output file
 		org.jdom.Document document = getDocument(cdm_output_file);
 
-
-		// get media nodes
-		//Element rootElement = document.getRootElement();
-
-
 		try {
 			//Element media_uri = (Element)XPath.selectSingleNode(rootElement, "//Taxon/media/e/representations/e/parts/e/uri");
 			List<Element> media_uris = XPath.selectNodes(document, "//Taxon/media/e/representations/e/parts/e/uri");
@@ -440,7 +438,7 @@ public class Cdm2MediawikiExporter {
 			for(Element uri : media_uris){					
 				String uriValue = uri.getValue();	
 				logger.info("The media uri is " + uriValue);
-				downloadImage(uriValue);
+				uploadImage(myBot, uriValue);
 			}
 
 		} catch (JDOMException e) {
@@ -463,7 +461,7 @@ public class Cdm2MediawikiExporter {
 	 * TODO give a unique id to each image name
 	 * 			but this has to be done also in the wikioutput then
 	 */
-	private void downloadImage(String url) throws MalformedURLException,
+	private void uploadImage(WikiBot myBot, String url) throws MalformedURLException,
 	IOException {
 		URL imageUrl = new URL(url);
 		String[] arr = url.split("/");
@@ -471,12 +469,22 @@ public class Cdm2MediawikiExporter {
 		System.out.println(filename);
 		//String filePath = temporaryImageExportFolder.getAbsolutePath()
 			//	+ File.separator + filename;
-		String filePath = temporaryExportFolder.getAbsolutePath()
-				+ "/images/" + filename;
-		System.out.println(filePath);
+		
+		//Download image to a local directory first
+		String filePath = temporaryExportFolder.getAbsolutePath() + "/images/" + filename;
+
 		File imageFile = new File(filePath);
 		logger.info("Downloading image " + imageFile.getAbsolutePath());
+		
 		FileUtils.copyURLToFile(imageUrl, new File(filePath));
+		try {
+			//Upload image to Mediawiki
+			//TODO: Change text to give a description of the image
+			myBot.uploadAFile(imageFile, filename, "some text", "no comment");
+		} catch (LoginException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	private Document getDocument(String filePath) {

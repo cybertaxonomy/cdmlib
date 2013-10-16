@@ -5,6 +5,7 @@ import static org.junit.Assert.*;
 import java.net.MalformedURLException;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 
 public class Cdm2MediawikiExporterTest {
@@ -15,7 +16,7 @@ public class Cdm2MediawikiExporterTest {
 
 			// palmweb
 			String webServiceUrl = "http://dev.e-taxonomy.eu/cdmserver/palmae/";
-			String taxonName = "Acrocomia";
+			String taxonName = "Acrocomia";//"Actinorhytis";
 			String wikiPrefix = null;
 
 			// flora of c a
@@ -66,7 +67,7 @@ public class Cdm2MediawikiExporterTest {
 
 	}
 	
-	@Test
+	@Ignore
 	public void testExportFromXmlFile() throws MalformedURLException {
 		//TODO
 		cdmExported="/home/sybille/.cdmLibrary/mediawiki_tmp/20131009-2041-cdm_output.xml";
@@ -77,13 +78,13 @@ public class Cdm2MediawikiExporterTest {
 				  loginName, password, wikiPrefix, true, false, false);
 	}
 	
-	@Test
+	@Ignore
 	public void testUploadToMediawiki(){
 		 //do only wiki import
 		//TODO
 		wikiFile="/home/sybille/.cdmLibrary/mediawiki_tmp/20131009-2041-output.xml";
-		exporter.uploadToMediawiki(wikiFile,
-		 wikiUrl, loginName, password);
+		//exporter.uploadToMediawiki(wikiFile,
+		 //wikiUrl, loginName, password);
 		 
 	}
 

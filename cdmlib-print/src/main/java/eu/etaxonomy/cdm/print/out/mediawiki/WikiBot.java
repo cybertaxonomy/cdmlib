@@ -621,8 +621,6 @@ public class WikiBot {
 		for (Map.Entry<String, Object> entry : params.entrySet()) {
 			String name = entry.getKey();
 			Object value = entry.getValue();
-			System.out.println("the name2 "+name);
-			System.out.println("the value2 "+value);
 
 			out.writeBytes("Content-Disposition: form-data; name=\"" + name + "\"" + _BOUND_BREAK);
 			if (value instanceof String) {
