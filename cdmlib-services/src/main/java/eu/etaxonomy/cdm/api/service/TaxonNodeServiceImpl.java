@@ -143,7 +143,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 newAcceptedTaxonNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference()); // childNode.getSynonymToBeUsed()
             }
         }
-        
+
         //Move Taxon RelationShips to new Taxon
         Set<TaxonRelationship> obsoleteTaxonRelationships = new HashSet<TaxonRelationship>();
         for(TaxonRelationship taxonRelationship : oldTaxon.getTaxonRelations()){
@@ -163,10 +163,6 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             // Remove old relationships
             taxonRelationship.setToTaxon(null);
             taxonRelationship.setFromTaxon(null);
-
-
-
-
         }
 
 
