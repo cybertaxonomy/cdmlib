@@ -62,4 +62,15 @@ public class DescriptionElementVoter extends CdmPermissionVoter {
         return ACCESS_ABSTAIN;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public boolean isOrpahn(CdmBase object) {
+        if(object instanceof DescriptionElementBase){
+            return ((DescriptionElementBase)object).getInDescription() == null;
+        }
+        return false;
+    }
+
 }

@@ -66,4 +66,15 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
         return false;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public boolean isOrpahn(CdmBase object) {
+        if(object instanceof TaxonNode){
+            return ((TaxonNode)object).getParent() == null;
+        }
+        return false;
+    }
+
 }

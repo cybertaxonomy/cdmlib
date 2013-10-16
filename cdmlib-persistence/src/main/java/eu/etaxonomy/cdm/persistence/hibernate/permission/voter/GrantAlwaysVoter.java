@@ -39,4 +39,12 @@ public class GrantAlwaysVoter extends CdmPermissionVoter {
         return CdmBase.class;
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public boolean isOrpahn(CdmBase object) {
+        return false;
+    }
+
 }

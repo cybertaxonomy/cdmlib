@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
 
 import java.util.Collection;
+import java.util.EnumSet;
 
 import org.apache.log4j.Logger;
 import org.springframework.security.access.AccessDecisionVoter;
@@ -19,6 +20,7 @@ import org.springframework.security.core.GrantedAuthority;
 
 import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 
@@ -31,6 +33,10 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
  */
 public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase> {
 
+    /**
+     *
+     */
+    private static final EnumSet<CRUD> DELETE = EnumSet.of(CRUD.DELETE);
     public static final Logger logger = Logger.getLogger(CdmPermissionVoter.class);
 
     /* (non-Javadoc)
@@ -124,10 +130,11 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                 vr.isPermissionMatch = auth.getOperation().containsAll(evalPermission.getOperation());
                 vr.isUuidMatch = auth.hasTargetUuid() && auth.getTargetUUID().equals(object.getUuid());
 
-                //
-                // only vote if no property is defined.
-                // Authorities with properties must be voted by type specific voters.
-                //
+                // first of all, always allow deleting orphan entities
+                if(vr.isClassMatch && evalPermission.getOperation().equals(DELETE) && isOrpahn(object)) {
+                    return ACCESS_GRANTED;
+                }
+
                 if(!auth.hasProperty()){
                     if ( !auth.hasTargetUuid() && vr.isClassMatch && vr.isPermissionMatch){
                         logger.debug("no targetUuid, class & permission match => ACCESS_GRANTED");
@@ -148,6 +155,7 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
                     }
                 }
 
+
                 //
                 // ask subclasses for further voting decisions
                 // subclasses will cast votes for specific Cdm Types
@@ -165,6 +173,21 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
         logger.debug("fallThroughVote => " + fallThroughVote);
         return fallThroughVote;
     }
+
+    /**
+     * The AccessDecisionVoter implementing this method can indicate via this method that
+     * an entity has become orphan in order to allow deleting it.
+     * <p>
+     * This is important
+     * in the context of hierarchic permission propagation like for example in
+     * tree structures where the permission to delete an entity is given on base
+     * of the permission on an parent object. Entities which become detached
+     * from the tree would otherwise no longer be deletable.
+     *
+     * @param object
+     * @return whether the cdm entity is orpahn
+     */
+    public abstract boolean isOrpahn(CdmBase object);
 
     /**
      * Override this method to implement specific decisions.

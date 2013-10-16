@@ -175,7 +175,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
                 if(tokens[i] != null && tokens[i].length() == 0){
                     tokens[i] = null;
                 }
-                logger.debug("[" + i + "]: " + tokens[i]+ "\n");
+                logger.trace("[" + i + "]: " + tokens[i]+ "\n");
             }
         } else {
             logger.debug("no match");
@@ -223,6 +223,8 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * Constructs a new CdmAuthority by parsing the authority string.
      * For details on the syntax please refer to the class
      * documentation above.
+     * <p>
+     *
      *
      *
      * @param authority

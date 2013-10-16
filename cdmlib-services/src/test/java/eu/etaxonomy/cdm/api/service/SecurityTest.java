@@ -51,6 +51,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -171,8 +172,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         /* User 'partEditor':
             - TAXONBASE.[ADMIN]
-            - TAXONNODE.[CREATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
-            - TAXONNODE.[UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - TAXONNODE.[UPDATE,CREATE,DELETE,READ,UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
+            - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
          */
         tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
 
@@ -695,7 +697,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
-            logger.debug("Expected failure of evaluation.", securityException);
+            logger.debug("Unexpected failure of evaluation.", securityException);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -704,10 +706,59 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         /*
          * Expectation:
-         * The user should not be granted to add the Description to a taxon
          */
         Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
 
+    }
+
+    @Test
+    public void testAcceptedTaxonToSynomym(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForPartEditor);
+        context.setAuthentication(authentication);
+
+        RuntimeException securityException = null;
+
+        Taxon t_acherontia_lachesis = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
+        Taxon t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
+
+
+        TaxonNode n_acherontia_lachesis = t_acherontia_lachesis.getTaxonNodes().iterator().next();
+        TaxonNode n_acherontia_styx = t_acherontia_styx.getTaxonNodes().iterator().next();
+
+        int numOfSynonymsBefore_styx = t_acherontia_styx.getSynonyms().size();
+        int numOfSynonymsBefore_lachesis = t_acherontia_lachesis.getSynonyms().size();
+
+        UUID synonymUuid = null; // UUID.randomUUID();
+
+        try {
+            Synonym synonym = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
+            synonymUuid = synonym.getUuid();
+            taxonService.saveOrUpdate(synonym);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.error("Unexpected Exception ", e);
+            Assert.fail("Unexpected Exception: " + e.getMessage());
+        } catch (DataChangeNoRollbackException e) {
+            Assert.fail("Unexpected Exception: " + e.getMessage());
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        /*
+         * Expectation:
+         */
+        Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
+
+        // reload from db and check assertions
+        t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
+        Assert.assertEquals("Acherontia styx now must have a synonym", numOfSynonymsBefore_styx + numOfSynonymsBefore_lachesis +  1, t_acherontia_styx.getSynonyms().size());
+        Assert.assertTrue("Acherontia lachesis now must be a synonym", taxonService.load(synonymUuid) instanceof Synonym);
+        Assert.assertNull("The old TaxonNode should no longer exist", taxonNodeService.find(n_acherontia_lachesis.getUuid()));
     }
 
     @Test
