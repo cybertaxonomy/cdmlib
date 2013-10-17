@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
@@ -86,7 +85,7 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		
 		Set<String> idSet = getTreeReferenceIdSet(state);
 
-		//nom reference map
+		//reference map
 		String nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 		Class<?> cdmClass = Reference.class;
 		Map<String, Reference> refMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
@@ -216,10 +215,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		return strQuery;
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String strQuery = 
@@ -228,13 +223,11 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
               	" INNER JOIN RelPTaxon ON FromTaxon.PTNameFk = RelPTaxon.PTNameFk1 AND FromTaxon.PTRefFk = RelPTaxon.PTRefFk1 " +
               	" INNER JOIN PTaxon AS ToTaxon ON RelPTaxon.PTNameFk2 = ToTaxon.PTNameFk AND RelPTaxon.PTRefFk2 = ToTaxon.PTRefFk " +
               	" INNER JOIN RelPTQualifier q ON q.RelPTQualifierId = RelPTaxon.RelQualifierFk " + 
-            " WHERE RelPTaxon.RelPTaxonId IN ("+ID_LIST_TOKEN+") ";
+            " WHERE RelPTaxon.RelPTaxonId IN ("+ID_LIST_TOKEN+") ORDER BY RelPTaxon.RelPTaxonId ";
 		return strQuery;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true ;
 		BerlinModelImportConfigurator config = state.getConfig();
@@ -373,11 +366,11 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		}
 		logger.info("Taxa to save: " + taxaToSave.size());
 		partitioner.startDoSave();
-		getTaxonService().save(taxaToSave);
+		getTaxonService().saveOrUpdate(taxaToSave);
 		classificationMap = null;
 		taxaToSave = null;
 			
-			return success;
+		return success;
 	}
 	
 
@@ -393,9 +386,6 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doInvoke(eu.etaxonomy.cdm.io.common.IImportConfigurator, eu.etaxonomy.cdm.api.application.CdmApplicationController, java.util.Map)
-	 */
 	@Override
 	protected void doInvoke(BerlinModelImportState state){				
 		try {
@@ -639,19 +629,13 @@ public class BerlinModelTaxonRelationImport  extends BerlinModelImportBase  {
 		return tree;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelTaxonRelationImportValidator();
 		return validator.validate(state);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoRelTaxa();
 	}
