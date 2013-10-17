@@ -79,6 +79,22 @@ public class Cdm2MediawikiExporter {
 	private File temporaryExportFolder = null;
 
 	private File temporaryImageExportFolder;
+	
+	public void export(String serviceUrl, String wikiUrl,
+			String wikiLoginUid, String passwd, String wikiPageNamespace,
+			boolean import2Mediawiki, boolean deleteOutputFiles,
+			boolean importImages) throws MalformedURLException {
+
+		// setup configurator - don't need to do this again in export method for each taxon
+		configurator = PublishConfigurator.NewRemoteInstance();
+		configurator.setWebserviceUrl(serviceUrl);
+		factory = configurator.getFactory();
+		
+		//get the taxon name		
+		//export(serviceUrl, taxonName, wikiUrl, wikiLoginUid, passwd,
+		//		wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
+		//		importImages, true);
+	}
 
 	/**
 	 * does the whole export process: runs cdm export to mediawiki xml-file and
@@ -428,7 +444,7 @@ public class Cdm2MediawikiExporter {
 	private void uploadImage(WikiBot myBot, String url) throws MalformedURLException,
 	IOException {
 		URL imageUrl = new URL(url);
-		String[] arr = url.split(FILESEPARATOR);
+		String[] arr = url.split("/");
 		String filename = arr[arr.length - 1];
 //		System.out.println(filename);
 		//String filePath = temporaryImageExportFolder.getAbsolutePath()

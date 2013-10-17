@@ -16,7 +16,7 @@ public class Cdm2MediawikiExporterTest {
 
 			// palmweb
 			String webServiceUrl = "http://dev.e-taxonomy.eu/cdmserver/palmae/";
-			String taxonName = "Acrocomia";//"Actinorhytis";
+			String taxonName = "Aphandra";//Acrocomia";//"Actinorhytis";
 			String wikiPrefix = null;
 
 			// flora of c a
@@ -64,6 +64,14 @@ public class Cdm2MediawikiExporterTest {
 		// do complete export
 				exporter.export(webServiceUrl, taxonName, wikiUrl, loginName, password,
 						wikiPrefix, false, false, true);
+
+	}
+	
+	@Test
+	public void testExportEntireDatabase() throws MalformedURLException {
+		// do complete export
+				exporter.export(webServiceUrl, wikiUrl, loginName, password,
+						wikiPrefix, true, false, true);
 
 	}
 	
