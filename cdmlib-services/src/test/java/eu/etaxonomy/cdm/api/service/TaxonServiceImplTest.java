@@ -159,6 +159,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         HomotypicalGroup groupTest = tax.getHomotypicGroup();
         HomotypicalGroup groupTest2 = syn.getHomotypicGroup();
         assertEquals(groupTest, groupTest2);
+        
     }
 
     @Test
@@ -570,7 +571,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 2 synonyms in the database", 2, nSynonyms);
         int nNames = nameService.count(TaxonNameBase.class);
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
-
+        
 
         UUID uuidSynonym1=UUID.fromString("7da85381-ad9d-4886-9d4d-0eeef40e3d88");
 
@@ -619,6 +620,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
         nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
+       
     }
 
     @Test
@@ -1003,6 +1005,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         service.save(testTaxon);
         commitAndStartNewTransaction(tableNames);
         int nTaxa = service.count(Taxon.class);
+        
         Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
         Taxon parent = (Taxon)service.find(TaxonGenerator.GENUS_UUID);
         Assert.assertNotNull("Parent taxon should exist", parent);
@@ -1115,9 +1118,16 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    @DataSet(value="BlankDataSet.xml")
+    
+    @DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="BlankDataSet.xml")
     public final void testDeleteTaxonDeleteSynonymRelations(){
-
+    	
+    	 final String[]tableNames = {
+                 "Classification", "Classification_AUD",
+                 "TaxonBase","TaxonBase_AUD",
+                 "TaxonNode","TaxonNode_AUD",
+                 "TaxonNameBase","TaxonNameBase_AUD"};
+    	 commitAndStartNewTransaction(tableNames);
         //create a small classification
         Taxon testTaxon = TaxonGenerator.getTestTaxon();
 
@@ -1128,7 +1138,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         SynonymRelationship synRel = speciesTaxon.getSynonymRelations().iterator().next();
         UUID synonymRelationUuid = synRel.getUuid();
         UUID synonymUuid = synRel.getSynonym().getUuid();
-
+        int i = service.getAllRelationships(1000, 0).size();
+        
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteSynonymsIfPossible(false);
 
