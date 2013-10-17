@@ -42,6 +42,10 @@ import org.apache.commons.io.FileUtils;
  */
 public class Cdm2MediawikiExporter {
 
+	private static final String IMAGES_FOLDER = "images";
+
+	private static final String FILESEPARATOR = File.separator;
+
 	//constants
 	private static final String MEDIAWIKI_CDM_SUB_DIR = "mediawiki_tmp";
 
@@ -267,7 +271,6 @@ public class Cdm2MediawikiExporter {
 
 		if (importImages) {
 			uploadImagesToMediawiki(myBot);
-			logger.info("images downloaded to "+temporaryImageExportFolder);
 		}
 		
 		// logout
@@ -358,7 +361,8 @@ public class Cdm2MediawikiExporter {
 				String text = page.getChild("revision").getChild("text")
 						.getText();
 				myBot.edit(title, text, PAGE_SUMMARY);
-				logger.info("exported page " + i + "/" + length + " " + title);
+				logger.info("exported page " + i + FILESEPARATOR + length + " " + title
+						+ " to " + wikiUrl + ".");
 				i++;
 			}
 
@@ -464,15 +468,14 @@ public class Cdm2MediawikiExporter {
 	private void uploadImage(WikiBot myBot, String url) throws MalformedURLException,
 	IOException {
 		URL imageUrl = new URL(url);
-		String[] arr = url.split("/");
+		String[] arr = url.split(FILESEPARATOR);
 		String filename = arr[arr.length - 1];
 		System.out.println(filename);
 		//String filePath = temporaryImageExportFolder.getAbsolutePath()
 			//	+ File.separator + filename;
-		
-		//Download image to a local directory first
-		String filePath = temporaryExportFolder.getAbsolutePath() + "/images/" + filename;
-
+		String filePath = temporaryExportFolder.getAbsolutePath()
+				+FILESEPARATOR + IMAGES_FOLDER +FILESEPARATOR+ filename;
+		System.out.println(filePath);
 		File imageFile = new File(filePath);
 		logger.info("Downloading image " + imageFile.getAbsolutePath());
 		

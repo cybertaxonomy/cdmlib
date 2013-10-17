@@ -280,7 +280,7 @@
 		<xsl:apply-templates select="key" />
 		<xsl:apply-templates select="descriptions" />
 		<!-- A change to Gallery: uncomment following line: -->
-		<xsl:call-template name="gallery"/>
+		<!--  <xsl:call-template name="gallery"/>-->
 		<xsl:call-template name="featureGallery" />
 		<!-- TODO to change to Figure Gallery: call figure gallery in the right 
 			place what else? -->

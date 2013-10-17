@@ -20,11 +20,11 @@ public class Cdm2MediawikiExporterTest {
 			String wikiPrefix = null;
 
 			// flora of c a
-			// String webServiceUrl =
-			// "http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/";
-			// String taxonName="Agarista";
-			// // String taxonName="Restionaceae";
-			// String wikiPrefix="Internal";
+//			 String webServiceUrl =
+//			 "http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/";
+//			 String taxonName="Agarista";
+//			// // String taxonName="Restionaceae";
+//			 String wikiPrefix="Internal";
 
 			// //cichoriae
 			// private static final String
@@ -35,9 +35,9 @@ public class Cdm2MediawikiExporterTest {
 			// ..................mediawiki...........................
 
 			String wikiUrl = "http://biowikifarm.net/testwiki";
-			String loginName = "Lorna Morris";
+			String loginName = "Sybille Bürs";
 			// String password = CdmUtils.readInputLine("Password: ");
-			String password = "dolfin_69";
+			String password = "ssetakil3?";
 			
 			
 			// inputfiles:
@@ -63,7 +63,7 @@ public class Cdm2MediawikiExporterTest {
 	public void testExport() throws MalformedURLException {
 		// do complete export
 				exporter.export(webServiceUrl, taxonName, wikiUrl, loginName, password,
-						wikiPrefix, true, false, true);
+						wikiPrefix, false, false, true);
 
 	}
 	
