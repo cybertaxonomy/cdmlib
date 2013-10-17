@@ -249,32 +249,17 @@ public class Cdm2MediawikiExporter {
 
 		logger.info("CDM xml file created and saved to2 "+ cdm_output_file);
 
-		WikiBot myBot = new WikiBot(wikiUrl, wikiLoginUid, passwd);
-
-		// login to mediawiki
-		try {
-			if (!myBot.login()) {
-				System.out.println("Login failed");
-				return;
-			}
-		} catch (Exception e) {
-			logger.info("Cannot log into Mediwiki: "+wikiUrl);
-			e.printStackTrace();
-		}
-
-		logger.info("logged in to mediawiki " + wikiLoginUid + ".");
-
+		
 		// import into mediawiki
 		if (import2Mediawiki) {
-			uploadToMediawiki(myBot);
+			uploadToMediawiki(wikiUrl, wikiLoginUid, passwd);
 		}
 
 		if (importImages) {
-			uploadImagesToMediawiki(myBot);
+			uploadImagesToMediawiki(wikiUrl, wikiLoginUid, passwd);
 		}
 		
-		// logout
-		myBot.logout();
+		
 
 		if (deleteOutputFiles) {
 			deleteOutputFiles();
@@ -329,22 +314,26 @@ public class Cdm2MediawikiExporter {
 	 * @param passwd
 	 * @param deleteOutputFile
 	 */
-	public void uploadToMediawiki(String inputFilePath, WikiBot myBot) {
+	public void uploadToMediawiki(String inputFilePath, String wikiUrl, String wikiLoginUid, String passwd) {
 		mediawikiFileWithPath = inputFilePath;
-		uploadToMediawiki(myBot);
+		uploadToMediawiki(wikiUrl, wikiLoginUid, passwd);
 	}
 
 	/*
 	 * @author l.morris
 	 */
-	private void uploadToMediawiki(WikiBot myBot) {
+	private void uploadToMediawiki(String wikiUrl, String wikiLoginUid, String passwd) {
 
 		// login to mediawiki
+		
+		WikiBot myBot = getBotAndLogin(wikiUrl, wikiLoginUid, passwd);
+
+		
 		try {
 
 			// parse wiki xml file and import pages one by one
 			// to mediawiki
-			// TODO import whole file, with ... from mediawiki API
+			// MAYDO import whole file, with functionality from mediawiki API
 
 			// get published output file
 			org.jdom.Document document = getDocument(mediawikiFileWithPath);
@@ -366,56 +355,8 @@ public class Cdm2MediawikiExporter {
 				i++;
 			}
 
-			// fetch images from input document and save them tmp
-
-			// TODO get image nodes and fetch image urls to a list
-			// download images
-
-			// TODO log out?
-
-			// delete xml-output
-			// MAYDO do this in a saver way: only clean the actual xml file
-			// TODO do we want to delete output file?
-
-			/*
-			 * URL url = new URL(
-			 * "http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg");
-			 */
-
-			// File file = new
-			// File("C:\\Users\\l.morris\\Documents\\prin_pub_test2\\palm_tc_14568_4.jpg");//palm_tc_14494_1.jpg
-			// //mediwiki8.xml");
-
-			/*
-			 * File file2 = new File(
-			 * "C:\\Users\\l.morris\\Documents\\prin_pub_test2\\Mediwiki7.xml");
-			 */
-
-			/*
-			 * // this uploadAFile works to upload an image // you need to have
-			 * the image e.g. palm_tc_14566_1.jpg // so
-			 * http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg //
-			 * doesn't work File file = new File(
-			 * "http://media.e-taxonomy.eu/palmae/photos/palm_tc_14566_1.jpg");
-			 * // File file = new File(url.toURI()); /*myBot.uploadAFile(file,
-			 * "palm_tc_14566_1.jpg", "my text", "my comment");
-			 */
-			// need to get a list of image paths. Xper2 use Base.getAllResources
-			// to get these.
-			// myBot.uploadAFile(file, filename, text, comment);
-			// List<WikiPage>
-			// create Wiki page - name, content, comments
-			// e.g. new WikiPage('taxonName', wikitext, comments)
-
-			/*
-			 * for (int i = 0; i < listOfpages.size(); i++) {
-			 * 
-			 * if (myBot.importPage(listOfpages.get(i))) { pagesOK++; } else {
-			 * pagesKO++; } }
-			 */
-			// */
-			// -----------
-
+			
+			myBot.logout();
 		} catch (IOException e) {
 			e.printStackTrace();
 		} catch (Exception e) {
@@ -425,13 +366,33 @@ public class Cdm2MediawikiExporter {
 		}
 
 	}
+	/**
+	 * @param wikiUrl
+	 * @param wikiLoginUid
+	 * @param passwd
+	 * @return
+	 */
+	private WikiBot getBotAndLogin(String wikiUrl, String wikiLoginUid,
+			String passwd) {
+		WikiBot myBot = new WikiBot(wikiUrl, wikiLoginUid, passwd);
 
-	private void uploadImagesToMediawiki(WikiBot myBot) {
-		//TODO
-		// fetch images from input document and save them tmp
+		// login to mediawiki
+		try {
+			if (!myBot.login()) {
+				System.out.println("Login failed");
+				return myBot;
+			}
+		} catch (Exception e) {
+			logger.info("Cannot log into Mediwiki: "+wikiUrl);
+			e.printStackTrace();
+		}
 
-		// TODO get image nodes and fetch image urls to a list
-		// download images
+		logger.info("logged in to mediawiki " + wikiLoginUid + ".");
+		return myBot;
+	}
+
+	private void uploadImagesToMediawiki(String wikiUrl, String wikiLoginUid, String passwd) {
+		WikiBot myBot = getBotAndLogin(wikiUrl, wikiLoginUid, passwd); 
 		// get published output file
 		org.jdom.Document document = getDocument(cdm_output_file);
 
@@ -442,9 +403,12 @@ public class Cdm2MediawikiExporter {
 			for(Element uri : media_uris){					
 				String uriValue = uri.getValue();	
 				logger.info("The media uri is " + uriValue);
+				
 				uploadImage(myBot, uriValue);
 			}
 
+			// logout
+			
 		} catch (JDOMException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -455,7 +419,7 @@ public class Cdm2MediawikiExporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}		
-
+		myBot.logout();
 	}
 
 	/**
