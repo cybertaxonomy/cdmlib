@@ -58,7 +58,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
@@ -123,6 +122,7 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 	}
 	
 	private TermVocabulary<NamedArea> createEuroMedAreas(BerlinModelImportState state) throws SQLException {
+		logger.warn("Start creating E+M areas");
 		Source source = state.getConfig().getSource();
 		Reference<?> sourceReference = state.getConfig().getSourceReference();
 		
@@ -169,6 +169,8 @@ public class BerlinModelOccurrenceImport  extends BerlinModelImportBase {
 		}	
 		
 		commitTransaction(txStatus);
+		logger.warn("Created E+M areas");
+		
 		return euroMedAreas;
 	}
 

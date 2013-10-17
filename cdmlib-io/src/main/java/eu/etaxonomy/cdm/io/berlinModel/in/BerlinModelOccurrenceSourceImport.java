@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
@@ -166,9 +165,7 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
 		Class cdmClass;
