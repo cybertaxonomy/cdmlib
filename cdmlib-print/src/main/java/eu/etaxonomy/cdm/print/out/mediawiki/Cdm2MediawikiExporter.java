@@ -378,16 +378,13 @@ public class Cdm2MediawikiExporter {
 
 		// login to mediawiki
 		try {
-			if (!myBot.login()) {
-				System.out.println("Login failed");
-				return myBot;
-			}
+			myBot.login();
 		} catch (Exception e) {
 			logger.info("Cannot log into Mediwiki: "+wikiUrl);
 			e.printStackTrace();
 		}
 
-		logger.info("logged in to mediawiki " + wikiLoginUid + ".");
+		logger.info("logged in to mediawiki as" + wikiLoginUid + ".");
 		return myBot;
 	}
 
@@ -402,7 +399,6 @@ public class Cdm2MediawikiExporter {
 
 			for(Element uri : media_uris){					
 				String uriValue = uri.getValue();	
-				logger.info("The media uri is " + uriValue);
 				
 				uploadImage(myBot, uriValue);
 			}
@@ -434,14 +430,14 @@ public class Cdm2MediawikiExporter {
 		URL imageUrl = new URL(url);
 		String[] arr = url.split(FILESEPARATOR);
 		String filename = arr[arr.length - 1];
-		System.out.println(filename);
+//		System.out.println(filename);
 		//String filePath = temporaryImageExportFolder.getAbsolutePath()
 			//	+ File.separator + filename;
 		String filePath = temporaryExportFolder.getAbsolutePath()
 				+FILESEPARATOR + IMAGES_FOLDER +FILESEPARATOR+ filename;
-		System.out.println(filePath);
+//		System.out.println(filePath);
 		File imageFile = new File(filePath);
-		logger.info("Downloading image " + imageFile.getAbsolutePath());
+		logger.info("downloading image" + url);
 		
 		FileUtils.copyURLToFile(imageUrl, new File(filePath));
 		try {
@@ -452,6 +448,7 @@ public class Cdm2MediawikiExporter {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		logger.info("saved image to" + imageFile.getAbsolutePath());
 	}
 
 	private Document getDocument(String filePath) {
