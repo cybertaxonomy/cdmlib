@@ -2,8 +2,8 @@
 <xsl:stylesheet version="2.0"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:functx="http://www.functx.com"
 	xmlns:fn="http://www.w3.org/2005/xpath-functions">
-
 	<xsl:import href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl" />
+	<!-- xsl:import href="functx-1.0-doc-2007-01.xsl" /-->
 	<!-- xsl:output method="xml" indent="no"/> -->
 	<xsl:strip-space elements="text" />
 
@@ -151,7 +151,7 @@
 				</timestamp>
 				<contributor>
 					<username>
-						<xsl:value-of select="$u_name"/>
+						<xsl:value-of select="$u_name" />
 					</username>
 				</contributor>
 
@@ -280,7 +280,7 @@
 		<xsl:apply-templates select="key" />
 		<xsl:apply-templates select="descriptions" />
 		<!-- A change to Gallery: uncomment following line: -->
-		<!--  <xsl:call-template name="gallery"/>-->
+		<!-- <xsl:call-template name="gallery"/> -->
 		<xsl:call-template name="featureGallery" />
 		<!-- TODO to change to Figure Gallery: call figure gallery in the right 
 			place what else? -->
@@ -346,7 +346,7 @@
 			<!-- use the citation-uuid as a unique name for the reference -->
 			<xsl:value-of
 				select="concat('{{EDIT_Reference|name=',$citation-uuid,'|content=')" />
-			
+
 			<xsl:choose>
 				<xsl:when test="exists($reference-node/authorTeam/teamMembers)">
 					<xsl:text>{{aut|</xsl:text>
@@ -371,11 +371,11 @@
 							<xsl:value-of select="$reference-node/titleCache"></xsl:value-of>
 						</xsl:otherwise>
 					</xsl:choose>
-					
+
 				</xsl:otherwise>
-				
+
 			</xsl:choose>
-			
+
 			<!-- DEBUGGING display uuid so can check references against those in Tax 
 				Editor -->
 			<!--<xsl:if test="$reference-node/datePublished/start != ''"> <xsl:value-of 
@@ -577,14 +577,14 @@
 			<!--homotypicSynonymsByHomotypicGroup/e/name/nomenclaturalReference -->
 			<!--xsl:apply-templates select="name/nomenclaturalReference"/ -->
 			<xsl:for-each select="name/homotypicalGroup/typifiedNames/e">
-			<xsl:call-template name="reference">
-				<xsl:with-param name="reference-node" select="nomenclaturalReference" />
-			</xsl:call-template>
-			</xsl:for-each>
 				<xsl:call-template name="reference">
+					<xsl:with-param name="reference-node" select="nomenclaturalReference" />
+				</xsl:call-template>
+			</xsl:for-each>
+			<xsl:call-template name="reference">
 				<xsl:with-param name="reference-node" select="name/nomenclaturalReference" />
-				
-				
+
+
 			</xsl:call-template>
 
 			<!--LORNA Pass the description elements for the citation 99b2842f-9aa7-42fa-bd5f-7285311e0101 -->
@@ -605,22 +605,24 @@
 			<xsl:text>{{EDIT Heterotypic Synonym|1|</xsl:text>
 			<xsl:apply-templates select="$first-element/name" />
 			<xsl:text>}}</xsl:text>
-			
+
 			<xsl:call-template name="wiki-newline-comment" />
 			<xsl:call-template name="reference">
-				<xsl:with-param name="reference-node" select="$first-element/name/nomenclaturalReference" />
+				<xsl:with-param name="reference-node"
+					select="$first-element/name/nomenclaturalReference" />
 			</xsl:call-template>
-			
+
 			<xsl:for-each select="name/homotypicalGroup/typifiedNames/e">
 				<xsl:call-template name="reference">
-					<xsl:with-param name="reference-node" select="$first-element/nomenclaturalReference" />
+					<xsl:with-param name="reference-node"
+						select="$first-element/nomenclaturalReference" />
 				</xsl:call-template>
 			</xsl:for-each>
-			
+
 			<!-- take the first one to printout as the head of the homotypic group -->
 			<!--do foreach for the rest -->
 			<xsl:for-each select="e[position() &gt; 1]">
-				<!--xsl:for-each select="e"-->
+				<!--xsl:for-each select="e" -->
 				<xsl:text>{{EDIT Homotypic Synonym|2|</xsl:text>
 				<xsl:apply-templates select="name" />
 				<xsl:text>}}</xsl:text>
@@ -628,7 +630,7 @@
 				<xsl:call-template name="reference">
 					<xsl:with-param name="reference-node" select="name/nomenclaturalReference" />
 				</xsl:call-template>
-				
+
 				<xsl:for-each select="name/homotypicalGroup/typifiedNames/e">
 					<xsl:call-template name="reference">
 						<xsl:with-param name="reference-node" select="nomenclaturalReference" />
@@ -671,7 +673,8 @@
 						</xsl:when>
 						<xsl:when test="type='authors'">
 							<xsl:text>}}</xsl:text>
-							<xsl:value-of select="concat('{{EDIT_',normalize-space($type),'_Author|')" />
+							<xsl:value-of
+								select="concat('{{EDIT_',normalize-space($type),'_Author|')" />
 							<xsl:apply-templates select="text" />
 							<xsl:text>}}</xsl:text>
 						</xsl:when>
@@ -809,13 +812,13 @@
 	<!--............................................. -->
 
 	<xsl:template name="textData">
+		
 		<xsl:value-of
 			select="concat('{{EDIT_Feature|name=',representation_L10n, '|elements=')" />
 		<xsl:call-template name="wiki-newline" />
 		<xsl:text>{{EDIT_Feature_Text|</xsl:text>
 		<!-- <xsl:choose> <xsl:when test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'"> -->
 		<!-- feature is not "Distribution" -->
-
 		<xsl:apply-templates
 			select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text" />
 		<!-- </xsl:when> </xsl:choose> -->
@@ -824,7 +827,7 @@
 		<!-- A Gallery: uncomment following line -->
 		<!--<xsl:apply-templates select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/> -->
 		<!-- A Gallery: comment following line -->
-		<!--xsl:call-template name="gallery"/-->
+		<!--xsl:call-template name="gallery"/ -->
 
 		<xsl:call-template name="wiki-newline" />
 		<xsl:call-template name="wiki-newline" />
@@ -838,8 +841,7 @@
 
 
 	<xsl:template match="text">
-
-		<xsl:call-template name="replace-tags">
+		<xsl:call-template name="replace-tags-others">
 			<xsl:with-param name="text-string" select="." />
 		</xsl:call-template>
 	</xsl:template>
@@ -873,9 +875,9 @@
 		<xsl:text>}}</xsl:text>
 		<xsl:call-template name="wiki-newline" />
 		<xsl:call-template name="wiki-newline" />
-		
+
 		<xsl:call-template name="gallery_file" />
-		
+
 	</xsl:template>
 
 
@@ -986,9 +988,8 @@
 	<!--we replace "escaped" html <i> and <b> with mediawiki markup -->
 	<!--............................................. -->
 
-	<xsl:template name="replace-tags">
+	<xsl:template name="replace-tags-others">
 		<xsl:param name="text-string" />
-
 		<!-- first replace bold tags and put the result in text-string2 -->
 		<xsl:variable name="text-string2">
 			<xsl:call-template name="add-markup">
@@ -1003,17 +1004,26 @@
 		</xsl:variable>
 
 		<!-- second replace italic tags on text-string2 -->
-		<xsl:call-template name="add-markup">
-			<xsl:with-param name="str" select="$text-string2" />
-			<xsl:with-param name="wiki-markup">
-				''
-			</xsl:with-param>
-			<xsl:with-param name="tag-name">
-				i
-			</xsl:with-param>
-		</xsl:call-template>
-	</xsl:template>
+		<xsl:variable name="text-string3">
+			<xsl:call-template name="add-markup">
+				<xsl:with-param name="str" select="$text-string2" />
+				<xsl:with-param name="wiki-markup">
+					''
+				</xsl:with-param>
+				<xsl:with-param name="tag-name">
+					i
+				</xsl:with-param>
+			</xsl:call-template>
+		</xsl:variable>
+	
 
+	<!-- third wrap = with <nowiki> tag -->
+	<xsl:call-template name="wrap-a-sequence-with-tags">
+	 <xsl:with-param name="str" select="$text-string3" />
+		<xsl:with-param name="pattern">=</xsl:with-param>
+		<xsl:with-param name="tag-name">nowiki</xsl:with-param>
+	</xsl:call-template>
+	</xsl:template>
 	<!--............................................. -->
 
 	<xsl:template name="add-markup">
@@ -1058,6 +1068,25 @@
 				<xsl:value-of select="$str" />
 			</xsl:otherwise>
 		</xsl:choose>
+	</xsl:template>
+
+	<!--............................................. -->
+	
+	<xsl:template name="wrap-a-sequence-with-tags">
+		
+		<!-- the string we operate on -->
+		<xsl:param name="str" />
+		<!-- the sequence we want to put tags arround e.g. "=" -->
+		<xsl:param name="pattern"/>
+		<!-- the tag name e.g. nowiki -->
+		<xsl:param name="tag-name" />
+		<!--xsl:value-of>###in wrap</xsl:value-of-->
+		<xsl:variable name="new-pattern">
+			<xsl:value-of select="concat('&lt;',$tag-name,'&gt;',$pattern,'&lt;/',$tag-name,'&gt;')">				
+			</xsl:value-of>
+		</xsl:variable>
+		
+		<xsl:value-of select="replace($str,$pattern, $new-pattern)"></xsl:value-of>
 	</xsl:template>
 
 	<!--+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ -->

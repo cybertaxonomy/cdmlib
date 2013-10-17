@@ -453,7 +453,7 @@ public class Cdm2MediawikiExporter {
 				+FILESEPARATOR + IMAGES_FOLDER +FILESEPARATOR+ filename;
 //		System.out.println(filePath);
 		File imageFile = new File(filePath);
-		logger.info("downloading image" + url);
+		logger.info("downloading image " + url);
 		
 		FileUtils.copyURLToFile(imageUrl, new File(filePath));
 		try {
