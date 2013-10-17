@@ -887,8 +887,8 @@
 			select="concat('{{EDIT_Gallery_File|filename=',functx:substring-after-last(.,'/'), '|description=')" />
 		<!--go back up to the description element and get the text for the Figure 
 			legend -->
-		<xsl:apply-templates
-			select="../../../../../../../multilanguageText_L10n/text" />
+		<xsl:apply-templates select="../../../../../../../multilanguageText_L10n/text" />
+		<xsl:apply-templates select="../../../../../../../name/titleCache" />
 		<xsl:text>}}</xsl:text>
 		<xsl:if test="position() != last()">
 			<xsl:call-template name="wiki-newline" />
