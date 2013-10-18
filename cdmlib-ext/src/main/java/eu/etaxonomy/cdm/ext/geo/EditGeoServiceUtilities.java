@@ -249,10 +249,12 @@ public class EditGeoServiceUtilities {
             parameters.put("ms", ms);
         }
         //layer
-        if (StringUtils.isBlank(baseLayerName)){
-            baseLayerName = "earth";
+//        if (StringUtils.isBlank(baseLayerName)){
+//            baseLayerName = "earth";
+//        }
+        if (!StringUtils.isBlank(baseLayerName)){
+            parameters.put("l", baseLayerName);
         }
-        parameters.put("l", baseLayerName);
 
         //style
         int i = 0;
@@ -477,23 +479,22 @@ public class EditGeoServiceUtilities {
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         String result = null;
 
-        if ( voc !=  null &&
-             voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary) ||
-             voc.getUuid().equals(uuidCyprusDivisionsVocabulary)
-             ){
+        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)
+                || voc.getUuid().equals(uuidCyprusDivisionsVocabulary)) {
             // TDWG or Cyprus
             result = area.getIdInVocabulary();
-            if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
+            if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())) {
                 result = result.replace("-", "");
             }
-        }else{
-            // use generic GeoServiceArea data stored in techincal annotations of the
+        } else {
+            // use generic GeoServiceArea data stored in technical annotations
+            // of the
             // named area
             GeoServiceArea areas = mapping.valueOf(area);
-            if ((areas != null) && areas.size()>0){
-                //FIXME multiple layers
-                List<String> values= areas.getAreasMap().values().iterator().next().values().iterator().next();
-                for (String value : values){
+            if ((areas != null) && areas.size() > 0) {
+                // FIXME multiple layers
+                List<String> values = areas.getAreasMap().values().iterator().next().values().iterator().next();
+                for (String value : values) {
                     result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
                 }
             }
@@ -582,7 +583,8 @@ public class EditGeoServiceUtilities {
             String layer = areas.getAreasMap().keySet().iterator().next();
             Map<String, List<String>> fields = areas.getAreasMap().get(layer);
             String field = fields.keySet().iterator().next();
-            return layer + ":" + field;
+            String layerString = layer + ":" + field;
+            return layerString.toLowerCase();
         }
 
         return null;

@@ -229,7 +229,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         ModelAndView mv = new ModelAndView();
 
         // /home/andreas/data/Euro+Med/Map/em_tiny_jan2003-shapefile/em_tiny_jan2003.csv
-        FileReader reader = new FileReader("em_tiny_jan2003.csv");
+        FileReader reader = new FileReader("/home/andreas/data/Euro+Med/Map/em_tiny_jan2003-shapefile/em_tiny_jan2003.csv");
 
         List<String> idSearchFields = new ArrayList();
         idSearchFields.add("PARENT");
