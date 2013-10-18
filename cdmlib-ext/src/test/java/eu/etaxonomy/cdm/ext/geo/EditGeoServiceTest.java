@@ -30,8 +30,6 @@ import java.util.UUID;
 
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
-import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -66,7 +64,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
 
     //@SpringBeanByType
     private IDefinedTermDao termDao;
-    
+
     @SpringBeanByType
     private ITermService termService;
 
@@ -191,7 +189,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
     }
 
     public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
-    private Map<String, NamedArea> divisions = new HashMap<String, NamedArea>();
+    private final Map<String, NamedArea> divisions = new HashMap<String, NamedArea>();
 
     private boolean makeCyprusAreas() {
         //divisions
@@ -205,7 +203,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
 
         for(int i = 1; i <= 8; i++){
             UUID divisionUuid = getNamedAreaUuid(String.valueOf(i));
-            NamedArea division = this.getNamedArea(divisionUuid, "Division " + i, "Cyprus: Division " + i, String.valueOf(i), areaType, areaLevel, areaVocabulary);
+            NamedArea division = this.newNamedArea(divisionUuid, "Division " + i, "Cyprus: Division " + i, String.valueOf(i), areaType, areaLevel, areaVocabulary);
             divisions.put(String.valueOf(i), division);
         }
 
@@ -245,12 +243,13 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
         }
     }
 
-    protected NamedArea getNamedArea(UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc){
-        NamedArea namedArea = NamedArea.NewInstance(text, label, labelAbbrev);
+    protected NamedArea newNamedArea(UUID uuid, String label, String text, String IdInVocabulary, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc){
+        NamedArea namedArea = NamedArea.NewInstance(text, label, null);
         voc.addTerm(namedArea);
         namedArea.setType(areaType);
         namedArea.setLevel(level);
         namedArea.setUuid(uuid);
+        namedArea.setIdInVocabulary(IdInVocabulary);
         return namedArea;
     }
 

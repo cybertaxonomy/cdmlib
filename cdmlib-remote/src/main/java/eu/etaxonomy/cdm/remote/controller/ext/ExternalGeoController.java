@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -188,7 +189,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Boolean doReturnImage = null;
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
-        logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
+        logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
@@ -204,5 +205,40 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         mv.addObject(uriParams);
         return mv;
     }
+
+    /**
+     * EXPERIMENTAL !!!!!
+     * DO NOT USE   !!!!!
+     *
+     * @param vocabUuid
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     *
+     * @author a.kohlbecker
+     */
+    @RequestMapping(value = { "mapShapeFileToNamedAreas/{uuid}" }, method = RequestMethod.GET)
+    public ModelAndView doMapShapeFileToNamedAreas(
+            @PathVariable("uuid") UUID vocabUuid,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        logger.info("doMapShapeFileToNamedAreas() " + requestPathAndQuery(request));
+        ModelAndView mv = new ModelAndView();
+
+        // /home/andreas/data/Euro+Med/Map/em_tiny_jan2003-shapefile/em_tiny_jan2003.csv
+        FileReader reader = new FileReader("em_tiny_jan2003.csv");
+
+        List<String> idSearchFields = new ArrayList();
+        idSearchFields.add("PARENT");
+        idSearchFields.add("EMAREA");
+        String wmsLayerName = "em_tiny_jan2003";
+        geoservice.mapShapeFileToNamedAreas(reader, idSearchFields , wmsLayerName , vocabUuid);
+        return mv;
+
+    }
+
 
 }

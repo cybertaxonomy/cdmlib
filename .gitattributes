@@ -64,6 +64,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/GeoServiceArea.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/GeoServiceAreaAnnotatedMapping.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/IEditGeoService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/IGeoServiceAreaMapping.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/geo/ShpAttributesToNamedAreaMapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IIpniService.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IIpniServiceConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniService.java -text
