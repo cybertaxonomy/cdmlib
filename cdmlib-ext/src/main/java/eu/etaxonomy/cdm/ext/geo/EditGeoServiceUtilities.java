@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -212,8 +213,14 @@ public class EditGeoServiceUtilities {
          */
         boolean generateMultipleAreaDataParameters = false;
 
+        /**
+         * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
+         * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
+         */
+        boolean doNotReuseStyles = true;
+
         List<String>  perLayerAreaData = new ArrayList<String>();
-        List<String> areaStyles = new ArrayList<String>();
+       Map<Integer, String> areaStyles = new HashMap<Integer, String>();
         List<String> legendLabels = new ArrayList<String>();
 
 
@@ -257,10 +264,10 @@ public class EditGeoServiceUtilities {
         }
 
         //style
-        int i = 0;
+        int styleCounter = 0;
         for (PresenceAbsenceTermBase<?> status: statusList){
 
-            char styleId = getStyleAbbrev(i);
+            char styleCode = getStyleAbbrev(styleCounter);
 
             //getting the area title
             if (languages == null){
@@ -289,37 +296,72 @@ public class EditGeoServiceUtilities {
             }
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
-            areaStyles.add(styleId + ID_FROM_VALUES_SEPARATOR + styleValues);
-            legendLabels.add(styleId + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
-            i++;
-        }
-
-        if(areaStyles.size() > 0){
-            parameters.put("as", StringUtils.join(areaStyles.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
-        }
-        if(legendLabels.size() > 0){
-            parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+            areaStyles.put(styleCounter, styleValues);
+            legendLabels.add(styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
+            styleCounter++;
         }
 
         // area data
-        List<String> stylesPerLayer;
+        List<String> styledAreasPerLayer;
         List<String> areasPerStyle;
+        /**
+         * Used to avoid reusing styles in multiple layers
+         *
+         * key: the style id
+         * value: the count of how often the style has been used for different layers, starts with 0 for first time use
+         */
+        Map<Integer, Integer> styleUsage = new HashMap<Integer, Integer>();
+        char styleChar;
         for (String layerString : layerMap.keySet()){
             // each layer
-            stylesPerLayer = new ArrayList<String>();
+            styledAreasPerLayer = new ArrayList<String>();
             Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
             for (int style: styleMap.keySet()){
                 // stylesPerLayer
-                char styleChar = getStyleAbbrev(style);
+                if(doNotReuseStyles) {
+                    if(!styleUsage.containsKey(style)){
+                        styleUsage.put(style, 0);
+                    } else {
+                        // increment by 1
+                        styleUsage.put(style, styleUsage.get(style) + 1);
+                    }
+                    Integer styleIncrement = styleUsage.get(style);
+                    if(styleIncrement > 0){
+                        // style code has been used before!
+                        styleChar = getStyleAbbrev(style + styleIncrement + styleCounter);
+                        areaStyles.put(style + styleIncrement + styleCounter, areaStyles.get(style));
+                    } else {
+                        styleChar = getStyleAbbrev(style);
+                    }
+                } else {
+                    styleChar = getStyleAbbrev(style);
+                }
                 Set<Distribution> distributionSet = styleMap.get(style);
                 areasPerStyle = new ArrayList<String>();
                 for (Distribution distribution: distributionSet){
                     // areasPerStyle
                     areasPerStyle.add(encode(getAreaCode(distribution, mapping)));
                 }
-                stylesPerLayer.add(styleChar + ID_FROM_VALUES_SEPARATOR + StringUtils.join(areasPerStyle.iterator(), SUBENTRY_DELIMITER));
+                styledAreasPerLayer.add(styleChar + ID_FROM_VALUES_SEPARATOR + StringUtils.join(areasPerStyle.iterator(), SUBENTRY_DELIMITER));
             }
-            perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(stylesPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+            perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(styledAreasPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+        }
+
+        if(areaStyles.size() > 0){
+            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
+            styleIds.addAll(areaStyles.keySet());
+            Collections.sort(styleIds);
+            StringBuilder db = new StringBuilder();
+            for(Integer sid : styleIds){
+                if(db.length() > 0){
+                    db.append(VALUE_LIST_ENTRY_SEPARATOR);
+                }
+                db.append( getStyleAbbrev(sid)).append(ID_FROM_VALUES_SEPARATOR).append(areaStyles.get(sid));
+            }
+            parameters.put("as", db.toString());
+        }
+        if(legendLabels.size() > 0){
+            parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
         }
 
 
