@@ -533,7 +533,7 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getTaxonNodesByName(java.lang.String)
 	 */
 	@Override
-	public Element getTaxonNodesByName(String taxonName) {
+	public Element getTaxonNodesByName(String taxonName, String classification) {
 		// TODO Auto-generated method stub
 		return null;
 	}

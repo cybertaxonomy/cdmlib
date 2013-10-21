@@ -52,7 +52,7 @@ public interface IXMLEntityFactory {
 	/*
 	 * Returns the taxonNodes for a specific name
 	 */
-	public Element getTaxonNodesByName(String taxonName);
+	public Element getTaxonNodesByName(String taxonName, String classification);
 	
 	/**
 	 * Returns the {@link FeatureTree FeatureTrees} available with this CDM Server 

@@ -80,21 +80,21 @@ public class Cdm2MediawikiExporter {
 
 	private File temporaryImageExportFolder;
 	
-	public void export(String serviceUrl, String wikiUrl,
-			String wikiLoginUid, String passwd, String wikiPageNamespace,
-			boolean import2Mediawiki, boolean deleteOutputFiles,
-			boolean importImages) throws MalformedURLException {
-
-		// setup configurator - don't need to do this again in export method for each taxon
-		configurator = PublishConfigurator.NewRemoteInstance();
-		configurator.setWebserviceUrl(serviceUrl);
-		factory = configurator.getFactory();
-		
-		//get the taxon name		
-		//export(serviceUrl, taxonName, wikiUrl, wikiLoginUid, passwd,
-		//		wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
-		//		importImages, true);
-	}
+//	public void export(String serviceUrl, String wikiUrl,
+//			String wikiLoginUid, String passwd, String wikiPageNamespace,
+//			boolean import2Mediawiki, boolean deleteOutputFiles,
+//			boolean importImages) throws MalformedURLException {
+//
+//		// setup configurator - don't need to do this again in export method for each taxon
+//		configurator = PublishConfigurator.NewRemoteInstance();
+//		configurator.setWebserviceUrl(serviceUrl);
+//		factory = configurator.getFactory();
+//		
+//		//get the taxon name		
+//		//export(serviceUrl, taxonName, wikiUrl, wikiLoginUid, passwd,
+//		//		wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
+//		//		importImages, true);
+//	}
 
 	/**
 	 * does the whole export process: runs cdm export to mediawiki xml-file and
@@ -119,12 +119,12 @@ public class Cdm2MediawikiExporter {
 	 *             temporary so far boolean for telling if we want to keep the
 	 *             mediawiki xml file ...
 	 */
-	public void export(String serviceUrl, String taxonName, String wikiUrl,
+	public void export(String serviceUrl, String taxonName, String classification, String wikiUrl,
 			String wikiLoginUid, String passwd, String wikiPageNamespace,
 			boolean import2Mediawiki, boolean deleteOutputFiles,
 			boolean importImages) throws MalformedURLException {
 
-		export(serviceUrl, taxonName, wikiUrl, wikiLoginUid, passwd,
+		export(serviceUrl, taxonName, classification, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
 				importImages, true);
 	}
@@ -136,6 +136,7 @@ public class Cdm2MediawikiExporter {
 	 * @param filename
 	 * @param serviceUrl
 	 * @param taxonName
+	 * @param classification
 	 * @param wikiUrl
 	 * @param wikiLoginUid
 	 * @param passwd
@@ -146,15 +147,17 @@ public class Cdm2MediawikiExporter {
 	 * @throws MalformedURLException
 	 */
 	public void exportFromXmlFile(String filename, String serviceUrl,
-			String taxonName, String wikiUrl, String wikiLoginUid,
+			String taxonName, String classification, String wikiUrl, String wikiLoginUid,
 			String passwd, String wikiPageNamespace, boolean import2Mediawiki,
 			boolean deleteOutputFiles, boolean importImages)
 					throws MalformedURLException {
 
+		//putthe document to a field:
 		externalDocument = getDocument(filename);
-		export(serviceUrl, taxonName, wikiUrl, wikiLoginUid, passwd,
+		// and run export with usePublisher=false:
+		export(serviceUrl, taxonName, classification, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
-				importImages, importImages);
+				importImages, false);
 
 	}
 
@@ -164,7 +167,7 @@ public class Cdm2MediawikiExporter {
 	 * stylesheet) export folder - we use a temporary so far boolean for telling
 	 * if we want to keep the mediawiki xml file ...
 	 */
-	private void export(String serviceUrl, String taxonName, String wikiUrl,
+	private void export(String serviceUrl, String taxonName, String classificationName, String wikiUrl,
 			String wikiLoginUid, String passwd, String wikiPageNamespace,
 			boolean import2Mediawiki, boolean deleteOutputFiles,
 			boolean importImages, boolean usePublisher)
@@ -189,7 +192,7 @@ public class Cdm2MediawikiExporter {
 		// get taxon node uuid from taxon name and pass it to the configurator:
 		// TODO get classification name from export() - add a parameter
 		// and use it to choose the right taxon
-		Element taxonNodeElement = factory.getTaxonNodesByName(taxonName);
+		Element taxonNodeElement = factory.getTaxonNodesByName(taxonName, classificationName);
 		configurator.addSelectedTaxonNodeElements(taxonNodeElement);
 
 		// get feature tree from taxon name/taxon node and pass it to the
@@ -400,7 +403,7 @@ public class Cdm2MediawikiExporter {
 			e.printStackTrace();
 		}
 
-		logger.info("logged in to mediawiki as" + wikiLoginUid + ".");
+		logger.info("logged in to mediawiki as " + wikiLoginUid + ".");
 		return myBot;
 	}
 
