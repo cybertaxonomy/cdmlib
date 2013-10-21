@@ -231,10 +231,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         child.setParentTreeNode(this, index);
 
-
-//		child.setParent(this);
-//		child.setClassification(this.getClassification());
-//		childNodes.add(index, child);
+		//TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
+		for(int i = 0; i < childNodes.size(); i++){
+			childNodes.get(i).sortIndex = i;
+		}
+		child.sortIndex = index;
+		
         //TODO workaround (see sortIndex doc)
         for(int i = 0; i < childNodes.size(); i++){
             childNodes.get(i).sortIndex = i;
@@ -243,7 +245,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         child.setReference(reference);
         child.setMicroReference(microReference);
-//        childNode.setSynonymToBeUsed(synonymToBeUsed);
 
         return child;
 
@@ -516,25 +517,25 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         setClassificationRecursively(classification);
 
         // add this node to the parent child nodes
-        List<TaxonNode> children = parent.getChildNodes();
-        if (children.contains(this)){
-            //avoid duplicates
-            if (children.indexOf(this) < index){
-                index = index -1;
-            }
-            children.remove(this);
-            children.add(index, this);
+        List<TaxonNode> parentChildren = parent.getChildNodes();
+        if (parentChildren.contains(this)){
+        	//avoid duplicates
+        	if (parentChildren.indexOf(this) < index){
+        		index = index -1;
+        	}
+        	parentChildren.remove(this);
+        	parentChildren.add(index, this);
         }else{
-            children.add(index, this);
+        	parentChildren.add(index, this);
         }
 
         //TODO workaround (see sortIndex doc)
-        //FIXME don't we need to update the parent's childNode index here??
-        for(int i = 0; i < childNodes.size(); i++){
-            childNodes.get(i).sortIndex = i;
-        }
-        this.sortIndex = index;
-
+        //TODO check if it is correct to use the parentChildren here 
+		for(int i = 0; i < parentChildren.size(); i++){
+			parentChildren.get(i).sortIndex = i;
+		}
+//		this.sortIndex = index;
+        
         // update the children count
         if(parent instanceof TaxonNode){
             TaxonNode parentTaxonNode = (TaxonNode) parent;
