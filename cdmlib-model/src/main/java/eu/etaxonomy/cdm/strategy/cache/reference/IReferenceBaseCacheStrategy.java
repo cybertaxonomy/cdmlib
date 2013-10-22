@@ -24,6 +24,13 @@ public interface IReferenceBaseCacheStrategy<T extends Reference> extends IIdent
 	 * Returns a short version of the reference, suitable for citation (e.g. ${authorname}, ${year})
 	 * @return
 	 */
-	public String getCitation(T referenceBase);
+	public String getCitation(T reference);
+	
+	/**
+	 * Returns the abbreviated title cache which is a title cache which uses the {@link Reference#getAbbrevTitle() abbrev title}
+	 * @return
+	 */
+	public String getAbbrevTitleCache(T reference);
+	
 
 }

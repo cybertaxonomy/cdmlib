@@ -21,6 +21,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -113,7 +114,7 @@ public class DbImportExtensionMapper extends DbSingleAttributeImportMapperBase<D
 			}else{
 				ignore = true;
 			}
-		} catch (NoSuchMethodException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			//do nothing  - checkDbColumnExists is not possible
 		}
 	}

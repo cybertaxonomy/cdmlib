@@ -20,7 +20,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.common.DbImportStateBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -77,7 +77,7 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 	 * @param state
 	 * @param tableName
 	 */
-	public void initialize(ITermService service, BerlinModelImportState state, Class<? extends CdmBase> destinationClass) {
+	public void initialize(ITermService service, DbImportStateBase<?,?> state, Class<? extends CdmBase> destinationClass) {
 		importMapperHelper.initialize(state, destinationClass);
 		try {
 			if (  checkDbColumnExists()){
@@ -85,7 +85,7 @@ public class DbImportImageGalleryMapper extends DbSingleAttributeImportMapperBas
 			}else{
 				ignore = true;
 			}
-		} catch (NoSuchMethodException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			//do nothing
 		}
 	}

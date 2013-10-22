@@ -75,6 +75,15 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "sources.$",
     });
 
+    protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "states.$",
+            "sources.citation.authorTeam",
+            "sources.nameUsedInSource.originalNameString",
+            "multilanguageText",
+            "media"
+    });
+
 
     public DescriptionListPortalController() {
         super();
@@ -202,14 +211,15 @@ public class DescriptionListPortalController extends IdentifiableListController<
                HttpStatusMessage.UUID_NOT_FOUND.send(response);
            }
        }
-
+       //TODO it seems as if the InitializationStrategy is not appropriate here !!!
+       //   see #3728 (DescriptionListPortalController.getDescriptionElementsForTaxon() seems to be using inapproptiate init strategy)
        Pager<T> pager = service.pageDescriptionElementsForTaxon(
                taxon,
                (features != null ? features.asSet() : null),
                type,
                pagerParams.getPageSize(),
                pagerParams.getPageIndex(),
-               getInitializationStrategy()
+               DESCRIPTION_ELEMENT_INIT_STRATEGY
               );
 
        return pager;

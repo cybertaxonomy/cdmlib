@@ -22,10 +22,11 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @created 15.03.2012
  */
 public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends NomRefDefaultCacheStrategyBase<T> {
+
 	private static final long serialVersionUID = -8418443677312335864L;
 	private static final Logger logger = Logger.getLogger(InRefDefaultCacheStrategyBase.class);
 	
-	private String inSeperator = "in ";
+	private String inSeparator = "in ";
 	private String afterSectionAuthor = " - ";
 	private String blank = " ";
 	
@@ -60,7 +61,7 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		//use generics's publication date if it exists
 		if (inRef == null ||  (thisRef.hasDatePublished() ) ){
 			GenericDefaultCacheStrategy<Reference> inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
-			result =  inRef == null ? "" : inRefStrategy.getNomRefTitleWithoutYearAndAuthor(inRef);
+			result =  inRef == null ? "" : inRefStrategy.getTitleWithoutYearAndAuthor(inRef, true);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, thisRef, true);
 		}else{
@@ -90,40 +91,49 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 	}
 	
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
 	@Override
 	public String getTitleCache(T thisRef) {
-		return getTitleCache(thisRef, false);
-	}	
+		return getTitleCache(thisRef, false, false);
+	}
 	
-	protected String getTitleCache(T thisRef, boolean inRefIsObligatory) {
-		boolean hasInRef = (thisRef.getInReference() != null);
+	@Override
+	public String getAbbrevTitleCache(T thisRef) {
+		return getTitleCache(thisRef, false, true);
+	}
+	
+	
+	protected String getTitleCache(T thisRef, boolean inRefIsObligatory, boolean isAbbrev) {
 		String result;
+		
+		Reference<?> inRef = thisRef.getInReference();
+		boolean hasInRef = (inRef != null);
 		// get inRef part
 		if (hasInRef){
-			result = thisRef.getInReference().getTitleCache();
+			result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(), inRef.getAbbrevTitle(), isAbbrev, true)  ;
 		}else{
 			if ( ! inRefIsObligatory){
 				return super.getTitleCache(thisRef);
+			}else{
+				result = String.format("- undefined %s -", getInRefType());
 			}
-			result = String.format("- undefined %s -", getInRefType());
 		}
 		
 		//in
-		result = inSeperator +  result;
+		result = inSeparator +  result;
 		
 		//section title
-		String title = CdmUtils.Nz(thisRef.getTitle());
+		String title = CdmUtils.getPreferredNonEmptyString(
+				thisRef.getTitle(), thisRef.getAbbrevTitle(), isAbbrev, true);
 		if (title.length() > 0){
 			result = title + blank + result;
 		}
 		
 		//section author
 		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorTeam();
-		String thisRefAuthor = CdmUtils.Nz(thisRefTeam == null ? "" : thisRefTeam.getTitleCache());
+		String thisRefAuthor = "";
+		if (thisRefTeam != null){
+			thisRefAuthor = CdmUtils.getPreferredNonEmptyString(thisRefTeam.getTitleCache(), thisRefTeam.getNomenclaturalTitle(), isAbbrev, true);
+		}
 		result = CdmUtils.concat(afterSectionAuthor, thisRefAuthor, result);
 		
 		//date
@@ -132,7 +142,7 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 			if (hasInRef && thisRef.getInBook().getDatePublished() != null){
 				TimePeriod inRefDate = thisRef.getInReference().getDatePublished();
 				String inRefDateString = inRefDate.getYear();
-				if (CdmUtils.isNotEmpty(inRefDateString)){
+				if (isNotBlank(inRefDateString)){
 					int pos = StringUtils.lastIndexOf(result, inRefDateString);
 					if (pos > -1 ){
 						result = result.substring(0, pos) + thisRefDate + result.substring(pos + inRefDateString.length());
@@ -148,7 +158,5 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		}
 		return result;
 	}
-	
-
 
 }

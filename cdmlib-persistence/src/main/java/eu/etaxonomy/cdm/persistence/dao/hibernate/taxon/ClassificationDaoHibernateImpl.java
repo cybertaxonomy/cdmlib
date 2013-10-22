@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -115,18 +116,21 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         return query;
     }
 
-
-
     @Override
     public UUID delete(Classification persistentObject){
         //delete all childnodes, then delete the tree
 
-        Set<TaxonNode> nodes = persistentObject.getChildNodes();
-        Iterator<TaxonNode> nodesIterator = nodes.iterator();
-
-        while(nodesIterator.hasNext()){
-            TaxonNode node = nodesIterator.next();
-            taxonNodeDao.delete(node);
+        List<TaxonNode> nodes = persistentObject.getChildNodes();
+        List<TaxonNode> nodesTmp = new ArrayList<TaxonNode>(nodes);
+//        Iterator<TaxonNode> nodesIterator = nodes.iterator();
+        
+        
+        for(TaxonNode node : nodesTmp){
+       
+        	persistentObject.deleteChildNode(node, true);
+            taxonNodeDao.delete(node, true);
+            
+           
         }
 
         super.delete(persistentObject);

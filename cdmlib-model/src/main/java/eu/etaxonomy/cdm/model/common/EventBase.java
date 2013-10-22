@@ -53,50 +53,46 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private AgentBase actor;
+	private AgentBase<?> actor;
 
 	@XmlElement(name = "Description")
 	@Field(index=Index.YES)
 	private String description;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getTimeperiod()
-	 */
+//******************** GETTER / SETTER *******************/	
+	
 	@Override
     public TimePeriod getTimeperiod() {
 		return timeperiod;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#setTimeperiod(eu.etaxonomy.cdm.model.common.TimePeriod)
-	 */
 	@Override
     public void setTimeperiod(TimePeriod timeperiod) {
+		if (timeperiod == null){
+			timeperiod = TimePeriod.NewInstance();
+		}
 		this.timeperiod = timeperiod;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getActor()
-	 */
 	@Override
     public AgentBase getActor() {
 		return actor;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#setActor(eu.etaxonomy.cdm.model.agent.Agent)
-	 */
 	@Override
     public void setActor(AgentBase actor) {
 		this.actor = actor;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#getDescription()
+	/**
+	 * The description of this event. Implementing classes may use this field for different purposes.
+	 * @return
 	 */
 	public String getDescription() {
 		return description;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.occurrence.IEvent#setDescription(java.lang.String)
+
+	/**
+	 * @see #getDescription()
+	 * @param description
 	 */
 	public void setDescription(String description) {
 		this.description = description;
@@ -117,7 +113,7 @@ public abstract class EventBase extends AnnotatableEntity implements IEvent {
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		EventBase result = (EventBase)super.clone();
-		//Actor
+		//Actor  //is this needed??
 		result.setActor(this.getActor());
 		//time period
 		result.setTimeperiod((TimePeriod)this.getTimeperiod().clone());

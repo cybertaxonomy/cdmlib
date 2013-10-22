@@ -18,6 +18,8 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -44,17 +46,17 @@ public class CategoricalDataTest {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance("Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature, "Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
         State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
         useCategoryVocabulary.addTerm(useCategory2);
 
         StateData stateData = StateData.NewInstance(useCategory1);
-        data.addState(stateData);
+        data.addStateData(stateData);
         StateData stateData2 = StateData.NewInstance(useCategory2);
-        stateData2.addModifier(Modifier.NewInstance(null, "Any modifer", null));
-        data.addState(stateData2);
+        stateData2.addModifier(DefinedTerm.NewModifierInstance(null, "Any modifer", null));
+        data.addStateData(stateData2);
 
         List<State> states = data.getStatesOnly();
         Assert.assertEquals("There should be 2 states", 2, states.size());
@@ -62,18 +64,18 @@ public class CategoricalDataTest {
     }
 
     /**
-     * Test method for {@link eu.etaxonomy.cdm.model.description.CategoricalData#setStatesOnly(List)}.
+     * Test method for {@link eu.etaxonomy.cdm.model.description.CategoricalData#setStateDataOnly(List)}.
      */
     @Test
     public void testSetStatesOnly() {
         TaxonDescription desc = TaxonDescription.NewInstance();
         CategoricalData data = CategoricalData.NewInstance();
         desc.addElement(data);
-        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance("Use category vocabulary", "use categories", null, null);
+        TermVocabulary<State> useCategoryVocabulary = TermVocabulary.NewInstance(TermType.Feature,"Use category vocabulary", "use categories", null, null);
         State useCategory1 = State.NewInstance("My first use category", "use category 1", null);
         useCategoryVocabulary.addTerm(useCategory1);
-        data.addState(useCategory1);
-        Assert.assertEquals("There should be 1 state now", 1, data.getStates().size());
+        data.addStateData(useCategory1);
+        Assert.assertEquals("There should be 1 state now", 1, data.getStateData().size());
 
         State useCategory2 = State.NewInstance("My favorite use category", "use category 2", null);
         useCategoryVocabulary.addTerm(useCategory2);
@@ -83,9 +85,9 @@ public class CategoricalDataTest {
         newStates.addAll(Arrays.asList(useCategory2, useCategory3));
 
         // setting new states and thus removing useCategory1
-        List<StateData> stateDataList = data.setStatesOnly(newStates);
+        List<StateData> stateDataList = data.setStateDataOnly(newStates);
         Assert.assertEquals("There should be 2 StateData objects", 2, stateDataList.size());
-        Assert.assertEquals("There should be 2 StateData objects", 2, data.getStates().size());
+        Assert.assertEquals("There should be 2 StateData objects", 2, data.getStateData().size());
         Assert.assertFalse("Category 1 should not be included anymore", data.getStatesOnly().contains(useCategory1));
         Assert.assertTrue("Category 2 should be included", data.getStatesOnly().contains(useCategory2));
 

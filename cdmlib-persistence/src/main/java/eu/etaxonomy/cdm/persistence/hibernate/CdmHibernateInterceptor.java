@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.Serializable;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.EmptyInterceptor;
@@ -19,7 +18,6 @@ import org.hibernate.type.Type;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 
 /**
  * @author a.mueller

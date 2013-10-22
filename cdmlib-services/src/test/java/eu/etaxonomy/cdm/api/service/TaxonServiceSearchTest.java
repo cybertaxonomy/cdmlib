@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.EnumSet;
 import java.util.HashSet;
@@ -41,24 +42,27 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -81,7 +85,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 /**
  * @author a.babadshanjan, a.kohlbecker
  * @created 04.02.2009
- * @version 1.0
  */
 public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
@@ -98,6 +101,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
+
+
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -118,6 +123,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private Set<Class<? extends CdmBase>> typesToIndex = null;
 
+    private NamedArea germany;
+    private NamedArea france ;
+    private NamedArea russia ;
+    private NamedArea canada ;
+
     /**
      * @throws java.lang.Exception
      */
@@ -128,7 +138,10 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         typesToIndex.add(TaxonBase.class);
         typesToIndex.add(TaxonRelationship.class);
 
-
+        germany =  Country.GERMANY();
+        france = Country.FRANCEFRENCHREPUBLIC();
+        russia = Country.RUSSIANFEDERATION();
+        canada = Country.CANADA();
 
     }
 
@@ -227,7 +240,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null, null,
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, null, null,
                 false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1),
                 pager.getCount());
@@ -238,11 +251,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching for 'Nulltanne' ", Integer.valueOf(0), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null,
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, null,
                 Arrays.asList(new Language[] { Language.GERMAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching in German", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weißtanne", null, null,
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"tanne", null, null,
                 Arrays.asList(new Language[] { Language.RUSSIAN() }), false, null, null, null, null);
         Assert.assertEquals("Expecting no entity when searching in Russian", Integer.valueOf(0), pager.getCount());
 
@@ -273,7 +286,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
-        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, null, null, false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"*", null, null, null, false, null, null, null, null);
         Assert.assertEquals("Expecting one entity when searching for CommonTaxonName", Integer.valueOf(1), pager.getCount());
     }
 
@@ -664,7 +677,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         d_abies_balsamea_new
                 .addElement(TextData
                         .NewInstance(
-                                "Die Balsamtanne ist mit bis zu 30 m Höhe ein mittelgroßer Baum und kann bis zu 200 Jahre alt werden",
+                                "Die Balsamtanne ist mit bis zu 30 m Höhe ein mittelgro"+UTF8.SHARP_S+"er Baum und kann bis zu 200 Jahre alt werden",
                                 Language.GERMAN(), null));
         t_abies_balsamea.addDescription(d_abies_balsamea_new);
         // set authorshipCache to null to avoid validation exception,
@@ -678,7 +691,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "DESCRIPTIONBASE"
         });
 
-        pager = taxonService.findByDescriptionElementFullText(TextData.class, "mittelgroßer Baum", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
+        pager = taxonService.findByDescriptionElementFullText(TextData.class, "mittelgro"+UTF8.SHARP_S+"er Baum", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("the taxon should be found via the new Description", Integer.valueOf(1), pager.getCount());
     }
 
@@ -709,7 +722,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("expecting default classification", childNode.getClassification().getUuid().toString(), CLASSIFICATION_UUID);
 
         // moving the taxon around
-        alternateClassification.addChildNode(childNode, null, null, null);
+        alternateClassification.addChildNode(childNode, null, null);
         classificationService.saveOrUpdate(alternateClassification);
         commitAndStartNewTransaction(null);
 
@@ -743,7 +756,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         StateData statedata = StateData.NewInstance(state);
         statedata.putModifyingText(Language.ENGLISH(), "always, even during winter");
-        cdata.addState(statedata);
+        cdata.addStateData(statedata);
         d_abies_balsamea.addElement(cdata);
 
         termService.save(state);
@@ -773,7 +786,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxonService.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
-        taxon = taxonService.load(taxon.getUuid());
+        taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
     }
 
@@ -850,7 +863,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         // synonym in classification ???
     }
 
-//    @Test
+    @Test
+    @DataSet
+    public final void testPrepareByAreaSearch() throws IOException, ParseException {
+
+        List<PresenceAbsenceTermBase<?>> statusFilter = new ArrayList<PresenceAbsenceTermBase<?>>();
+        List<NamedArea> areaFilter = new ArrayList<NamedArea>();
+        areaFilter.add(germany);
+        areaFilter.add(canada);
+        areaFilter.add(russia);
+
+        Pager<SearchResult<TaxonBase>> pager = taxonService.findByDistribution(areaFilter, statusFilter, null, 20, 0, null, null);
+        Assert.assertEquals("Expecting 2 entities", Integer.valueOf(2), Integer.valueOf(pager.getRecords().size()));
+
+    }
+
+    @Test
     @DataSet
     public final void testFindTaxaAndNamesByFullText() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
@@ -858,32 +886,140 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
 
+        Classification alternateClassification = classificationService.find(UUID.fromString(CLASSIFICATION_ALT_UUID));
+
+
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, true, null, null, null, null);
+                "Abies", null, null, null, null, true, null, null, null, null);
 //        logPagerRecords(pager, Level.DEBUG);
-        Assert.assertEquals("Expecting 8 entities", Integer.valueOf(8), pager.getCount());
+        Assert.assertEquals("doTaxa & doSynonyms", Integer.valueOf(8), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.allOf(TaxaAndNamesSearchMode.class),
+                "Abies", null, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("all search modes", Integer.valueOf(8), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.allOf(TaxaAndNamesSearchMode.class),
+                "Abies", alternateClassification, null, null, null, true, null, null, null, null);
+//        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("all search modes, filtered by alternateClassification", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
-                "Abies", null, null, null, true, null, null, null, null);
+                "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
-        pager = taxonService.findTaxaAndNamesByFullText(
-                EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
-                "Abies", null, null, null, true, null, null, null, null);
-        Assert.assertEquals("Expecting 0 entity", Integer.valueOf(0), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
-                "balsam", null, null, null, true, null, null, null, null);
+                "Abies", null, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 0 entity", Integer.valueOf(0), pager.getCount());
+
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
+                "Tanne", null, null, null, null, true, null, null, null, null);
+        Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), Integer.valueOf(pager.getRecords().size()));
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
-                "kawakamii", null, null, null, true, null, null, null, null);
+                "kawakamii", null, null, null, null, true, null, null, null, null);
         logPagerRecords(pager, Level.DEBUG);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+    }
+
+    @Test
+    @DataSet
+    public final void testFindTaxaAndNamesByFullText_AreaFilter() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        Set<NamedArea> a_germany_canada_russia = new HashSet<NamedArea>();
+        a_germany_canada_russia.add(germany);
+        a_germany_canada_russia.add(canada);
+        a_germany_canada_russia.add(russia);
+
+        Set<NamedArea> a_russia = new HashSet<NamedArea>();
+        a_russia.add(russia);
+
+        Set<PresenceAbsenceTermBase<?>> present = new HashSet<PresenceAbsenceTermBase<?>>();
+        present.add(PresenceTerm.PRESENT());
+
+        Set<PresenceAbsenceTermBase<?>> present_native = new HashSet<PresenceAbsenceTermBase<?>>();
+        present_native.add(PresenceTerm.PRESENT());
+        present_native.add(PresenceTerm.NATIVE());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
+                "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
+        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("taxa with matching area filter", Integer.valueOf(2), pager.getCount());
+
+        // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("synonyms with matching area filter", Integer.valueOf(1), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
+        logPagerRecords(pager, Level.DEBUG);
+        Assert.assertEquals("taxa and synonyms with matching area filter", Integer.valueOf(3), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("taxa and synonyms with matching area & status filter 1", Integer.valueOf(3), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_germany_canada_russia, present, null, true, null, null, null, null);
+        Assert.assertEquals("taxa and synonyms with matching area & status filter 2", Integer.valueOf(2), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, a_russia, present, null, true, null, null, null, null);
+        Assert.assertEquals("taxa and synonyms with non matching area & status filter", Integer.valueOf(0), pager.getCount());
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxaByCommonNames),
+                "Tanne", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("ByCommonNames with area filter", Integer.valueOf(1), pager.getCount());
+
+        // abies_kawakamii_sensu_komarov as misapplied name for t_abies_balsamea
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
+
+        // FIXME #3730 (Taxon.removeTaxonRelation() raises error on update)
+        /* ----------------------------------------------- START
+        // and now also test if updating of the index works properly
+        // 1. remove existing taxon relation
+        Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
+        Set<TaxonRelationship> relsTo = t_abies_balsamea.getRelationsToThisTaxon();
+        Assert.assertEquals(Integer.valueOf(1), Integer.valueOf(relsTo.size()));
+        TaxonRelationship taxonRelation = relsTo.iterator().next();
+        t_abies_balsamea.removeTaxonRelation(taxonRelation);
+        taxonService.saveOrUpdate(t_abies_balsamea);
+        commitAndStartNewTransaction(null);
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", Integer.valueOf(0), pager.getCount());
+
+        // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in russia: ABSENT
+        // TODO
+        // ---------------------------------------------- END */
 
     }
 
@@ -944,31 +1080,45 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("first fragments should contains serch term", fragments[0].toLowerCase().contains("<b>abies</b>"));
     }
 
-    /**
-     *
-     */
-    private void refreshLuceneIndex() {
-
-//        commitAndStartNewTransaction(null);
-        commit();
-        endTransaction();
-        indexer.purge(DefaultProgressMonitor.NewInstance());
-        indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
-        startNewTransaction();
-//        commitAndStartNewTransaction(null);
-    }
+//    @SuppressWarnings("rawtypes")
+//    @Test
+//    @DataSet
+//    public final void benchmarkFindTaxaAndNamesHql() throws CorruptIndexException, IOException, ParseException {
+//
+//        createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
+//
+//        IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
+//        configurator.setTitleSearchString("Weiß%");
+//        configurator.setMatchMode(MatchMode.BEGINNING);
+//        configurator.setDoTaxa(false);
+//        configurator.setDoSynonyms(false);
+//        configurator.setDoNamesWithoutTaxa(false);
+//        configurator.setDoTaxaByCommonNames(true);
+//
+//        Pager<IdentifiableEntity> pager;
+//
+//        long startMillis = System.currentTimeMillis();
+//        for (int indx = 0; indx < BENCHMARK_ROUNDS; indx++) {
+//            pager = taxonService.findTaxaAndNames(configurator);
+//            if (logger.isDebugEnabled()) {
+//                logger.debug("[" + indx + "]" + pager.getRecords().get(0).getTitleCache());
+//            }
+//        }
+//        double duration = ((double) (System.currentTimeMillis() - startMillis)) / BENCHMARK_ROUNDS;
+//        logger.info("Benchmark result - [find taxon by CommonName via HQL] : " + duration + "ms (" + BENCHMARK_ROUNDS + " benchmark rounds )");
+//    }
 
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByCommonNameHqlBenchmark() throws CorruptIndexException, IOException, ParseException {
+    public final void benchmarkFindByCommonNameHql() throws CorruptIndexException, IOException, ParseException {
 
 //        printDataSet(System.err, new String[] { "TaxonBase" });
 
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 
         IFindTaxaAndNamesConfigurator configurator = new FindTaxaAndNamesConfiguratorImpl();
-        configurator.setTitleSearchString("Weiß%");
+        configurator.setTitleSearchString("Wei"+UTF8.SHARP_S+"%");
         configurator.setMatchMode(MatchMode.BEGINNING);
         configurator.setDoTaxa(false);
         configurator.setDoSynonyms(false);
@@ -991,7 +1141,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
-    public final void testFindByCommonNameLuceneBenchmark() throws CorruptIndexException, IOException, ParseException {
+    public final void benchmarkFindByCommonNameLucene() throws CorruptIndexException, IOException, ParseException {
 
         createRandomTaxonWithCommonName(NUM_OF_NEW_RADOM_ENTITIES);
 
@@ -1001,7 +1151,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         long startMillis = System.currentTimeMillis();
         for (int indx = 0; indx < BENCHMARK_ROUNDS; indx++) {
-            pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Weiß*", null, null, null, false, null, null, null, null);
+            pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Wei"+UTF8.SHARP_S+"*", null, null, null, false, null, null, null, null);
             if (logger.isDebugEnabled()) {
                 logger.debug("[" + indx + "]" + pager.getRecords().get(0).getEntity().getTitleCache());
             }
@@ -1042,10 +1192,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
         taxonService.save(t_abies_alba);
 
+        BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
+        n_abies_subalpina.setNameCache("Abies subalpina", true);
+        Synonym s_abies_subalpina = Synonym.NewInstance(n_abies_subalpina, sec);
+        taxonService.save(s_abies_subalpina);
+
         BotanicalName n_abies_balsamea = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_balsamea.setNameCache("Abies balsamea", true);
         Taxon t_abies_balsamea = Taxon.NewInstance(n_abies_balsamea, sec);
         t_abies_balsamea.setUuid(UUID.fromString(ABIES_BALSAMEA_UUID));
+        t_abies_balsamea.addSynonym(s_abies_subalpina, SynonymRelationshipType.SYNONYM_OF());
         taxonService.save(t_abies_balsamea);
 
         BotanicalName n_abies_grandis = BotanicalName.NewInstance(Rank.SPECIES());
@@ -1059,37 +1215,22 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         t_abies_kawakamii.getTitleCache();
         taxonService.save(t_abies_kawakamii);
 
-        // missapplied name for t_abies_balsamea
+        // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
         Taxon t_abies_kawakamii_sensu_komarov = Taxon.NewInstance(n_abies_kawakamii, sec_sensu);
         taxonService.save(t_abies_kawakamii_sensu_komarov);
         t_abies_kawakamii_sensu_komarov.addTaxonRelation(t_abies_balsamea, TaxonRelationshipType.MISAPPLIED_NAME_FOR(), null, null);
         taxonService.saveOrUpdate(t_abies_kawakamii_sensu_komarov);
 
-        BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
-        n_abies_subalpina.setNameCache("Abies subalpina", true);
-        Synonym s_abies_subalpina = Synonym.NewInstance(n_abies_subalpina, sec);
-        taxonService.save(s_abies_subalpina);
-
         BotanicalName n_abies_lasiocarpa = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_lasiocarpa.setNameCache("Abies lasiocarpa", true);
         Taxon t_abies_lasiocarpa = Taxon.NewInstance(n_abies_lasiocarpa, sec);
-        t_abies_lasiocarpa.addSynonym(s_abies_subalpina, SynonymRelationshipType.SYNONYM_OF());
         taxonService.save(t_abies_lasiocarpa);
 
         // add taxa to classifications
-        europeanAbiesClassification.addChildTaxon(t_abies_balsamea, null, null, null);
-        alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null, null);
+        europeanAbiesClassification.addChildTaxon(t_abies_balsamea, null, null);
+        alternativeClassification.addChildTaxon(t_abies_lasiocarpa, null, null);
         classificationService.saveOrUpdate(europeanAbiesClassification);
         classificationService.saveOrUpdate(alternativeClassification);
-
-
-        //
-        // prepare namedAreas
-        //
-        NamedArea germany =  WaterbodyOrCountry.GERMANY();
-        NamedArea france = WaterbodyOrCountry.FRANCEFRENCHREPUBLIC();
-        NamedArea russia = WaterbodyOrCountry.RUSSIANFEDERATION();
-        NamedArea canada = WaterbodyOrCountry.CANADA();
 
         //
         // Description
@@ -1102,8 +1243,17 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
 
         // CommonTaxonName
-        d_abies_alba.addElement(CommonTaxonName.NewInstance("Weißtanne", Language.GERMAN()));
+        d_abies_alba.addElement(CommonTaxonName.NewInstance("Wei"+UTF8.SHARP_S+"tanne", Language.GERMAN()));
         d_abies_alba.addElement(CommonTaxonName.NewInstance("silver fir", Language.ENGLISH()));
+        d_abies_alba.addElement(Distribution
+                .NewInstance(
+                        germany,
+                        PresenceTerm.NATIVE()));
+        d_abies_alba.addElement(Distribution
+                .NewInstance(
+                        russia,
+                        AbsenceTerm.ABSENT()));
+
         // TextData
         d_abies_balsamea
             .addElement(TextData
@@ -1121,6 +1271,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 .NewInstance(
                         canada,
                         PresenceTerm.PRESENT()));
+
+        d_abies_balsamea
+        .addElement(Distribution
+                .NewInstance(
+                        germany,
+                        PresenceTerm.NATIVE()));
 
         d_abies_balsamea
                 .addElement(TextData
@@ -1148,6 +1304,20 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             "HIBERNATE_SEQUENCES" // IMPORTANT!!!
             });
 
+    }
+
+    /**
+     *
+     */
+    private void refreshLuceneIndex() {
+
+//        commitAndStartNewTransaction(null);
+        commit();
+        endTransaction();
+        indexer.purge(DefaultProgressMonitor.NewInstance());
+        indexer.reindex(typesToIndex, DefaultProgressMonitor.NewInstance());
+        startNewTransaction();
+//        commitAndStartNewTransaction(null);
     }
 
     /**

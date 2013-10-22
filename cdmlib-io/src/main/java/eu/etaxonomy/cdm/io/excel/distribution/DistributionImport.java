@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportConfiguratorBase;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImportState;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase;
@@ -35,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -229,7 +229,7 @@ public class DistributionImport extends CdmIoBase<ExcelImportState<ExcelImportCo
         				boolean ignore = false;
         				
     					if(!distribution.equals("")) {
-    						NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(distribution);
+    						NamedArea namedArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(distribution);
         					TaxonDescription taxonDescription = myDescriptions.get(taxon);
         					if (namedArea != null) {    
     		    				// Check against existing distributions and ignore the ones that occur multiple times

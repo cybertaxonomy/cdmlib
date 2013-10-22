@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -1033,7 +1034,7 @@ public abstract class MarkupImportBase  {
 			if (value.equals(GENUS_ABBREVIATION)){
 				rank = Rank.GENUS();
 			}else if (byAbbrev) {
-				rank = Rank.getRankByAbbreviation(value, nc, useUnknown);
+				rank = Rank.getRankByIdInVoc(value, nc, useUnknown);
 			} else {
 				rank = Rank.getRankByEnglishName(value, nc, useUnknown);
 			}
@@ -1088,7 +1089,7 @@ public abstract class MarkupImportBase  {
 	protected NomenclaturalCode makeNomenclaturalCode(MarkupImportState state) {
 		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		if (nc == null) {
-			nc = NomenclaturalCode.ICBN; // default;
+			nc = NomenclaturalCode.ICNAFP; // default;
 		}
 		return nc;
 	}
@@ -1546,18 +1547,18 @@ public abstract class MarkupImportBase  {
 				}
 				// legend
 				if (StringUtils.isNotBlank(legendString)) {
-					media.addDescription(legendString, getDefaultLanguage(state));
+					media.putDescription(getDefaultLanguage(state), legendString);
 				}
 				if (StringUtils.isNotBlank(numString)) {
 					// TODO use concrete source (e.g. DAPHNIPHYLLACEAE in FM
 					// vol.13)
 					Reference<?> citation = state.getConfig().getSourceReference();
-					media.addSource(numString, "num", citation, null);
+					media.addSource(OriginalSourceType.Import, numString, "num", citation, null);
 					// TODO name used in source if available
 				}
 				// TODO which citation
 				if (StringUtils.isNotBlank(id)) {
-					media.addSource(id, null, state.getConfig().getSourceReference(), null);
+					media.addSource(OriginalSourceType.Import, id, null, state.getConfig().getSourceReference(), null);
 				} else {
 					String message = "Figure id should never be empty or null";
 					fireWarningEvent(message, next, 6);

@@ -171,9 +171,14 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 			Set<PolytomousKeyNode> nodes = state.getUnmatchedLeads().getNodes(unmatchedKey);
 			for(PolytomousKeyNode nodeToMatch: nodes){
 				for (PolytomousKeyNode childNode : childList){
-					nodeToMatch.addChild(childNode);
-					//just to be on the save side
-					nodeToMatch.refreshNodeNumbering();
+					try {
+						nodeToMatch.addChild(childNode);
+						//just to be on the save side
+						nodeToMatch.refreshNodeNumbering();
+					} catch (Exception e) {
+						String message = "An exception occurred when trying to add a key node child or to referesh the node numbering: " + e.getMessage();
+						fireWarningEvent(message, parentEvent, 6);
+					}
 				}
 				state.getUnmatchedLeads().removeNode(unmatchedKey, nodeToMatch);
 			}
@@ -353,7 +358,7 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 
 	private boolean isInfraSpecificMarker(String single) {
 		try {
-			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
+			if (Rank.getRankByIdInVoc(single).isInfraSpecific()){
 				return true;
 			}else{
 				return false;
@@ -374,11 +379,11 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		
 		//try to find matching lead nodes 
 		UnmatchedLeadsKey leadsKey = UnmatchedLeadsKey.NewInstance(num, nameString);
-		Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, taxon, leadsKey);
+		Set<PolytomousKeyNode> matchingNodes = handleMatchingNodes(state, event, taxon, leadsKey);
 		
 		if (num != null){//same without using the num
 			UnmatchedLeadsKey noNumLeadsKey = UnmatchedLeadsKey.NewInstance("", nameString);
-			Set<PolytomousKeyNode> noNumMatchingNodes = handleMatchingNodes(state, taxon, noNumLeadsKey);
+			Set<PolytomousKeyNode> noNumMatchingNodes = handleMatchingNodes(state, event, taxon, noNumLeadsKey);
 			if(noNumMatchingNodes.size() > 0){
 				String message ="Taxon matches additional key node when not considering <num> attribute in taxontitle. This may be correct but may also indicate an error.";
 				fireWarningEvent(message, event, 1);
@@ -393,13 +398,18 @@ public class MarkupKeyImport  extends MarkupImportBase  {
 		
 	}
 	
-	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, Taxon taxon, UnmatchedLeadsKey leadsKey) {
+	private Set<PolytomousKeyNode> handleMatchingNodes(MarkupImportState state, XMLEvent event, Taxon taxon, UnmatchedLeadsKey leadsKey) {
 		Set<PolytomousKeyNode> matchingNodes = state.getUnmatchedLeads().getNodes(leadsKey);
 		for (PolytomousKeyNode matchingNode : matchingNodes){
 			state.getUnmatchedLeads().removeNode(leadsKey, matchingNode);
 			matchingNode.setTaxon(taxon);
 			//just to be on the save side
-			matchingNode.refreshNodeNumbering();
+			try{	
+				matchingNode.refreshNodeNumbering();
+			} catch (Exception e) {
+				String message = "An exception occurred when trying to referesh the node numbering: " + e.getMessage();
+				fireWarningEvent(message, event, 6);
+			}
 			state.getPolytomousKeyNodesToSave().add(matchingNode);
 		}
 		return matchingNodes;

@@ -9,6 +9,8 @@
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -31,8 +33,10 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
  * as an upper case string.</li>
  * <li><code>property</code>: The <code>CdmAuthority</code> only applies to instances
  * which satisfy the specified property. Interpretation is up to type specific voters.</li>
- * <li><code>operation</code>: a string which specifies a {@link Operation} on that set of cdm
- * types</li>
+ * <li><code>operation</code>: A string enclosed in brackets <code>[]</code>
+ * which specifies one {@link Operation} or
+ * multiple on that set of cdm types. Multiple {@link Operation} must be comma
+ * separated.</li>
  * <li><code>targetUuid</code>: The <code>operation</code> may be restricted to a specific cdm entity by adding
  * the entity uuid to the <code>operation</code>. The uuid string is enclosed in curly brackets '<code>{</code>'
  * , '<code>}</code>' and appended to the end of the <code>operation</code>.</li>
@@ -41,13 +45,14 @@ import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
  * <h3>Examples for permissionStrings</h3>
  *
  * <pre>
- * TAXONBASE.CREATE
- * TAXONBASE.READ
- * TAXONBASE.UPDATE
- * TAXONBASE.DELETE
- * DESCRIPTIONBASE.UPDATE
- * DESCRIPTIONELEMENTBASE(Ecology).UPDATE
- * TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+ * TAXONBASE.[CREATE]
+ * TAXONBASE.[READ]
+ * TAXONBASE.[UPDATE]
+ * TAXONBASE.[DELETE]
+ * DESCRIPTIONBASE.[UPDATE]
+ * DESCRIPTIONBASE.[CREATE,UPDATE,DELETE,READ]
+ * DESCRIPTIONELEMENTBASE(Ecology).[UPDATE]
+ * TAXONNODE.[UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
  * </pre>
  *
  * The method {@link #getPermissionString(String)} parses a full authority and returns  permissionString and
@@ -62,6 +67,8 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     private static final long serialVersionUID = 1L;
 
     public static final Logger logger = Logger.getLogger(CdmAuthority.class);
+
+    private static Map<String, CdmAuthority> grantedAuthorityCache = new HashMap<String, CdmAuthority>();
 
     CdmPermissionClass permissionClass;
     String property;
@@ -122,7 +129,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
     }
 
     public void setOperation(EnumSet<CRUD> operation) {
-    	this.operation = operation;
+        this.operation = operation;
     }
 
     public UUID getTargetUUID(){
@@ -157,7 +164,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
         //  (\\w*)             -> classname
         //  (?:\\((\\w*)\\))?  -> (property)
         //  \\.?               -> .
-        //  (?:(\\w*))(?:\\{([\\da-z\\-]+)\\})? -> Permmission and targetUuid
+        //  (?:\\[(\\D*)\\])(?:\\{([\\da-z\\-]+)\\})? -> Permission and targetUuid
         //
         String regex = "(\\w*)(?:\\((\\w*)\\))?\\.?(?:\\[(\\D*)\\])?(?:\\{([\\da-z\\-]+)\\})?";
         Pattern pattern = Pattern.compile(regex);
@@ -172,7 +179,7 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
                 if(tokens[i] != null && tokens[i].length() == 0){
                     tokens[i] = null;
                 }
-                logger.debug("[" + i + "]: " + tokens[i]+ "\n");
+                logger.trace("[" + i + "]: " + tokens[i]+ "\n");
             }
         } else {
             logger.debug("no match");
@@ -220,13 +227,21 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
      * Constructs a new CdmAuthority by parsing the authority string.
      * For details on the syntax please refer to the class
      * documentation above.
-     *
+     * <p>
+     * This method is mainly used by the permission voters ({@link CdmPermissionVoter)}.
+     * In order to improve the voting process this method is caching the <code>CdmAuthority</code>
+     * instances per <code>GrantedAuthority</code> string in a map.
      *
      * @param authority
      * @throws ParsingException
      */
     public static CdmAuthority fromGrantedAuthority(GrantedAuthority authority) throws ParsingException {
-        return new CdmAuthority(authority.getAuthority());
+        CdmAuthority cdmAuthority = grantedAuthorityCache.get(authority.getAuthority());
+        if(cdmAuthority == null){
+            cdmAuthority = new CdmAuthority(authority.getAuthority());
+        }
+        return cdmAuthority;
+//        return  new CdmAuthority(authority.getAuthority());
     }
 
     /* (non-Javadoc)

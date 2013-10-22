@@ -26,7 +26,7 @@ public class MapTableCreator extends TableCreator {
 
 	
 	protected MapTableCreator(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String mapKeyTableName, boolean includeAudTable) {
-		super(stepName, firstTableName + "_" + secondTableName, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Object>(), new ArrayList<Boolean>(), new ArrayList<String>(), includeAudTable, false, false);
+		super(stepName, firstTableName + "_" + secondTableName, new ArrayList<String>(), new ArrayList<String>(), new ArrayList<Object>(), new ArrayList<Boolean>(), new ArrayList<String>(), includeAudTable, false, false, false);
 		this.firstTableName = firstTableName;
 		this.secondTableName = secondTableName;
 		this.firstTableAlias = (firstTableAlias != null )? firstTableAlias : firstTableName ;

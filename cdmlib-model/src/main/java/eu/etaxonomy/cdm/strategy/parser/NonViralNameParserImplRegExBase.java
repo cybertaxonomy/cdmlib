@@ -13,6 +13,8 @@ import java.util.regex.Pattern;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UTF8;
+
 
 /**
  * This class is a base class that separates regex parts of the parser from methods
@@ -29,7 +31,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String epiSplitter = "(\\s+|\\(|\\))"; //( ' '+| '(' | ')' )
     protected static Pattern pattern = Pattern.compile(epiSplitter); 
 
-	public static final String hybridSign = "\u00D7";
+	public static final String hybridSign = UTF8.HYBRID.toString();  //  "\u00D7";
 
     //some useful non-terminals
     protected static String pStart = "^";

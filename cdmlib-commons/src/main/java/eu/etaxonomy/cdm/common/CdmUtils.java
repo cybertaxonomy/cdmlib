@@ -71,7 +71,11 @@ public class CdmUtils {
 
         return homeDirString;
     }
-	
+
+    public static File getCdmHomeDir() {
+        return new File(System.getProperty("user.home")+File.separator+cdmFolderName+File.separator);
+    }
+
 	public static File getCdmSubDir(String dirName) {
 
 		File folder = new File(System.getProperty("user.home") + File.separator
@@ -86,12 +90,6 @@ public class CdmUtils {
 		}
 		return folder;
 	}
-
-    public static File getCdmHomeDir() {
-        return new File(System.getProperty("user.home")+File.separator+cdmFolderName+File.separator);
-    }
-
-
 
 
     /**

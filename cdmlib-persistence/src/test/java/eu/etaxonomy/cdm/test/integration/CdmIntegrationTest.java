@@ -453,12 +453,23 @@ public abstract class CdmIntegrationTest extends UnitilsJUnit4 {
     }
 
     /**
-     * This is the recommended method to create DbUnit dataset for integration tests.
-     *
+     * <b>WARNING</b> read this doc before using this method.
+     * <p>
+     * This is the recommended method to create DbUnit data set for integration tests.
+     * This method will create the DbUnit data set file for the specific test class
+     * it has been called from. This happens in full compliance with the DbUnit conventions,
+     * so that the test class will immediately be able to use the
+     * newly created file during the next run.
+     * This also means that using <code>writeDbUnitDataSetFile()</code>
+     * in a test class <b>will overwrite the existing data set file</b>. This is not
+     * considered to be harmful since we expect that any development always is
+     * backed up by a VCS like git, svn and therefore recovery of overwritten
+     * data source files should not cause any problems.
+     * <p>
      * Writes a  DbUnit dataset file from the current data base connection using the
-     * {@link FlatFullXmlWriter}.
-     * which is a variant of the {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
-     * inserts '[null]' place holders for null values instead of skipping them.
+     * {@link FlatFullXmlWriter} which is a variant of the
+     * {@link org.dbunit.dataset.xml.FlatXmlWriter}. It
+     * inserts <code>'[null]'</code> place holders for null values instead of skipping them.
      *
      *
      * @param includeTableNames

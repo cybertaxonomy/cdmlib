@@ -24,16 +24,18 @@ import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 /**
  * @author a.mueller
  *
@@ -61,11 +63,12 @@ public class ImportHelper {
 	 * @return
 	 */
 	public static boolean setOriginalSource(ISourceable sourceable, Reference sourceReference, String sourceId, String namespace){
-		IOriginalSource originalSource;
+		IOriginalSource<?> originalSource;
+		OriginalSourceType type = OriginalSourceType.Import;
 		if (HibernateProxyHelper.isInstanceOf(sourceable, IdentifiableEntity.class)){
-			originalSource = IdentifiableSource.NewInstance(sourceId, namespace, sourceReference, null);
+			originalSource = IdentifiableSource.NewInstance(type, sourceId, namespace, sourceReference, null);
 		}else if (HibernateProxyHelper.isInstanceOf(sourceable, DescriptionElementBase.class)){
-			originalSource = DescriptionElementSource.NewInstance(sourceId, namespace, sourceReference, null);
+			originalSource = DescriptionElementSource.NewInstance(type, sourceId, namespace, sourceReference, null);
 		}else{
 			throw new ClassCastException("Unknown implementing class for ISourceable "+ sourceable.getClass() + " . Not supported bei ImportHelper.");
 		}
@@ -298,7 +301,7 @@ public class ImportHelper {
 	public static TimePeriod getDatePublished(String refYear){
 		TimePeriod resultNew;
 		try {
-			resultNew = TimePeriod.parseString(refYear);
+			resultNew = TimePeriodParser.parseString(refYear);
 		} catch (IllegalArgumentException e) {
 			logger.warn("RefYear could not be parsed: " + refYear);
 			resultNew = null;

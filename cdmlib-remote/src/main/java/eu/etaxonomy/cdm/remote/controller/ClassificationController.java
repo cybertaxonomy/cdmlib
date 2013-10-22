@@ -28,8 +28,8 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
 
 /**
@@ -113,7 +113,7 @@ public class ClassificationController extends BaseController<Classification,ICla
         }
         rank = findRank(rankUuid);
 
-        return service.loadRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY());
+        return service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY());
     }
 
     private Rank findRank(UUID rankUuid) {

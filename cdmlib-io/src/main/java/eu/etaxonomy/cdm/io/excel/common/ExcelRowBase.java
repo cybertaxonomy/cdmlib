@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.excel.common.ExcelTaxonOrSpecimenImportBase.SourceType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -169,7 +170,7 @@ public abstract class ExcelRowBase {
 	private IdentifiableSource getOrMakeSource(int key) {
 		IdentifiableSource  source = sources.get(key);
 		if (source == null){
-			source = IdentifiableSource.NewInstance();
+			source = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
 			sources.put(key, source);
 		}
 		return source;

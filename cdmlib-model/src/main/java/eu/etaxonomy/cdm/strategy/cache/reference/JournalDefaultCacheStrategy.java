@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -22,7 +23,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author a.mueller
  * @created 29.06.2008
- * @version 1.0
  */
 public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
 	@SuppressWarnings("unused")
@@ -33,9 +33,9 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 	protected String afterYear = "";
 	protected String afterAuthor = ", ";
 
-	private String blank = " ";
-	private String comma = ",";
-	private String dot =".";
+//	private String blank = " ";
+//	private String comma = ",";
+//	private String dot =".";
 	
 	final static UUID uuid = UUID.fromString("c84846cd-c862-462e-81b8-53cf4100ed32");
 	
@@ -63,18 +63,29 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 		super();
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
+
+	@Override
 	public String getTitleCache(T journal) {
-		String result = "";
+		return getTitleCache(journal, false);
+		
+
+	}
+	
+
+	@Override
+	public String getAbbrevTitleCache(T journal) {
+		return getTitleCache(journal, true);
+	}
+	
+	
+	private String getTitleCache(T journal, boolean isAbbrev){
 		if (journal == null){
 			return null;
 		}
-		String title = CdmUtils.Nz(journal.getTitle()).trim();
-		if (!"".equals(title) ){
-			result += title;
-		}
+
+		String title = CdmUtils.getPreferredNonEmptyString(journal.getTitle(), journal.getAbbrevTitle(), isAbbrev, true);
+		
+		String result = title;
 		
 //		//delete .
 //		while (result.endsWith(".")){
@@ -82,13 +93,18 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 //		}
 		
 //		result = addYear(result, journal);
+		
+		
 		TeamOrPersonBase<?> team = journal.getAuthorTeam();
-		String author = (team == null ? "" : CdmUtils.Nz(team.getTitleCache()));
-		if (! author.equals("")){
-			result = author + afterAuthor + result;
+		if (team != null){
+			String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
+			if (StringUtils.isNotBlank(author)){
+				result = author + afterAuthor + result;
+			}
 		}
 		return result;
 	}
+
 	
 	public String getCitation(T referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
@@ -106,4 +122,6 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 		
 		return stringBuilder.toString();
 	}
+
+
 }

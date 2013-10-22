@@ -31,7 +31,6 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -42,15 +41,18 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -371,13 +373,13 @@ public class IpniService  implements IIpniService{
 
 		
 		//dates
-		TimePeriod date = TimePeriod.parseString(valueMap.get(DATE));
+		TimePeriod date = TimePeriodParser.parseString(valueMap.get(DATE));
 		ref.setDatePublished(date);
 
 
 		//source
 		Reference citation = getIpniCitation(appConfig);
-		ref.addSource(valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
+		ref.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Publication", citation, valueMap.get(VERSION));
 
 		
 		
@@ -439,7 +441,7 @@ public class IpniService  implements IIpniService{
 		//rank
 		try {
 			String rankStr = nomalizeRank(valueMap.get(RANK));
-			name.setRank(Rank.getRankByNameOrAbbreviation(rankStr, NomenclaturalCode.ICBN, true));
+			name.setRank(Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICNAFP, true));
 		} catch (UnknownCdmTypeException e) {
 			logger.warn("Rank was unknown");
 		}
@@ -451,7 +453,7 @@ public class IpniService  implements IIpniService{
 		//publication
 		Reference ref = ReferenceFactory.newGeneric();
 		ref.setTitleCache(valueMap.get(PUBLICATION));
-		TimePeriod datePublished = TimePeriod.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
+		TimePeriod datePublished = TimePeriodParser.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
 		name.setNomenclaturalReference(ref);
 		
 		//name status
@@ -483,12 +485,12 @@ public class IpniService  implements IIpniService{
 		name.addReplacedSynonym(replacedSynoynm, null, null, null);
 
 		//type information
-		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+		DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 		
 		
 		//gathering period
 		String collectionDateAsText = valueMap.get(COLLECTION_DATE_AS_TEXT);
-		TimePeriod gatheringPeriod = TimePeriod.parseString(collectionDateAsText);
+		TimePeriod gatheringPeriod = TimePeriodParser.parseString(collectionDateAsText);
 		
 		try {
 			gatheringPeriod.setStartDay(getIntegerDateValueOrNull(valueMap, COLLECTION_DAY1));
@@ -549,7 +551,7 @@ public class IpniService  implements IIpniService{
 		
 		//source
 		Reference citation = getIpniCitation(appConfig);
-		name.addSource(valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
+		name.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Name", citation, valueMap.get(VERSION));
 		
 		
 //		//TODO
@@ -671,13 +673,13 @@ public class IpniService  implements IIpniService{
 		person.setFirstname(valueMap.get(DEFAULT_AUTHOR_FORENAME));
 		person.setLastname(valueMap.get(DEFAULT_AUTHOR_SURNAME));
 		
-		Reference citation = getIpniCitation(appConfig);
+		Reference<?> citation = getIpniCitation(appConfig);
 		
 		//id, version
-		person.addSource(valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
+		person.addSource(OriginalSourceType.Lineage, valueMap.get(ID), "Author", citation, valueMap.get(VERSION));
 		
 		//dates
-		TimePeriod lifespan = TimePeriod.parseString(valueMap.get(DATES));
+		TimePeriod lifespan = TimePeriodParser.parseString(valueMap.get(DATES));
 		person.setLifespan(lifespan);
 		
 		//alternative_names
@@ -699,7 +701,7 @@ public class IpniService  implements IIpniService{
 
 	
 	private Reference getIpniCitation(ICdmApplicationConfiguration appConfig) {
-		Reference ipniReference;
+		Reference<?> ipniReference;
 		if (appConfig != null){
 			ipniReference = appConfig.getReferenceService().find(uuidIpni);
 			if (ipniReference == null){
@@ -717,7 +719,7 @@ public class IpniService  implements IIpniService{
 	 * @return
 	 */
 	private Reference getNewIpniReference() {
-		Reference ipniReference;
+		Reference<?> ipniReference;
 		ipniReference = ReferenceFactory.newDatabase();
 		ipniReference.setTitleCache("The International Plant Names Index (IPNI)");
 		return ipniReference;

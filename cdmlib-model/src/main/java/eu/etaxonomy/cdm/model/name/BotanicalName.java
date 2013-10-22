@@ -227,7 +227,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICBN,  rank);
+		return (BotanicalName)nameParser.parseFullName(fullNameString, NomenclaturalCode.ICNAFP,  rank);
 	}
 	
 	/**
@@ -261,7 +261,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 		if (nameParser == null){
 			nameParser = new NonViralNameParserImpl();
 		}
-		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICBN, rank);
+		return (BotanicalName)nameParser.parseReferencedName(fullNameAndReferenceString, NomenclaturalCode.ICNAFP, rank);
 	}
 
 //*********************** 	
@@ -310,7 +310,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode(){
-		return NomenclaturalCode.ICBN;
+		return NomenclaturalCode.ICNAFP;
 	}
 
 	

@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -123,7 +124,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 					TaxonDescription description = getTaxonDescription(taxon, descriptionRef, false, true);
 					TextData featurePlaceholder = docImport.getFeaturePlaceholder(state, description, feature, true);
 					for (Reference<?> citation : refs) {
-						featurePlaceholder.addSource(null, null, citation, null);
+						featurePlaceholder.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, null);
 					}
 				} else {
 					String message = "No reference found in references";
@@ -561,15 +562,26 @@ public class MarkupFeatureImport extends MarkupImportBase {
 					TermVocabulary<?> voc = null;
 					language = getLanguage(state, langUuid, languageStr, languageStr, null, voc);
 					if (language == null){
-						logger.warn("Language " + languageStr + " not recognized by transformer");
+						String warning = "Language " + languageStr + " not recognized by transformer";
+						fireWarningEvent(warning, state.getReader().peek(), 4);
 					}
 				} catch (UndefinedTransformerMethodException e) {
 					throw new RuntimeException(e);
 				}
 			}
-			NamedArea area = null;
-			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(name, language, area);
-			result.add(commonTaxonName);
+			DescriptionElementBase commonName;
+			if (name != null && name.length() < 255 ){
+				NamedArea area = null;
+				commonName = CommonTaxonName.NewInstance(name, language, area);
+			}else{
+				if (language == null){
+					language = getDefaultLanguage(state);
+				}
+				commonName = TextData.NewInstance(Feature.COMMON_NAME(), name, language, null);
+				String warning = "Vernacular feature is >255 size. Therefore it is handled as TextData, not CommonTaxonName: " + name;
+				fireWarningEvent(warning, state.getReader().peek(), 1);
+			}
+			result.add(commonName);
 		}
 		
 		return result;

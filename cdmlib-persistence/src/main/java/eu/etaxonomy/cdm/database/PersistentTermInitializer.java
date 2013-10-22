@@ -91,6 +91,17 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     @Override
     public void doInitialize(){
         logger.info("PersistentTermInitializer initialize start ...");
+        
+//        //only for testing - remove
+//        TransactionStatus txStatus2 = transactionManager.getTransaction(txDefinition);
+//        int i = vocabularyDao.count();
+//        List<TermVocabulary> list = vocabularyDao.list(null, null);
+//        for (TermVocabulary voc : list){
+//        	System.out.println(voc.getUuid());
+//        }
+//        transactionManager.commit(txStatus2);
+//        // end testing
+        
         if (omit){
             logger.info("PersistentTermInitializer.omit == true, returning without initializing terms");
             return;
@@ -99,6 +110,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             logger.info("PersistentTermInitializer.omit == false, initializing " + VocabularyEnum.values().length + " term classes");
 
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
+//          TermVocabulary v = vocabularyDao.findByUuid(UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"));
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
                 //Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
                 UUID vocabularyUuid = firstPass(vocabularyType,terms);
@@ -120,11 +132,11 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
     protected void secondPass(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms) {
         logger.debug("Initializing vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 
-        TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
+        TermVocabulary<?> persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
 
         if (persistedVocabulary != null){
             for(Object object : persistedVocabulary.getTerms()) {
-                DefinedTermBase definedTermBase = (DefinedTermBase) object;
+                DefinedTermBase<?> definedTermBase = (DefinedTermBase) object;
                 Hibernate.initialize(definedTermBase.getRepresentations());
                 for(Representation r : definedTermBase.getRepresentations()) {
                     Hibernate.initialize(r.getLanguage());
@@ -133,7 +145,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             }
         }else{
             logger.error("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
-            throw new NullPointerException("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
+            throw new IllegalStateException("Persisted Vocabulary does not exist in database: " + vocabularyUuid);
         }
         logger.debug("Setting defined Terms for class " + clazz.getSimpleName() + ", " + persistedVocabulary.getTerms().size() + " in vocabulary");
         super.setDefinedTerms(clazz, persistedVocabulary);
@@ -157,18 +169,18 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             terms.put(d.getUuid(), d);
         }
 
-        TermVocabulary loadedVocabulary  = termLoader.loadTerms(vocabularyType, terms);
+        TermVocabulary<?> loadedVocabulary  = termLoader.loadTerms(vocabularyType, terms);
 
         UUID vocabularyUuid = loadedVocabulary.getUuid();
 
 
         logger.debug("loading vocabulary " + vocabularyUuid);
-        TermVocabulary persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
+        TermVocabulary<DefinedTermBase> persistedVocabulary = vocabularyDao.findByUuid(vocabularyUuid);
         if(persistedVocabulary == null) { // i.e. there is no persisted vocabulary
             logger.debug("vocabulary " + vocabularyUuid + " does not exist - saving");
             saveVocabulary(loadedVocabulary);
         }else {
-            logger.debug("vocabulary " + vocabularyUuid + " does exist and already has " + persistedVocabulary.size() + " terms");
+            if (logger.isDebugEnabled()){logger.debug("vocabulary " + vocabularyUuid + " does exist and already has " + persistedVocabulary.size() + " terms");}
             boolean persistedVocabularyHasMissingTerms = false;
             for(Object t : loadedVocabulary.getTerms()) {
                 if(!persistedVocabulary.getTerms().contains(t)) {

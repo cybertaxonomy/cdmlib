@@ -12,6 +12,8 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -19,9 +21,12 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.lucene.queryParser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.WebDataBinder;
+import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -29,6 +34,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -38,6 +44,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -46,6 +53,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
+import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
+import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
 /**
@@ -83,6 +92,103 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
     @Autowired
     private ITermService termService;
 
+    @InitBinder
+    @Override
+    public void initBinder(WebDataBinder binder) {
+        super.initBinder(binder);
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
+    }
+
+    /**
+     * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;find</b>
+     *
+     * @param query
+     *            the string to query for. Since the wildcard character '*'
+     *            internally always is appended to the query string, a search
+     *            always compares the query string with the beginning of a name.
+     *            - <i>required parameter</i>
+     * @param treeUuid
+     *            the {@link UUID} of a {@link Classification} to which the
+     *            search is to be restricted. - <i>optional parameter</i>
+     * @param areas
+     *            restrict the search to a set of geographic {@link NamedArea}s.
+     *            The parameter currently takes a list of TDWG area labels.
+     *            - <i>optional parameter</i>
+     * @param pageNumber
+     *            the number of the page to be returned, the first page has the
+     *            pageNumber = 1 - <i>optional parameter</i>
+     * @param pageSize
+     *            the maximum number of entities returned per page (can be -1
+     *            to return all entities in a single page) - <i>optional parameter</i>
+     * @param doTaxa
+     *            weather to search for instances of {@link Taxon} - <i>optional parameter</i>
+     * @param doSynonyms
+     *            weather to search for instances of {@link Synonym} - <i>optional parameter</i>
+     * @param doTaxaByCommonNames
+     *            for instances of {@link Taxon} by a common name used - <i>optional parameter</i>
+     * @return a Pager on a list of {@link IdentifiableEntity}s initialized by
+     *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
+     * @throws IOException
+     * @throws LuceneMultiSearchException
+     * @throws ParseException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"search"})
+    public Pager<SearchResult<TaxonBase>> doSearch(
+            @RequestParam(value = "query", required = true) String query,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
+            @RequestParam(value = "status", required = false) Set<PresenceAbsenceTermBase<?>> status,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
+            @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
+            @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
+            @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException, LuceneMultiSearchException {
+
+
+        logger.info("search : " + requestPathAndQuery(request) );
+
+        Set<NamedArea> areaSet = null;
+        if(areaList != null){
+            areaSet = new HashSet<NamedArea>(areaList.size());
+            areaSet.addAll(areaList);
+            TaxonListController.includeAllSubAreas(areaSet, termService);
+        }
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        // TODO change type of do* parameters  to TaxaAndNamesSearchMode
+        EnumSet<TaxaAndNamesSearchMode> searchModes = EnumSet.noneOf(TaxaAndNamesSearchMode.class);
+        if(BooleanUtils.toBoolean(doTaxa)) {
+            searchModes.add(TaxaAndNamesSearchMode.doTaxa);
+        }
+        if(BooleanUtils.toBoolean(doSynonyms)) {
+            searchModes.add(TaxaAndNamesSearchMode.doSynonyms);
+        }
+        if(BooleanUtils.toBoolean(doMisappliedNames)) {
+            searchModes.add(TaxaAndNamesSearchMode.doMisappliedNames);
+        }
+        if(BooleanUtils.toBoolean(doTaxaByCommonNames)) {
+            searchModes.add(TaxaAndNamesSearchMode.doTaxaByCommonNames);
+        }
+
+        Classification classification = null;
+        if(treeUuid != null){
+            classification = classificationService.find(treeUuid);
+        }
+
+        return service.findTaxaAndNamesByFullText(searchModes, query,
+                classification, areaSet, status, null,
+                false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                null, initializationStrategy);
+    }
 
     /**
      * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
@@ -119,7 +225,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"})
+    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"}) // TODO should be find, see TaxonListPortaController
     public Pager<IdentifiableEntity> doFindTaxaAndNames(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -165,6 +271,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
     }
 
+
     /**
      * @param clazz
      * @param queryString
@@ -193,7 +300,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException {
 
-         logger.info("findByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByDescriptionElementFullText : " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -236,7 +343,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException {
 
-         logger.info("findByFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByFullText : " + requestPathAndQuery(request)  );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -270,7 +377,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             )
              throws IOException, ParseException, LuceneMultiSearchException {
 
-         logger.info("findByEverythingFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByEverythingFullText : " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -289,5 +396,23 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
                 pagerParams.getPageSize(), pagerParams.getPageIndex(),
                 ((List<OrderHint>)null), initializationStrategy);
         return pager;
+    }
+
+    /**
+     * @param areaSet
+     */
+    static public void includeAllSubAreas(Set<NamedArea> areaSet, ITermService termService) {
+        Set<NamedArea> tmpAreaSet = areaSet;
+        // expand all areas to include also the sub areas
+        Pager<NamedArea> pager = null;
+        while(true){
+            pager = termService.getIncludes(tmpAreaSet, 1000, null, null);
+            if(pager.getCount() == 0){
+                break;
+            }
+            tmpAreaSet = (Set<NamedArea>) pager.getRecords();
+            areaSet.addAll(tmpAreaSet);
+
+        }
     }
 }

@@ -21,6 +21,7 @@ import org.apache.lucene.queryParser.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
@@ -52,7 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -162,7 +164,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * but also it is than difficult to decide how to handle other names
      * in the homotypic group. It is up to the implementing class to
      * handle this situation via an exception or in another way.
-     * TODO Open issue: does the old synonym need to be deleted from the database?
+     *
      *
      * @param synonym
      * 				the synonym to change into an accepted taxon
@@ -209,11 +211,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
-     * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
-     * @param syn the synonym
+     * Deletes all synonym relationships of a given synonym. If taxon is given
+     * only those relationships to the taxon are deleted.
+     *
+     * @param syn
+     *            the synonym
      * @param taxon
      * @return
+     * @deprecated This method must no longer being used since the
+     *             SynonymRelationship is annotated at the {@link Taxon} and at
+     *             the {@link Synonym} with <code>orphanDelete=true</code>. Just
+     *             remove the from and to entities from the relationship and
+     *             hibernate will care for the deletion. Using this method can cause
+     *             <code>StaleStateException</code> (see http://dev.e-taxonomy.eu/trac/ticket/3797)
+     *
      */
+    @Deprecated
     public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
     /**
@@ -222,7 +235,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param config
      * @throws ReferencedObjectUndeletableException
      */
-    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException;
+    public UUID deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws DataChangeNoRollbackException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -576,6 +589,38 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException;
 
+
+    /**
+     * @param areaFilter
+     * @param statusFilter
+     * @param classification
+     *            Additional filter criterion: If a taxonomic classification
+     *            three is specified here the result set will only contain taxa
+     *            of the given classification
+     * @param highlightFragments
+     * @param pageSize
+     *            The maximum number of objects returned (can be null for all
+     *            objects)
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param orderHints
+     *            Supports path like <code>orderHints.propertyNames</code> which
+     *            include *-to-one properties like createdBy.username or
+     *            authorTeam.persistentTitleCache
+     * @param propertyPath
+     *            Common properties to initialize the instances of the
+     *            CDM types ({@link Taxon} and {@link Synonym}
+     *            this method can return - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a paged list of instances of {@link Taxon} instances
+     * @throws IOException
+     * @throws ParseException
+     */
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+            Classification classification,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException;
+
     /**
      * Searches for TaxonBase instances using the TaxonBase free text index.
      *
@@ -623,7 +668,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
             EnumSet<TaxaAndNamesSearchMode> searchModes,
-            String queryString, Classification classification, Set<NamedArea> namedAreas,
+            String queryString, Classification classification, Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus,
             List<Language> languages, boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException;
 
@@ -752,6 +797,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public long deleteSynonymRelationships(Synonym syn);
 
 
+
+
+
     /**
      * Removes a synonym.<BR><BR>
      *
@@ -772,7 +820,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param removeNameIfPossible
      * @throws DataChangeNoRollbackException
      */
-    public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible, boolean newHomotypicGroupIfNeeded);
+    public void deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
 
     /**
@@ -824,6 +872,33 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return list of inferred synonyms
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
+
+
+
+
+    /**
+     * Removes a synonym.<BR><BR>
+     *
+     * In detail it removes
+     *  <li>all synonym relationship to the given taxon or to all taxa if taxon is <code>null</code></li>
+     *  <li>the synonym concept if it is not referenced by any synonym relationship anymore</li>
+     *  <BR><BR>
+     *  If <code>config.removeNameIfPossible</code> is true
+     *  it also removes the synonym name if it is not used in any other context
+     *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)<BR><BR>
+     *  If <code>config.newHomotypicGroupIfNeeded</code> is <code>true</code> and the synonym name is not deleted and
+     *  the name is homotypic to the taxon the name is moved to a new homotypical group.<BR><BR>
+     *
+     *  If synonym is <code>null</code> the method has no effect.
+     *
+     * @param taxon
+     * @param synonym
+     * @param config
+     * @throws DataChangeNoRollbackException
+     */
+    void deleteSynonym(Synonym synonym, Taxon taxon,
+            SynonymDeletionConfigurator config);
+
 
 
 

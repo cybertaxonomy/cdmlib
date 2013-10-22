@@ -93,8 +93,7 @@ public class TaxonRelationship extends RelationshipBase<Taxon, Taxon, TaxonRelat
      * @deprecated for hibernate only, don't use
      */
     @Deprecated
-    private TaxonRelationship(){
-    }
+    private TaxonRelationship(){}
 
     /**
      * Class constructor: creates a new taxon relationship instance (with the

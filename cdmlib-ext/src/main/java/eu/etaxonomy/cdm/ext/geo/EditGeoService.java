@@ -10,11 +10,14 @@
 package eu.etaxonomy.cdm.ext.geo;
 
 import java.awt.Color;
+import java.io.IOException;
+import java.io.Reader;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
@@ -29,10 +33,12 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 
@@ -46,7 +52,7 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 public class EditGeoService implements IEditGeoService {
     public static final Logger logger = Logger.getLogger(EditGeoService.class);
 
-    private static final String DEFAULT_BACK_LAYER = "tdwg4";
+//    private static final String DEFAULT_BACK_LAYER = "tdwg4";
 
     @Autowired
     private IDescriptionDao dao;
@@ -55,6 +61,9 @@ public class EditGeoService implements IEditGeoService {
     private IGeoServiceAreaMapping areaMapping;
 
     private IDefinedTermDao termDao;
+
+    @Autowired
+    private ITermVocabularyDao vocabDao;
 
     @Autowired
     public void setTermDao(IDefinedTermDao termDao) {
@@ -87,8 +96,13 @@ public class EditGeoService implements IEditGeoService {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
-            List<Distribution> result = (List) dao.getDescriptionElements(taxonDescription, getDistributionFeatures(),
-                    Distribution.class, null, null, null);
+            List<Distribution> result = (List) dao.getDescriptionElements(
+                    taxonDescription, null,
+                    getDistributionFeatures(),
+                    Distribution.class,
+                    null,
+                    null,
+                    null);
             distributions.addAll(result);
         }
 
@@ -107,9 +121,9 @@ public class EditGeoService implements IEditGeoService {
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
             String backLayer, List<Language> langs) {
 
-        if (backLayer == null) {
-            backLayer = DEFAULT_BACK_LAYER;
-        }
+//        if (backLayer == null) {
+//            backLayer = DEFAULT_BACK_LAYER;
+//        }
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
         return uriParams;
@@ -146,29 +160,29 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     public String getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
-            Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors,
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
             Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
 
-        List<Point> fieldObservationPoints = new ArrayList<Point>();
+        List<Point> fieldUnitPoints = new ArrayList<Point>();
         List<Point> derivedUnitPoints = new ArrayList<Point>();
 
         IndividualsAssociation individualsAssociation;
-        DerivedUnitBase derivedUnit;
+        DerivedUnit derivedUnit;
 
         for (SpecimenOrObservationBase specimenOrObservationBase : specimensOrObersvations) {
             SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao
                     .load(specimenOrObservationBase.getUuid());
 
-            if (specimenOrObservation instanceof FieldObservation) {
-                fieldObservationPoints.add(((FieldObservation) specimenOrObservation).getGatheringEvent()
+            if (specimenOrObservation instanceof FieldUnit) {
+                fieldUnitPoints.add(((FieldUnit) specimenOrObservation).getGatheringEvent()
                         .getExactLocation());
             }
-            if (specimenOrObservation instanceof DerivedUnitBase<?>) {
-                registerDerivedUnitLocations((DerivedUnitBase) specimenOrObservation, derivedUnitPoints);
+            if (specimenOrObservation instanceof DerivedUnit) {
+                registerDerivedUnitLocations((DerivedUnit) specimenOrObservation, derivedUnitPoints);
             }
         }
 
-        return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldObservationPoints,
+        return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
                 derivedUnitPoints, specimenOrObservationTypeColors, doReturnImage, width, height, bbox, backLayer);
 
     }
@@ -177,14 +191,14 @@ public class EditGeoService implements IEditGeoService {
      * @param derivedUnit
      * @param derivedUnitPoints
      */
-    private void registerDerivedUnitLocations(DerivedUnitBase<?> derivedUnit, List<Point> derivedUnitPoints) {
+    private void registerDerivedUnitLocations(DerivedUnit derivedUnit, List<Point> derivedUnitPoints) {
 
         Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
         if (originals != null) {
             for (SpecimenOrObservationBase original : originals) {
-                if (original instanceof FieldObservation) {
-                    if (((FieldObservation) original).getGatheringEvent() != null) {
-                        Point point = ((FieldObservation) original).getGatheringEvent().getExactLocation();
+                if (original instanceof FieldUnit) {
+                    if (((FieldUnit) original).getGatheringEvent() != null) {
+                        Point point = ((FieldUnit) original).getGatheringEvent().getExactLocation();
                         if (point != null) {
                             // FIXME: remove next statement after
                             // DerivedUnitFacade or ABCD import is fixed
@@ -195,7 +209,7 @@ public class EditGeoService implements IEditGeoService {
                         }
                     }
                 } else {
-                    registerDerivedUnitLocations((DerivedUnitBase) original, derivedUnitPoints);
+                    registerDerivedUnitLocations((DerivedUnit) original, derivedUnitPoints);
                 }
             }
         }
@@ -213,6 +227,20 @@ public class EditGeoService implements IEditGeoService {
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
         areaMapping.set(area, geoServiceArea);
 
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#mapShapeFileToNamedAreas(java.io.Reader, java.util.List, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader, List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid) throws IOException {
+        TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
+        ShpAttributesToNamedAreaMapper mapper = new ShpAttributesToNamedAreaMapper(areaVocabulary, areaMapping);
+        Map<NamedArea, String> resultMap = mapper.readCsv(csvReader, idSearchFields, wmsLayerName);
+        vocabDao.saveOrUpdate(areaVocabulary);
+        return resultMap;
     }
 
 }

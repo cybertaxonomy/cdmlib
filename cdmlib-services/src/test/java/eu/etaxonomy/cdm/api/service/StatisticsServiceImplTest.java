@@ -12,8 +12,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import javax.validation.constraints.AssertTrue;
-
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -21,29 +19,25 @@ import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
-import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.statistics.Statistics;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsConfigurator;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsPartEnum;
 import eu.etaxonomy.cdm.api.service.statistics.StatisticsTypeEnum;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
-import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.SpecimenDescription;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -306,15 +300,14 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 					// create a description and 2 description elements with
 					// references for taxon name
-					TaxonNameDescription nameDescr = new TaxonNameDescription();
+					TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
 					CommonTaxonName nameElement = CommonTaxonName.NewInstance(
 							"Veilchen" + taxonCounter, Language.GERMAN());
 					TextData textElement = new TextData();
 					Reference nameElementRef = ReferenceFactory.newArticle();
-					Reference textElementRef = ReferenceFactory
-							.newBookSection();
-					nameElement.addSource(null, null, nameElementRef, "name: ");
-					textElement.addSource(null, null, textElementRef, "text: ");
+					Reference textElementRef = ReferenceFactory.newBookSection();
+					nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
+					textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
 					nameDescr.addElement(nameElement);
 					nameDescr.addElement(textElement);
 					name.addDescription(nameDescr);
@@ -330,15 +323,14 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					for (int i = 0; i < descriptiveElementsPerTaxon; i++) {
 						DescriptionElementBase descriptionElement = new TextData();
 						DescriptionElementSource descriptionElementSource = DescriptionElementSource
-								.NewInstance();
+								.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 						Reference article = ReferenceFactory.newArticle();
 
 						descriptionElementSource.setCitation(article);
 						descriptionElement.addSource(descriptionElementSource);
 						taxonDescription.addElement(descriptionElement);
 						referenceService.save(article);
-						descriptionService
-								.saveDescriptionElement(descriptionElement);
+						descriptionService.saveDescriptionElement(descriptionElement);
 
 					}
 					descriptionService.save(taxonDescription);
@@ -362,8 +354,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				}
 
 				// add taxon to classification
-				classifications.get(classiCounter).addChildTaxon(taxon, null,
-						null, null);
+				classifications.get(classiCounter).addChildTaxon(taxon, null, null);
 
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < NO_OF_SYNONYMS) {
@@ -388,7 +379,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 						// create a description and 2 description elements with
 						// references for synonym name
-						TaxonNameDescription nameDescr = new TaxonNameDescription();
+						TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
 						CommonTaxonName nameElement = CommonTaxonName
 								.NewInstance("anderes Veilchen" + taxonCounter,
 										Language.GERMAN());
@@ -397,10 +388,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 								.newArticle();
 						Reference textElementRef = ReferenceFactory
 								.newBookSection();
-						nameElement.addSource(null, null, nameElementRef,
-								"name: ");
-						textElement.addSource(null, null, textElementRef,
-								"text: ");
+						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
+						textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
 						nameDescr.addElement(nameElement);
 						nameDescr.addElement(textElement);
 						name.addDescription(nameDescr);
@@ -428,8 +417,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				// we add the taxon to the next class in the list too.
 				if (classiCounter < NO_OF_CLASSIFICATIONS
 						&& sharedClassification < NO_OF_SHARED_TAXA) {
-					classifications.get(classiCounter + 1).addChildTaxon(taxon,
-							null, null, null);
+					classifications.get(classiCounter + 1).addChildTaxon(taxon, null, null);
 
 					// we remember that this taxon is attached to 2
 					// classifications:

@@ -369,7 +369,13 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
-			props.addPropertyValue(key, persistentProperties.getProperty(key));
+			
+			if (key.equals("nomenclaturalCode") && persistentProperties.getProperty(key).equals("ICBN")){
+				//bugfix for old nomenclatural codes, remove if fixed elsewhere, see https://dev.e-taxonomy.eu/trac/ticket/3658
+				props.addPropertyValue(key, NomenclaturalCode.ICNAFP.name());
+			}else{
+				props.addPropertyValue(key, persistentProperties.getProperty(key));
+			}
 		}
 
 		bd.setPropertyValues(props);
@@ -419,7 +425,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 
 		Properties props = new Properties();
 		props.setProperty("hibernate.hbm2ddl.auto", hbm2dll.toString());
-		props.setProperty("hibernate.dialect", dbtype.getHibernateDialect());
+		props.setProperty("hibernate.dialect", dbtype.getHibernateDialectCanonicalName());
 		props.setProperty("hibernate.cache.region.factory_class", cacheProviderClass.getName());
 		props.setProperty("hibernate.show_sql", String.valueOf(showSql));
 		props.setProperty("hibernate.format_sql", String.valueOf(formatSql));

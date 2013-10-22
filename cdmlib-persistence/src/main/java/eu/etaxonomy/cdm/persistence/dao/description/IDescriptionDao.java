@@ -13,21 +13,22 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.media.IMediaDao;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -58,6 +59,17 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @return a count of DescriptionBase instances
      */
      int countDescriptions(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
+
+    /**
+     * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
+     *
+     * @param taxon Restrict the results to those descriptions that refer to a specific taxon (can be null for all TaxonDescription instances)
+     * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
+     * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
+     * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+     * @return a count of TaxonDescription instances
+     */
+    int countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
 
     /**
      * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
@@ -133,7 +145,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      *            The type of description
      * @return a count of DescriptionElementBase instances
      */
-      int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type);
+    int countDescriptionElements(DescriptionBase description, Class<? extends DescriptionBase> descriptionType, Set<Feature> features, Class<? extends DescriptionElementBase> type);
 
     /**
      * Returns a List of TaxonDescription instances, optionally filtered by parameters passed to this method
@@ -147,20 +159,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param propertyPaths Properties to initialize in the returned entities, following the syntax described in {@link IBeanInitializer#initialize(Object, List)}
      * @return a List of TaxonDescription instances
      */
-    List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
-
-
-    /**
-     * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
-     *
-     * @param taxon Restrict the results to those descriptions that refer to a specific taxon (can be null for all TaxonDescription instances)
-     * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
-     * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
-     * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
-     * @return a count of TaxonDescription instances
-     */
-    int countTaxonDescriptions(Taxon taxon, Set<Scope> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
-
+    List<TaxonDescription> listTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerTypes, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Returns a List of Media instances, optionally filtered by parameters passed to this method.
@@ -276,4 +275,15 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      */
     <T extends DescriptionElementBase> long countDescriptionElementForTaxon(Taxon taxon,
             Set<Feature> features, Class<T> type);
+
+    /**
+     * Method to list all {@link NamedAreas} instances which are currently used
+     * by {@link Distribution} elements.
+     *
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    List<NamedArea> listNamedAreasInUse(Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 }

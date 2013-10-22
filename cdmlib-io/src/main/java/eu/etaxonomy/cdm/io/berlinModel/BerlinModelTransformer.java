@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -31,8 +30,9 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.RankClass;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
-import eu.etaxonomy.cdm.model.reference.ISectionBase;
+import eu.etaxonomy.cdm.model.reference.ISection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -45,10 +45,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
+	
+	//source Refs
+	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 	
 	//ranks
 	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
@@ -110,6 +112,9 @@ public class BerlinModelTransformer {
 	
 	//Marker Types
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
+	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
+	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");
+	
 	
 	//Extension Types
 	public static final UUID uuidSpeciesExpertName = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
@@ -117,6 +122,15 @@ public class BerlinModelTransformer {
 	
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
+	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
+	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
+	public static final UUID uuidMclCode = UUID.fromString("aa27083a-6a96-42aa-a2f8-5541cf057067");
+	
+	//Area Level
+	public static final UUID uuidAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
+	public static final UUID uuidAreaLevelFirst = UUID.fromString("d21503e3-875e-4abc-82ec-f812e3cfea84");
+	public static final UUID uuidAreaLevelSecond = UUID.fromString("97ac0bf5-b31c-487a-8ed5-a576f46c902c");
+	
 	
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
@@ -251,27 +265,21 @@ public class BerlinModelTransformer {
 			return null;
 		}else if (nomStatus.equalsIgnoreCase("comb. ined.")){
 			if (nomStatusCombIned == null){
-				nomStatusCombIned = new NomenclaturalStatusType();
-				Representation representation = Representation.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
-				nomStatusCombIned.addRepresentation(representation);
+				nomStatusCombIned = NomenclaturalStatusType.NewInstance("comb. ined.", "comb. ined.", "comb. ined.", Language.LATIN());
 				nomStatusCombIned.setUuid(uuidNomStatusCombIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusCombIned);
 			}
 			result = nomStatusCombIned;
 		}else if (nomStatus.equalsIgnoreCase("sp. nov. ined.")){
 			if (nomStatusSpNovIned == null){
-				nomStatusSpNovIned = new NomenclaturalStatusType();
-				Representation representation = Representation.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN());
-				nomStatusSpNovIned.addRepresentation(representation);
+				nomStatusSpNovIned = NomenclaturalStatusType.NewInstance("sp. nov. ined.", "sp. nov. ined.", "sp. nov. ined.", Language.LATIN());
 				nomStatusSpNovIned.setUuid(uuidNomStatusSpNovIned);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusSpNovIned);
 			}
 			result = nomStatusSpNovIned;
 		}else if (nomStatus.equalsIgnoreCase("nom. & orth. cons.")){
 			if (nomStatusNomOrthCons == null){
-				nomStatusNomOrthCons = new NomenclaturalStatusType();
-				Representation representation = Representation.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN());
-				nomStatusNomOrthCons.addRepresentation(representation);
+				nomStatusNomOrthCons = NomenclaturalStatusType.NewInstance("nom. & orth. cons.", "nom. & orth. cons.", "nom. & orth. cons.", Language.LATIN());
 				nomStatusNomOrthCons.setUuid(uuidNomStatusNomOrthCons);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusNomOrthCons);
 			}
@@ -483,9 +491,7 @@ public class BerlinModelTransformer {
 		}else if (rankId == 57){
 			
 			if (collSpeciesRank == null){
-				collSpeciesRank = new Rank();
-				Representation representation = Representation.NewInstance("Collective species", "Coll. species", "coll.", Language.ENGLISH());
-				collSpeciesRank.addRepresentation(representation);
+				collSpeciesRank = Rank.NewInstance(RankClass.SpeciesGroup, "Collective species", "Coll. species", "coll.");
 				collSpeciesRank.setUuid(uuidRankCollSpecies);
 				OrderedTermVocabulary<Rank> voc = (OrderedTermVocabulary<Rank>)Rank.SPECIES().getVocabulary();
 				voc.addTermBelow(collSpeciesRank, Rank.SPECIESGROUP());
@@ -515,10 +521,10 @@ public class BerlinModelTransformer {
 				}
 			}
 			try {
-				result = Rank.getRankByNameOrAbbreviation(abbrev);
+				result = Rank.getRankByNameOrIdInVoc(abbrev);
 			} catch (UnknownCdmTypeException e) {
 				try {
-					result = Rank.getRankByNameOrAbbreviation(rankName);
+					result = Rank.getRankByNameOrIdInVoc(rankName);
 				} catch (UnknownCdmTypeException e1) {
 					switch (rankId){
 						case 0: return null;
@@ -548,6 +554,8 @@ public class BerlinModelTransformer {
 						case 60: return Rank.SPECIES();
 						case 61: return Rank.GREX();
 						case 65: return Rank.SUBSPECIES();
+						case 66: {System.out.println("Rank 66 not yet implemented"); throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());}
+						case 67: {System.out.println("Rank 67 not yet implemented"); throw new UnknownCdmTypeException("Unknown Rank id" + Integer.valueOf(rankId).toString());}
 						case 68: return Rank.CONVAR();
 						case 70: return Rank.VARIETY();
 						case 73: return Rank.SUBVARIETY();
@@ -681,7 +689,7 @@ public class BerlinModelTransformer {
 			return null;
 		}
 		else if (ref.getType().equals(ReferenceType.Article)){		return REF_ARTICLE;}
-		else if (ref instanceof ISectionBase){	return REF_PART_OF_OTHER_TITLE;}
+		else if (ref instanceof ISection){	return REF_PART_OF_OTHER_TITLE;}
 		else if (ref.getType().equals(ReferenceType.Book)){	return REF_BOOK;}
 		else if (ref.getType().equals(ReferenceType.Database)){	return REF_DATABASE;}
 //		else if (ref instanceof SectionBas){	return REF_INFORMAL;}

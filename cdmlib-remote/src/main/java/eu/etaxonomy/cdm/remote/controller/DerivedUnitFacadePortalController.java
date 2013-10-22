@@ -33,7 +33,7 @@ public class DerivedUnitFacadePortalController extends
             "ecologyAll",
             "plantDescriptionAll",
 
-//			"fieldObservation.*",
+//			"fieldUnit.*",
             "fieldObjectMedia",
 
 //			"derivedUnit.*",

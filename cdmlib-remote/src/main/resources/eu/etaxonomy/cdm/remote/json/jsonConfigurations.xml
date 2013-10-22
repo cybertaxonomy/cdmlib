@@ -15,7 +15,7 @@
          <set>
            <!--
              the exceptions listed here should be covered by implementations of
-             eu.etaxonomy.cdm.persistence.dao.AutoPropertyInitializer.
+             eu.etaxonomy.cdm.persistence.dao.initializer.AutoPropertyInitializer.
              The according configuration files are
               - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence_security.xml
               - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml
@@ -43,8 +43,9 @@
              <value>Media.representations</value>
              <value>MediaRepresentation.parts</value>
 
-             <value>Sequence.locus</value>
-             <value>Sequence.genBankAccession</value>
+             <value>Sequence.marker</value>
+             <value>Sequence.genBankAccessionNumber</value>
+             <value>Sequence.genBankUri</value>
 
              <value>Annotation.annotationType</value>
              <value>Marker.markerType</value>

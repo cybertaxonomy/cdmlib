@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
@@ -70,6 +71,9 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		return dao.listByTermClass(clazz, includeSubclasses, includeEmptyVocs,limit, start, orderHints, propertyPaths);
 	}
 	
+	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
+		return dao.findByTermType(termType);
+	}
 	/** 
 	 * (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getLanguageVocabulary()

@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 public class TaxonXModsExtractor extends TaxonXExtractor{
 
@@ -298,7 +299,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (!content.isEmpty()) {
                         originInfo.add(children.item(i).getNodeName()+":"+content);
                         if (children.item(i).getNodeName().contains("dateIssued")) {
-                            ref.setDatePublished(TimePeriod.parseString(content));
+                            ref.setDatePublished(TimePeriodParser.parseString(content));
                         }
                     }
                     publisher="";
@@ -342,7 +343,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (children.item(i).getNodeName().equalsIgnoreCase("mods:date")){
                         content = children.item(i).getTextContent().trim();
                         if (!content.isEmpty()){
-                            date = TimePeriod.parseString(content);
+                            date = TimePeriodParser.parseString(content);
                             ref.setDatePublished(date);
                         }
                     }

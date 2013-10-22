@@ -34,6 +34,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -65,7 +66,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 @Audited
 public class MediaKey extends Media implements IIdentificationKey{
 	private static final long serialVersionUID = -29095811051894471L;
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MediaKey.class);
 	
 	@XmlElementWrapper(name = "CoveredTaxa")
@@ -105,7 +105,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name="MediaKey_Scope")
 	@NotNull
-	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
+	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 	
 	@XmlElementWrapper( name = "KeyRepresentations")
 	@XmlElement( name = "KeyRepresentation")
@@ -276,9 +276,9 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * Returns the set of {@link Scope scope restrictions} corresponding to
 	 * <i>this</i> identification key 
 	 */
-	public Set<Scope> getScopeRestrictions() {
+	public Set<DefinedTerm> getScopeRestrictions() {
 		if(scopeRestrictions == null) {
-			this.scopeRestrictions = new HashSet<Scope>();
+			this.scopeRestrictions = new HashSet<DefinedTerm>();
 		}
 		return scopeRestrictions;
 	}
@@ -290,7 +290,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @param	scopeRestriction	the scope restriction to be added to <i>this</i> identification key
 	 * @see    	   		#getScopeRestrictions()
 	 */
-	public void addScopeRestriction(Scope scopeRestriction) {
+	public void addScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.add(scopeRestriction);
 	}
 	
@@ -302,7 +302,7 @@ public class MediaKey extends Media implements IIdentificationKey{
 	 * @see     		#getScopeRestrictions()
 	 * @see     		#addScopeRestriction(Scope)
 	 */
-	public void removeScopeRestriction(Scope scopeRestriction) {
+	public void removeScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
 	}
 	
@@ -338,8 +338,8 @@ public class MediaKey extends Media implements IIdentificationKey{
 				result.addKeyRepresentation(rep);
 			}
 			
-			result.scopeRestrictions = new HashSet<Scope>();
-			for (Scope scope: this.scopeRestrictions){
+			result.scopeRestrictions = new HashSet<DefinedTerm>();
+			for (DefinedTerm scope: this.scopeRestrictions){
 				result.addScopeRestriction(scope);
 			}
 			

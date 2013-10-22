@@ -15,6 +15,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.security.access.ConfigAttribute;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
@@ -54,10 +55,24 @@ public class TaxonNodeVoter extends CdmPermissionVoter {
      * @return
      */
     private boolean findTargetUuidInParentNodes(UUID targetUuid, TaxonNode node){
-        if (targetUuid.equals(node.getUuid()))
+        if (targetUuid.equals(node.getUuid())) {
             return true;
-        else if (node.getParent()!= null){
-             return findTargetUuidInParentNodes(targetUuid, node.getParent());
+        } else {
+            TaxonNode parentNode = HibernateProxyHelper.deproxy(node, TaxonNode.class).getParent();
+            if (parentNode != null){
+                 return findTargetUuidInParentNodes(targetUuid, parentNode);
+            }
+        }
+        return false;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.hibernate.permission.voter.CdmPermissionVoter#isOrpahn(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
+    public boolean isOrpahn(CdmBase object) {
+        if(object instanceof TaxonNode){
+            return ((TaxonNode)object).getParent() == null;
         }
         return false;
     }

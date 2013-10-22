@@ -11,6 +11,7 @@ import java.util.Set;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -43,14 +44,14 @@ public interface IIoConfigurator extends IIoObservable{
 	 * Returns the CdmApplicationController
 	 * @return
 	 */
-	public CdmApplicationController getCdmAppController();
+	public ICdmApplicationConfiguration getCdmAppController();
 
 	
 	/**
 	 * Sets the CdmApplicationController
 	 * @param cdmApp the cdmApp to set
 	 */
-	public void setCdmAppController(CdmApplicationController cdmApp);
+	public void setCdmAppController(ICdmApplicationConfiguration cdmApp);
 
 	/**
 	 * Get the way how the CDM schema is validated

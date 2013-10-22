@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -48,6 +49,8 @@ public class Language extends DefinedTermBase<Language> {
     private static final long serialVersionUID = -5030610079904074217L;
     private static final Logger logger = Logger.getLogger(Language.class);
 
+    public static final UUID uuidLanguageVocabulary = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de");
+    
     public static final UUID uuidEnglish = UUID.fromString("e9f8cdb7-6819-44e8-95d3-e2d0690c3523");
 
     private static final UUID uuidAfar = UUID.fromString("b3ad88e2-0080-466f-9bf4-b01ba4122563");
@@ -541,6 +544,8 @@ public class Language extends DefinedTermBase<Language> {
 
     protected static Map<UUID, Language> termMap = null;
 
+// *************************** Factory MEthods ********************************/    
+    
     public static Language NewInstance(){
         return new Language();
     }
@@ -565,48 +570,57 @@ public class Language extends DefinedTermBase<Language> {
         return new Language(term, label, labelAbbrev);
     }
 
-    public static Language NewInstance(UUID uuid, String label, String iso639_3){
-        Language result = Language.NewInstance(label, label, iso639_3);
+    public static Language NewInstance(UUID uuid, String label, String iso639_2){
+        Language result = Language.NewInstance(label, label, iso639_2);
         result.setUuid(uuid);
-        result.setIso639_2(iso639_3);
+//        result.setIso639_2(iso639_2);
         return result;
     }
 
-
+//**************** Attributes *************************************/    
+    
     @XmlAttribute(name = "iso639_1")
     //TODO create userDefinedType ?
     @Column(length=2)
     private String iso639_1;
 
-    @XmlAttribute(name = "iso639_2")
-    //TODO create userDefinedType ?
-    @Column(length=3)
-    private String iso639_2;
+//    @XmlAttribute(name = "iso639_2")
+//    //TODO create userDefinedType ?
+//    @Column(length=3)
+//    private String iso639_2;
 
-    public Language() {
-    }
+//***** CONSTRUCTOR ***************************************/    
+    
+    //for hibernate use only
+    @Deprecated
+    protected Language() {
+   		super(TermType.Language);
+    };
+    
     public Language(UUID uuid) {
-        this.setUuid(uuid);
+        super(TermType.Language);
+    	this.setUuid(uuid);
     }
-    public Language(String iso639_1, String iso639_2, String englishLabel, String frenchLabel) throws Exception {
-        super();
-        if(iso639_1 != null && iso639_1.length() > 2){
-            logger.warn("iso639_1 too long: "+iso639_1.toString());
+    public Language(String iso639_1, String iso639_x2, String englishLabel, String frenchLabel) throws Exception {
+        super(TermType.Language);
+        if(iso639_1 != null && iso639_1.length() != 2){
+            logger.warn("iso639_1 is not of size 2: "+iso639_1.toString());
         }
-        if(iso639_1 != null && iso639_2.length() > 3){
-            logger.warn("iso639_2 too long: "+iso639_2.toString());
+        if(iso639_x2 != null && iso639_x2.length() != 3){
+            logger.warn("iso639_2 is not of size 3: "+iso639_x2.toString());
         }
         this.iso639_1=iso639_1;
-        this.iso639_2=iso639_2;
+//        this.iso639_2=iso639_2;
         String textEnglish = englishLabel;
         String textFrench = englishLabel;
-        String label = iso639_2;
+        String label = iso639_x2;
         String labelAbbrev = null;
         this.addRepresentation(new Representation(textEnglish, label, labelAbbrev, Language.ENGLISH()));
         this.addRepresentation(new Representation(textFrench, label, labelAbbrev, Language.FRENCH()));
     }
     public Language(String text, String label, String labelAbbrev, Language lang) {
-        this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
+        super(TermType.Language);
+    	this.addRepresentation(new Representation(text,label,labelAbbrev, lang));
     }
     public Language(String label, String text, String labelAbbrev) {
         this(label,text,labelAbbrev, DEFAULT());
@@ -1168,37 +1182,40 @@ public class Language extends DefinedTermBase<Language> {
      *
      * @return the iso639 alpha-3 language code or null if not available
      */
+    @Transient
     public String getIso639_2() {
-        return iso639_2;
+        return getIdInVocabulary();
     }
 
-    public void setIso639_2(String iso639_2) {
-        if (iso639_2 != null){
-            iso639_2 = iso639_2.trim();
-            if(iso639_2.length() > 3 ){
-                logger.warn("Iso639-2: "+iso639_2+" too long");
-            }
-        }
-        this.iso639_2 = iso639_2;
-    }
+//    public void setIso639_2(String iso639_2) {
+//        if (iso639_2 != null){
+//            iso639_2 = iso639_2.trim();
+//            if(iso639_2.length() > 3 ){
+//                logger.warn("Iso639-2: "+iso639_2+" too long");
+//            }
+//        }
+//        this.iso639_2 = iso639_2;
+//    }
 
     @Override
-    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
+    public Language readCsvLine(Class<Language> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         try {
             Language newInstance =  Language.class.newInstance();
             if ( UUID.fromString(csvLine.get(0).toString()).equals(Language.uuidEnglish)){
-                DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance);
+                DefinedTermBase.readCsvLine(newInstance, csvLine, newInstance, abbrevAsId);
             }else{
-                DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish));
+                DefinedTermBase.readCsvLine(newInstance,csvLine,(Language)terms.get(Language.uuidEnglish), abbrevAsId);
             }
-
-            newInstance.setIso639_2(csvLine.get(4).trim());
+            
+//          newInstance.setIso639_2(csvLine.get(4).trim());   //does not exist anymore
+//          newInstance.setIdInVocabulary(csvLine.get(4).trim());  //same as abbrev
+            
             newInstance.setIso639_1(csvLine.get(5).trim());
             //TODO could replace with generic validation
             if(iso639_1 != null && iso639_1.length() > 2){
                 logger.warn("Iso639-1: "+ newInstance.getIso639_1() +" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
             }
-            if(iso639_2 != null &&  iso639_2.length() > 3 ){
+            if(getIdInVocabulary() != null &&  getIdInVocabulary().length() != 3 ){
                 logger.warn("Iso639-2: "+newInstance.getIso639_2()+" from "+csvLine.get(3)+" ,"+csvLine.get(2)+" too long");
             }
 

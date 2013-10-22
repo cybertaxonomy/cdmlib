@@ -23,7 +23,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  * @author n.hoffmann
  * @created Sep 22, 2009
- * @version 1.0
  */
 public class NomenclaturalCodeAwareDataSource extends BasicDataSource {
 	@SuppressWarnings("unused")

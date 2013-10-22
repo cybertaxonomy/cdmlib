@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.database.types;
 
 import javax.sql.DataSource;
 
+import org.hibernate.dialect.Dialect;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
@@ -37,9 +39,16 @@ public interface IDatabaseType {
 	public int getDefaultPort();
 	
 	/**
+	 * Returns the {@link Dialect hibernate dialect}
 	 * @return
 	 */
-	public String getHibernateDialect();
+	public Dialect getHibernateDialect();
+	
+	/**
+	 * Returns the canoncial (full path) name of the {@link Dialect hibernate dialect} class
+	 * @return
+	 */
+	public String getHibernateDialectCanonicalName();
 	
 	/**
 	 * Returns the connection String for the given parameters, using default port

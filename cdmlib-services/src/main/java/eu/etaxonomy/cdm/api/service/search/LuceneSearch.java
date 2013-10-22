@@ -14,18 +14,13 @@ import java.util.Collection;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.analysis.Analyzer;
-import org.apache.lucene.index.IndexReader;
-import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
-import org.apache.lucene.queryParser.QueryParser;
-import org.apache.lucene.search.BooleanClause;
-import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MultiCollector;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
-import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.TopDocs;
 import org.apache.lucene.search.grouping.GroupDocs;
 import org.apache.lucene.search.grouping.SearchGroup;
@@ -33,12 +28,7 @@ import org.apache.lucene.search.grouping.TermAllGroupsCollector;
 import org.apache.lucene.search.grouping.TermFirstPassGroupingCollector;
 import org.apache.lucene.search.grouping.TermSecondPassGroupingCollector;
 import org.apache.lucene.search.grouping.TopGroups;
-import org.hibernate.Session;
-import org.hibernate.search.ProjectionConstants;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
 
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -61,13 +51,15 @@ public class LuceneSearch {
 
     public static final Logger logger = Logger.getLogger(LuceneSearch.class);
 
-    protected Session session;
+    protected ILuceneIndexToolProvider toolProvider;
 
     protected IndexSearcher searcher;
 
     protected SortField[] sortFields;
 
     private Class<? extends CdmBase> directorySelectClass;
+
+    private Filter filter = null;
 
     protected Class<? extends CdmBase> getDirectorySelectClass() {
         return pushAbstractBaseTypeDown(directorySelectClass);
@@ -76,11 +68,25 @@ public class LuceneSearch {
     /**
      * classFilter
      */
-    protected Class<? extends CdmBase> clazz;
+    protected Class<? extends CdmBase> cdmTypeRestriction;
 
 
-    public Class<? extends CdmBase> getClazz() {
-        return clazz;
+    public Class<? extends CdmBase> getCdmTypRestriction() {
+        return cdmTypeRestriction;
+    }
+
+    /**
+     * @return the filter
+     */
+    public Filter getFilter() {
+        return filter;
+    }
+
+    /**
+     * @param filter the filter to set
+     */
+    public void setFilter(Filter filter) {
+        this.filter = filter;
     }
 
     /**
@@ -88,7 +94,7 @@ public class LuceneSearch {
      * <code>directorySelectClass</code> the Class is set to <code>null</code>
      * @param clazz
      */
-    public void setClazz(Class<? extends CdmBase> clazz) {
+    public void setCdmTypRestriction(Class<? extends CdmBase> clazz) {
 
         /*
          * NOTE:
@@ -98,7 +104,7 @@ public class LuceneSearch {
         if(clazz != null && clazz.equals(directorySelectClass)){
             clazz = null;
         }
-        this.clazz = clazz;
+        this.cdmTypeRestriction = clazz;
     }
 
     /**
@@ -127,40 +133,41 @@ public class LuceneSearch {
     /**
      * @param session
      */
-    public LuceneSearch(Session session, Class<? extends CdmBase> directorySelectClass) {
-         this.session = session;
+    public LuceneSearch(ILuceneIndexToolProvider toolProvider, Class<? extends CdmBase> directorySelectClass) {
+         this.toolProvider = toolProvider;
          this.directorySelectClass = directorySelectClass;
     }
 
     /**
      * @param session
      */
-    public LuceneSearch(Session session, String groupByField, Class<? extends CdmBase> directorySelectClass) {
-         this.session = session;
-         this.directorySelectClass = directorySelectClass;
-         this.groupByField = groupByField;
+    public LuceneSearch(ILuceneIndexToolProvider toolProvider, String groupByField, Class<? extends CdmBase> directorySelectClass) {
+        this.toolProvider = toolProvider;
+        this.directorySelectClass = directorySelectClass;
+        this.groupByField = groupByField;
     }
 
     /**
      * TODO the abstract base class DescriptionElementBase can not be used, so
-     * we are using an arbitraty subclass to find the DirectoryProvider, future
+     * we are using an arbitrary subclass to find the DirectoryProvider, future
      * versions of hibernate search my allow using abstract base classes see
      * {@link http://stackoverflow.com/questions/492184/how-do-you-find-all-subclasses-of-a-given-class-in-java}
      *
      * @param type must not be null
      * @return
      */
-    protected Class<? extends CdmBase> pushAbstractBaseTypeDown(Class<? extends CdmBase> type) {
+    private Class<? extends CdmBase> pushAbstractBaseTypeDown(Class<? extends CdmBase> type) {
+        Class<? extends CdmBase> returnType = type;
         if (type.equals(DescriptionElementBase.class)) {
-            type = TextData.class;
+            returnType = TextData.class;
         }
         if (type.equals(TaxonBase.class)) {
-            type = Taxon.class;
+            returnType = Taxon.class;
         }
         if (type.equals(TaxonNameBase.class)) {
-            type = NonViralName.class;
+            returnType = NonViralName.class;
         }
-        return type;
+        return returnType;
     }
 
     protected LuceneSearch() {
@@ -172,51 +179,26 @@ public class LuceneSearch {
      */
     public IndexSearcher getSearcher() {
         if(searcher == null){
-            searcher = new IndexSearcher(getIndexReader());
+            searcher = new IndexSearcher(toolProvider.getIndexReaderFor(directorySelectClass));
             searcher.setDefaultFieldSortScoring(true, true);
         }
         return searcher;
     }
 
     /**
-     * @return
-     */
-    public IndexReader getIndexReader() {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-        IndexReader reader = searchFactory.getIndexReaderAccessor().open(getDirectorySelectClass());
-        return reader;
-    }
-
-    /**
-     * @return
-     */
-    public IndexReader getIndexReaderFor(Class<? extends CdmBase> clazz) {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-        IndexReader reader = searchFactory.getIndexReaderAccessor().open(pushAbstractBaseTypeDown(clazz));
-        return reader;
-    }
-
-    /**
-     * @return
-     */
-    public QueryParser getQueryParser() {
-        Analyzer analyzer = getAnalyzer();
-        QueryParser parser = new QueryParser(Configuration.luceneVersion,  "titleCache", analyzer);
-        return parser;
-    }
-
-    /**
-     * @return
+     * Convenience method which delegated the call to the available
+     * {@link ILuceneIndexToolProvider#getAnalyzerFor(Class)} method.
+     *
+     * @return the Analyzer suitable for the <code>directorySelectClass</code>
+     * of the LuceneSearch
      */
     public Analyzer getAnalyzer() {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
-        Analyzer analyzer = searchFactory.getAnalyzer(getDirectorySelectClass());
-        return analyzer;
+        return toolProvider.getAnalyzerFor(directorySelectClass);
     }
 
     /**
      * @param luceneQueryString
-     * @param clazz the type as additional filter criterion
+     * @param cdmTypeRestriction the type as additional filter criterion
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
      * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
      * @return
@@ -238,7 +220,7 @@ public class LuceneSearch {
      */
     public Query parse(String luceneQueryString) throws ParseException {
         logger.debug("luceneQueryString to be parsed: " + luceneQueryString);
-        Query luceneQuery = getQueryParser().parse(luceneQueryString);
+        Query luceneQuery = toolProvider.getQueryParserFor(directorySelectClass).parse(luceneQueryString);
         return luceneQuery;
     }
 
@@ -250,12 +232,10 @@ public class LuceneSearch {
     public TopDocs executeSearch(int maxNoOfHits) throws IOException {
         Query fullQuery = expandQuery();
         logger.info("lucene query string to be parsed: " + fullQuery.toString());
-        return getSearcher().search(fullQuery, maxNoOfHits);
+        return getSearcher().search(fullQuery, filter, maxNoOfHits);
 
     }
     /**
-     * @param luceneQuery
-     * @param clazz the type as additional filter criterion
      * @param pageSize if the page size is null or in an invalid range it will be set to MAX_HITS_ALLOWED
      * @param pageNumber a 0-based index of the page to return, will default to 0 if null or negative.
      * @return
@@ -299,7 +279,8 @@ public class LuceneSearch {
         }
         // - first pass
         TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
-        getSearcher().search(fullQuery, firstPassCollector);
+
+        getSearcher().search(fullQuery, filter , firstPassCollector);
         Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
 
         if (topGroups == null) {
@@ -313,7 +294,7 @@ public class LuceneSearch {
         TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(
                 groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields
                 );
-        getSearcher().search(fullQuery, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
+        getSearcher().search(fullQuery, filter, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
         TopGroups<String> groupsResult = secondPassCollector.getTopGroups(0); // no offset here since we need the first item for the max score
 
@@ -329,24 +310,13 @@ public class LuceneSearch {
     }
 
     /**
-     * @param clazz
+     * expands the query by adding a type restriction if the
+     * <code>cdmTypeRestriction</code> is not <code>NULL</code>
      */
     protected Query expandQuery() {
         Query fullQuery;
-        if(clazz != null){
-            BooleanQuery filteredQuery = new BooleanQuery();
-            BooleanQuery classFilter = new BooleanQuery();
-
-            Term t = new Term(ProjectionConstants.OBJECT_CLASS, clazz.getName());
-            TermQuery termQuery = new TermQuery(t);
-
-            classFilter.setBoost(0);
-            classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
-
-            filteredQuery.add(this.query, BooleanClause.Occur.MUST);
-            filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
-
-            fullQuery = filteredQuery;
+        if(cdmTypeRestriction != null){
+            fullQuery = QueryFactory.addTypeRestriction(query, cdmTypeRestriction);
         } else {
             fullQuery = this.query;
         }

@@ -15,9 +15,8 @@ import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -158,7 +157,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 		}
 	}
 
-	public static String transformToGbifSex(Sex sex) {
+	public static String transformToGbifSex(DefinedTerm sex) {
 		if ( sex == null){
 			return null;
 		}else{
@@ -177,7 +176,7 @@ public class DwcaTaxExportTransformer extends InputTransformerBase {
 		}
 	}
 
-	public static String transformToGbifLifeStage(Stage stage) {
+	public static String transformToGbifLifeStage(DefinedTerm stage) {
 		if ( stage == null){
 			return null;
 		}else{

@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.BookSectionDefaultCacheStrategy
  * This class corresponds, according to the TDWG ontology, to the publication type
  * term (from PublicationTypeTerm): "BookSection".
  */
-public interface IBookSection extends ISectionBase, INomenclaturalReference{
+public interface IBookSection extends ISection, INomenclaturalReference{
 
 	/**
 	 * Returns this book sections book

@@ -19,21 +19,22 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 
 /**
  * @author a.mueller
  * @date 10.09.2010
  *
  */
-public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpdaterStep{
+public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> implements ITermUpdaterStep{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(VocabularyCreator.class);
 
 // **************************** STATIC METHODS ********************************/
 
-	public static final VocabularyCreator NewVocabularyInstance(UUID uuidVocabulary, String description,  String label, String abbrev, boolean isOrdered, Class termclass){
+	public static final VocabularyCreator NewVocabularyInstance(UUID uuidVocabulary, String description,  String label, String abbrev, boolean isOrdered, Class<?> termclass, TermType termType){
 		String stepName = makeStepName(label);
-		return new VocabularyCreator(stepName, uuidVocabulary, description, label, abbrev, isOrdered, termclass);	
+		return new VocabularyCreator(stepName, uuidVocabulary, description, label, abbrev, isOrdered, termclass, termType);	
 	}
 
 // *************************** VARIABLES *****************************************/
@@ -42,11 +43,12 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 	private String label;
 	private String abbrev;
 	private boolean isOrdered;
-	private Class termClass;
+	private Class<?> termClass;
+	private TermType termType;
 
 // ***************************** CONSTRUCTOR ***************************************/
 	
-	private VocabularyCreator(String stepName, UUID uuidVocabulary, String description, String label, String abbrev, boolean isOrdered, Class termClass) {
+	private VocabularyCreator(String stepName, UUID uuidVocabulary, String description, String label, String abbrev, boolean isOrdered, Class<?> termClass, TermType termType) {
 		super(stepName);
 		this.uuidVocabulary = uuidVocabulary;
 		this.description = description;
@@ -54,6 +56,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		this.label = label;
 		this.isOrdered = isOrdered;
 		this.termClass = termClass;
+		this.termType = termType;
 	}
 
 // ******************************* METHODS *************************************************/
@@ -83,8 +86,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		
 		
 		String id = Integer.toString(vocId);
-		//FIXME get current time
-		String created = "2010-09-16 10:15:00";
+		String created  = getNowString();
 		String dtype;
 		if (isOrdered){
 			dtype = "OrderedTermVocabulary";
@@ -94,8 +96,8 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		String titleCache = (StringUtils.isNotBlank(label))? label : ( (StringUtils.isNotBlank(abbrev))? abbrev : description );  
 		String protectedTitleCache = getBoolean(false, datasource);
 		String termSourceUri = termClass.getCanonicalName();
-		String sqlInsertTerm = " INSERT INTO TermVocabulary (DTYPE, id, uuid, created, protectedtitlecache, titleCache, termsourceuri)" +
-				"VALUES ('" + dtype + "', " + id + ", '" + uuidVocabulary + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', '" + termSourceUri + "'" + ")"; 
+		String sqlInsertTerm = " INSERT INTO TermVocabulary (DTYPE, id, uuid, created, protectedtitlecache, titleCache, termsourceuri, termType)" +
+				"VALUES ('" + dtype + "', " + id + ", '" + uuidVocabulary + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', '" + termSourceUri + "', '" + termType.getKey() + "')"; 
 		datasource.executeUpdate(sqlInsertTerm);
 		
 		//language id
@@ -124,8 +126,8 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 		}
 		
 		UUID uuidRepresentation = UUID.randomUUID();
-		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, abbreviatedlabel, label, language_id) " +
-				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "',  '" + abbrev +  "', " + langId + ")"; 
+		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
+				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "'," + nullSafeString(abbrev) +  ", " + langId + ")"; 
 		
 		datasource.executeUpdate(sqlInsertRepresentation);
 		
@@ -139,6 +141,14 @@ public class VocabularyCreator extends SchemaUpdaterStepBase implements ITermUpd
 	}
 
 
+
+	private String nullSafeString(String abbrev) {
+		if (abbrev == null){
+			return "NULL";
+		}else{
+			return "'" + abbrev + "'";
+		}
+	}
 
 	private static String makeStepName(String label) {
 		String stepName = "Create new vocabulary '"+ label + "'";

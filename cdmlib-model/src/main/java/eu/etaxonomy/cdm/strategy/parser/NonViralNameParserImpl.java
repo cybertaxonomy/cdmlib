@@ -93,7 +93,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 	
 	public NonViralName getNonViralNameInstance(String fullString, NomenclaturalCode code, Rank rank){
-		NonViralName result = null;
+		NonViralName<?> result = null;
 		if(code ==null) {
 			boolean isBotanicalName = anyBotanicFullNamePattern.matcher(fullString).find();
 			boolean isZoologicalName = anyZooFullNamePattern.matcher(fullString).find();;
@@ -114,7 +114,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 		} else {
 			switch (code) {
-			case ICBN:
+			case ICNAFP:
 				result = BotanicalName.NewInstance(rank);
 				break;
 			case ICZN:
@@ -154,13 +154,13 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if (fullReferenceString == null){
 			return null;
 		}else{
-			NonViralName result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
+			NonViralName<?> result = getNonViralNameInstance(fullReferenceString, nomCode, rank);
 			parseReferencedName(result, fullReferenceString, rank, MAKE_EMPTY);
 			return result;
 		}
 	}
 	
-	private String standardize(NonViralName nameToBeFilled, String fullReferenceString, boolean makeEmpty){
+	private String standardize(NonViralName<?> nameToBeFilled, String fullReferenceString, boolean makeEmpty){
 		//Check null and standardize
 		if (fullReferenceString == null){
 			//return null;
@@ -182,7 +182,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalFullName(NonViralName nameToBeFilled){
+	private String getLocalFullName(NonViralName<?> nameToBeFilled){
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
 		}else if (nameToBeFilled instanceof BotanicalName) {
@@ -200,7 +200,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param nameToBeFilled
 	 * @return
 	 */
-	private String getLocalSimpleName(NonViralName nameToBeFilled){
+	private String getLocalSimpleName(NonViralName<?> nameToBeFilled){
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooName;
 		}else if (nameToBeFilled instanceof NonViralName){
@@ -274,7 +274,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		parsable.setProblemEnds(-1);
 	}
 	
-	private void makeNoFullRefMatch(NonViralName nameToBeFilled, String fullReferenceString, Rank rank){
+	private void makeNoFullRefMatch(NonViralName<?> nameToBeFilled, String fullReferenceString, Rank rank){
 	    //try to parse first part as name, but keep in mind full string is not parsable
 		int start = 0;
 		
@@ -308,7 +308,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		logger.info("no applicable parsing rule could be found for \"" + fullReferenceString + "\"");    
 	}
 	
-	private void makeNameWithReference(NonViralName nameToBeFilled, 
+	private void makeNameWithReference(NonViralName<?> nameToBeFilled, 
 			String fullReferenceString, 
 			Matcher nameAndRefSeparatorMatcher,
 			Rank rank,
@@ -377,9 +377,9 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    	nameToBeFilled.addParsingProblems(ref.getParsingProblem());
 	    }
 	    
-	    Reference nomRef;
-		if ( (nomRef = (Reference)nameToBeFilled.getNomenclaturalReference()) != null ){
-			nomRef.setAuthorTeam((TeamOrPersonBase)nameToBeFilled.getCombinationAuthorTeam());
+	    Reference<?> nomRef;
+		if ( (nomRef = (Reference<?>)nameToBeFilled.getNomenclaturalReference()) != null ){
+			nomRef.setAuthorTeam((TeamOrPersonBase<?>)nameToBeFilled.getCombinationAuthorTeam());
 		}
 	}
 	
@@ -435,7 +435,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	}
 	
 	
-	private void parseReference(NonViralName nameToBeFilled, String strReference, boolean isInReference){
+	private void parseReference(NonViralName<?> nameToBeFilled, String strReference, boolean isInReference){
 		
 		INomenclaturalReference ref;
 		String originalStrReference = strReference;
@@ -466,7 +466,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				//continue
 			}else{
 				ref = makeDetailYearUnparsable(nameToBeFilled,strReference);
-				ref.setDatePublished(TimePeriod.parseString(yearPart));
+				ref.setDatePublished(TimePeriodParser.parseString(yearPart));
 				return;
 			}
 		}
@@ -610,7 +610,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 		if ("".equals(year.trim())){
 			return true;
 		}
-		TimePeriod datePublished = TimePeriod.parseString(year);
+		TimePeriod datePublished = TimePeriodParser.parseString(year);
 		
 		if (nomRef.getType().equals(ReferenceType.BookSection)){
 			handleBookSectionYear((IBookSection)nomRef, datePublished);
@@ -800,7 +800,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				if ("[unranked]".equals(epi[1])){
 					infraGenericRank = Rank.INFRAGENERICTAXON();
 				}else{
-					infraGenericRank = Rank.getRankByAbbreviation(epi[1]);
+					infraGenericRank = Rank.getRankByIdInVoc(epi[1]);
 				}
 				nameToBeFilled.setRank(infraGenericRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -809,7 +809,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 			 //aggr. or group
 			 else if (aggrOrGroupPattern.matcher(fullNameString).matches()){
-				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[2]));
+				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 			}
@@ -822,7 +822,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			}
 			 //autonym
 			 else if (autonymPattern.matcher(fullNameString).matches()){
-				nameToBeFilled.setRank(Rank.getRankByAbbreviation(epi[epi.length - 2]));
+				nameToBeFilled.setRank(Rank.getRankByIdInVoc(epi[epi.length - 2]));
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
 				nameToBeFilled.setSpecificEpithet(epi[1]);
 				nameToBeFilled.setInfraSpecificEpithet(epi[epi.length - 1]);
@@ -842,7 +842,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 				if ("[unranked]".equals(infraSpecRankEpi)){
 					infraSpecificRank = Rank.INFRASPECIFICTAXON();
 				}else{
-					infraSpecificRank = Rank.getRankByAbbreviation(infraSpecRankEpi);
+					infraSpecificRank = Rank.getRankByIdInVoc(infraSpecRankEpi);
 				}
 				nameToBeFilled.setRank(infraSpecificRank);
 				nameToBeFilled.setGenusOrUninomial(epi[0]);
@@ -853,7 +853,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			 else if (oldInfraSpeciesPattern.matcher(fullNameString).matches()){
 				boolean implemented = false;
 				if (implemented){
-					nameToBeFilled.setRank(Rank.getRankByNameOrAbbreviation(epi[2]));
+					nameToBeFilled.setRank(Rank.getRankByNameOrIdInVoc(epi[2]));
 					nameToBeFilled.setGenusOrUninomial(epi[0]);
 					nameToBeFilled.setSpecificEpithet(epi[1]);
 					//TODO result.setUnnamedNamePhrase(epi[2] + " " + epi[3]);

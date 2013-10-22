@@ -35,7 +35,7 @@ import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.strategy.merge.MergeException;
 
 /**
@@ -88,7 +88,7 @@ public class Contact implements Serializable, Cloneable {
 	 * @return
 	 */
 	public static Contact NewInstance(String street, String postcode, String locality,
-			WaterbodyOrCountry country, String pobox, String region,
+			Country country, String pobox, String region,
 			String email, String faxNumber, String phoneNumber, String url, Point location) {
 		Contact result = new Contact();
 		if (country != null || StringUtils.isNotBlank(locality) || StringUtils.isNotBlank(pobox) || StringUtils.isNotBlank(postcode) ||
@@ -226,7 +226,7 @@ public class Contact implements Serializable, Cloneable {
 	}
 
 	public void addAddress(String street, String postcode, String locality,
-			WaterbodyOrCountry country, String pobox, String region, Point location){
+			Country country, String pobox, String region, Point location){
 		Address newAddress = Address.NewInstance(country, locality, pobox, postcode, region, street, location);
 		getAddresses().add(newAddress);
 	}

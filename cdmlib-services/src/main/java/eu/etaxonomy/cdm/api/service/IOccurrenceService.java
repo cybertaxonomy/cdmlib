@@ -28,19 +28,19 @@ import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
@@ -49,9 +49,9 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
  */
 public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenOrObservationBase> {
 
-    public WaterbodyOrCountry getCountryByIso(String iso639);
+    public Country getCountryByIso(String iso639);
 
-    public List<WaterbodyOrCountry> getWaterbodyOrCountryByName(String name);
+    public List<Country> getCountryByName(String name);
 
     /**
      * Returns a paged list of occurrences that have been determined to belong
@@ -136,11 +136,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     @Override
     public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
 
-    public List<UuidAndTitleCache<FieldObservation>> getFieldObservationUuidAndTitleCache();
+    public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache();
 
-    public List<UuidAndTitleCache<DerivedUnitBase>> getDerivedUnitBaseUuidAndTitleCache();
+    public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
 
-    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnitBase derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
+    public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
 
     public List<DerivedUnitFacade> listDerivedUnitFacades(DescriptionBase description, List<String> propertyPaths);
 
@@ -151,7 +151,7 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * ways, all these possible relations are taken into account:
      * <ul>
      * <li>The {@link IndividualsAssociation} elements in a
-     * {@link TaxonDescription} contain {@link DerivedUnitBase}s</li>
+     * {@link TaxonDescription} contain {@link DerivedUnit}s</li>
      * <li>{@link SpecimenTypeDesignation}s may be associated with any
      * {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
      * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent}

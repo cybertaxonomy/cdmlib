@@ -41,6 +41,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
+import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
@@ -49,7 +50,6 @@ import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
@@ -57,6 +57,7 @@ import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.HybridRelationship;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
@@ -70,7 +71,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IReferencedEntityDao;
@@ -106,6 +107,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     private IHomotypicalGroupDao homotypicalGroupDao;
     @Autowired
     private ICdmGenericDao genericDao;
+    @Autowired
+    private ILuceneIndexToolProvider luceneIndexToolProvider;
 
     /**
      * Constructor
@@ -142,10 +145,18 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //remove references to this name
         removeNameRelationshipsByDeleteConfig(name, config);
 
+        
+        //remove name from homotypical group
+        HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
+        if (homotypicalGroup != null){
+        	homotypicalGroup.removeTypifiedName(name);
+        }
+        
+        
         //check if this name is still used somewhere
 
         //name relationships
-        if (! name.getNameRelations().isEmpty()){
+        if (! name.getNameRelations().isEmpty() && !config.isRemoveAllNameRelationships()){
             String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
             throw new ReferencedObjectUndeletableException(message);
 //			return null;
@@ -181,10 +192,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //check references with only reverse mapping
         Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
         for (CdmBase referencingObject : referencingObjects){
-            //DerivedUnitBase?.storedUnder
-            if (referencingObject.isInstanceOf(DerivedUnitBase.class)){
+            //DerivedUnit?.storedUnder
+            if (referencingObject.isInstanceOf(DerivedUnit.class)){
                 String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
                 throw new ReferencedObjectUndeletableException(message);
             }
             //DescriptionElementSource#nameUsedInSource
@@ -207,6 +218,25 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
 
         //TODO inline references
+             
+    	if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
+    		String message = "Name can't be deleted as it is a basionym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
+    		String message = "Name can't be deleted as it has a basionym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
+    		String message = "Name can't be deleted as it is a replaced synonym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
+    		String message = "Name can't be deleted as it has a replaced synonym.";
+            throw new ReferencedObjectUndeletableException(message);
+    	}
+    	
+    
 
         dao.delete(name);
         return name.getUuid();
@@ -557,96 +587,96 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
 
     protected LuceneSearch prepareFindByFuzzyNameSearch(Class<? extends CdmBase> clazz,
-    		NonViralName nvn,
-    		float accuracy,
-    		int maxNoOfResults,
-    		List<Language> languages,
-    		boolean highlightFragments) {
-    	String similarity = Float.toString(accuracy);
-    	String searchSuffix = "~" + similarity;
-
-
-    	BooleanQuery finalQuery = new BooleanQuery(false);
-    	BooleanQuery textQuery = new BooleanQuery(false);
-
-    	LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
-    	QueryFactory queryFactory = new QueryFactory(luceneSearch);
-
-//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
-//    	luceneSearch.setSortFields(sortFields);
-
-    	// ---- search criteria
-    	luceneSearch.setClazz(clazz);
-
-    	FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());
-    	if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {
-    		fltq.addTerms(nvn.getGenusOrUninomial().toLowerCase(), "genusOrUninomial", accuracy, 3);
-    	} else {
-    		//textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
-    		textQuery.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
-    	}
-
-    	if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
-    		fltq.addTerms(nvn.getInfraGenericEpithet().toLowerCase(), "infraGenericEpithet", accuracy, 3);
-    	} else {
-    		//textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-    		textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
-    	}
-
-    	if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
-    		fltq.addTerms(nvn.getSpecificEpithet().toLowerCase(), "specificEpithet", accuracy, 3);
-    	} else {
-    		//textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-    		textQuery.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
-    	}
-
-    	if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
-    		fltq.addTerms(nvn.getInfraSpecificEpithet().toLowerCase(), "infraSpecificEpithet", accuracy, 3);
-    	} else {
-    		//textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
-    		textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
-    	}
-
-    	if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
-    		fltq.addTerms(nvn.getAuthorshipCache().toLowerCase(), "authorshipCache", accuracy, 3);
-    	} else {
-    		//textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
-    	}
-
-    	textQuery.add(fltq, Occur.MUST);
-
-    	finalQuery.add(textQuery, Occur.MUST);
-
-    	luceneSearch.setQuery(finalQuery);
-
-    	if(highlightFragments){
-    		luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
-    	}
-    	return luceneSearch;
-    }
-
-    protected LuceneSearch prepareFindByFuzzyNameCacheSearch(Class<? extends CdmBase> clazz,
-    		String name,
-    		float accuracy,
-    		int maxNoOfResults,
-    		List<Language> languages,
+            NonViralName nvn,
+            float accuracy,
+            int maxNoOfResults,
+            List<Language> languages,
             boolean highlightFragments) {
+        String similarity = Float.toString(accuracy);
+        String searchSuffix = "~" + similarity;
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+
+        BooleanQuery finalQuery = new BooleanQuery(false);
+        BooleanQuery textQuery = new BooleanQuery(false);
+
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
 
 //    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
-        luceneSearch.setClazz(clazz);
+        luceneSearch.setCdmTypRestriction(clazz);
+
+        FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());
+        if(nvn.getGenusOrUninomial() != null && !nvn.getGenusOrUninomial().equals("")) {
+            fltq.addTerms(nvn.getGenusOrUninomial().toLowerCase(), "genusOrUninomial", accuracy, 3);
+        } else {
+            //textQuery.add(new RegexQuery (new Term ("genusOrUninomial", "^[a-zA-Z]*")), Occur.MUST_NOT);
+            textQuery.add(queryFactory.newTermQuery("genusOrUninomial", "_null_", false), Occur.MUST);
+        }
+
+        if(nvn.getInfraGenericEpithet() != null && !nvn.getInfraGenericEpithet().equals("")){
+            fltq.addTerms(nvn.getInfraGenericEpithet().toLowerCase(), "infraGenericEpithet", accuracy, 3);
+        } else {
+            //textQuery.add(new RegexQuery (new Term ("infraGenericEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+            textQuery.add(queryFactory.newTermQuery("infraGenericEpithet", "_null_", false), Occur.MUST);
+        }
+
+        if(nvn.getSpecificEpithet() != null && !nvn.getSpecificEpithet().equals("")){
+            fltq.addTerms(nvn.getSpecificEpithet().toLowerCase(), "specificEpithet", accuracy, 3);
+        } else {
+            //textQuery.add(new RegexQuery (new Term ("specificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+            textQuery.add(queryFactory.newTermQuery("specificEpithet", "_null_", false), Occur.MUST);
+        }
+
+        if(nvn.getInfraSpecificEpithet() != null && !nvn.getInfraSpecificEpithet().equals("")){
+            fltq.addTerms(nvn.getInfraSpecificEpithet().toLowerCase(), "infraSpecificEpithet", accuracy, 3);
+        } else {
+            //textQuery.add(new RegexQuery (new Term ("infraSpecificEpithet", "^[a-zA-Z]*")), Occur.MUST_NOT);
+            textQuery.add(queryFactory.newTermQuery("infraSpecificEpithet", "_null_", false), Occur.MUST);
+        }
+
+        if(nvn.getAuthorshipCache() != null && !nvn.getAuthorshipCache().equals("")){
+            fltq.addTerms(nvn.getAuthorshipCache().toLowerCase(), "authorshipCache", accuracy, 3);
+        } else {
+            //textQuery.add(new RegexQuery (new Term ("authorshipCache", "^[a-zA-Z]*")), Occur.MUST_NOT);
+        }
+
+        textQuery.add(fltq, Occur.MUST);
+
+        finalQuery.add(textQuery, Occur.MUST);
+
+        luceneSearch.setQuery(finalQuery);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
+    }
+
+    protected LuceneSearch prepareFindByFuzzyNameCacheSearch(Class<? extends CdmBase> clazz,
+            String name,
+            float accuracy,
+            int maxNoOfResults,
+            List<Language> languages,
+            boolean highlightFragments) {
+
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
+
+//    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+//    	luceneSearch.setSortFields(sortFields);
+
+        // ---- search criteria
+        luceneSearch.setCdmTypRestriction(clazz);
         FuzzyLikeThisQuery fltq = new FuzzyLikeThisQuery(maxNoOfResults, luceneSearch.getAnalyzer());
 
         fltq.addTerms(name, "nameCache", accuracy, 3);
 
-     	BooleanQuery finalQuery = new BooleanQuery(false);
+         BooleanQuery finalQuery = new BooleanQuery(false);
 
-     	finalQuery.add(fltq, Occur.MUST);
+         finalQuery.add(fltq, Occur.MUST);
 
         luceneSearch.setQuery(finalQuery);
 
@@ -657,28 +687,28 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     }
 
     protected LuceneSearch prepareFindByExactNameSearch(Class<? extends CdmBase> clazz,
-    		String name,
-    		boolean wildcard,
-    		List<Language> languages,
+            String name,
+            boolean wildcard,
+            List<Language> languages,
             boolean highlightFragments) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonNameBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonNameBase.class);
+        QueryFactory queryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonNameBase.class);
 
 //    	SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
 //    	luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
-        luceneSearch.setClazz(clazz);
+        luceneSearch.setCdmTypRestriction(clazz);
 
         if(name != null && !name.equals("")) {
-        	if(wildcard) {
-        		textQuery.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);
-        	} else {
-        		textQuery.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);
-        	}
+            if(wildcard) {
+                textQuery.add(new WildcardQuery(new Term("nameCache", name + "*")), Occur.MUST);
+            } else {
+                textQuery.add(queryFactory.newTermQuery("nameCache", name, false), Occur.MUST);
+            }
         }
 
         luceneSearch.setQuery(textQuery);
@@ -698,13 +728,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             List<String> propertyPaths,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
 
-    	logger.info("Name to fuzzy search for : " + name);
-    	// parse the input name
-    	NonViralNameParserImpl parser = new NonViralNameParserImpl();
-    	NonViralName nvn = parser.parseFullName(name);
-    	if(name != null && !name.equals("") && nvn == null) {
-    		throw new ParseException("Could not parse name " + name);
-    	}
+        logger.info("Name to fuzzy search for : " + name);
+        // parse the input name
+        NonViralNameParserImpl parser = new NonViralNameParserImpl();
+        NonViralName nvn = parser.parseFullName(name);
+        if(name != null && !name.equals("") && nvn == null) {
+            throw new ParseException("Could not parse name " + name);
+        }
         LuceneSearch luceneSearch = prepareFindByFuzzyNameSearch(null, nvn, accuracy, maxNoOfResults, languages, highlightFragments);
 
         // --- execute search
@@ -733,13 +763,13 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             boolean highlightFragments,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
 
-    	logger.info("Name to fuzzy search for : " + name);
-    	// parse the input name
-    	NonViralNameParserImpl parser = new NonViralNameParserImpl();
-    	NonViralName nvn = parser.parseFullName(name);
-    	if(name != null && !name.equals("") && nvn == null) {
-    		throw new ParseException("Could not parse name " + name);
-    	}
+        logger.info("Name to fuzzy search for : " + name);
+        // parse the input name
+        NonViralNameParserImpl parser = new NonViralNameParserImpl();
+        NonViralName nvn = parser.parseFullName(name);
+        if(name != null && !name.equals("") && nvn == null) {
+            throw new ParseException("Could not parse name " + name);
+        }
         LuceneSearch luceneSearch = prepareFindByFuzzyNameSearch(null, nvn, accuracy, maxNoOfResults, languages, highlightFragments);
 
         // --- execute search
@@ -759,12 +789,12 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     @Override
     public List<DocumentSearchResult> findByFuzzyNameCacheSearch(
             String name,
-    		float accuracy,
+            float accuracy,
             List<Language> languages,
             boolean highlightFragments,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
 
-    	logger.info("Name to fuzzy search for : " + name);
+        logger.info("Name to fuzzy search for : " + name);
 
         LuceneSearch luceneSearch = prepareFindByFuzzyNameCacheSearch(null, name, accuracy, maxNoOfResults, languages, highlightFragments);
 
@@ -789,9 +819,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
             boolean highlightFragments,
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException {
 
-    	logger.info("Name to exact search for : " + name);
+        logger.info("Name to exact search for : " + name);
 
-    	LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareFindByExactNameSearch(null, name, wildcard, languages, highlightFragments);
 
         // --- execute search
 

@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  * 
  * @author n.hoffmann
  * @created Oct 27, 2010
- * @version 1.0
  */
 public class SequenceTableCreator extends SchemaUpdaterStepBase {
 
@@ -58,17 +57,14 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	public static SequenceTableCreator NewInstance(String stepName){
 		return new SequenceTableCreator(stepName);
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
+
 	@Override
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor){
 		boolean result = true;
 		try {
-			createSequenceTable(datasource, monitor);
-			makeEntriesForEntityTables(datasource, monitor);
-		} catch (SQLException e) {
+			result &= createSequenceTable(datasource, monitor);
+			result &= makeEntriesForEntityTables(datasource, monitor);
+		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);
 			result = false;
 		}
@@ -107,7 +103,7 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	 * @return
 	 * @throws SQLException 
 	 */
-	private void makeEntriesForEntityTables(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private boolean makeEntriesForEntityTables(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
 		
 		DatabaseMetaData metaData = datasource.getMetaData();
 		ResultSet resultSet = metaData.getTables(datasource.getDatabase(), null, null, null);
@@ -147,7 +143,9 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 				
 				datasource.executeUpdate(query);
 			}
+			
 		}
+		return true;
 	}
 
 }

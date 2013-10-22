@@ -38,6 +38,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -63,8 +64,13 @@ import eu.etaxonomy.cdm.strategy.generate.PolytomousKeyGenerator;
  * @version 2.0 (08.11.2010)
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "PolytomousKey", propOrder = { "coveredTaxa", "taxonomicScope",
-		"geographicalScope", "scopeRestrictions", "root" })
+@XmlType(name = "PolytomousKey", propOrder = { 
+		"coveredTaxa", 
+		"taxonomicScope",
+		"geographicalScope", 
+		"scopeRestrictions", 
+		"root",
+		"startNumber"})
 @XmlRootElement(name = "PolytomousKey")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.media.FeatureTree")
@@ -108,12 +114,16 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	@ManyToMany(fetch = FetchType.LAZY)
 	@JoinTable(name = "PolytomousKey_Scope")
 	@NotNull
-	private Set<Scope> scopeRestrictions = new HashSet<Scope>();
+	private Set<DefinedTerm> scopeRestrictions = new HashSet<DefinedTerm>();
 
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private PolytomousKeyNode root;
+	
+	@XmlElement(name = "StartNumber")
+	private int startNumber = 1;
+	
 
 // ***************** STATIC METHODS ********************************/
 
@@ -140,7 +150,8 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	 */
 	protected PolytomousKey() {
 		super();
-		root = PolytomousKeyNode.NewRootInstance();
+		root = PolytomousKeyNode.NewInstance();
+		root.setNodeNumber(getStartNumber());
 		root.setKey(this);
 		this.cacheStrategy = PolytomousKeyDefaultCacheStrategy.NewInstance();
 	}
@@ -287,9 +298,9 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	 * Returns the set of {@link Scope scope restrictions} corresponding to
 	 * <i>this</i> identification key
 	 */
-	public Set<Scope> getScopeRestrictions() {
+	public Set<DefinedTerm> getScopeRestrictions() {
 		if (scopeRestrictions == null) {
-			this.scopeRestrictions = new HashSet<Scope>();
+			this.scopeRestrictions = new HashSet<DefinedTerm>();
 		}
 		return scopeRestrictions;
 	}
@@ -304,7 +315,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	 *            identification key
 	 * @see #getScopeRestrictions()
 	 */
-	public void addScopeRestriction(Scope scopeRestriction) {
+	public void addScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.add(scopeRestriction);
 	}
 
@@ -317,8 +328,26 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	 * @see #getScopeRestrictions()
 	 * @see #addScopeRestriction(Scope)
 	 */
-	public void removeScopeRestriction(Scope scopeRestriction) {
+	public void removeScopeRestriction(DefinedTerm scopeRestriction) {
 		this.scopeRestrictions.remove(scopeRestriction);
+	}
+	
+
+	/**
+	 * The first number for the automated numbering of {@link PolytomousKeyNode key nodes}.
+	 * Default value is 1.
+	 * @return
+	 */
+	public int getStartNumber() {
+		return startNumber;
+	}
+
+	/**
+	 * @see #getStartNumber()
+	 * @param startNumber
+	 */
+	public void setStartNumber(int startNumber) {
+		this.startNumber = startNumber;
 	}
 
 	// ******************** toString *****************************************/
@@ -443,8 +472,7 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	// return getRoot().getChildren();
 	// }
 
-	// *********************** CLONE
-	// ********************************************************/
+	// *********************** CLONE ************************************/
 
 	/**
 	 * Clones <i>this</i> PolytomousKey. This is a shortcut that enables to
@@ -473,8 +501,8 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 
 			result.root = (PolytomousKeyNode) this.root.clone();
 
-			result.scopeRestrictions = new HashSet<Scope>();
-			for (Scope scope : this.scopeRestrictions) {
+			result.scopeRestrictions = new HashSet<DefinedTerm>();
+			for (DefinedTerm scope : this.scopeRestrictions) {
 				result.addScopeRestriction(scope);
 			}
 

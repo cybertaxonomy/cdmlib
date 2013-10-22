@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -41,6 +42,7 @@ import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ClassBridge;
+import org.hibernate.search.annotations.ClassBridges;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
@@ -48,6 +50,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
+import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -84,7 +87,10 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonBase")
 @Audited
 @Configurable
-@ClassBridge(impl=GroupByTaxonClassBridge.class)
+@ClassBridges({
+    @ClassBridge(impl = GroupByTaxonClassBridge.class),
+    @ClassBridge(impl = TaxonRelationshipClassBridge.class)
+})
 public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
@@ -92,7 +98,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlElementWrapper(name = "Descriptions")
     @XmlElement(name = "Description")
     @OneToMany(mappedBy="taxon", fetch= FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @NotNull
     @ContainedIn
     private Set<TaxonDescription> descriptions = new HashSet<TaxonDescription>();
@@ -144,7 +150,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     private Taxon taxonomicParentCache;
 
 
-
     @XmlElementWrapper(name = "taxonNodes")
     @XmlElement(name = "taxonNode")
     @XmlIDREF
@@ -158,31 +163,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     @XmlElement(name = "TaxonomicChildrenCount")
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
     private int taxonomicChildrenCount;
-
-// ************* CONSTRUCTORS *************/
-
-    //TODO should be private, but still produces Spring init errors
-    @Deprecated
-    public Taxon(){
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
-    }
-
-    /**
-     * Class constructor: creates a new (accepted/correct) taxon instance with
-     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
-     * using it.
-     *
-     * @param  taxonNameBase	the taxon name used
-     * @param  sec				the reference using the taxon name
-     * @see    					TaxonBase#TaxonBase(TaxonNameBase, Reference)
-     */
-    public Taxon(TaxonNameBase taxonNameBase, Reference sec){
-        super(taxonNameBase, sec);
-        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
-    }
-
-//********* METHODS **************************************/
-
+    
+// ************************* FACTORY METHODS ********************************/
+    
     /**
      * Creates a new (accepted/correct) taxon instance with
      * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
@@ -211,6 +194,31 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         result.setTaxonStatusUnknown(true);
         return result;
     }
+// ************* CONSTRUCTORS *************/
+
+    //TODO should be private, but still produces Spring init errors
+    @Deprecated
+    public Taxon(){
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
+    }
+
+    /**
+     * Class constructor: creates a new (accepted/correct) taxon instance with
+     * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
+     * using it.
+     *
+     * @param  taxonNameBase	the taxon name used
+     * @param  sec				the reference using the taxon name
+     * @see    					TaxonBase#TaxonBase(TaxonNameBase, Reference)
+     */
+    public Taxon(TaxonNameBase taxonNameBase, Reference sec){
+        super(taxonNameBase, sec);
+        this.cacheStrategy = new TaxonBaseDefaultCacheStrategy<Taxon>();
+    }
+
+//********* METHODS **************************************/
+
+
 
     /**
      * Returns the set of {@link eu.etaxonomy.cdm.model.description.TaxonDescription taxon descriptions}
@@ -304,8 +312,84 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     protected void addTaxonNode(TaxonNode taxonNode){
         taxonNodes.add(taxonNode);
     }
-    protected void removeTaxonNode(TaxonNode taxonNode){
-        taxonNodes.remove(taxonNode);
+    
+    public boolean removeTaxonNode(TaxonNode taxonNode){
+    	if (!taxonNodes.contains(taxonNode)){
+    		return false;
+    	}
+        TaxonNode parent = taxonNode.getParent();
+        if (parent != null){
+        	parent.removeChildNode(taxonNode);
+        }
+        taxonNode.setTaxon(null);
+        return taxonNodes.remove(taxonNode);
+        
+    }
+    
+    public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
+    	TaxonNode parent = taxonNode.getParent();
+    	boolean success = true; 
+    	
+		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
+			
+			taxonNode.delete();
+			
+		} else if (!taxonNode.isTopmostNode()){
+			List<TaxonNode> children =  taxonNode.getChildNodes();
+			
+			for (TaxonNode childNode: children){
+				
+				children.remove(childNode);
+				parent.addChildNode(childNode, null, null);
+				
+			}	
+			
+			taxonNode.delete();
+			
+		} else if (taxonNode.isTopmostNode()){
+			success = false;
+		}
+		return success;
+    }
+    
+    public boolean removeTaxonNodes(boolean deleteChildren){
+    	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
+    	TaxonNode node;
+    	TaxonNode parent;
+    	boolean success = false;
+    	List<TaxonNode> removeNodes = new ArrayList<TaxonNode>();
+    	while (nodesIterator.hasNext()){
+    		node = nodesIterator.next();
+    		if (!deleteChildren){
+    			List<TaxonNode> children = node.getChildNodes();
+    			Iterator<TaxonNode> childrenIterator = children.iterator();
+    			parent = node.getParent();
+    			while (childrenIterator.hasNext()){
+    				TaxonNode childNode = childrenIterator.next();
+    				if (parent != null){
+    					parent.addChildNode(childNode, null, null);
+    				}else{
+    					childNode.setParent(null);
+    				}
+    			}
+    			
+    			for (int i = 0; i<node.getChildNodes().size(); i++){
+    				node.removeChild(i);
+    			}
+    			
+    			
+    		}
+    		    		
+    		removeNodes.add(node);
+	 	}
+    	for (int i = 0; i<removeNodes.size(); i++){
+    		TaxonNode removeNode = removeNodes.get(i);
+    		success = removeNode.delete(deleteChildren);
+    		removeNode.setTaxon(null);
+    		removeTaxonNode(removeNode);
+    	}
+    	return success;
+    	
     }
 
 
@@ -420,6 +504,22 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return relationsToThisTaxon;
     }
     /**
+	 * Returns the set of all {@link TaxonRelationship taxon relationships}
+	 * between two taxa in which <i>this</i> taxon is involved either as a source or
+	 * as a target.
+	 *
+	 * @see    #getRelationsFromThisTaxon()
+	 * @see    #getRelationsToThisTaxon()
+	 */
+	@Transient
+	public Set<TaxonRelationship> getTaxonRelations() {
+	    Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
+	    rels.addAll(getRelationsToThisTaxon());
+	    rels.addAll(getRelationsFromThisTaxon());
+	    return rels;
+	}
+
+	/**
      * @see    #getRelationsToThisTaxon()
      */
     protected void setRelationsToThisTaxon(Set<TaxonRelationship> relationsToThisTaxon) {
@@ -431,22 +531,6 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
      */
     protected void setRelationsFromThisTaxon(Set<TaxonRelationship> relationsFromThisTaxon) {
         this.relationsFromThisTaxon = relationsFromThisTaxon;
-    }
-
-    /**
-     * Returns the set of all {@link TaxonRelationship taxon relationships}
-     * between two taxa in which <i>this</i> taxon is involved either as a source or
-     * as a target.
-     *
-     * @see    #getRelationsFromThisTaxon()
-     * @see    #getRelationsToThisTaxon()
-     */
-    @Transient
-    public Set<TaxonRelationship> getTaxonRelations() {
-        Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
-        rels.addAll(getRelationsToThisTaxon());
-        rels.addAll(getRelationsFromThisTaxon());
-        return rels;
     }
 
     /**
@@ -463,10 +547,12 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         Set<TaxonRelationship> relations = new HashSet<TaxonRelationship>();
 
         for(TaxonRelationship relationship : getTaxonRelations()){
-            if(relationship.getFromTaxon().equals(possiblyRelatedTaxon))
+            if(relationship.getFromTaxon().equals(possiblyRelatedTaxon)) {
                 relations.add(relationship);
-            if(relationship.getToTaxon().equals(possiblyRelatedTaxon))
+            }
+            if(relationship.getToTaxon().equals(possiblyRelatedTaxon)) {
                 relations.add(relationship);
+            }
         }
 
         return relations.size() > 0 ? relations : null;
@@ -506,13 +592,21 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
             }
         }
         //delete Relationship from other related Taxon
-        if (fromTaxon != null && fromTaxon != this){
+        if (fromTaxon != this){
             rel.setToTaxon(null);  //remove this Taxon from relationship
-            fromTaxon.removeTaxonRelation(rel);
+            if (fromTaxon != null){
+            	if (fromTaxon.getTaxonRelations().contains(rel)){
+            		fromTaxon.removeTaxonRelation(rel);
+            	}
+            }
         }
-        if (toTaxon != null && toTaxon != this){
+        if (toTaxon != this ){
             rel.setFromTaxon(null); //remove this Taxon from relationship
-            toTaxon.removeTaxonRelation(rel);
+           if (toTaxon != null){
+	           if (toTaxon.getTaxonRelations().contains(rel)) {
+	        	   toTaxon.removeTaxonRelation(rel);
+	           }
+           }
         }
     }
 
@@ -588,6 +682,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.IRelated#addRelationship(eu.etaxonomy.cdm.model.common.RelationshipBase)
      */
+    @Override
     @Deprecated //for inner use by RelationshipBase only
     public void addRelationship(RelationshipBase rel){
         if (rel instanceof TaxonRelationship){
@@ -1525,17 +1620,18 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> im
         return unplaced;
     }
 
+    @Override
     @Transient
     public boolean isOrphaned() {
-    	
-    	if(taxonNodes == null || taxonNodes.isEmpty()) {
-    		if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
-				return true;
-	    	}
-    	}
-    	return false;
+
+        if(taxonNodes == null || taxonNodes.isEmpty()) {
+            if(getRelationsFromThisTaxon().isEmpty() && getRelationsToThisTaxon().isEmpty()) {
+                return true;
+            }
+        }
+        return false;
     }
-    
+
     public void setUnplaced(boolean unplaced) {
         this.unplaced = unplaced;
     }

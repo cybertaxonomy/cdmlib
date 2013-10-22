@@ -23,8 +23,6 @@ import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.SortField;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
 import org.hibernate.search.indexes.IndexReaderAccessor;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -48,9 +46,9 @@ public class LuceneMultiSearch extends LuceneSearch {
      * @param luceneSearch the searches to execute together as a union like search
      * @throws Exception
      */
-    public LuceneMultiSearch(LuceneSearch... luceneSearch) throws LuceneMultiSearchException {
+    public LuceneMultiSearch(ILuceneIndexToolProvider toolProvider, LuceneSearch... luceneSearch) throws LuceneMultiSearchException {
 
-        session = luceneSearch[0].session;
+        this.toolProvider = toolProvider;
         groupByField = null; //reset
         BooleanQuery query = new BooleanQuery();
 
@@ -66,13 +64,13 @@ public class LuceneMultiSearch extends LuceneSearch {
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
 
             // set the class for each of the sub searches
-            if(search.clazz != null){
-                if(clazz != null && !clazz.equals(search.clazz)){
+            if(search.cdmTypeRestriction != null){
+                if(cdmTypeRestriction != null && !cdmTypeRestriction.equals(search.cdmTypeRestriction)){
                     throw new LuceneMultiSearchException(
                             "LuceneMultiSearch can only handle once class restriction, but multiple given: " +
-                            getClazz() + ", " + search.getClazz());
+                            getCdmTypRestriction() + ", " + search.getCdmTypRestriction());
                 }
-                setClazz(search.getClazz());
+                setCdmTypRestriction(search.getCdmTypRestriction());
             }
 
             // set the groupByField for each of the sub searches
@@ -87,9 +85,11 @@ public class LuceneMultiSearch extends LuceneSearch {
 
 
             // add the sort field from each of the sub searches
-            for(SortField addField : search.getSortFields()){
-                if(! multiSearcherSortFields.contains(addField)) {
-                    multiSearcherSortFields.add(addField);
+            if(search.getSortFields() != null) {
+                for(SortField addField : search.getSortFields()){
+                    if(! multiSearcherSortFields.contains(addField)) {
+                        multiSearcherSortFields.add(addField);
+                    }
                 }
             }
         }
@@ -106,8 +106,6 @@ public class LuceneMultiSearch extends LuceneSearch {
     public IndexSearcher getSearcher() {
 
         if(searcher == null){
-
-            SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
             List<IndexReader> readers = new ArrayList<IndexReader>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
                    //OLD
@@ -115,7 +113,7 @@ public class LuceneMultiSearch extends LuceneSearch {
 //                logger.info(directoryProviders[0].getDirectory().toString());
 
 //                ReaderProvider readerProvider = searchFactory.getReaderProvider();
-                IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor();
+                IndexReaderAccessor ira = toolProvider.getIndexReaderAccessor();
                 IndexReader reader = ira.open(type);
 //            	readers.add(readerProvider.openReader(directoryProviders[0]));
                 readers.add(reader);
@@ -140,10 +138,9 @@ public class LuceneMultiSearch extends LuceneSearch {
      */
     @Override
     public Analyzer getAnalyzer() {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
         Analyzer analyzer = null;
         for(Class<? extends CdmBase> type : directorySelectClasses){
-            Analyzer a = searchFactory.getAnalyzer(type);
+            Analyzer a = toolProvider.getAnalyzerFor(type);
             if(isEqual(analyzer, a)){
                 throw new RuntimeException("The LuceneMultiSearch must only be used on indexes which are using the same Analyzer.");
             }
@@ -151,6 +148,7 @@ public class LuceneMultiSearch extends LuceneSearch {
         }
         return analyzer;
     }
+
 
     /**
      * @param analyzer

@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -267,7 +266,7 @@ public class DescriptionElementDaoHibernateImplTest extends CdmTransactionalInte
 		stateData.putModifyingText(Language.ENGLISH(), "test modifier");
 		LanguageString langString = stateData.getModifyingText().get(Language.ENGLISH());
 		langString.setUuid(UUID.fromString("53a91bd4-d758-47ec-a385-94799bdb9f32"));
-		data.addState(stateData);
+		data.addStateData(stateData);
 //		Modifier modifier = Modifier.NewInstance("my test modifier", "test", null);
 //		TODO still throws JDBC batch update exception, one reason may be that in hibernate_sequence nextVal for definedtermbase is "1"
 //		stateData.addModifier(modifier);

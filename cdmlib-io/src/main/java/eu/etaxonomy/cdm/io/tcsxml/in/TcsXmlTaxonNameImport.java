@@ -223,7 +223,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Rank stringRank = null;
 		try {
 			boolean useUnknown = true;
-			stringRank = Rank.getRankByNameOrAbbreviation(strRankString, useUnknown);
+			stringRank = Rank.getRankByNameOrIdInVoc(strRankString, useUnknown);
 		} catch (UnknownCdmTypeException e1) {
 			//does not happen because of useUnknown = true
 		}

@@ -121,6 +121,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      *
      * @see #NewInstance(Feature)
      * @see #NewInstance(String, Language, TextFormat)
+     * @see	#NewInstance(Feature, String, Language, TextFormat)
      */
     public static TextData NewInstance(){
         return new TextData();
@@ -133,6 +134,7 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      * @param	feature	the feature the text data refer to
      * @see 			#NewInstance()
      * @see 			#NewInstance(String, Language, TextFormat)
+     * @see					#NewInstance(Feature, String, Language, TextFormat)
      */
     public static TextData NewInstance(Feature feature){
         return new TextData(feature);
@@ -147,8 +149,29 @@ public class TextData extends DescriptionElementBase implements IMultiLanguageTe
      * @param	format		the text format used to structure the text string
      * @see 				#NewInstance()
      * @see 				#NewInstance(Feature)
+     * @see					#NewInstance(Feature, String, Language, TextFormat)
      */
     public static TextData NewInstance(String text, Language language, TextFormat format){
+        TextData result =  new TextData();
+        result.putText(language, text);
+        result.setFormat(format);
+        return result;
+    }
+    
+    
+    /**
+     * Creates a new text data instance with a given text in a given particular
+     * {@link Language language} and with the given text format for structuring it.
+     *
+     * @param   feature	    the feature the text data refer to
+     * @param	text		the text string with the content of the description
+     * @param	language	the language in which the text string is formulated
+     * @param	format		the text format used to structure the text string
+     * @see 				#NewInstance()
+     * @see 				#NewInstance(Feature)
+     * @see					#NewInstance(String, Language, TextFormat)
+     */
+    public static TextData NewInstance(Feature feature, String text, Language language, TextFormat format){
         TextData result =  new TextData();
         result.putText(language, text);
         result.setFormat(format);

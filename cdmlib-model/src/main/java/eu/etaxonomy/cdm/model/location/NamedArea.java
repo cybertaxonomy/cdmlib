@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.location;
 
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -42,21 +43,22 @@ import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.Parameter;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.media.Media;
 
 /**
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:36
  */
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -68,15 +70,13 @@ import eu.etaxonomy.cdm.model.media.Media;
     "validPeriod",
     "shape",
     "pointApproximation",
-    "waterbodiesOrCountries",
+    "countries",
     "type",
     "level"
 })
 @XmlRootElement(name = "NamedArea")
 @XmlSeeAlso({
-    TdwgArea.class,
-    Continent.class,
-    WaterbodyOrCountry.class
+    Country.class
 })
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.common.DefinedTermBase")
@@ -86,11 +86,61 @@ import eu.etaxonomy.cdm.model.media.Media;
 })
 public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private static final long serialVersionUID = 6248434369557403036L;
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(NamedArea.class);
 
+    
+	//Continent UUIDs
+    private static final UUID uuidEurope = UUID.fromString("3b69f979-408c-4080-b573-0ad78a315610");
+	private static final UUID uuidAfrica = UUID.fromString("c204c529-d8d2-458f-b939-96f0ebd2cbe8");
+	private static final UUID uuidAsiaTemperate = UUID.fromString("7f4f4f89-3b4c-475d-929f-144109bd8457");
+	private static final UUID uuidAsiaTropical = UUID.fromString("f8039275-d2c0-4753-a1ab-0336642a1499");
+	private static final UUID uuidNAmerica = UUID.fromString("81d8aca3-ddd7-4537-9f2b-5327c95b6e28");
+	private static final UUID uuidSAmerica = UUID.fromString("12b861c9-c922-498c-8b1a-62afc26d19e3");
+	private static final UUID uuidAustralasia = UUID.fromString("a2afdb9a-04a0-434c-9e75-d07dbeb86526");
+	private static final UUID uuidPacific = UUID.fromString("c57adcff-5213-45f0-a5f0-97a9f5c0f1fe");
+	private static final UUID uuidAntarctica = UUID.fromString("71fd9ab7-9b07-4eb6-8e54-c519aff56728");
+
+    
+    public static final UUID uuidTdwgAreaVocabulary = UUID.fromString("1fb40504-d1d7-44b0-9731-374fbe6cac77");
+    public static final UUID uuidContinentVocabulary = UUID.fromString("e72cbcb6-58f8-4201-9774-15d0c6abc128");
+    public static final UUID uuidWaterbodyVocabulary = UUID.fromString("35a62b25-f541-4f12-a7c7-17d90dec3e03");
+
+	
+	private static final UUID uuidArcticOcean = UUID.fromString("af4271e5-8897-4e6f-9db7-54ea4f28cfc0");
+	private static final UUID uuidAtlanticOcean = UUID.fromString("77e79804-1b17-4c99-873b-933fe216e3da");
+	private static final UUID uuidPacificOcean = UUID.fromString("3d68a327-104c-49d5-a2d8-c71c6600181b");
+	private static final UUID uuidIndianOcean = UUID.fromString("ff744a37-5990-462c-9c20-1e85a9943851");
+	private static final UUID uuidSouthernOcean = UUID.fromString("ef04f363-f67f-4a2c-8d98-110de4c5f654");
+	private static final UUID uuidMediterraneanSea = UUID.fromString("8811a47e-29d6-4455-8f83-8916b78a692f");
+	private static final UUID uuidBlackSea = UUID.fromString("4cb4bbae-9aab-426c-9025-e34f809165af");
+	private static final UUID uuidCaspianSea = UUID.fromString("598fec0e-b93a-4947-a1f3-601e380797f7");
+	private static final UUID uuidRedSea = UUID.fromString("ee69385e-6c80-405c-be6e-974e9fd1e297");
+	private static final UUID uuidPersianGulf = UUID.fromString("8dc16e70-74b8-4143-95cf-a659a319a854");
+
+    
+    
+    private static Map<String, UUID> tdwgAbbrevMap = null;
+    private static Map<String, UUID> tdwglabelMap = null;
+
+    private static Map<UUID, NamedArea> tdwgTermMap = null;
+    private static Map<UUID, NamedArea> continentMap = null;		
+    private static Map<UUID, NamedArea> waterbodyMap = null;		
+
+    
     private static Map<UUID, NamedArea> termMap = null;
 
+	public static final NamedArea ARCTICOCEAN () { return waterbodyMap.get(uuidArcticOcean );}
+	public static final NamedArea ATLANTICOCEAN () { return waterbodyMap.get(uuidAtlanticOcean );}
+	public static final NamedArea PACIFICOCEAN () { return waterbodyMap.get(uuidPacificOcean );}
+	public static final NamedArea INDIANOCEAN () { return waterbodyMap.get(uuidIndianOcean );}
+	public static final NamedArea SOUTHERNOCEAN () { return waterbodyMap.get(uuidSouthernOcean );}
+	public static final NamedArea MEDITERRANEANSEA () { return waterbodyMap.get(uuidMediterraneanSea );}
+	public static final NamedArea BLACKSEA () { return waterbodyMap.get(uuidBlackSea );}
+	public static final NamedArea CASPIANSEA () { return waterbodyMap.get(uuidCaspianSea );}
+	public static final NamedArea REDSEA () { return waterbodyMap.get(uuidRedSea );}
+	public static final NamedArea PERSIANGULF () { return waterbodyMap.get(uuidPersianGulf );}
+
+    
 //************************* FACTORY METHODS ****************************************/
 
     /**
@@ -122,8 +172,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     private Point pointApproximation;
 
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name="DefinedTermBase_WaterbodyOrCountry")
-    private final Set<WaterbodyOrCountry> waterbodiesOrCountries = new HashSet<WaterbodyOrCountry>();
+    @JoinTable(name="DefinedTermBase_Country")
+    private final Set<Country> countries = new HashSet<Country>();
 
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaType type;
@@ -131,16 +181,17 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
     private NamedAreaLevel level;
 
-//*************************** CONSTRUCTOR ******************************************/
+	
+//********************************** Constructor *******************************************************************/	
 
-    /**
-     * Constructor
-     */
-    public NamedArea() {
+  	//for hibernate use only
+  	@Deprecated
+  	protected NamedArea() {
+    	super(TermType.NamedArea);
     }
 
-    public NamedArea(String term, String label, String labelAbbrev) {
-        super(term, label, labelAbbrev);
+    protected NamedArea(String term, String label, String labelAbbrev) {
+        super(TermType.NamedArea, term, label, labelAbbrev);
     }
 
 //********************************* GETTER /SETTER *********************************************/
@@ -186,20 +237,20 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         this.shape = shape;
     }
 
-    @XmlElementWrapper(name = "WaterbodiesOrCountries")
-    @XmlElement(name = "WaterbodiesOrCountry")
+    @XmlElementWrapper(name = "Countries")
+    @XmlElement(name = "Country")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-    public Set<WaterbodyOrCountry> getWaterbodiesOrCountries() {
-        return waterbodiesOrCountries;
+    public Set<Country> getCountries() {
+        return countries;
     }
 
-    public void addWaterbodyOrCountry(WaterbodyOrCountry waterbodyOrCountry) {
-        this.waterbodiesOrCountries.add(waterbodyOrCountry);
+    public void addCountry(Country country) {
+        this.countries.add(country);
     }
 
-    public void removeWaterbodyOrCountry(WaterbodyOrCountry waterbodyOrCountry) {
-        this.waterbodiesOrCountries.remove(waterbodyOrCountry);
+    public void removeCountry(Country country) {
+        this.countries.remove(country);
     }
 
     @XmlElement(name = "PointApproximation")
@@ -287,13 +338,9 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         super.setIncludes(includes);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
-     */
     @Override
-    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {
-        NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms);
+    public NamedArea readCsvLine(Class<NamedArea> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
+        NamedArea newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
 
         String levelString = csvLine.get(6);
 
@@ -303,33 +350,224 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             newInstance.setLevel(level);
         }
 
-        String partOfString = csvLine.get(7);
-
-        if(partOfString != null && partOfString.length() != 0) {
-            UUID partOfUuid = UUID.fromString(partOfString);
-            NamedArea partOf = (NamedArea)terms.get(partOfUuid);
-            partOf.addIncludes(newInstance);
-        }
+//        String partOfString = csvLine.get(7);
+//
+//        if(partOfString != null && partOfString.length() != 0) {
+//            UUID partOfUuid = UUID.fromString(partOfString);
+//            NamedArea partOf = (NamedArea)terms.get(partOfUuid);
+//            partOf.addIncludes(newInstance);
+//        }
         return newInstance;
     }
+    
+	@Override
+	protected int partOfCsvLineIndex(){
+		return 7;
+	}
 
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()
-     */
     @Override
     public void resetTerms(){
         termMap = null;
+        tdwgAbbrevMap = null;
+   		tdwglabelMap = null;
+   		tdwgTermMap = null;
+   		continentMap = null;
+   		waterbodyMap = null;
     }
+    
+	@Deprecated //preliminary, will be removed in future
+    protected static NamedArea getContinentByUuid(UUID uuid){
+		if (continentMap == null){
+			return null;
+		}else{
+			return (NamedArea)continentMap.get(uuid);
+		}
+	}
+	
+    @Deprecated //preliminary, will be removed in future
+    protected static NamedArea getWaterbodyByUuid(UUID uuid){
+		if (waterbodyMap == null){
+			return null;
+		}else{
+			return (NamedArea)waterbodyMap.get(uuid);
+		}
+    }
+    
+    @Deprecated //preliminary, will be removed in future
+    protected static NamedArea getTdwgTermByUuid(UUID uuid){
+        if (tdwgTermMap == null){
+            DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+            vocabularyStore.initialize();
+        }
+        return tdwgTermMap.get(uuid);
+    }
+    
+    @Deprecated //preliminary, will be removed in future
+    public static NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation){
+        if (tdwgAbbrevMap == null){
+        	initTdwgMaps();
+        }
+        UUID uuid = tdwgAbbrevMap.get(tdwgAbbreviation);
+        if (uuid == null){
+            logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgAbbreviation));
+            return null;
+        }
+        return NamedArea.getTdwgTermByUuid(uuid);
+    }
+
+    @Deprecated //preliminary, will be removed in future
+    public static NamedArea getAreaByTdwgLabel(String tdwgLabel){
+        if (tdwglabelMap == null){
+            initTdwgMaps();
+        }
+        tdwgLabel = tdwgLabel.toLowerCase();
+        UUID uuid = tdwglabelMap.get(tdwgLabel);
+        if (uuid == null){
+            logger.info("Unknown TDWG area: " + CdmUtils.Nz(tdwgLabel));
+            return null;
+        }
+        return NamedArea.getTdwgTermByUuid(uuid);
+    }
+
+    @Deprecated //preliminary, will be removed in future
+    public static boolean isTdwgAreaLabel(String label){
+        label = (label == null? null : label.toLowerCase());
+        if (tdwglabelMap.containsKey(label)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+
+    @Deprecated //preliminary, will be removed in future
+    public static boolean isTdwgAreaAbbreviation(String abbrev){
+        if (tdwgAbbrevMap.containsKey(abbrev)){
+            return true;
+        }else{
+            return false;
+        }
+    }
+    
+	public static final NamedArea EUROPE(){
+		return getContinentByUuid(uuidEurope);
+	}
+
+	public static final NamedArea AFRICA(){
+		return getContinentByUuid(uuidAfrica);
+	}
+
+	public static final NamedArea ASIA_TEMPERATE(){
+		return getContinentByUuid(uuidAsiaTemperate);
+	}
+
+	public static final NamedArea ASIA_TROPICAL(){
+		return getContinentByUuid(uuidAsiaTropical);
+	}
+
+	public static final NamedArea NORTH_AMERICA(){
+		return getContinentByUuid(uuidNAmerica);
+	}
+
+	public static final NamedArea ANTARCTICA(){
+		return getContinentByUuid(uuidAntarctica);
+	}
+
+	public static final NamedArea SOUTH_AMERICA(){
+		return getContinentByUuid(uuidSAmerica);
+	}
+
+	public static final NamedArea AUSTRALASIA(){
+		return getContinentByUuid(uuidAustralasia);
+	}
+	
+	public static final NamedArea PACIFIC(){
+		return getContinentByUuid(uuidPacific);
+	}
+
+	
+	protected void setDefaultContinentTerms(TermVocabulary<NamedArea> termVocabulary) {
+		continentMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			continentMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+		}
+	}
+
+	protected void setDefaultWaterbodyTerms(TermVocabulary<NamedArea> termVocabulary) {
+		waterbodyMap = new HashMap<UUID, NamedArea>();
+		for (NamedArea term : termVocabulary.getTerms()){
+			waterbodyMap.put(term.getUuid(), (NamedArea)term);  //TODO casting
+		}
+	}
+	
+	protected void setTdwgDefaultTerms(TermVocabulary<NamedArea> tdwgTermVocabulary) {
+        tdwgTermMap = new HashMap<UUID, NamedArea>();
+        for (NamedArea term : tdwgTermVocabulary.getTerms()){
+            tdwgTermMap.put(term.getUuid(), term);  //TODO casting
+            addTdwgArea(term);
+        }
+
+	}
+	
+   protected static void addTdwgArea(NamedArea area){
+        if (area == null){
+            logger.warn("tdwg area is null");
+            return;
+        }
+        Language lang = Language.DEFAULT();
+        Representation representation = area.getRepresentation(lang);
+        String tdwgAbbrevLabel = representation.getAbbreviatedLabel();
+        String tdwgLabel = representation.getLabel().toLowerCase();
+        if (tdwgAbbrevLabel == null){
+            logger.warn("tdwgLabel = null");
+            return;
+        }
+        //init map
+        if (tdwgAbbrevMap == null){
+        	tdwgAbbrevMap = new HashMap<String, UUID>();
+        }
+        if (tdwglabelMap == null){
+        	tdwglabelMap = new HashMap<String, UUID>();
+        }
+        //add to map
+        tdwgAbbrevMap.put(tdwgAbbrevLabel, area.getUuid());
+        tdwglabelMap.put(tdwgLabel, area.getUuid());
+        //add type
+        area.setType(NamedAreaType.ADMINISTRATION_AREA());
+        //add level
+        if (tdwgAbbrevLabel.trim().length()== 1){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL1());
+        }else if (tdwgAbbrevLabel.trim().length()== 2){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL2());
+        }else if (tdwgAbbrevLabel.trim().length()== 3){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL3());
+        }else if (tdwgAbbrevLabel.trim().length()== 6){
+            area.setLevel(NamedAreaLevel.TDWG_LEVEL4());
+        }else {
+            logger.warn("Unknown TDWG Level " + tdwgAbbrevLabel + "! Unvalid string length (" +  tdwgAbbrevLabel.length() +")");
+        }
+    }
+
+    private static void initTdwgMaps(){
+    	tdwglabelMap = new HashMap<String, UUID>();
+    	tdwgAbbrevMap = new HashMap<String, UUID>();
+    }
+
 
 
     @Override
     protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-        termMap = new HashMap<UUID, NamedArea>();
-        for (NamedArea term : termVocabulary.getTerms()){
-            termMap.put(term.getUuid(), term);
+        if (termVocabulary.getUuid().equals(this.uuidTdwgAreaVocabulary)){
+        	this.setTdwgDefaultTerms(termVocabulary);
+        }else if (termVocabulary.getUuid().equals(this.uuidContinentVocabulary)){
+        	this.setDefaultContinentTerms(termVocabulary);
+        }else if (termVocabulary.getUuid().equals(this.uuidWaterbodyVocabulary)){
+        	this.setDefaultWaterbodyTerms(termVocabulary);
+        }else{
+	    	termMap = new HashMap<UUID, NamedArea>();
+	        for (NamedArea term : termVocabulary.getTerms()){
+	            termMap.put(term.getUuid(), term);
+	        }
         }
     }
 
@@ -379,6 +617,8 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             return null;
         }
 
+///****************** toString ***********************************************/        
+        
         @Override
         public String toString() {
             return toString(false, 0);
@@ -522,9 +762,6 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
 // ******************* toString **********************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.TermBase#toString()
-     */
     @Override
     public String toString(){
         String result, label, level = "";
@@ -614,7 +851,7 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
         NamedArea result;
 
             result = (NamedArea)super.clone();
-            //no changes to level, pointApproximation, shape, type, validPeriod and waterbodiesOrCountries
+            //no changes to level, pointApproximation, shape, type, validPeriod and countries
             return result;
 
     }

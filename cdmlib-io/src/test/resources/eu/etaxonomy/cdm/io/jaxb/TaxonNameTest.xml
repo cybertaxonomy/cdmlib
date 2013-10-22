@@ -186,13 +186,13 @@
         </occurrence:Collection>
     </Collections>
     <Occurrences>
-        <occurrence:Specimen id="1" uuid="urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176">
+        <occurrence:DerivedUnit id="1" uuid="urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176">
             <common:TitleCache>K000400332</common:TitleCache>
             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
             <occurrence:Collection>urn-uuid-3345de2b-02f7-4927-9fe2-4d094449b09c</occurrence:Collection>
             <occurrence:CatalogNumber>K000400332</occurrence:CatalogNumber>
             <occurrence:StoredUnder>urn-uuid-ff5d2897-51e1-4352-a23d-678b7d9026bf</occurrence:StoredUnder>
-        </occurrence:Specimen>
+        </occurrence:DerivedUnit>
     </Occurrences>
     <References>
         <reference:Book id="1" uuid="urn-uuid-ea590de1-cb10-400e-8b0d-f7aa4b47cea9" hasProblem="false" problemStarts="-1" problemEnds="-1">

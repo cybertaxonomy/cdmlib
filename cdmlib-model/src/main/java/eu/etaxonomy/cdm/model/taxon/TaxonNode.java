@@ -12,13 +12,17 @@ package eu.etaxonomy.cdm.model.taxon;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
+import javax.validation.constraints.Size;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -38,18 +42,20 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
  * @created 31.03.2009
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNode", propOrder = {
+    "classification",
     "taxon",
     "parent",
-    "classification",
+    "treeIndex",
+    "sortIndex",
     "childNodes",
     "referenceForParentChildRelation",
     "microReferenceForParentChildRelation",
@@ -60,7 +66,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
-public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable{
+public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
 
@@ -81,6 +87,11 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     private TaxonNode parent;
 
 
+    @XmlElement(name = "treeIndex")
+    @Size(max=255)
+    private String treeIndex;
+
+
     @XmlElement(name = "classification")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
@@ -94,9 +105,15 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     @XmlElement(name = "childNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    @OrderColumn(name="sortIndex")
+    @OrderBy("sortIndex")
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    private Set<TaxonNode> childNodes = new HashSet<TaxonNode>();
+    private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
+
+    //see https://dev.e-taxonomy.eu/trac/ticket/3722
+    private Integer sortIndex = -1;
 
     @XmlElement(name = "reference")
     @XmlIDREF
@@ -133,6 +150,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      * @deprecated setting of classification is handled in the addTaxonNode() method,
      * use TaxonNode(taxon) instead
      */
+    @Deprecated
     protected TaxonNode (Taxon taxon, Classification classification){
         this(taxon);
         setClassification(classification);
@@ -152,15 +170,20 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
 
 //************************ METHODS **************************/
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#addChildTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String, eu.etaxonomy.cdm.model.taxon.Synonym)
-     */
-    public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation, Synonym synonymToBeUsed) {
-        if (this.getClassification().isTaxonInTree(taxon)){
-             throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
-        }
+    @Override
+    public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
+        return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
 
-        return addChildNode(new TaxonNode(taxon), citation, microCitation, synonymToBeUsed);
+    }
+
+
+    @Override
+    public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
+        if (this.getClassification().isTaxonInTree(taxon)){
+            throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
+       }
+
+       return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
     }
 
     /**
@@ -169,20 +192,62 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      * @param childNode the taxon node to be moved to the new parent
      * @return the child node in the state of having a new parent
      */
-    public TaxonNode addChildNode(TaxonNode childNode, Reference reference, String microReference, Synonym synonymToBeUsed){
+    @Override
+    public TaxonNode addChildNode(TaxonNode childNode, Reference reference, String microReference){
 
-        // check if this node is a descendant of the childNode
-        if(childNode.getParentTreeNode() != this && childNode.isAncestor(this)){
+        addChildNode(childNode, childNodes.size(), reference, microReference);
+        return childNode;
+    }
+
+    /**
+     * Inserts the given taxon node in the list of children of <i>this</i> taxon node
+     * at the given (index + 1) position. If the given index is out of bounds
+     * an exception will arise.<BR>
+     * Due to bidirectionality this method must also assign <i>this</i> taxon node
+     * as the parent of the given child.
+     *
+     * @param	child	the taxon node to be added
+     * @param	index	the integer indicating the position at which the child
+     * 					should be added
+     * @see				#getChildNodes()
+     * @see				#addChildNode(TaxonNode, Reference, String, Synonym)
+     * @see				#deleteChildNode(TaxonNode)
+     * @see				#deleteChildNode(int)
+     */
+    @Override
+    public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
+        if (index < 0 || index > childNodes.size() + 1){
+            throw new IndexOutOfBoundsException("Wrong index: " + index);
+        }
+           // check if this node is a descendant of the childNode
+        if(child.getParentTreeNode() != this && child.isAncestor(this)){
             throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
         }
 
-        childNode.setParentTreeNode(this);
 
-        childNode.setReference(reference);
-        childNode.setMicroReference(microReference);
-        childNode.setSynonymToBeUsed(synonymToBeUsed);
+//		if (child.getParent() != null){
+//			child.getParent().deleteChildNode(child);
+//		}
 
-        return childNode;
+        child.setParentTreeNode(this, index);
+
+		//TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
+		for(int i = 0; i < childNodes.size(); i++){
+			childNodes.get(i).sortIndex = i;
+		}
+		child.sortIndex = index;
+		
+        //TODO workaround (see sortIndex doc)
+        for(int i = 0; i < childNodes.size(); i++){
+            childNodes.get(i).sortIndex = i;
+        }
+        child.sortIndex = index;
+
+        child.setReference(reference);
+        child.setMicroReference(microReference);
+
+        return child;
+
     }
 
     /**
@@ -202,19 +267,44 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
-     */
+    @Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-
-        node.getTaxon().removeTaxonNode(node);
+        Taxon taxon = node.getTaxon();
         node.setTaxon(null);
+        taxon.removeTaxonNode(node);
+
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
             node.deleteChildNode(childNode);
+        }
+
+//		// two iterations because of ConcurrentModificationErrors
+//        Set<TaxonNode> removeNodes = new HashSet<TaxonNode>();
+//        for (TaxonNode grandChildNode : node.getChildNodes()) {
+//                removeNodes.add(grandChildNode);
+//        }
+//        for (TaxonNode childNode : removeNodes) {
+//                childNode.deleteChildNode(node);
+//        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+     */
+    public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
+        boolean result = removeChildNode(node);
+        Taxon taxon = node.getTaxon();
+        node.setTaxon(null);
+        taxon.removeTaxonNode(node);
+        if (deleteChildren){
+            ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+            for(TaxonNode childNode : childNodes){
+                node.deleteChildNode(childNode, deleteChildren);
+            }
         }
 
 //		// two iterations because of ConcurrentModificationErrors
@@ -237,24 +327,74 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      * @return
      */
     protected boolean removeChildNode(TaxonNode childNode){
-        boolean result = false;
+        boolean result = true;
 
         if(childNode == null){
             throw new IllegalArgumentException("TaxonNode may not be null");
         }
-        if(HibernateProxyHelper.deproxy(childNode.getParent(), TaxonNode.class) != this){
-            throw new IllegalArgumentException("TaxonNode must be a child of this node");
+        int index = childNodes.indexOf(childNode);
+        if (index >= 0){
+            removeChild(index);
+        } else {
+            result = false;
         }
 
-        result = childNodes.remove(childNode);
-        this.countChildren--;
-        if (this.countChildren < 0){
-            throw new IllegalStateException("children count must not be negative ");
-        }
-        childNode.setParent(null);
-        childNode.setClassification(null);
+
+//		OLD
+//        if(HibernateProxyHelper.deproxy(childNode.getParent(), TaxonNode.class) != this){
+//            throw new IllegalArgumentException("TaxonNode must be a child of this node");
+//        }
+//
+//        result = childNodes.remove(childNode);
+//        this.countChildren--;
+//        if (this.countChildren < 0){
+//            throw new IllegalStateException("Children count must not be negative ");
+//        }
+//        childNode.setParent(null);
+//        childNode.setClassification(null);
 
         return result;
+    }
+
+    /**
+     * Removes the child node placed at the given (index + 1) position
+     * from the list of {@link #getChildNodes() children} of <i>this</i> taxon node.
+     * Sets the parent and the classification of the child
+     * node to null.
+     * If the given index is out of bounds no child will be removed.
+     *
+     * @param  index	the integer indicating the position of the taxon node to
+     * 					be removed
+     * @see     		#getChildNodes()
+     * @see				#addChildNode(TaxonNode, Reference, String)
+     * @see				#addChildNode(TaxonNode, int, Reference, String)
+     * @see				#deleteChildNode(TaxonNode)
+     */
+    public void removeChild(int index){
+
+        TaxonNode child = childNodes.get(index);
+        child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
+
+        if (child != null){
+
+            TaxonNode parent = HibernateProxyHelper.deproxy(child.getParent(), TaxonNode.class);
+            TaxonNode thisNode = HibernateProxyHelper.deproxy(this, TaxonNode.class);
+            if(parent != null && parent != thisNode){
+                throw new IllegalArgumentException("Child TaxonNode (id:" + child.getId() +") must be a child of this (id:" + thisNode.getId() + " node. Sortindex is: " + index + ", parent-id:" + parent.getId());
+            }else if (parent == null){
+                throw new IllegalStateException("Parent of child is null in TaxonNode.removeChild(int). This should not happen.");
+            }
+            childNodes.remove(index);
+            this.countChildren = childNodes.size();
+            child.setParent(null);
+            //TODO workaround (see sortIndex doc)
+            for(int i = 0; i < countChildren; i++){
+                TaxonNode childAt = childNodes.get(i);
+                childAt.sortIndex = i;
+            }
+            child.sortIndex = null;
+            child.setClassification(null);
+        }
     }
 
 
@@ -271,7 +411,38 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         }
     }
 
+    /**
+     * Remove this taxonNode From its taxonomic parent
+     *
+     * @return true on success
+     */
+    public boolean delete(boolean deleteChildren){
+        if(isTopmostNode()){
+            return classification.deleteChildNode(this, deleteChildren);
+        }else{
+            return getParent().deleteChildNode(this, deleteChildren);
+        }
+    }
+
 //*********** GETTER / SETTER ***********************************/
+
+    @Override
+    public String treeIndex() {
+        return treeIndex;
+    }
+
+    @Override
+    @Deprecated //for CDM lib internal use only, may be removed in future versions
+    public void setTreeIndex(String treeIndex) {
+        this.treeIndex = treeIndex;
+    }
+
+
+    @Override
+    @Deprecated //for CDM lib internal use only, may be removed in future versions
+    public int treeId() {
+        return this.classification.getId();
+    }
 
     public Taxon getTaxon() {
         return taxon;
@@ -283,12 +454,14 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         }
     }
     @Transient
-    public ITreeNode getParentTreeNode() {
-        if(isTopmostNode())
+    public ITaxonTreeNode getParentTreeNode() {
+        if(isTopmostNode()){
             return getClassification();
+        }
         return parent;
     }
 
+    @Override
     public TaxonNode getParent(){
         return parent;
     }
@@ -303,7 +476,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      *
      * @see setParentTreeNode(ITreeNode)
      */
-    protected void setParent(ITreeNode parent) {
+    protected void setParent(ITaxonTreeNode parent) {
         if(parent instanceof Classification){
             this.parent = null;
             return;
@@ -318,13 +491,21 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      * @param parent
      */
     @Transient
-    protected void setParentTreeNode(ITreeNode parent){
+    protected void setParentTreeNode(ITaxonTreeNode parent, int index){
         // remove ourselves from the old parent
-        ITreeNode formerParent = this.getParentTreeNode();
+        ITaxonTreeNode formerParent = this.getParentTreeNode();
+
+        //special case, child already exists for same parent
+        if (formerParent != null && formerParent.equals(parent)){
+            int currentIndex = formerParent.getChildNodes().indexOf(this);
+            if (currentIndex != -1 && currentIndex < index){
+                index--;
+            }
+        }
+        //remove old parent
         if(formerParent instanceof TaxonNode){  //child was a child itself
             ((TaxonNode) formerParent).removeChildNode(this);
-        }
-        else if((formerParent instanceof Classification) && ! formerParent.equals(parent)){ //child was root in old tree
+        } else if((formerParent instanceof Classification) && ! formerParent.equals(parent)){ //child was root in old tree
             ((Classification) formerParent).removeChildNode(this);
         }
 
@@ -336,12 +517,29 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         setClassificationRecursively(classification);
 
         // add this node to the parent child nodes
-        parent.getChildNodes().add(this);
+        List<TaxonNode> parentChildren = parent.getChildNodes();
+        if (parentChildren.contains(this)){
+        	//avoid duplicates
+        	if (parentChildren.indexOf(this) < index){
+        		index = index -1;
+        	}
+        	parentChildren.remove(this);
+        	parentChildren.add(index, this);
+        }else{
+        	parentChildren.add(index, this);
+        }
 
+        //TODO workaround (see sortIndex doc)
+        //TODO check if it is correct to use the parentChildren here 
+		for(int i = 0; i < parentChildren.size(); i++){
+			parentChildren.get(i).sortIndex = i;
+		}
+//		this.sortIndex = index;
+        
         // update the children count
         if(parent instanceof TaxonNode){
             TaxonNode parentTaxonNode = (TaxonNode) parent;
-            parentTaxonNode.setCountChildren(parentTaxonNode.getCountChildren() + 1);
+            parentTaxonNode.setCountChildren(parent.getChildNodes().size());
         }
     }
 
@@ -357,7 +555,8 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         this.classification = classification;
     }
 
-    public Set<TaxonNode> getChildNodes() {
+    @Override
+    public List<TaxonNode> getChildNodes() {
         return childNodes;
     }
 
@@ -391,9 +590,9 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         for(TaxonNode childNode : getChildNodes()){
             childClone = (TaxonNode) childNode.clone();
             for (TaxonNode childChild:childNode.getChildNodes()){
-                childClone.addChildNode(childChild.cloneDescendants(), childChild.getReference(), childChild.getMicroReference(), childChild.getSynonymToBeUsed());
+                childClone.addChildNode(childChild.cloneDescendants(), childChild.getReference(), childChild.getMicroReference());
             }
-            clone.addChildNode(childClone, childNode.getReference(), childNode.getMicroReference(), childNode.getSynonymToBeUsed());
+            clone.addChildNode(childClone, childNode.getReference(), childNode.getMicroReference());
 
 
             //childClone.addChildNode(childNode.cloneDescendants());
@@ -408,22 +607,15 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      */
     protected Set<TaxonNode> getAncestors(){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
-
-
         nodeSet.add(this);
-
         if(this.getParent() != null){
-            nodeSet.addAll(((TaxonNode) this.getParent()).getAncestors());
+            nodeSet.addAll(this.getParent().getAncestors());
         }
-
         return nodeSet;
     }
 
-    /**
-     * The reference for the parent child relationship
-     *
-     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getReference()
-     */
+
+    @Override
     public Reference getReference() {
         return referenceForParentChildRelation;
     }
@@ -435,11 +627,8 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         this.referenceForParentChildRelation = reference;
     }
 
-    /**
-     *
-     *
-     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#getMicroReference()
-     */
+
+    @Override
     public String getMicroReference() {
         return microReferenceForParentChildRelation;
     }
@@ -464,12 +653,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
     protected void setCountChildren(int countChildren) {
         this.countChildren = countChildren;
     }
-//	public Taxon getOriginalConcept() {
-//		return originalConcept;
-//	}
-//	public void setOriginalConcept(Taxon originalConcept) {
-//		this.originalConcept = originalConcept;
-//	}
+
     public Synonym getSynonymToBeUsed() {
         return synonymToBeUsed;
     }
@@ -523,6 +707,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
      * @return true if the taxonNode has childNodes
      */
     @Transient
+    @Override
     public boolean hasChildNodes(){
         return childNodes.size() > 0;
     }
@@ -544,7 +729,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
         try{
         result = (TaxonNode)super.clone();
         result.getTaxon().addTaxonNode(result);
-        result.childNodes = new HashSet<TaxonNode>();
+        result.childNodes = new ArrayList<TaxonNode>();
         result.countChildren = 0;
 
         return result;
@@ -554,4 +739,7 @@ public class TaxonNode extends AnnotatableEntity implements ITreeNode, Cloneable
             return null;
         }
     }
+
+
+
 }

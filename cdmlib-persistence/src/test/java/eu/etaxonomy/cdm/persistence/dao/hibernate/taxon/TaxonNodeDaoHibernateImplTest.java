@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -47,10 +48,15 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid1;
     private UUID uuid2;
     private UUID uuid3;
+    
+    private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
+            "childNodes"
+    });
 
     @Before
     public void setUp(){
-        uuid1 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
+    	uuid1 = UUID.fromString("0b5846e5-b8d2-4ca9-ac51-099286ea4adc");
+        uuid3 = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
         uuid2 = UUID.fromString("770239f6-4fa8-496b-8738-fe8f7b2ad519");
         AuditEventContextHolder.clearContext();
     }
@@ -79,41 +85,41 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet
     public void testClassification() {
-        Classification classification =  classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+    	
+        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"), CLASSIFICATION_INIT_STRATEGY);
 
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
         assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
-        TaxonNode taxNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
-        TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.findByUuid(uuid2);
+        TaxonNode taxNode = (TaxonNode) taxonNodeDao.load(uuid1);
+        TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.load(uuid2);
         Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
 
         rootNodes.add(taxNode);
 
 
         for (TaxonNode rootNode : rootNodes){
-            classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference(), rootNode.getSynonymToBeUsed());
+            classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference());
         }
 
-        taxNode.addChildNode(taxNode2, null, null,null);
-
+        taxNode.addChildNode(taxNode2, null,null);
+        
         Taxon taxon2 = taxNode2.getTaxon();
         Taxon taxon = taxNode.getTaxon();
-        UUID uuidTaxon = taxon.getUuid();
-        UUID uuidTaxon2 = taxon2.getUuid();
-
+               
         List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be only two taxa", 5, taxa.size());
+        assertEquals("there should be six taxa", 6, taxa.size());
 
-        taxonNodeDao.delete(taxNode2);
-
+        taxonNodeDao.delete(taxNode2, true);
+        classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be only one taxon left", 4, taxa.size());
+        assertEquals("there should be five taxa left", 5, taxa.size());
 
-        classificationDao.delete(classification);
+        classificationDao.delete(classification);  
+        classification = null;
+        classificationDao.flush();
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         assertEquals("The tree should be null", null, classification);
-
 
     }
 }

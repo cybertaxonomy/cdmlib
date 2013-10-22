@@ -23,19 +23,19 @@ public class MnTableCreator extends TableCreator {
 	private boolean secondTableInKey;
 	
 	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String secondTableName, boolean includeAudTable){
-		MnTableCreator result = new MnTableCreator(stepName, firstTableName, null, secondTableName, null, new String[]{}, new String[]{}, null, null, includeAudTable, false, true, false, false);
+		MnTableCreator result = new MnTableCreator(stepName, firstTableName, null, secondTableName, null, new String[]{}, new String[]{}, null, null, includeAudTable, false, true, false, false, false);
 		return result;
 	}
 	
 	public static MnTableCreator NewMnInstance(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, boolean includeAudTable, boolean hasSortIndex, boolean secondTableInKey){
-		MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, secondTableName, secondTableAlias, new String[]{}, new String[]{}, null, null, includeAudTable, hasSortIndex, secondTableInKey, false, false);
+		MnTableCreator result = new MnTableCreator(stepName, firstTableName, firstTableAlias, secondTableName, secondTableAlias, new String[]{}, new String[]{}, null, null, includeAudTable, hasSortIndex, secondTableInKey, false, false, false);
 		return result;
 	}
 
 	
 	protected MnTableCreator(String stepName, String firstTableName, String firstTableAlias, String secondTableName, String secondTableAlias, String[] columnNames, String[] columnTypes,
-			List<Object> defaultValues, List<Boolean> isNull, boolean includeAudTable, boolean hasSortIndex, boolean secondTableInKey, boolean includeCdmBaseAttributes, boolean includeIdentifiableEntity) {
-		super(stepName, firstTableName + "_" + secondTableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues, isNull,	new ArrayList<String>(), includeAudTable, includeCdmBaseAttributes, includeIdentifiableEntity);
+			List<Object> defaultValues, List<Boolean> isNull, boolean includeAudTable, boolean hasSortIndex, boolean secondTableInKey, boolean includeCdmBaseAttributes,boolean includeAnnotatableEntity, boolean includeIdentifiableEntity) {
+		super(stepName, firstTableName + "_" + secondTableName, Arrays.asList(columnNames), Arrays.asList(columnTypes), defaultValues, isNull,	new ArrayList<String>(), includeAudTable, includeCdmBaseAttributes, includeAnnotatableEntity, includeIdentifiableEntity);
 		this.firstTableName = firstTableName;
 		this.secondTableName = secondTableName;
 		this.firstTableAlias = (firstTableAlias != null )? firstTableAlias : firstTableName ;

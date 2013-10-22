@@ -62,7 +62,7 @@ public class Cdm2MediawikiExporterTest {
 	public void testExport() throws MalformedURLException {
 		// do complete export
 		exporter.export(webServiceUrl, taxonName, classificationName, wikiUrl,
-				loginName, password, wikiPrefix, false, false, false);
+				loginName, password, wikiPrefix, true, false, true);
 
 	}
 

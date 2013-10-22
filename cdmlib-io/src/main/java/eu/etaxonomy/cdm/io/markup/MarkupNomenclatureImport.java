@@ -24,6 +24,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -45,6 +46,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NameTypeParser;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -656,7 +658,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			TaxonDescription td = getTaxonDescription(taxon, state.getConfig().getSourceReference(), false, true);
 			TextData citation = TextData.NewInstance(Feature.CITATION());
 			// TODO name used in source
-			citation.addSource(null, null, reference, microCitation);
+			citation.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, reference, microCitation);
 			td.addElement(citation);
 		} else if (TYPE.equalsIgnoreCase(classValue)) {
 			handleNotYetImplementedAttributeValue(parentEvent, CLASS, classValue);
@@ -727,7 +729,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 
 		//year
-		TimePeriod timeperiod = TimePeriod.parseString(year);
+		TimePeriod timeperiod = TimePeriodParser.parseString(year);
 		if (reference.getType().equals(ReferenceType.BookSection)){
 			reference.getInBook().setDatePublished(timeperiod);
 		}
@@ -932,6 +934,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 		}
 	}
 
+
 	private boolean isArticle(String type, String volume, String editors) {
 		if ("journal".equalsIgnoreCase(type)){
 			return true;
@@ -1012,6 +1015,12 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 						//handle pages as detail, this is at least true for Flora Malesiana
 						refMap.put(DETAILS, pages); 
 					}
+				}else{
+					if (! pages.contains("-")){
+						String message = "There are pages and detail available where pages may also hold details information.";
+						fireWarningEvent(message, parentEvent, 8);
+					}
+					reference.setPages(pages);
 				}
 			}
 		}

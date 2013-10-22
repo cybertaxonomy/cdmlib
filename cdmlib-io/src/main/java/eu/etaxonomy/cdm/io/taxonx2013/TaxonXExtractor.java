@@ -39,7 +39,6 @@ import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringArea;
 import eu.etaxonomy.cdm.io.specimen.UnitsGatheringEvent;
@@ -56,14 +55,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -91,7 +85,7 @@ public class TaxonXExtractor {
     public class MySpecimenOrObservation{
         String descr="";
         @SuppressWarnings("rawtypes")
-        DerivedUnitBase derivedUnitBase=null;
+        DerivedUnit derivedUnitBase=null;
 
         public String getDescr() {
             return descr;
@@ -100,11 +94,11 @@ public class TaxonXExtractor {
             this.descr = descr;
         }
         @SuppressWarnings("rawtypes")
-        public DerivedUnitBase getDerivedUnitBase() {
+        public DerivedUnit getDerivedUnitBase() {
             return derivedUnitBase;
         }
         @SuppressWarnings("rawtypes")
-        public void setDerivedUnitBase(DerivedUnitBase derivedUnitBase) {
+        public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
             this.derivedUnitBase = derivedUnitBase;
         }
 
@@ -118,8 +112,8 @@ public class TaxonXExtractor {
      * @return
      */
     @SuppressWarnings({ "unused", "null", "rawtypes" })
-    protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnitBase derivedUnitBase,
-            DerivedUnitType defaultAssociation) {
+    protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnit derivedUnitBase,
+    		SpecimenOrObservationType defaultAssociation) {
         String country=null;
         String locality=null;
         String stateprov=null;
@@ -347,25 +341,25 @@ public class TaxonXExtractor {
             return null;
         }
     }
-    protected DerivedUnitFacade getFacade(String recordBasis, DerivedUnitType defaultAssoc) {
+    protected DerivedUnitFacade getFacade(String recordBasis, SpecimenOrObservationType defaultAssoc) {
 //        System.out.println("getFacade() for "+recordBasis);
-        DerivedUnitType type = null;
+    	SpecimenOrObservationType type = null;
 
         // create specimen
         if (recordBasis != null) {
             String recordBasisL = recordBasis.toLowerCase();
             if (recordBasisL.startsWith("specimen") || recordBasisL.contains("specimen") || recordBasisL.contains("type")) {// specimen
-                type = DerivedUnitType.Specimen;
+                type = SpecimenOrObservationType.PreservedSpecimen;
             }
             if (recordBasisL.startsWith("observation")) {
-                type = DerivedUnitType.Observation;
+                type = SpecimenOrObservationType.Observation;
             }
             if (recordBasisL.contains("fossil")) {
-                type = DerivedUnitType.Fossil;
+                type = SpecimenOrObservationType.Fossil;
             }
 
             if (recordBasisL.startsWith("living")) {
-                type = DerivedUnitType.LivingBeing;
+                type = SpecimenOrObservationType.LivingSpecimen;
             }
             if (type == null) {
                 logger.info("The basis of record does not seem to be known: *" + recordBasisL+"*");
@@ -384,16 +378,25 @@ public class TaxonXExtractor {
 
     @SuppressWarnings("rawtypes")
     protected Feature makeFeature(SpecimenOrObservationBase unit) {
-        if (unit.isInstanceOf(DerivedUnit.class)) {
+    	if (unit == null){
+        	return null;
+        }
+        SpecimenOrObservationType type = unit.getRecordBasis();
+    	
+    	if (type.isFeatureObservation()){
+        	return Feature.OBSERVATION();
+        }else if (type.isPreservedSpecimen() || 
+        		type == SpecimenOrObservationType.LivingSpecimen ||
+        	    type == SpecimenOrObservationType.OtherSpecimen
+        		){
+        	return Feature.SPECIMEN();
+        }else if (type == SpecimenOrObservationType.Unknown || 
+        		type == SpecimenOrObservationType.DerivedUnit 
+        		) {
             return Feature.INDIVIDUALS_ASSOCIATION();
         }
-        else if (unit.isInstanceOf(FieldObservation.class) || unit.isInstanceOf(Observation.class)) {
-            return Feature.OBSERVATION();
-        }
-        else if (unit.isInstanceOf(Fossil.class) || unit.isInstanceOf(LivingBeing.class) || unit.isInstanceOf(Specimen.class)) {
-            return Feature.SPECIMEN();
-        }
-        logger.warn("No feature defined for derived unit class: " + unit.getClass().getSimpleName());
+        logger.warn("No feature defined for derived unit class: "
+                    + unit.getClass().getSimpleName());
         return null;
     }
 

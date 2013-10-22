@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 
 public class TaxonNameTest {
 		
@@ -36,7 +36,7 @@ public class TaxonNameTest {
 			
 			BotanicalName botanicalName = (BotanicalName)dataSet.getTaxonomicNames().get(0);	
 			assertNotNull("BotanicalName must not be null",botanicalName);
-			Specimen specimen = (Specimen)dataSet.getOccurrences().get(0);
+			DerivedUnit specimen = (DerivedUnit)dataSet.getOccurrences().get(0);
 			
 			assertNotNull("BotanicalName.typeDesignations must not be null",botanicalName.getTypeDesignations());
 			assertFalse("BotanicalName.typeDesignations must contain TypeDesignation entities", botanicalName.getTypeDesignations().isEmpty());

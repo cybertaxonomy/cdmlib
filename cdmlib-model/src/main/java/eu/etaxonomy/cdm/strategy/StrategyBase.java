@@ -14,9 +14,12 @@ import java.net.URI;
 import java.util.Collection;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.LSID;
@@ -83,13 +86,34 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 				fieldType == DateTime.class ||
 				fieldType == LSID.class ||
 				fieldType == Contact.class ||
-				fieldType == URI.class
+				fieldType == URI.class ||
+				fieldType == DOI.class
 			){
 				return true;
 		}else{
 			return false;
 		}
 	}
+	
+	
+	/**
+	 * Null safe string. Returns the given string if it is not <code>null</code>.
+	 * Empty string otherwise. 
+	 * @see CdmUtils#Nz(String)
+	 * @return the null-safe string
+	 */
+	protected String Nz(String str){
+		return CdmUtils.Nz(str);
+	}
+	
+	/**
+	 * Checks if a string is blank.
+	 * @see StringUtils#isNotBlank(String)
+	 */
+	protected boolean isNotBlank(String str){
+		return StringUtils.isNotBlank(str);
+	}
+	
 	
 	
 }

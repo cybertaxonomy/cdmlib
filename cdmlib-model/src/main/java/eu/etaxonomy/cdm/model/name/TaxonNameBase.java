@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 import java.lang.reflect.Method;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -55,7 +56,7 @@ import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -72,7 +73,6 @@ import eu.etaxonomy.cdm.strategy.merge.Merge;
 import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 import eu.etaxonomy.cdm.validation.Level2;
-import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
 /**
  * The upmost (abstract) class for scientific taxon names regardless of any
@@ -113,7 +113,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="TaxonNameBase", indexes = { @Index(name = "taxonNameBaseTitleCacheIndex", columnNames = { "titleCache" }),  @Index(name = "taxonNameBaseNameCacheIndex", columnNames = { "nameCache" }) })
-public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IReferencedEntity, IParsable, IRelated, IMatchable, Cloneable {
+public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INameCacheStrategy> extends IdentifiableEntity<S> implements IParsable, IRelated, IMatchable, Cloneable {
     private static final long serialVersionUID = -4530368639601532116L;
     private static final Logger logger = Logger.getLogger(TaxonNameBase.class);
 
@@ -122,7 +122,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @CacheUpdate(noUpdate ="titleCache")
     @NotEmpty(groups = Level2.class)
-    @Size(max = 330)
+    @Size(max = 800)  //see #1592
     protected String fullTitleCache;
 
     //if true titleCache will not be automatically generated/updated
@@ -438,7 +438,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    				  #addNameRelationship(NameRelationship)
      */
     public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, String ruleConsidered){
-        fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
+        //fromName.addRelationshipToName(this, type, null, null, ruleConsidered);
+        NameRelationship rel = this.addRelationshipFromName(fromName, type, null, null, ruleConsidered);
+        
 //		NameRelationship rel = new NameRelationship(this, fromName, type, ruleConsidered);
     }
     /**
@@ -456,8 +458,8 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see    				  #addRelationshipToName(TaxonNameBase, NameRelationshipType, String)
      * @see    				  #addNameRelationship(NameRelationship)
      */
-    public void addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
-        fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
+    public NameRelationship addRelationshipFromName(TaxonNameBase fromName, NameRelationshipType type, Reference citation, String microCitation, String ruleConsidered){
+        return fromName.addRelationshipToName(this, type, citation, microCitation, ruleConsidered);
     }
 
     /**
@@ -645,6 +647,24 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return false;
     }
+    
+    /**
+     * Indicates <i>this</i> taxon name is a {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonym}
+     * of any other taxon name. Returns "true", if a replaced
+     * synonym {@link NameRelationship relationship} from <i>this</i> taxon name to another taxon name exists,
+     * false otherwise (also in case <i>this</i> taxon name is the only one in the
+     * homotypical group).
+     */
+    @Transient
+    public boolean isReplacedSynonym(){
+        Set<NameRelationship> relationsFromThisName = this.getRelationsFromThisName();
+        for (NameRelationship relation : relationsFromThisName) {
+            if (relation.getType().isReplacedSynonymRelation()) {
+                return true;
+            }
+        }
+        return false;
+    }
 
     /**
      * Returns the taxon name which is the {@link NameRelationshipType#BASIONYM() basionym} of <i>this</i> taxon name.
@@ -721,6 +741,23 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }else{
             return null;
         }
+    }
+    
+    /**
+     * Returns the set of taxon names which are the {@link NameRelationshipType#REPLACED_SYNONYM() replaced synonyms} of <i>this</i> taxon name.
+     *  
+     */
+    @Transient
+    public Set<TaxonNameBase> getReplacedSynonyms(){
+        Set<TaxonNameBase> result = new HashSet<TaxonNameBase>();
+        Set<NameRelationship> rels = this.getRelationsToThisName();
+        for (NameRelationship rel : rels){
+            if (rel.getType().isReplacedSynonymRelation()){
+                TaxonNameBase replacedSynonym = rel.getFromName();
+                result.add(replacedSynonym);
+            }
+        }
+        return result;
     }
 
     /**
@@ -1105,9 +1142,9 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      * @see 			  				SpecimenTypeDesignation
      * @see 			  				TypeDesignationBase#isNotDesignated()
      */
-    public SpecimenTypeDesignation addSpecimenTypeDesignation(Specimen typeSpecimen,
+    public SpecimenTypeDesignation addSpecimenTypeDesignation(DerivedUnit typeSpecimen,
                 SpecimenTypeDesignationStatus status,
-                Reference citation,
+                Reference<?> citation,
                 String citationMicroReference,
                 String originalNameString,
                 boolean isNotDesignated,
@@ -1206,17 +1243,6 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
 // *************************************************************************//
 
     /**
-     * @see #getNomenclaturalReference()
-     */
-    @Override
-    @Transient
-    public Reference getCitation(){
-        //TODO What is the purpose of this method differing from the getNomenclaturalReference method?
-        logger.warn("getCitation not yet implemented");
-        return null;
-    }
-
-    /**
      * Returns the complete string containing the
      * {@link eu.etaxonomy.cdm.model.reference.INomenclaturalReference#getNomenclaturalCitation() nomenclatural reference citation}
      * and the {@link #getNomenclaturalMicroReference() details} assigned to <i>this</i> taxon name.
@@ -1301,7 +1327,31 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         Method method = ReflectionUtils.findMethod(TaxonBase.class, "setName", new Class[] {TaxonNameBase.class});
         ReflectionUtils.makeAccessible(method);
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
-        taxonBases.remove(taxonBase);
+        boolean removed = false;
+        
+        if (taxonBases.contains(taxonBase)){
+        	 removed = taxonBases.remove(taxonBase);
+        }
+        if (!removed){
+	       if (!removed && !taxonBases.isEmpty()){
+		       HashSet<TaxonBase> copyTaxonBase = new HashSet<TaxonBase>();
+		       Iterator<TaxonBase> iterator = taxonBases.iterator();
+		       while (iterator.hasNext()){
+		    	   TaxonBase taxonBaseTest = iterator.next();
+		    	   if (taxonBaseTest.equals(taxonBase)){
+		    		   removed = taxonBases.remove(taxonBaseTest);
+		    	   }
+		    	   
+		    	   
+		        }
+	       }
+        }
+        
+        
+       
+        
+        
+       
     }
 
     /**
@@ -1438,6 +1488,10 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
     @Transient
     public boolean isGroupsBasionym() {
+    	if (homotypicalGroup == null){
+    		homotypicalGroup = HomotypicalGroup.NewInstance();
+    		homotypicalGroup.addTypifiedName(this);
+    	}
         Set<TaxonNameBase> typifiedNames = homotypicalGroup.getTypifiedNames();
 
         // Check whether there are any other names in the group

@@ -9,23 +9,32 @@
 */
 package eu.etaxonomy.cdm.api.service.search;
 
+import java.io.IOException;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.apache.lucene.index.IndexReader;
 import org.apache.lucene.index.Term;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.Filter;
 import org.apache.lucene.search.FilteredQuery;
+import org.apache.lucene.search.IndexSearcher;
 import org.apache.lucene.search.MatchAllDocsQuery;
 import org.apache.lucene.search.NumericRangeQuery;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.TermQuery;
 import org.apache.lucene.search.WildcardQuery;
+import org.apache.lucene.search.join.JoinUtil;
+import org.hibernate.search.ProjectionConstants;
 import org.hibernate.search.spatial.impl.Point;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.hibernate.search.spatial.impl.SpatialQueryBuilderFromPoint;
@@ -38,6 +47,21 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
+ * QueryFactory creates queries for a specific lucene index that means queries
+ * specific to the various CDM base types. Therefore the QueryFactory hold a
+ * reference to a {@link LuceneSearch} instance which has been created for a
+ * CDM base type.<br>
+ * The field names used in queries created on free text fields are remembered
+ * and can be accessed by {@link #getTextFieldNames()} or {@link #getTextFieldNamesAsArray()}.
+ * This is useful for highlighting the matches with {@link LuceneSearch#setHighlightFields(String[])}
+ * <p>
+ * The index specific methods from {@link LuceneSearch} which are
+ * used by QueryFactory directly or indirectly are:
+ * <ul>
+ * <li>{@link LuceneSearch#getAnalyzer()}</li>
+ * </ul>
+ *
+ *
  * @author a.kohlbecker
  * @date Sep 14, 2012
  *
@@ -46,11 +70,13 @@ public class QueryFactory {
 
     public static final Logger logger = Logger.getLogger(QueryFactory.class);
 
-    private final LuceneSearch luceneSearch;
+    protected ILuceneIndexToolProvider toolProvider;
 
     Set<String> textFieldNames = new HashSet<String>();
 
-    private BooleanQuery finalQuery;
+    Map<Class<? extends CdmBase>, IndexSearcher> indexSearcherMap = new HashMap<Class<? extends CdmBase>, IndexSearcher>();
+
+    private final Class<? extends CdmBase> cdmBaseType;
 
     public Set<String> getTextFieldNames() {
         return textFieldNames;
@@ -60,9 +86,9 @@ public class QueryFactory {
         return textFieldNames.toArray(new String[textFieldNames.size()]);
     }
 
-
-    public QueryFactory(LuceneSearch luceneSearch){
-        this.luceneSearch = luceneSearch;
+    public QueryFactory(ILuceneIndexToolProvider toolProvider, Class<? extends CdmBase> cdmBaseType){
+        this.cdmBaseType = cdmBaseType;
+        this.toolProvider = toolProvider;
     }
 
     /**
@@ -73,7 +99,7 @@ public class QueryFactory {
      * @param fieldName
      * @param queryString
      * @param isTextField whether this field is a field containing free text in contrast to e.g. ID fields.
-     *     If <code>isTextField</code> to <code>true</code> the <code>queryString</code> will be parsed by
+     *     If <code>isTextField</code> is set <code>true</code> the <code>queryString</code> will be parsed by
      *     using the according analyzer.
      * @return the resulting <code>TermQuery</code> or <code>null</code> in case of an <code>ParseException</code>
      *
@@ -87,7 +113,7 @@ public class QueryFactory {
             // in order to support the full query syntax we must use the parser
             // here
             try {
-                return luceneSearch.parse(luceneQueryString);
+                return toolProvider.getQueryParserFor(cdmBaseType).parse(luceneQueryString);
             } catch (ParseException e) {
                 logger.error(e);
             }
@@ -184,11 +210,35 @@ public class QueryFactory {
 
     /**
      * @param idFieldName
+     * @param entitiy
+     * @return
+     */
+    public Query newEntityIdsQuery(String idFieldName, List<? extends CdmBase> entities){
+        BooleanQuery idInQuery = new BooleanQuery();
+        if(entities != null && entities.size() > 0 ){
+            for(CdmBase entity : entities){
+                idInQuery.add(newEntityIdQuery(idFieldName, entity), Occur.SHOULD);
+            }
+        }
+        return idInQuery;
+    }
+
+    /**
+     * @param idFieldName
      * @return
      */
     public Query newIsNotNullQuery(String idFieldName){
         return new TermQuery(new Term(NotNullAwareIdBridge.notNullField(idFieldName), NotNullAwareIdBridge.NOT_NULL_VALUE));
-  }
+    }
+
+    /**
+     * @param uuidFieldName
+     * @param entity
+     * @return
+     */
+    public Query newEntityUuidQuery(String uuidFieldName, IdentifiableEntity entity) {
+        return newTermQuery(uuidFieldName, entity.getUuid().toString(), false);
+    }
 
     /**
      * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the uuid
@@ -197,27 +247,35 @@ public class QueryFactory {
      * @param entities
      * @return
      */
-    public Query newEntityUuidQuery(String uuidFieldName, List<? extends IdentifiableEntity> entities){
+    public Query newEntityUuidsQuery(String uuidFieldName, List<? extends IdentifiableEntity> entities){
 
         BooleanQuery uuidInQuery = new BooleanQuery();
         if(entities != null && entities.size() > 0 ){
             for(IdentifiableEntity entity : entities){
-                uuidInQuery.add(newTermQuery(uuidFieldName, entity.getUuid().toString(), false), Occur.SHOULD);
+                uuidInQuery.add(newEntityUuidQuery(uuidFieldName, entity), Occur.SHOULD);
             }
         }
         return uuidInQuery;
     }
 
-    public void setFinalQuery(BooleanQuery finalQuery) {
-        this.finalQuery = finalQuery;
-    }
 
-    public BooleanQuery getFinalQuery(){
-        return finalQuery;
-    }
+    /**
+     * creates a query for searching for documents in which the field specified by <code>uuidFieldName</code> matches at least one of the
+     * supplied <code>uuids</code>
+     * the sql equivalent of this is <code>WHERE uuidFieldName IN (uuid_1, uuid_2, ...) </code>.
+     * @param uuidFieldName
+     * @param entities
+     * @return
+     */
+    public Query newUuidQuery(String uuidFieldName, List<UUID> uuids){
 
-    public LuceneSearch getLuceneSearch() {
-        return luceneSearch;
+        BooleanQuery uuidInQuery = new BooleanQuery();
+        if(uuids != null && uuids.size() > 0 ){
+            for(UUID uuid : uuids){
+                uuidInQuery.add(newTermQuery(uuidFieldName, uuids.toString(), false), Occur.SHOULD);
+            }
+        }
+        return uuidInQuery;
     }
 
 
@@ -265,6 +323,66 @@ public class QueryFactory {
                 new MatchAllDocsQuery(),
                 new QueryWrapperFilter( boxQuery )
         );
+    }
+
+    /**
+     *
+     * @param fromField
+     * @param toField
+     * @param joinFromQuery
+     * @param fromType
+     * @return
+     * @throws IOException
+     */
+    public Query newJoinQuery(String fromField, String toField, Query joinFromQuery,
+            Class<? extends CdmBase> fromType) throws IOException {
+            return JoinUtil.createJoinQuery(fromField, toField, joinFromQuery, indexSearcherFor(fromType));
+    }
+
+    /**
+     * Creates a class restriction query and wraps the class restriction
+     * query and the given <code>query</code> into a BooleanQuery where both must match.
+     * <p>
+     * TODO instead of using a BooleanQuery for the class restriction it would be much more
+     *  performant to use a {@link Filter} instead.
+     *
+     * @param cdmTypeRestriction
+     * @param query
+     * @return
+     */
+    public static Query addTypeRestriction(Query query, Class<? extends CdmBase> cdmTypeRestriction) {
+
+        Query fullQuery;
+        BooleanQuery filteredQuery = new BooleanQuery();
+        BooleanQuery classFilter = new BooleanQuery();
+
+        Term t = new Term(ProjectionConstants.OBJECT_CLASS, cdmTypeRestriction.getName());
+        TermQuery termQuery = new TermQuery(t);
+
+        classFilter.setBoost(0);
+        classFilter.add(termQuery, BooleanClause.Occur.SHOULD);
+
+        filteredQuery.add(query, BooleanClause.Occur.MUST);
+        filteredQuery.add(classFilter, BooleanClause.Occur.MUST);
+
+        fullQuery = filteredQuery;
+        return fullQuery;
+    }
+
+    /**
+     * @param clazz
+     * @return
+     */
+    private IndexSearcher indexSearcherFor(Class<? extends CdmBase> clazz) {
+        if(indexSearcherMap.get(clazz) == null){
+
+            IndexReader indexReader = toolProvider.getIndexReaderFor(clazz);
+            IndexSearcher searcher = new IndexSearcher(indexReader);
+            searcher.setDefaultFieldSortScoring(true, true);
+            indexSearcherMap.put(clazz, searcher);
+        }
+        IndexSearcher indexSearcher = indexSearcherMap.get(clazz);
+        return indexSearcher;
     }
 
 }

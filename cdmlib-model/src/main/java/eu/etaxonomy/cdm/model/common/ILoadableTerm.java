@@ -23,7 +23,7 @@ public interface ILoadableTerm<T extends IDefinedTerm>{
 	 * @param csvLine
 	 * @return
 	 */
-	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms);
+	public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId);
 
 	public  void writeCsvLine(CSVWriter writer, T term);
 }

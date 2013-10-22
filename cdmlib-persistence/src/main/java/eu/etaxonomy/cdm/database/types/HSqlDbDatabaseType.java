@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.database.types;
 
 import javax.sql.DataSource;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.HSQLCorrectedDialect;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.LocalHsqldb;
 
@@ -34,7 +37,7 @@ public class HSqlDbDatabaseType extends DatabaseTypeBase {
     private int defaultPort = 9001;
     
     //hibernate dialect
-    private String hibernateDialect = "HSQLCorrectedDialect";
+    private Dialect hibernateDialect = new HSQLCorrectedDialect();
     
     //init method
     private String initMethod = "init";
