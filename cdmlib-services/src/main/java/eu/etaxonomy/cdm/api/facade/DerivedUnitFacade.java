@@ -1698,8 +1698,7 @@ public class DerivedUnitFacade {
 	// individual counts
 	@Transient
 	public Integer getIndividualCount() {
-		return (hasFieldUnit() ? getFieldUnit(true)
-				.getIndividualCount() : null);
+		return (hasFieldUnit() ? getFieldUnit(true).getIndividualCount() : null);
 	}
 
 	public void setIndividualCount(Integer individualCount) {
