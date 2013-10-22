@@ -30,6 +30,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -443,7 +445,8 @@ public class EditGeoServiceUtilities {
 
                 // if no layer is mapped this area descend into sub areas in order to project
                 // the distribution to those
-                for(NamedArea subArea : area.getIncludes()){
+                for(DefinedTermBase<?> dtb : area.getIncludes()){
+                    NamedArea subArea = HibernateProxyHelper.deproxy(dtb, NamedArea.class);
                     addAreaToLayerMap(layerMap, statusList, distribution, subArea, mapping);
                 }
 
