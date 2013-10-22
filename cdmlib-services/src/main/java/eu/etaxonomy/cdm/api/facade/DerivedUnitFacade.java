@@ -1709,8 +1709,7 @@ public class DerivedUnitFacade {
 	// life stage
 	@Transient
 	public DefinedTerm getLifeStage() {
-		return (hasFieldUnit() ? getFieldUnit(true)
-				.getLifeStage() : null);
+		return (hasFieldUnit() ? getFieldUnit(true).getLifeStage() : null);
 	}
 
 	public void setLifeStage(DefinedTerm lifeStage) {
@@ -1720,13 +1719,23 @@ public class DerivedUnitFacade {
 	// sex
 	@Transient
 	public DefinedTerm getSex() {
-		return (hasFieldUnit() ? getFieldUnit(true).getSex()
-				: null);
+		return (hasFieldUnit() ? getFieldUnit(true).getSex(): null);
 	}
 
 	public void setSex(DefinedTerm sex) {
 		getFieldUnit(true).setSex(sex);
 	}
+	
+	// kind of Unit
+	@Transient
+	public DefinedTerm getKindOfUnit() {
+		return (hasFieldUnit() ? getFieldUnit(true).getKindOfUnit() : null);
+	}
+
+	public void setKindOfUnit(DefinedTerm kindOfUnit) {
+		getFieldUnit(true).setKindOfUnit(kindOfUnit);
+	}
+	
 
 	// field unit
 	public boolean hasFieldUnit() {
