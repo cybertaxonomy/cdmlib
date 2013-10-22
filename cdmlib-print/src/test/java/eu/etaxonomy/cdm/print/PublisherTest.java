@@ -51,8 +51,9 @@ public class PublisherTest {
 		
 		configurator = PublishConfigurator.NewRemoteInstance();
 		
-		configurator.setWebserviceUrl("http://localhost:8080/");
-		//configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/");//central africa production
+//		configurator.setWebserviceUrl("http://localhost:8080/");
+		configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/");//central africa production
+		//TODO
 		//configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/caryophyllales/");					
 		//http://160.45.63.201/cdmserver/flora_central_africa
 		//http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/
@@ -70,8 +71,8 @@ public class PublisherTest {
 		
 //		Element selectedTaxonNodeElement = new Element("TaxonNode");
 //		configurator.addSelectedTaxonNodeElements(selectedTaxonNodeElement);		
-//		configurator.setExportFolder(new File("/home/sybille/tmp/"));
-		configurator.setExportFolder(new File("/Users/l.morris/Documents")); //TODO: use a relative path
+		configurator.setExportFolder(new File("/home/sybille/tmp/"));
+//		configurator.setExportFolder(new File("/Users/l.morris/Documents")); //TODO: use a relative path
 	}
 	
 	private static void setTaxonNode() {
@@ -139,7 +140,8 @@ public class PublisherTest {
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.print.Publisher#publish()}.
 	 */
-	@Ignore
+//	@Ignore
+	@Test
 	public void testPublishXml() {
 		
 		List<IPublishOutputModule> modules = new ArrayList();

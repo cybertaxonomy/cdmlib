@@ -73,41 +73,43 @@ public class XMLHarvester {
 	
 	private List<SimplifiedFeatureNode> featureTreeRecursive(Element featureNode){
 		List<SimplifiedFeatureNode> result = new ArrayList<SimplifiedFeatureNode>();
-		
+
 		if(featureNode != null){
 			Element children = featureNode.getChild("children");
-			
-			List<Element> childFeatureNodes = children.getChildren();
-			
-			for(Element childNode : childFeatureNodes){
-				
-				UUID uuid = XMLHelper.getUuid(childNode);
-				Element featureNodeElement = factory.getFeatureNode(uuid);
-				Element featureElement = factory.getFeatureForFeatureNode(uuid);
-				
-				
-				try {
-					Element featureTitleCache = (Element) XPath.selectSingleNode(featureElement, "//Feature/titleCache");
-					
-					logger.info("The featureNode uuid is " + uuid);
-					logger.info("The feature element name is " + featureTitleCache.getValue());
-					logger.info("The feature title cache text french is " + featureTitleCache.getText().toLowerCase(Locale.FRENCH));
-					logger.info("The feature title cache value french is " + featureTitleCache.getValue().toLowerCase(Locale.FRENCH));
-					
-					featureTitleCache.setText(featureTitleCache.getText().toLowerCase(Locale.FRENCH));
-					
-				} catch (JDOMException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+
+			if (children != null){
+				List<Element> childFeatureNodes = children.getChildren();
+
+				for(Element childNode : childFeatureNodes){
+
+					UUID uuid = XMLHelper.getUuid(childNode);
+					Element featureNodeElement = factory.getFeatureNode(uuid);
+					Element featureElement = factory.getFeatureForFeatureNode(uuid);
+
+
+					try {
+						Element featureTitleCache = (Element) XPath.selectSingleNode(featureElement, "//Feature/titleCache");
+
+						logger.info("The featureNode uuid is " + uuid);
+						logger.info("The feature element name is " + featureTitleCache.getValue());
+						logger.info("The feature title cache text french is " + featureTitleCache.getText().toLowerCase(Locale.FRENCH));
+						logger.info("The feature title cache value french is " + featureTitleCache.getValue().toLowerCase(Locale.FRENCH));
+
+						featureTitleCache.setText(featureTitleCache.getText().toLowerCase(Locale.FRENCH));
+
+					} catch (JDOMException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+
+					////We set it to French here but this isn't the correct place the Feature/titleCache
+					featureElement.setName(featureElement.getName().toLowerCase(Locale.FRENCH));
+					SimplifiedFeatureNode simplifiedFeatureNode = new SimplifiedFeatureNode(featureElement, featureTreeRecursive(featureNodeElement));				
+					result.add(simplifiedFeatureNode);
 				}
-								
-				////We set it to French here but this isn't the correct place the Feature/titleCache
-				featureElement.setName(featureElement.getName().toLowerCase(Locale.FRENCH));
-				SimplifiedFeatureNode simplifiedFeatureNode = new SimplifiedFeatureNode(featureElement, featureTreeRecursive(featureNodeElement));				
-				result.add(simplifiedFeatureNode);
 			}
 		}
-		
+
 		return result;
 	}
 	
@@ -166,6 +168,7 @@ public class XMLHarvester {
 		result.addContent(root);
 		
 		cleanDateFields(result);
+		
 		
 		return result;
 	}
@@ -504,6 +507,7 @@ public class XMLHarvester {
 					
 					if (child2.getChild("name") != null) {
 						populateTypeDesignations(child2);// pass in the name of the synonym from synonymy/e/e/name
+						//populateImages(child2);
 						}
 					
 				}
@@ -516,10 +520,22 @@ public class XMLHarvester {
 	
 	
 	/**
-	 * TODO not implemented yet
+	 * 
 	 * @param taxonElement
 	 */
 	private void populateImages(Element taxonElement){
-		logger.warn("not implemented yet");
+		
+		factory.getMedia(taxonElement);
+		logger.warn("Populating images");
+		//Element nameElement = fullTaxonElement.getChild("name");
+		//Element uuidElement = fullTaxonElement.getChild("uuid");
+		
+		List<Element> mediaElements = factory.getMedia(taxonElement);
+		
+		//nameElement.removeChild("typeDesignations");
+		
+		for(Element media: mediaElements){
+			XMLHelper.addContent(media, "media", taxonElement);
+		}
 	}
 }

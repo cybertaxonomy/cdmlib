@@ -1618,7 +1618,11 @@ cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XMLHelper.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/XmlEntityFactoryBase.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/IPublishOutputModule.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/PublishOutputModuleBase.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/Cdm2MediawikiExporter.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/MediawikiOutputModule.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/WikiBot.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/WikiFile.java -text
+cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/mediawiki/WikiPage.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/DocumentCreator.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/IStyleNames.java -text
 cdmlib-print/src/main/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModule.java -text
@@ -1645,6 +1649,7 @@ cdmlib-print/src/site/site.xml -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PubTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/PublisherTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/TransformatorTest.java -text
+cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/mediawiki/Cdm2MediawikiExporterTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/odf/OdfOutputModuleTest.java -text
 cdmlib-print/src/test/java/eu/etaxonomy/cdm/print/out/pdf/PdfOutputModuleTest.java -text
 cdmlib-print/src/test/resources/20100719-1939-xml_export.xml -text

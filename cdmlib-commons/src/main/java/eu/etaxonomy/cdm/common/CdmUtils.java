@@ -76,7 +76,20 @@ public class CdmUtils {
         return new File(System.getProperty("user.home")+File.separator+cdmFolderName+File.separator);
     }
 
+	public static File getCdmSubDir(String dirName) {
 
+		File folder = new File(System.getProperty("user.home") + File.separator
+				+ cdmFolderName + File.separator + dirName + File.separator);
+
+		// if the directory does not exist, create it
+		if (!folder.exists()) {
+			if (!folder.mkdir()) {
+				// TODO throw some Exception
+				return null;
+			}
+		}
+		return folder;
+	}
 
 
     /**

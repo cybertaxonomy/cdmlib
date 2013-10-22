@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import org.apache.log4j.Logger;
 import org.jdom.Document;
+import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -43,7 +44,12 @@ public class XMLOutputModule extends PublishOutputModuleBase{
 		try {
 			String filePath = getFilePath(exportFolder);
 			FileOutputStream outputStream = new FileOutputStream(filePath);
-			XMLOutputter xmlOutputter = new XMLOutputter();
+			//XMLOutputter xmlOutputter = new XMLOutputter();
+						
+			Format format = Format.getPrettyFormat();
+			format.setEncoding("UTF-8");
+			XMLOutputter xmlOutputter = new XMLOutputter(format);			
+			
 			xmlOutputter.output(document, outputStream);
 			logger.warn("XML output written to disk: " + filePath);
 		} catch (FileNotFoundException e) {
