@@ -141,7 +141,7 @@ public class PublisherTest {
 	 * Test method for {@link eu.etaxonomy.cdm.print.Publisher#publish()}.
 	 */
 //	@Ignore
-	@Test
+	@Ignore
 	public void testPublishXml() {
 		
 		List<IPublishOutputModule> modules = new ArrayList();
