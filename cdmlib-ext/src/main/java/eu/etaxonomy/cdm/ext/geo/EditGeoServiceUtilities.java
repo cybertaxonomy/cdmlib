@@ -445,6 +445,12 @@ public class EditGeoServiceUtilities {
 
                 // if no layer is mapped this area descend into sub areas in order to project
                 // the distribution to those
+                /**
+                 * FIXME ClassCaseException!!!
+                 * getIncludes():  Hibernate returns this as a collection of CGLibProxy$$DefinedTermBase objects
+                 * which can't be cast to instances of T - can we explicitly initialize these terms using
+                 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
+                 */
                 for(DefinedTermBase<?> dtb : area.getIncludes()){
                     NamedArea subArea = HibernateProxyHelper.deproxy(dtb, NamedArea.class);
                     addAreaToLayerMap(layerMap, statusList, distribution, subArea, mapping);
