@@ -82,6 +82,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private IDescriptionService descriptionService;
+    
+    @SpringBeanByType
+    private IMarkerService markerService;
 
 
 
@@ -656,7 +659,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
         int nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be 1 relationship left in the database", 1, nRelations);
-
+        synonym1.addMarker(Marker.NewInstance(MarkerType.IMPORTED(), true));
+        synonym1.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        service.update(synonym1);
+        synonym1 =(Synonym) service.load(uuidSynonym1);
+       
+        
+        Set<Marker> markers = synonym1.getMarkers();
+        Marker marker = markers.iterator().next();
+        UUID markerUUID = marker.getUuid();
        // taxon2 = (Taxon)service.load(uuidTaxon2);
         synonym1 = (Synonym)service.load(uuidSynonym1);
 
@@ -670,6 +681,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
         nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be no relationship left in the database", 0, nRelations);
+        marker = markerService.load(markerUUID);
+        assertNull(marker);
 
     }
 
@@ -695,7 +708,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon1 = (Taxon)service.load(uuidTaxon1);
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
-
+       
         service.deleteSynonym(synonym1, taxon1, new SynonymDeletionConfigurator());
 
         this.commitAndStartNewTransaction(tableNames);
@@ -706,7 +719,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should be 4 names left in the database (name not deleted as synonym was not deleted)", 4, nNames);
         int nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be 1 relationship left in the database", 1, nRelations);
-
+       
+        
     }
 
     @Test
@@ -1095,6 +1109,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(false);
+        
+        
 
         try {
             service.deleteTaxon(speciesTaxon, config, null);
