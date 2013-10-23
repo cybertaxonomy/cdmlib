@@ -1241,7 +1241,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 try{
                     nameService.delete(name, config.getNameDeletionConfig());
                 }catch (ReferencedObjectUndeletableException ex){
-                    System.err.println("Name wasn't deleted as it is referenced");
                     if (logger.isDebugEnabled()) {
                         logger.debug("Name wasn't deleted as it is referenced");
                     }
