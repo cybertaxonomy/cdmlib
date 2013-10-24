@@ -7,9 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
-
-import java.net.URI;
+package eu.etaxonomy.cdm.io.common.mapping.berlinModel;
 
 import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 
@@ -18,17 +16,17 @@ import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
  * @created 20.03.2008
  * @version 1.0
  */
-public class CdmUriMapper extends CdmSingleAttributeMapperBase {
+public class CdmBooleanMapper extends CdmSingleAttributeMapperBase {
 
 	/**
 	 * @param dbAttributString
 	 * @param cdmAttributeString
 	 */
-	public CdmUriMapper(String dbAttributString, String cdmAttributeString) {
+	public CdmBooleanMapper(String dbAttributString, String cdmAttributeString) {
 		super(dbAttributString, cdmAttributeString);
 	}
 
 	public Class getTypeClass(){
-		return URI.class;
+		return Boolean.class;
 	}
 }

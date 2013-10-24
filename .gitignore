@@ -4,7 +4,6 @@
 /.umlproject
 /bin
 /cdmlib-io.uml
-src/main/java/eu/etaxonomy/cdm/io/berlinModel/in/BerlinModelTaxonImportValidator.java
 src/main/java/eu/etaxonomy/cdm/io/markup/Markup_OLD.java
 src/test/resources/eu/etaxonomy/cdm/io/PUBLIC.xsd
 src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd

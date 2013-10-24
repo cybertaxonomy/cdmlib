@@ -45,10 +45,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
+	
+	//source Refs
+	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 	
 	//ranks
 	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
@@ -110,6 +112,9 @@ public class BerlinModelTransformer {
 	
 	//Marker Types
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
+	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
+	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");
+	
 	
 	//Extension Types
 	public static final UUID uuidSpeciesExpertName = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
@@ -117,6 +122,15 @@ public class BerlinModelTransformer {
 	
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
+	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
+	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
+	public static final UUID uuidMclCode = UUID.fromString("aa27083a-6a96-42aa-a2f8-5541cf057067");
+	
+	//Area Level
+	public static final UUID uuidAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
+	public static final UUID uuidAreaLevelFirst = UUID.fromString("d21503e3-875e-4abc-82ec-f812e3cfea84");
+	public static final UUID uuidAreaLevelSecond = UUID.fromString("97ac0bf5-b31c-487a-8ed5-a576f46c902c");
+	
 	
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");

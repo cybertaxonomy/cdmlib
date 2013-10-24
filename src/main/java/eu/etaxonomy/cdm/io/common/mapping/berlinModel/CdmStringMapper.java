@@ -7,7 +7,7 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.io.berlinModel;
+package eu.etaxonomy.cdm.io.common.mapping.berlinModel;
 
 import org.apache.log4j.Logger;
 

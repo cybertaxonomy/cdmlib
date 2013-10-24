@@ -34,7 +34,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 01.07.2008
- * @version 1.0
  */
 public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicationDefaultConfiguration
         implements ICdmIO<STATE>, IIoObservable {
@@ -59,17 +58,11 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
         return observers.add(observer);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IIoObservable#getObservers()
-     */
     @Override
     public Set<IIoObserver> getObservers() {
         return observers;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IIoObservable#addObservers(java.util.Set)
-     */
     @Override
     public void addObservers(Set<IIoObserver> newObservers) {
         for (IIoObserver observer : newObservers){
@@ -77,36 +70,21 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IIoObservable#countObservers()
-     */
     @Override
     public int countObservers(){
         return observers.size();
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObserver(eu.etaxonomy.cdm.io.common.events.IIoObserver)
-     */
     @Override
     public boolean removeObserver(IIoObserver observer){
         return observers.remove(observer);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IIoObservable#removeObservers()
-     */
     @Override
     public void removeObservers(){
         observers.removeAll(observers);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ICdmIO#fire(eu.etaxonomy.cdm.io.common.events.IIoEvent)
-     */
     @Override
     public void fire(IIoEvent event){
         for (IIoObserver observer: observers){
@@ -117,15 +95,10 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
 //******************** End Observers *********************************************************
 
 
-
     public int countSteps(){
         return 1;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ICdmExport#invoke(eu.etaxonomy.cdm.io.common.ExportStateBase)
-     */
     @Override
     public boolean invoke(STATE state) {
         if (isIgnore( state)){
@@ -156,18 +129,12 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
         sessionFactory.getCurrentSession().flush();
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction()
-     */
     @Override
     //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(), remove duplicate
     public TransactionStatus startTransaction() {
         return startTransaction(false);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.application.CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
-     */
     @Override
     //TODO seems to be exact duplicate of CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
     public TransactionStatus startTransaction(Boolean readOnly) {
@@ -201,15 +168,13 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     }
 
     //TODO move into super class CdmApplicationDefaultConfiguration#startTransaction(java.lang.Boolean)
+    //==> no 
     public void rollbackTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = super.getTransactionManager();
         txManager.rollback(txStatus);
         return;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ICdmIO#check(eu.etaxonomy.cdm.io.common.IIoConfigurator)
-     */
     @Override
     public boolean check(STATE state) {
         if (isIgnore(state)){
@@ -221,23 +186,6 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     }
 
     protected abstract boolean doCheck(STATE state);
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ICdmIO#invoke(eu.etaxonomy.cdm.io.common.IIoConfigurator, java.util.Map)
-     */
-//	public boolean invoke(T config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores) {
-//		if (isIgnore(config)){
-//			logger.warn("No invoke for " + ioName + " (ignored)");
-//			return true;
-//		}else{
-//			return doInvoke(config, stores);
-//		}
-//	}
-
-//	protected abstract boolean doInvoke(T config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores);
 
 
     /**
@@ -355,75 +303,5 @@ public abstract class CdmIoBase<STATE extends IoStateBase> extends CdmApplicatio
     protected boolean isNotBlank(String str){
         return StringUtils.isNotBlank(str);
     }
-
-
-//	/**
-//	   * Returns the first stack trace element of the first class not equal to "StackTraceUtils" or "LogUtils" and aClass. <br />
-//	   * Stored in array of the callstack. <br />
-//	   * Allows to get past a certain class.
-//	   * @param aclass class to get pass in the stack trace. If null, only try to get past StackTraceUtils.
-//	   * @return stackTraceElement (never null, because if aClass is not found, returns first class past StackTraceUtils)
-//	   * @throws AssertionFailedException if resulting statckTrace is null (RuntimeException)
-//	   */
-//	  public static StackTraceElement getCallingStackTraceElement(final Class aclass) {
-//	    final Throwable           t         = new Throwable();
-//	    final StackTraceElement[] ste       = t.getStackTrace();
-//	    int index = 1;
-//	    final int limit = ste.length;
-//	    StackTraceElement   st        = ste[index];
-//	    String              className = st.getClassName();
-//	    boolean aclassfound = false;
-//	    if(aclass == null) {
-//	        aclassfound = true;
-//	    }
-//	    StackTraceElement   resst = null;
-//	    while(index < limit) {
-//	        if(shouldExamine(className, aclass) == true) {
-//	                if(resst == null) {
-//	                        resst = st;
-//	                }
-//	                if(aclassfound == true) {
-//	                        final StackTraceElement ast = onClassFound(aclass, className, st);
-//	                        if(ast != null) {
-//	                                resst = ast;
-//	                                break;
-//	                        }
-//	                }
-//	                else
-//	                {
-//	                        if(aclass != null && aclass.getName().equals(className) == true) {
-//	                                aclassfound = true;
-//	                        }
-//	                }
-//	        }
-//	        index = index + 1;
-//	        st        = ste[index];
-//	        className = st.getClassName();
-//	    }
-//	    if(resst == null)  {
-//	        throw new AssertionFailedException(StackTraceUtils.getClassMethodLine() + " null argument:" + "stack trace should null"); //$NON-NLS-1$
-//	    }
-//	    return resst;
-//	  }
-//
-//	  static private boolean shouldExamine(String className, Class aclass) {
-//	      final boolean res = StackTraceUtils.class.getName().equals(className) == false && (className.endsWith(LOG_UTILS
-//	        	) == false || (aclass !=null && aclass.getName().endsWith(LOG_UTILS)));
-//	      return res;
-//	  }
-//
-//	  static private StackTraceElement onClassFound(Class aclass, String className, StackTraceElement st) {
-//	      StackTraceElement   resst = null;
-//	      if(aclass != null && aclass.getName().equals(className) == false)
-//	      {
-//	          resst = st;
-//	      }
-//	      if(aclass == null)
-//	      {
-//	          resst = st;
-//	      }
-//	      return resst;
-//	  }
-
 
 }
