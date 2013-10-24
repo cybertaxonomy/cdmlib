@@ -3,7 +3,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>eu.etaxonomy</groupId>
     <artifactId>cdmlib-parent</artifactId>
-	<version>3.2.3-SNAPSHOT</version>
+	<version>3.3.0-SNAPSHOT</version>
     <name>CDM Library</name>
     <description>The Java implementation of the Common Data Model (CDM), the data model for EDIT's internet platform for cybertaxonomy.</description>
     <url>http://wp5.e-taxonomy.eu/cdmlib/</url>
@@ -977,6 +977,11 @@
 		       <artifactId>lucene-grouping</artifactId>
 		       <version>${lucene.version}</version>
 		    </dependency>
+            <dependency>
+               <groupId>org.apache.lucene</groupId>
+               <artifactId>lucene-join</artifactId>
+               <version>${lucene.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>com.ibm.lsid</groupId>
@@ -998,6 +1003,7 @@
                 <artifactId>dozer</artifactId>
                 <version>5.3.0</version>
             </dependency>
+
             <!-- ******* XML ******* -->
             <dependency>
                 <groupId>xml-apis</groupId>
