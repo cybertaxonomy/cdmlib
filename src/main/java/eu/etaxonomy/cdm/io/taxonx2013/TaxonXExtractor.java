@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -133,7 +132,7 @@ public class TaxonXExtractor {
             //                        logger.info("Current reference :"+nbRef+", "+ref+", "+treatmentMainName+"--"+ref.indexOf(treatmentMainName));
             Reference<?> reference = ReferenceFactory.newGeneric();
             reference.setTitleCache(ref);
-
+/*
             boolean sourceExists=false;
             Set<IdentifiableSource> sources = acceptedTaxon.getSources();
             for (IdentifiableSource src : sources){
@@ -143,24 +142,22 @@ public class TaxonXExtractor {
                     sourceExists=true;
                 }
             }
-            System.out.println("sourceExists?:"+sourceExists);
+             System.out.println("sourceExists?:"+sourceExists);
+            */
+
             if (nbRef==0){
                 acceptedTaxon.getName().setNomenclaturalReference(reference);
-                if(!sourceExists) {
                     acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
-                }
             }else{
                 TaxonDescription taxonDescription =importer.getTaxonDescription(acceptedTaxon, false, true);
                 acceptedTaxon.addDescription(taxonDescription);
-                if(!sourceExists) {
                     acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
-                }
 
                 TextData textData = TextData.NewInstance(Feature.CITATION());
 
                 textData.addSource(OriginalSourceType.Import, null,null, reference, null, acceptedTaxon.getName(), ref);
                 taxonDescription.addElement(textData);
-
+/*
                 sourceExists=false;
                 sources = taxonDescription.getSources();
                 for (IdentifiableSource src : sources){
@@ -173,7 +170,8 @@ public class TaxonXExtractor {
                 if(!sourceExists) {
                     taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
                 }
-
+                */
+                taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
                 importer.getDescriptionService().saveOrUpdate(taxonDescription);
             }
             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
@@ -339,6 +337,7 @@ public class TaxonXExtractor {
             derivedUnitFacade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
 
             derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            System.out.println("derivedUnitBase: "+derivedUnitBase);
             //                designation.setTypeSpecimen(derivedUnitBase);
             //                TaxonNameBase<?,?> name = taxon.getName();
             //                name.addTypeDesignation(designation, true);
@@ -349,6 +348,7 @@ public class TaxonXExtractor {
 
             derivedUnitFacade = getFacade(descr.replaceAll(";",""), defaultAssociation);
             derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            System.out.println("derivedUnitBase2: "+derivedUnitBase);
         }
 
         unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
@@ -445,7 +445,7 @@ public class TaxonXExtractor {
         }
     }
     protected DerivedUnitFacade getFacade(String recordBasis, SpecimenOrObservationType defaultAssoc) {
-        //        System.out.println("getFacade() for "+recordBasis);
+        System.out.println("getFacade() for "+recordBasis+", defaultassociation: "+defaultAssoc);
     	SpecimenOrObservationType type = null;
 
         // create specimen
@@ -639,6 +639,13 @@ public class TaxonXExtractor {
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         String k = fullname+"_"+atomised;
+
+        String defaultN = "";
+        if (atomised.length()>fullname.length()) {
+            defaultN=atomised;
+        } else {
+            defaultN=fullname;
+        }
         if (namesAsked.containsKey(k)){
             return namesAsked.get(k);
         }
@@ -656,7 +663,7 @@ public class TaxonXExtractor {
                     JOptionPane.PLAIN_MESSAGE,
                     null,
                     null,
-                    atomised);
+                    defaultN);
             namesAsked.put(k, s);
             return s;
         }
@@ -751,6 +758,29 @@ public class TaxonXExtractor {
                 null,
                 "Other");
         return s;
+    }
+
+    /**
+     * @param fullLineRefName
+     * @return
+     */
+    protected int askIfNameContained(String fullLineRefName) {
+
+        JTextArea textArea = new JTextArea("Is a scientific name contained in this sentence ? Type 0 if contains a name, 1 if it's only a reference. Press 2 if it's to be ignored \n"+fullLineRefName);
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 400 ) );
+
+        String s = (String)JOptionPane.showInputDialog(
+                null,
+                scrollPane,
+                "",
+                JOptionPane.PLAIN_MESSAGE,
+                null,
+                null,
+                "0");
+        return Integer.valueOf(s);
     }
 
 
@@ -1097,6 +1127,8 @@ public class TaxonXExtractor {
 
         else if ("Provisional".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();}
         else if ("nom. provis.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();}
+
+//        else if ("syn. nov.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.NEW_SYNONYM();}
 
 
 
