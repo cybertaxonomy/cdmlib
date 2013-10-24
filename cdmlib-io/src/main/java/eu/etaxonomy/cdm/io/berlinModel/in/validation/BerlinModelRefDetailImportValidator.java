@@ -15,6 +15,7 @@ import java.sql.SQLException;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.Source;
@@ -93,7 +94,7 @@ public class BerlinModelRefDetailImportValidator implements IOValidator<BerlinMo
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} catch (NoSuchMethodException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			logger.debug("Source does not support checking existance of 'idInSource' column");
 		}
 		return success;

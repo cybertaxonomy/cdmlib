@@ -26,8 +26,8 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
@@ -74,8 +74,8 @@ public class ExcelImportConfiguratorTest extends CdmTransactionalIntegrationTest
 		assertTrue("Return value for import.invoke should be true", result);
 		assertEquals("Number of TaxonNames should be 3", 3, nameService.count(null));
 		assertEquals("Number of specimen should be 6", 6, occurrenceService.count(SpecimenOrObservationBase.class));
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnitBase.class));
-		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(FieldObservation.class));
+		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(DerivedUnit.class));
+		assertEquals("Number of specimen should be 3", 3, occurrenceService.count(FieldUnit.class));
 
 	}
 

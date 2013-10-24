@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelCommonNamesImpor
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -42,10 +42,10 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -278,7 +278,7 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 				if (nameInSourceFk != null && nameUsedInSource == null){
 					logger.warn("Name used in source (" + nameInSourceFk + ") was not found for common name " + commonNameId);
 				}
-				DescriptionElementSource source = DescriptionElementSource.NewInstance(reference, microCitation, nameUsedInSource, originalNameString);
+				DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(reference, microCitation, nameUsedInSource, originalNameString);
 				for (CommonTaxonName commonTaxonName : commonTaxonNames){
 					commonTaxonName.addSource(source);
 				}
@@ -581,11 +581,11 @@ public class BerlinModelCommonNamesImport  extends BerlinModelImportBase {
 			area = getNamedArea(state, BerlinModelTransformer.uuidUkraineAndCrimea , "Ukraine & Crimea", "Ukraine (including Crimea)", "Uk", null, null);
 			getTermService().saveOrUpdate(area);
 		}else if (tdwgCode.equalsIgnoreCase("Rf")){
-			area = WaterbodyOrCountry.RUSSIANFEDERATION();
+			area = Country.RUSSIANFEDERATION();
 		}else if (tdwgCode.equalsIgnoreCase("Gg")){
-			area = WaterbodyOrCountry.GEORGIA();
+			area = Country.GEORGIA();
 		}else{
-			area = TdwgArea.getAreaByTdwgAbbreviation(tdwgCode);
+			area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwgCode);
 		}
 		if (area == null){
 			logger.warn("Area is null for " + tdwgCode);

@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * @author a.kohlbecker
@@ -106,7 +107,7 @@ public interface IEditGeoService {
 
 	public String getOccurrenceServiceRequestParameterString(
 			List<SpecimenOrObservationBase> specimensOrObersvations,
-			Map<Class<? extends SpecimenOrObservationBase>,Color> specimenOrObservationTypeColors,
+			Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors,
 			Boolean doReturnImage,
 			Integer width,
 			Integer height,

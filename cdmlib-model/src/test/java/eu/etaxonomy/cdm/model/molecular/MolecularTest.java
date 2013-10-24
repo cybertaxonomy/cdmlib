@@ -1,10 +1,8 @@
 package eu.etaxonomy.cdm.model.molecular;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNotSame;
 import static org.junit.Assert.assertTrue;
-
-import java.util.Iterator;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -12,6 +10,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -22,7 +21,7 @@ public class MolecularTest {
 	private static Logger logger = Logger.getLogger(MolecularTest.class);
 
 	private DnaSample dnaSample;
-	private Locus locus;
+	private DefinedTerm marker;
 	private PhylogeneticTree phyloTree;
 	private Sequence seq;
 	
@@ -41,24 +40,24 @@ public class MolecularTest {
 		dnaSample = DnaSample.NewInstance();
 		seq = new Sequence();
 		
-		seq.setBarcode(true);
-		seq.setSequence("ATTGCCATCG");
+//		seq.setBarcode(true);
+		seq.getConsensusSequence().setString("ATTGCCATC");
 		
-		GenBankAccession genBankAccession = GenBankAccession.NewInstance("12393247");
-		seq.addGenBankAccession(genBankAccession );
+		seq.setGeneticAccessionNumber("HM347273");
+//		seq.setGenBankUri(URI.create("http://www.abc.de"));
 		Media chromatogram = Media.NewInstance();
 		chromatogram.putTitle(LanguageString.NewInstance("chromatogram", Language.ENGLISH()));
-		seq.addChromatogram(chromatogram);
+//		seq.addChromatogram(chromatogram);
 		
 		Sequence otherSeq = Sequence.NewInstance("CATCGAGTTGC");
 		
-		otherSeq.setBarcode(true);
-		dnaSample.addSequences(seq);
-		dnaSample.addSequences(otherSeq);
+		otherSeq.getBarcodeSequencePart().setString("ATTGCC");
+		dnaSample.addSequence(seq);
+		dnaSample.addSequence(otherSeq);
 		
-		locus= Locus.NewInstance("Test", "test locus");
+		marker = DefinedTerm.NewDnaMarkerInstance("Test", "test marker", null);
 		
-		phyloTree =new PhylogeneticTree();
+		phyloTree = PhylogeneticTree.NewInstance();
 		phyloTree.addUsedSequences(seq);
 		phyloTree.addUsedSequences(otherSeq);
 	}
@@ -76,28 +75,20 @@ public class MolecularTest {
 		
 		
 		Sequence sequenceClone = (Sequence)seq.clone();
-		assertEquals(sequenceClone.getChromatograms().iterator().next().getAllTitles().get(0),seq.getChromatograms().iterator().next().getAllTitles().get(0));
+//		assertEquals(sequenceClone.getChromatograms().iterator().next().getAllTitles().get(0),seq.getChromatograms().iterator().next().getAllTitles().get(0));
+//		
+//		Iterator<Media> mediaIteratorClone = sequenceClone.getChromatograms().iterator();
+//		Iterator<Media> mediaIterator = seq.getChromatograms().iterator();
+//		Media test = (Media)mediaIterator.next();
+//		LanguageString title = test.getTitle(Language.ENGLISH());
+//		test = (Media)mediaIteratorClone.next();
+//		LanguageString titleClone = test.getTitle(Language.ENGLISH());		
+//		assertEquals(title, titleClone);
 		
-		Iterator<Media> mediaIteratorClone = sequenceClone.getChromatograms().iterator();
-		Iterator<Media> mediaIterator = sequenceClone.getChromatograms().iterator();
-		Media test = (Media)mediaIterator.next();
-		LanguageString title = test.getTitle(Language.ENGLISH());
-		test = (Media)mediaIteratorClone.next();
-		LanguageString titleClone = test.getTitle(Language.ENGLISH());		
-		assertEquals(title, titleClone);
 		
-		
-		
-		assertTrue (sequenceClone.getGenBankAccession().size() == seq.getGenBankAccession().size());
-		
-		Iterator<GenBankAccession> genBankAccessionIteratorClone = sequenceClone.getGenBankAccession().iterator();
-		Iterator<GenBankAccession> genBankAccessionIterator = seq.getGenBankAccession().iterator();
-		GenBankAccession genBankAccession = (GenBankAccession)genBankAccessionIterator.next();
-		String numberStr = genBankAccession.getAccessionNumber();
-		GenBankAccession genBankAccessionClone = (GenBankAccession)genBankAccessionIteratorClone.next();
-		String numberStrClone = genBankAccessionClone.getAccessionNumber();	
-		assertEquals(numberStr, numberStrClone);
-		assertNotSame(genBankAccession, genBankAccessionClone);
+		assertTrue (sequenceClone.getGeneticAccessionNumber().equals(seq.getGeneticAccessionNumber()));
+		assertNotNull(sequenceClone.getGenBankUri());
+		assertTrue (sequenceClone.getGenBankUri().equals(seq.getGenBankUri()));
 		
 		DnaSample dnaSampleClone = (DnaSample)dnaSample.clone();
 		Sequence[] seqArray = new Sequence[dnaSample.getSequences().size()];

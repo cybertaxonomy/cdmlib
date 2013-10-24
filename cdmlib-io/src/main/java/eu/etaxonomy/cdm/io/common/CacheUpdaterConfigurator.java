@@ -73,16 +73,13 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	private boolean doReferenceBase = true;
 	
 	//SpecimenOrObservationBase
-	private boolean doFieldObservation = true;
+	private boolean doFieldUnit = true;
 	private boolean doDeriveUnit = true;
-	private boolean doLivingBeing = true;
-	private boolean doObservation = true;
-	private boolean doSpecimen = true;
+	private boolean doDnaSample = true;
 	
 	//Media
 	private boolean doMedia = true;
 	private boolean doMediaKey = true;
-	private boolean doFigure = true;
 	private boolean doPhylogenticTree = true;
 	
 	
@@ -128,16 +125,13 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 			doReferenceBase = false;
 			
 			//SpecimenOrObservationBase
-			doFieldObservation = false;
+			doFieldUnit = false;
 			doDeriveUnit = false;
-			doLivingBeing = false;
-			doObservation = false;
-			doSpecimen = false;
+			doDnaSample = false;
 			
 			//Media
 			doMedia = false;
 			doMediaKey = false;
-			doFigure = false;
 			doPhylogenticTree = false;
 			
 			
@@ -226,11 +220,11 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	public boolean isDoReferenceBase() {
 		return doReferenceBase;
 	}
-	public void setDoFieldObservation(boolean doFieldObservation) {
-		this.doFieldObservation = doFieldObservation;
+	public void setDoFieldUnit(boolean doFieldUnit) {
+		this.doFieldUnit = doFieldUnit;
 	}
-	public boolean isDoFieldObservation() {
-		return doFieldObservation;
+	public boolean isDoFieldUnit() {
+		return doFieldUnit;
 	}
 	public void setDoDeriveUnit(boolean doDeriveUnit) {
 		this.doDeriveUnit = doDeriveUnit;
@@ -238,23 +232,11 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	public boolean isDoDeriveUnit() {
 		return doDeriveUnit;
 	}
-	public void setDoLivingBeing(boolean doLivingBeing) {
-		this.doLivingBeing = doLivingBeing;
+	public void setDoDnaSample(boolean doDnaSample) {
+		this.doDnaSample = doDnaSample;
 	}
-	public boolean isDoLivingBeing() {
-		return doLivingBeing;
-	}
-	public void setDoObservation(boolean doObservation) {
-		this.doObservation = doObservation;
-	}
-	public boolean isDoObservation() {
-		return doObservation;
-	}
-	public void setDoSpecimen(boolean doSpecimen) {
-		this.doSpecimen = doSpecimen;
-	}
-	public boolean isDoSpecimen() {
-		return doSpecimen;
+	public boolean isDoDnaSample() {
+		return doDnaSample;
 	}
 	public void setDoMedia(boolean doMedia) {
 		this.doMedia = doMedia;
@@ -267,12 +249,6 @@ public class CacheUpdaterConfigurator extends ImportConfiguratorBase<DefaultImpo
 	}
 	public boolean isDoMediaKey() {
 		return doMediaKey;
-	}
-	public void setDoFigure(boolean doFigure) {
-		this.doFigure = doFigure;
-	}
-	public boolean isDoFigure() {
-		return doFigure;
 	}
 	public void setDoPhylogenticTree(boolean doPhylogenticTree) {
 		this.doPhylogenticTree = doPhylogenticTree;

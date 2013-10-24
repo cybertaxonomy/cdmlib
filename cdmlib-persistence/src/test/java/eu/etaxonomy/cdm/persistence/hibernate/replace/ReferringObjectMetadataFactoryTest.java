@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.replace;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -28,7 +29,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author ben.clark
  * @created 22.12.2009
- * @version 1.0
  */
 public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrationTest {
 	@SuppressWarnings("unused")
@@ -77,8 +77,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		Institution x = (Institution)agentDao.findByUuid(institution1);
 		Institution y = (Institution)agentDao.findByUuid(institution2);
 
-		assert x != null;
-		assert y != null;
+		Assert.assertNotNull(x);
+		Assert.assertNotNull(y);
 
 		agentDao.replace(x,y);
 	}
@@ -90,8 +90,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		Person x = (Person)agentDao.findByUuid(person1);
 		Person y = (Person)agentDao.findByUuid(person2);
 
-		assert x != null;
-		assert y != null;
+		Assert.assertNotNull(x);
+		Assert.assertNotNull(y);
 
 		agentDao.replace(x,y);
 		this.setComplete();
@@ -106,8 +106,8 @@ public class ReferringObjectMetadataFactoryTest extends CdmTransactionalIntegrat
 		Person x = (Person)agentDao.findByUuid(person3);
 		Person y = (Person)agentDao.findByUuid(person2);
 
-		assert x != null;
-		assert y != null;
+		Assert.assertNotNull(x);
+		Assert.assertNotNull(y);
 
 		agentDao.replace(x,y);
 	}

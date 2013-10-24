@@ -27,8 +27,9 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -134,13 +135,13 @@ public class BerlinModelOccurrenceSourceImport  extends BerlinModelImportBase {
     				Reference<?> ref = getReference(refId, state);
 
     				if (ref != null){
-    					DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
+    					DescriptionElementSource originalSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
     					originalSource.setCitation(ref);
     					TaxonNameBase<?, ?> taxonName;
 						taxonName = getName(state, oldName, oldNameFk);
 						if (taxonName != null){
     						originalSource.setNameUsedInSource(taxonName);
-    					}else if(CdmUtils.isNotEmpty(oldName)){
+    					}else if(isNotBlank(oldName)){
     						originalSource.setOriginalNameString(oldName);
     					}
     					distribution.addSource(originalSource);

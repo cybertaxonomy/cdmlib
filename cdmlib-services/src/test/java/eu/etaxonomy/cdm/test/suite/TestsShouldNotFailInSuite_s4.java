@@ -13,7 +13,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategyTest;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldObservationCacheStrategyTest;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeFieldUnitCacheStrategyTest;
 import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
 
 
@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.api.service.NameServiceImplTest;
 		{
 			DerivedUnitFacadeCacheStrategyTest.class,
 			DerivedUnitFacadeCacheStrategyTest.class,
-			DerivedUnitFacadeFieldObservationCacheStrategyTest.class,
+			DerivedUnitFacadeFieldUnitCacheStrategyTest.class,
 			NameServiceImplTest.class
 		}
 	)

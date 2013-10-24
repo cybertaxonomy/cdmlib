@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.model.description.FeatureNode;
  * @version 1.0
  */
 @Controller
-@RequestMapping(value = {"/featurenode/{uuid}"})
+@RequestMapping(value = {"/featureNode/{uuid}"})
 public class FeatureNodeController extends BaseController<FeatureNode, IFeatureNodeService> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureNodeController.class);

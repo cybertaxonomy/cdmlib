@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 import org.apache.log4j.Logger;
@@ -33,7 +34,6 @@ import javax.xml.bind.annotation.XmlType;
  * Celsius".
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:34
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -49,12 +49,12 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	
 	protected static Map<UUID, MeasurementUnit> termMap = null;		
 
-	/** 
-	 * Class constructor: creates a new empty measurement unit instance.
-	 * 
-	 * @see #MeasurementUnit(String, String, String)
-	 */
-	public MeasurementUnit(){
+//********************************** Constructor *******************************************************************/	
+
+	//for hibernate use only
+	@Deprecated
+	protected MeasurementUnit(){
+		super(TermType.MeasurementUnit);
 	}
 
 	/** 
@@ -69,8 +69,8 @@ public class MeasurementUnit extends DefinedTermBase<MeasurementUnit> {
 	 * 						 new measurement unit to be created
 	 * @see 				 #NewInstance()
 	 */
-	public MeasurementUnit(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	private MeasurementUnit(String term, String label, String labelAbbrev) {
+		super(TermType.MeasurementUnit, term, label, labelAbbrev);
 	}
 
 	

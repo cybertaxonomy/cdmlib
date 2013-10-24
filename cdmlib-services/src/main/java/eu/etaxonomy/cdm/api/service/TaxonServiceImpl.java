@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -23,8 +24,11 @@ import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
+import org.apache.lucene.search.BooleanFilter;
 import org.apache.lucene.search.BooleanQuery;
+import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Query;
+import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -39,8 +43,11 @@ import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.api.service.search.DocIdBitSetPrinter;
+import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch;
 import eu.etaxonomy.cdm.api.service.search.LuceneSearch.TopGroupsWithMaxScore;
 import eu.etaxonomy.cdm.api.service.search.QueryFactory;
@@ -58,28 +65,35 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IIdentificationKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
+import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -141,6 +155,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
+
+    @Autowired
+    private ILuceneIndexToolProvider luceneIndexToolProvider;
+
 
     /**
      * Constructor
@@ -408,7 +426,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
      */
     @Override
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz,
+            String uninomial,	String infragenericEpithet, String specificEpithet,
+            String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<TaxonBase>();
@@ -418,6 +438,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
     }
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#listTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
@@ -812,7 +833,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
             for (SpecimenOrObservationBase occurrence : specimensOrObservations) {
 
-                taxonMedia.addAll(occurrence.getMedia());
+//            	direct media removed from specimen #3597
+//              taxonMedia.addAll(occurrence.getMedia());
 
                 // SpecimenDescriptions
                 Set<SpecimenDescription> specimenDescriptions = occurrence.getSpecimenDescriptions();
@@ -828,17 +850,28 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 }
 
                 // Collection
-                if (occurrence instanceof DerivedUnitBase) {
-                    if (((DerivedUnitBase) occurrence).getCollection() != null){
-                        taxonMedia.addAll(((DerivedUnitBase) occurrence).getCollection().getMedia());
+                //TODO why may collections have media attached? #
+                if (occurrence.isInstanceOf(DerivedUnit.class)) {
+                	DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    if (derivedUnit.getCollection() != null){
+                        taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
                 }
 
-                // Chromatograms
-                if (occurrence instanceof DnaSample) {
-                    Set<Sequence> sequences = ((DnaSample) occurrence).getSequences();
-                    for (Sequence sequence : sequences) {
-                        taxonMedia.addAll(sequence.getChromatograms());
+                // pherograms & gelPhotos
+                if (occurrence.isInstanceOf(DnaSample.class)) {
+                	DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
+                	Set<Sequence> sequences = dnaSample.getSequences();
+                	//we do show only those gelPhotos which lead to a consensus sequence
+                	for (Sequence sequence : sequences) {
+                		Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                    	for (SingleRead singleRead : sequence.getSingleReads()){
+                    		Amplification amplification = singleRead.getAmplification();
+                    		dnaRelatedMedia.add(amplification.getGelPhoto());
+                    		dnaRelatedMedia.add(singleRead.getPherogram());
+                    		dnaRelatedMedia.remove(null);
+                    	}
+                    	taxonMedia.addAll(dnaRelatedMedia);
                     }
                 }
 
@@ -955,7 +988,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             //FIXME check if description is ALWAYS deletable
                             descriptionService.delete(desc);
                         }else{
-                            if (desc.getDescribedSpecimenOrObservations().size()>0){
+                            if (desc.getDescribedSpecimenOrObservation() != null){
                                 String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
                                         " which also describes specimens or abservations";
                                     throw new ReferencedObjectUndeletableException(message);
@@ -970,7 +1003,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 //IIdentificationKeys (Media, Polytomous, MultiAccess)
                 if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
                     String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnitBase.class).getTitleCache());
+                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
                     throw new ReferencedObjectUndeletableException(message);
                 }
 
@@ -1355,7 +1388,30 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+    }
+
+    @Override
+    public Pager<SearchResult<TaxonBase>> findByDistribution(List<NamedArea> areaFilter, List<PresenceAbsenceTermBase<?>> statusFilter,
+            Classification classification,
+            Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) throws IOException, ParseException {
+
+        LuceneSearch luceneSearch = prepareByDistributionSearch(areaFilter, statusFilter, classification);
+
+        // --- execute search
+        TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
+
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+        idFieldMap.put(CdmBaseType.TAXON, "id");
+
+        // ---  initialize taxa, thighlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(luceneSearch, luceneSearch.getQuery());
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, luceneSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
+
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
     }
 
@@ -1373,30 +1429,431 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), TaxonBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
+        QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
-        luceneSearch.setClazz(clazz);
+        luceneSearch.setCdmTypRestriction(clazz);
 
-        textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
-        textQuery.add(queryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
+        textQuery.add(taxonBaseQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        textQuery.add(taxonBaseQueryFactory.newDefinedTermQuery("name.rank", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
 
         if(classification != null){
-            finalQuery.add(queryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
         }
         luceneSearch.setQuery(finalQuery);
 
         if(highlightFragments){
-            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
+            luceneSearch.setHighlightFields(taxonBaseQueryFactory.getTextFieldNamesAsArray());
         }
         return luceneSearch;
     }
+
+    /**
+     * Uses org.apache.lucene.search.join.JoinUtil for query time joining, alternatively
+     * the BlockJoinQuery could be used. The latter might be more memory save but has the
+     * drawback of requiring to do the join an indexing time.
+     * see  http://dev.e-taxonomy.eu/trac/wiki/LuceneNotes#JoinsinLucene for more information on this.
+     *
+     * Joins TaxonRelationShip with Taxon depending on the direction of the given edge:
+     * <ul>
+     * <li>direct, everted: {@link Direction.relatedTo}: TaxonRelationShip.relatedTo.id --&gt; Taxon.id </li>
+     * <li>inverse: {@link Direction.relatedFrom}:  TaxonRelationShip.relatedFrom.id --&gt; Taxon.id </li>
+     * <ul>
+     *
+     * @param queryString
+     * @param classification
+     * @param languages
+     * @param highlightFragments
+     * @return
+     * @throws IOException
+     */
+    protected LuceneSearch prepareFindByTaxonRelationFullTextSearch(TaxonRelationshipEdge edge, String queryString, Classification classification, List<Language> languages,
+            boolean highlightFragments) throws IOException {
+
+        String fromField;
+        String queryTermField;
+        String toField = "id"; // TaxonBase.uuid
+
+        if(edge.isBidirectional()){
+            throw new RuntimeException("Bidirectional joining not supported!");
+        }
+        if(edge.isEvers()){
+            fromField = "relatedFrom.id";
+            queryTermField = "relatedFrom.titleCache";
+        } else if(edge.isInvers()) {
+            fromField = "relatedTo.id";
+            queryTermField = "relatedTo.titleCache";
+        } else {
+            throw new RuntimeException("Invalid direction: " + edge.getDirections());
+        }
+
+        BooleanQuery finalQuery = new BooleanQuery();
+
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonBase.class);
+        QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
+
+        BooleanQuery joinFromQuery = new BooleanQuery();
+        joinFromQuery.add(taxonBaseQueryFactory.newTermQuery(queryTermField, queryString), Occur.MUST);
+        joinFromQuery.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
+        Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        luceneSearch.setSortFields(sortFields);
+
+        finalQuery.add(joinQuery, Occur.MUST);
+
+        if(classification != null){
+            finalQuery.add(taxonBaseQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+        }
+        luceneSearch.setQuery(finalQuery);
+
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(taxonBaseQueryFactory.getTextFieldNamesAsArray());
+        }
+        return luceneSearch;
+    }
+
+
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaAndNamesByFullText(java.util.EnumSet, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, java.util.Set, java.util.List, boolean, java.lang.Integer, java.lang.Integer, java.util.List, java.util.Map)
+     */
+    @Override
+    public Pager<SearchResult<TaxonBase>> findTaxaAndNamesByFullText(
+            EnumSet<TaxaAndNamesSearchMode> searchModes, String queryString, Classification classification,
+            Set<NamedArea> namedAreas, Set<PresenceAbsenceTermBase<?>> distributionStatus, List<Language> languages,
+            boolean highlightFragments, Integer pageSize,
+            Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
+            throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        if(highlightFragments){
+            logger.warn("findTaxaAndNamesByFullText() : fragment highlighting is " +
+                    "currently not fully supported by this method and thus " +
+                    "may not work with common names and misapplied names.");
+        }
+
+        // convert sets to lists
+        List<NamedArea> namedAreaList = null;
+        List<PresenceAbsenceTermBase<?>>distributionStatusList = null;
+        if(namedAreas != null){
+            namedAreaList = new ArrayList<NamedArea>(namedAreas.size());
+            namedAreaList.addAll(namedAreas);
+        }
+        if(distributionStatus != null){
+            distributionStatusList = new ArrayList<PresenceAbsenceTermBase<?>>(distributionStatus.size());
+            distributionStatusList.addAll(distributionStatus);
+        }
+
+        // set default if parameter is null
+        if(searchModes == null){
+            searchModes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa);
+        }
+
+        boolean addDistributionFilter = namedAreas != null && namedAreas.size() > 0;
+
+        List<LuceneSearch> luceneSearches = new ArrayList<LuceneSearch>();
+        Map<CdmBaseType, String> idFieldMap = new HashMap<CdmBaseType, String>();
+
+        /*
+          ======== filtering by distribution , HOWTO ========
+
+           - http://www.javaranch.com/journal/2009/02/filtering-a-lucene-search.html
+           - http://stackoverflow.com/questions/17709256/lucene-solr-using-complex-filters -> QueryWrapperFilter
+          add Filter to search as http://lucene.apache.org/core/3_6_0/api/all/org/apache/lucene/search/Filter.html
+          which will be put into a FilteredQuersy  in the end ?
+
+
+          3. how does it work in spatial?
+          see
+           - http://www.nsshutdown.com/projects/lucene/whitepaper/locallucene_v2.html
+           - http://www.infoq.com/articles/LuceneSpatialSupport
+           - http://www.mhaller.de/archives/156-Spatial-search-with-Lucene.html
+          ------------------------------------------------------------------------
+
+          filter strategies:
+          A) use a separate distribution filter per index sub-query/search:
+           - byTaxonSyonym (query TaxaonBase):
+               use a join area filter (Distribution -> TaxonBase)
+           - byCommonName (query DescriptionElementBase): use an area filter on
+               DescriptionElementBase !!! PROBLEM !!!
+               This cannot work since the distributions are different entities than the
+               common names and thus these are different lucene documents.
+           - byMisaplliedNames (join query TaxonRelationship -> TaxaonBase):
+               use a join area filter (Distribution -> TaxonBase)
+
+          B) use a common distribution filter for all index sub-query/searches:
+           - use a common join area filter (Distribution -> TaxonBase)
+           - also implement the byCommonName as join query (CommonName -> TaxonBase)
+           PROBLEM in this case: we are losing the fragment highlighting for the
+           common names, since the returned documents are always TaxonBases
+        */
+
+        /* The QueryFactory for creating filter queries on Distributions should
+         * The query factory used for the common names query cannot be reused
+         * for this case, since we want to only record the text fields which are
+         * actually used in the primary query
+         */
+        QueryFactory distributionFilterQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Distribution.class);
+
+        BooleanFilter multiIndexByAreaFilter = new BooleanFilter();
+
+
+        // search for taxa or synonyms
+        if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) || searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
+            Class taxonBaseSubclass = TaxonBase.class;
+            if(searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && !searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
+                taxonBaseSubclass = Taxon.class;
+            } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
+                taxonBaseSubclass = Synonym.class;
+            }
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments));
+            idFieldMap.put(CdmBaseType.TAXON, "id");
+            /* A) does not work!!!!
+            if(addDistributionFilter){
+                // in this case we need a filter which uses a join query
+                // to get the TaxonBase documents for the DescriptionElementBase documents
+                // which are matching the areas in question
+                Query taxonAreaJoinQuery = createByDistributionJoinQuery(
+                        namedAreaList,
+                        distributionStatusList,
+                        distributionFilterQueryFactory
+                        );
+                multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+            }
+            */
+            if(addDistributionFilter && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)){
+                // add additional area filter for synonyms
+                String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+                String toField = "accTaxon.id"; // id in TaxonBase index
+
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+                multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+
+            }
+        }
+
+        // search by CommonTaxonName
+        if(searchModes.contains(TaxaAndNamesSearchMode.doTaxaByCommonNames)) {
+            // B)
+            QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
+            Query byCommonNameJoinQuery = descriptionElementQueryFactory.newJoinQuery(
+                    "inDescription.taxon.id",
+                    "id",
+                    QueryFactory.addTypeRestriction(
+                                createByDescriptionElementFullTextQuery(queryString, classification, null, languages, descriptionElementQueryFactory)
+                                , CommonTaxonName.class
+                                ),
+                    CommonTaxonName.class);
+            logger.debug("byCommonNameJoinQuery: " + byCommonNameJoinQuery.toString());
+            LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
+            byCommonNameSearch.setCdmTypRestriction(Taxon.class);
+            byCommonNameSearch.setQuery(byCommonNameJoinQuery);
+            idFieldMap.put(CdmBaseType.TAXON, "id");
+
+            luceneSearches.add(byCommonNameSearch);
+
+            /* A) does not work!!!!
+            luceneSearches.add(
+                    prepareByDescriptionElementFullTextSearch(CommonTaxonName.class,
+                            queryString, classification, null, languages, highlightFragments)
+                        );
+            idFieldMap.put(CdmBaseType.DESCRIPTION_ELEMENT, "inDescription.taxon.id");
+            if(addDistributionFilter){
+                // in this case we are able to use DescriptionElementBase documents
+                // which are matching the areas in question directly
+                BooleanQuery byDistributionQuery = createByDistributionQuery(
+                        namedAreaList,
+                        distributionStatusList,
+                        distributionFilterQueryFactory
+                        );
+                multiIndexByAreaFilter.add(new QueryWrapperFilter(byDistributionQuery), Occur.SHOULD);
+            } */
+        }
+
+        // search by misapplied names
+        if(searchModes.contains(TaxaAndNamesSearchMode.doMisappliedNames)) {
+            // NOTE:
+            // prepareFindByTaxonRelationFullTextSearch() is making use of JoinUtil.createJoinQuery()
+            // which allows doing query time joins
+            // finds the misapplied name (Taxon B) which is an misapplication for
+            // a related Taxon A.
+            //
+            luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
+                    new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
+                    queryString, classification, languages, highlightFragments));
+            idFieldMap.put(CdmBaseType.TAXON, "id");
+
+            if(addDistributionFilter){
+                String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+
+                /*
+                 * Here i was facing wired and nasty bug which took me bugging be really for hours until I found this solution.
+                 * Maybe this is a but in java itself java.
+                 *
+                 * When the string toField is constructed by using the expression TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString()
+                 * directly:
+                 *
+                 *    String toField = "relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id";
+                 *
+                 * The byDistributionQuery fails, however when the uuid is first stored in another string variable the query
+                 * will execute as expected:
+                 *
+                 *    String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
+                 *    String toField = "relation." + misappliedNameForUuid +".to.id";
+                 *
+                 * Comparing both strings by the String.equals method returns true, so both String are identical.
+                 *
+                 * The bug occurs when running eu.etaxonomy.cdm.api.service.TaxonServiceSearchTest in eclipse and in maven and seems to to be
+                 * dependent from a specific jvm (openjdk6  6b27-1.12.6-1ubuntu0.13.04.2, openjdk7 7u25-2.3.10-1ubuntu0.13.04.2,  oracle jdk1.7.0_25 tested)
+                 * The bug is persistent after a reboot of the development computer.
+                 */
+//                String misappliedNameForUuid = TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString();
+//                String toField = "relation." + misappliedNameForUuid +".to.id";
+                String toField = "relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id";
+//                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + misappliedNameForUuid +".to.id") ? " > identical" : " > different");
+//                System.out.println("relation.1ed87175-59dd-437e-959e-0d71583d8417.to.id".equals("relation." + TaxonRelationshipType.MISAPPLIED_NAME_FOR().getUuid().toString() +".to.id") ? " > identical" : " > different");
+
+                BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, distributionFilterQueryFactory);
+                Query taxonAreaJoinQuery = distributionFilterQueryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+                QueryWrapperFilter filter = new QueryWrapperFilter(taxonAreaJoinQuery);
+
+//                debug code for bug described above
+                DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
+                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
+
+                multiIndexByAreaFilter.add(filter, Occur.SHOULD);
+            }
+        }
+
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider,
+                luceneSearches.toArray(new LuceneSearch[luceneSearches.size()]));
+
+
+        if(addDistributionFilter){
+
+            // B)
+            // in this case we need a filter which uses a join query
+            // to get the TaxonBase documents for the DescriptionElementBase documents
+            // which are matching the areas in question
+            //
+            // for toTaxa, doByCommonName
+            Query taxonAreaJoinQuery = createByDistributionJoinQuery(
+                    namedAreaList,
+                    distributionStatusList,
+                    distributionFilterQueryFactory
+                    );
+            multiIndexByAreaFilter.add(new QueryWrapperFilter(taxonAreaJoinQuery), Occur.SHOULD);
+        }
+
+        if (addDistributionFilter){
+            multiSearch.setFilter(multiIndexByAreaFilter);
+        }
+        // --- execute search
+        TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
+
+        // --- initialize taxa, highlight matches ....
+        ISearchResultBuilder searchResultBuilder = new SearchResultBuilder(multiSearch, multiSearch.getQuery());
+
+
+        List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
+                topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
+
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
+        return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
+    }
+
+    /**
+     * @param namedAreaList at least one area must be in the list
+     * @param distributionStatusList optional
+     * @return
+     * @throws IOException
+     */
+    protected Query createByDistributionJoinQuery(
+            List<NamedArea> namedAreaList,
+            List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            QueryFactory queryFactory
+            ) throws IOException {
+
+        String fromField = "inDescription.taxon.id"; // in DescriptionElementBase index
+        String toField = "id"; // id in TaxonBase index
+
+        BooleanQuery byDistributionQuery = createByDistributionQuery(namedAreaList, distributionStatusList, queryFactory);
+
+        Query taxonAreaJoinQuery = queryFactory.newJoinQuery(fromField, toField, byDistributionQuery, Distribution.class);
+
+        return taxonAreaJoinQuery;
+    }
+
+    /**
+     * @param namedAreaList
+     * @param distributionStatusList
+     * @param queryFactory
+     * @return
+     */
+    private BooleanQuery createByDistributionQuery(List<NamedArea> namedAreaList,
+            List<PresenceAbsenceTermBase<?>> distributionStatusList, QueryFactory queryFactory) {
+        BooleanQuery areaQuery = new BooleanQuery();
+        // area field from Distribution
+        areaQuery.add(queryFactory.newEntityIdsQuery("area.id", namedAreaList), Occur.MUST);
+
+        // status field from Distribution
+        if(distributionStatusList != null && distributionStatusList.size() > 0){
+            areaQuery.add(queryFactory.newEntityIdsQuery("status.id", distributionStatusList), Occur.MUST);
+        }
+
+        logger.debug("createByDistributionQuery() query: " + areaQuery.toString());
+        return areaQuery;
+    }
+
+    /**
+     * This method has been primarily created for testing the area join query but might
+     * also be useful in other situations
+     *
+     * @param namedAreaList
+     * @param distributionStatusList
+     * @param classification
+     * @param highlightFragments
+     * @return
+     * @throws IOException
+     */
+    protected LuceneSearch prepareByDistributionSearch(
+            List<NamedArea> namedAreaList, List<PresenceAbsenceTermBase<?>> distributionStatusList,
+            Classification classification) throws IOException {
+
+        BooleanQuery finalQuery = new BooleanQuery();
+
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
+
+        // FIXME is this query factory using the wrong type?
+        QueryFactory taxonQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(Taxon.class);
+
+        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING, false)};
+        luceneSearch.setSortFields(sortFields);
+
+
+        Query byAreaQuery = createByDistributionJoinQuery(namedAreaList, distributionStatusList, taxonQueryFactory);
+
+        finalQuery.add(byAreaQuery, Occur.MUST);
+
+        if(classification != null){
+            finalQuery.add(taxonQueryFactory.newEntityIdQuery("taxonNodes.classification.id", classification), Occur.MUST);
+        }
+
+        logger.info("prepareByAreaSearch() query: " + finalQuery.toString());
+        luceneSearch.setQuery(finalQuery);
+
+        return luceneSearch;
+    }
+
 
 
     /* (non-Javadoc)
@@ -1432,12 +1889,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public Pager<SearchResult<TaxonBase>> findByEverythingFullText(String queryString,
             Classification classification, List<Language> languages, boolean highlightFragments,
-            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
+            Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
         LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);
 
-        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
+        LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
@@ -1452,7 +1909,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         List<SearchResult<TaxonBase>> searchResults = searchResultBuilder.createResultSet(
                 topDocsResultSet, multiSearch.getHighlightFields(), dao, idFieldMap, propertyPaths);
 
-        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupedHitCount : 0;
+        int totalHits = topDocsResultSet != null ? topDocsResultSet.topGroups.totalGroupCount : 0;
         return new DefaultPagerImpl<SearchResult<TaxonBase>>(pageNumber, totalHits, pageSize, searchResults);
 
     }
@@ -1468,75 +1925,91 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param directorySelectClass
      * @return
      */
-    protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Feature> features,
+    protected LuceneSearch prepareByDescriptionElementFullTextSearch(Class<? extends CdmBase> clazz,
+            String queryString, Classification classification, List<Feature> features,
             List<Language> languages, boolean highlightFragments) {
-        BooleanQuery finalQuery = new BooleanQuery();
-        BooleanQuery textQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(getSession(), GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
-        QueryFactory queryFactory = new QueryFactory(luceneSearch);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, DescriptionElementBase.class);
+        QueryFactory descriptionElementQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(DescriptionElementBase.class);
 
         SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("inDescription.taxon.titleCache__sort", SortField.STRING, false)};
-        luceneSearch.setSortFields(sortFields);
 
-        // ---- search criteria
-        luceneSearch.setClazz(clazz);
-        textQuery.add(queryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
+        BooleanQuery finalQuery = createByDescriptionElementFullTextQuery(queryString, classification, features,
+                languages, descriptionElementQueryFactory);
+
+        luceneSearch.setSortFields(sortFields);
+        luceneSearch.setCdmTypRestriction(clazz);
+        luceneSearch.setQuery(finalQuery);
+        if(highlightFragments){
+            luceneSearch.setHighlightFields(descriptionElementQueryFactory.getTextFieldNamesAsArray());
+        }
+
+        return luceneSearch;
+    }
+
+    /**
+     * @param queryString
+     * @param classification
+     * @param features
+     * @param languages
+     * @param descriptionElementQueryFactory
+     * @return
+     */
+    private BooleanQuery createByDescriptionElementFullTextQuery(String queryString, Classification classification,
+            List<Feature> features, List<Language> languages, QueryFactory descriptionElementQueryFactory) {
+        BooleanQuery finalQuery = new BooleanQuery();
+        BooleanQuery textQuery = new BooleanQuery();
+        textQuery.add(descriptionElementQueryFactory.newTermQuery("titleCache", queryString), Occur.SHOULD);
 
         // common name
         Query nameQuery;
         if(languages == null || languages.size() == 0){
-            nameQuery = queryFactory.newTermQuery("name", queryString);
+            nameQuery = descriptionElementQueryFactory.newTermQuery("name", queryString);
         } else {
             nameQuery = new BooleanQuery();
             BooleanQuery languageSubQuery = new BooleanQuery();
             for(Language lang : languages){
-                languageSubQuery.add(queryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
+                languageSubQuery.add(descriptionElementQueryFactory.newTermQuery("language.uuid",  lang.getUuid().toString(), false), Occur.SHOULD);
             }
-            ((BooleanQuery) nameQuery).add(queryFactory.newTermQuery("name", queryString), Occur.MUST);
+            ((BooleanQuery) nameQuery).add(descriptionElementQueryFactory.newTermQuery("name", queryString), Occur.MUST);
             ((BooleanQuery) nameQuery).add(languageSubQuery, Occur.MUST);
         }
         textQuery.add(nameQuery, Occur.SHOULD);
 
 
         // text field from TextData
-        textQuery.add(queryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newMultilanguageTextQuery("text", queryString, languages), Occur.SHOULD);
 
         // --- TermBase fields - by representation ----
         // state field from CategoricalData
-        textQuery.add(queryFactory.newDefinedTermQuery("states.state", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.state", queryString, languages), Occur.SHOULD);
 
         // state field from CategoricalData
-        textQuery.add(queryFactory.newDefinedTermQuery("states.modifyingText", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("stateData.modifyingText", queryString, languages), Occur.SHOULD);
 
         // area field from Distribution
-        textQuery.add(queryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("area", queryString, languages), Occur.SHOULD);
 
         // status field from Distribution
-        textQuery.add(queryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
+        textQuery.add(descriptionElementQueryFactory.newDefinedTermQuery("status", queryString, languages), Occur.SHOULD);
 
         finalQuery.add(textQuery, Occur.MUST);
         // --- classification ----
 
         if(classification != null){
-            finalQuery.add(queryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
+            finalQuery.add(descriptionElementQueryFactory.newEntityIdQuery("inDescription.taxon.taxonNodes.classification.id", classification), Occur.MUST);
         }
 
         // --- IdentifieableEntity fields - by uuid
         if(features != null && features.size() > 0 ){
-            finalQuery.add(queryFactory.newEntityUuidQuery("feature.uuid", features), Occur.MUST);
+            finalQuery.add(descriptionElementQueryFactory.newEntityUuidsQuery("feature.uuid", features), Occur.MUST);
         }
 
         // the description must be associated with a taxon
-        finalQuery.add(queryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
+        finalQuery.add(descriptionElementQueryFactory.newIsNotNullQuery("inDescription.taxon.id"), Occur.MUST);
 
         logger.info("prepareByDescriptionElementFullTextSearch() query: " + finalQuery.toString());
-        luceneSearch.setQuery(finalQuery);
-
-        if(highlightFragments){
-            luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
-        }
-        return luceneSearch;
+        return finalQuery;
     }
 
     /**
@@ -1936,9 +2409,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String idInSourceSyn= getIdInSource(syn);
 
         if (idInSourceParent != null && idInSourceSyn != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, idInSourceSyn + "; " + idInSourceParent, POTENTIAL_COMBINATION_NAMESPACE, sourceReference, null);
             potentialCombination.addSource(originalSource);
         }
 
@@ -1999,19 +2472,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // Add the original source
         if (idInSourceSyn != null && idInSourceTaxon != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
 
         }else{
             logger.error("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
         }
@@ -2042,9 +2519,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Reference<?> sourceReference = syn.getSec();
 
         if (sourceReference == null){
-            logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon");
-            //TODO:Remove
-            System.out.println("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());
+            logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());
             sourceReference = taxon.getSec();
         }
 
@@ -2103,11 +2578,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
 
-        IdentifiableSource originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);
 
-        originalSource = IdentifiableSource.NewInstance(taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
+        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredSynName.addSource(originalSource);
 

@@ -22,6 +22,7 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import org.junit.Assert;
@@ -132,13 +133,13 @@ public class ClassificationTest {
 	public void testAddRoot() {
 		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
-		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null, synonym);
-		
+		TaxonNode taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
+		taxonNode1.setSynonymToBeUsed(synonym);
 		
 		
 		
 		//test root node
-		Set<TaxonNode> rootNodes = classification1.getChildNodes();
+		List<TaxonNode> rootNodes = classification1.getChildNodes();
 		assertFalse("List of root nodes should not be empty", rootNodes.isEmpty());
 		assertEquals("Number of root nodes should be 1", 1, rootNodes.size());
 		TaxonNode root = rootNodes.iterator().next();
@@ -149,7 +150,7 @@ public class ClassificationTest {
 		assertEquals(synonym, root.getSynonymToBeUsed());
 		
 		//any node
-		Set<TaxonNode> allNodes = classification1.getChildNodes();
+		List<TaxonNode> allNodes = classification1.getChildNodes();
 		assertFalse("List of root nodes should not be empty", allNodes.isEmpty());
 		assertEquals("Number of root nodes should be 1", 1, allNodes.size());
 		TaxonNode anyNode = allNodes.iterator().next();
@@ -163,7 +164,7 @@ public class ClassificationTest {
 	 */
 	@Test
 	public void testIsTaxonInTree() {
-		classification1.addChildTaxon(taxon1, null, null, null);
+		classification1.addChildTaxon(taxon1, null, null);
 		
 		assertTrue(classification1.isTaxonInTree(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
@@ -176,10 +177,10 @@ public class ClassificationTest {
 	 */
 	@Test
 	public void testMakeRootChildOfOtherNode() {
-		TaxonNode root1 = classification1.addChildTaxon(taxon1, null, null, null);
-		TaxonNode root2 = classification1.addChildTaxon(taxon2, null, null, null);
+		TaxonNode root1 = classification1.addChildTaxon(taxon1, null, null);
+		TaxonNode root2 = classification1.addChildTaxon(taxon2, null, null);
 		Taxon taxon3 = Taxon.NewInstance(null, null);
-		root2.addChildTaxon(taxon3, null, null, null);
+		root2.addChildTaxon(taxon3, null, null);
 		String microRef = "p55";
 		
 		assertFalse("Root1 must not yet be child of root 2", root2.getChildNodes().contains(root1));
@@ -201,7 +202,7 @@ public class ClassificationTest {
 	
 	@Test
 	public void testIsTopmostInTree() {
-		TaxonNode root = classification1.addChildTaxon(taxon1, null, null, null);
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
 		
 		assertTrue(classification1.isTaxonInTree(taxon1));
 		assertTrue(classification1.isTopmostInTree(taxon1));
@@ -209,21 +210,21 @@ public class ClassificationTest {
 		assertFalse(classification1.isTaxonInTree(anyTaxon));
 		assertFalse(classification1.isTopmostInTree(anyTaxon));
 		Taxon child = Taxon.NewInstance(null, null);
-		root.addChildTaxon(child, null, null, null);
+		root.addChildTaxon(child, null, null);
 		assertTrue(classification1.isTaxonInTree(child));
 		assertFalse(classification1.isTopmostInTree(child));
 	}
 	
 	@Test
 	public void testGetTopmostNode() {
-		TaxonNode root = classification1.addChildTaxon(taxon1, null, null, null);
+		TaxonNode root = classification1.addChildTaxon(taxon1, null, null);
 		
 		assertEquals(root, classification1.getTopmostNode(taxon1));
 		Taxon anyTaxon = Taxon.NewInstance(null, null);
 		assertFalse(classification1.isTaxonInTree(anyTaxon));
 		assertNull(classification1.getTopmostNode(anyTaxon));
 		Taxon child = Taxon.NewInstance(null, null);
-		root.addChildTaxon(child, null, null, null);
+		root.addChildTaxon(child, null, null);
 		assertTrue(classification1.isTaxonInTree(child));
 		assertNull(classification1.getTopmostNode(child));
 	}
@@ -233,7 +234,8 @@ public class ClassificationTest {
 
 		TaxonNameBase<?,?> synonymName = BotanicalName.NewInstance(Rank.SPECIES());
 		Synonym synonym = Synonym.NewInstance(synonymName, ref1);
-		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null, synonym);
+		TaxonNode rootNode = classification1.addChildTaxon(taxon1, null, null);
+		rootNode.setSynonymToBeUsed(synonym);
 		Assert.assertEquals(0,rootNode.getChildNodes().size());
 		
 		//add child to existing root
@@ -406,17 +408,17 @@ public class ClassificationTest {
 	@Test
 	public void testCloneClassification(){
 		
-		taxonNode1 = classification1.addChildTaxon(taxon1, null, null, null);
+		taxonNode1 = classification1.addChildTaxon(taxon1, null, null);
 		taxonName1.setTitleCache("name1");
 		taxonName12.setTitleCache("name12");
 		taxonName121.setTitleCache("name121");
 		taxonName2.setTitleCache("name2");
 		taxonName3.setTitleCache("name3");
 		
-		taxonNode12 = taxonNode1.addChildTaxon(taxon12, null, null, null);
-		taxonNode121 = taxonNode12.addChildTaxon(taxon121, null, null, null);
-		taxonNode2 = classification1.addChildTaxon(taxon2, null, null, null);
-		taxonNode2.addChildTaxon(taxon3, null, null, null);
+		taxonNode12 = taxonNode1.addChildTaxon(taxon12, null, null);
+		taxonNode121 = taxonNode12.addChildTaxon(taxon121, null, null);
+		taxonNode2 = classification1.addChildTaxon(taxon2, null, null);
+		taxonNode2.addChildTaxon(taxon3, null, null);
 		Classification clone = (Classification)classification1.clone();
 		assertEquals(classification1.getAllNodes().size(), clone.getAllNodes().size());
 		TaxonNode cloneNode = clone.getNode(taxon1);

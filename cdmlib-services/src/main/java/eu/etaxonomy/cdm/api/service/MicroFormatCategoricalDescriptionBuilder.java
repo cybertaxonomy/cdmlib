@@ -6,9 +6,9 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -24,9 +24,9 @@ public class MicroFormatCategoricalDescriptionBuilder extends AbstractCategorica
 		for (Iterator<StateData> sd = states.iterator() ; sd.hasNext() ;){
 			StateData stateData = sd.next();
 			State s = stateData.getState();
-			Set<Modifier> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply written one after the other
-			for (Iterator<Modifier> mod = modifiers.iterator() ; mod.hasNext() ;){
-				Modifier modifier = mod.next();
+			Set<DefinedTerm> modifiers = stateData.getModifiers(); // the states and their according modifiers are simply written one after the other
+			for (Iterator<DefinedTerm> mod = modifiers.iterator() ; mod.hasNext() ;){
+				DefinedTerm modifier = mod.next();
 				CategoricalDescription.append(" " + spanClass("modifier") + modifier.getPreferredRepresentation(languages).getLabel() + spanEnd);
 			}
 			CategoricalDescription.append(" " + spanClass("state") + s.getPreferredRepresentation(languages).getLabel() + spanEnd);

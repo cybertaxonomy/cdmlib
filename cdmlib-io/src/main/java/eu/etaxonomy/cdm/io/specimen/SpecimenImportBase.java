@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.io.common.ImportStateBase;
 /**
  * @author p.kelbert
  * @created 20.10.2008
- * @version 1.0
  */
 public abstract class SpecimenImportBase<CONFIG extends IImportConfigurator, STATE extends ImportStateBase>  extends CdmImportBase<CONFIG, STATE> {
 	@SuppressWarnings("unused")

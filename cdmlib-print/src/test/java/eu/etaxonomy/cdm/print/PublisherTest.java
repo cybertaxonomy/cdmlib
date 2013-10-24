@@ -23,6 +23,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
+import eu.etaxonomy.cdm.print.out.mediawiki.MediawikiOutputModule;
 import eu.etaxonomy.cdm.print.out.odf.OdfOutputModule;
 import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
 
@@ -51,7 +52,7 @@ public class PublisherTest {
 		configurator = PublishConfigurator.NewRemoteInstance();
 		
 		configurator.setWebserviceUrl("http://localhost:8080/");
-		/////configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/");//central africa production
+		//configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/");//central africa production
 		//configurator.setWebserviceUrl("http://dev.e-taxonomy.eu/cdmserver/caryophyllales/");					
 		//http://160.45.63.201/cdmserver/flora_central_africa
 		//http://dev.e-taxonomy.eu/cdmserver/flora_central_africa/
@@ -63,7 +64,9 @@ public class PublisherTest {
 		
 		//TODO: How do we get the uuid for the feature tree from the classification or taxonNode without hardcoding it?
 		//configurator.setFeatureTree(UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c"));//caryophyllales		
-		configurator.setFeatureTree(UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7"));//Ericaceae
+		//configurator.setFeatureTree(UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7"));//Ericaceae
+		configurator.setFeatureTree(UUID.fromString("051d35ee-22f1-42d8-be07-9e9bfec5bcf7"));
+		//configurator.setFeatureTree(UUID.fromString("ae9615b8-bc60-4ed0-ad96-897f9226d568"));//ae9615b8-bc60-4ed0-ad96-897f9226d568 cichorieae
 		
 //		Element selectedTaxonNodeElement = new Element("TaxonNode");
 //		configurator.addSelectedTaxonNodeElements(selectedTaxonNodeElement);		
@@ -78,7 +81,8 @@ public class PublisherTest {
 		//taxonNodeUuid a605e87e-113e-4ebd-ad97-f086b734b4da FeatureTree UUID 051d35ee-22f1-42d8-be07-9e9bfec5bcf7
 		//UUID taxonNodeUuid = UUID.fromString("be6566eb-4661-41fe-8ec2-caf885a12cbd");//5168a18b-c0b1-44cc-80aa-7a5572fefe04
 		//UUID taxonNodeUuid = UUID.fromString("a605e87e-113e-4ebd-ad97-f086b734b4da");//Ericaceae
-		UUID taxonNodeUuid = UUID.fromString("0044aae4-721b-4726-85ff-752a89cff748");
+		UUID taxonNodeUuid = UUID.fromString("0044aae4-721b-4726-85ff-752a89cff748");//restionaceae
+		//UUID taxonNodeUuid = UUID.fromString("6a7ac1ad-2fd9-4218-8132-12dd463d04b9");// cf74ab02-2385-4818-9d56-902fa3e6fe6b 4f6c68d0-63f2-4235-83c2-5bff14532f90 cichorieae.
 		//restionaceae 0044aae4-721b-4726-85ff-752a89cff748
 		//UUID taxonNodeUuid = UUID.fromString("9440bd28-b462-4112-8906-a643b7d3f195");//caryophyllales
 		Element taxonNodeElement = factory.getTaxonNode(taxonNodeUuid);
@@ -137,7 +141,13 @@ public class PublisherTest {
 	 */
 	@Ignore
 	public void testPublishXml() {
-		configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new XMLOutputModule()}));
+		
+		List<IPublishOutputModule> modules = new ArrayList();
+		//modules.add(new XMLOutputModule());
+		modules.add(new MediawikiOutputModule());
+		configurator.setOutputModules(modules);
+		
+		//configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new XMLOutputModule()}));
 		logger.warn("The number of selected taxon node elements is........ " + configurator.getSelectedTaxonNodeElements().size());
 		
 		Publisher.publish(configurator);

@@ -25,19 +25,22 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.AccountStore;
+import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CdmUpdater;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
+import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -45,7 +48,9 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 public class Datasource {
 	private static final Logger logger = Logger.getLogger(Datasource.class);
@@ -53,17 +58,78 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
+		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 		System.out.println(lsDataSources);
 //		CdmPersistentDataSource dataSource = lsDataSources.get(0);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+		
 		String server = "localhost";
-		String database = "cdm_test";
+//		String database = "cdm_test";
+		String database = "test";
 		String username = "edit";
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-//		CdmPersistentDataSource.save(dataSource.getName(), dataSource);
+		
+//		//SQLServer
+//		database = "CDMTest";
+//		int port = 1433;
+//		username = "pesiexport";
+////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
+//		
+//		//H2
+//		username = "sa";
+////		dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+		
+		
+		CdmUpdater updater = new CdmUpdater();
+		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+		
+		
+		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
+		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		
+//		insertSomeData(appCtr);
+		
+		
+		
 		appCtr.close();
+	}
+
+	private void insertSomeData(CdmApplicationController appCtr) {
+		Classification cl = Classification.NewInstance("myClass");
+		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(null), null), null, null);
+		appCtr.getClassificationService().save(cl);
+		
+		Taxon t2 = Taxon.NewInstance(null, null);
+		t2.setTitleCache("Taxon2", true);
+		TaxonNode node2 = node1.addChildTaxon(t2, null, null);
+		
+		Taxon t3 = Taxon.NewInstance(null, null);
+		t3.setTitleCache("Taxon3", true);
+		TaxonNode node3 = node1.addChildTaxon(t3, 0, null, null);
+		
+		appCtr.getTaxonNodeService().saveOrUpdate(node1);
+		
+		cl.addChildNode(node3, 0, null, null);
+		appCtr.getTaxonNodeService().saveOrUpdate(node3);
+		appCtr.getClassificationService().saveOrUpdate(cl);
+		
+		FeatureTree ft1 = FeatureTree.NewInstance();
+		FeatureNode fn1 = FeatureNode.NewInstance(null);
+		ft1.getRoot().addChild(fn1);
+		appCtr.getFeatureNodeService().save(fn1);
+		
+		FeatureNode fn2 = FeatureNode.NewInstance(null);
+		fn1.addChild(fn2);
+		
+		FeatureNode fn3 = FeatureNode.NewInstance(null);
+		fn1.addChild(fn2, 0);
+		
+		appCtr.getFeatureNodeService().saveOrUpdate(fn1);
+		
+		ft1.getRoot().addChild(fn3, 0);
+		appCtr.getFeatureNodeService().saveOrUpdate(fn3);
+		appCtr.getFeatureTreeService().saveOrUpdate(ft1);
 	}
 	
 	private void testDatabaseChange() throws DataSourceNotFoundException{
@@ -93,41 +159,6 @@ public class Datasource {
 		}
 		
 		appCtr.close();
-	}
-
-	private void testSqlServer(){
-		DbSchemaValidation validation = DbSchemaValidation.CREATE;
-		CdmDataSource ds = 
-			CdmDataSource.NewSqlServer2005Instance("LENOVO-T61", "NielsTest", -1, "Niels", "test", null);
-			//CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
-//		ds =
-//			 CdmPersistentDataSource.NewInstance("localH2");
-		try {
-			CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
-			String sql = "SELECT name, id FROM sys.sysobjects WHERE (xtype = 'U')"; //all tables
-			ResultSet rs = ds.executeQuery(sql);
-			while (rs.next()){
-				String tableName = rs.getString("name");
-				long tableId = rs.getLong("id");
-				sql = "SELECT name FROM sys.sysobjects WHERE xtype='F' and parent_obj = " +  tableId;//get foreignkeys
-				ResultSet rsFk = ds.executeQuery(sql);
-				while (rsFk.next()){
-					String fk = rsFk.getString("name");
-					sql = " ALTER TABLE "+tableName+" DROP CONSTRAINT "+fk + "";
-					ds.executeUpdate(sql);
-				}
-				
-			}
-			
-			Person agent = Person.NewInstance();
-			appCtr.getAgentService().save(agent);
-			TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
-			appCtr.getNameService().save(tn);
-			appCtr.close();
-		} catch (SQLException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 
 	private void testSqlServer2005(){
@@ -211,7 +242,7 @@ public class Datasource {
 			Taxon taxon = Taxon.NewInstance(name, ref);
 			TaxonDescription description = TaxonDescription.NewInstance();
 			taxon.addDescription(description);
-			NamedArea area1 = TdwgArea.getAreaByTdwgAbbreviation("GER");
+			NamedArea area1 = appCtr.getTermService().getAreaByTdwgAbbreviation("GER");
 			Distribution distribution = Distribution.NewInstance(area1, PresenceTerm.PRESENT());
 			description.addElement(distribution);
 			

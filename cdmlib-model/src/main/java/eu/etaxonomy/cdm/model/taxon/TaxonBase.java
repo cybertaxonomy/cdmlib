@@ -61,7 +61,6 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:56
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -69,6 +68,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
     "name",
     "sec",
     "doubtful",
+    "publish",
     "appendedPhrase",
     "useNameCache"
 })
@@ -78,14 +78,14 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
 @Table(appliesTo="TaxonBase", indexes = { @Index(name = "taxonBaseTitleCacheIndex", columnNames = { "titleCache" }) })
 @TaxonNameCannotBeAcceptedAndSynonym(groups = Level3.class)
 @ClassBridges({
-	@ClassBridge(name="classInfo",
-			index = org.hibernate.search.annotations.Index.YES, 
-			store = Store.YES,
-			impl = ClassInfoBridge.class),
-	@ClassBridge(name="accTaxon",
-			index = org.hibernate.search.annotations.Index.YES, 
-			store = Store.YES,
-			impl = AcceptedTaxonBridge.class)
+    @ClassBridge(name="classInfo",
+            index = org.hibernate.search.annotations.Index.YES,
+            store = Store.YES,
+            impl = ClassInfoBridge.class),
+    @ClassBridge(name="accTaxon", // TODO rename to acceptedTaxon, since we are usually not using abbreviations for field names
+            index = org.hibernate.search.annotations.Index.YES,
+            store = Store.YES,
+            impl = AcceptedTaxonBridge.class)
 })
 public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
@@ -108,6 +108,9 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     //The assignment to the Taxon or to the Synonym class is not definitive
     @XmlAttribute(name = "isDoubtful")
     private boolean doubtful;
+    
+    @XmlAttribute(name = "publish")
+    private boolean publish = true;
 
     @XmlElement(name = "Name", required = true)
     @XmlIDREF
@@ -230,8 +233,8 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
     /**
      * Returns the boolean value indicating whether the assignment of <i>this</i>
-     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class is definitive
-     * (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
+     * (abstract) taxon to the {@link Taxon Taxon} or to the {@link Synonym Synonym} class 
+     * is definitive (false) or not (true). If this flag is set the use of <i>this</i> (abstract)
      * taxon as an "accepted/correct" name or as a (junior) "synonym" might
      * still change in the course of taxonomical working process.
      */
@@ -244,6 +247,22 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     public void setDoubtful(boolean doubtful){
         this.doubtful = doubtful;
     }
+    
+
+	/**
+	 * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not 
+	 * (<code>publish=true</code>) during any publication process to the general public.
+	 * This publish flag implementation is preliminary and may be replaced by a more general 
+	 * implementation of READ rights in future.<BR>
+	 * The default value is <code>true</code>.
+	 */
+	public boolean isPublish() {
+		return publish;
+	}
+
+	public void setPublish(boolean publish) {
+		this.publish = publish;
+	}
 
     /**
      * Returns the {@link eu.etaxonomy.cdm.model.reference.Reference reference} of <i>this</i> (abstract) taxon.
@@ -294,7 +313,7 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
     public void setUseNameCache(boolean useNameCache) {
         this.useNameCache = useNameCache;
     }
-    
+
     @Transient
     public abstract boolean isOrphaned();
 //*********************** CLONE ********************************************************/
@@ -322,5 +341,6 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
 
     }
+
 
 }

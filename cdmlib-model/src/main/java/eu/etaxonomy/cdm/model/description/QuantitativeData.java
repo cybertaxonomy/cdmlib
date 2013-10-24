@@ -33,6 +33,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.validator.constraints.NotEmpty;
 
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
@@ -284,7 +285,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setMinimum(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setMinimum(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.MIN());
 	}
 
@@ -298,7 +299,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setMaximum(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setMaximum(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.MAX());
 	}
 	
@@ -312,7 +313,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setAverage(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setAverage(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.AVERAGE());
 	}
 
@@ -326,7 +327,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setStandardDeviation(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setStandardDeviation(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.STANDARD_DEVIATION());
 	}
 
@@ -339,7 +340,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setSampleSize(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setSampleSize(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.SAMPLE_SIZE());
 	}
 
@@ -353,7 +354,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setTypicalLowerBoundary(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setTypicalLowerBoundary(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.TYPICAL_LOWER_BOUNDARY());
 	}
 
@@ -367,7 +368,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @return the newValue
 	 */
 	@Transient
-	public StatisticalMeasurementValue setTypicalUpperBoundary(Float value, Set<Modifier> modifiers){
+	public StatisticalMeasurementValue setTypicalUpperBoundary(Float value, Set<DefinedTerm> modifiers){
 		return setSpecificStatisticalValue(value, modifiers, StatisticalMeasure.TYPICAL_UPPER_BOUNDARY());
 	}
 	
@@ -379,7 +380,7 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	 * @param value
 	 * @return the newValue
 	 */
-	public StatisticalMeasurementValue setSpecificStatisticalValue(Float value, Set<Modifier> modifiers, StatisticalMeasure type){
+	public StatisticalMeasurementValue setSpecificStatisticalValue(Float value, Set<DefinedTerm> modifiers, StatisticalMeasure type){
 		StatisticalMeasurementValue result = null;
 		if (value != null){
 			StatisticalMeasurementValue newValue = StatisticalMeasurementValue.NewInstance();

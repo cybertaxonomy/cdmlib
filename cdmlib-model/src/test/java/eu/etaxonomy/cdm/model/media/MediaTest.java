@@ -84,7 +84,7 @@ public class MediaTest {
         media1.setMediaCreated(new DateTime(2002, 1,1,0,0,0,0));
         languageString1 = LanguageString.NewInstance("media1Desc", Language.DEFAULT());
         media1.addDescription(languageString1);
-        media1.addDescription("media1Desc2", Language.GERMAN());
+        media1.putDescription(Language.GERMAN(), "media1Desc2");
         mediaRepresentation1 = MediaRepresentation.NewInstance();
         mediaRepresentation2 = MediaRepresentation.NewInstance();
         mediaRepresentation1.setMimeType("MimeType1");
@@ -246,9 +246,9 @@ public class MediaTest {
     public void testAddDescriptionStringLanguage() {
         Assert.assertTrue("Clone must have a german language description", media1.getAllDescriptions().containsKey(Language.GERMAN()));
         Assert.assertSame("Description1 must be the same", "media1Desc2", media1.getAllDescriptions().get(Language.GERMAN()).getText() );
-        media1.addDescription("testDesc", Language.DEFAULT());
+        media1.putDescription(Language.DEFAULT(), "testDesc");
         Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
-        media1.addDescription("testDesc2", Language.DEFAULT());
+        media1.putDescription(Language.DEFAULT(), "testDesc2");
         Assert.assertEquals("Number of descriptions must be 2", 2, media1.getAllDescriptions().size() );
         Assert.assertSame("Default language description must be 'testDesc2'", "testDesc2", media1.getAllDescriptions().get(Language.DEFAULT()).getText() );
     }

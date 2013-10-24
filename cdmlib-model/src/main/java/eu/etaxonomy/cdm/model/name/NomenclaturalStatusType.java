@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.name;
 
 
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
@@ -92,7 +94,17 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	private static final UUID uuidValid = UUID.fromString("bd036217-5499-4ccd-8f4c-72e06158db93");
 	private static final UUID uuidOpusUtiqueOppr = UUID.fromString("a5055d80-dbba-4660-b091-a1835d59fe7c");
 	private static final UUID uuidSubnudum = UUID.fromString("92a76bd0-6ea8-493f-98e0-4be0b98c092f");
+	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
 
+	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev, Language language) {
+		return new NomenclaturalStatusType(description, label, labelAbbrev, language);
+	}
+	
+	public static NomenclaturalStatusType NewInstance(String description, String label, String labelAbbrev) {
+		return new NomenclaturalStatusType(description, label, labelAbbrev);
+	}
+		
+	
 	
 	private static Map<String, UUID> abbrevMap = null;
 	private static Map<String, UUID> labelMap = null;
@@ -109,16 +121,12 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	}
 
 	
-	
-// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty nomenclatural status type instance.
-	 * 
-	 * @see 	#NomenclaturalStatusType(String, String, String)
-	 * @see 	#readCsvLine(List, Language)
-	 * @see 	#readCsvLine(List)
-	 */
-	public NomenclaturalStatusType() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected NomenclaturalStatusType() {
+		super(TermType.NomenclaturalStatusType);
 	}
 
 	/** 
@@ -136,10 +144,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see 				 #readCsvLine(List, Language)
 	 * @see 				 #readCsvLine(List)
 	 */
-	public NomenclaturalStatusType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	private NomenclaturalStatusType(String term, String label, String labelAbbrev) {
+		super(TermType.NomenclaturalStatusType, term, label, labelAbbrev);
 	}
 
+	private NomenclaturalStatusType(String term, String label, String labelAbbrev, Language language) {
+		super(TermType.NomenclaturalStatusType);
+		this.addRepresentation(new Representation(term, label, labelAbbrev, language));
+	}
+	
 //********* METHODS **************************************
 
 
@@ -205,7 +218,8 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 				this.equals(CONSERVED()) ||
 				this.equals(ORTHOGRAPHY_CONSERVED()) ||
 				this.equals(REJECTED_PROP()) ||
-				this.equals(UTIQUE_REJECTED_PROP())
+				this.equals(UTIQUE_REJECTED_PROP()) ||
+				this.equals(COMB_NOV())
 			){
 			return true;
 		}else{
@@ -648,6 +662,15 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	public static final NomenclaturalStatusType SUBNUDUM(){
 		return getTermByUuid(uuidSubnudum);
 	}
+	
+	/**
+	 * Returns the nomenclatural status type "comb. nov.". No further information available for now.
+	 * @return
+	 */
+	//TODO javadoc. this term was added for Flore du Gabon
+	public static final NomenclaturalStatusType COMB_NOV(){
+		return getTermByUuid(uuidCombNov);
+	}
 
 	/**
 	 * Returns the nomenclatural status type "opus utique oppressum". This type
@@ -827,10 +850,10 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 	 * @see					eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(List)
 	 */
 
-	public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms) {   //TODO should be List<String> but makes error for some strange reason
+	public NomenclaturalStatusType readCsvLine(Class<NomenclaturalStatusType> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {   //TODO should be List<String> but makes error for some strange reason
 		try {
 			NomenclaturalStatusType newInstance = termClass.newInstance();
-			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN());
+			DefinedTermBase.readCsvLine(newInstance, csvLine, Language.LATIN(), abbrevAsId);
 			return newInstance;
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
@@ -859,24 +882,32 @@ public class NomenclaturalStatusType extends OrderedTermBase<NomenclaturalStatus
 			logger.warn("statusType is NULL");
 			return;
 		}
-		Language lang = Language.LATIN();   
-		Representation representation = statusType.getRepresentation(lang);
-		String abbrevLabel = representation.getAbbreviatedLabel();
-		String label = representation.getLabel();
-		if (abbrevLabel == null){
-			logger.warn("label is NULL");
-			return;
+		List<Language> list = new ArrayList<Language>();
+		list.add(Language.LATIN());
+		list.add(Language.ENGLISH());
+		list.add(Language.DEFAULT());
+		
+		Representation representation = statusType.getPreferredRepresentation(list);
+		if (representation != null){
+			
+			String abbrevLabel = representation.getAbbreviatedLabel();
+			String label = representation.getLabel();
+			if (abbrevLabel == null){
+				logger.warn("label is NULL");
+				return;
+			}
+			//initialize maps
+			if (abbrevMap == null){
+				abbrevMap = new HashMap<String, UUID>();
+			}
+			if (labelMap == null){
+				labelMap = new HashMap<String, UUID>();
+			}
+			//add to map
+			abbrevMap.put(abbrevLabel, statusType.getUuid());
+			labelMap.put(label.toLowerCase(), statusType.getUuid());	
 		}
-		//initialize maps
-		if (abbrevMap == null){
-			abbrevMap = new HashMap<String, UUID>();
-		}
-		if (labelMap == null){
-			labelMap = new HashMap<String, UUID>();
-		}
-		//add to map
-		abbrevMap.put(abbrevLabel, statusType.getUuid());
-		labelMap.put(label.toLowerCase(), statusType.getUuid());	
+		
 	}
 
 

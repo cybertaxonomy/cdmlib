@@ -29,7 +29,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -41,10 +40,11 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -54,15 +54,10 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -70,6 +65,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author p.kelbert
@@ -113,7 +109,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 	protected String identifier;
 	protected String gatheringNotes;
 
-	private DerivedUnitBase derivedUnitBase;
+	private DerivedUnit derivedUnitBase;
 	private Reference<?> ref = null;
 	private TransactionStatus tx;
 	private Classification classification = null;
@@ -197,7 +193,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 		 ref = getReferenceService().find(ref.getUuid());
 		 classification = getClassificationService().find(classification.getUuid());
 		 try{
-			 derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
+			 derivedUnitBase = (DerivedUnit) getOccurrenceService().find(derivedUnitBase.getUuid());
 		 }catch(Exception e){
 			 //logger.warn("derivedunit up to date or not created yet");
 		 }
@@ -459,7 +455,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 		 }
 		 if (!exist){
 			 taxon = (Taxon) getTaxonService().find(taxon.getUuid());
-			 classification.addChildTaxon(taxon, ref, "", null);
+			 classification.addChildTaxon(taxon, ref, null);
 			 getClassificationService().saveOrUpdate(classification);
 			 //            refreshTransaction();
 		 }
@@ -491,7 +487,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 			 }
 		 }
 		 if (nomenclatureCode.toString().equals("Botanical")){
-			 taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICBN,null);
+			 taxonName  = nvnpi.parseFullName(scientificName,NomenclaturalCode.ICNAFP,null);
 			 if (taxonName.hasProblem()) {
 				 problem=true;
 			 }}
@@ -522,41 +518,41 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 	 }
 
 	 private DerivedUnitFacade getFacade() {
-		 // logger.info("GETFACADE");
-		 /**
-		  * SPECIMEN OR OBSERVATION OR LIVING
-		  */
-		 // DerivedUnitBase derivedThing = null;
-		 DerivedUnitType type = null;
+	       // logger.info("GETFACADE");
+	        /**
+	         * SPECIMEN OR OBSERVATION OR LIVING
+	         */
+	        // DerivedUnit derivedThing = null;
+	    	SpecimenOrObservationType type = null;
 
-		 // create specimen
-		 if (recordBasis != null) {
-			 String rec = recordBasis.toLowerCase();
-			 if (rec.contains("specimen") || rec.startsWith("s")) {// specimen
-				 type = DerivedUnitType.Specimen;
-			 }
-			 if (rec.contains("observat") || rec.startsWith("o")) {
-				 type = DerivedUnitType.Observation;
-			 }
-			 if (rec.contains("fossil") || rec.startsWith("f") ){
-				 type = DerivedUnitType.Fossil;
-			 }
+	        // create specimen
+	        if (recordBasis != null) {
+	            String rec = recordBasis.toLowerCase();
+	            if (rec.contains("specimen") || rec.startsWith("s")) {// specimen
+	                type = SpecimenOrObservationType.PreservedSpecimen;
+	            }
+	            if (rec.contains("observat") || rec.startsWith("o")) {
+	                type = SpecimenOrObservationType.Observation;
+	            }
+	            if (rec.contains("fossil") || rec.startsWith("f") ){
+	                type = SpecimenOrObservationType.Fossil;
+	            }
 
-			 if (rec.contains("living") || rec.startsWith("l")) {
-				 type = DerivedUnitType.LivingBeing;
-			 }
-			 if (type == null) {
-				 if(DEBUG) {
-					 logger.info("The basis of record does not seem to be known: "   + recordBasis);
-				 }
-				 type = DerivedUnitType.DerivedUnit;
-			 }
-		 } else {
-			 logger.info("The basis of record is null");
-			 type = DerivedUnitType.DerivedUnit;
-		 }
-		 DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
-		 return derivedUnitFacade;
+	            if (rec.contains("living") || rec.startsWith("l")) {
+	                type = SpecimenOrObservationType.LivingSpecimen;
+	            }
+	            if (type == null) {
+	                if(DEBUG) {
+	                    logger.info("The basis of record does not seem to be known: "   + recordBasis);
+	                }
+	                type = SpecimenOrObservationType.DerivedUnit;
+	            }
+	        } else {
+	            logger.info("The basis of record is null");
+	            type = SpecimenOrObservationType.DerivedUnit;
+	        }
+	        DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(type);
+	        return derivedUnitFacade;
 	 }
 
 	 /*
@@ -581,9 +577,9 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 			 if (!originalsource.isEmpty()){
 				 Reference<?> reference = ReferenceFactory.newGeneric();
 				 reference.setTitleCache(originalsource, true);
-				 derivedUnitBase.addSource(originalsource, "", reference, "");
+				 derivedUnitBase.addSource(OriginalSourceType.Import, originalsource, "", reference, "");
 			 }else{
-				 derivedUnitBase.addSource(unitID,"",ref,ref.getCitation());
+				 derivedUnitBase.addSource(OriginalSourceType.Import, unitID,"",ref,ref.getCitation());
 			 }
 			 /**
 			  * INSTITUTION & COLLECTION
@@ -655,7 +651,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
 			 }else{
 				 if (!gatheringDate.isEmpty()){
-					 TimePeriod tp = TimePeriod.parseString(gatheringDate);
+					 TimePeriod tp = TimePeriodParser.parseString(gatheringDate);
 					 unitsGatheringEvent.setGatheringDate(tp);
 				 }
 			 }
@@ -701,21 +697,28 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
 
 	 private Feature makeFeature(SpecimenOrObservationBase unit) {
-		 if (unit.isInstanceOf(DerivedUnit.class)) {
-			 return Feature.INDIVIDUALS_ASSOCIATION();
-		 } else if (unit.isInstanceOf(FieldObservation.class)
-				 || unit.isInstanceOf(Observation.class)) {
-			 return Feature.OBSERVATION();
-		 } else if (unit.isInstanceOf(Fossil.class)
-				 || unit.isInstanceOf(LivingBeing.class)
-				 || unit.isInstanceOf(Specimen.class)) {
-			 return Feature.SPECIMEN();
-		 }
-		 if (DEBUG) {
-			 logger.warn("No feature defined for derived unit class: "
-					 + unit.getClass().getSimpleName());
-		 }
-		 return null;
+	        if (unit == null){
+	        	return null;
+	        }
+	        SpecimenOrObservationType type = unit.getRecordBasis();
+	    	
+	    	if (type.isFeatureObservation()){
+	        	return Feature.OBSERVATION();
+	        }else if (type.isPreservedSpecimen() || 
+	        		type == SpecimenOrObservationType.LivingSpecimen ||
+	        	    type == SpecimenOrObservationType.OtherSpecimen
+	        		){
+	        	return Feature.SPECIMEN();
+	        }else if (type == SpecimenOrObservationType.Unknown || 
+	        		type == SpecimenOrObservationType.DerivedUnit 
+	        		) {
+	            return Feature.INDIVIDUALS_ASSOCIATION();
+	        }
+	        if (DEBUG) {
+	            logger.warn("No feature defined for derived unit class: "
+	                    + unit.getClass().getSimpleName());
+	        }
+	        return null;
 	 }
 
 	 private void makeIndividualsAssociation(Taxon taxon, DeterminationEvent determinationEvent, SpecimenSynthesysExcelImportConfigurator config) {
@@ -744,9 +747,9 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 		 indAssociation.setFeature(feature);
 
 		 for (Reference<?> citation : determinationEvent.getReferences()) {
-			 indAssociation.addSource(DescriptionElementSource.NewInstance(null, null, citation, null));
+			 indAssociation.addSource(DescriptionElementSource.NewInstance(OriginalSourceType.Import, null, null, citation, null));
 		 }
-		 indAssociation.addSource(null,null,config.getDataReference(),null);
+		 indAssociation.addSource(OriginalSourceType.Import, null,null,config.getDataReference(),null);
 
 		 taxonDescription.addElement(indAssociation);
 		 taxonDescription.setTaxon(taxon);
@@ -774,7 +777,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 		 if (state.getConfig().doAskForDate()) {
 			 keepAtomisedDate = askQuestion("Gathering dates can be stored in either atomised fieds (day month year) or in a concatenated field."+
 					 "\nWhich value do you want to store?\nPress 1 for the atomised, press 2 for the concatenated field, and then press enter.");
-			 useTDWGarea = askQuestion("Use TDWG area or WaterbodyOrCountry/namedarea?\n Press 1 for TDWG areas\n Press 2 for classics WaterbodyOrCountry.");
+			 useTDWGarea = askQuestion("Use TDWG area or Country/namedarea?\n Press 1 for TDWG areas\n Press 2 for classics Country.");
 		 }
 
 		 tx = startTransaction();

@@ -39,12 +39,13 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.Scope;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -142,7 +143,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         //languages
         List<Language> langs = LocaleContext.getLanguages();
 
-        Set<Scope> scopes = null;
+        Set<DefinedTerm> scopes = null;
         Set<NamedArea> geographicalScope = null;
         Integer pageSize = null;
         Integer pageNumber = null;
@@ -185,7 +186,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         String bbox = null;
         String backLayer = null;
         Boolean doReturnImage = null;
-        Map<Class<? extends SpecimenOrObservationBase>, Color> specimenOrObservationTypeColors = null;
+        Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
         ModelAndView mv = new ModelAndView();

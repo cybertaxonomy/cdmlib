@@ -16,8 +16,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import javax.sql.DataSource;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
@@ -85,25 +83,22 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		return false;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getSingleValue(java.lang.String)
-	 */
 	@Override
 	public Object getSingleValue(String query) throws SQLException{
 		String queryString = query == null? "(null)": query;  
 		ResultSet resultSet = executeQuery(query);
 		if (resultSet == null || resultSet.next() == false){
-			logger.warn("No record returned for query " +  queryString);
+			logger.info("No record returned for query " +  queryString);
 			return null;
 		}
 		if (resultSet.getMetaData().getColumnCount() != 1){
-			logger.warn("More than one column selected in query" +  queryString);
-			return null;
+			logger.info("More than one column selected in query" +  queryString);
+			//first value will be taken
 		}
 		Object object = resultSet.getObject(1);
 		if (resultSet.next()){
-			logger.warn("Multiple results for query " +  queryString);
-			return null;
+			logger.info("Multiple results for query " +  queryString);
+			//first row will be taken
 		}
 		return object;
 	}
@@ -172,9 +167,9 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	public void startTransaction() {
 		try {
 			Connection connection = getConnection();
-			connection.setAutoCommit(false);
 			this.connection = connection;
-	    	return;
+			connection.setAutoCommit(false);
+			return;
 		} catch(SQLException e) {
 			logger.error("Problems when starting transaction \n" + "Exception: " + e);
 			return;

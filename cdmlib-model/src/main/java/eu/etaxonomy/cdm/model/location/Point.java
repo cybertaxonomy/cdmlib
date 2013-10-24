@@ -39,7 +39,7 @@ import org.hibernate.search.annotations.Spatial;
 import org.hibernate.search.annotations.SpatialMode;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter;
 import eu.etaxonomy.cdm.strategy.parser.location.CoordinateConverter.ConversionResults;
 
@@ -641,7 +641,7 @@ public class Point implements Cloneable, Serializable {
      * Clones <i>this</i> point. This is a shortcut that enables to
      * create a new instance that differs only slightly from <i>this</i> point
      * by modifying only some of the attributes.<BR>
-     * This method overrides the clone method from {@link DerivedUnitBase DerivedUnitBase}.
+     * This method overrides the clone method from {@link DerivedUnit DerivedUnit}.
      *
      * @see java.lang.Object#clone()
      */

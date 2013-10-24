@@ -16,16 +16,16 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.common.CdmMetaData;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 
 /**
+ * Common updater base class for updating schema or terms.
  * @author a.mueller
  * @date 16.11.2010
  *
  */
 public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdater<U>> implements IUpdater<U> {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TermUpdaterBase.class);
 	
 	protected List<T> list;
@@ -55,23 +55,24 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	
 	private boolean isToBeInvoked(ICdmDataSource datasource, IProgressMonitor monitor) {
 		boolean result = true;
-		String datasourceSchemaVersion;
+		String datasourceVersion;
 		try {
-			datasourceSchemaVersion = getCurrentVersion(datasource, monitor);
+			datasourceVersion = getCurrentVersion(datasource, monitor);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
 		}
 		
-		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
-		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceVersion, monitor);
+		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceVersion, monitor);
 //		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
-		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceSchemaVersion, monitor);
+		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
+		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceVersion, monitor);
 		
 		result &= isDatasourceBeforeMyTargetVersion;
-		result &= !(isAfterMyStartVersion /*&& isBeforeMyTargetVersion*/);
+		result &= !(isAfterMyStartVersion && isBeforeMyTargetVersion);
 		result &= ! (isBeforeMyStartVersion && getPreviousUpdater() == null);
-//		result &= !isBeforeMyTargetVersion;
+		result &= !isBeforeMyTargetVersion;
 		return result;
 	}
 	
@@ -88,20 +89,20 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	@Override
 	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
 		boolean result = true;
-		String datasourceSchemaVersion;
+		String datasourceVersion;
 		try {
-			datasourceSchemaVersion = getCurrentVersion(datasource, monitor);
+			datasourceVersion = getCurrentVersion(datasource, monitor);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
 		}		
 
 		
-		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceSchemaVersion, monitor);
-		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceSchemaVersion, monitor);
+		boolean isAfterMyStartVersion = isAfterMyStartVersion(datasourceVersion, monitor);
+		boolean isBeforeMyStartVersion = isBeforeMyStartVersion(datasourceVersion, monitor);
 //		boolean isAfterMyTargetVersion = isAfterMyTargetVersion(targetVersion, monitor);
 		boolean isBeforeMyTargetVersion = isBeforeMyTargetVersion(targetVersion, monitor);
-		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceSchemaVersion, monitor);
+		boolean isDatasourceBeforeMyTargetVersion = isBeforeMyTargetVersion(datasourceVersion, monitor);
 		
 		
 		
@@ -140,7 +141,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 		if (result == false){
 			return result;
 		}
-		datasource.startTransaction();
+//		datasource.startTransaction();  transaction already started by CdmUpdater
 		try {
 			for (T step : list){
 				result &= handleSingleStep(datasource, monitor, result, step, false);
@@ -148,8 +149,6 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 					break;
 				}
 			}
-			// TODO schema version gets updated even if something went utterly wrong while executing the steps
-			// I don't think we want this to happen
 			if (result == true){
 				result &= updateVersion(datasource, monitor);
 			}else{
@@ -157,13 +156,9 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 			}
 			
 		} catch (Exception e) {
+			datasource.rollback();
 			logger.error("Error occurred while trying to run updater: " + this.getClass().getName());
 			result = false;
-		}
-		if (result == false){
-			datasource.commitTransaction();
-		}else{
-			datasource.rollback();
 		}
 		return result;
 	
@@ -184,7 +179,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				monitor.worked(1);
 //			}
 		} catch (Exception e) {
-			monitor.warning("Monitor: Exception occurred while updating schema", e);
+			monitor.warning("Monitor: Exception occurred while handling single schema updating step", e);
 			datasource.rollback();
 			result = false;
 		}

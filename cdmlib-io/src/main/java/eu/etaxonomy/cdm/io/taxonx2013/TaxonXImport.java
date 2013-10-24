@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -55,7 +55,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
 
     private TaxonXImportState taxonXstate;
     private TaxonXDataHolder dataHolder;
-    private DerivedUnitBase derivedUnitBase;
+    private DerivedUnit derivedUnitBase;
 
     private TransactionStatus tx;
 
@@ -281,7 +281,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         ref = getReferenceService().find(ref.getUuid());
         classification = getClassificationService().find(classification.getUuid());
         try{
-            derivedUnitBase = (DerivedUnitBase) getOccurrenceService().find(derivedUnitBase.getUuid());
+            derivedUnitBase = (DerivedUnit) getOccurrenceService().find(derivedUnitBase.getUuid());
         }catch(Exception e){
             //logger.warn("derivedunit up to date or not created yet");
         }

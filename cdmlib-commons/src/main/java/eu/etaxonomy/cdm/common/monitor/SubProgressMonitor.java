@@ -147,9 +147,11 @@ public class SubProgressMonitor extends ProgressMonitorWrapper {
         sentToParent = 0;
     }
 
-    /* (Intentionally not javadoc'd)
-     * Implements the internal method <code>IProgressMonitor.internalWorked</code>.
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.common.monitor.ProgressMonitorWrapper#internalWorked(double)
      */
+    @Override
     public void internalWorked(double work) {
         if (usedUp || nestedBeginTasks != 1) {
             return;

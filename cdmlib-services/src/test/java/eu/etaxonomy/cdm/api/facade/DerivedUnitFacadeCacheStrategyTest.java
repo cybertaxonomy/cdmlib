@@ -9,23 +9,21 @@
 */
 package eu.etaxonomy.cdm.api.facade;
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.description.Sex;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -33,10 +31,11 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
 /**
@@ -48,20 +47,20 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeCacheStrategyTest.class);
 
-	Specimen specimen;
+	DerivedUnit specimen;
 	DerivationEvent derivationEvent;
-	FieldObservation fieldObservation;
+	FieldUnit fieldUnit;
 	GatheringEvent gatheringEvent;
 	Integer absoluteElevation = 40;
 	Integer absoluteElevationError = 2;
 	Team collector = Team.NewInstance();
 	String collectingMethod = "Collection Method";
-	Integer distanceToGround = 22;
-	Integer distanceToSurface = 50;
+	Double distanceToGround = 22.0;
+	Double distanceToSurface = 50.0;
 	ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
 	Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
 	String gatheringEventDescription = "A nice gathering description";
-	TimePeriod gatheringPeriod = TimePeriod.parseString("03.05.2005");
+	TimePeriod gatheringPeriod = TimePeriodParser.parseString("03.05.2005");
 	String ecology = "sand dunes";
 	String plantDescription = "flowers blue";
 
@@ -70,10 +69,10 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	Person primaryCollector;
 
 	Integer individualCount = 1;
-	Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
-	Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
+	DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
+	DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
 	LanguageString locality = LanguageString.NewInstance("Berlin-Dahlem, E side of Englerallee", Language.DEFAULT());
-	NamedArea country = WaterbodyOrCountry.GERMANY();
+	NamedArea country = Country.GERMANY();
 
 	String exsiccatum = "Greuter, Pl. Dahlem. 456";
 	String accessionNumber = "8909756";
@@ -82,14 +81,14 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	String collectorsNumber = "234589913A34";
 	Collection collection = Collection.NewInstance();
 
-	PreservationMethod preservationMethod = PreservationMethod.NewInstance("my prservation", null, null);
+	PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
 
 	DerivedUnitFacade specimenFacade;
 
-	Specimen collectionSpecimen;
+	DerivedUnit collectionSpecimen;
 	GatheringEvent existingGatheringEvent;
 	DerivationEvent firstDerivationEvent;
-	FieldObservation firstFieldObject;
+	FieldUnit firstFieldObject;
 	Media media1 = Media.NewInstance();
 
 
@@ -110,16 +109,16 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		specimen = Specimen.NewInstance();
+		specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
 		derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
 		specimen.setDerivedFrom(derivationEvent);
-		fieldObservation = FieldObservation.NewInstance();
-		fieldObservation.addDerivationEvent(derivationEvent);
+		fieldUnit = FieldUnit.NewInstance();
+		fieldUnit.addDerivationEvent(derivationEvent);
 		gatheringEvent = GatheringEvent.NewInstance();
-		fieldObservation.setGatheringEvent(gatheringEvent);
+		fieldUnit.setGatheringEvent(gatheringEvent);
 		gatheringEvent.setAbsoluteElevation(absoluteElevation);
-		gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
+//		gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
 		gatheringEvent.setActor(collector);
 		gatheringEvent.setCollectingMethod(collectingMethod);
 		gatheringEvent.setDistanceToGround(distanceToGround);
@@ -131,11 +130,11 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		gatheringEvent.setLocality(locality);
 		gatheringEvent.setCountry(country);
 
-		fieldObservation.setFieldNumber(fieldNumber);
-		fieldObservation.setFieldNotes(fieldNotes);
-		fieldObservation.setIndividualCount(individualCount);
-		fieldObservation.setSex(sex);
-		fieldObservation.setLifeStage(lifeStage);
+		fieldUnit.setFieldNumber(fieldNumber);
+		fieldUnit.setFieldNotes(fieldNotes);
+		fieldUnit.setIndividualCount(individualCount);
+		fieldUnit.setSex(sex);
+		fieldUnit.setLifeStage(lifeStage);
 		primaryCollector = Person.NewTitledInstance("Kilian");
 		collector.addTeamMember(primaryCollector);
 		Person secondCollector = Person.NewInstance();
@@ -144,7 +143,7 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		collector.addTeamMember(secondCollector);
 		Person thirdCollector = Person.NewTitledInstance("Kohlbecker");
 		collector.addTeamMember(thirdCollector);
-		fieldObservation.setPrimaryCollector(primaryCollector);
+		fieldUnit.setPrimaryCollector(primaryCollector);
 
 		specimen.setAccessionNumber(accessionNumber);
 		specimen.setCatalogNumber(catalogNumber);
@@ -156,9 +155,9 @@ public class DerivedUnitFacadeCacheStrategyTest extends CdmIntegrationTest {
 		specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
 		//existing specimen with 2 derivation events in line
-		collectionSpecimen = Specimen.NewInstance();
-		Specimen middleSpecimen = Specimen.NewInstance();
-		firstFieldObject = FieldObservation.NewInstance();
+		collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+		DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+		firstFieldObject = FieldUnit.NewInstance();
 
 		//TODO maybe we should define concrete event types here
 		DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(null);

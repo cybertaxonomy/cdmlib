@@ -22,12 +22,10 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  * @date 16.09.2010
  *
  */
-public class UniqueIndexDropper extends SchemaUpdaterStepBase<UniqueIndexDropper> implements ISchemaUpdaterStep {
+public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndexDropper> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(UniqueIndexDropper.class);
 	
-	private String tableName;
 	private String indexColumn;
-	private boolean includeAudTable;
 	
 	public static final UniqueIndexDropper NewInstance(String tableName, String indexColumn, boolean includeAudTable){
 		String stepName = "Drop index " + tableName + "-" + indexColumn;
@@ -42,32 +40,16 @@ public class UniqueIndexDropper extends SchemaUpdaterStepBase<UniqueIndexDropper
 		this.includeAudTable = includeAudTable;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		boolean result = true;
-		result &= dropIndex(tableName, datasource, monitor);
-		if (includeAudTable){
-			String aud = "_AUD";
-			result &= dropIndex(tableName + aud, datasource, monitor);
-		}
-		return (result == true )? 0 : null;
-	}
-
-	private boolean dropIndex(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
 		try {
 			if (checkExists(datasource)){
 				String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
 				datasource.executeUpdate(updateQuery);
 			}
 			return true;
-		} catch ( DatabaseTypeNotSupportedException e) {
-			e.printStackTrace();
-			return false;
-		} catch ( SQLException e) {
-			e.printStackTrace();
+		} catch ( Exception e) {
+			monitor.warning(e.getMessage(), e);
 			return false;
 		}
 	}

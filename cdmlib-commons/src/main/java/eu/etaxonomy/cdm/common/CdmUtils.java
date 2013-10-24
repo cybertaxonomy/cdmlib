@@ -29,6 +29,7 @@ import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 /**
@@ -259,6 +260,30 @@ public class CdmUtils {
         String[] strings = {string1, string2};
         return concat(separator, strings);
     }
+    
+	
+	/**
+	 * Returns <code>preferred</code> if not blank, else returns <code>alternative</code>.
+	 * If reverse is <code>true</code> computation is 
+	 * the other way round (<code>alternative</code> if not blank, otherwise <code>preferred</code>).
+	 * @param preferred first string
+	 * @param alternative second string
+	 * @param reverse reverse flag
+	 * @param nzTrim if <code>true</code> the result is trimmed and <code>null</code> values are replaced by empty string.
+	 * @return the preferred string
+	 */
+	static public String getPreferredNonEmptyString(String preferred, String alternative, boolean reverse, boolean nzTrim){
+		String result;
+		if (! reverse){
+			result = StringUtils.isBlank(preferred) ? alternative : preferred;
+		}else{
+			result = StringUtils.isBlank(alternative) ? preferred : alternative;
+		}
+		if (nzTrim){
+			result = Nz(result).trim();
+		}
+		return result;
+	}
 
 
     /** Returns a version of the input where all contiguous

@@ -22,8 +22,7 @@ import org.apache.lucene.index.MultiReader;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.IndexSearcher;
-import org.hibernate.search.Search;
-import org.hibernate.search.SearchFactory;
+import org.apache.lucene.search.SortField;
 import org.hibernate.search.indexes.IndexReaderAccessor;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -40,28 +39,64 @@ public class LuceneMultiSearch extends LuceneSearch {
 
     public static final Logger logger = Logger.getLogger(LuceneMultiSearch.class);
 
-    private Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
+    private final Set<Class<? extends CdmBase>> directorySelectClasses = new HashSet<Class<? extends CdmBase>>();
 
 
     /**
      * @param luceneSearch the searches to execute together as a union like search
+     * @throws Exception
      */
-    public LuceneMultiSearch(LuceneSearch... luceneSearch) {
-        session = luceneSearch[0].session;
+    public LuceneMultiSearch(ILuceneIndexToolProvider toolProvider, LuceneSearch... luceneSearch) throws LuceneMultiSearchException {
 
+        this.toolProvider = toolProvider;
+        groupByField = null; //reset
         BooleanQuery query = new BooleanQuery();
 
         Set<String> highlightFields = new HashSet<String>();
+        List<SortField> multiSearcherSortFields = new ArrayList<SortField>();
 
         for(LuceneSearch search : luceneSearch){
+
             this.directorySelectClasses.add(search.getDirectorySelectClass());
             query.add(search.getQuery(), Occur.SHOULD);
+
+            // add the highlightFields from each of the sub searches
             highlightFields.addAll(Arrays.asList(search.getHighlightFields()));
+
+            // set the class for each of the sub searches
+            if(search.cdmTypeRestriction != null){
+                if(cdmTypeRestriction != null && !cdmTypeRestriction.equals(search.cdmTypeRestriction)){
+                    throw new LuceneMultiSearchException(
+                            "LuceneMultiSearch can only handle once class restriction, but multiple given: " +
+                            getCdmTypRestriction() + ", " + search.getCdmTypRestriction());
+                }
+                setCdmTypRestriction(search.getCdmTypRestriction());
+            }
+
+            // set the groupByField for each of the sub searches
+            if(search.groupByField != null){
+                if(groupByField != null && !groupByField.equals(search.groupByField)){
+                    throw new LuceneMultiSearchException(
+                            "LuceneMultiSearch can only handle once groupByField, but multiple given: " +
+                            groupByField + ", " + search.groupByField);
+                }
+                groupByField = search.groupByField;
+            }
+
+
+            // add the sort field from each of the sub searches
+            if(search.getSortFields() != null) {
+                for(SortField addField : search.getSortFields()){
+                    if(! multiSearcherSortFields.contains(addField)) {
+                        multiSearcherSortFields.add(addField);
+                    }
+                }
+            }
         }
 
+        this.sortFields = multiSearcherSortFields.toArray(new SortField[multiSearcherSortFields.size()]);
         this.highlightFields = highlightFields.toArray(new String[highlightFields.size()]);
         this.query = query;
-
     }
 
     /**
@@ -71,19 +106,17 @@ public class LuceneMultiSearch extends LuceneSearch {
     public IndexSearcher getSearcher() {
 
         if(searcher == null){
-
-            SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
             List<IndexReader> readers = new ArrayList<IndexReader>();
             for(Class<? extends CdmBase> type : directorySelectClasses){
-            	   //OLD
+                   //OLD
 //                DirectoryProvider[] directoryProviders = searchFactory.getDirectoryProviders(type);
 //                logger.info(directoryProviders[0].getDirectory().toString());
 
 //                ReaderProvider readerProvider = searchFactory.getReaderProvider();
-            	IndexReaderAccessor ira = searchFactory.getIndexReaderAccessor(); 
-            	IndexReader reader = ira.open(type);
+                IndexReaderAccessor ira = toolProvider.getIndexReaderAccessor();
+                IndexReader reader = ira.open(type);
 //            	readers.add(readerProvider.openReader(directoryProviders[0]));
-            	readers.add(reader);
+                readers.add(reader);
             }
             if(readers.size() > 1){
                 MultiReader multireader = new MultiReader(readers.toArray(new IndexReader[readers.size()]), true);
@@ -105,10 +138,9 @@ public class LuceneMultiSearch extends LuceneSearch {
      */
     @Override
     public Analyzer getAnalyzer() {
-        SearchFactory searchFactory = Search.getFullTextSession(session).getSearchFactory();
         Analyzer analyzer = null;
         for(Class<? extends CdmBase> type : directorySelectClasses){
-            Analyzer a = searchFactory.getAnalyzer(type);
+            Analyzer a = toolProvider.getAnalyzerFor(type);
             if(isEqual(analyzer, a)){
                 throw new RuntimeException("The LuceneMultiSearch must only be used on indexes which are using the same Analyzer.");
             }
@@ -116,6 +148,7 @@ public class LuceneMultiSearch extends LuceneSearch {
         }
         return analyzer;
     }
+
 
     /**
      * @param analyzer

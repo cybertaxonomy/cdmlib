@@ -17,6 +17,9 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+	static final long serialVersionUID = -8535065052672341462L;
+
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BookDefaultCacheStrategy.class);
 	
 	private String prefixEdition = "ed.";
@@ -54,16 +57,16 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 
 
 	@Override
-	public String getNomRefTitleWithoutYearAndAuthor(T nomenclaturalReference){
-		if (nomenclaturalReference == null){
+	public String getTitleWithoutYearAndAuthor(T ref, boolean isAbbrev){
+		if (ref == null){
 			return null;
 		}
 		//TODO
-		String titelAbbrev = CdmUtils.Nz(nomenclaturalReference.getTitle()).trim();
-		String edition = CdmUtils.Nz(nomenclaturalReference.getEdition()).trim();
+		String title = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
+		String edition = CdmUtils.Nz(ref.getEdition()).trim();
 		//TODO
 		String series = ""; //nomenclaturalReference.getSeries();
-		String volume = CdmUtils.Nz(nomenclaturalReference.getVolume()).trim();
+		String volume = CdmUtils.Nz(ref.getVolume()).trim();
 		String refYear = "";  //TODO nomenclaturalReference.getYear();
 
 
@@ -72,23 +75,23 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 		Integer len;
 		String lastChar;
 		String character =".";
-		len = titelAbbrev.length();
+		len = title.length();
 		if (len > 0){
-			lastChar = titelAbbrev.substring(len-1, len);
+			lastChar = title.substring(len-1, len);
 		}
 		//lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
-		lastCharIsDouble = titelAbbrev.equals(character);
+		lastCharIsDouble = title.equals(character);
 
 		if(lastCharIsDouble  && edition.length() == 0 && series.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
-			titelAbbrev =  titelAbbrev.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
+			title =  title.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
 		}
 
 		
 		boolean needsComma = false;
 		//titelAbbrev
-		if (!"".equals(titelAbbrev) ){
+		if (!"".equals(title) ){
 			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
-			nomRefCache = titelAbbrev + postfix; 
+			nomRefCache = title + postfix; 
 		}
 		//edition
 		String editionPart = "";

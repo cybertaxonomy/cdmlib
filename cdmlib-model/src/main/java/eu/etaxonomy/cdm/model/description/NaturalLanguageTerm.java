@@ -19,6 +19,7 @@ import org.hibernate.search.annotations.Indexed;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 @XmlAccessorType(XmlAccessType.PROPERTY)
@@ -44,6 +45,27 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 	
 	private static final UUID uuidTo = UUID.fromString("9087cdcd-8b08-4082-a1de-34c9ba9fb494");
 	
+	
+	public static  NaturalLanguageTerm NewInstance(String term, String label, String labelAbbrev) {
+		return new NaturalLanguageTerm(term, label, labelAbbrev);
+	}
+
+	
+//********************************** Constructor *******************************************************************/	
+
+	//for hibernate use only
+	@Deprecated
+	protected NaturalLanguageTerm() {
+		super(TermType.NaturalLanguageTerm);
+	}
+	
+	private NaturalLanguageTerm(String term, String label, String labelAbbrev) {
+		super(TermType.NaturalLanguageTerm, term, label, labelAbbrev);
+	}
+	
+//********************************** Methods *******************************************************************/	
+	
+	
 	@Override
 	protected void setDefaultTerms(
 			TermVocabulary<NaturalLanguageTerm> termVocabulary) {
@@ -51,14 +73,6 @@ public class NaturalLanguageTerm extends DefinedTermBase<NaturalLanguageTerm> {
 		//NaturalLanguageTerm.TO.setLabel("eip");
 
 	}
-	
-	public NaturalLanguageTerm() {
-	}
-	
-	public NaturalLanguageTerm(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
-	}
-	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#resetTerms()

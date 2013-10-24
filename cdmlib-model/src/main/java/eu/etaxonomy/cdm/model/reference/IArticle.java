@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.strategy.cache.reference.ArticleDefaultCacheStrategy;
  * <li> "MagazineArticle"
  * </ul>
  */
-public interface IArticle extends ISectionBase, IVolumeReference, INomenclaturalReference{
+public interface IArticle extends ISection, IVolumeReference, INomenclaturalReference{
 	
 	/**
 	 * Returns the series information for this article

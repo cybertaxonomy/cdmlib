@@ -99,49 +99,49 @@ public class IdentificationKeyGeneratorTest {
 		State s11 = State.NewInstance("","Triangular","");
 		State s12 = State.NewInstance("","Circular","");
 		sd11.setState(s11);
-		catd11.addState(sd11);
+		catd11.addStateData(sd11);
 		
 		CategoricalData catd12 = CategoricalData.NewInstance();
 		catd12.setFeature(feature1);
 		StateData sd12 = StateData.NewInstance();
 		sd12.setState(s11);
-		catd12.addState(sd12);
+		catd12.addStateData(sd12);
 		
 		CategoricalData catd13 = CategoricalData.NewInstance();
 		catd13.setFeature(feature1);
 		StateData sd13 = StateData.NewInstance();
 		sd13.setState(s11);
-		catd13.addState(sd13);
+		catd13.addStateData(sd13);
 		
 		CategoricalData catd14 = CategoricalData.NewInstance();
 		catd14.setFeature(feature1);
 		StateData sd14 = StateData.NewInstance();
 		sd14.setState(s11);
-		catd14.addState(sd14);
+		catd14.addStateData(sd14);
 		
 		CategoricalData catd15 = CategoricalData.NewInstance();
 		catd15.setFeature(feature1);
 		StateData sd15 = StateData.NewInstance();
 		sd15.setState(s12);
-		catd15.addState(sd15);
+		catd15.addStateData(sd15);
 		
 		CategoricalData catd16 = CategoricalData.NewInstance();
 		catd16.setFeature(feature1);
 		StateData sd16 = StateData.NewInstance();
 		sd16.setState(s12);
-		catd16.addState(sd16);
+		catd16.addStateData(sd16);
 		
 		CategoricalData catd17 = CategoricalData.NewInstance();
 		catd17.setFeature(feature1);
 		StateData sd17 = StateData.NewInstance();
 		sd17.setState(s12);
-		catd17.addState(sd17);
+		catd17.addStateData(sd17);
 		
 		CategoricalData catd18 = CategoricalData.NewInstance();
 		catd18.setFeature(feature1);
 		StateData sd18 = StateData.NewInstance();
 		sd18.setState(s12);
-		catd18.addState(sd18);
+		catd18.addStateData(sd18);
 		
 		/*************************/
 		
@@ -151,49 +151,49 @@ public class IdentificationKeyGeneratorTest {
 		State s21 = State.NewInstance("","Yes","");
 		State s22 = State.NewInstance("","No","");
 		sd21.setState(s21);
-		catd21.addState(sd21);
+		catd21.addStateData(sd21);
 		
 		CategoricalData catd22 = CategoricalData.NewInstance();
 		catd22.setFeature(feature2);
 		StateData sd22 = StateData.NewInstance();
 		sd22.setState(s21);
-		catd22.addState(sd22);
+		catd22.addStateData(sd22);
 		
 		CategoricalData catd23 = CategoricalData.NewInstance();
 		catd23.setFeature(feature2);
 		StateData sd23 = StateData.NewInstance();
 		sd23.setState(s21);
-		catd23.addState(sd23);
+		catd23.addStateData(sd23);
 		
 		CategoricalData catd24 = CategoricalData.NewInstance();
 		catd24.setFeature(feature2);
 		StateData sd24 = StateData.NewInstance();
 		sd24.setState(s21);
-		catd24.addState(sd24);
+		catd24.addStateData(sd24);
 		
 		CategoricalData catd25 = CategoricalData.NewInstance();
 		catd25.setFeature(feature2);
 		StateData sd25 = StateData.NewInstance();
 		sd25.setState(s21);
-		catd25.addState(sd25);
+		catd25.addStateData(sd25);
 		
 		CategoricalData catd26 = CategoricalData.NewInstance();
 		catd26.setFeature(feature2);
 		StateData sd26 = StateData.NewInstance();
 		sd26.setState(s21);
-		catd26.addState(sd26);
+		catd26.addStateData(sd26);
 		
 		CategoricalData catd27 = CategoricalData.NewInstance();
 		catd27.setFeature(feature2);
 		StateData sd27 = StateData.NewInstance();
 		sd27.setState(s21);
-		catd27.addState(sd27);
+		catd27.addStateData(sd27);
 		
 		CategoricalData catd28 = CategoricalData.NewInstance();
 		catd28.setFeature(feature2);
 		StateData sd28 = StateData.NewInstance();
 		sd28.setState(s22);
-		catd28.addState(sd28);
+		catd28.addStateData(sd28);
 		
 		/*************************/
 		
@@ -301,49 +301,49 @@ public class IdentificationKeyGeneratorTest {
 		State s41 = State.NewInstance("","Blue","");
 		State s42 = State.NewInstance("","Yellow","");
 		sd41.setState(s41);
-		catd41.addState(sd41);
+		catd41.addStateData(sd41);
 		
 		CategoricalData catd42 = CategoricalData.NewInstance();
 		catd42.setFeature(feature4);
 		StateData sd42 = StateData.NewInstance();
 		sd42.setState(s42);
-		catd42.addState(sd42);
+		catd42.addStateData(sd42);
 		
 		CategoricalData catd43 = CategoricalData.NewInstance();
 		catd43.setFeature(feature4);
 		StateData sd43 = StateData.NewInstance();
 		sd43.setState(s41);
-		catd43.addState(sd43);
+		catd43.addStateData(sd43);
 		
 		CategoricalData catd44 = CategoricalData.NewInstance();
 		catd44.setFeature(feature4);
 		StateData sd44 = StateData.NewInstance();
 		sd44.setState(s42);
-		catd44.addState(sd44);
+		catd44.addStateData(sd44);
 		
 		CategoricalData catd45 = CategoricalData.NewInstance();
 		catd45.setFeature(feature4);
 		StateData sd45 = StateData.NewInstance();
 		sd45.setState(s41);
-		catd45.addState(sd45);
+		catd45.addStateData(sd45);
 		
 		CategoricalData catd46 = CategoricalData.NewInstance();
 		catd46.setFeature(feature4);
 		StateData sd46 = StateData.NewInstance();
 		sd46.setState(s41);
-		catd46.addState(sd46);
+		catd46.addStateData(sd46);
 		
 		CategoricalData catd47 = CategoricalData.NewInstance();
 		catd47.setFeature(feature4);
 		StateData sd47 = StateData.NewInstance();
 		sd47.setState(s41);
-		catd47.addState(sd47);
+		catd47.addStateData(sd47);
 		
 		CategoricalData catd48 = CategoricalData.NewInstance();
 		catd48.setFeature(feature4);
 		StateData sd48 = StateData.NewInstance();
 		sd48.setState(s41);
-		catd48.addState(sd48);
+		catd48.addStateData(sd48);
 		
 		/*************************/
 		

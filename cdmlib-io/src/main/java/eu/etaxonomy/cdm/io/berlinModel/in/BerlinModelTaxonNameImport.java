@@ -22,6 +22,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelTaxonNameImportValidator;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -36,7 +37,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
@@ -191,12 +191,12 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					}
 					
 					//create TaxonNameBase
-					TaxonNameBase taxonNameBase;
+					TaxonNameBase<?,?> taxonNameBase;
 					if (config.getNomenclaturalCode() != null){
 						taxonNameBase = config.getNomenclaturalCode().getNewTaxonNameInstance(rank);
 						//check cultivar
 						if (taxonNameBase instanceof BotanicalName){
-							if (CdmUtils.isNotEmpty(strCultivarGroupName) && CdmUtils.isNotEmpty(strCultivarName)){
+							if (isNotBlank(strCultivarGroupName) && isNotBlank(strCultivarName)){
 								taxonNameBase = CultivarPlantName.NewInstance(rank);
 							}
 						}
@@ -248,7 +248,7 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 					boolean colExists = true;
 					try {
 						colExists = state.getConfig().getSource().checkColumnExists("Name", "Source_Acc");
-					} catch (NoSuchMethodException e) {
+					} catch (DatabaseTypeNotSupportedException e) {
 						logger.debug("Source does not support 'checkColumnExists'");
 					}
 					if (colExists){
@@ -330,13 +330,13 @@ public class BerlinModelTaxonNameImport extends BerlinModelImportBase {
 	private Rank handleProlesAndRaceSublusus(BerlinModelImportState state, ResultSet rs, Rank rank) throws SQLException {
 		Rank result;
 		String rankAbbrev = rs.getString("RankAbbrev");
-		String rankStr = rs.getString("Rank");
+//		String rankStr = rs.getString("Rank");
 		if (CdmUtils.nullSafeEqual(rankAbbrev, "prol.") ){
-			result = getRank(state, BerlinModelTransformer.uuidRankProles, rankStr, "Rank Proles", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
+			result = Rank.PROLES();
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "race")){
-			result = getRank(state, BerlinModelTransformer.uuidRankRace, rankStr, "Rank Race", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
+			result = Rank.RACE();
 		}else if(CdmUtils.nullSafeEqual(rankAbbrev, "sublusus")){
-			result = getRank(state, BerlinModelTransformer.uuidRankSublusus, rankStr, "Rank Sublusus", rankAbbrev, CdmBase.deproxy(Rank.SPECIES().getVocabulary(), OrderedTermVocabulary.class), Rank.CONVAR());
+			result = Rank.SUBLUSUS();
 		}else{
 			result = rank;
 			logger.warn("Unhandled rank: " + rankAbbrev);

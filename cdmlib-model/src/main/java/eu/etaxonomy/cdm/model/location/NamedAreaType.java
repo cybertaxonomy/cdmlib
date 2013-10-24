@@ -25,12 +25,12 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * Controlled vocabulary to differentiate categories of areas
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:37
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -58,15 +58,17 @@ public class NamedAreaType extends DefinedTermBase<NamedAreaType> {
 		return new NamedAreaType(term, label, labelAbbrev);
 	}
 	
-	/**
-	 * Constructor
-	 */
-	public NamedAreaType(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
-	}
+// *********************** CONSTRUCTOR ******************************/
 	
-	public NamedAreaType(){
+	//for hibernate use only
+	@Deprecated
+	protected NamedAreaType(){
+		super(TermType.NamedAreaType);
 	}	
+
+	private NamedAreaType(String term, String label, String labelAbbrev) {
+		super(TermType.NamedAreaType, term, label, labelAbbrev);
+	}
 	
 //************************** METHODS ********************************
 	

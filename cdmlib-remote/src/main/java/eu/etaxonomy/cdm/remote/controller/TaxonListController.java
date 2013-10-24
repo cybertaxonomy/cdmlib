@@ -29,9 +29,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
+import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -160,7 +161,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             config.setClassification(classification);
         }
 
-        return (Pager<IdentifiableEntity>) service.findTaxaAndNames(config);
+        return service.findTaxaAndNames(config);
 
     }
 
@@ -267,7 +268,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             HttpServletRequest request,
             HttpServletResponse response
             )
-             throws IOException, ParseException {
+             throws IOException, ParseException, LuceneMultiSearchException {
 
          logger.info("findByEverythingFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
 

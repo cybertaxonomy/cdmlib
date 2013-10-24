@@ -40,7 +40,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -117,8 +117,8 @@ public abstract class CsvExportBaseRedlist extends CdmExportBase<CsvTaxExportCon
 		if (area != null){
 			record.setLocationId(area);
 			record.setLocality(area.getLabel());
-			if (area.isInstanceOf(WaterbodyOrCountry.class)){
-				WaterbodyOrCountry country = CdmBase.deproxy(area, WaterbodyOrCountry.class);
+			if (area.isInstanceOf(Country.class)){
+				Country country = CdmBase.deproxy(area, Country.class);
 				record.setCountryCode(country.getIso3166_A2());
 			}
 		}else{

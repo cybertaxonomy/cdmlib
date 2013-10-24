@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -18,7 +18,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.http.HttpException;
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 
@@ -33,9 +32,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  */
 public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
-	
+
 	private String sruVersion = "1.1";
-	
+
 	/**
 	 * The GRIB sru service is available at "http://gso.gbv.de/sru/DB=1.83/"
 	 * The documentation is found at http://bhleurope.gbv.de/#sru from where the following text has been retrieved:
@@ -56,52 +55,49 @@ public class SruServiceWrapper extends ServiceWrapperBase<Reference> {
 	 * </dl>
 	 * </p>
 	 * @param cqlQuery
-	 *            an <b>URL encoded</b> CQL Query string see 
+	 *            an <b>URL encoded</b> CQL Query string see
 	 *            {@link http://www.loc.gov/standards/sru/specs/cql.html} for documentation
 	 * @param recordSchema
 	 * @return
 	 */
 	public List<Reference> doSearchRetrieve(String cqlQuery, String recordSchema){
-		
+
 		List<NameValuePair> pairs = new ArrayList<NameValuePair>();
-		
+
 		SchemaAdapterBase<Reference> schemaAdapter = schemaAdapterMap.get(recordSchema);
 		if(schemaAdapter == null){
 			logger.error("No SchemaAdapter found for " + recordSchema);
 		}
-		
+
 		String sruOperation = "searchRetrieve";
-		
+
 		pairs.add(new BasicNameValuePair("operation", sruOperation));
 		pairs.add(new BasicNameValuePair("version", sruVersion));
 		pairs.add(new BasicNameValuePair("query", cqlQuery));
 		pairs.add(new BasicNameValuePair("recordSchema", recordSchema));
-		
+
 		Map<String, String> requestHeaders = new HashMap<String, String>();
 		requestHeaders.put("Accept-Charset", "UTF-8");
-		
+
 		try {
 			URI requestUri = createUri(null, pairs);
-			
-			
+
+
 			InputStream stream = executeHttpGet(requestUri, requestHeaders);
 			return schemaAdapter.getCmdEntities(stream);
-			
-		} catch (IOException e) { 
+
+		} catch (IOException e) {
 			// thrown by doHttpGet
 			logger.error(e);
 		} catch (URISyntaxException e) {
 			// thrown by createUri
 			logger.error(e);
-		} catch (HttpException e) {
-			// thrown by executeHttpGet
-			logger.error(e);
-		} 
-		
+		}
+
 		return null;
-		
+
 	}
-	
-	
-	
+
+
+
 }

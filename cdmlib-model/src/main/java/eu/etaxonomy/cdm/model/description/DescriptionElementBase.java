@@ -44,13 +44,16 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.jaxb.MultilanguageTextAdapter;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IMultiLanguageTextHolder;
+import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -74,17 +77,17 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
  * </ul>
  *
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:24
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DescriptionElementBase", propOrder = {
-        "feature",
-        "modifiers",
-        "modifyingText",
-        "media",
-        "inDescription",
-        "sources"
+    "feature",
+    "inDescription",
+    "timeperiod",
+    "modifiers",
+    "modifyingText",
+    "media",
+    "sources"
 })
 @Entity
 @Audited
@@ -111,7 +114,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionElementBase_Modifier")
     @IndexedEmbedded(depth=1)
-    private Set<Modifier> modifiers = new HashSet<Modifier>();
+    private Set<DefinedTerm> modifiers = new HashSet<DefinedTerm>();
 
     @XmlElement(name = "ModifyingText")
     @XmlJavaTypeAdapter(MultilanguageTextAdapter.class)
@@ -138,6 +141,9 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     @Cascade(CascadeType.SAVE_UPDATE)
     @IndexedEmbedded
     private DescriptionBase inDescription;
+    
+	@XmlElement(name = "TimePeriod")
+    private TimePeriod timeperiod = TimePeriod.NewInstance();;
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")
@@ -234,10 +240,28 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
     /**
+	 * The point in time, the time period or the season for which this description element 
+	 * is valid. A season may be expressed by not filling the year part(s) of the time period. 
+	 */
+	public TimePeriod getTimeperiod() {
+		return timeperiod;
+	}
+
+	/**
+	 * @see #getTimeperiod()
+	 */
+	public void setTimeperiod(TimePeriod timeperiod) {
+		if (timeperiod == null){
+			timeperiod = TimePeriod.NewInstance();
+		}
+		this.timeperiod = timeperiod;
+	}
+
+	/**
      * Returns the set of {@link Modifier modifiers} used to qualify the validity of
      * <i>this</i> description element. This is only metainformation.
      */
-    public Set<Modifier> getModifiers(){
+    public Set<DefinedTerm> getModifiers(){
         return this.modifiers;
     }
 
@@ -248,7 +272,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @param modifier	the modifier to be added to <i>this</i> description element
      * @see    	   		#getModifiers()
      */
-    public void addModifier(Modifier modifier){
+    public void addModifier(DefinedTerm modifier){
         this.modifiers.add(modifier);
     }
     /**
@@ -259,7 +283,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
      * @see     		#getModifiers()
      * @see     		#addModifier(Modifier)
      */
-    public void removeModifier(Modifier modifier){
+    public void removeModifier(DefinedTerm modifier){
         this.modifiers.remove(modifier);
     }
 
@@ -376,19 +400,43 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     }
 
     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
+     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceType, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
      */
-    public DescriptionElementSource addSource(String id, String idNamespace, Reference citation, String microCitation) {
+    public DescriptionElementSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;
         }
-        DescriptionElementSource source = DescriptionElementSource.NewInstance(id, idNamespace, citation, microCitation);
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(type, id, idNamespace, citation, microCitation);
+        addSource(source);
+        return source;
+    }
+    
+    
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
+     */
+    @Override
+    public DescriptionElementSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
+        if (id == null && idNamespace == null && citation == null && microCitation == null){
+            return null;
+        }
+        DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, id, idNamespace, citation, microCitation);
         addSource(source);
         return source;
     }
 
-    public void addSource(String id, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
-        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(id, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
+    /**
+     * Adds a {@link IOriginalSource source} to this description element.
+     * @param type the type of the source
+     * @param idInSource the id used in the source 
+     * @param idNamespace the namespace for the id in the source
+     * @param citation the source as a {@link Reference reference}
+     * @param microReference the details (e.g. page number) in the reference
+     * @param nameUsedInSource the taxon name used in the source
+     * @param originalNameString the name as text used in the source
+     */
+    public void addSource(OriginalSourceType type, String idInSource, String idNamespace, Reference citation, String microReference, TaxonNameBase nameUsedInSource, String originalNameString){
+        DescriptionElementSource newSource = DescriptionElementSource.NewInstance(type, idInSource, idNamespace, citation, microReference, nameUsedInSource, originalNameString);
         addSource(newSource);
     }
 
@@ -401,22 +449,22 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
 
 // ******************* METHODS *************************************************************/
 
-    protected Map<TermVocabulary, List<Modifier>> makeModifierMap(){
-        Map<TermVocabulary, List<Modifier>> result = new HashMap<TermVocabulary, List<Modifier>>();
-        for (Modifier modifier : getModifiers()){
-            TermVocabulary<Modifier> voc = modifier.getVocabulary();
+    protected Map<TermVocabulary, List<DefinedTerm>> makeModifierMap(){
+        Map<TermVocabulary, List<DefinedTerm>> result = new HashMap<TermVocabulary, List<DefinedTerm>>();
+        for (DefinedTerm modifier : getModifiers()){
+            TermVocabulary<DefinedTerm> voc = modifier.getVocabulary();
             if (result.get(voc) == null){
-                result.put(voc, new ArrayList<Modifier>());
+                result.put(voc, new ArrayList<DefinedTerm>());
             }
             result.get(voc).add(modifier);
         }
         return result;
     }
 
-    public List<Modifier> getModifiers(TermVocabulary voc){
-        List<Modifier> result = makeModifierMap().get(voc);
+    public List<DefinedTerm> getModifiers(TermVocabulary voc){
+        List<DefinedTerm> result = makeModifierMap().get(voc);
         if (result == null){
-            result = new ArrayList<Modifier>();
+            result = new ArrayList<DefinedTerm>();
         }
         return result;
     }
@@ -459,8 +507,8 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         }
 
         //modifiers
-        result.modifiers = new HashSet<Modifier>();
-        for (Modifier modifier : getModifiers()){
+        result.modifiers = new HashSet<DefinedTerm>();
+        for (DefinedTerm modifier : getModifiers()){
             result.modifiers.add(modifier);
         }
 

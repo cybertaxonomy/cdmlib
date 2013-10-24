@@ -137,36 +137,28 @@ public class CdmPostDataChangeObservableListener implements
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.hibernate.event.PostInsertEventListener#onPostInsert(org.hibernate.event.PostInsertEvent)
-	 */
+	@Override
 	public void onPostInsert(PostInsertEvent event) {
 		if(propagateInserts && event.getEntity() instanceof CdmBase){
 			getDefault().notifyObservers(CdmDataChangeEvent.NewInstance(event));
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see org.hibernate.event.PostLoadEventListener#onPostLoad(org.hibernate.event.PostLoadEvent)
-	 */
+	@Override
 	public void onPostLoad(PostLoadEvent event) {
 		if(propagateLoads && event.getEntity() instanceof CdmBase){
 			getDefault().notifyObservers(CdmDataChangeEvent.NewInstance(event));
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.hibernate.event.PostUpdateEventListener#onPostUpdate(org.hibernate.event.PostUpdateEvent)
-	 */
+	@Override
 	public void onPostUpdate(PostUpdateEvent event) {
 		if(propagateUpdates && event.getEntity() instanceof CdmBase){
 			getDefault().notifyObservers(CdmDataChangeEvent.NewInstance(event));
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.hibernate.event.PostDeleteEventListener#onPostDelete(org.hibernate.event.PostDeleteEvent)
-	 */
+	@Override
 	public void onPostDelete(PostDeleteEvent event) {
 		if(propagateDeletes && event.getEntity() instanceof CdmBase){
 			getDefault().notifyObservers(CdmDataChangeEvent.NewInstance(event));

@@ -33,7 +33,6 @@ import eu.etaxonomy.cdm.model.agent.Address;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Contact;
 import eu.etaxonomy.cdm.model.agent.Institution;
-import eu.etaxonomy.cdm.model.agent.InstitutionType;
 import eu.etaxonomy.cdm.model.agent.InstitutionalMembership;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
@@ -42,10 +41,10 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.Figure;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -57,6 +56,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -77,10 +77,7 @@ import eu.etaxonomy.cdm.model.description.MediaKey;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
-import eu.etaxonomy.cdm.model.description.Scope;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -90,26 +87,21 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.description.TextFormat;
-import eu.etaxonomy.cdm.model.location.Continent;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.AudioFile;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MovieFile;
-import eu.etaxonomy.cdm.model.media.ReferencedMediaBase;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.media.RightsTerm;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.GenBankAccession;
-import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.PhylogeneticTree;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.BacterialName;
@@ -136,21 +128,16 @@ import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationModifier;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IBookSection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -159,7 +146,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.persistence.dao.agent.IAgentDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
@@ -177,7 +163,6 @@ import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 /**
  * @author a.mueller
  * @created 27.07.2009
- * @version 1.0
  */
 @Ignore
 public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
@@ -194,7 +179,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 
 	
 	@SpringBeanByType
-	private ITaxonNameDao nameDao;
+	private ITaxonNameDao nameDao; 
 
 	@SpringBeanByType
 	private IAgentDao agentDao;
@@ -233,8 +218,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@Ignore
 	public void testDelete(){
-		Reference ref1 = ReferenceFactory.newBook();
-		Reference ref2 = ReferenceFactory.newBook();
+		Reference<?> ref1 = ReferenceFactory.newBook();
+		Reference<?> ref2 = ReferenceFactory.newBook();
 		Annotation annotation = Annotation.NewInstance("Anno1", null);
 		ref1.addAnnotation(annotation);
 		cdmGenericDao.saveOrUpdate(ref1);
@@ -336,7 +321,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				AgentBase.class,
 				Institution.class, 
 				InstitutionalMembership.class, 
-				InstitutionType.class, 
 				Person.class, 
 				Team.class, 
 				TeamOrPersonBase.class, 
@@ -346,7 +330,6 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				DefinedTermBase.class, 
 				Extension.class, 
 				ExtensionType.class, 
-				Figure.class, 
 				GrantedAuthorityImpl.class, 
 				Group.class, 
 				IdentifiableSource.class,
@@ -362,6 +345,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				Representation.class, 
 				TermVocabulary.class, 
 				User.class, 
+				DefinedTerm.class,
 				
 				AbsenceTerm.class, 
 				CategoricalData.class, 
@@ -378,10 +362,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				PresenceAbsenceTermBase.class, 
 				PresenceTerm.class, 
 				QuantitativeData.class, 
-				Scope.class, 
-				Sex.class, 
 				SpecimenDescription.class, 
-				Stage.class, 
 				State.class, 
 				StateData.class, 
 				StatisticalMeasure.class, 
@@ -391,25 +372,20 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				TaxonNameDescription.class, 
 				TextData.class, 
 				TextFormat.class, 
-				Continent.class, 
 				NamedArea.class, 
 				NamedAreaLevel.class, 
 				NamedAreaType.class, 
 				ReferenceSystem.class, 
-				TdwgArea.class, 
-				WaterbodyOrCountry.class, 
+				Country.class, 
 				AudioFile.class, 
 				ImageFile.class, 
 				Media.class, 
 				MediaRepresentation.class, 
 				MediaRepresentationPart.class, 
 				MovieFile.class, 
-				ReferencedMediaBase.class, 
 				Rights.class, 
-				RightsTerm.class, 
+				RightsType.class, 
 				DnaSample.class, 
-				GenBankAccession.class, 
-				Locus.class, 
 				PhylogeneticTree.class, 
 				Sequence.class, 
 				BacterialName.class, 
@@ -436,16 +412,10 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				DerivationEvent.class, 
 				DerivationEventType.class, 
 				DerivedUnit.class, 
-				DerivedUnitBase.class, 
 				DeterminationEvent.class, 
-				DeterminationModifier.class, 
-				FieldObservation.class, 
-				Fossil.class, 
+				FieldUnit.class, 
 				GatheringEvent.class, 
-				LivingBeing.class, 
-				Observation.class, 
 				PreservationMethod.class, 
-				Specimen.class, 
 				SpecimenOrObservationBase.class, 
 				Reference.class, 
 				Synonym.class, 
@@ -632,8 +602,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		article1.addExtension(extension1);
 		article2.addExtension(extension2);
 		
-		IdentifiableSource source1 = IdentifiableSource.NewInstance();
-		IdentifiableSource source2 = IdentifiableSource.NewInstance();
+		IdentifiableSource source1 = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
+		IdentifiableSource source2 = IdentifiableSource.NewInstance(OriginalSourceType.Unknown);
 		
 		article1.addSource(source1);
 		article2.addSource(source2);
@@ -655,7 +625,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		TaxonDescription taxDesc = TaxonDescription.NewInstance(taxon1);
 		taxDesc.setTitleCache("taxDesc", true);
-		taxDesc.addSource(null, null, article2, null);
+		taxDesc.addSource(OriginalSourceType.Unknown, null, null, article2, null);
 
 		taxonDao.save(taxon1);
 
@@ -766,7 +736,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		String street3 = "Street3";
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));
@@ -822,7 +792,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			if (street3.equals(address.getStreet())){
 				street3Exists = true;
 			}
-			if (WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC() == address.getCountry()){
+			if (Country.ARGENTINAARGENTINEREPUBLIC() == address.getCountry()){
 				country1Exists = true;
 			}
 		}

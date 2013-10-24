@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.hibernate.dialect.Dialect;
+import org.hibernate.dialect.PostgreSQL82Dialect;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
@@ -27,7 +30,7 @@ public class PostgreSQLDatabaseType extends DatabaseTypeBase {
     //port
     private int defaultPort = 5432;
     //hibernate dialect
-    private String hibernateDialect = "PostgreSQLDialect";
+    private Dialect hibernateDialect = new PostgreSQL82Dialect();
 
     private static String dbSeparator = "/";
     

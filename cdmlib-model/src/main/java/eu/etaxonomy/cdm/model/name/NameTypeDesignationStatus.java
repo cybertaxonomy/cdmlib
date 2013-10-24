@@ -24,13 +24,13 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
  * The terms in this class define the status of a {@link NameTypeDesignation name type designation}. 
  * 
  * @author a.babadshanjan
- * @version 1.0
  * @created 20.03.2009
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -78,19 +78,16 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 		return (NameTypeDesignationStatus)termMap.get(uuid);
 	}
 
-	// ************* CONSTRUCTORS *************/	
+	//********************************** Constructor *********************************/	
 
-	/** 
-	 * Class constructor: creates a new empty name type designation status instance.
-	 * 
-	 * @see 	#NameTypeDesignationStatus(String, String, String)
-	 */
-	@Deprecated //public use by term initializer only TODO needs to be changed
-	public NameTypeDesignationStatus() {
+  	//for hibernate use only
+  	@Deprecated
+  	protected NameTypeDesignationStatus() {
+		super (TermType.NameTypeDesignationStatus);
 	}
 	
 	protected NameTypeDesignationStatus(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.NameTypeDesignationStatus, term, label, labelAbbrev);
 	}
 
 //************************** METHODS ********************************
@@ -210,7 +207,7 @@ public class NameTypeDesignationStatus extends TypeDesignationStatusBase<NameTyp
 	 * Returns the boolean value indicating whether <i>this</i> type designation
 	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
 	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the
+	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
 	 * nomenclatural type, when no holotype was indicated at the time of
 	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
 	 * holotype is found to be assigned to taxon names belonging to more than

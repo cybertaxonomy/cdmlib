@@ -15,6 +15,7 @@ import java.util.List;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.Dialect;
 
 import eu.etaxonomy.cdm.database.types.H2DatabaseType;
 import eu.etaxonomy.cdm.database.types.HSqlDbDatabaseType;
@@ -139,8 +140,8 @@ public enum DatabaseTypeEnum {
 	/**
 	 * @return
 	 */
-	public String getHibernateDialect(){
-		return dbType.getHibernateDialect();
+	public String getHibernateDialectCanonicalName(){
+		return dbType.getHibernateDialectCanonicalName();
 	}
 	   
     /**
@@ -162,8 +163,15 @@ public enum DatabaseTypeEnum {
     	logger.debug("Connection String: " + result);	
         return result;
     }
-    
-
+	
+    /**
+     * Returns the {@link Dialect hiberante dialect} used for this database type.
+	 * @return hibernate dialect
+	 */
+    public Dialect getHibernateDialect(){
+    	Dialect result = dbType.getHibernateDialect();
+    	return result;
+    }
 
 	/**
      * Returns the Name of the initialization method to be used when a hibernate datasource is created for this database

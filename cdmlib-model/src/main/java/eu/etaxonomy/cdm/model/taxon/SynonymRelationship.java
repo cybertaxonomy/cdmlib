@@ -68,8 +68,8 @@ import eu.etaxonomy.cdm.validation.annotation.HomotypicSynonymsShouldBelongToGro
 @Audited
 @HomotypicSynonymsShouldBelongToGroup(groups = Level3.class)
 public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, SynonymRelationshipType> {
-	private static final long serialVersionUID = 1615082389452680243L;
-	private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
+    private static final long serialVersionUID = 1615082389452680243L;
+    private static final Logger logger = Logger.getLogger(SynonymRelationship.class);
 
     @XmlElement(name = "IsProParte")
     private boolean proParte = false;
@@ -232,20 +232,24 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
 
     //FIXME Why was this protected - especially since setSynonym is public,
     // making relatedFrom inaccessible outside the package
+    @Override
     protected Synonym getRelatedFrom() {
         return relatedFrom;
     }
 
     //FIXME Why was this protected - especially since setAcceptedTaxon is public,
     // making relatedTo inaccessible outside the package
+    @Override
     protected Taxon getRelatedTo() {
         return relatedTo;
     }
 
+    @Override
     public SynonymRelationshipType getType() {
         return type;
     }
 
+    @Override
     protected void setRelatedFrom(Synonym relatedFrom) {
         if (relatedFrom == null){
             this.deletedObjects.add(this.relatedFrom);
@@ -253,6 +257,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
         this.relatedFrom = relatedFrom;
     }
 
+    @Override
     protected void setRelatedTo(Taxon relatedTo) {
         if (relatedTo == null){
             this.deletedObjects.add(this.relatedTo);
@@ -260,6 +265,7 @@ public class SynonymRelationship extends RelationshipBase<Synonym, Taxon, Synony
         this.relatedTo = relatedTo;
     }
 
+    @Override
     public void setType(SynonymRelationshipType type) {
         this.type = type;
     }

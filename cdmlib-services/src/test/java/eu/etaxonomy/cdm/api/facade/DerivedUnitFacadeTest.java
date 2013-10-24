@@ -27,27 +27,26 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.Sex;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
-import eu.etaxonomy.cdm.model.description.Stage;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -55,14 +54,16 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+
 
 
 /**
@@ -84,16 +85,18 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     private IUserService userService;
 
 
-    Specimen specimen;
+    DerivedUnit specimen;
     DerivationEvent derivationEvent;
-    FieldObservation fieldObservation;
+    FieldUnit fieldUnit;
     GatheringEvent gatheringEvent;
     Integer absoluteElevation = 10;
-    Integer absoluteElevationError = 2;
-    AgentBase collector = Team.NewInstance();
+    Integer absoluteElevationMaximum = 14;
+    AgentBase<?> collector = Team.NewInstance();
     String collectingMethod = "Collection Method";
-    Integer distanceToGround = 22;
-    Integer distanceToSurface = 50;
+    Double distanceToGround = 22.0;
+    Double distanceToSurface = 0.3;
+    Double distanceToSurfaceMax = 0.7;
+    
     ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
     Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
     String gatheringEventDescription = "A nice gathering description";
@@ -103,31 +106,30 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     String fieldNotes = "such a beautiful specimen";
 
     Integer individualCount = 1;
-    Stage lifeStage = Stage.NewInstance("A wonderful stage", "stage", "st");
-    Sex sex = Sex.NewInstance("FemaleMale", "FM", "FM");
+    DefinedTerm lifeStage = DefinedTerm.NewStageInstance("A wonderful stage", "stage", "st");
+    DefinedTerm sex = DefinedTerm.NewSexInstance("FemaleMale", "FM", "FM");
     LanguageString locality = LanguageString.NewInstance("My locality",
             Language.DEFAULT());
 
     String accessionNumber = "888462535";
     String catalogNumber = "UU879873590";
-    TaxonNameBase taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies",
+    TaxonNameBase<?,?> taxonName = BotanicalName.NewInstance(Rank.GENUS(), "Abies",
             null, null, null, null, null, null, null);
     String collectorsNumber = "234589913A34";
     Collection collection = Collection.NewInstance();
-    PreservationMethod preservationMethod = PreservationMethod.NewInstance(
-            "my prservation", null, null);
+    PreservationMethod preservationMethod = PreservationMethod.NewInstance(null, "my prservation");
 
     DerivedUnitFacade specimenFacade;
 
-    Specimen collectionSpecimen;
+    DerivedUnit collectionSpecimen;
     GatheringEvent existingGatheringEvent;
     DerivationEvent firstDerivationEvent;
-    FieldObservation firstFieldObject;
+    FieldUnit firstFieldObject;
     Media media1 = Media.NewInstance();
 
     DerivedUnitFacade emptyFacade;
 
-    NamedArea country = WaterbodyOrCountry.GERMANY();
+    NamedArea country = Country.GERMANY();
 
     // ****************************** SET UP **********************************/
 
@@ -138,20 +140,21 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Before
     public void setUp() throws Exception {
 
-        specimen = Specimen.NewInstance();
+        specimen = DerivedUnit.NewPreservedSpecimenInstance();
 
         derivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         specimen.setDerivedFrom(derivationEvent);
-        fieldObservation = FieldObservation.NewInstance();
-        fieldObservation.addDerivationEvent(derivationEvent);
+        fieldUnit = FieldUnit.NewInstance();
+        fieldUnit.addDerivationEvent(derivationEvent);
         gatheringEvent = GatheringEvent.NewInstance();
-        fieldObservation.setGatheringEvent(gatheringEvent);
+        fieldUnit.setGatheringEvent(gatheringEvent);
         gatheringEvent.setAbsoluteElevation(absoluteElevation);
-        gatheringEvent.setAbsoluteElevationError(absoluteElevationError);
+        gatheringEvent.setAbsoluteElevationMax(absoluteElevationMaximum);
         gatheringEvent.setActor(collector);
         gatheringEvent.setCollectingMethod(collectingMethod);
         gatheringEvent.setDistanceToGround(distanceToGround);
         gatheringEvent.setDistanceToWaterSurface(distanceToSurface);
+        gatheringEvent.setDistanceToWaterSurfaceMax(distanceToSurfaceMax);
         gatheringEvent.setExactLocation(exactLocation);
         gatheringEvent.setDescription(gatheringEventDescription);
         gatheringEvent.setCountry(country);
@@ -159,11 +162,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         gatheringEvent.setTimeperiod(gatheringPeriod);
         gatheringEvent.setLocality(locality);
 
-        fieldObservation.setFieldNumber(fieldNumber);
-        fieldObservation.setFieldNotes(fieldNotes);
-        fieldObservation.setIndividualCount(individualCount);
-        fieldObservation.setSex(sex);
-        fieldObservation.setLifeStage(lifeStage);
+        fieldUnit.setFieldNumber(fieldNumber);
+        fieldUnit.setFieldNotes(fieldNotes);
+        fieldUnit.setIndividualCount(individualCount);
+        fieldUnit.setSex(sex);
+        fieldUnit.setLifeStage(lifeStage);
 
         specimen.setAccessionNumber(accessionNumber);
         specimen.setCatalogNumber(catalogNumber);
@@ -174,9 +177,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade = DerivedUnitFacade.NewInstance(specimen);
 
         // existing specimen with 2 derivation events in line
-        collectionSpecimen = Specimen.NewInstance();
-        Specimen middleSpecimen = Specimen.NewInstance();
-        firstFieldObject = FieldObservation.NewInstance();
+        collectionSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+        DerivedUnit middleSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
+        firstFieldObject = FieldUnit.NewInstance();
 
 		//TODO maybe we should define concrete event types here
         DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
@@ -192,7 +195,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         firstFieldObject.setGatheringEvent(existingGatheringEvent);
 
         // empty facade
-        emptyFacade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        emptyFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 
     }
 
@@ -206,14 +209,14 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         UUID imageFeatureUuid = Feature.IMAGE().getUuid();
         Feature imageFeature = (Feature) termService.find(imageFeatureUuid);
 
-        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         facade.innerDerivedUnit().setUuid(UUID.fromString("77af784f-931b-4857-be9a-48ccf31ed3f1"));
         facade.setFieldNumber("12345");
         Media media = Media.NewInstance(URI.create("www.abc.de"), 200, null,"jpeg");
 
         try {
             SpecimenDescription imageGallery = SpecimenDescription.NewInstance();
-            imageGallery.addDescribedSpecimenOrObservation(facade.innerFieldObservation());
+            imageGallery.setDescribedSpecimenOrObservation(facade.innerFieldUnit());
             imageGallery.setImageGallery(true);
             TextData textData = TextData.NewInstance();
             textData.setFeature(imageFeature);
@@ -228,12 +231,12 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         this.service.save(facade.innerDerivedUnit());
 
          setComplete(); endTransaction();
-         try {if (true){printDataSet(System.out, new
-         String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
-         ,"DERIVATIONEVENT",
-         "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA","DESCRIPTIONBASE_SPECIMENOROBSERVATIONBASE",
-         "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
-         } catch(Exception e) { logger.warn(e);}
+//         try {if (true){printDataSet(System.out, new
+//         String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
+//         ,"DERIVATIONEVENT",
+//         "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA",
+//         "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
+//         } catch(Exception e) { logger.warn(e);}
 
     }
 
@@ -247,14 +250,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // UUID specimenUUID =
         // UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
         // Specimen specimen = (Specimen)service.find(specimenUUID);
-        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         Media media = Media.NewInstance(URI.create("www.derivedUnitImage.de"),200, null, "png");
 
         try {
             SpecimenDescription imageGallery = SpecimenDescription
                     .NewInstance();
-            imageGallery.addDescribedSpecimenOrObservation(facade
-                    .innerDerivedUnit());
+            imageGallery.setDescribedSpecimenOrObservation(facade.innerDerivedUnit());
             imageGallery.setImageGallery(true);
             TextData textData = TextData.NewInstance();
             imageGallery.addElement(textData);
@@ -271,7 +273,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // try {if (true){printDataSet(System.out, new
         // String[]{"HIBERNATE_SEQUENCES","SPECIMENOROBSERVATIONBASE","SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT"
         // ,"DERIVATIONEVENT",
-        // "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA","DESCRIPTIONBASE_SPECIMENOROBSERVATIONBASE",
+        // "DESCRIPTIONBASE","DESCRIPTIONELEMENTBASE","DESCRIPTIONELEMENTBASE_MEDIA",
         // "MEDIA", "MEDIAREPRESENTATION","MEDIAREPRESENTATIONPART"});}
         // } catch(Exception e) { logger.warn(e);}
 
@@ -284,23 +286,20 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     public void testGetFieldObjectImageGalleryBooleanPersisted() {
         UUID specimenUUID = UUID
                 .fromString("25383fc8-789b-4eff-92d3-a770d0622351");
-        Specimen specimen = (Specimen) service.load(specimenUUID);
+        DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
         Assert.assertNotNull("Specimen should exist (persisted)", specimen);
         try {
             DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
-            SpecimenDescription imageGallery = facade
-                    .getFieldObjectImageGallery(true);
+            SpecimenDescription imageGallery = facade.getFieldObjectImageGallery(true);
             Assert.assertNotNull("Image gallery should exist", imageGallery);
             Assert.assertEquals("UUID should be equal to the persisted uuid",
                     UUID.fromString("8cb772e9-1577-45c6-91ab-dbec1413c060"),
                     imageGallery.getUuid());
-            Assert.assertEquals("The image gallery should be flagged as such",
-                    true, imageGallery.isImageGallery());
+            Assert.assertEquals("The image gallery should be flagged as such",true, imageGallery.isImageGallery());
             Assert.assertEquals(
                     "There should be one TextData in image gallery", 1,
                     imageGallery.getElements().size());
-            List<Media> media = imageGallery.getElements().iterator().next()
-                    .getMedia();
+            List<Media> media = imageGallery.getElements().iterator().next().getMedia();
             Assert.assertEquals("There should be 1 media", 1, media.size());
         } catch (DerivedUnitFacadeNotSupportedException e) {
             e.printStackTrace();
@@ -313,7 +312,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 //	@Ignore // TODO generally works causes has id problems with following tests when running in suite
 	public void testGetDerivedUnitImageGalleryBooleanPersisted() {
 		UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
-		Specimen specimen = (Specimen) service.load(specimenUUID);
+		DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
 		Assert.assertNotNull("Specimen should exist (persisted)", specimen);
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
@@ -337,7 +336,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
 	@Test
 	public void testGetDerivedUnitImageGalleryBoolean() {
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		try {
 			DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
 			SpecimenDescription imageGallery = facade.getDerivedUnitImageGallery(true);
@@ -361,8 +360,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         // ???
         // Assert.assertNotNull("The derivation event should have been created",
         // specimenFacade.getSpecimen().getDerivedFrom());
-        // Assert.assertNotNull("The field observation should have been created",
-        // specimenFacade.getFieldObservation());
+        // Assert.assertNotNull("The field unit should have been created",
+        // specimenFacade.getFieldUnit());
         // Assert.assertNotNull("The gathering event should have been created",
         // specimenFacade.getGatheringEvent());
     }
@@ -378,8 +377,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade.innerDerivedUnit());
         Assert.assertSame("Derivation event should be same", derivationEvent,
                 specimenFacade.innerDerivedUnit().getDerivedFrom());
-        Assert.assertSame("Field observation should be same", fieldObservation,
-                specimenFacade.innerFieldObservation());
+        Assert.assertSame("Field unit should be same", fieldUnit,
+                specimenFacade.innerFieldUnit());
         Assert.assertSame("Gathering event should be same", gatheringEvent,
                 specimenFacade.innerGatheringEvent());
 
@@ -387,30 +386,29 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testGatheringEventIsConnectedToDerivedUnit() {
-        Specimen specimen = Specimen.NewInstance();
+    	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-            specimenFacade.setDistanceToGround(2);
-            FieldObservation specimenFieldObservation = (FieldObservation) specimen
-                    .getDerivedFrom().getOriginals().iterator().next();
+            specimenFacade.setDistanceToGround(2.0);
+            FieldUnit specimenFieldUnit = (FieldUnit) specimen.getDerivedFrom().getOriginals().iterator().next();
             Assert.assertSame(
                     "Facade gathering event and specimen gathering event should be the same",
                     specimenFacade.innerGatheringEvent(),
-                    specimenFieldObservation.getGatheringEvent());
+                    specimenFieldUnit.getGatheringEvent());
         } catch (DerivedUnitFacadeNotSupportedException e) {
             Assert.fail("An error should not occur in NewInstance()");
         }
     }
 
     @Test
-    public void testNoGatheringEventAndFieldObservation() {
-        Specimen specimen = Specimen.NewInstance();
+    public void testNoGatheringEventAndFieldUnit() {
+    	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
-            Assert.assertNull("No field observation should exists",
-                    specimenFacade.innerFieldObservation());
+            Assert.assertNull("No field unit should exists",
+                    specimenFacade.innerFieldUnit());
         } catch (DerivedUnitFacadeNotSupportedException e) {
             Assert.fail("An error should not occur in NewInstance()");
         }
@@ -419,7 +417,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testInititializeTextDataWithSupportTest() {
         // TODO
-        Specimen specimen = Specimen.NewInstance();
+    	DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
         DerivedUnitFacade specimenFacade;
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(specimen);
@@ -446,14 +444,14 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testAddGetRemoveCollectingArea() {
         String tdwgLabel = "GER";
-        NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgLabel);
+        NamedArea tdwgArea = termService.getAreaByTdwgAbbreviation(tdwgLabel);
         NamedArea newCollectingArea = NamedArea.NewInstance("A nice area",
                 "nice", "n");
         specimenFacade.addCollectingArea(newCollectingArea);
         Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade
                 .getCollectingAreas().size());
         Assert.assertSame("Areas should be same", newCollectingArea,
-                specimenFacade.innerFieldObservation().getGatheringEvent()
+                specimenFacade.innerFieldUnit().getGatheringEvent()
                         .getCollectingAreas().iterator().next());
         specimenFacade.addCollectingArea(tdwgArea);
         Assert.assertEquals("Exactly 2 areas must exist", 2, specimenFacade
@@ -477,16 +475,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testAddCollectingAreas() {
         NamedArea firstArea = NamedArea.NewInstance("A nice area", "nice", "n");
-        Assert.assertEquals("No area must exist", 0, specimenFacade
-                .getCollectingAreas().size());
+        Assert.assertEquals("No area must exist", 0, specimenFacade.getCollectingAreas().size());
         specimenFacade.addCollectingArea(firstArea);
-        Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade
-                .getCollectingAreas().size());
+        Assert.assertEquals("Exactly 1 area must exist", 1, specimenFacade.getCollectingAreas().size());
 
         String tdwgLabel = "GER";
-        NamedArea tdwgArea = TdwgArea.getAreaByTdwgAbbreviation(tdwgLabel);
-        NamedArea secondArea = NamedArea
-                .NewInstance("A nice area", "nice", "n");
+        NamedArea tdwgArea = termService.getAreaByTdwgAbbreviation(tdwgLabel);
+        NamedArea secondArea = NamedArea.NewInstance("A nice area", "nice", "n");
 
         java.util.Collection<NamedArea> areaCollection = new HashSet<NamedArea>();
         areaCollection.add(secondArea);
@@ -498,12 +493,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     }
 
     /**
-     * Test method for
+     * Test method for getting and setting absolute elevation.
      * {@link eu.etaxonomy.cdm.api.facade.DerivedUnitFacade#getAbsoluteElevation()}
      * .
      */
     @Test
-    @Ignore // #######DerivationEvent --------------------------- 2
     public void testGetSetAbsoluteElevation() {
         Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
         specimenFacade.setAbsoluteElevation(400);
@@ -516,49 +510,75 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      * .
      */
     @Test
-    public void testGetSetAbsoluteElevationError() {
+    public void testGetSetAbsoluteElevationMaximum() {
         Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("Absolute elevation error must be same",absoluteElevationError, specimenFacade.getAbsoluteElevationError());
-        specimenFacade.setAbsoluteElevationError(4);
-        Assert.assertEquals("Absolute elevation error must be 4",Integer.valueOf(4), specimenFacade.getAbsoluteElevationError());
+        Assert.assertEquals("Absolute elevation maximum must be same",absoluteElevationMaximum, specimenFacade.getAbsoluteElevationMaximum());
+        specimenFacade.setAbsoluteElevationMax(4);
+        Assert.assertEquals("Absolute elevation maximum must be 4", Integer.valueOf(4), specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("Absolute elevation must be same",absoluteElevation, specimenFacade.getAbsoluteElevation());
 
     }
 
     @Test
     public void testGetSetAbsoluteElevationRange() {
-        Integer expected = absoluteElevation - 2;
-        Assert.assertEquals("", expected, specimenFacade.getAbsoluteElevationMinimum());
-        expected = absoluteElevation + 2;
-        Assert.assertEquals("", expected,specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
 
         specimenFacade.setAbsoluteElevationRange(30, 36);
         Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
-        Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevationMinimum());
-        Assert.assertEquals("", Integer.valueOf(33),specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("", Integer.valueOf(3),specimenFacade.getAbsoluteElevationError());
+        Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
-
-        try {
-            specimenFacade.setAbsoluteElevationRange(30, 35);
-            Assert.fail("Odd distance needs to throw IllegalArgumentException");
-        } catch (IllegalArgumentException e) {
-            Assert.assertTrue("Exception needs to be thrown", true);
-        }
-
+        specimenFacade.setAbsoluteElevationRange(30, 35);
+        Assert.assertEquals("Odd range should not throw an exception anymore", String.format("30%s35", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
+        
         specimenFacade.setAbsoluteElevationRange(41, null);
-        Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMaximum());
-        Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevationMinimum());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
-        Assert.assertNotNull("", specimenFacade.getAbsoluteElevationError());
-        Assert.assertEquals("", Integer.valueOf(0),specimenFacade.getAbsoluteElevationError());
+        Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
+        Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
+        Assert.assertEquals("", "41",specimenFacade.absoluteElevationToString());
 
         specimenFacade.setAbsoluteElevationRange(null, null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevation());
-        Assert.assertNull("", specimenFacade.getAbsoluteElevationError());
+        Assert.assertNull("", specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertNull("", specimenFacade.absoluteElevationToString());
 
     }
 
+    @Test
+    public void testGetSetAbsoluteElevationText() {
+        Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
+
+        String elevText = "approx. 30 - 35";
+        specimenFacade.setAbsoluteElevationText(elevText);
+        Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
+        Assert.assertEquals("", elevText,specimenFacade.absoluteElevationToString());
+        
+        specimenFacade.setAbsoluteElevationRange(30, 35);
+        Assert.assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", Integer.valueOf(30), specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", Integer.valueOf(35),specimenFacade.getAbsoluteElevationMaximum());
+
+        
+        specimenFacade.setAbsoluteElevationRange(41, null);
+        Assert.assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
+        
+
+        specimenFacade.setAbsoluteElevationText(null);
+        Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
+        Assert.assertEquals("ToString should change by setting text to null", "41",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
+        Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
+    }
+
+    
     /**
      */
     @Test
@@ -593,11 +613,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetSetDistanceToGround() {
-        Assert.assertEquals("Distance to ground must be same",
-                distanceToGround, specimenFacade.getDistanceToGround());
-        specimenFacade.setDistanceToGround(5);
-        Assert.assertEquals("Distance to ground must be 5", Integer.valueOf(5),
-                specimenFacade.getDistanceToGround());
+        Assert.assertEquals("Distance to ground must be same",distanceToGround, specimenFacade.getDistanceToGround());
+        specimenFacade.setDistanceToGround(5.0);
+        Assert.assertEquals("Distance to ground must be 5", Double.valueOf(5), specimenFacade.getDistanceToGround());
     }
 
     /**
@@ -607,29 +625,49 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetDistanceToWaterSurface() {
-        Assert.assertEquals("Distance to surface must be same",
-                distanceToSurface, specimenFacade.getDistanceToWaterSurface());
-        specimenFacade.setDistanceToWaterSurface(6);
-        Assert.assertEquals("Distance to surface must be 6",
-                Integer.valueOf(6), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("Distance to surface must be same", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        specimenFacade.setDistanceToWaterSurface(6.0);
+        Assert.assertEquals("Distance to surface must be 6", Double.valueOf(6), specimenFacade.getDistanceToWaterSurface());
         // empty facade tests
-        Assert.assertNull("Empty facace must not have any gathering values",
-                emptyFacade.getDistanceToWaterSurface());
-        emptyFacade.setDistanceToWaterSurface(13);
-        Assert.assertNotNull(
-                "Field observation must exist if distance to water exists",
-                emptyFacade.getFieldObservation(false));
-        Assert.assertNotNull(
-                "Gathering event must exist if distance to water exists",
-                emptyFacade.getGatheringEvent(false));
-        FieldObservation specimenFieldObservation = (FieldObservation) emptyFacade
-                .innerDerivedUnit().getDerivedFrom().getOriginals().iterator()
-                .next();
-        Assert.assertSame(
-                "Gathering event of facade and of specimen must be the same",
-                specimenFieldObservation.getGatheringEvent(),
-                emptyFacade.getGatheringEvent(false));
+        Assert.assertNull("Empty facace must not have any gathering values", emptyFacade.getDistanceToWaterSurface());
+        emptyFacade.setDistanceToWaterSurface(13.0);
+        Assert.assertNotNull("Field unit must exist if distance to water exists", emptyFacade.getFieldUnit(false));
+        Assert.assertNotNull("Gathering event must exist if distance to water exists", emptyFacade.getGatheringEvent(false));
+        FieldUnit specimenFieldUnit = (FieldUnit) emptyFacade
+                .innerDerivedUnit().getDerivedFrom().getOriginals().iterator().next();
+        Assert.assertSame("Gathering event of facade and of specimen must be the same",
+                specimenFieldUnit.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
     }
+    
+    @Test
+    public void testGetSetDistanceToWaterText() {
+        Assert.assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", distanceToSurfaceMax ,specimenFacade.getDistanceToWaterSurfaceMax());
+        Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceText());
+
+        String distText = "approx. 0.3 - 0.6";
+        specimenFacade.setDistanceToWaterSurfaceText(distText);
+        Assert.assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", distanceToSurfaceMax,specimenFacade.getDistanceToWaterSurfaceMax());
+        Assert.assertEquals("", distText,specimenFacade.distanceToWaterSurfaceToString());
+        
+        specimenFacade.setDistanceToWaterSurfaceRange(0.6, 1.4);
+        Assert.assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("", Double.valueOf(0.6), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", Double.valueOf(1.4),specimenFacade.getDistanceToWaterSurfaceMax());
+
+        specimenFacade.setDistanceToWaterSurfaceRange(41.2, null);
+        Assert.assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
+        
+        specimenFacade.setDistanceToWaterSurfaceText(null);
+        Assert.assertNull("", specimenFacade.getDistanceToWaterSurfaceText());
+        Assert.assertEquals("ToString should change by setting text to null", "41.2",specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
+        Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
+    }
+
 
     /**
      * Test method for
@@ -689,13 +727,11 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
      */
     @Test
     public void testGetTimeperiod() {
-        Assert.assertNotNull("Gathering period must not be null",
-                specimenFacade.getGatheringPeriod());
-        Assert.assertEquals("Gathering period must be same", gatheringPeriod,
-                specimenFacade.getGatheringPeriod());
+        Assert.assertNotNull("Gathering period must not be null", specimenFacade.getGatheringPeriod());
+        Assert.assertFalse("Gathering period must not be empty", specimenFacade.getGatheringPeriod().isEmpty());
+        Assert.assertEquals("Gathering period must be same", gatheringPeriod, specimenFacade.getGatheringPeriod());
         specimenFacade.setGatheringPeriod(null);
-        Assert.assertNull("Gathering period must be null",
-                specimenFacade.getGatheringPeriod());
+        Assert.assertTrue("Gathering period must be null", specimenFacade.getGatheringPeriod().isEmpty());
     }
 
     @Test
@@ -704,23 +740,22 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
             IllegalAccessException {
         // this test depends on the current implementation of SpecimenFacade. In
         // future
-        // field observation may not be initialized from the beginning. Than the
+        // field unit may not be initialized from the beginning. Than the
         // following
         // assert should be set to assertNull
-        Assert.assertTrue(
-                "field object should not be null (depends on specimen facade initialization !!)",
+        Assert.assertTrue("field object should not be null (depends on specimen facade initialization !!)",
                 specimenFacade.hasFieldObject());
 
-        Field fieldObservationField = DerivedUnitFacade.class
-                .getDeclaredField("fieldObservation");
-        fieldObservationField.setAccessible(true);
-        fieldObservationField.set(specimenFacade, null);
-        Assert.assertFalse("The field observation should be null now",
+        Field fieldUnitField = DerivedUnitFacade.class
+                .getDeclaredField("fieldUnit");
+        fieldUnitField.setAccessible(true);
+        fieldUnitField.set(specimenFacade, null);
+        Assert.assertFalse("The field unit should be null now",
                 specimenFacade.hasFieldObject());
 
-        specimenFacade.setDistanceToGround(33);
+        specimenFacade.setDistanceToGround(33.0);
         Assert.assertTrue(
-                "The field observation should have been created again",
+                "The field unit should have been created again",
                 specimenFacade.hasFieldObject());
     }
 
@@ -976,15 +1011,15 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 emptyFacade.getFieldNumber());
         emptyFacade.setFieldNumber("1256A");
         Assert.assertNotNull(
-                "Field observation must exist if field number exists",
-                emptyFacade.getFieldObservation(false));
-        FieldObservation specimenFieldObservation = (FieldObservation) emptyFacade
+                "Field unit must exist if field number exists",
+                emptyFacade.getFieldUnit(false));
+        FieldUnit specimenFieldUnit = (FieldUnit) emptyFacade
                 .innerDerivedUnit().getDerivedFrom().getOriginals().iterator()
                 .next();
         Assert.assertSame(
-                "Field observation of facade and of specimen must be the same",
-                specimenFieldObservation,
-                emptyFacade.getFieldObservation(false));
+                "Field unit of facade and of specimen must be the same",
+                specimenFieldUnit,
+                emptyFacade.getFieldUnit(false));
         Assert.assertEquals("1256A", emptyFacade.getFieldNumber());
     }
 
@@ -1010,12 +1045,12 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Ignore // #######DerivationEvent ---------------------------------------- 1
     public void testSetGatheringEvent() {
         GatheringEvent newGatheringEvent = GatheringEvent.NewInstance();
-        newGatheringEvent.setDistanceToGround(43);
+        newGatheringEvent.setDistanceToGround(43.0);
         Assert.assertFalse("The initial distance to ground should not be 43",
-                specimenFacade.getDistanceToGround() == 43);
+                specimenFacade.getDistanceToGround() == 43.0);
         specimenFacade.setGatheringEvent(newGatheringEvent);
         Assert.assertTrue("The final distance to ground should be 43",
-                specimenFacade.getDistanceToGround() == 43);
+                specimenFacade.getDistanceToGround() == 43.0);
         Assert.assertSame(
                 "The new gathering event should be 'newGatheringEvent'",
                 newGatheringEvent, specimenFacade.innerGatheringEvent());
@@ -1031,8 +1066,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Gathering event must not be null",
                 specimenFacade.innerGatheringEvent());
         Assert.assertEquals(
-                "Gathering event must be field observations gathering event",
-                specimenFacade.innerFieldObservation().getGatheringEvent(),
+                "Gathering event must be field unit's gathering event",
+                specimenFacade.innerFieldUnit().getGatheringEvent(),
                 specimenFacade.innerGatheringEvent());
     }
 
@@ -1327,8 +1362,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         } catch (MethodNotSupportedByDerivedUnitTypeException e) {
             Assert.fail("Method not supported should not be thrown for a specimen");
         }
-        specimenFacade = DerivedUnitFacade
-                .NewInstance(DerivedUnitType.Observation);
+        specimenFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.Observation);
         try {
             specimenFacade.setPreservationMethod(preservationMethod);
             Assert.fail("Method not supported should be thrown for an observation on set preservation method");
@@ -1336,8 +1370,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         } catch (MethodNotSupportedByDerivedUnitTypeException e) {
             // ok
         }
-        specimenFacade = DerivedUnitFacade
-                .NewInstance(DerivedUnitType.LivingBeing);
+        specimenFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.LivingSpecimen);
         try {
             specimenFacade.getPreservationMethod();
             Assert.fail("Method not supported should be thrown for a living being on get preservation method");
@@ -1436,51 +1469,39 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testAddGetRemoveSource() {
-        Assert.assertEquals("No sources should exist yet", 0, specimenFacade
-                .getSources().size());
-        Reference reference = ReferenceFactory.newBook();
-        IdentifiableSource source1 = specimenFacade.addSource(reference, "54",
-                "myName");
-        Assert.assertEquals("One source should exist now", 1, specimenFacade
-                .getSources().size());
-        IdentifiableSource source2 = IdentifiableSource.NewInstance("1",
-                "myTable");
+        Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
+        
+        Reference<?> reference = ReferenceFactory.newBook();
+        IdentifiableSource source1 = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, "54", "myName");
+        Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+        IdentifiableSource source2 = IdentifiableSource.NewDataImportInstance("1", "myTable");
         specimenFacade.addSource(source2);
-        Assert.assertEquals("One source should exist now", 2, specimenFacade
-                .getSources().size());
+        Assert.assertEquals("One source should exist now", 2, specimenFacade.getSources().size());
         specimenFacade.removeSource(source1);
-        Assert.assertEquals("One source should exist now", 1, specimenFacade
-                .getSources().size());
-        Reference reference2 = ReferenceFactory.newJournal();
-        IdentifiableSource sourceNotUsed = specimenFacade.addSource(reference2,
-                null, null);
+        Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
+        Reference<?> reference2 = ReferenceFactory.newJournal();
+        IdentifiableSource sourceNotUsed = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference2,null, null);
         specimenFacade.removeSource(sourceNotUsed);
-        Assert.assertEquals("One source should still exist", 1, specimenFacade
-                .getSources().size());
-        Assert.assertEquals("1", specimenFacade.getSources().iterator().next()
-                .getIdInSource());
+        Assert.assertEquals("One source should still exist", 1, specimenFacade.getSources().size());
+        Assert.assertEquals("1", specimenFacade.getSources().iterator().next().getIdInSource());
         specimenFacade.removeSource(source2);
-        Assert.assertEquals("No sources should exist anymore", 0,
-                specimenFacade.getSources().size());
+        Assert.assertEquals("No sources should exist anymore", 0,specimenFacade.getSources().size());
     }
 
     @Test
     public void testAddGetRemoveDuplicate() {
-        Assert.assertEquals("No duplicates should be available yet", 0,
-                specimenFacade.getDuplicates().size());
-        Specimen newSpecimen1 = Specimen.NewInstance();
+        Assert.assertEquals("No duplicates should be available yet", 0,specimenFacade.getDuplicates().size());
+        DerivedUnit newSpecimen1 = DerivedUnit.NewPreservedSpecimenInstance();
         specimenFacade.addDuplicate(newSpecimen1);
-        Assert.assertEquals("There should be 1 duplicate now", 1,
-                specimenFacade.getDuplicates().size());
-        Specimen newSpecimen2 = Specimen.NewInstance();
+        Assert.assertEquals("There should be 1 duplicate now", 1,specimenFacade.getDuplicates().size());
+        DerivedUnit newSpecimen2 = DerivedUnit.NewPreservedSpecimenInstance();
         DerivationEvent newDerivationEvent = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
         newSpecimen2.setDerivedFrom(newDerivationEvent);
         Assert.assertSame(
                 "The derivation event should be 'newDerivationEvent'",
                 newDerivationEvent, newSpecimen2.getDerivedFrom());
         specimenFacade.addDuplicate(newSpecimen2);
-        Assert.assertEquals("There should be 2 duplicates now", 2,
-                specimenFacade.getDuplicates().size());
+        Assert.assertEquals("There should be 2 duplicates now", 2, specimenFacade.getDuplicates().size());
         Assert.assertNotSame(
                 "The derivation event should not be 'newDerivationEvent' anymore",
                 newDerivationEvent, newSpecimen2.getDerivedFrom());
@@ -1501,9 +1522,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         String catalogNumber = "1234890";
         String accessionNumber = "345345";
         String collectorsNumber = "lkjewe";
-        TaxonNameBase storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
+        TaxonNameBase<?,?> storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
-        Specimen duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
+        DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,
                 catalogNumber, accessionNumber, storedUnder,
                 method);
         Assert.assertEquals("There should be 2 duplicates now", 2,
@@ -1511,10 +1532,8 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.removeDuplicate(newSpecimen2);
         Assert.assertEquals("There should be 1 duplicates now", 1,
                 specimenFacade.getDuplicates().size());
-        Collection sameCollection = specimenFacade.getDuplicates().iterator()
-                .next().getCollection();
-        Assert.assertSame("Collections should be same", newCollection,
-                sameCollection);
+        Collection sameCollection = specimenFacade.getDuplicates().iterator().next().getCollection();
+        Assert.assertSame("Collections should be same", newCollection, sameCollection);
     }
 
     // ************************** Existing Specimen with multiple derivation
@@ -1537,13 +1556,13 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     }
 
     @Test
-    public void testMultipleFieldObservationsNotSupported() {
+    public void testMultipleFieldUnitNotSupported() {
         specimenFacade = null;
-        FieldObservation secondFieldObject = FieldObservation.NewInstance();
+        FieldUnit secondFieldObject = FieldUnit.NewInstance();
         firstDerivationEvent.addOriginal(secondFieldObject);
         try {
             specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
-            Assert.fail("Multiple field observations for one specimen should no be supported by the facade");
+            Assert.fail("Multiple field units for one specimen should no be supported by the facade");
         } catch (DerivedUnitFacadeNotSupportedException e) {
             // ok
         }
@@ -1551,23 +1570,24 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade);
     }
 
-    @Test // #######DerivationEvent
-    public void testOnlyImageGallerySupported() {
-        specimenFacade = null;
-        firstFieldObject.addMedia(media1);
-        try {
-            specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
-            Assert.fail("Only image galleries are supported by the facade but not direct media");
-        } catch (DerivedUnitFacadeNotSupportedException e) {
-            // ok
-        }
-        Assert.assertNull("Specimen facade should not be initialized",
-                specimenFacade);
-    }
+// 	not required anymore #3597   
+//    @Test // #######DerivationEvent
+//    public void testOnlyImageGallerySupported() {
+//        specimenFacade = null;
+//        firstFieldObject.addMedia(media1);
+//        try {
+//            specimenFacade = DerivedUnitFacade.NewInstance(collectionSpecimen);
+//            Assert.fail("Only image galleries are supported by the facade but not direct media");
+//        } catch (DerivedUnitFacadeNotSupportedException e) {
+//            // ok
+//        }
+//        Assert.assertNull("Specimen facade should not be initialized",
+//                specimenFacade);
+//    }
 
     @Test // #######DerivationEvent
     public void testEventPropagation() {
-        specimenFacade.setDistanceToGround(24);
+        specimenFacade.setDistanceToGround(24.0);
 
     }
 
@@ -1608,7 +1628,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, password);
         SecurityContextHolder.getContext().setAuthentication(token);
 
-        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(DerivedUnitType.Specimen);
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         facade.setLocality("testLocality");
         facade.getTitleCache();
 //		facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);

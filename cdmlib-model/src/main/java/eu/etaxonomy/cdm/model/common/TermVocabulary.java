@@ -49,7 +49,6 @@ import org.hibernate.search.annotations.IndexedEmbedded;
  * A single enumeration must only contain DefinedTerm instances of one kind
  * (this means a subclass of DefinedTerm).
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:23
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -88,17 +87,29 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 
 // ********************************* FACTORY METHODS *****************************************/
 
-	public static TermVocabulary NewInstance(String description, String label, String abbrev, URI termSourceUri){
-		return new TermVocabulary(description, label, abbrev, termSourceUri);
+
+	public static TermVocabulary NewInstance(TermType type){
+		return new TermVocabulary(type);
+	}
+	
+	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
+		return new TermVocabulary(type, description, label, abbrev, termSourceUri);
 	}
 
 // ************************* CONSTRUCTOR *************************************************
 
+	//for hibernate use only
+	@Deprecated
 	protected TermVocabulary() {
+		super(TermType.Unknown);
 	}
 
-	protected TermVocabulary(String term, String label, String labelAbbrev, URI termSourceUri) {
-		super(term, label, labelAbbrev);
+	protected TermVocabulary(TermType type) {
+		super(type);
+	}
+	
+	protected TermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
+		super(type, term, label, labelAbbrev);
 		setTermSourceUri(termSourceUri);
 	}
 
@@ -176,7 +187,20 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	public TermVocabulary<T> readCsvLine(List<String> csvLine, Language lang) {
 		this.setUuid(UUID.fromString(csvLine.get(0)));
 		this.setUri(URI.create(csvLine.get(1)));
-		//this.addRepresentation(Representation.NewInstance(csvLine.get(3), csvLine.get(2).trim(), lang) );
+		String label = csvLine.get(2).trim();
+		String description = csvLine.get(3);
+		
+		//see  http://dev.e-taxonomy.eu/trac/ticket/3550
+		this.addRepresentation(Representation.NewInstance(description, label, null, lang) );
+		//preliminary until above is solved
+//		this.setTitleCache(label, true);
+		
+		TermType termType = TermType.getByKey(csvLine.get(4));
+		if (termType == null){
+			throw new IllegalArgumentException("TermType can not be mapped: " + csvLine.get(4));
+		}
+		this.setTermType(termType);
+		
 		return this;
 	}
 
@@ -192,9 +216,9 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 	 */
 	@Override
 	public Object clone() {
-		TermVocabulary result;
+		TermVocabulary<T> result;
 		try {
-			result = (TermVocabulary) super.clone();
+			result = (TermVocabulary<T>) super.clone();
 
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

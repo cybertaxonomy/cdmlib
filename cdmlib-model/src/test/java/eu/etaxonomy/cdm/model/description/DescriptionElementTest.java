@@ -16,25 +16,23 @@ import static org.junit.Assert.assertTrue;
 
 import java.util.List;
 
-import org.junit.Assert;
-
-
-
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -71,17 +69,17 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		Media media = Media.NewInstance(null, 1000, "jpeg", null);
 		categorialData.addMedia(media);
 		
-		DescriptionElementSource source = DescriptionElementSource.NewInstance();
+		DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown);
 		Reference<?> citation = ReferenceFactory.newArticle();
 		citation.setTitle("Test");
 		source.setCitation(citation);
 		categorialData.addSource(source );
 		StateData state = StateData.NewInstance();
-		categorialData.addState(state);
+		categorialData.addStateData(state);
 		
 		indAssociation = IndividualsAssociation.NewInstance();
 		
-		Specimen associatedSpecimen = Specimen.NewInstance();
+		DerivedUnit associatedSpecimen = DerivedUnit.NewPreservedSpecimenInstance();
 		associatedSpecimen.setIndividualCount(2);
 		
 		indAssociation.setAssociatedSpecimenOrObservation(associatedSpecimen);
@@ -111,8 +109,8 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 	@Test
 	public void testCloneCategorialData(){
 		CategoricalData clone = (CategoricalData)categorialData.clone();
-		assertEquals(clone.getStates().size(),categorialData.getStates().size() );
-		assertSame(clone.getStates().get(0), categorialData.getStates().get(0));
+		assertEquals(clone.getStateData().size(),categorialData.getStateData().size() );
+		assertSame(clone.getStateData().get(0), categorialData.getStateData().get(0));
 		assertNotSame(clone, categorialData);
 			
 	}
@@ -146,25 +144,26 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		CategoricalData data = CategoricalData.NewInstance();
 		desc.addElement(data);
 		StateData stateData = StateData.NewInstance();
-		data.addState(stateData);
+		data.addStateData(stateData);
 		
-		TermVocabulary<Modifier> plantPartVoc = TermVocabulary.NewInstance("plant parts", "plant parts", "parts", null);
-		Modifier leaf = Modifier.NewInstance("leaf", "leaf", null);
+		TermType modifierType = TermType.Modifier;
+		TermVocabulary<DefinedTerm> plantPartVoc = TermVocabulary.NewInstance(modifierType,"plant parts", "plant parts", "parts", null);
+		DefinedTerm leaf = DefinedTerm.NewModifierInstance("leaf", "leaf", null);
 		plantPartVoc.addTerm(leaf);
 		data.addModifier(leaf);
-		Modifier peduncle = Modifier.NewInstance("peduncle", "peduncle", null);
+		DefinedTerm peduncle = DefinedTerm.NewModifierInstance("peduncle", "peduncle", null);
 		plantPartVoc.addTerm(peduncle);
 		data.addModifier(peduncle);
-		Modifier notExistingPart = Modifier.NewInstance("not existing part", "not existing part", null);
+		DefinedTerm notExistingPart = DefinedTerm.NewModifierInstance("not existing part", "not existing part", null);
 		plantPartVoc.addTerm(notExistingPart);
 
-		TermVocabulary<Modifier> ethnicGroupVoc = TermVocabulary.NewInstance("An ethnic group", "ethnic group", null, null);
-		Modifier scots = Modifier.NewInstance("Scots ", "Scots", null);
+		TermVocabulary<DefinedTerm> ethnicGroupVoc = TermVocabulary.NewInstance(TermType.Modifier,"An ethnic group", "ethnic group", null, null);
+		DefinedTerm scots = DefinedTerm.NewModifierInstance("Scots ", "Scots", null);
 		ethnicGroupVoc.addTerm(scots);
 		data.addModifier(scots);
 
 		
-		List<Modifier> modifiers = data.getModifiers(plantPartVoc);
+		List<DefinedTerm> modifiers = data.getModifiers(plantPartVoc);
 		Assert.assertEquals("There should be 2 modifiers of type 'plant part'", 2, modifiers.size());
 		Assert.assertEquals("There should be 3 terms in the 'plant part' vocabulary", 3, plantPartVoc.size());
 		Assert.assertEquals("There should be 1 modifiers of type 'ethnic group'", 1, data.getModifiers(ethnicGroupVoc).size());
@@ -172,10 +171,6 @@ private static Logger logger = Logger.getLogger(DescriptionElementTest.class);
 		
 	}
 	
-	
-	
-	
-
 }
 
 

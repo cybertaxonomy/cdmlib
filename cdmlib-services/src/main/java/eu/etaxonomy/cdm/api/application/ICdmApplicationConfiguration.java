@@ -47,7 +47,6 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 /**
  * @author a.mueller
  * @created 21.05.2008
- * @version 1.0
  */
 public interface ICdmApplicationConfiguration {
 

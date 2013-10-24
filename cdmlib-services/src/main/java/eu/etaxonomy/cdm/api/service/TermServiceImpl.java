@@ -19,11 +19,11 @@ import java.util.Locale;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
@@ -40,7 +40,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
@@ -101,9 +100,19 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	 * @see eu.etaxonomy.cdm.api.service.ITermService#getAreaByTdwgAbbreviation(java.lang.String)
 	 */
 	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {
-		//FIXME this is just a placeholder until it is decided where to implement this method 
-		//(see also FIXMEs in TdwgArea)
-		return TdwgArea.getAreaByTdwgAbbreviation(tdwgAbbreviation);
+		if (StringUtils.isBlank(tdwgAbbreviation)){ //TDWG areas should always have a label
+			return null;
+		}
+		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class, null, null);
+		if (list.isEmpty()){
+			return null;
+		}else if (list.size() == 1){
+			return list.get(0);
+		}else{
+			String message = "There is more then 1 (%d) TDWG area with the same abbreviated label. This is forbidden. Check the state of your database.";
+			throw new IllegalStateException(String.format(message, list.size()));
+		}
+		
 	}
 
 	public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {

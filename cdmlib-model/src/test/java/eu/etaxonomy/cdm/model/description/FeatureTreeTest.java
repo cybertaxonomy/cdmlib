@@ -66,8 +66,8 @@ public class FeatureTreeTest {
 		node21.setFeature(Feature.ANATOMY());
 		node1.addChild(node21, 1);
 		
-		assertEquals(node1.getChildren().size(), 2);
-		assertEquals(node1.getChildren().get(1), node21);
+		assertEquals(node1.getChildNodes().size(), 2);
+		assertEquals(node1.getChildNodes().get(1), node21);
 		
 		
 		assertEquals(node21.getParent(), node1);

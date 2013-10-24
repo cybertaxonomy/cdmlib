@@ -17,15 +17,20 @@ import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.api.application.CdmIoApplicationController;
+import eu.etaxonomy.cdm.io.common.CdmDefaultIOBase;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.print.out.pdf.PdfOutputModule;
 import eu.etaxonomy.cdm.print.out.xml.XMLOutputModule;
@@ -43,6 +48,8 @@ public class PubTest {
 	
 	private static Publisher publisher;
 	
+	public static final String DEFAULT_PRINT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultPrintApplicationContext.xml";
+	
 	
 	/**
 	 * @throws java.lang.Exception
@@ -55,7 +62,9 @@ public class PubTest {
 		IProgressMonitor progressMonitor = DefaultProgressMonitor.NewInstance();
 		
 		//Connecting to a CDMDataSource
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(null, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
+		///Resource resource =  new ClassPathResource(CdmDefaultIOBase.DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
+		Resource resource =  new ClassPathResource(DEFAULT_PRINT_APPLICATION_CONTEXT_RESOURCE);
+		ICdmApplicationConfiguration app = CdmIoApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
 		//ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(resource, dataSource, DbSchemaValidation.VALIDATE, false, progressMonitor);
 		//configurator = PublishConfigurator.NewLocalInstance(CdmStore.getCurrentApplicationConfiguration());//from taxeditor GeneratePdfHandler
 		configurator = PublishConfigurator.NewLocalInstance(app);
@@ -84,6 +93,8 @@ public class PubTest {
 	
     private static ICdmDataSource customDataSource() {
 
+    	
+//    	pwd = AccountStore.readOrStorePassword(cdmServer, cdmDB, cdmUserName,pwd);
        String dataSourceName = CdmUtils.readInputLine("Database name: ");
        String username = CdmUtils.readInputLine("Username: ");
        String password = CdmUtils.readInputLine("Password: ");
@@ -91,7 +102,7 @@ public class PubTest {
        dataSourceName = (dataSourceName.equals("")) ? "cdm_test4" : dataSourceName;
        username = (username.equals("")) ? "ljm" : username;
        
-       ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_flora_central_africa", 3306, "edit", password, NomenclaturalCode.ICBN);
+       ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_flora_central_africa", 3306, "edit", password, NomenclaturalCode.ICNAFP);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", dataSourceName, 3306, username, password, NomenclaturalCode.ICBN);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_edit_cichorieae", 3306, "ljm", password, NomenclaturalCode.ICBN);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_cichorieae", 3306, "edit", password, NomenclaturalCode.ICBN);

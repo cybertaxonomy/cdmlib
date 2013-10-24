@@ -206,6 +206,27 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
             int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
     
 	/**
+	 * Fuzzy matching against the name cache using only the lucene index. 
+	 * 
+	 *  
+	 * @param name taxon name to fuzzy match
+	 * @param accuracy value > 0.0 and < 1.0 which determines the accuracy of the result.
+	 * @param languages list of languages to consider when matching (currently not used)
+	 * @param highlightFragments
+	 * @param maxNoOfResults 
+	 * @return
+	 * @throws CorruptIndexException
+	 * @throws IOException
+	 * @throws ParseException
+	 */
+    public List<DocumentSearchResult> findByFuzzyNameCacheSearch(
+            String name,
+            float accuracy,
+            List<Language> languages,
+            boolean highlightFragments, 
+            int maxNoOfResults) throws CorruptIndexException, IOException, ParseException;
+    
+	/**
 	 * Exact matching for the taxon name elements using only the lucene index.
 	 * 
 	 * The input name is first atomised using the {@link NonViralNameParserImpl}

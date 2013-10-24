@@ -334,7 +334,6 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 		
 	}
 
-	@Transactional
 	private void initTaxonTree() {
 		classifications = classificationService.listClassifications(null, null, null, VOC_CLASSIFICATION_INIT_STRATEGY);
 		classificationTree = new Tree("Classifications:");
@@ -349,7 +348,7 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 				setFirst=false;
 			}
 			if(c.hasChildNodes()){
-				Set<TaxonNode> setTaxonNodes = c.getChildNodes();
+				List<TaxonNode> setTaxonNodes = c.getChildNodes();
 				initTaxonTree(setTaxonNodes, c);
 			}
 		}
@@ -458,7 +457,7 @@ public class HelloWorld extends UI implements View, WizardProgressListener{
 	 * @param setTaxonNodes
 	 * @param parent
 	 */
-	private void initTaxonTree(Set<TaxonNode> setTaxonNodes, Object parent) {
+	private void initTaxonTree(List<TaxonNode> setTaxonNodes, Object parent) {
 		List<TaxonNode> listTaxonNodes = new ArrayList<TaxonNode>();
 		listTaxonNodes.addAll(setTaxonNodes);
 		//sorting List

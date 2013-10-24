@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -77,7 +78,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     @XmlSchemaType(name="IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name="DescriptionBase_Scope")
-    private Set<Scope> scopes = new HashSet<Scope>();
+    private Set<DefinedTerm> scopes = new HashSet<DefinedTerm>();
 
     @XmlElementWrapper( name = "GeoScopes")
     @XmlElement( name = "GeoScope")
@@ -97,9 +98,6 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     private Taxon taxon;
 
 
-    public void setTaxon(Taxon taxon) {
-        this.taxon = taxon;
-    }
 
     /**
      * Creates a new empty taxon description instance.
@@ -157,6 +155,10 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     }
 
 
+    public void setTaxon(Taxon taxon) {
+        this.taxon = taxon;
+    }
+
     /**
      * Returns the set of {@link NamedArea named areas} indicating the geospatial
      * data where <i>this</i> taxon description is valid.
@@ -194,7 +196,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
      * restricting the validity of <i>this</i> taxon description. This set
      * of scopes should contain no more than one "sex" and one "life stage".
      */
-    public Set<Scope> getScopes(){
+    public Set<DefinedTerm> getScopes(){
         return this.scopes;
     }
 
@@ -206,7 +208,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
      * @param scope	the scope to be added to <i>this</i> taxon description
      * @see    	   	#getScopes()
      */
-    public void addScope(Scope scope){
+    public void addScope(DefinedTerm scope){
         this.scopes.add(scope);
     }
 
@@ -218,7 +220,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
      * @see     		#getScopes()
      * @see     		#addScope(Scope)
      */
-    public void removeScope(Scope scope){
+    public void removeScope(DefinedTerm scope){
         this.scopes.remove(scope);
     }
 
@@ -258,8 +260,8 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
         result = (TaxonDescription)super.clone();
 
         //scopes
-        result.scopes = new HashSet<Scope>();
-        for (Scope scope : getScopes()){
+        result.scopes = new HashSet<DefinedTerm>();
+        for (DefinedTerm scope : getScopes()){
             result.scopes.add(scope);
         }
 

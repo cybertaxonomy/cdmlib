@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import eu.etaxonomy.cdm.common.DOI;
+
 /**
  * This base interface represents all different kind of published 
  * {@link IReference references} which constitute a physical 
@@ -51,5 +53,11 @@ public interface IPublicationBase extends IReference {
 	 */
 	public void setPublisher(String publisher, String placePublished);
 
+	/**
+	 * @return
+	 */
+	public DOI getDoi();
 
+	public void setDoi(DOI doi);
+	
 }

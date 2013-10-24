@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -33,10 +33,10 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -87,8 +87,8 @@ public class TestSpecimen {
 		
 		logger.info("Create locality");
 		NamedArea namedArea = NamedArea.NewInstance();
-		WaterbodyOrCountry country = WaterbodyOrCountry.ARGENTINAARGENTINEREPUBLIC();
-		namedArea.addWaterbodyOrCountry(country);
+		Country country = Country.ARGENTINAARGENTINEREPUBLIC();
+		namedArea.addCountry(country);
 		namedArea.setType(NamedAreaType.ADMINISTRATION_AREA());
 		// XX
 		
@@ -99,7 +99,7 @@ public class TestSpecimen {
 		
 		
 		logger.info("Create new specimen ...");
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setCatalogNumber("JE 00004506");
 		specimen.setStoredUnder(botanicalName);   //??
 		specimen.setCollection(collection);
@@ -121,19 +121,18 @@ public class TestSpecimen {
 		
 		MediaRepresentationPart mediaRepresentationPart = MediaRepresentationPart.NewInstance(uri, size);
 		mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
-		specimen.addMedia(media);
+//		specimen.addMedia(media);    #3597
 
 		//Original ID
-		IdentifiableSource source = IdentifiableSource.NewInstance();
 		String id = "22";
-		source.setIdInSource(id);
+		IdentifiableSource source = IdentifiableSource.NewDataImportInstance(id);
 		specimen.addSource(source);
 		
-		FieldObservation fieldObservation = FieldObservation.NewInstance();
+		FieldUnit fieldUnit = FieldUnit.NewInstance();
 		DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.GATHERING_IN_SITU());
 		derivationEvent.addDerivative(specimen);
-		fieldObservation.addDerivationEvent(derivationEvent);
-		fieldObservation.setGatheringEvent(gatheringEvent);
+		fieldUnit.addDerivationEvent(derivationEvent);
+		fieldUnit.setGatheringEvent(gatheringEvent);
 		
 		
 		//type information
@@ -146,10 +145,10 @@ public class TestSpecimen {
 		Set<SpecimenOrObservationBase> originals = dEvent.getOriginals();
 		logger.warn("Originals: " + originals);
 		for (SpecimenOrObservationBase original : originals){
-			if (original instanceof FieldObservation){
-				FieldObservation fieldObservation2 = (FieldObservation)original;
-				logger.warn("FieldObservation: " + fieldObservation2);
-				GatheringEvent gatheringEvent2= fieldObservation2.getGatheringEvent();
+			if (original instanceof FieldUnit){
+				FieldUnit fieldUnit2 = (FieldUnit)original;
+				logger.warn("FieldUnit: " + fieldUnit2);
+				GatheringEvent gatheringEvent2= fieldUnit2.getGatheringEvent();
 				logger.warn("GatheringEvent: " + gatheringEvent2);
 				AgentBase<?> gatherer2 = gatheringEvent2.getCollector();
 				logger.warn("Gatherer: "+  gatherer2);

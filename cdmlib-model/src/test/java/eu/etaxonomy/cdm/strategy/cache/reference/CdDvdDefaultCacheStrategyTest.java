@@ -64,8 +64,8 @@ public class CdDvdDefaultCacheStrategyTest {
 	}
 	
 	@Test
-	public void testGetNomRefTitleWithoutYearAndAuthor() {
-		String result = instance.getNomRefTitleWithoutYearAndAuthor(cdDvd);
+	public void testGetTitleWithoutYearAndAuthor() {
+		String result = instance.getTitleWithoutYearAndAuthor(cdDvd, false);
 		assertEquals(title, result);
 	}
 

@@ -29,6 +29,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.annotations.Any;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
 import org.hibernate.envers.NotAudited;
 
@@ -79,19 +80,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		return new Annotation(text, Language.DEFAULT());
 	}
 
-	protected Annotation(){
-		super();
-	}
-
-	/**
-	 * Constructor
-	 * @param text
-	 * @param lang
-	 */
-	protected Annotation(String text, Language language) {
-		super(text, language);
-	}
-
 
 	//Human annotation
 	@XmlElement(name = "Commentator")
@@ -118,12 +106,31 @@ public class Annotation extends LanguageStringBase implements Cloneable {
     @ManyToOne(fetch = FetchType.LAZY)
 	private AnnotationType annotationType;
 
-	// for external annotations/comments the URL of these can be set.
+	// for external annotations/comments the URI of these can be set.
 	// should be useful to implement trackback, pingback or linkback:
 	// http://en.wikipedia.org/wiki/Linkback
-	@XmlElement(name = "LinkbackURL") // TODO tell JAXB to use the new field name: linkbackUri
-	@Column(name="linkbackUrl") // TODO upgrade databases to new field name linkbackUri
+	@XmlElement(name = "LinkbackUri")
+	@Type(type="uriUserType")
 	private URI linkbackUri;
+
+	
+// *********** CONSTRUCTOR **************************************/
+	
+	protected Annotation(){
+		super();
+	}
+
+	/**
+	 * Constructor
+	 * @param text
+	 * @param lang
+	 */
+	protected Annotation(String text, Language language) {
+		super(text, language);
+	}
+
+//******************** GETTER /SETTER *************************/	
+	
 
 	/**
 	 * Currently envers does not support @Any
@@ -132,7 +139,7 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 	public AnnotatableEntity getAnnotatedObj() {
 		return annotatedObj;
 	}
-
+	
 	//TODO make not public, but TaxonTaoHibernateImpl.delete has to be changed then
 	/**
 	 *
@@ -167,28 +174,6 @@ public class Annotation extends LanguageStringBase implements Cloneable {
 		this.linkbackUri = linkbackUri;
 	}
 
-	/**
-	 * private get/set methods for Hibernate that allows us to save the URL as strings
-	 * @return
-	 */
-	private String getLinkbackUriStr() {
-		if (linkbackUri == null){
-			return null;
-		}
-		return linkbackUri.toString();
-	}
-	private void setLinkbackUriStr(String linkbackUriString) {
-		if (linkbackUriString == null){
-			this.linkbackUri = null;
-		}else{
-			try {
-				this.linkbackUri = new URI(linkbackUriString);
-			} catch (URISyntaxException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
-            }
-		}
-	}
 
 // ***************************** TO STRING ***********************************
 

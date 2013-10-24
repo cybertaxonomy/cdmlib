@@ -13,8 +13,6 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
-//import eu.etaxonomy.cdm.model.reference.Generic;
-//import eu.etaxonomy.cdm.model.reference.Thesis;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ThesisDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
@@ -53,25 +51,27 @@ public class ThesisDefaultCacheStrategy <T extends Reference> extends NomRefDefa
 	private ThesisDefaultCacheStrategy(){
 		super();
 	}
+
+
+	@Override
+	public String getAbbrevTitleCache(T thesis) {
+		return getTitleWithoutYearAndAuthor(thesis, true);
+	}
 	
 	@Override
-	protected String getNomRefTitleWithoutYearAndAuthor(T thesis){
+	protected String getTitleWithoutYearAndAuthor(T thesis, boolean isAbbrev){
 		//FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 		
 		if (thesis == null){
 			return null;
 		}
 		
+		//titelAbbrev
 		//TODO
-		String titelAbbrev = CdmUtils.Nz(thesis.getTitle()).trim();
-		
-		String nomRefCache = "";
+		String titelAbbrev = CdmUtils.getPreferredNonEmptyString(thesis.getTitle(), thesis.getAbbrevTitle(), isAbbrev, true);
 		
 		//titelAbbrev
-		if (!"".equals(titelAbbrev)){
-			nomRefCache = titelAbbrev + blank; 
-		}
-
+		String nomRefCache = titelAbbrev + blank;
 	
 		//delete .
 		while (nomRefCache.endsWith(".")){
@@ -80,5 +80,6 @@ public class ThesisDefaultCacheStrategy <T extends Reference> extends NomRefDefa
 		
 		return nomRefCache.trim();
 	}
+
 
 }

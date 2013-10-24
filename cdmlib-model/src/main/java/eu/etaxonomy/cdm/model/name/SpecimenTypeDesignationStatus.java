@@ -26,6 +26,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -48,7 +49,6 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
  * </ul>
  * 
  * @author m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:07:00
  */
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -85,13 +85,12 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidIsosyntype = UUID.fromString("052a5ff0-8e9a-4355-b24f-5e4bb6071f44");
 
 	
-	// ************* CONSTRUCTORS *************/	
-	/** 
-	 * Class constructor: creates a new empty type designation status instance.
-	 * 
-	 * @see 	#TypeDesignationStatus(String, String, String)
-	 */
-	public SpecimenTypeDesignationStatus() {
+//********************************** Constructor *********************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected SpecimenTypeDesignationStatus() {
+		super(TermType.SpecimenTypeDesignationStatus);
 	}
 
 
@@ -108,8 +107,8 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * 						 new type designation status to be created
 	 * @see 				 #TypeDesignationStatus()
 	 */
-	public SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+	private SpecimenTypeDesignationStatus(String term, String label, String labelAbbrev) {
+		super(TermType.SpecimenTypeDesignationStatus, term, label, labelAbbrev);
 	}
 	
 //************************** METHODS ********************************
@@ -135,7 +134,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	 * Returns the boolean value indicating whether <i>this</i> type designation
 	 * status is itself "lectotype" or a kind of "lectotype" (true) or not
 	 * (false). Returns false if <i>this</i> type designation status is null.<BR>
-	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the
+	 * A lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the
 	 * nomenclatural type, when no holotype was indicated at the time of
 	 * publication of the "type-bringing" {@link TaxonNameBase taxon name}, when the
 	 * holotype is found to be assigned to taxon names belonging to more than
@@ -168,7 +167,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	
 	/**
 	 * Returns the "holotype" designation status. A holotype of a
-	 * set of names is the one {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}
+	 * set of names is the one {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}
 	 * designated as the nomenclatural type by the {@link NonViralName#getCombinationAuthorTeam() author} of the
 	 * "type-bringing" {@link TaxonNameBase taxon name} (or by the author of a later validated
 	 * "invalid" taxon name).
@@ -181,7 +180,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "lectotype" designation status. A lectotype is a
-	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} designated as the nomenclatural type,
+	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} designated as the nomenclatural type,
 	 * when no holotype was indicated at the time of publication of the
 	 * "type-bringing" {@link TaxonNameBase taxon name}, when the
 	 * holotype is found to to be assigned to taxon names belonging to more than one
@@ -195,7 +194,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "neotype" designation status. A neotype is a
-	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} selected to serve as nomenclatural type
+	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} selected to serve as nomenclatural type
 	 * as long as all of the material on which the "type-bringing" {@link TaxonNameBase taxon name} was based
 	 * is missing. 
 	 * 
@@ -207,7 +206,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "epitype" designation status. An epitype is a
-	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration} selected to serve as an interpretative type
+	 * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration} selected to serve as an interpretative type
 	 * when the holotype, lectotype or previously designated neotype, or all
 	 * original material associated with the {@link NomenclaturalStatusType#VALID() validly} published "type-bringing"
 	 * {@link TaxonNameBase taxon name}, is demonstrably ambiguous and cannot be critically
@@ -308,7 +307,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "second step lectotype" designation status. </BR>
-	 * A second step lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}, designated as lectotype
+	 * A second step lectotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}, designated as lectotype
 	 * in order to substitute another already existing lectotype.
 	 * 
 	 * @see	#LECTOTYPE()
@@ -319,7 +318,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "second step neotype" designation status. </BR>
-	 * A second step neotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimen or illustration}, designated as neotype
+	 * A second step neotype is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimen or illustration}, designated as neotype
 	 * in order to substitute another already existing neotype.
 	 * 
 	 * @see	#LECTOTYPE()
@@ -351,7 +350,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 
 	/**
 	 * Returns the "iconotype" designation status. An iconotype is a holotype or
-	 * a lectotype that is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase drawing}
+	 * a lectotype that is a {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit drawing}
 	 * and not a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
 	 * "Iconotype" does not have type status according to the ICBN.
 	 * 

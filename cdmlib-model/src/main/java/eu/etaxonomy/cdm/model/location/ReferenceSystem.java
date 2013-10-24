@@ -26,6 +26,7 @@ import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 
 /**
@@ -71,17 +72,19 @@ public class ReferenceSystem extends DefinedTermBase<ReferenceSystem> {
 		return new ReferenceSystem(term, label, labelAbbrev);
 	}
 	
-	/**
-	 * Constructor
-	 */
-	public ReferenceSystem() {
+//********************************** Constructor *******************************************************************/	
+
+  	//for hibernate use only
+  	@Deprecated
+  	protected ReferenceSystem() {
+		super(TermType.ReferenceSystem);
 	}
 	
 	/**
 	 * Constructor
 	 */
 	private ReferenceSystem(String term, String label, String labelAbbrev) {
-		super(term, label, labelAbbrev);
+		super(TermType.ReferenceSystem, term, label, labelAbbrev);
 	}
 
 // ************************************* MTEHODS ***************************************************/	

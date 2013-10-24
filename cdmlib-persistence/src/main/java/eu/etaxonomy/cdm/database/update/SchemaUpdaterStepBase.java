@@ -17,6 +17,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -32,10 +33,12 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	private static final Logger logger = Logger.getLogger(SchemaUpdaterStepBase.class);
 	
 	protected String stepName;
+
+	private boolean ignoreErrors;
 		
 	
 //************************ CONSTRUCTOR ***********************************/
-	
+
 	protected SchemaUpdaterStepBase(String stepName){
 		this.setStepName(stepName);
 	}
@@ -108,6 +111,27 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	
 	public List<ISchemaUpdaterStep> getInnerSteps(){
 		return new ArrayList<ISchemaUpdaterStep>();
+	}
+	
+	@Override
+	public boolean isIgnoreErrors() {
+		return ignoreErrors;
+	}
+	
+	
+	@Override
+	public void setIgnoreErrors(boolean ignoreErrors) {
+		this.ignoreErrors = ignoreErrors;
+	}
+	
+
+	/**
+	 * Returns a time string with date and time (without millis) that 
+	 * can be used as a time string for database insert and update
+	 * @return
+	 */
+	protected String getNowString() {
+		return DateTime.now().toString("YYYY-MM-dd HH:mm:ss");
 	}
 
 	@Override

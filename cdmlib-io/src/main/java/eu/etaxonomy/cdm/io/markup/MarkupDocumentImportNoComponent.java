@@ -30,6 +30,11 @@ import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
@@ -236,7 +241,7 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 		
 		Classification tree = makeTree(state, dataLocation);
 		if (lastTaxon == null) {
-			tree.addChildTaxon(taxon, null, null, null);
+			tree.addChildTaxon(taxon, null, null);
 			return;
 		}
 		Rank thisRank = taxon.getName().getRank();
@@ -252,15 +257,15 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 				message = String.format(message, taxon.getName().getTitleCache());
 				fireWarningEvent(message, makeLocationStr(dataLocation), 6);
 			}else if (thisRank.isLower(lastRank)) {
-				lastNode.addChildTaxon(taxon, null, null, null);
+				lastNode.addChildTaxon(taxon, null, null);
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			} else if (thisRank.equals(lastRank)) {
 				TaxonNode parent = lastNode.getParent();
 				if (parent != null) {
-					parent.addChildTaxon(taxon, null, null, null);
+					parent.addChildTaxon(taxon, null, null);
 					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
 				} else {
-					tree.addChildTaxon(taxon, null, null, null);
+					tree.addChildTaxon(taxon, null, null);
 				}
 			} else if (thisRank.isHigher(lastRank)) {
 				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),	dataLocation);

@@ -82,7 +82,7 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 
 	@Test
 	public void getTermByUUID() {
-		DefinedTermBase term = dao.findByUuid(uuid);
+		DefinedTermBase<?> term = dao.findByUuid(uuid);
 		assertNotNull("findByUuid should return a term",term);
 		assertEquals("findByUuid should return Feature.UNKNOWN",Feature.UNKNOWN(),term);
 	}
@@ -112,6 +112,17 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 	public void getLanguageByMalformedIso2() {
 		Language lang = dao.getLanguageByIso("abcd");
 		assertNull("getLanguageByIso should return null for this malformed Iso \'abcd\'",lang);
+	}
+	
+	@Test
+	public void getDefinedTermByIdInVocabulary(){
+		UUID tdwgVocUuid = NamedArea.uuidTdwgAreaVocabulary;
+		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary("GER", tdwgVocUuid, NamedArea.class, null, null);
+		assertNotNull("Method should return a result", list);
+		assertEquals("Method should return exactly 1 area", 1, list.size());
+		NamedArea area = list.get(0);
+		assertEquals("GER", area.getIdInVocabulary());
+		assertEquals(tdwgVocUuid, area.getVocabulary().getUuid());
 	}
 
 	 @Test

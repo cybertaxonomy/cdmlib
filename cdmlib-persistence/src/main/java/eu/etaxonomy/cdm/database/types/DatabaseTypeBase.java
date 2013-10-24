@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database.types;
 import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.Dialect;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.NomenclaturalCodeAwareDataSource;
@@ -33,7 +34,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	//defaultPort
 	private int defaultPort;
 	//hibernate dialect
-	private String hibernateDialect;
+	private Dialect hibernateDialect;
 	//init method
 	private String initMethod = null;
 	//init method
@@ -41,7 +42,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	
 	
 	//init
-	protected void init(String typeName, String classString, String urlString, int defaultPort, String hibernateDialect) {
+	protected void init(String typeName, String classString, String urlString, int defaultPort, Dialect hibernateDialect) {
 		this.typeName = typeName;
 		this.classString = classString;
 		this.urlString = urlString;
@@ -49,43 +50,37 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 		this.hibernateDialect = hibernateDialect;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getName()
-	 */
+	@Override
 	public String getName(){
 		return typeName;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getClassString()
-	 */
+
+	@Override
 	public String getClassString(){
 		return classString;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getUrlString()
-	 */
+	@Override
 	public String getUrlString(){
 		return urlString;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getDefaultPort()
-	 */
+	@Override
 	public int getDefaultPort(){
 		return defaultPort;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getHibernateDialect()
-	 */
-	public String getHibernateDialect(){
-		return "org.hibernate.dialect." + hibernateDialect;
+	@Override
+	public Dialect getHibernateDialect(){
+		return hibernateDialect;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.IDatabaseType#getConnectionString(java.lang.String, java.lang.String)
-	 */
+
+	@Override
+	public String getHibernateDialectCanonicalName(){
+		return hibernateDialect.getClass().getCanonicalName();
+	}
+
+	@Override
 	public String getConnectionString(ICdmDataSource cdmDataSource){
 		int port = cdmDataSource.getPort();
 		if (port< 1){
@@ -96,30 +91,22 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	
 	abstract protected String getConnectionString(ICdmDataSource cdmDataSource, int port);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDataSourceClass()
-	 */
+	@Override
 	public Class<? extends DataSource> getDataSourceClass() {
 		return NomenclaturalCodeAwareDataSource.class;
 	} 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getInitMethod()
-	 */
+	@Override
 	public String getInitMethod() {
 		return initMethod;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDestroyMethod()
-	 */
+	@Override
 	public String getDestroyMethod() {
 		return destroyMethod;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getServerNameByConnectionString(java.lang.String)
-	 */
+	@Override
 	public String getServerNameByConnectionString(String connectionString){
     	return getServerNameByConnectionString(connectionString, urlString, "/");
     }
@@ -143,9 +130,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
     	return result;
     }
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getPortByConnectionString(java.lang.String)
-	 */
+	@Override
 	public int getPortByConnectionString(String connectionString){
 		String dbSeparator = "/";
     	return getPortByConnectionString(connectionString, urlString, dbSeparator);
@@ -195,9 +180,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
     	return result;
     }
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.types.IDatabaseType#getDatabaseNameByConnectionString(java.lang.String)
-	 */
+	@Override
 	public abstract String getDatabaseNameByConnectionString(String connectionString);
 
 	

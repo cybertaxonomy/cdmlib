@@ -43,14 +43,36 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	private static final Logger logger = Logger.getLogger(OrderedTermVocabulary.class);
 
 // ************************* FACTORY METHODS ***********************************************/
+
 	
-	public static OrderedTermVocabulary NewInstance(String term, String label, String labelAbbrev, URI termSourceUri){
-		return new OrderedTermVocabulary(term, label, labelAbbrev, termSourceUri);
+	/**
+	 * @param type the {@link TermType term type}, must be the same as for all included terms
+	 * @return
+	 * @throws NullPointerException if type is <code>null</code>
+	 */
+	public static OrderedTermVocabulary NewInstance(TermType type){
+		return new OrderedTermVocabulary(type);
+	}
+	
+	
+	/**
+	 * @param type the {@link TermType term type}, must be the same as for all included terms
+	 * @param description the description of this vocabulary
+	 * @param label 
+	 * @param labelAbbrev
+	 * @param termSourceUri
+	 * @return
+	 * @throws NullPointerException if type is <code>null</code>
+	 */
+	public static OrderedTermVocabulary NewInstance(TermType type, String description, String label, String labelAbbrev, URI termSourceUri){
+		return new OrderedTermVocabulary(type, description, label, labelAbbrev, termSourceUri);
 	}
 	
 	
 //************************ CONSTRUCTOR *****************************************************/	
 
+	//for hibernate use only
+	@Deprecated
 	protected OrderedTermVocabulary() {
 		super();
 	}
@@ -60,8 +82,17 @@ public class OrderedTermVocabulary<T extends OrderedTermBase> extends TermVocabu
 	 * @param label
 	 * @param termSourceUri
 	 */
-	protected OrderedTermVocabulary(String term, String label, String labelAbbrev, URI termSourceUri) {
-		super(term, label, labelAbbrev, termSourceUri);
+	protected OrderedTermVocabulary(TermType type) {
+		super(type);
+	}
+	
+	/**
+	 * @param term
+	 * @param label
+	 * @param termSourceUri
+	 */
+	protected OrderedTermVocabulary(TermType type, String term, String label, String labelAbbrev, URI termSourceUri) {
+		super(type, term, label, labelAbbrev, termSourceUri);
 	}
 
 

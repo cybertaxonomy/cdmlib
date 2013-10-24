@@ -967,7 +967,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             //Check if TaxonNode belongs to the current tree
 
             node = classificationService.loadTaxonNode(node, TAXONNODE_WITHTAXON_INIT_STRATEGY);
-            Set<TaxonNode> children = node.getChildNodes();
+            List<TaxonNode> children = node.getChildNodes();
             Taxon childTaxon;
             for (TaxonNode child : children){
                 childTaxon = child.getTaxon();

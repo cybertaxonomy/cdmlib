@@ -43,7 +43,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonComparator;
  * taxon names without explicit {@link TypeDesignationBase type designation} can belong
  * to an homotypical group.<BR>
  * Taxon names belonging to an homotypical group and the taxon names or
- * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase specimens} used as types for their
+ * {@link eu.etaxonomy.cdm.model.occurrence.DerivedUnit specimens} used as types for their
  * {@link TypeDesignationBase type designations} have the following properties: <ul>
  * <li>	A taxon name belongs exactly to one homotypical group
  * <li>	A type specimen or a type name can be used as a type only for taxon

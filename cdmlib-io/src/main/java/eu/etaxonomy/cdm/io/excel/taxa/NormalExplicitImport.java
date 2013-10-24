@@ -25,17 +25,18 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.excel.common.ExcelRowBase.SourceDataHolder;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -43,7 +44,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.babadshanjan
@@ -162,7 +163,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 
 				// Rank
 				try {
-					rank = Rank.getRankByNameOrAbbreviation(rankStr);
+					rank = Rank.getRankByNameOrIdInVoc(rankStr);
 				} catch (UnknownCdmTypeException ex) {
 					try {
 						rank = Rank.getRankByEnglishName(rankStr, state.getConfig().getNomenclaturalCode(), false);
@@ -324,9 +325,9 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				//tdwg label
 				for (String tdwg : taxonDataHolder.getDistributions()){
 					TaxonDescription td = this.getTaxonDescription(acceptedTaxon, state.getConfig().getSourceReference() ,false, true);
-					NamedArea area = TdwgArea.getAreaByTdwgAbbreviation(tdwg);
+					NamedArea area = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwg);
 					if (area == null){
-						area = TdwgArea.getAreaByTdwgLabel(tdwg);
+						area = TdwgAreaProvider.getAreaByTdwgLabel(tdwg);
 					}
 					if (area != null){
 						Distribution distribution = Distribution.NewInstance(area, PresenceTerm.PRESENT());
@@ -374,25 +375,25 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 				List<Map<SourceType, String>> sourceList = sourceDataHolder.getSources();
 				for (Map<SourceType, String> sourceMap : sourceList){
 				
-					DescriptionElementSource source = DescriptionElementSource.NewInstance();
 					//ref
 					Reference<?> ref = ReferenceFactory.newGeneric();
 					boolean refExists = false; //in case none of the ref fields exists, the ref should not be added
 					for (SourceType type : sourceMap.keySet()){
 						String value = sourceMap.get(type);
 						if (type.equals(SourceType.Author)){
-							TeamOrPersonBase author = getAuthorAccordingToConfig(value, state);
+							TeamOrPersonBase<?> author = getAuthorAccordingToConfig(value, state);
 							ref.setAuthorTeam(author);
 						}else if (type.equals(SourceType.Title)) {
 							ref.setTitle(value);
 						}else if (type.equals(SourceType.Year)) {
-							ref.setDatePublished(TimePeriod.parseString(value));
+							ref.setDatePublished(TimePeriodParser.parseString(value));
 						}else if (type.equals(SourceType.RefExtension)) {
 							ExtensionType extensionType = getExtensionType(state, uuidRefExtension, "RefExtension", "Reference Extension", "RefExt.");
 							Extension extension = Extension.NewInstance(ref, value, extensionType);
 						}
 						refExists = true;
 					}
+					DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 					if (refExists){
 						ref = getReferenceAccordingToConfig(ref, state);
 						source.setCitation(ref);

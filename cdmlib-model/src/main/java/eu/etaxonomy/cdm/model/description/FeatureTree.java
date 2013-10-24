@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.description;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -17,21 +18,28 @@ import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 
-import eu.etaxonomy.cdm.model.common.TermBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
 /**
  * The class to arrange {@link Feature features} (characters) in a tree structure.
@@ -49,41 +57,48 @@ import eu.etaxonomy.cdm.model.common.TermBase;
  * depending on their grade of precision.  
  *  
  * @see		MediaKey
+ * 
  * @author  m.doering
- * @version 1.0
  * @created 08-Nov-2007 13:06:16
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {
-    "descriptionSeparated",
-    "root"
+    "root",
+    "uri",
+    "representations"
 })
 @XmlRootElement(name = "FeatureTree")
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.description.FeatureTree")
 @Audited
-public class FeatureTree extends TermBase implements Cloneable{
+public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStrategy> implements Cloneable{
 	private static final long serialVersionUID = -6713834139003172735L;
 	private static final Logger logger = Logger.getLogger(FeatureTree.class);
-	//private Set<FeatureNode> nodes = new HashSet<FeatureNode>();
 	
 	@XmlElement(name = "Root")
 	@OneToOne(fetch = FetchType.LAZY)
 	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	private FeatureNode root;
 	
-	@XmlElement(name = "IsDescriptionSeparated")
-	private boolean descriptionSeparated = false;
+
+    // TODO needed? FeatureTree was a TermBase until v3.3 but was removed from
+	//it as TermBase got the termType which does not apply to FeatureTree.
+	//We need to check how far representations and uri is still required
+	//or can be deleted. Current implementations seem all to use the title cache
+	//instead of representation. This may not be correct.
+	@XmlElementWrapper(name = "Representations")
+    @XmlElement(name = "Representation")
+    @OneToMany(fetch=FetchType.EAGER, orphanRemoval=true)
+    @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
+    private Set<Representation> representations = new HashSet<Representation>();
+	
+    @XmlElement(name = "URI")
+    @Field(analyze = Analyze.NO)
+    @Type(type="uriUserType")
+    private URI uri;
 		
-	/** 
-	 * Class constructor: creates a new feature tree instance with an empty
-	 * {@link #getRoot() root node}.
-	 */
-	protected FeatureTree() {
-		super();
-		root = FeatureNode.NewInstance();
-		root.setFeatureTree(this);
-	}
+//******************** FACTORY METHODS ******************************************/	
 
 	/** 
 	 * Creates a new feature tree instance with an empty {@link #getRoot() root node}.
@@ -132,27 +147,23 @@ public class FeatureTree extends TermBase implements Cloneable{
 		
 		return result;
 	}
+
 	
-	// Delete the isDescriptionSeparated flag ??
-	/**
-	 * Returns the boolean value of the flag indicating whether the
-	 * {@link DescriptionElementBase description elements} associated with the {@link Feature features}
-	 * belonging to <i>this</i> feature tree should be treated separately (true)
-	 * or not (false).
-	 *  
-	 * @return  the boolean value of the isDescriptionSeparated flag
+// ******************** CONSTRUCTOR *************************************/	
+	
+	/** 
+	 * Class constructor: creates a new feature tree instance with an empty
+	 * {@link #getRoot() root node}.
 	 */
-	public boolean isDescriptionSeparated() {
-		return descriptionSeparated;
+	protected FeatureTree() {
+		super();
+		root = FeatureNode.NewInstance();
+		root.setFeatureTree(this);
 	}
 
-	/**
-	 * @see	#isDescriptionSeparated() 
-	 */
-	public void setDescriptionSeparated(boolean descriptionSeperated) {
-		this.descriptionSeparated = descriptionSeperated;
-	}
+// ****************** GETTER / SETTER **********************************/	
 	
+
 //	@OneToMany
 //	@Cascade({CascadeType.SAVE_UPDATE})
 //	public Set<FeatureNode> getNodes() {
@@ -185,7 +196,7 @@ public class FeatureTree extends TermBase implements Cloneable{
 	@Transient
 	public List<FeatureNode> getRootChildren(){
 		List<FeatureNode> result = new ArrayList<FeatureNode>();
-		result.addAll(root.getChildren());
+		result.addAll(root.getChildNodes());
 		return result;
 	}
 	

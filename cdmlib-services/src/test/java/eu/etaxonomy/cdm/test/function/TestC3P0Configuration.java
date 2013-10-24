@@ -43,7 +43,7 @@ public class TestC3P0Configuration{
 
 	@Before
 	public void setup() throws DataSourceNotFoundException, TermNotFoundException{
-		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "edit", "wp5", NomenclaturalCode.ICBN);
+		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "edit", "wp5", NomenclaturalCode.ICNAFP);
 		appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
 	}
 

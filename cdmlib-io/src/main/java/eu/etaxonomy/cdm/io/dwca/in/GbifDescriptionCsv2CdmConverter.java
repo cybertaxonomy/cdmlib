@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 
@@ -62,13 +63,35 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		if (taxon != null){
 			
 			String description = item.get(TermUri.DC_DESCRIPTION);
+			//String license = item.get(TermUri.DC_LICENSE);//lorna check - often empty in SP dwca
+					
+			//TODO: Create the Language from the TermUri.DC_LANGUAGE in the dwca
+			Language language = getLanguage(item); 
+									
+			
 			if (StringUtils.isNotBlank(description)){
 				Feature feature = getFeatureByDcType(item, resultList);
 
 				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+								
+				//deduplicate - if this taxonDescription already got these Rights attached
+				boolean addRights = true;
+				String rights = item.get(TermUri.DC_RIGHTS);
+				Set<Rights> allRights = taxonDescription.getRights();				
+				for (Rights r : allRights) {					
+					if (r.getText() == rights) {
+						addRights = false;
+					}
+				}
+				
+				if (addRights && (rights != null || rights != "")) {
+					Rights copyright = Rights.NewInstance(rights, language);
+					taxonDescription.addRights(copyright);
+				}
+				
 				TextData descElement = TextData.NewInstance(feature);
 				
-				Language language = getLanguage(item);  //TODO
+				//Language language = getLanguage(item);  //TODO
 				descElement.putText(language,description);
 				taxonDescription.addElement(descElement);
 			}else{
@@ -92,6 +115,14 @@ public class GbifDescriptionCsv2CdmConverter extends PartitionableConverterBase<
 		//TODO
 		
 		Language language = Language.DEFAULT();
+		String langString = item.get(TermUri.DC_LANGUAGE);	
+		
+		/*if (langString != null) {
+			if (!langString.equals("")) {
+				language = getTermService().getLanguageByIso(langString.substring(0, 2));
+				//can getTermService from StreamImportBase which calls GbifDescriptionCsv2CdmConverter.map
+			}
+		}*/
 		return language;
 	}
 

@@ -27,6 +27,7 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
+import eu.etaxonomy.cdm.database.update.DatabaseTypeNotSupportedException;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelFactsImportValidator;
 import eu.etaxonomy.cdm.io.common.IOValidator;
@@ -35,12 +36,13 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -85,7 +87,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			return featureVocabulary;
 		} catch (UnknownCdmTypeException e) {
 			logger.error("Feature vocabulary not available. New vocabulary created");
-			return TermVocabulary.NewInstance("User Defined Feature Vocabulary", "User Defined Feature Vocabulary", null, null); 
+			return TermVocabulary.NewInstance(TermType.Feature, "User Defined Feature Vocabulary", "User Defined Feature Vocabulary", null, null); 
 		}
 	}
 	
@@ -201,7 +203,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 			}else{
 				result = " ORDER By Fact.FactId";
 			}
-		} catch (NoSuchMethodException e) {
+		} catch (DatabaseTypeNotSupportedException e) {
 			logger.info("checkColumnExists not supported");
 			result = " ORDER By Fact.FactId";
 		}
@@ -305,7 +307,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						}
 						
 						//reference
-						Reference citation = null;
+						Reference<?> citation = null;
 						String factRefFk = String.valueOf(factRefFkObj);
 						if (factRefFkObj != null){
 							citation = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, factRefFk);	
@@ -314,10 +316,8 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 								logger.warn("Citation not found in referenceMap: " + factRefFk);
 							success = false;
 							}
-						if (citation != null || CdmUtils.isNotEmpty(details)){
-							DescriptionElementSource originalSource = DescriptionElementSource.NewInstance();
-							originalSource.setCitation(citation);
-							originalSource.setCitationMicroReference(details);
+						if (citation != null || StringUtils.isNotBlank(details)){
+							DescriptionElementSource originalSource = DescriptionElementSource.NewPrimarySourceInstance(citation, details);
 							textData.addSource(originalSource);
 						}
 						taxonDescription.addElement(textData);

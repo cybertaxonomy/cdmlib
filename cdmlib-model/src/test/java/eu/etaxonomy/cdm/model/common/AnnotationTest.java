@@ -126,7 +126,7 @@ public class AnnotationTest extends EntityTestBase {
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#getLinkbackUri()}.
-	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#setLinkbackUri(java.net.URL)}.
+	 * Test method for {@link eu.etaxonomy.cdm.model.common.Annotation#setLinkbackUri(URI))}.
 	 */
 	@Test
 	public void testGetSetLinkbackUri() {

@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.database.types;
 
+import org.hibernate.dialect.Dialect;
+
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 
@@ -34,7 +36,7 @@ public class OdbcDatabaseType extends DatabaseTypeBase {
     
     //hibernate dialect
     //TODO
-    private String hibernateDialect = "xxx";
+    private Dialect hibernateDialect = null;
     
     //connection String
 	public String getConnectionString(ICdmDataSource ds, int port){
