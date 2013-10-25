@@ -126,27 +126,37 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	            return;
 	        }
 
-	        Collections.sort(propertyPaths);
-	        //long startTime1 = System.nanoTime();
 	        if(logger.isDebugEnabled()){
 	            logger.debug(">> starting to initialize " + bean + " ;class:" + bean.getClass().getSimpleName());
 	        }
+	        
+	        //new
+	        BeanInitNode rootInitializer = BeanInitNode.createInitTree(propertyPaths);
+	        System.out.println(rootInitializer.toStringTree());
+	        initializeBean(bean, rootInitializer);
+	        
+	        
+	        //old
+	        Collections.sort(propertyPaths);
 	        for(String propPath : propertyPaths){
 	            initializePropertyPath(bean, propPath);
 	        }
-	        //long estimatedTime1 = System.nanoTime() - startTime1;
-	        //System.err.println(".");
-	        //long startTime2 = System.nanoTime();
-	        //for(String propPath : propertyPaths){
-	        //	initializePropertyPath(bean, propPath);
-	        //}
-	        //long estimatedTime2 = System.nanoTime() - startTime2;
-	        //System.err.println("first pas: "+estimatedTime1+" ns; second pas: "+estimatedTime2+ " ns");
 	        if(logger.isDebugEnabled()){
 	            logger.debug("   Completed initialization of " + bean);
 	        }
 
 	    }
+	    
+
+		//new
+	    
+	    public void initializeBean(Object bean, BeanInitNode rootInitializer) {
+			initializePropertyPath(bean, rootInitializer);
+			for (BeanInitNode child : rootInitializer.getChildrenList()){
+				initializeBean(bean, child);
+			}
+		}
+	    
 
 	    @Override
 	    public <C extends Collection<?>> C initializeAll(C beanList,  List<String> propertyPaths) {
@@ -164,106 +174,100 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	     * @param bean
 	     * @param propPath
 	     */
-	    private void initializePropertyPath(Object bean, String propPath) {
-	        if(logger.isDebugEnabled()){
-	            logger.debug("processing " + propPath);
+	    void initializePropertyPath(Object bean, BeanInitNode node) {
+	        if(logger.isDebugEnabled()){logger.debug("processing " + node.toString());}
+	        if (StringUtils.isBlank(node.getPath())){
+	        	return;
 	        }
 
-
-	        // [1]
-	        // if propPath only contains a wildcard (* or $)
-	        // => do a batch initialization of *toOne or *toMany relations
-	        if(propPath.equals(LOAD_2ONE_WILDCARD)){
-	            if(Collection.class.isAssignableFrom(bean.getClass())){
-	                initializeAllEntries((Collection)bean, true, false);
-	            } else if(Map.class.isAssignableFrom(bean.getClass())) {
-	                initializeAllEntries(((Map)bean).values(), true, false);
-	            } else{
-	                initializeBean(bean, true, false);
-	            }
-	        } else if(propPath.equals(LOAD_2ONE_2MANY_WILDCARD)){
-	            if(Collection.class.isAssignableFrom(bean.getClass())){
-	                initializeAllEntries((Collection)bean, true, true);
-	            } else if(Map.class.isAssignableFrom(bean.getClass())) {
-	                initializeAllEntries(((Map)bean).values(), true, true);
-	            } else {
-	                initializeBean(bean, true, true);
-	            }
+	        if (node.isWildcard()){
+		        initializeWildcardPropertyPath(bean, node);
 	        } else {
-	            // [2]
-	            // propPath contains either a single field or a nested path
-
-	            // split next path token off and keep the remaining as nestedPath
-	            String property;
-	            String nestedPath = null;
-	            int pos;
-	            if((pos = propPath.indexOf('.')) > 0){
-	                nestedPath = propPath.substring(pos + 1);
-	                property = propPath.substring(0, pos);
-	            } else {
-	                property = propPath;
-	            }
-
-	            // is the property indexed?
-	            Integer index = null;
-	            if((pos = property.indexOf('[')) > 0){
-	                String indexString = property.substring(pos + 1, property.indexOf(']'));
-	                index = Integer.valueOf(indexString);
-	                property = property.substring(0, pos);
-	            }
-
-	            try {
-	                //Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
-
-	                // [2.a] initialize the bean named by property
-
-	                PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
-	                Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
-
-	                // [2.b]
-	                // recurse into nested properties
-	                if(unwrappedPropertyBean != null && nestedPath != null){
-	                    if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
-	                        // nested collection
-	                        int i = 0;
-	                        for (Object entrybean : (Collection) unwrappedPropertyBean) {
-	                            if(index == null){
-	                                initializePropertyPath(entrybean, nestedPath);
-	                            } else if(index.equals(i)){
-	                                initializePropertyPath(entrybean, nestedPath);
-	                                break;
-	                            }
-	                            i++;
-	                        }
-	                    } else if(Map.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
-	                        // nested map
-	                        int i = 0;
-	                        for (Object entrybean : ((Map) unwrappedPropertyBean).values()) {
-	                            if(index == null){
-	                                initializePropertyPath(entrybean, nestedPath);
-	                            } else if(index.equals(i)){
-	                                initializePropertyPath(entrybean, nestedPath);
-	                                break;
-	                            }
-	                            i++;
-	                        }
-	                    }else {
-	                        // nested bean
-	                        initializePropertyPath(unwrappedPropertyBean, nestedPath);
-	                        setProperty(bean, property, unwrappedPropertyBean);
-	                    }
-	                }
-
-	            } catch (IllegalAccessException e) {
-	                logger.error("Illegal access on property " + property);
-	            } catch (InvocationTargetException e) {
-	                logger.error("Cannot invoke property " + property + " not found");
-	            } catch (NoSuchMethodException e) {
-	                logger.info("Property " + property + " not found");
-	            }
+	            initializeNoWildcardPropertyPath(bean, node);
 	        }
 	    }
 
+		// if propPath only contains a wildcard (* or $)
+        // => do a batch initialization of *toOne or *toMany relations
+        private void initializeWildcardPropertyPath(Object bean, BeanInitNode node) {
+			boolean initToMany = node.getPath().equals(LOAD_2ONE_2MANY_WILDCARD);
+		    if(Collection.class.isAssignableFrom(bean.getClass())){
+		        initializeAllEntries((Collection)bean, true, initToMany);
+		    } else if(Map.class.isAssignableFrom(bean.getClass())) {
+		        initializeAllEntries(((Map)bean).values(), true, initToMany);
+		    } else{
+		        initializeBean(bean, true, initToMany);
+		    }
+		}
+
+    	// propPath contains either a single field or a nested path
+		// split next path token off and keep the remaining as nestedPath
+        private void initializeNoWildcardPropertyPath(Object bean, BeanInitNode node) {
+			
+        	String property = node.getPath();
+			int pos;
+
+			// is the property indexed?
+			Integer index = null;
+			if((pos = property.indexOf('[')) > 0){
+			    String indexString = property.substring(pos + 1, property.indexOf(']'));
+			    index = Integer.valueOf(indexString);
+			    property = property.substring(0, pos);
+			}
+
+			try {
+			    //Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
+
+			    // [2.a] initialize the bean named by property
+
+			    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
+			    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" ... ");}
+			    Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
+			    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" - DONE ");}
+				
+			    // [2.b]
+			    // recurse into nested properties
+			    if(unwrappedPropertyBean != null ){
+			    	for (BeanInitNode childNode : node.getChildrenList()){
+			    		Collection<?> collection = null;
+			    		if(Map.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
+			    			collection = ((Map<?,?>)unwrappedPropertyBean).values();
+			    		}else if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
+			                collection =  (Collection<?>) unwrappedPropertyBean;	
+			    		}
+			    		if (collection != null){
+			                //collection or map
+			    			if (logger.isDebugEnabled()){logger.debug(" initialize collection for " + childNode.toString() + " ... ");}
+			 	            int i = 0;
+			    			for (Object entrybean : collection) {
+			                    if(index == null){
+			                        initializePropertyPath(entrybean, childNode);
+			                    } else if(index.equals(i)){
+			                        initializePropertyPath(entrybean, childNode);
+			                        break;
+			                    }
+			                    i++;
+			                }
+			    			if (logger.isDebugEnabled()){logger.debug(" initialize collection for " + childNode.toString() + " - DONE ");}
+			 	            
+			            }else {
+			                // nested bean
+			                initializePropertyPath(unwrappedPropertyBean, childNode);
+			                setProperty(bean, property, unwrappedPropertyBean);
+			            }
+			    	}
+			    }
+
+			} catch (IllegalAccessException e) {
+			    logger.error("Illegal access on property " + property);
+			} catch (InvocationTargetException e) {
+			    logger.error("Cannot invoke property " + property + " not found");
+			} catch (NoSuchMethodException e) {
+			    logger.info("Property " + property + " not found");
+			}
+		}
+
+	    //TODO check if needed in advanced
 	    private Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
 	        if(propertyDescriptor == null || bean == null){
@@ -316,45 +320,6 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	    }
 
 	    /**
-	     * @param beanClass
-	     * @param bean
-	     * @return
-	     */
-	    private void invokePropertyAutoInitializers(Object bean) {
-
-	        if(beanAutoInitializers == null || bean == null){
-	            return;
-	        }
-	        if(!CdmBase.class.isAssignableFrom(bean.getClass())){
-	            return;
-	        }
-	        CdmBase cdmBaseBean = (CdmBase)bean;
-	        for(Class<? extends CdmBase> superClass : beanAutoInitializers.keySet()){
-	            if(superClass.isAssignableFrom(bean.getClass())){
-	                beanAutoInitializers.get(superClass).initialize(cdmBaseBean);
-	            }
-	        }
-	    }
-
-	    private void setProperty(Object object, String property, Object value){
-	        Method method = methodCache.getMethod(object.getClass(), "set" + StringUtils.capitalize(property), value.getClass());
-	        if(method != null){
-	            try {
-	                method.invoke(object, value);
-	            } catch (IllegalArgumentException e) {
-	                // TODO Auto-generated catch block
-	                e.printStackTrace();
-	            } catch (IllegalAccessException e) {
-	                // TODO Auto-generated catch block
-	                e.printStackTrace();
-	            } catch (InvocationTargetException e) {
-	                // TODO Auto-generated catch block
-	                e.printStackTrace();
-	            }
-	        }
-	    }
-
-	    /**
 	     * @param collection of which all entities are to be initialized
 	     * @param cdmEntities initialize all *toOne relations to cdm entities
 	     * @param collections initialize all *toMany relations
@@ -365,44 +330,4 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	        }
 	    }
 
-	    /**
-	     * Return all public bean properties which, exclusive those whose return type match any class defined in
-	     * the parameter <code>typeRestrictions</code> or which are transient properties.
-	     *
-	     * @param bean
-	     * @param typeRestrictions
-	     * @return
-	     */
-	    @SuppressWarnings("unchecked")
-	    public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class> typeRestrictions) {
-
-	        Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();
-	        PropertyDescriptor[] prop = PropertyUtils.getPropertyDescriptors(bean);
-
-	        for (int i = 0; i < prop.length; i++) {
-	            //String propName = prop[i].getName();
-
-	            // only read methods & skip transient getters
-	            if( prop[i].getReadMethod() != null ){
-	                  try{
-	                     Class transientClass = Class.forName( "javax.persistence.Transient" );
-	                     if( prop[i].getReadMethod().getAnnotation( transientClass ) != null ){
-	                        continue;
-	                     }
-	                  }catch( ClassNotFoundException cnfe ){
-	                     // ignore
-	                  }
-	                  if(typeRestrictions != null && typeRestrictions.size() > 1){
-	                      for(Class type : typeRestrictions){
-	                          if(type.isAssignableFrom(prop[i].getPropertyType())){
-	                              properties.add(prop[i]);
-	                          }
-	                      }
-	                  } else {
-	                      properties.add(prop[i]);
-	                  }
-	            }
-	        }
-	        return properties;
-	    }
 }

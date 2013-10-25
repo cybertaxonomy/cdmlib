@@ -1367,6 +1367,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/Ab
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AdvancedBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AnnotationTypeAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AutoPropertyInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/BeanInitNode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/GatheringEventLocationAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/IBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/MarkerTypeAutoInitializer.java -text

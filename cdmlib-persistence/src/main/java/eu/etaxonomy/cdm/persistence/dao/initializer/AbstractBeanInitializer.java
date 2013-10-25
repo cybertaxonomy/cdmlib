@@ -173,7 +173,8 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param bean
      * @param propPath
      */
-    private void initializePropertyPath(Object bean, String propPath) {
+    //changed form private to protected  (AM)
+    protected void initializePropertyPath(Object bean, String propPath) {
         if(logger.isDebugEnabled()){
             logger.debug("processing " + propPath);
         }
@@ -329,7 +330,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param bean
      * @return
      */
-    private void invokePropertyAutoInitializers(Object bean) {
+    protected final void invokePropertyAutoInitializers(Object bean) {
 
         if(beanAutoInitializers == null || bean == null){
             return;
@@ -345,7 +346,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         }
     }
 
-    private void setProperty(Object object, String property, Object value){
+    protected void setProperty(Object object, String property, Object value){
         Method method = methodCache.getMethod(object.getClass(), "set" + StringUtils.capitalize(property), value.getClass());
         if(method != null){
             try {
