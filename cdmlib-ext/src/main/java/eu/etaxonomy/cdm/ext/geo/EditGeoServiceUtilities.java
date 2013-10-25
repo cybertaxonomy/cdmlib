@@ -30,8 +30,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -241,7 +239,6 @@ public class EditGeoServiceUtilities {
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
         List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 
-        // TODO this step seems to be taking too much time
         groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
@@ -408,6 +405,9 @@ public class EditGeoServiceUtilities {
     }
 
     /**
+     * Adds the areas to the layer map. Areas which do not have layer information
+     * mapped to them are ignored.
+     * <p>
      * A layer map holds the following information:
      *
      * <ul>
@@ -438,29 +438,14 @@ public class EditGeoServiceUtilities {
             String geoLayerString = getWMSLayerName(area, mapping);
 
             if(geoLayerString == null){
-
-                // if no layer is mapped this area descend into sub areas in order to project
-                // the distribution to those
-                /**
-                 * FIXME ClassCaseException!!!
-                 * getIncludes():  Hibernate returns this as a collection of CGLibProxy$$DefinedTermBase objects
-                 * which can't be cast to instances of T - can we explicitly initialize these terms using
-                 * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
-                 */
-                for(DefinedTermBase<?> dtb : area.getIncludes()){
-                    NamedArea subArea = HibernateProxyHelper.deproxy(dtb, NamedArea.class);
-                    addAreaToLayerMap(layerMap, statusList, distribution, subArea, mapping);
-                }
-
+               /* IGNORE areas for which no layer is mapped */
             } else {
-
                 Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
                 if (styleMap == null) {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
                     layerMap.put(geoLayerString, styleMap);
                 }
                 addDistributionToStyleMap(distribution, styleMap, statusList);
-
             }
         }
     }
