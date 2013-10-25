@@ -1364,6 +1364,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxo
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AbstractBeanInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AdvancedBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AnnotationTypeAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AutoPropertyInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/GatheringEventLocationAutoInitializer.java -text
