@@ -95,13 +95,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy
-     * .cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITaxonService service) {
@@ -139,7 +132,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         // get the descriptions for the taxon
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
-
         Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
         //languages
         List<Language> langs = LocaleContext.getLanguages();
@@ -152,9 +144,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
 
         List<TaxonDescription> taxonDescriptions = page.getRecords();
-        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
-            backLayer, langs);
+        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, 
+        		presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
         mv.addObject(uriParams);
+        
         return mv;
     }
 
