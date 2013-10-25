@@ -132,6 +132,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         // get the descriptions for the taxon
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
+        
         Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
         //languages
         List<Language> langs = LocaleContext.getLanguages();
