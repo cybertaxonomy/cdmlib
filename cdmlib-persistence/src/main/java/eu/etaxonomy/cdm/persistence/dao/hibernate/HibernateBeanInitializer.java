@@ -26,7 +26,8 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 //@Component("defaultBeanInitializer")
 public class HibernateBeanInitializer extends AbstractBeanInitializer{
 
-    public static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
