@@ -213,6 +213,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
        }
        //TODO it seems as if the InitializationStrategy is not appropriate here !!!
        //   see #3728 (DescriptionListPortalController.getDescriptionElementsForTaxon() seems to be using inapproptiate init strategy)
+       if (logger.isDebugEnabled()){logger.debug("get pager ...");}
        Pager<T> pager = service.pageDescriptionElementsForTaxon(
                taxon,
                (features != null ? features.asSet() : null),
@@ -221,7 +222,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
                pagerParams.getPageIndex(),
                DESCRIPTION_ELEMENT_INIT_STRATEGY
               );
-
+       if (logger.isDebugEnabled()){logger.debug("get pager - DONE");}
        return pager;
    }
 }
