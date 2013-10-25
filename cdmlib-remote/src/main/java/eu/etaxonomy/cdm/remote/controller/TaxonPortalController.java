@@ -147,9 +147,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.status.type.representations",
 
             // taxon descriptions
-            "descriptions.elements.area.$",
-            "descriptions.elements.multilanguageText",
-            "descriptions.elements.media",
+//            "descriptions.elements.area.$",
+//            "descriptions.elements.multilanguageText",
+//            "descriptions.elements.media",
 
             });
 
