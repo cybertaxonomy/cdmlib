@@ -257,10 +257,6 @@ public class EditGeoServiceUtilities {
         if(ms != null){
             parameters.put("ms", ms);
         }
-        //layer
-//        if (StringUtils.isBlank(baseLayerName)){
-//            baseLayerName = "earth";
-//        }
         if (!StringUtils.isBlank(baseLayerName)){
             parameters.put("l", baseLayerName);
         }

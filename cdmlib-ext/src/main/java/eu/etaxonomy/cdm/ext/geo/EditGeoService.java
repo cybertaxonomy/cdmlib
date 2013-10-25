@@ -52,8 +52,6 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 public class EditGeoService implements IEditGeoService {
     public static final Logger logger = Logger.getLogger(EditGeoService.class);
 
-//    private static final String DEFAULT_BACK_LAYER = "tdwg4";
-
     @Autowired
     private IDescriptionDao dao;
 
