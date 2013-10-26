@@ -9,11 +9,8 @@ import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -23,7 +20,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 
 /**
- * For now this is to test if we can improve performance for bean initializing
+ * For now this is a test if we can improve performance for bean initializing
  * @author a.mueller
  * @date 2013-10-25
  *
@@ -31,7 +28,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
 	   public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
-	
+
 	    @Override
 	    public void load(Object bean) {
 	        initializeBean(bean, true, false);
@@ -41,39 +38,6 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	    public void loadFully(Object bean) {
 	        initializeBean(bean, true, true);
 	    }
-
-
-//	    @Override
-//	    public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
-//
-//	        if(logger.isDebugEnabled()){
-//	            logger.debug(">> starting initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName());
-//	        }
-//	        Set<Class> restrictions = new HashSet<Class>();
-//	        if(cdmEntities){
-//	            restrictions.add(CdmBase.class);
-//	        }
-//	        if(collections){
-//	            restrictions.add(Collections.class);
-//	        }
-//	        Set<PropertyDescriptor> props = getProperties(bean, restrictions);
-//	        for(PropertyDescriptor propertyDescriptor : props){
-//	            try {
-//
-//	                invokeInitialization(bean, propertyDescriptor);
-//
-//	            } catch (IllegalAccessException e) {
-//	                logger.error("Illegal access on property " + propertyDescriptor.getName());
-//	            } catch (InvocationTargetException e) {
-//	                logger.info("Cannot invoke property " + propertyDescriptor.getName() + " not found");
-//	            } catch (NoSuchMethodException e) {
-//	                logger.info("Property " + propertyDescriptor.getName() + " not found");
-//	            }
-//	        }
-//	        if(logger.isDebugEnabled()){
-//	            logger.debug("  completed initializeBean() of " + bean);
-//	        }
-//	    }
 
 
 	    //TODO optimize algorithm ..

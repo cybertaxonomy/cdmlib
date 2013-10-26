@@ -39,7 +39,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
     public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
 
     @Autowired
-    IMethodCache methodCache;
+    private IMethodCache methodCache;
 
     private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers = null;
 
