@@ -18,10 +18,8 @@ import java.util.Set;
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.dao.IMethodCache;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 
 /**
@@ -33,10 +31,6 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
 	   public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
-
-	    @Autowired
-	    IMethodCache methodCache;
-
 	
 	    /* (non-Javadoc)
 	     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
