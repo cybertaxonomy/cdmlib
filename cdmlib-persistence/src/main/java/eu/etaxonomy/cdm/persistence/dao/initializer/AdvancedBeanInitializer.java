@@ -32,68 +32,50 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
 	   public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
 	
-	    /* (non-Javadoc)
-	     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
-	     */
 	    @Override
 	    public void load(Object bean) {
 	        initializeBean(bean, true, false);
 	    }
 
-	    /* (non-Javadoc)
-	     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#loadFully(eu.etaxonomy.cdm.model.common.CdmBase)
-	     */
 	    @Override
 	    public void loadFully(Object bean) {
 	        initializeBean(bean, true, true);
 	    }
 
-	    /**
-	     * Initializes all *toOne relations of the given bean and all *toMany
-	     * relations, depending on the state of the boolean parameters
-	     * <code>cdmEntities</code> and <code>collections</code>
-	     *
-	     * @param bean
-	     *            the bean to initialize
-	     * @param cdmEntities
-	     *            initialize all *toOne relations to cdm entities
-	     * @param collections
-	     *            initialize all *toMany relations
-	     */
-	    public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
 
-	        if(logger.isDebugEnabled()){
-	            logger.debug(">> starting initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName());
-	        }
-	        Set<Class> restrictions = new HashSet<Class>();
-	        if(cdmEntities){
-	            restrictions.add(CdmBase.class);
-	        }
-	        if(collections){
-	            restrictions.add(Collections.class);
-	        }
-	        Set<PropertyDescriptor> props = getProperties(bean, restrictions);
-	        for(PropertyDescriptor propertyDescriptor : props){
-	            try {
+//	    @Override
+//	    public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
+//
+//	        if(logger.isDebugEnabled()){
+//	            logger.debug(">> starting initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName());
+//	        }
+//	        Set<Class> restrictions = new HashSet<Class>();
+//	        if(cdmEntities){
+//	            restrictions.add(CdmBase.class);
+//	        }
+//	        if(collections){
+//	            restrictions.add(Collections.class);
+//	        }
+//	        Set<PropertyDescriptor> props = getProperties(bean, restrictions);
+//	        for(PropertyDescriptor propertyDescriptor : props){
+//	            try {
+//
+//	                invokeInitialization(bean, propertyDescriptor);
+//
+//	            } catch (IllegalAccessException e) {
+//	                logger.error("Illegal access on property " + propertyDescriptor.getName());
+//	            } catch (InvocationTargetException e) {
+//	                logger.info("Cannot invoke property " + propertyDescriptor.getName() + " not found");
+//	            } catch (NoSuchMethodException e) {
+//	                logger.info("Property " + propertyDescriptor.getName() + " not found");
+//	            }
+//	        }
+//	        if(logger.isDebugEnabled()){
+//	            logger.debug("  completed initializeBean() of " + bean);
+//	        }
+//	    }
 
-	                invokeInitialization(bean, propertyDescriptor);
 
-	            } catch (IllegalAccessException e) {
-	                logger.error("Illegal access on property " + propertyDescriptor.getName());
-	            } catch (InvocationTargetException e) {
-	                logger.info("Cannot invoke property " + propertyDescriptor.getName() + " not found");
-	            } catch (NoSuchMethodException e) {
-	                logger.info("Property " + propertyDescriptor.getName() + " not found");
-	            }
-	        }
-	        if(logger.isDebugEnabled()){
-	            logger.debug("  completed initializeBean() of " + bean);
-	        }
-	    }
-
-	    /* (non-Javadoc)
-	     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#initializeProperties(java.lang.Object, java.util.List)
-	     */
 	    //TODO optimize algorithm ..
 	    @Override
 	    public void initialize(Object bean, List<String> propertyPaths) {
@@ -114,11 +96,12 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	        initializeBean(bean, rootInitializer);
 	        
 	        
-	        //old
-	        Collections.sort(propertyPaths);
-	        for(String propPath : propertyPaths){
-	            initializePropertyPath(bean, propPath);
-	        }
+//	        //old
+//	        if(logger.isDebugEnabled()){logger.debug("Start old initalizer ... ");};
+//	        Collections.sort(propertyPaths);
+//	        for(String propPath : propertyPaths){
+//	            initializePropertyPath(bean, propPath);
+//	        }
 	        if(logger.isDebugEnabled()){
 	            logger.debug("   Completed initialization of " + bean);
 	        }
