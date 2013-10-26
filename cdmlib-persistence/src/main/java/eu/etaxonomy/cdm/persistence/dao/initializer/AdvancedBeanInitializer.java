@@ -61,12 +61,12 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	        initializeBean(bean, rootInitializer);
 	        
 	        
-	        //old
-	        if(logger.isDebugEnabled()){logger.debug("Start old initalizer ... ");};
-	        Collections.sort(propertyPaths);
-	        for(String propPath : propertyPaths){
-	            initializePropertyPath(bean, propPath);
-	        }
+//	        //old
+//	        if(logger.isDebugEnabled()){logger.debug("Start old initalizer ... ");};
+//	        Collections.sort(propertyPaths);
+//	        for(String propPath : propertyPaths){
+//	            initializePropertyPath(bean, propPath);
+//	        }
 	        if(logger.isDebugEnabled()){
 	            logger.debug("   Completed initialization of " + bean);
 	        }

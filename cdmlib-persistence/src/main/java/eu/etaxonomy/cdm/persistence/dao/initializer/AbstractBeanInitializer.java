@@ -236,7 +236,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
                     if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
                         // nested collection
                         int i = 0;
-                        for (Object entrybean : (Collection) unwrappedPropertyBean) {
+                        for (Object entrybean : (Collection<?>) unwrappedPropertyBean) {
                             if(index == null){
                                 initializePropertyPath(entrybean, nestedPath);
                             } else if(index.equals(i)){

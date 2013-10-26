@@ -32,7 +32,7 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		this.path = CdmUtils.Nz(part);
 		this.parent = parent;
 		if (parent != null){
-			addChild(part, this);
+			parent.addChild(part, this);
 		}
 	}
 
