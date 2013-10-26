@@ -37,22 +37,6 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	    @Autowired
 	    IMethodCache methodCache;
 
-	    private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers = null;
-
-	    /**
-	     * @param beanAutoInitializers the beanAutoInitializers to set
-	     */
-	    public void setBeanAutoInitializers(Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers) {
-	        this.beanAutoInitializers = beanAutoInitializers;
-	    }
-
-	    /**
-	     * @return the beanAutoInitializers
-	     */
-	    public Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> getBeanAutoInitializers() {
-	        return beanAutoInitializers;
-	    }
-
 	
 	    /* (non-Javadoc)
 	     * @see eu.etaxonomy.cdm.persistence.dao.BeanInitializer#load(eu.etaxonomy.cdm.model.common.CdmBase)
@@ -224,7 +208,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" ... ");}
 			    Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
 			    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" - DONE ");}
-				
+				//TODO continue
+//			    node.addBean(unwrappedPropertyBean);
+			    
 			    // [2.b]
 			    // recurse into nested properties
 			    if(unwrappedPropertyBean != null ){

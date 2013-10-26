@@ -32,7 +32,17 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		this.path = CdmUtils.Nz(part);
 		this.parent = parent;
 		if (parent != null){
-			parent.children.put(part, this);
+			addChild(part, this);
+		}
+	}
+
+	private void addChild(String part, BeanInitNode child) {
+		children.put(part, child);
+		if (child.isWildcard()){
+			if (part.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD)){
+				this.isToManyInitialized = true;
+			}
+			this.isToOneInitialized = true;
 		}
 	}
 
