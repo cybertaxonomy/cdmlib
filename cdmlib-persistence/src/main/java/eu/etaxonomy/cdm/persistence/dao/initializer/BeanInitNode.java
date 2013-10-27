@@ -4,10 +4,13 @@
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -27,6 +30,9 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	
 	private boolean isToOneInitialized = false;
 	
+	private  Map<Class<?>, Set<Object>> beans = new HashMap<Class<?>, Set<Object>>();
+
+	
 	
 	public BeanInitNode(BeanInitNode parent, String part) {
 		this.path = CdmUtils.Nz(part);
@@ -45,6 +51,7 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 			this.isToOneInitialized = true;
 		}
 	}
+
 
 	public static BeanInitNode createInitTree(List<String> propertyPaths) {
 		
@@ -76,6 +83,31 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	}
 
 
+	public void addBean(Object bean) {
+		if (bean != null){
+			Class<?> key = bean.getClass();
+			Set<Object> classedBeans = beans.get(key);
+			if (classedBeans == null){
+				classedBeans = new HashSet<Object>();
+				beans.put(key, classedBeans);
+			}
+			classedBeans.add(bean);
+		}
+	}
+	public void addBeans(Collection<?> beans) {
+		for (Object bean : beans){
+			addBean(bean);
+		}
+	}
+	
+	private Map<Class<?>, Set<Object>> getClassedBeans(){
+		return this.beans;
+	}
+	
+	public void resetBeans(){
+		beans.clear();
+	}
+
 	public String getPath() {
 		return path;
 	}
@@ -94,6 +126,15 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		return path.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD);
 	}
 
+
+	public boolean isInitializedIfSingle(){
+		return parent.isToOneInitialized;
+	}
+	
+	public boolean isInitializedAny(){
+		return parent.isToManyInitialized;
+	}
+	
 	@Override
 	public int compareTo(BeanInitNode o) {
 		String toMany = AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD;
@@ -131,13 +172,14 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		
 		return result;
 	}
-	
-	public boolean isInitializedIfSingle(){
-		return parent.isToOneInitialized;
+
+	public Map<Class<?>, Set<Object>> getParentBeans() {
+		if (parent == null){
+			return new HashMap<Class<?>, Set<Object>>();
+		}else{
+			return parent.getClassedBeans();
+		}
 	}
-	
-	public boolean isInitializedAny(){
-		return parent.isToManyInitialized;
-	}
+
 
 }

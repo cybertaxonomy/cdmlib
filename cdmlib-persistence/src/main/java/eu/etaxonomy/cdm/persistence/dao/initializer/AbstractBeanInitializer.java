@@ -274,7 +274,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         }
     }
 
-    private Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    protected Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         if(propertyDescriptor == null || bean == null){
             return null;
@@ -369,7 +369,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param cdmEntities initialize all *toOne relations to cdm entities
      * @param collections initialize all *toMany relations
      */
-    private void initializeAllEntries(Collection collection, boolean cdmEntities, boolean collections) {
+    protected void initializeAllEntries(Collection collection, boolean cdmEntities, boolean collections) {
         for(Object bean : collection){
             initializeBean(bean, cdmEntities, collections);
         }

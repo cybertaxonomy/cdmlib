@@ -5,11 +5,8 @@ package eu.etaxonomy.cdm.persistence.dao.initializer;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
+import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -17,7 +14,6 @@ import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
 
 /**
@@ -31,34 +27,38 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	   public static final Logger logger = Logger.getLogger(AdvancedBeanInitializer.class);
 
 	    @Override
-	    public void load(Object bean) {
-	        initializeBean(bean, true, false);
+	    public void initialize(Object bean, List<String> propertyPaths) {
+	        List<Object> beanList = new ArrayList<Object>(1);
+	        beanList.add(bean);
+	        initializeAll(beanList, propertyPaths);
 	    }
-
-	    @Override
-	    public void loadFully(Object bean) {
-	        initializeBean(bean, true, true);
-	    }
-
-
+	    
 	    //TODO optimize algorithm ..
 	    @Override
-	    public void initialize(Object bean, List<String> propertyPaths) {
+	    public <C extends Collection<?>> C initializeAll(C beanList,  List<String> propertyPaths) {
 
-	        invokePropertyAutoInitializers(bean);
+	    	if (beanList == null || beanList.isEmpty()){
+	    		return beanList;
+	    	}
+	    	
+	    	//TODO new required?
+//	        invokePropertyAutoInitializers(bean);
 
-	        if(propertyPaths == null){
-	            return;
+	        if(propertyPaths == null){  //TODO if AutoInitializer is not requiredfor top level bean, this can be merged with previous "if"
+	            return beanList;
 	        }
 
-	        if(logger.isDebugEnabled()){
-	            logger.debug(">> starting to initialize " + bean + " ;class:" + bean.getClass().getSimpleName());
-	        }
 	        
 	        //new
-	        BeanInitNode rootInitializer = BeanInitNode.createInitTree(propertyPaths);
-	        System.out.println(rootInitializer.toStringTree());
-	        initializeBean(bean, rootInitializer);
+ 	        BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
+	        System.out.println(rootPath.toStringTree());
+	        
+
+	        if(logger.isDebugEnabled()){
+	            logger.debug(">> starting to initialize beanlist ; class(e.g.):" + beanList.iterator().next().getClass().getSimpleName());
+	        }
+	        rootPath.addBeans(beanList);
+	        initializeBean(rootPath);
 	        
 	        
 //	        //old
@@ -68,67 +68,62 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 //	            initializePropertyPath(bean, propPath);
 //	        }
 	        if(logger.isDebugEnabled()){
-	            logger.debug("   Completed initialization of " + bean);
+	            logger.debug("   Completed initialization of beanlist ");
 	        }
+	        return beanList;
 
 	    }
 	    
 
 		//new
-	    
-	    public void initializeBean(Object bean, BeanInitNode rootInitializer) {
-			initializePropertyPath(bean, rootInitializer);
-			for (BeanInitNode child : rootInitializer.getChildrenList()){
-				initializeBean(bean, child);
+	    private void initializeBean(BeanInitNode rootPath) {
+			initializePropertyPath(rootPath);
+			for (BeanInitNode childPath : rootPath.getChildrenList()){
+				initializeBean(childPath);
 			}
+			rootPath.resetBeans();
 		}
 	    
-
-	    @Override
-	    public <C extends Collection<?>> C initializeAll(C beanList,  List<String> propertyPaths) {
-	        if(propertyPaths != null){
-	            for(Object bean : beanList){
-	                initialize(bean, propertyPaths);
-	            }
-	        }
-	        return beanList;
-	    }
-
 	    /**
 	     * Initializes the given single <code>propPath</code> String.
 	     *
 	     * @param bean
 	     * @param propPath
 	     */
-	    void initializePropertyPath(Object bean, BeanInitNode node) {
+	    private void initializePropertyPath(BeanInitNode node) {
 	        if(logger.isDebugEnabled()){logger.debug("processing " + node.toString());}
 	        if (StringUtils.isBlank(node.getPath())){
 	        	return;
 	        }
 
 	        if (node.isWildcard()){
-		        initializeWildcardPropertyPath(bean, node);
+		        initializeWildcardPropertyPath(node);
 	        } else {
-	            initializeNoWildcardPropertyPath(bean, node);
+	            initializeNoWildcardPropertyPath(node);
 	        }
 	    }
 
 		// if propPath only contains a wildcard (* or $)
         // => do a batch initialization of *toOne or *toMany relations
-        private void initializeWildcardPropertyPath(Object bean, BeanInitNode node) {
+        private void initializeWildcardPropertyPath(BeanInitNode node) {
 			boolean initToMany = node.getPath().equals(LOAD_2ONE_2MANY_WILDCARD);
-		    if(Collection.class.isAssignableFrom(bean.getClass())){
-		        initializeAllEntries((Collection)bean, true, initToMany);
-		    } else if(Map.class.isAssignableFrom(bean.getClass())) {
-		        initializeAllEntries(((Map)bean).values(), true, initToMany);
-		    } else{
-		        initializeBean(bean, true, initToMany);
+		    for (Class<?> clazz : node.getParentBeans().keySet()){
+				for (Object bean : node.getParentBeans().get(clazz)){
+				
+					if(Collection.class.isAssignableFrom(bean.getClass())){
+				        initializeAllEntries((Collection<?>)bean, true, initToMany);
+				    } else if(Map.class.isAssignableFrom(bean.getClass())) {
+				        initializeAllEntries(((Map<?,?>)bean).values(), true, initToMany);
+				    } else{
+				        initializeBean(bean, true, initToMany);
+				    }
+			    }
 		    }
 		}
 
     	// propPath contains either a single field or a nested path
 		// split next path token off and keep the remaining as nestedPath
-        private void initializeNoWildcardPropertyPath(Object bean, BeanInitNode node) {
+        private void initializeNoWildcardPropertyPath(BeanInitNode node) {
 			
         	String property = node.getPath();
 			int pos;
@@ -144,47 +139,53 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			try {
 			    //Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
 
-			    // [2.a] initialize the bean named by property
-
-			    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
-			    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" ... ");}
-			    Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
-			    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" - DONE ");}
-				//TODO continue
-//			    node.addBean(unwrappedPropertyBean);
-			    
-			    // [2.b]
-			    // recurse into nested properties
-			    if(unwrappedPropertyBean != null ){
-			    	for (BeanInitNode childNode : node.getChildrenList()){
-			    		Collection<?> collection = null;
-			    		if(Map.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
-			    			collection = ((Map<?,?>)unwrappedPropertyBean).values();
-			    		}else if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
-			                collection =  (Collection<?>) unwrappedPropertyBean;	
-			    		}
-			    		if (collection != null){
-			                //collection or map
-			    			if (logger.isDebugEnabled()){logger.debug(" initialize collection for " + childNode.toString() + " ... ");}
-			 	            int i = 0;
-			    			for (Object entrybean : collection) {
-			                    if(index == null){
-			                        initializePropertyPath(entrybean, childNode);
-			                    } else if(index.equals(i)){
-			                        initializePropertyPath(entrybean, childNode);
-			                        break;
-			                    }
-			                    i++;
-			                }
-			    			if (logger.isDebugEnabled()){logger.debug(" initialize collection for " + childNode.toString() + " - DONE ");}
-			 	            
-			            }else {
-			                // nested bean
-			                initializePropertyPath(unwrappedPropertyBean, childNode);
-			                setProperty(bean, property, unwrappedPropertyBean);
-			            }
-			    	}
-			    }
+			    // [1] initialize the bean named by property
+			    for (Class<?> clazz : node.getParentBeans().keySet()){
+					for (Object bean : node.getParentBeans().get(clazz)){
+		
+					    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
+					    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" ... ");}
+					    Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
+					    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" - DONE ");}
+		
+	
+					    // [2]
+					    // recurse into nested properties
+					    if(unwrappedPropertyBean != null ){
+	//				    	for (BeanInitNode childNode : node.getChildrenList()){
+					    		Collection<?> collection = null;
+					    		if(Map.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
+					    			collection = ((Map<?,?>)unwrappedPropertyBean).values();
+					    		}else if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
+					                collection =  (Collection<?>) unwrappedPropertyBean;	
+					    		}
+					    		if (collection != null){
+					                //collection or map
+					    			if (logger.isDebugEnabled()){logger.debug(" initialize collection for " + node.toString() + " ... ");}
+					 	            int i = 0;
+					    			for (Object entrybean : collection) {
+					                    if(index == null){
+					    				    node.addBean(entrybean);
+	//				                    	initializePropertyPath(entrybean, childNode);
+					                    } else if(index.equals(i)){
+					                    	node.addBean(entrybean);
+	//				                    	initializePropertyPath(entrybean, childNode);
+					                        break;
+					                    }
+					                    i++;
+					                }
+					    			if (logger.isDebugEnabled()){logger.debug(" initialize collection for " + node.toString() + " - DONE ");}
+					 	            
+					            }else {
+					                // nested bean
+					            	node.addBean(unwrappedPropertyBean);
+	//				            	initializePropertyPath(unwrappedPropertyBean, childNode);
+					                setProperty(bean, property, unwrappedPropertyBean);
+					            }
+					    	}
+						}
+//				    }
+				}				
 
 			} catch (IllegalAccessException e) {
 			    logger.error("Illegal access on property " + property);
@@ -194,68 +195,5 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			    logger.info("Property " + property + " not found");
 			}
 		}
-
-	    //TODO check if needed in advanced
-	    private Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
-
-	        if(propertyDescriptor == null || bean == null){
-	            return null;
-	        }
-
-	        // (1)
-	        // initialialization of the bean
-	        //
-	        Object propertyProxy = PropertyUtils.getProperty( bean, propertyDescriptor.getName());
-	        Object propertyBean = initializeInstance(propertyProxy);
-
-	        if(propertyBean != null){
-	            // (2)
-	            // auto initialialization of sub properties
-	            //
-	            if(CdmBase.class.isAssignableFrom(propertyBean.getClass())){
-
-	                // initialization of a single bean
-	                CdmBase cdmBaseBean = (CdmBase)propertyBean;
-	                invokePropertyAutoInitializers(cdmBaseBean);
-
-	            } else if(Collection.class.isAssignableFrom(propertyBean.getClass()) ||
-	                    Map.class.isAssignableFrom(propertyBean.getClass()) ) {
-
-	                // it is a collection or map
-	                Method readMethod = propertyDescriptor.getReadMethod();
-	                Type genericReturnType = readMethod.getGenericReturnType();
-
-	                if(genericReturnType instanceof ParameterizedType){
-	                    ParameterizedType type = (ParameterizedType) genericReturnType;
-	                    Type[] typeArguments = type.getActualTypeArguments();
-
-	                    if(typeArguments.length > 0
-	                            && typeArguments[0] instanceof Class<?>
-	                            && CdmBase.class.isAssignableFrom((Class<?>) typeArguments[0])){
-
-	                        if(Collection.class.isAssignableFrom((Class<?>) type.getRawType())){
-	                            for(CdmBase entry : ((Collection<CdmBase>)propertyBean)){
-	                                invokePropertyAutoInitializers(entry);
-	                            }
-	                        }
-	                    }
-
-	                }
-	            }
-	        }
-
-	        return propertyBean;
-	    }
-
-	    /**
-	     * @param collection of which all entities are to be initialized
-	     * @param cdmEntities initialize all *toOne relations to cdm entities
-	     * @param collections initialize all *toMany relations
-	     */
-	    private void initializeAllEntries(Collection collection, boolean cdmEntities, boolean collections) {
-	        for(Object bean : collection){
-	            initializeBean(bean, cdmEntities, collections);
-	        }
-	    }
 
 }
