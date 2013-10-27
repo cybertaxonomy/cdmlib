@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
@@ -141,12 +142,15 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 
 			    // [1] initialize the bean named by property
 			    for (Class<?> clazz : node.getParentBeans().keySet()){
-					for (Object bean : node.getParentBeans().get(clazz)){
+			    	Set<Object> beans = node.getParentBeans().get(clazz);
+			    	if (logger.isDebugEnabled()){logger.debug("invoke initialization beans of class "+clazz+" ... ");}
+					    
+			    	for (Object bean : beans){
 		
 					    PropertyDescriptor propertyDescriptor = PropertyUtils.getPropertyDescriptor(bean, property);
-					    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" ... ");}
-					    Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
-					    if (logger.isDebugEnabled()){logger.debug("invokeInitialization "+node+" - DONE ");}
+					    if (logger.isDebugEnabled()){logger.debug("invoke initialization "+node+" ... ");}
+						Object unwrappedPropertyBean = invokeInitialization(bean, propertyDescriptor);
+					    if (logger.isDebugEnabled()){logger.debug("invoke initialization "+node+" - DONE ");}
 		
 	
 					    // [2]
