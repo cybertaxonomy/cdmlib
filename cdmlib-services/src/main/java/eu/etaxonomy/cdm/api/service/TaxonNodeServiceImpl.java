@@ -24,8 +24,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -57,6 +59,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private ITaxonService taxonService;
+    
+    @Autowired
+    private IClassificationService classService;
 
     @Autowired
     public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
@@ -190,20 +195,43 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public List<UUID> deleteTaxonNodes(List<TaxonNode> nodes){
-        boolean deleteChildren;
+    public List<UUID> deleteTaxonNodes(Set<ITreeNode> nodes, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+        
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
-        for (TaxonNode node:nodes){
-            Classification classification = node.getClassification();
-            if (classification.getChildNodes().contains(node)){
-                classification.deleteChildNode(node);
-            } else {
-                node.getTaxon().removeTaxonNode(node);
-            }
-            deletedUUIDs.add(node.getUuid());
-            dao.delete(node);
+        
+        for (ITreeNode treeNode:nodes){
+        	if (treeNode instanceof TaxonNode){
+        		TaxonNode taxonNode;
+	            taxonNode = (TaxonNode)treeNode;
+	            Classification classification = taxonNode.getClassification();
+	            if (classification.getChildNodes().contains(taxonNode)){
+	                classification.deleteChildNode(taxonNode);
+	            } else {
+	            	taxonNode.getTaxon().removeTaxonNode(taxonNode);
+	            }
+	            dao.delete(taxonNode);
+        	}else {
+        		Classification classification = (Classification) treeNode;
+        		classService.delete(classification);
+        	}
+        	
+            deletedUUIDs.add(treeNode.getUuid());
+            
         }
         return deletedUUIDs;
 
     }
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public UUID deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+    	
+    	taxonService.deleteTaxon(node.getTaxon(), config, node.getClassification());
+    	
+    	return node.getUuid();
+    }
+    
+    
 }

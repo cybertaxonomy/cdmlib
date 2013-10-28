@@ -62,9 +62,11 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -1066,10 +1068,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             throw new DataChangeNoRollbackException(message);
                         }
                     } else if (config.isDeleteInAllClassifications()){
-                        List<TaxonNode> nodesList = new ArrayList<TaxonNode>();
+                        Set<ITreeNode> nodesList = new HashSet<ITreeNode>();
                         nodesList.addAll(taxon.getTaxonNodes());
 
-                            for (TaxonNode taxonNode: nodesList){
+                            for (ITreeNode treeNode: nodesList){
+                            	TaxonNode taxonNode = (TaxonNode) treeNode;
                                 if(deleteChildren){
                                     Object[] childNodes = taxonNode.getChildNodes().toArray();
                                     for (Object childNode: childNodes){
@@ -1094,7 +1097,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 }
                             }
 
-                        nodeService.deleteTaxonNodes(nodesList);
+                        nodeService.deleteTaxonNodes(nodesList, config);
                     }
                     if (!success){
                          message = "The taxon node could not be deleted.";
@@ -1225,7 +1228,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
         }
         this.saveOrUpdate(synonym);
-
+        
         //TODO remove name from homotypical group?
 
         //remove synonym (if necessary)
