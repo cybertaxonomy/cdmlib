@@ -99,7 +99,7 @@ public class Feature extends DefinedTermBase<Feature> {
 	
 	protected static Map<UUID, Feature> termMap = null;		
 
-	private boolean supportsTextData;
+	private boolean supportsTextData = true;   //by default text data should be always supported
 	
 	private boolean supportsQuantitativeData;
 	
