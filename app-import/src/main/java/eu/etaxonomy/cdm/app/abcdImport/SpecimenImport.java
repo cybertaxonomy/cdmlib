@@ -30,7 +30,7 @@ public class SpecimenImport {
     //final static String xmlSource = "D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\specimen\\Picris pauciflora\\B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
 //    final static String xmlSource = "/home/pkelbert/workspace/proibiosphere/cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 
-    final static String xmlSource = "/home/pkelbert/Bureau/CDM/CLD33-a.xml";
+    final static String xmlSource = "/home/pkelbert/Documents/Proibiosphere/Presentations/Demo/ABCD/calvum.xml";
 //    final static String xmlSource = "/home/pkelbert/workspacetrunk/cdmlib/cdmlib-io/target/test-classes/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
 
 
@@ -54,25 +54,26 @@ public class SpecimenImport {
             ICdmDataSource destination = cdmDestination;
             Abcd206ImportConfigurator specimenImportConfigurator = Abcd206ImportConfigurator.NewInstance(source,  destination);
 
-//            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
+////            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
             specimenImportConfigurator.setSourceSecId("specimen");
-            specimenImportConfigurator.setCheck(check);
-            specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
+//            specimenImportConfigurator.setCheck(check);
+//            specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
             specimenImportConfigurator.setParseNameAutomatically(false);
             specimenImportConfigurator.setReuseExistingMetadata(true);
             specimenImportConfigurator.reuseExistingDescriptiveGroups(false);
-
+//
             specimenImportConfigurator.setReuseExistingTaxaWhenPossible(true);
-
+//
             specimenImportConfigurator.setAddIndividualsAssociationsSuchAsSpecimenAndObservations(true);
             specimenImportConfigurator.setUseClassification(true);
             specimenImportConfigurator.setInteractWithUser(true);
-
+//
             specimenImportConfigurator.setSourceReference(null);
             specimenImportConfigurator.setTaxonReference(null);
 
             // invoke import
             CdmDefaultImport<Abcd206ImportConfigurator> specimenImport = new CdmDefaultImport<Abcd206ImportConfigurator>();
+            System.out.println("TJS LA");
             //new Test().invoke(tcsImportConfigurator);
             specimenImport.invoke(specimenImportConfigurator);
             System.out.println("End import from SpecimenData ("+ source.toString() + ")...");
