@@ -30,6 +30,7 @@ import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.IReferenceService;
@@ -324,7 +325,13 @@ public class SpecimenUserInteraction implements ItemListener {
         for (TaxonDescription description : descriptions){
             Set<IdentifiableSource> sources =  description.getTaxon().getSources();
             sources.addAll(description.getSources());
-            descrMap.put(description.getTitleCache()+sources.toString(),description);
+            List<String> src=new ArrayList<String>();
+            src.add("(");
+            for (IdentifiableSource s:sources) {
+                src.add(s.getCitation().getTitleCache());
+            }
+            src.add(")");
+            descrMap.put(description.getTitleCache()+StringUtils.join(src,";"),description);
             //            for (IdentifiableSource source:sources){
             //                if(ref.equals(source.getCitation())) {
             //                    taxonDescription = description;
