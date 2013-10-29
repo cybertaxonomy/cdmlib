@@ -48,7 +48,7 @@ public class CentralAfricaFernsFdacImportActivator {
 	static boolean useSourceReferenceAsSec = true; 
 	
 	//default nom code is ICZN as it allows adding publication year 
-	static final NomenclaturalCode defaultNomCode = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode defaultNomCode = NomenclaturalCode.ICNAFP;
 
 	
 	//check - import

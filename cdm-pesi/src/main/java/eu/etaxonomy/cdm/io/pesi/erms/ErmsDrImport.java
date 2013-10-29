@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectMapper;
 import eu.etaxonomy.cdm.io.pesi.erms.validation.ErmsDrImportValidator;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -164,7 +165,7 @@ public class ErmsDrImport  extends ErmsImportBase<Distribution> {
 	 */
 	private void addSource(Distribution distribution, Integer source_id, ErmsImportState state) {
 		Reference<?> ref = (Reference)state.getRelatedObject(ErmsReferenceImport.REFERENCE_NAMESPACE, String.valueOf(source_id));
-		distribution.addSource(null, null, ref, null);
+		distribution.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, ref, null);
 	}
 
 	/* (non-Javadoc)

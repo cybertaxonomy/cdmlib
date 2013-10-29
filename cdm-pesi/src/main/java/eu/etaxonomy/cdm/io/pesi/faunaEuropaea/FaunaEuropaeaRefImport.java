@@ -31,10 +31,10 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -42,7 +42,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.profiler.ProfilerController;
 
 
 /**
@@ -515,7 +514,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 
 				UUID taxonUuid = taxonBase.getUuid();
 				FaunaEuropaeaReferenceTaxon fauEuHelperTaxon = fauEuTaxonMap.get(taxonUuid);
-				Reference citation;
+				Reference<?> citation;
 				String microCitation;
 				DescriptionElementSource originalSource;
 				Synonym syn;
@@ -525,7 +524,7 @@ public class FaunaEuropaeaRefImport extends FaunaEuropaeaImportBase {
 					
 					citation = references.get(storedReference.getReferenceId());
 					microCitation = storedReference.getPage();
-					originalSource = DescriptionElementSource.NewInstance(null, null, citation, microCitation, null, null);
+					originalSource = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource, null, null, citation, microCitation, null, null);
 					if (isSynonym){
 						syn = CdmBase.deproxy(taxonBase, Synonym.class);
 						originalSource.setNameUsedInSource(syn.getName());

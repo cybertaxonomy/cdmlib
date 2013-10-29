@@ -55,67 +55,71 @@ public class EfloraSources {
 
   //***** FM NEW */	
 	
-	//Flora Malesiana Vol 12
-	public static URI fm_12(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_12/xml_1995_vol_12_all_final_5.xml");
+	//Flora Malesiana Vol 12_1
+	public static URI fm_12_1(){
+		return URI.create("file://PESIIMPORT3/malesiana/vol12_1_final.xml");
 	}
 	
-	//Flora Malesiana Vol 13 - small families
-	public static URI fm_13_small_families(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_13/vol_13_small_families.xml");
+	//Flora Malesiana Vol 12_2
+	public static URI fm_12_2(){
+		return URI.create("file://PESIIMPORT3/malesiana/vol12_2_final.xml");
+	}
+	
+	public static URI fm_13(){
+		return URI.create("file://PESIIMPORT3/malesiana/vol13_final.xml");
 	}
 
-	//Flora Malesiana Vol 13 - large families
-	public static URI fm_13_large_families(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_13/xmlv9_large_families_vol_13.xml");
-	}
+//	//Flora Malesiana Vol 13 - large families
+//	public static URI fm_13_large_families(){
+//		return URI.create("file://PESIIMPORT3/malesiana/vol_13/xmlv9_large_families_vol_13.xml");
+//	}
 
 	//Flora Malesiana Vol 14
 	public static URI fm_14(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_15/vol14_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol14_final.xml");
 	}
 	
 	//Flora Malesiana Vol 15
 	public static URI fm_15(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_15/vol15_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol15_final.xml");
 	}
 
 	//Flora Malesiana Vol 16
 	public static URI fm_16(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_16/vol16_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol16_final.xml");
 	}
 
 	//Flora Malesiana Vol 17, part1
 	public static URI fm_17_1(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_17/fmvol17_part1_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol17_part1_final.xml");
 	}
 	
 	//Flora Malesiana Vol 17, part2
 	public static URI fm_17_2(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_17/fmvol17_part2_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol17_part2_final.xml");
 	}
 	
 	//Flora Malesiana Vol 18
 	public static URI fm_18(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_15/vol18_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol18_final.xml");
 	}
 	//Flora Malesiana Vol 19
 	public static URI fm_19(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_15/vol19_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol19_final.xml");
 	}
 	//Flora Malesiana Vol 20
 	public static URI fm_20(){
-		return URI.create("file://PESIIMPORT3/malesiana/vol_15/vol20_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/vol20_final.xml");
 	}
 	
 	//Flora Malesiana Series 2 - Vol 2
 	public static URI fm_ser2_2(){
-		return URI.create("file://PESIIMPORT3/malesiana/ser2/vol_02/ser2vol2final1.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/IIvol2_final.xml");
 	}
 
 	//Flora Malesiana Series 2 - Vol 3
 	public static URI fm_ser2_3(){
-		return URI.create("file://PESIIMPORT3/malesiana/ser2/vol_03/IIvol3_final.xml");
+		return URI.create("file://PESIIMPORT3/malesiana/IIvol3_final.xml");
 	}
 
 //************************* GABON ************************************************/
@@ -186,6 +190,52 @@ public class EfloraSources {
 		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol11_final.xml");
 	}
 
+	//Flore du Gabon vol 12 and 17  (same family)
+	public static URI fdg_12_17(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol12and17_final.xml");
+	}
+
+
+	//Flore du Gabon vol 13
+	public static URI fdg_13(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol13_final.xml");
+	}
+
+	//Flore du Gabon vol 14
+	public static URI fdg_14(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol14_final.xml");
+	}
+
+	//Flore du Gabon vol 15
+	public static URI fdg_15(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol15_final.xml");
+	}
+
+	//Flore du Gabon vol 16
+	public static URI fdg_16(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol16_final.xml");
+	}
+
+	//Flore du Gabon vol 17
+	public static URI fdg_17(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol17_final.xml");
+	}
+
+	//Flore du Gabon vol 18
+	public static URI fdg_18(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol18_final.xml");
+	}
+
+	//Flore du Gabon vol 19
+	public static URI fdg_19(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol19_final.xml");
+	}
+
+	//Flore du Gabon vol 20
+	public static URI fdg_20(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol20_final.xml");
+	}
+	
 	//Flore du Gabon vol 21
 	public static URI fdg_21(){
 		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol21_final.xml");
@@ -211,6 +261,15 @@ public class EfloraSources {
 		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol30_final.xml");
 	}
 
+	//Flore du Gabon vol 34
+	public static URI fdg_34(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol34_final.xml");
+	}
+	
+	//Flore du Gabon vol 35
+	public static URI fdg_35(){
+		return URI.create("file://PESIIMPORT3/gabon/markupData/fdgvol35_final.xml");
+	}
 	
 //************************* GUIANAS **********************************************/	
 	

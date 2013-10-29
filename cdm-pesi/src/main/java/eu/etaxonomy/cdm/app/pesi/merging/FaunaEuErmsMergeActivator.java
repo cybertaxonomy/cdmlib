@@ -291,14 +291,14 @@ public class FaunaEuErmsMergeActivator {
 				
 				Iterator<TaxonNode> iteratorNodesFaunaEu = nodesFaunaEu.iterator();
 				TaxonNode node = iteratorNodesFaunaEu.next();
-				Set<TaxonNode> children = node.getChildNodes();
+				List<TaxonNode> children = node.getChildNodes();
 				Iterator<TaxonNode> childrenIterator = children.iterator();
 				TaxonNode childNode;
 				if (iteratorNodesErms.hasNext()){
 					TaxonNode ermsNode = iteratorNodesErms.next();
 					while (childrenIterator.hasNext()){
 						childNode = childrenIterator.next();
-						ermsNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference(), null);
+						ermsNode.addChildNode(childNode, childNode.getReference(), childNode.getMicroReference());
 					}
 				}
 				

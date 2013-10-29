@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -353,7 +355,7 @@ public abstract class IndexFungorumImportBase extends CdmImportBase<IndexFungoru
 			year = CdmUtils.concat(" ", year, "[" + yearOnPubl + "]");
 		}
 		if (year != null){
-			ref.setDatePublished(TimePeriod.parseString(year));
+			ref.setDatePublished(TimePeriodParser.parseString(year));
 		}
 		
 		//preliminary, set protected titlecache as Generic Cache Generation with in references currently doesn't fully work yet
@@ -384,7 +386,7 @@ public abstract class IndexFungorumImportBase extends CdmImportBase<IndexFungoru
 		Reference<?> sourceReference = state.getRelatedObject(NAMESPACE_REFERENCE, SOURCE_REFERENCE, Reference.class);
 		//source
 		String strId = (id == null ? null : String.valueOf(id));
-		IdentifiableSource source = IdentifiableSource.NewInstance(strId, namespace, sourceReference, null);
+		IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, strId, namespace, sourceReference, null);
 		taxon.addSource(source);
 		
 		//no last action

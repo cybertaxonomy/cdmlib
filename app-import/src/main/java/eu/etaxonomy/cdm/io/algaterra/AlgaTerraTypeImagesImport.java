@@ -89,7 +89,7 @@ public class AlgaTerraTypeImagesImport  extends AlgaTerraImageImportBase {
 		Set<SpecimenOrObservationBase> unitsToSave = new HashSet<SpecimenOrObservationBase>();
 		
 		Map<String, DerivedUnit> typeSpecimenMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(AlgaTerraSpecimenImportBase.TYPE_SPECIMEN_DERIVED_UNIT_NAMESPACE);
-		Map<String, Reference> biblioReference = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
+		Map<String, Reference> referenceMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
 		
 		
 		ResultSet rs = partitioner.getResultSet();

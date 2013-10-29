@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -66,7 +67,7 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -79,6 +80,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -631,7 +633,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 
 	private boolean isInfraSpecificMarker(String single) {
 		try {
-			if (Rank.getRankByAbbreviation(single).isInfraSpecific()){
+			if (Rank.getRankByIdInVoc(single).isInfraSpecific()){
 				return true;
 			}
 		} catch (UnknownCdmTypeException e) {
@@ -712,10 +714,10 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	private void makeOriginalSourceReferences(ISourceable sourcable, String splitter, String refAll) {
 		String[] splits = refAll.split(splitter);
 		for (String strRef: splits){
-			Reference ref = ReferenceFactory.newGeneric();
+			Reference<?> ref = ReferenceFactory.newGeneric();
 			ref.setTitleCache(strRef, true);
 			String refDetail = parseReferenceYearAndDetail(ref);
-			sourcable.addSource(null, null, ref, refDetail);
+			sourcable.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, ref, refDetail);
 		}
 		
 		
@@ -1061,7 +1063,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		//clean
 		typeText = cleanNameType(typeText);
 		//create name
-		BotanicalName nameType = (BotanicalName)parser.parseFullName(typeText, NomenclaturalCode.ICBN, Rank.SPECIES());
+		BotanicalName nameType = (BotanicalName)parser.parseFullName(typeText, NomenclaturalCode.ICNAFP, Rank.SPECIES());
 		((NameTypeDesignation) typeDesignation).setTypeName(nameType);
 		//TODO wie können NameTypes den Namen zugeordnet werden? -  wird aber vom Portal via NameCache matching gemacht
 	}
@@ -1094,13 +1096,13 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		}else{
 			logger.warn("Unhandled type string: " + typeType);
 		}
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		if (typeText.length() > 255){
 			specimen.setTitleCache(typeText.substring(0, 252) + "...", true);
 		}else{
 			specimen.setTitleCache(typeText, true);
 		}
-		specimen.addDefinition(typeText, Language.ENGLISH());
+		specimen.putDefinition(Language.ENGLISH(), typeText);
 		((SpecimenTypeDesignation) typeDesignation).setTypeSpecimen(specimen);
 	}
 
@@ -1357,13 +1359,13 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param name
 	 * @param value
 	 */
-	protected TeamOrPersonBase handleNameUsage(Taxon taxon, NonViralName name, String referenceTitle, TeamOrPersonBase lastTeam) {
-		Reference ref = ReferenceFactory.newGeneric();
+	protected TeamOrPersonBase handleNameUsage(Taxon taxon, NonViralName<?> name, String referenceTitle, TeamOrPersonBase lastTeam) {
+		Reference<?> ref = ReferenceFactory.newGeneric();
 		referenceTitle = removeStartingSymbols(referenceTitle, ref);
 		
 		ref.setTitleCache(referenceTitle, true);
 		String microReference = parseReferenceYearAndDetail(ref);
-		TeamOrPersonBase team = getReferenceAuthor(ref);
+		TeamOrPersonBase<?> team = getReferenceAuthor(ref);
 		parseReferenceType(ref);
 		if (team == null){
 			team = lastTeam;
@@ -1372,7 +1374,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		
 		TaxonDescription description = getDescription(taxon);
 		TextData textData = TextData.NewInstance(Feature.CITATION());
-		textData.addSource(null, null, ref, microReference, name, null);
+		textData.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, ref, microReference, name, null);
 		description.addElement(textData);
 		return team;
 	}
@@ -1602,10 +1604,10 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		if (elInfraRank.size() == 1){
 			String strRank = elInfraRank.get(0).getTextNormalize();
 			try {
-				infraRank = Rank.getRankByNameOrAbbreviation(strRank);
+				infraRank = Rank.getRankByNameOrIdInVoc(strRank);
 			} catch (UnknownCdmTypeException e) {
 				try{
-					infraRank = Rank.getRankByNameOrAbbreviation(strRank + ".");
+					infraRank = Rank.getRankByNameOrIdInVoc(strRank + ".");
 				} catch (UnknownCdmTypeException e2) {
 					logger.warn("Unknown infrank " + strRank + ". Set infraRank to (null).");
 				}
@@ -1620,7 +1622,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	}
 
 
-	private void handleInfrEpi(NonViralName name, Rank infraRank, String value) {
+	private void handleInfrEpi(NonViralName<?> name, Rank infraRank, String value) {
 		if (infraRank != null && infraRank.isInfraSpecific()){
 			name.setInfraSpecificEpithet(value);
 			if (CdmUtils.isCapital(value)){
@@ -1665,7 +1667,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 	 * @param element
 	 * @param taxon
 	 */
-	private void handleInfraspecificEpithet(Element element, String attrValue, NonViralName name) {
+	private void handleInfraspecificEpithet(Element element, String attrValue, NonViralName<?> name) {
 		String value = element.getTextNormalize();
 		if (value.indexOf("subsp.") != -1){
 			//TODO genus and species epi
@@ -1911,10 +1913,10 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 				try {
 					Rank rank;
 					try {
-						rank = Rank.getRankByNameOrAbbreviation(classValue);
+						rank = Rank.getRankByNameOrIdInVoc(classValue);
 					} catch (Exception e) {
 						//TODO nc
-						rank = Rank.getRankByEnglishName(classValue, NomenclaturalCode.ICBN, false);
+						rank = Rank.getRankByEnglishName(classValue, NomenclaturalCode.ICNAFP, false);
 					}
 					taxon.getName().setRank(rank);
 					if (rank.equals(Rank.FAMILY()) || rank.equals(Rank.GENUS())){
@@ -2025,7 +2027,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		
 		Classification tree = getTree(state);
 		if (lastTaxon == null){
-			tree.addChildTaxon(taxon, null, null, null);
+			tree.addChildTaxon(taxon, null, null);
 			return;
 		}
 		Rank thisRank = taxon.getName().getRank();
@@ -2033,15 +2035,15 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 		if (lastTaxon.getTaxonNodes().size() > 0){
 			TaxonNode lastNode = lastTaxon.getTaxonNodes().iterator().next();
 			if (thisRank.isLower(lastRank )  ){
-				lastNode.addChildTaxon(taxon, null, null, null);
+				lastNode.addChildTaxon(taxon, null, null);
 				fillMissingEpithetsForTaxa(lastTaxon, taxon);
 			}else if (thisRank.equals(lastRank)){
 				TaxonNode parent = lastNode.getParent();
 				if (parent != null){
-					parent.addChildTaxon(taxon, null, null, null);
+					parent.addChildTaxon(taxon, null, null);
 					fillMissingEpithetsForTaxa(parent.getTaxon(), taxon);
 				}else{
-					tree.addChildTaxon(taxon, null, null, null);
+					tree.addChildTaxon(taxon, null, null);
 				}
 			}else if (thisRank.isHigher(lastRank)){
 				handleTaxonRelation(state, taxon, lastNode.getParent().getTaxon());
@@ -2221,7 +2223,7 @@ public class EfloraTaxonImport  extends EfloraImportBase implements ICdmIO<Eflor
 				startMonth = getMonth(strPeriod.substring(0, end));
 			}
 			
-			TimePeriod datePublished = TimePeriod.parseString(strPeriod);
+			TimePeriod datePublished = TimePeriodParser.parseString(strPeriod);
 			if (startMonth != null){
 				datePublished.setStartMonth(startMonth);
 			}

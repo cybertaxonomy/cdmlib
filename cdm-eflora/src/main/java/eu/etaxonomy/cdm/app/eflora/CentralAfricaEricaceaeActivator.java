@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenCdmExcelImportConfigurator;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -197,8 +198,8 @@ public class CentralAfricaEricaceaeActivator {
 		}
 		TransactionStatus tx = app.startTransaction();
 		
-		OrderedTermVocabulary<NamedArea> voc = OrderedTermVocabulary.NewInstance("Phytogeographic Regions of Central Africa", "Phytogeographic Regions of Central Africa", "FdAC regions", null);
-		app.getVocabularyService().save(voc);
+		OrderedTermVocabulary<NamedArea> areaVoc = OrderedTermVocabulary.NewInstance(TermType.NamedArea, "Phytogeographic Regions of Central Africa", "Phytogeographic Regions of Central Africa", "FdAC regions", null);
+		app.getVocabularyService().save(areaVoc);
 		
 		NamedAreaLevel level = NamedAreaLevel.NewInstance("Phytogeographic Regions of Central Africa", "Phytogeographic Regions of Central Africa", "FdAC regions");
 		ITermService termService = app.getTermService();
@@ -208,71 +209,71 @@ public class CentralAfricaEricaceaeActivator {
 		NamedArea area = NamedArea.NewInstance("C\u00F4tier", "C\u00F4tier", "I");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 		
 
 		area = NamedArea.NewInstance("Mayumbe", "Mayumbe", "II");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Bas-Congo", "Bas-Congo", "III");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Kasai", "Kasai", "IV");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Bas-Katanga", "Bas-Katanga", "V");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Forestier Central", "Forestier Central", "VI");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Ubangi-Uele", "Ubangi-Uele", "VII");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Lac Albert", "Lac Albert", "VIII");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Lacs \u00C9douard et Kivu", "Lacs \u00C9douard et Kivu", "IX");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Rwanda-Burundi", "Rwanda-Burundi", "X");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 
 		area = NamedArea.NewInstance("Haut-Katanga", "Haut-Katanga", "XI");
 		area.setLevel(level);
 		area.setType(NamedAreaType.NATURAL_AREA());
-		voc.addTerm(area);
+		areaVoc.addTerm(area);
 		termService.save(area);
 		
-		app.getVocabularyService().save(voc);
+		app.getVocabularyService().save(areaVoc);
 		
 		app.commitTransaction(tx);
 

@@ -70,7 +70,7 @@ public class IndexFungorumImportConfigurator extends DbImportConfiguratorBase<In
 	 * @param destination
 	 */
 	private IndexFungorumImportConfigurator(Source source, ICdmDataSource destination) {
-	   super(source, destination, NomenclaturalCode.ICBN, defaultTransformer);//default for IF
+	   super(source, destination, NomenclaturalCode.ICNAFP, defaultTransformer);//default for IF
 	}
 	
 	

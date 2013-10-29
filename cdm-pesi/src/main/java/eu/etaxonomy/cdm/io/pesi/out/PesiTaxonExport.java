@@ -33,6 +33,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.TaxonServiceImpl;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbConstantMapper;
@@ -1991,7 +1992,7 @@ public class PesiTaxonExport extends PesiExportBase {
 				Reference<?> ref = source.getCitation();
 				UUID refUuid = ref.getUuid();
 				String idInSource = source.getIdInSource();
-				if (refUuid.equals(PesiTransformer.uuidSourceRefEuroMed)){
+				if (refUuid.equals(BerlinModelTransformer.uuidSourceRefEuroMed)){
 					result = idInSource != null ? ("NameId: " + source.getIdInSource()) : null;
 				}else if (refUuid.equals(PesiTransformer.uuidSourceRefFaunaEuropaea)){
 					result = idInSource != null ? ("TAX_ID: " + source.getIdInSource()) : null;
@@ -2115,7 +2116,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		for (IdentifiableSource source : sources){
 			Reference ref = source.getCitation();
 			UUID refUuid = ref.getUuid();
-			if (refUuid.equals(PesiTransformer.uuidSourceRefEuroMed) || 
+			if (refUuid.equals(BerlinModelTransformer.uuidSourceRefEuroMed) || 
 				refUuid.equals(PesiTransformer.uuidSourceRefFaunaEuropaea)||
 				refUuid.equals(PesiTransformer.uuidSourceRefErms)||
 				refUuid.equals(PesiTransformer.uuidSourceRefIndexFungorum) ||
@@ -2372,7 +2373,7 @@ public class PesiTaxonExport extends PesiExportBase {
 		for (IdentifiableSource source : sources) {
 			Reference<?> ref = source.getCitation();
 			UUID refUuid = ref.getUuid();
-			if (refUuid.equals(PesiTransformer.uuidSourceRefEuroMed)){
+			if (refUuid.equals(BerlinModelTransformer.uuidSourceRefEuroMed)){
 				bitSet.set(PesiTransformer.SOURCE_EM);
 			}else if (refUuid.equals(PesiTransformer.uuidSourceRefFaunaEuropaea)){
 				bitSet.set(PesiTransformer.SOURCE_FE);

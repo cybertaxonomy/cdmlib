@@ -65,7 +65,7 @@ public class FaunaEuropaeaImportConfigurator extends ImportConfiguratorBase<Faun
 		super(defaultTransformer);
 		setSource(source);
 		setDestination(destination);
-		setNomenclaturalCode(NomenclaturalCode.ICBN);
+		setNomenclaturalCode(NomenclaturalCode.ICZN);
 	}
 	
 //	public static FaunaEuropaeaImportConfigurator NewInstance(ICdmDataSource source, ICdmDataSource destination){

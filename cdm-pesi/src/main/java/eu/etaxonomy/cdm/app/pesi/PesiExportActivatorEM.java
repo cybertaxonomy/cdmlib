@@ -48,7 +48,7 @@ public class PesiExportActivatorEM {
 	static final CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICNAFP;
 	
 	static final boolean deleteAll = true;
 	

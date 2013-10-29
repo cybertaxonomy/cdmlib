@@ -17,14 +17,13 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -150,7 +149,7 @@ public final class FaunaEuropaeaTransformer {
 			}
 
 			try {
-				result = Rank.getRankByNameOrAbbreviation(rankName);
+				result = Rank.getRankByNameOrIdInVoc(rankName);
 			} catch (UnknownCdmTypeException e1) {
 
 				switch (rankId) {
@@ -209,84 +208,84 @@ public final class FaunaEuropaeaTransformer {
 			
 			//TODO: Verify mappings with comments. Those don't map to TDWG areas.
 			
-			if (areaCode.equals("AD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-AN");
-			//else if (areaCode.equals("AFR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("24"); // Afro-tropical region - Northeast Tropical Africa
-			else if (areaCode.equals("AL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ALB-OO");
-			else if (areaCode.equals("AT")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AUT-AU");
-			else if (areaCode.equals("AUS")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AUS"); // Australian region - Australia
-			else if (areaCode.equals("BA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-BH"); 
-			else if (areaCode.equals("BE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BGM-BE");
-			else if (areaCode.equals("BG")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BUL-OO");
-			else if (areaCode.equals("BY")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLR-OO");
-			else if (areaCode.equals("CH")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SWI-OO");
-			else if (areaCode.equals("CY")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CYP-OO");
-			else if (areaCode.equals("CZ")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CZE-CZ");
-			else if (areaCode.equals("DE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GER-OO");
-			else if (areaCode.equals("DK-DEN")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("DEN-OO");
-			else if (areaCode.equals("DK-FOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FOR-OO");
-			else if (areaCode.equals("EE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
-			//else if (areaCode.equals("EPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("3");   // Palaearctic - Asia-Temperate
-			else if (areaCode.equals("ES-BAL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
-			else if (areaCode.equals("ES-CNY")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CNY-OO");
-			else if (areaCode.equals("ES-SPA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-SP");
-			else if (areaCode.equals("FI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FIN-OO");
-			else if (areaCode.equals("FR-COR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("COR-OO");
-			else if (areaCode.equals("FR-FRA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FRA-FR");
-			else if (areaCode.equals("GB-CI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FRA-CI");
-			else if (areaCode.equals("GB-GI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SPA-GI");
-			else if (areaCode.equals("GB-GRB")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRB-OO");
-			else if (areaCode.equals("GB-NI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("IRE-NI");
-			//else if (areaCode.equals("GR-AEG")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("EAI-OO"); // North Aegean Is. - East Aegean Is.
-			//else if (areaCode.equals("GR-CYC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRC-OO"); // Cyclades Is. - Greece
-			//else if (areaCode.equals("GR-DOD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("EAI-OO"); // Dodecanese Is. - East Aegean Is.
-			else if (areaCode.equals("GR-GRC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("GRC-OO");
-			//else if (areaCode.equals("GR-KRI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("KRI-OO");//only Crete
-			else if (areaCode.equals("HR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-CR");
-			else if (areaCode.equals("HU")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("HUN-OO");
-			else if (areaCode.equals("IE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("IRE-IR");
-			else if (areaCode.equals("IS")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ICE-OO");
-			else if (areaCode.equals("IT-ITA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ITA-IT");
-			else if (areaCode.equals("IT-SAR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SAR-OO");
-			else if (areaCode.equals("IT-SI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SIC-SI");
-			else if (areaCode.equals("LI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AUT-LI");
-			else if (areaCode.equals("LT")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-LI");
-			else if (areaCode.equals("LU")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BGM-LU");
-			else if (areaCode.equals("LV")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-LA");
-			else if (areaCode.equals("MC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("FRA-MO");
-			else if (areaCode.equals("MD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("UKR-MO");
-			else if (areaCode.equals("MK")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-MA");
-			else if (areaCode.equals("MT")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SIC-MA");
-			//else if (areaCode.equals("NAF")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("20");   // North Africa - Northern Africa
-			//else if (areaCode.equals("NEA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("7");	// Nearctic region - Northern America
-			//else if (areaCode.equals("NEO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("8");    // Neotropical region - Southern America
-			else if (areaCode.equals("NL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NET-OO");
-			else if (areaCode.equals("NO-NOR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("NOR-OO");
-			else if (areaCode.equals("NO-SVA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SVA-OO");
-			//else if (areaCode.equals("NRE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("34");   // Near East - Western Asia
-			//else if (areaCode.equals("ORR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("35");	// Oriental region - Arabian Peninsula
-			else if (areaCode.equals("PL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("POL-OO");
-			else if (areaCode.equals("PT-AZO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("AZO-OO");
-			else if (areaCode.equals("PT-MDR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("MDR-OO");
-			else if (areaCode.equals("PT-POR")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("POR-OO");
-			else if (areaCode.equals("PT-SEL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SEL-OO");
-			else if (areaCode.equals("RO")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ROM-OO");
-			//else if (areaCode.equals("RU-FJL")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("WSB-OO"); Franz Josef Land
-			else if (areaCode.equals("RU-KGD")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("BLT-KA");
-			//else if (areaCode.equals("RU-NOZ")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("WSB-OO"); Novaya Zemla
-			else if (areaCode.equals("RU-RUC")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("RUC-OO");
-			else if (areaCode.equals("RU-RUE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("RUE-OO");
-			else if (areaCode.equals("RU-RUN")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("RUN-OO");
-			else if (areaCode.equals("RU-RUS")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("RUS-OO");
-			else if (areaCode.equals("RU-RUW")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("RUW-OO");
-			else if (areaCode.equals("SE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("SWE-OO");
-			else if (areaCode.equals("SI")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG-SL");
-			else if (areaCode.equals("SK")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("CZE-SK");
-			else if (areaCode.equals("SM")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ITA-SM");
-			else if (areaCode.equals("TR-TUE")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("TUE-OO");
-			//else if (areaCode.equals("UA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("UKR-UK"); //UKraine including Crimea
+			if (areaCode.equals("AD")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SPA-AN");
+			//else if (areaCode.equals("AFR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("24"); // Afro-tropical region - Northeast Tropical Africa
+			else if (areaCode.equals("AL")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("ALB-OO");
+			else if (areaCode.equals("AT")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("AUT-AU");
+			else if (areaCode.equals("AUS")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("AUS"); // Australian region - Australia
+			else if (areaCode.equals("BA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG-BH"); 
+			else if (areaCode.equals("BE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BGM-BE");
+			else if (areaCode.equals("BG")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BUL-OO");
+			else if (areaCode.equals("BY")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BLR-OO");
+			else if (areaCode.equals("CH")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SWI-OO");
+			else if (areaCode.equals("CY")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("CYP-OO");
+			else if (areaCode.equals("CZ")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("CZE-CZ");
+			else if (areaCode.equals("DE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("GER-OO");
+			else if (areaCode.equals("DK-DEN")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("DEN-OO");
+			else if (areaCode.equals("DK-FOR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("FOR-OO");
+			else if (areaCode.equals("EE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-ES");
+			//else if (areaCode.equals("EPA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("3");   // Palaearctic - Asia-Temperate
+			else if (areaCode.equals("ES-BAL")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-ES");
+			else if (areaCode.equals("ES-CNY")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("CNY-OO");
+			else if (areaCode.equals("ES-SPA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SPA-SP");
+			else if (areaCode.equals("FI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("FIN-OO");
+			else if (areaCode.equals("FR-COR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("COR-OO");
+			else if (areaCode.equals("FR-FRA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("FRA-FR");
+			else if (areaCode.equals("GB-CI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("FRA-CI");
+			else if (areaCode.equals("GB-GI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SPA-GI");
+			else if (areaCode.equals("GB-GRB")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("GRB-OO");
+			else if (areaCode.equals("GB-NI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("IRE-NI");
+			//else if (areaCode.equals("GR-AEG")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("EAI-OO"); // North Aegean Is. - East Aegean Is.
+			//else if (areaCode.equals("GR-CYC")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("GRC-OO"); // Cyclades Is. - Greece
+			//else if (areaCode.equals("GR-DOD")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("EAI-OO"); // Dodecanese Is. - East Aegean Is.
+			else if (areaCode.equals("GR-GRC")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("GRC-OO");
+			//else if (areaCode.equals("GR-KRI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("KRI-OO");//only Crete
+			else if (areaCode.equals("HR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG-CR");
+			else if (areaCode.equals("HU")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("HUN-OO");
+			else if (areaCode.equals("IE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("IRE-IR");
+			else if (areaCode.equals("IS")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("ICE-OO");
+			else if (areaCode.equals("IT-ITA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("ITA-IT");
+			else if (areaCode.equals("IT-SAR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SAR-OO");
+			else if (areaCode.equals("IT-SI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SIC-SI");
+			else if (areaCode.equals("LI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("AUT-LI");
+			else if (areaCode.equals("LT")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-LI");
+			else if (areaCode.equals("LU")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BGM-LU");
+			else if (areaCode.equals("LV")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-LA");
+			else if (areaCode.equals("MC")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("FRA-MO");
+			else if (areaCode.equals("MD")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("UKR-MO");
+			else if (areaCode.equals("MK")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG-MA");
+			else if (areaCode.equals("MT")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SIC-MA");
+			//else if (areaCode.equals("NAF")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("20");   // North Africa - Northern Africa
+			//else if (areaCode.equals("NEA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("7");	// Nearctic region - Northern America
+			//else if (areaCode.equals("NEO")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("8");    // Neotropical region - Southern America
+			else if (areaCode.equals("NL")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("NET-OO");
+			else if (areaCode.equals("NO-NOR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("NOR-OO");
+			else if (areaCode.equals("NO-SVA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SVA-OO");
+			//else if (areaCode.equals("NRE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("34");   // Near East - Western Asia
+			//else if (areaCode.equals("ORR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("35");	// Oriental region - Arabian Peninsula
+			else if (areaCode.equals("PL")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("POL-OO");
+			else if (areaCode.equals("PT-AZO")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("AZO-OO");
+			else if (areaCode.equals("PT-MDR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("MDR-OO");
+			else if (areaCode.equals("PT-POR")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("POR-OO");
+			else if (areaCode.equals("PT-SEL")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SEL-OO");
+			else if (areaCode.equals("RO")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("ROM-OO");
+			//else if (areaCode.equals("RU-FJL")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("WSB-OO"); Franz Josef Land
+			else if (areaCode.equals("RU-KGD")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-KA");
+			//else if (areaCode.equals("RU-NOZ")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("WSB-OO"); Novaya Zemla
+			else if (areaCode.equals("RU-RUC")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUC-OO");
+			else if (areaCode.equals("RU-RUE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUE-OO");
+			else if (areaCode.equals("RU-RUN")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUN-OO");
+			else if (areaCode.equals("RU-RUS")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUS-OO");
+			else if (areaCode.equals("RU-RUW")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("RUW-OO");
+			else if (areaCode.equals("SE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("SWE-OO");
+			else if (areaCode.equals("SI")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG-SL");
+			else if (areaCode.equals("SK")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("CZE-SK");
+			else if (areaCode.equals("SM")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("ITA-SM");
+			else if (areaCode.equals("TR-TUE")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("TUE-OO");
+			//else if (areaCode.equals("UA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("UKR-UK"); //UKraine including Crimea
 			
-			else if (areaCode.equals("VA")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("ITA-VC");
-			else if (areaCode.equals("YU")) tdwgArea = TdwgArea.getAreaByTdwgAbbreviation("YUG");
+			else if (areaCode.equals("VA")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("ITA-VC");
+			else if (areaCode.equals("YU")) tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG");
 			else 					
 				throw new UnknownCdmTypeException("Unknown Area " + areaCode);
 
@@ -355,10 +354,8 @@ public final class FaunaEuropaeaTransformer {
 		if (nomStatusTempNamed == null){
 			nomStatusTempNamed = (NomenclaturalStatusType)termService.find(uuidNomStatusTempNamed);
 			if (nomStatusTempNamed == null){
-				nomStatusTempNamed = new NomenclaturalStatusType();
-				Representation representation = Representation.NewInstance("temporary named", "temporary named", "temp. named", Language.ENGLISH());
+				nomStatusTempNamed = NomenclaturalStatusType.NewInstance("temporary named", "temporary named", "temp. named", Language.ENGLISH());
 				Representation repLatin = Representation.NewInstance("", "", "", Language.LATIN());
-				nomStatusTempNamed.addRepresentation(representation);
 				nomStatusTempNamed.addRepresentation(repLatin);
 				nomStatusTempNamed.setUuid(uuidNomStatusTempNamed);
 				NomenclaturalStatusType.ALTERNATIVE().getVocabulary().addTerm(nomStatusTempNamed);

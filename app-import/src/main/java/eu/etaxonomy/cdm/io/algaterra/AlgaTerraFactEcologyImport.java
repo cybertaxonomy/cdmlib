@@ -204,10 +204,9 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		TeamOrPersonBase<?> author = getAuthor(identifiedBy);
 		determination.setDeterminer(author);
 		if (refFk != null){
-			Map<String, Reference> biblioRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-			Map<String, Reference> nomRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+			Map<String, Reference> refMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
 			
-			Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(refFk));
+			Reference<?> ref = refMap.get(String.valueOf(refFk));
 			determination.addReference(ref);
 		}else{
 			//IdentificationReference is not to be handled according to Henning
@@ -314,19 +313,12 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 			Map<String, DerivedUnit> derivedUnitMap = (Map<String, DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, derivedUnitMap);
 
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
-
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 
 			
 		} catch (SQLException e) {

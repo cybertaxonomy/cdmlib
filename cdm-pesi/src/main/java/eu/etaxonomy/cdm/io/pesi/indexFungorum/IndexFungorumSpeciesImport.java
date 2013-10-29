@@ -104,7 +104,7 @@ public class IndexFungorumSpeciesImport  extends IndexFungorumImportBase {
 				Rank rank = Rank.SPECIES();
 				
 				NonViralNameParserImpl parser = NonViralNameParserImpl.NewInstance();
-				NonViralName<?> name = parser.parseSimpleName(preferredName, NomenclaturalCode.ICBN, rank);
+				NonViralName<?> name = parser.parseSimpleName(preferredName, NomenclaturalCode.ICNAFP, rank);
 				
 				Taxon taxon = Taxon.NewInstance(name, sourceReference);
 				Taxon parent = getParentTaxon(state, rs);

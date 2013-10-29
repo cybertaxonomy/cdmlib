@@ -35,10 +35,11 @@ import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.pesi.erms.validation.ErmsSourceUsesImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -202,7 +203,7 @@ public class ErmsSourceUsesImport  extends ErmsImportBase<CommonTaxonName> {
 	private IdentifiableEntity<?> makeAdditionalSource(ResultSetPartitioner<?> partitioner, ErmsImportState state, Reference<?> ref, String strTaxonId, String strPageNr) {
 		Feature citationFeature = Feature.CITATION();
 		DescriptionElementBase element = TextData.NewInstance(citationFeature);
-		DescriptionElementSource source = element.addSource(null, null, ref, strPageNr);
+		DescriptionElementSource source = element.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, ref, strPageNr);
 		if (source == null){
 			logger.warn("Source is null");
 			return null;

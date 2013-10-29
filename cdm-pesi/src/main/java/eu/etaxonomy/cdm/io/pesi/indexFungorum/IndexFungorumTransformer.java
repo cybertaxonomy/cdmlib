@@ -13,11 +13,11 @@ package eu.etaxonomy.cdm.io.pesi.indexFungorum;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 
@@ -35,11 +35,11 @@ public final class IndexFungorumTransformer extends InputTransformerBase {
 		switch (kingdomId){
 			case 1: return null;
 			case 2: return NomenclaturalCode.ICZN;  //Animalia
-			case 3: return NomenclaturalCode.ICBN;  //Plantae
-			case 4: return NomenclaturalCode.ICBN;  //Fungi
+			case 3: return NomenclaturalCode.ICNAFP;  //Plantae
+			case 4: return NomenclaturalCode.ICNAFP;  //Fungi
 			case 5: return NomenclaturalCode.ICZN ;  //Protozoa
 			case 6: return NomenclaturalCode.ICNB ;  //Bacteria
-			case 7: return NomenclaturalCode.ICBN;  //Chromista
+			case 7: return NomenclaturalCode.ICNAFP;  //Chromista
 			case 147415: return NomenclaturalCode.ICNB;  //Monera
 			default: return null;
 	
@@ -78,39 +78,39 @@ public final class IndexFungorumTransformer extends InputTransformerBase {
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		if (StringUtils.isBlank(key)){
 			return null;
-		}else if (key.equalsIgnoreCase("AT")){return TdwgArea.getAreaByTdwgAbbreviation("AUT-AU");
-		}else if (key.equalsIgnoreCase("LU")){return TdwgArea.getAreaByTdwgAbbreviation("BGM-LU");
-		}else if (key.equalsIgnoreCase("BA")){return TdwgArea.getAreaByTdwgAbbreviation("YUG-BH");
-		}else if (key.equalsIgnoreCase("BG")){return TdwgArea.getAreaByTdwgAbbreviation("BUL-OO");
-		}else if (key.equalsIgnoreCase("EE")){return TdwgArea.getAreaByTdwgAbbreviation("BLT-ES");
-		}else if (key.equalsIgnoreCase("FR")){return TdwgArea.getAreaByTdwgAbbreviation("FRA");
-		}else if (key.equalsIgnoreCase("DE")){return TdwgArea.getAreaByTdwgAbbreviation("GER-OO");
-		}else if (key.equalsIgnoreCase("IE")){return TdwgArea.getAreaByTdwgAbbreviation("IRE-IR");
-		}else if (key.equalsIgnoreCase("CH")){return TdwgArea.getAreaByTdwgAbbreviation("SWI-OO");
-		}else if (key.equalsIgnoreCase("NL")){return TdwgArea.getAreaByTdwgAbbreviation("NET-OO");
-		}else if (key.equalsIgnoreCase("HU")){return TdwgArea.getAreaByTdwgAbbreviation("HUN-OO");
-		}else if (key.equalsIgnoreCase("IT")){return TdwgArea.getAreaByTdwgAbbreviation("ITA");
-		}else if (key.equalsIgnoreCase("LV")){return TdwgArea.getAreaByTdwgAbbreviation("BLT-LA");
-		}else if (key.equalsIgnoreCase("LT")){return TdwgArea.getAreaByTdwgAbbreviation("BLT-LI");
-		}else if (key.equalsIgnoreCase("NO")){return TdwgArea.getAreaByTdwgAbbreviation("NOR-OO");
-		}else if (key.equalsIgnoreCase("PL")){return TdwgArea.getAreaByTdwgAbbreviation("POL-OO");
-		}else if (key.equalsIgnoreCase("RO")){return TdwgArea.getAreaByTdwgAbbreviation("ROM-OO");
-		}else if (key.equalsIgnoreCase("MT")){return TdwgArea.getAreaByTdwgAbbreviation("SIC-MA");
-		}else if (key.equalsIgnoreCase("SK")){return TdwgArea.getAreaByTdwgAbbreviation("CZE-SK");
-		}else if (key.equalsIgnoreCase("RS")){return TdwgArea.getAreaByTdwgAbbreviation("YUG-SE");
-		}else if (key.equalsIgnoreCase("SE")){return TdwgArea.getAreaByTdwgAbbreviation("SWE-OO");
-		}else if (key.equalsIgnoreCase("AM")){return TdwgArea.getAreaByTdwgAbbreviation("TCS-AR");
-		}else if (key.equalsIgnoreCase("IL")){return TdwgArea.getAreaByTdwgAbbreviation("PAL-IS");
+		}else if (key.equalsIgnoreCase("AT")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("AUT-AU");
+		}else if (key.equalsIgnoreCase("LU")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BGM-LU");
+		}else if (key.equalsIgnoreCase("BA")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG-BH");
+		}else if (key.equalsIgnoreCase("BG")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BUL-OO");
+		}else if (key.equalsIgnoreCase("EE")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-ES");
+		}else if (key.equalsIgnoreCase("FR")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("FRA");
+		}else if (key.equalsIgnoreCase("DE")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("GER-OO");
+		}else if (key.equalsIgnoreCase("IE")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("IRE-IR");
+		}else if (key.equalsIgnoreCase("CH")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SWI-OO");
+		}else if (key.equalsIgnoreCase("NL")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("NET-OO");
+		}else if (key.equalsIgnoreCase("HU")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("HUN-OO");
+		}else if (key.equalsIgnoreCase("IT")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("ITA");
+		}else if (key.equalsIgnoreCase("LV")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-LA");
+		}else if (key.equalsIgnoreCase("LT")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("BLT-LI");
+		}else if (key.equalsIgnoreCase("NO")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("NOR-OO");
+		}else if (key.equalsIgnoreCase("PL")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("POL-OO");
+		}else if (key.equalsIgnoreCase("RO")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("ROM-OO");
+		}else if (key.equalsIgnoreCase("MT")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SIC-MA");
+		}else if (key.equalsIgnoreCase("SK")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("CZE-SK");
+		}else if (key.equalsIgnoreCase("RS")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("YUG-SE");
+		}else if (key.equalsIgnoreCase("SE")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("SWE-OO");
+		}else if (key.equalsIgnoreCase("AM")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("TCS-AR");
+		}else if (key.equalsIgnoreCase("IL")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("PAL-IS");
 		
-		}else if (key.equalsIgnoreCase("UK")){return WaterbodyOrCountry.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND();
-		}else if (key.equalsIgnoreCase("DK")){return WaterbodyOrCountry.DENMARKKINGDOMOF();
-		}else if (key.equalsIgnoreCase("GR")){return WaterbodyOrCountry.GREECEHELLENICREPUBLIC();
-		}else if (key.equalsIgnoreCase("ES")){return WaterbodyOrCountry.SPAINSPANISHSTATE();
-		}else if (key.equalsIgnoreCase("PT")){return WaterbodyOrCountry.PORTUGALPORTUGUESEREPUBLIC();
-		}else if (key.equalsIgnoreCase("RU")){return WaterbodyOrCountry.RUSSIANFEDERATION();
-		}else if (key.equalsIgnoreCase("UA")){return WaterbodyOrCountry.UKRAINE();
-		}else if (key.equalsIgnoreCase("GE")){return WaterbodyOrCountry.GEORGIA();
-		}else if (key.equalsIgnoreCase("TR")){return WaterbodyOrCountry.TURKEYREPUBLICOF();
+		}else if (key.equalsIgnoreCase("UK")){return Country.UNITEDKINGDOMOFGREATBRITAINANDNORTHERNIRELAND();
+		}else if (key.equalsIgnoreCase("DK")){return Country.DENMARKKINGDOMOF();
+		}else if (key.equalsIgnoreCase("GR")){return Country.GREECEHELLENICREPUBLIC();
+		}else if (key.equalsIgnoreCase("ES")){return Country.SPAINSPANISHSTATE();
+		}else if (key.equalsIgnoreCase("PT")){return Country.PORTUGALPORTUGUESEREPUBLIC();
+		}else if (key.equalsIgnoreCase("RU")){return Country.RUSSIANFEDERATION();
+		}else if (key.equalsIgnoreCase("UA")){return Country.UKRAINE();
+		}else if (key.equalsIgnoreCase("GE")){return Country.GEORGIA();
+		}else if (key.equalsIgnoreCase("TR")){return Country.TURKEYREPUBLICOF();
 		
 		
 		} else {

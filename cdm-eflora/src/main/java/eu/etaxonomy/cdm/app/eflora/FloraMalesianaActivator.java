@@ -39,7 +39,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 /**
  * @author a.mueller
  * @created 20.06.2008
- * @version 1.0
  */
 public class FloraMalesianaActivator extends EfloraActivatorBase {
 	private static final Logger logger = Logger.getLogger(FloraMalesianaActivator.class);
@@ -47,9 +46,9 @@ public class FloraMalesianaActivator extends EfloraActivatorBase {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	
-	static final URI fmSource12 = EfloraSources.fm_12();
-	static final URI fmSource13_small = EfloraSources.fm_13_small_families();
-	static final URI fmSource13_large = EfloraSources.fm_13_large_families();
+	static final URI fmSource12_1 = EfloraSources.fm_12_1();
+	static final URI fmSource12_2 = EfloraSources.fm_12_2();
+	static final URI fmSource13 = EfloraSources.fm_13();
 	static final URI fmSource14 = EfloraSources.fm_14();
 	static final URI fmSource15 = EfloraSources.fm_15();
 	static final URI fmSource16 = EfloraSources.fm_16();
@@ -70,9 +69,9 @@ public class FloraMalesianaActivator extends EfloraActivatorBase {
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql_test();
 	
 	private boolean includeBase = true;
-	private boolean includeVol12 = includeBase;
-	private boolean includeVol13_small = includeBase;
-	private boolean includeVol13_large = includeBase;
+	private boolean includeVol12_1 = includeBase;
+	private boolean includeVol12_2 = includeBase;
+	private boolean includeVol13 = includeBase;
 	private boolean includeVol14 = includeBase;
 	private boolean includeVol15 = includeBase;
 	private boolean includeVol16 = includeBase;
@@ -86,7 +85,7 @@ public class FloraMalesianaActivator extends EfloraActivatorBase {
 	
 	private boolean h2ForCheck = false;
 	
-	static final boolean reuseState = true;
+	static final boolean reuseState = true;  //when running multiple imports
 	
 
 	//feature tree uuid
@@ -95,6 +94,7 @@ public class FloraMalesianaActivator extends EfloraActivatorBase {
 	
 	//classification
 	static final UUID classificationUuid = UUID.fromString("ca4e4bcb-a1d1-4124-a358-a3d3c41dd450");
+	static final String classificationTitle = "Flora Malesiana";
 	
 	//check - import
 	static CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -123,6 +123,7 @@ public class FloraMalesianaActivator extends EfloraActivatorBase {
 		
 		MarkupImportConfigurator markupConfig= MarkupImportConfigurator.NewInstance(source, cdmDestination);
 		markupConfig.setClassificationUuid(classificationUuid);
+		markupConfig.setClassificationName(classificationTitle);
 		markupConfig.setDoTaxa(doTaxa);
 		markupConfig.setCheck(check);
 		markupConfig.setDoPrintKeys(doPrintKeys);
@@ -136,24 +137,25 @@ public class FloraMalesianaActivator extends EfloraActivatorBase {
 		CdmDefaultImport<MarkupImportConfigurator> myImport = new CdmDefaultImport<MarkupImportConfigurator>(); 
 
 
-		//Vol12
-		doSource(includeVol12, fmSource12, "Flora Malesiana - vol. 12", markupConfig, myImport);
+
+		//Vol16
+		doSource(includeVol16, fmSource16, "Flora Malesiana - vol. 16", markupConfig, myImport);
+		
+
+		//Vol12_1
+		doSource(includeVol12_1, fmSource12_1, "Flora Malesiana - vol. 12, pt.1", markupConfig, myImport);
+
+		//Vol12_2
+		doSource(includeVol12_2, fmSource12_2, "Flora Malesiana - vol. 12, pt.2", markupConfig, myImport);
 
 		//Vol13_large
-		doSource(includeVol13_large, fmSource13_large, "Flora Malesiana - vol. 13", markupConfig, myImport);
+		doSource(includeVol13, fmSource13, "Flora Malesiana - vol. 13", markupConfig, myImport);
 		
-		//Vol13_small
-		doSource(includeVol13_small, fmSource13_small, "Flora Malesiana - vol. 13", markupConfig, myImport);
-
 		//Vol14
 		doSource(includeVol14, fmSource14, "Flora Malesiana - vol. 14", markupConfig, myImport);
 
 		//Vol15
 		doSource(includeVol15, fmSource15, "Flora Malesiana - vol. 15", markupConfig, myImport);
-
-		//Vol16
-		doSource(includeVol16, fmSource16, "Flora Malesiana - vol. 16", markupConfig, myImport);
-		
 		//Vol17, part1
 		doSource(includeVol17_1, fmSource17_1, "Flora Malesiana - vol. 17, part I", markupConfig, myImport);
 

@@ -25,8 +25,8 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportDescriptionElementSourceCreati
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.pesi.erms.validation.ErmsVernacularSourceImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**

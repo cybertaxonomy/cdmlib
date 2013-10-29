@@ -31,7 +31,6 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -121,8 +120,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 		Map<String, TaxonNameBase> taxonNameMap = (Map<String, TaxonNameBase>) partitioner.getObjectMap(BerlinModelTaxonNameImport.NAMESPACE);
 		Map<String, DerivedUnit> ecoFactMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(AlgaTerraEcoFactImport.ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
 		Map<String, DerivedUnit> typeSpecimenMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(TYPE_SPECIMEN_FIELD_OBSERVATION_NAMESPACE);
-		Map<String, Reference> biblioRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-		Map<String, Reference> nomRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+		Map<String, Reference> refMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
 		
 		
 		ResultSet rs = partitioner.getResultSet();
@@ -164,7 +162,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 					handleFieldObservationSpecimen(rs, facade, state, partitioner);
 					
 					//TODO divide like in EcoFact (if necessary)
-					handleTypeSpecimenSpecificSpecimen(rs,facade, state, biblioRefMap, nomRefMap, typeSpecimenId);
+					handleTypeSpecimenSpecificSpecimen(rs,facade, state, refMap, typeSpecimenId);
 					
 					handleFirstDerivedSpecimen(rs, facade, state, partitioner);
 					
@@ -176,7 +174,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 					designation.setTypeSpecimen(facade.innerDerivedUnit());
 					designation.setTypeStatus(status);
 					if (tdRefFk != null){
-						Reference<?> typeDesigRef = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(tdRefFk));
+						Reference<?> typeDesigRef = refMap.get(String.valueOf(tdRefFk));
 						if (typeDesigRef == null){
 							logger.warn("Type designation reference not found in maps: " + tdRefFk);
 						}else{
@@ -241,7 +239,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-	private void handleTypeSpecimenSpecificSpecimen(ResultSet rs, DerivedUnitFacade facade, AlgaTerraImportState state, Map<String, Reference> biblioRefMap, Map<String, Reference> nomRefMap, int typeSpecimenId) throws SQLException {
+	private void handleTypeSpecimenSpecificSpecimen(ResultSet rs, DerivedUnitFacade facade, AlgaTerraImportState state, Map<String, Reference> refMap, int typeSpecimenId) throws SQLException {
 		
 		
 		//TODO
@@ -260,7 +258,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 		Integer  refFk = nullSafeInt(rs, "tsRefFk");
 		if (refFk != null){
 			
-			Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(refFk));
+			Reference<?> ref = refMap.get(String.valueOf(refFk));
 			if (ref == null){
 				logger.warn("TypeSpecimen reference (" + refFk + ")not found in biblioRef. TypeSpecimenId: " + typeSpecimenId);
 			}else{
@@ -421,20 +419,12 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 			Map<String, Collection> subCollectionMap = (Map<String, Collection>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, subCollectionMap);
 
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
-
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
-
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 			
 			//
 //			//terms

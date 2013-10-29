@@ -64,7 +64,7 @@ public class CentralAfricaFernsImportConfigurator extends DbImportConfiguratorBa
 
 
 	private CentralAfricaFernsImportConfigurator(Source source, ICdmDataSource destination) {
-	   super(source, destination,NomenclaturalCode.ICBN,  defaultTransformer);//default for FdAC
+	   super(source, destination,NomenclaturalCode.ICNAFP,  defaultTransformer);//default for FdAC
 	}
 	
 

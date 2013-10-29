@@ -58,11 +58,21 @@ public class FloreGabonActivator extends EfloraActivatorBase {
 	static final URI fdg9 = EfloraSources.fdg_9();
 	static final URI fdg10 = EfloraSources.fdg_10();
 	static final URI fdg11 = EfloraSources.fdg_11();
+	static final URI fdg12_17 = EfloraSources.fdg_12_17();
+	static final URI fdg13 = EfloraSources.fdg_13();
+	static final URI fdg14 = EfloraSources.fdg_14();
+	static final URI fdg15 = EfloraSources.fdg_15();
+	static final URI fdg16 = EfloraSources.fdg_16();
+	static final URI fdg18 = EfloraSources.fdg_18();
+	static final URI fdg19 = EfloraSources.fdg_19();
+	static final URI fdg20 = EfloraSources.fdg_20();
 	static final URI fdg21 = EfloraSources.fdg_21();
 	static final URI fdg22 = EfloraSources.fdg_22();
 	static final URI fdg27 = EfloraSources.fdg_27();
 	static final URI fdg28 = EfloraSources.fdg_28();
 	static final URI fdg30 = EfloraSources.fdg_30();
+	static final URI fdg34 = EfloraSources.fdg_34();
+	static final URI fdg35 = EfloraSources.fdg_35();
 	
 	
 	
@@ -80,7 +90,6 @@ public class FloreGabonActivator extends EfloraActivatorBase {
 	static final UUID classificationUuid = UUID.fromString("2f892452-ff49-48cf-834f-52ca29600719");
 	static final String classificationTitle = "Flore du Gabon";
 	
-	
 	//check - import
 	private boolean h2ForCheck = false;
 	static CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -97,7 +106,7 @@ public class FloreGabonActivator extends EfloraActivatorBase {
 	
 	
 	//if true, use inverse include information
-	private boolean inverseInclude = false;
+	private boolean inverseInclude = true;
 	
 	private boolean includeFdg1 = true;
 	private boolean includeFdg2 = true;
@@ -111,11 +120,21 @@ public class FloreGabonActivator extends EfloraActivatorBase {
 	private boolean includeFdg9 = true;
 	private boolean includeFdg10 = true;
 	private boolean includeFdg11 = true;
+	private boolean includeFdg12_17 = true;
+	private boolean includeFdg13 = true;
+	private boolean includeFdg14 = true;
+	private boolean includeFdg15 = true;
+	private boolean includeFdg16 = true;
+	private boolean includeFdg18 = true;
+	private boolean includeFdg19 = false;
+	private boolean includeFdg20 = true;
 	private boolean includeFdg21 = true;
 	private boolean includeFdg22 = true;
 	private boolean includeFdg27 = true;
 	private boolean includeFdg28 = true;
 	private boolean includeFdg30 = true;
+	private boolean includeFdg34 = true;
+	private boolean includeFdg35 = true;
 	
 // **************** NO CHANGE **********************************************/
 	
@@ -182,6 +201,30 @@ public class FloreGabonActivator extends EfloraActivatorBase {
 
 		//Vol11
 		executeVolume(fdg11, includeFdg11 ^ inverseInclude);
+		
+		//Vol12
+		executeVolume(fdg12_17, includeFdg12_17 ^ inverseInclude);
+		
+		//Vol13
+		executeVolume(fdg13, includeFdg13 ^ inverseInclude);
+		
+		//Vol14
+		executeVolume(fdg14, includeFdg14 ^ inverseInclude);
+		
+		//Vol15
+		executeVolume(fdg15, includeFdg15 ^ inverseInclude);
+		
+		//Vol16
+		executeVolume(fdg16, includeFdg16 ^ inverseInclude);
+		
+		//Vol18
+		executeVolume(fdg18, includeFdg18 ^ inverseInclude);
+		
+		//Vol19
+		executeVolume(fdg19, includeFdg19 ^ inverseInclude);
+		
+		//Vol20
+		executeVolume(fdg20, includeFdg20 ^ inverseInclude);
 
 		//Vol21
 		executeVolume(fdg21, includeFdg21 ^ inverseInclude);
@@ -193,6 +236,12 @@ public class FloreGabonActivator extends EfloraActivatorBase {
 		executeVolume(fdg28, includeFdg28 ^ inverseInclude);
 		//Vol30
 		executeVolume(fdg30, includeFdg30 ^ inverseInclude);
+		//Vol34
+		executeVolume(fdg34, includeFdg34 ^ inverseInclude);
+		//Vol35
+		executeVolume(fdg35, includeFdg35 ^ inverseInclude);
+				
+		
 		
 		FeatureTree tree = makeFeatureNode(myImport.getCdmAppController().getTermService());
 		myImport.getCdmAppController().getFeatureTreeService().saveOrUpdate(tree);

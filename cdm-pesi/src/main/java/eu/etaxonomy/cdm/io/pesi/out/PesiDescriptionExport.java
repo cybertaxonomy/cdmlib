@@ -28,7 +28,7 @@ import org.springframework.transaction.TransactionStatus;
 import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.common.DbExportStateBase;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.common.mapping.DbIgnoreMapper;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.common.mapping.out.CollectionExportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbAreaMapper;
@@ -44,13 +44,11 @@ import eu.etaxonomy.cdm.io.common.mapping.out.DbSimpleFilterMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbSingleSourceMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbStringMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.DbTextDataMapper;
-import eu.etaxonomy.cdm.io.common.mapping.out.DbTimePeriodMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.IdMapper;
 import eu.etaxonomy.cdm.io.common.mapping.out.MethodMapper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -65,10 +63,8 @@ import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.profiler.ProfilerController;
@@ -421,7 +417,7 @@ public class PesiDescriptionExport extends PesiExportBase {
 		}else if (area.getUuid().equals(BerlinModelTransformer.euroMedUuid)){
 			//E+M area only holds endemic status information and therefore is not exported to PESI
 			return false;
-		}else if (area.equals(TdwgArea.getAreaByTdwgAbbreviation("1"))){
+		}else if (area.equals(TdwgAreaProvider.getAreaByTdwgAbbreviation("1"))){
 			//Europe area never holds status information (may probably be deleted in E+M)
 			return false;
 //		}else if (area.equals(TdwgArea.getAreaByTdwgAbbreviation("21"))){

@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -37,6 +38,7 @@ import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -110,7 +112,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 			int end = matcher.end();
 //			
 			String strPeriod = titleToParse.substring(start, end);
-			TimePeriod datePublished = TimePeriod.parseString(strPeriod);
+			TimePeriod datePublished = TimePeriodParser.parseString(strPeriod);
 			ref.setDatePublished(datePublished);
 			String author = titleToParse.substring(0, start).trim();
 			author = parseInRefrence(ref, author);
@@ -165,19 +167,19 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 	 * @param value
 	 */
 	@Override
-	protected TeamOrPersonBase handleNameUsage(Taxon taxon, NonViralName name, String referenceTitle, TeamOrPersonBase lastTeam) {
-		Reference ref = ReferenceFactory.newGeneric();
+	protected TeamOrPersonBase<?> handleNameUsage(Taxon taxon, NonViralName<?> name, String referenceTitle, TeamOrPersonBase lastTeam) {
+		Reference<?> ref = ReferenceFactory.newGeneric();
 		
 		ref.setTitleCache(referenceTitle, true);
 		
-		TeamOrPersonBase team = getReferenceAuthor(ref, name);
+		TeamOrPersonBase<?> team = getReferenceAuthor(ref, name);
 		ref.setAuthorTeam(team);
 	
 		String[] multipleReferences = ref.getTitleCache().split("&");
 		
 		TaxonDescription description = getDescription(taxon);
 		for (String singleReferenceString : multipleReferences){
-			Reference singleRef = ReferenceFactory.newGeneric();
+			Reference<?> singleRef = ReferenceFactory.newGeneric();
 			singleRef.setTitleCache(singleReferenceString.trim(), true);
 			singleRef.setAuthorTeam(team);
 			
@@ -188,7 +190,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 	//		parseReferenceType(ref);
 			
 			TextData textData = TextData.NewInstance(Feature.CITATION());
-			textData.addSource(null, null, singleRef, microReference, name, null);
+			textData.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, singleRef, microReference, name, null);
 			description.addElement(textData);
 		}
 		return team;
@@ -221,7 +223,7 @@ public class CentralAfricaEricaceaeTaxonImport  extends EfloraTaxonImport  {
 			}
 			ref.setProtectedTitleCache(false);
 		}
-		TimePeriod datePublished = TimePeriod.parseString(titleToParse);
+		TimePeriod datePublished = TimePeriodParser.parseString(titleToParse);
 		ref.setDatePublished(datePublished);
 		return detailResult;
 		

@@ -30,13 +30,11 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.profiler.ProfilerController;
 
 
 /**
  * @author a.babadshanjan
  * @created 23.08.2010
- * @version 1.0
  */
 @Component
 public class FaunaEuropaeaUsersImport extends FaunaEuropaeaImportBase {

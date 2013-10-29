@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist;
 
-import java.lang.reflect.Method;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -69,7 +68,7 @@ public class CentralAfricaChecklistImportConfigurator extends DbImportConfigurat
 
 
 	private CentralAfricaChecklistImportConfigurator(Source source, ICdmDataSource destination) {
-	   super(source, destination,NomenclaturalCode.ICBN, defaultTransformer);  //default for FdAC
+	   super(source, destination,NomenclaturalCode.ICNAFP, defaultTransformer);  //default for FdAC
 	}
 	
 	

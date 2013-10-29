@@ -29,7 +29,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  * @author a.mueller
  * @created 01.03.2010
- * @version 1.0
  */
 public final class ErmsTransformer extends InputTransformerBase {
 	private static final Logger logger = Logger.getLogger(ErmsTransformer.class);
@@ -192,11 +191,11 @@ public final class ErmsTransformer extends InputTransformerBase {
 		switch (kingdomId){
 			case 1: return null;
 			case 2: return NomenclaturalCode.ICZN;  //Animalia
-			case 3: return NomenclaturalCode.ICBN;  //Plantae
-			case 4: return NomenclaturalCode.ICBN;  //Fungi
+			case 3: return NomenclaturalCode.ICNAFP;  //Plantae
+			case 4: return NomenclaturalCode.ICNAFP;  //Fungi
 			case 5: return NomenclaturalCode.ICZN ;  //Protozoa
 			case 6: return NomenclaturalCode.ICNB ;  //Bacteria
-			case 7: return NomenclaturalCode.ICBN;  //Chromista
+			case 7: return NomenclaturalCode.ICNAFP;  //Chromista   ??
 			case 147415: return NomenclaturalCode.ICNB;  //Monera
 			default: return null;
 	

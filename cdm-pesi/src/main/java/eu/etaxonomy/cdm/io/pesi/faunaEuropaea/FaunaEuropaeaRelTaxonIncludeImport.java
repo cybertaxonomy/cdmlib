@@ -35,14 +35,13 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.profiler.ProfilerController;
+//import eu.etaxonomy.cdm.profiler.ProfilerController;
 
 
 
 /**
  * @author a.babadshanjan
  * @created 12.05.2009
- * @version 1.0
  */
 @Component
 public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase  {
@@ -59,9 +58,6 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 	" WHERE (Taxon.TAX_VALID = 0) " +
 	" AND (Taxon.TAX_AUT_ID <> " + A_AUCT + " OR Taxon.TAX_AUT_ID IS NULL)";
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
 	@Override
 	protected boolean doCheck(FaunaEuropaeaImportState state) {
 		boolean result = true;
@@ -71,10 +67,8 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 		
 		return result;
 	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+
+	@Override
 	protected boolean isIgnore(FaunaEuropaeaImportState state) {
 		return ! (state.getConfig().isDoTaxonomicallyIncluded() || 
 		state.getConfig().isDoMisappliedNames() || state.getConfig().isDoHeterotypicSynonyms());
@@ -93,6 +87,7 @@ public class FaunaEuropaeaRelTaxonIncludeImport extends FaunaEuropaeaImportBase 
 //		}
 	}
 	
+	@Override
 	protected void doInvoke(FaunaEuropaeaImportState state) {				
 		
 		/*logger.warn("Start RelTaxon doInvoke");

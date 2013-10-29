@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMarkerMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportObjectCreationMapper;
@@ -32,11 +33,11 @@ import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IMappingImport;
 import eu.etaxonomy.cdm.io.eflora.centralAfrica.checklist.validation.CentralAfricaChecklistTaxonImportValidator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -51,7 +52,6 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 /**
  * @author a.mueller
  * @created 20.02.2010
- * @version 1.0
  */
 @Component
 public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistImportBase<TaxonBase> implements IMappingImport<TaxonBase, CentralAfricaChecklistImportState>{
@@ -172,10 +172,10 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.mapping.IMappingImport#createObject(java.sql.ResultSet)
 	 */
-	public TaxonBase createObject(ResultSet rs, CentralAfricaChecklistImportState state) throws SQLException {
+	public TaxonBase<?> createObject(ResultSet rs, CentralAfricaChecklistImportState state) throws SQLException {
 		BotanicalName speciesName = BotanicalName.NewInstance(Rank.SPECIES());
 		
-		Reference sec = state.getConfig().getSourceReference();
+		Reference<?> sec = state.getConfig().getSourceReference();
 		getReferenceService().saveOrUpdate(sec);
 		
 		String familyString = rs.getString("family");
@@ -223,14 +223,13 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 		String sourceString = rs.getString("source");
 		String sourceId = rs.getString("source_id");
 		
-		Reference sourceRef = state.getRelatedObject(REFERENCE_NAMESPACE, sourceString, Reference.class);
-		speciesTaxon.addSource(sourceId, REFERENCE_NAMESPACE, sourceRef, null);
-		
+		Reference<?> sourceRef = state.getRelatedObject(REFERENCE_NAMESPACE, sourceString, Reference.class);
+		speciesTaxon.addSource(OriginalSourceType.Import, sourceId, REFERENCE_NAMESPACE, sourceRef, null);
 		
 		//geneva id
-		Reference genevaReference = state.getGenevaReference();
+		Reference<?> genevaReference = state.getGenevaReference();
 		Object genevaId = rs.getObject("geneva_ID");
-		speciesTaxon.addSource(String.valueOf(genevaId), null, genevaReference, null);
+		speciesTaxon.addSource(OriginalSourceType.Import, String.valueOf(genevaId), null, genevaReference, null);
 		
 		//distribution
 		handleDistribution(rs, speciesTaxon);
@@ -259,7 +258,7 @@ public class CentralAfricaChecklistTaxonImport  extends CentralAfricaChecklistIm
 	 */
 	private void addDistribution(TaxonDescription description, Boolean exists, String label) {
 		if (exists == true){
-			NamedArea namedArea = TdwgArea.getAreaByTdwgAbbreviation(label);
+			NamedArea namedArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(label);
 			Distribution distribution = Distribution.NewInstance(namedArea, PresenceTerm.PRESENT());
 			description.addElement(distribution);
 		}

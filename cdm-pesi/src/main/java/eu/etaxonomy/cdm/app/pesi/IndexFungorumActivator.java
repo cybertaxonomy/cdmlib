@@ -55,7 +55,7 @@ public class IndexFungorumActivator {
 	
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	
 // ***************** ALL ************************************************//

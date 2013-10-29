@@ -44,11 +44,11 @@ public class BerlinModelSources {
 	
 	public static Source euroMed(){
 		//	BerlinModel - Euro+Med
-		String dbms = Source.SQL_SERVER_2005;
+		String dbms = Source.SQL_SERVER_2008;
 		String strServer = "BGBM42";
 		String strDB = "EuroPlusMed_00_Edit";
-		int port = 1247;
-		String userName = "webUser";
+		int port = 1433;  //was 1247
+		String userName = "pesiexport";  //was webUser
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	

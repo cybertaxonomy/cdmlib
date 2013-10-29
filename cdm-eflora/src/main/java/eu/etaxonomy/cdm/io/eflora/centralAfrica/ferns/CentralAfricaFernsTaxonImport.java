@@ -57,14 +57,14 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 
 /**
@@ -262,7 +262,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 				designation.setNotDesignated(true);
 			}
 
-			DerivedUnitBase specimen = designation.getTypeSpecimen();
+			DerivedUnit specimen = designation.getTypeSpecimen();
 
 			if (lastFacade != null){
 				lastFacade.addDuplicate(specimen);
@@ -335,7 +335,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 	private SpecimenTypeDesignation makeCachedSpecimenDesignation(String split) {
 		SpecimenTypeDesignation lastDesignation;
 		lastDesignation = SpecimenTypeDesignation.NewInstance();
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setTitleCache(split, true);
 		lastDesignation.setTypeSpecimen(specimen);
 		return lastDesignation;
@@ -345,7 +345,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 
 	private SpecimenTypeDesignation makeSpecimenTypeCollection(SpecimenTypeDesignation designation, String collectionString, String strCollectionPattern, String strNumberPattern, String strAddInfoPattern) {
 		SpecimenTypeDesignation result = SpecimenTypeDesignation.NewInstance();
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		result.setTypeSpecimen(specimen);
 		
 		//collection
@@ -513,7 +513,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		if (strName.endsWith(",")){
 			strName = strName.substring(0, strName.length() -1);
 		}
-		BotanicalName result = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(strName, NomenclaturalCode.ICBN, Rank.SPECIES());
+		BotanicalName result = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(strName, NomenclaturalCode.ICNAFP, Rank.SPECIES());
 		return result;
 	}
 
@@ -537,17 +537,17 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 				acceptedName = acceptedName.substring(0, acceptedName.length()-1);
 			}
 			acceptedName = acceptedName.replaceFirst("=", "").trim();
-			result[1] = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(acceptedName, NomenclaturalCode.ICBN, null);
+			result[1] = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(acceptedName, NomenclaturalCode.ICNAFP, null);
 			strName = notAcceptedName;
 		}
 		
-		result[0] = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(strName, NomenclaturalCode.ICBN, Rank.SPECIES());
+		result[0] = (BotanicalName)NonViralNameParserImpl.NewInstance().parseFullName(strName, NomenclaturalCode.ICNAFP, Rank.SPECIES());
 		return result;
 	}
 
 
 
-	private String handleDesignatedBy(TypeDesignationBase typeDesignation, String typeString) {
+	private String handleDesignatedBy(TypeDesignationBase<?> typeDesignation, String typeString) {
 		String[] splitDesignated = typeString.split(", designated by ");
 		if (splitDesignated.length > 1){
 			Reference designationCitation = getDesignationCitation(typeDesignation, splitDesignated[1]);
@@ -561,7 +561,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 
 
 
-	private Reference getDesignationCitation(TypeDesignationBase typeDesignation, String citationString) {
+	private Reference getDesignationCitation(TypeDesignationBase<?> typeDesignation, String citationString) {
 		// TODO try to find an existing Reference
 		Reference result = ReferenceFactory.newGeneric();
 		String strBracketPattern = "\\((10 Oct. )?\\d{4}:\\s?(\\d{1,3}(--\\d{1,3})?|[XLVI]{1,7}|\\.{1,8})\\)\\.?";
@@ -589,7 +589,7 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		Team team = Team.NewTitledInstance(authorPart, authorPart);
 		result.setAuthorTeam(team);
 		String[] bracketSplit = bracket.split(":");
-		TimePeriod datePublished = TimePeriod.parseString(bracketSplit[0].trim());
+		TimePeriod datePublished = TimePeriodParser.parseString(bracketSplit[0].trim());
 		result.setDatePublished(datePublished);
 		String citationMicroReference = bracketSplit[1].trim();
 		citationMicroReference = citationMicroReference.replace("--", "-");
@@ -657,18 +657,18 @@ public class CentralAfricaFernsTaxonImport  extends CentralAfricaFernsImportBase
 		if (StringUtils.isNotBlank(referenceString) || StringUtils.isNotBlank(volume) || 
 					StringUtils.isNotBlank(pages) || StringUtils.isNotBlank(illustrations) || 
 					StringUtils.isNotBlank(datePublishedString) || StringUtils.isNotBlank(paperTitle)){
-			NonViralName name = CdmBase.deproxy(taxonBase.getName(), NonViralName.class);
-			Reference reference = ReferenceFactory.newGeneric();
-			reference.setAuthorTeam((TeamOrPersonBase)name.getCombinationAuthorTeam());
+			NonViralName<?> name = CdmBase.deproxy(taxonBase.getName(), NonViralName.class);
+			Reference<?> reference = ReferenceFactory.newGeneric();
+			reference.setAuthorTeam((TeamOrPersonBase<?>)name.getCombinationAuthorTeam());
 			reference.setTitle(referenceString);
 			reference.setVolume(volume);
 			reference.setEdition(part);
-			Reference inrefernce = null;
+			Reference<?> inrefernce = null;
 			//TODO parser
-			TimePeriod datePublished = TimePeriod.parseString(datePublishedString);
+			TimePeriod datePublished = TimePeriodParser.parseString(datePublishedString);
 			reference.setDatePublished(datePublished);
 			if (StringUtils.isNotBlank(paperTitle)){
-				Reference innerReference = ReferenceFactory.newGeneric();
+				Reference<?> innerReference = ReferenceFactory.newGeneric();
 				innerReference.setDatePublished(datePublished);
 				name.setNomenclaturalReference(innerReference);
 				innerReference.setInReference(reference);

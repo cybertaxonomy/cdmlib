@@ -7,25 +7,23 @@
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
-package eu.etaxonomy.cdm.app.pesi;
+package eu.etaxonomy.cdm.app.berlinModelImport;
 
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
-import eu.etaxonomy.cdm.app.common.BerlinModelSources;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
-import eu.etaxonomy.cdm.app.common.TreeCreator;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.berlinModel.BerlinModelTransformer;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.DO_REFERENCES;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.EDITOR;
 import eu.etaxonomy.cdm.io.common.Source;
-import eu.etaxonomy.cdm.io.pesi.out.PesiTransformer;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -46,13 +44,13 @@ public class EuroMedActivator {
 	private static final Logger logger = Logger.getLogger(EuroMedActivator.class);
 
 	//database validation status (create, update, validate ...)
-	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-//	static final Source berlinModelSource = BerlinModelSources.euroMed();
-	static final Source berlinModelSource = BerlinModelSources.PESI3_euroMed();
+	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
+	static final Source berlinModelSource = BerlinModelSources.euroMed();
+//	static final Source berlinModelSource = BerlinModelSources.PESI3_euroMed();
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_pesi_euroMed();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql_test();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	static final boolean includePesiExport = false;
 	
@@ -66,7 +64,7 @@ public class EuroMedActivator {
 	// set to zero for unlimited nameFacts
 	static final int maximumNumberOfNameFacts = 0;
 	
-	static final int partitionSize = 5000;
+	static final int partitionSize = 2500;
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -75,7 +73,7 @@ public class EuroMedActivator {
 	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
 	
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	//ignore null
 	static final boolean ignoreNull = true;
@@ -84,7 +82,8 @@ public class EuroMedActivator {
 	
 	static boolean useClassification = true;
 	
-	static boolean 	isSplitTdwgCodes = false;
+	static boolean isSplitTdwgCodes = false;
+	static boolean useEmAreaVocabulary = true;
 	
 	private boolean removeHttpMapsAnchor = true;
 
@@ -96,10 +95,11 @@ public class EuroMedActivator {
 	static String taxonTable = "v_cdm_exp_taxaAll";
 	static String classificationQuery = " SELECT DISTINCT t.PTRefFk, r.RefCache FROM PTaxon t INNER JOIN Reference r ON t.PTRefFk = r.RefId WHERE t.PTRefFk = " + sourceSecId; 
 	static String relPTaxonIdQuery = " SELECT r.RelPTaxonId " + 
-					" FROM RelPTaxon AS r INNER JOIN v_cdm_exp_taxaDirect AS a ON r.PTNameFk2 = a.PTNameFk AND r.PTRefFk2 = a.PTRefFk ";
+					" FROM RelPTaxon AS r INNER JOIN v_cdm_exp_taxaDirect AS a ON r.PTNameFk2 = a.PTNameFk AND r.PTRefFk2 = a.PTRefFk" +
+					" ORDER BY r.RelPTaxonId ";  // AND r.RelQualifierFk =1 
 	static String nameIdTable = " v_cdm_exp_namesAll ";
 	static String referenceIdTable = " v_cdm_exp_refAll ";
-	static String factFilter = " factId IN ( SELECT factId FROM v_cdm_exp_factsAll )";
+	static String factFilter = " factId IN ( SELECT factId FROM v_cdm_exp_factsAll WHERE FactCategoryFk NOT IN (12, 14, 249, 251))";
 	static String occurrenceFilter = " occurrenceId IN ( SELECT occurrenceId FROM v_cdm_exp_occurrenceAll )";
 	static String occurrenceSourceFilter = " occurrenceFk IN ( SELECT occurrenceId FROM v_cdm_exp_occurrenceAll )"; 
 	static String commonNameFilter = " commonNameId IN ( SELECT commonNameId FROM v_cdm_exp_commonNamesAll )";
@@ -111,52 +111,52 @@ public class EuroMedActivator {
 	
 // **************** ALL *********************	
 
-	static final boolean doUser = true;
-	//authors
-	static final boolean doAuthors = true;
-	//references
-	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
-	//names
-	static final boolean doTaxonNames = true;
-	static final boolean doRelNames = true;
-	static final boolean doNameStatus = true;
-	static final boolean doTypes = false;  //serious types do not exist in E+M
-	static final boolean doNameFacts = true;
-	
-	//taxa
-	static final boolean doTaxa = true;
-	static final boolean doRelTaxa = true;
-	static final boolean doFacts = true;
-	static final boolean doOccurences = true;
-	static final boolean doCommonNames = false; //FIXME currently common names throw errors and make later imports not work
-
-	//etc.
-	static final boolean doMarker = true;
+//	static final boolean doUser = true;
+//	//authors
+//	static final boolean doAuthors = true;
+//	//references
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	//names
+//	static final boolean doTaxonNames = true;
+//	static final boolean doRelNames = true;
+//	static final boolean doNameStatus = true;
+//	static final boolean doTypes = false;  //serious types do not exist in E+M
+//	static final boolean doNameFacts = true;
+//	
+//	//taxa
+//	static final boolean doTaxa = true;
+//	static final boolean doRelTaxa = false;
+//	static final boolean doFacts = true;
+//	static final boolean doOccurences = false;
+//	static final boolean doCommonNames = true;
+//
+//	//etc.
+//	static final boolean doMarker = true;
 
 	
 // **************** SELECTED *********************
 
-//	static final boolean doUser = true;
-//	//authors
-//	static final boolean doAuthors = false;
-//	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
-//	//names
-//	static final boolean doTaxonNames = false;
-//	static final boolean doRelNames = false;
-//	static final boolean doNameStatus = false;
-//	static final boolean doTypes = false;
-//	static final boolean doNameFacts = false;
-//	
-//	//taxa 
-//	static final boolean doTaxa = false;
-//	static final boolean doRelTaxa = false;
-//	static final boolean doFacts = false;
-//	static final boolean doOccurences = false;
-//	static final boolean doCommonNames = false;
-//	
-//	//etc.
-//	static final boolean doMarker = false;
+	static final boolean doUser = false;
+	//authors
+	static final boolean doAuthors = false;
+	//references
+	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
+	//names
+	static final boolean doTaxonNames = false;
+	static final boolean doRelNames = false;
+	static final boolean doNameStatus = false;
+	static final boolean doTypes = false;
+	static final boolean doNameFacts = false;
+	
+	//taxa 
+	static final boolean doTaxa = false;
+	static final boolean doRelTaxa = false;
+	static final boolean doFacts = false;
+	static final boolean doOccurences = true;
+	static final boolean doCommonNames = false;
+	
+	//etc.
+	static final boolean doMarker = false;
 	
 	
 	public void importEm2CDM (Source source, ICdmDataSource destination, DbSchemaValidation hbm2dll){
@@ -179,7 +179,7 @@ public class EuroMedActivator {
 		config.setDoTypes(doTypes);
 		config.setDoNameFacts(doNameFacts);
 		config.setUseClassification(useClassification);
-		config.setSourceRefUuid(PesiTransformer.uuidSourceRefEuroMed);
+		config.setSourceRefUuid(BerlinModelTransformer.uuidSourceRefEuroMed);
 		
 		config.setDoTaxa(doTaxa);
 		config.setDoRelTaxa(doRelTaxa);
@@ -216,7 +216,7 @@ public class EuroMedActivator {
 		
 		//TDWG codes
 		config.setSplitTdwgCodes(isSplitTdwgCodes);
-		
+		config.setUseEmAreaVocabulary(useEmAreaVocabulary);
 		
 		config.setCheck(check);
 		config.setEditor(editor);
@@ -228,7 +228,7 @@ public class EuroMedActivator {
 		CdmDefaultImport<BerlinModelImportConfigurator> bmImport = new CdmDefaultImport<BerlinModelImportConfigurator>();
 		bmImport.invoke(config);
 		
-		if (doFacts && config.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || config.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)    ){
+		if (doFacts && (config.getCheck().equals(CHECK.CHECK_AND_IMPORT)  || config.getCheck().equals(CHECK.IMPORT_WITHOUT_CHECK)  )  ){
 			ICdmApplicationConfiguration app = bmImport.getCdmAppController();
 			
 			//make feature tree
@@ -237,6 +237,8 @@ public class EuroMedActivator {
 			tree.getRoot().addChild(imageNode);
 			FeatureNode distributionNode = FeatureNode.NewInstance(Feature.DISTRIBUTION());
 			tree.getRoot().addChild(distributionNode, 2); 
+			FeatureNode commonNameNode = FeatureNode.NewInstance(Feature.COMMON_NAME());
+			tree.getRoot().addChild(commonNameNode, 3); 
 			app.getFeatureTreeService().saveOrUpdate(tree);
 		}
 		
@@ -254,8 +256,9 @@ public class EuroMedActivator {
 		
 		importActivator.importEm2CDM(source, cdmRepository, hbm2dll);
 		if (includePesiExport){
-			PesiExportActivatorEM exportActivator = new PesiExportActivatorEM();
-			exportActivator.doExport(cdmRepository);
+			//not available from here since E+M was moved to app-import
+//			PesiExportActivatorEM exportActivator = new PesiExportActivatorEM();
+//			exportActivator.doExport(cdmRepository);
 		}
 
 	}

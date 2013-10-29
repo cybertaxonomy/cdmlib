@@ -26,6 +26,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMethodMapper;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportTaxIncludedInMapper;
@@ -35,6 +36,7 @@ import eu.etaxonomy.cdm.io.eflora.centralAfrica.ferns.validation.CentralAfricaFe
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -45,8 +47,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -756,7 +757,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		if (parent != null){
 			childNode = tree.addParentChild(parent, child, citation, microCitation);
 		}else{
-			childNode = tree.addChildTaxon(child, citation, microCitation, null);
+			childNode = tree.addChildTaxon(child, citation, microCitation);
 		}
 		return (childNode != null);
 	}
@@ -1040,7 +1041,7 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		boolean areaDoubtful = false;
 		Distribution distribution = Distribution.NewInstance(null, PresenceTerm.PRESENT());
 		Reference<?> sourceReference = this.sourceReference;
-		distribution.addSource(taxonNumber, "Distribution_Country", sourceReference, null, nameUsedInSource, null);
+		distribution.addSource(OriginalSourceType.Import, taxonNumber, "Distribution_Country", sourceReference, null, nameUsedInSource, null);
 		NamedArea area = null;
 		//empty
 		if (StringUtils.isBlank(country)){
@@ -1074,20 +1075,20 @@ public class CentralAfricaFernsTaxonRelationImport  extends CentralAfricaFernsIm
 		
 		
 		//areas
-		if (TdwgArea.isTdwgAreaLabel(country)){
+		if (TdwgAreaProvider.isTdwgAreaLabel(country)){
 			//tdwg
-			area = TdwgArea.getAreaByTdwgLabel(country);
-		}else if (TdwgArea.isTdwgAreaLabel(countryWithoutIslands)){
+			area = TdwgAreaProvider.getAreaByTdwgLabel(country);
+		}else if (TdwgAreaProvider.isTdwgAreaLabel(countryWithoutIslands)){
 			//tdwg
-			area = TdwgArea.getAreaByTdwgLabel(countryWithoutIslands);
-		}else if (TdwgArea.isTdwgAreaLabel(countryWithoutDot)){
+			area = TdwgAreaProvider.getAreaByTdwgLabel(countryWithoutIslands);
+		}else if (TdwgAreaProvider.isTdwgAreaLabel(countryWithoutDot)){
 			//tdwg
-			area = TdwgArea.getAreaByTdwgLabel(countryWithoutDot);
+			area = TdwgAreaProvider.getAreaByTdwgLabel(countryWithoutDot);
 		}else if ( (area = state.getTransformer().getNamedAreaByKey(country)) != null) {
 			//area already set
-		}else if (WaterbodyOrCountry.isWaterbodyOrCountryLabel(country)){
+		}else if (Country.isCountryLabel(country)){
 			//iso
-			area = WaterbodyOrCountry.getWaterbodyOrCountryByLabel(country);
+			area = Country.getCountryByLabel(country);
 		}else{
 			//others
 			NamedAreaLevel level = null;
