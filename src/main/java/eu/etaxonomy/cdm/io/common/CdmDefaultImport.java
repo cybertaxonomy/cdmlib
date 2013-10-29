@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -21,8 +21,9 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultIOBase<IImportConfigurator> implements ICdmImporter<T> {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDefaultImport.class);
-	
-	public boolean invoke(T config){
+
+	@Override
+    public boolean invoke(T config){
 		ICdmDataSource destination = config.getDestination();
 		boolean omitTermLoading = config.isOmitTermLoading();
 		return invoke(config, destination, omitTermLoading);
@@ -30,7 +31,6 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 
 	public boolean invoke(IImportConfigurator config, ICdmDataSource destination, boolean omitTermLoading){
 		boolean createNew = config.isCreateNew();
-		
 		if (startApplicationController(config, destination, omitTermLoading, createNew) == false){
 			return false;
 		}else{
@@ -39,7 +39,7 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 			return defaultImport.invoke(config);
 		}
 	}
-	
+
 	/**
 	 * Starts the CdmApplicationController if not yet started
 	 * @param config Configuration
@@ -51,5 +51,5 @@ public class CdmDefaultImport<T extends IImportConfigurator> extends CdmDefaultI
 		boolean createNew = false;
 		return startApplicationController(config, destination, omitTermLoading, createNew);
 	}
-	
+
 }
