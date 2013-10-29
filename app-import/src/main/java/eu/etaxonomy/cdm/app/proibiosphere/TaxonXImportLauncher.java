@@ -54,9 +54,13 @@ public class TaxonXImportLauncher {
 
     //database validation status (create, update, validate ...)
     static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
+    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
 
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
+
+
+    static String plaziUrl = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2Fresources%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&taxonomicName.taxonomicName=";
+    static String plaziUrlDoc = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2Fresources%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&MODS.ModsDocID=";
 
 
     private static String askQuestion(String question){
@@ -67,16 +71,13 @@ public class TaxonXImportLauncher {
     }
 
     public static void main(String[] args) {
-
-        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2Fresources%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&taxonomicName.taxonomicName=";
-        String plaziUrlDoc = "http://plazi.cs.umb.edu/GgServer/search?taxonomicName.isNomenclature=true&taxonomicName.exactMatch=true&indexName=0&subIndexName=taxonomicName&subIndexName=MODS&minSubResultSize=1&searchMode=index&resultFormat=xml&xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2Fresources%2FsrsWebPortalData%2FCdmSyncTreatmentList.xslt&MODS.ModsDocID=";
-        //        String plaziUrl = "http://plazi.cs.umb.edu/GgServer/xslt/E01DD5BE427421156E0C0BAC56389E0D?xsltUrl=http%3A%2F%2Fplazi.cs.umb.edu%2FGgServer%2FsrsWebPortalData%2FLinkers%2FXmlDocumentLinkerData%2Fgg2taxonx.xsl";
-//        List<String> sourcesStr =  new ArrayList<String>();
-//        boolean plaziNotServer=false;
+        String[] taxonList = new String[] {"Eupolybothrus", "Polybothrus"};
+//       /*ants*/ String[] modsList = new String[] {"3924", "3743", "4375","6757","6752","3481","21401_fisher_smith_plos_2008","2592","4096","6877","6192","8071"};
+        String[] modsList = new String[] {"1313-2970","zt%2000904"};
+        String tnomenclature = "ICZN";
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
-        plaziUrl=plaziUrl+"Chenopodium";
-//       plaziUrl=plaziUrlDoc+"FlNordica_chenop";
+        HashMap<String,List<URI>>documentMap = new HashMap<String, List<URI>>();
 
         /*HOW TO HANDLE SECUNDUM REFERENCE*/
         boolean reuseSecundum = askIfReuseSecundum();
@@ -85,12 +86,127 @@ public class TaxonXImportLauncher {
             secundum = askForSecundum();
         }
 
-        String tnomenclature = "ICBN";
-        URL plaziURL;
-        try {
-            plaziURL = new URL(plaziUrl);
-            BufferedReader in = new BufferedReader(new InputStreamReader(plaziURL.openStream()));
+//        checkTreatmentPresence("taxon",taxonList, documents,documentMap);
+        checkTreatmentPresence("modsid",modsList, documents,documentMap);
 
+        TaxonXImportConfigurator taxonxImportConfigurator =null;
+        CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
+
+        ICdmDataSource destination = cdmDestination;
+        taxonxImportConfigurator = prepareTaxonXImport(destination,reuseSecundum, secundum);
+
+        log.info("Start import from  TaxonX Data");
+
+
+        for (String document:documentMap.keySet()){
+            if (doImportDocument(document, documentMap.get(document).size())){
+                int i=0;
+                for (URI source:documentMap.get(document)){
+                    System.out.println("START "+i+" ("+(documentMap.get(document)).size()+"): "+source.getPath());
+                    i++;
+
+                    prepareReferenceAndSource(taxonxImportConfigurator,source);
+                    prepareNomenclature(taxonxImportConfigurator,tnomenclature);
+                    //   taxonxImportConfigurator.setTaxonReference(null);
+
+                    taxonImport.invoke(taxonxImportConfigurator);
+                    log.info("End import from SpecimenData ("+ source.toString() + ")...");
+
+                    //          //deduplicate
+                    //            ICdmApplicationConfiguration app = taxonImport.getCdmAppController();
+                    //            int count = app.getAgentService().deduplicate(Person.class, null, null);
+                    //            logger.warn("Deduplicated " + count + " persons.");
+                    //            count = app.getReferenceService().deduplicate(Reference.class, null, null);
+                    //            logger.warn("Deduplicated " + count + " references.");
+                }
+            }
+        }
+
+
+    }
+
+
+
+    /**
+     * @param taxonxImportConfigurator
+     * @param tnomenclature
+     */
+    private static void prepareNomenclature(TaxonXImportConfigurator taxonxImportConfigurator, String tnomenclature) {
+        //            String tnomenclature = askQuestion("ICBN or ICZN ?");
+
+        if (tnomenclature.equalsIgnoreCase("ICBN")) {
+            taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
+            //                taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
+        }
+        if(tnomenclature.equalsIgnoreCase("ICZN")){
+            taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICZN);
+            //                taxonxImportConfigurator.setClassificationName("Ants");
+        }
+        if(tnomenclature.equalsIgnoreCase("ICNB")){
+            taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNB);
+            //                taxonxImportConfigurator.setClassificationName("Bacteria");
+        }
+
+    }
+
+    /**
+     * @param taxonxImportConfigurator
+     * @param source
+     *
+     */
+    private static void prepareReferenceAndSource(TaxonXImportConfigurator taxonxImportConfigurator, URI source) {
+        Reference<?> reference = ReferenceFactory.newGeneric();
+        //            String tref = askQuestion("Import source? (ie Plazi document ID)");
+        String tref="PLAZI - "+source.getPath().split("/")[source.getPath().split("/").length-1];
+        reference.setTitleCache(tref,true);
+        reference.setTitle(tref);
+        reference.generateTitle();
+
+        taxonxImportConfigurator.setSourceReference(reference);
+        TaxonXImportConfigurator.setSourceRef(reference);
+
+        taxonxImportConfigurator.setSource(source);
+    }
+
+    /**
+     * @param destination
+     * @param reuseSecundum
+     * @param secundum
+     * @return
+     */
+    private static TaxonXImportConfigurator prepareTaxonXImport(ICdmDataSource destination, boolean reuseSecundum, Reference<?> secundum) {
+        TaxonXImportConfigurator taxonxImportConfigurator = TaxonXImportConfigurator.NewInstance(destination);
+
+        //        taxonxImportConfigurator.setClassificationName(taxonxImportConfigurator.getSourceReferenceTitle());
+        taxonxImportConfigurator.setCheck(check);
+        taxonxImportConfigurator.setDbSchemaValidation(hbm2dll);
+        taxonxImportConfigurator.setDoAutomaticParsing(true);
+
+
+        taxonxImportConfigurator.setKeepOriginalSecundum(reuseSecundum);
+        if (!reuseSecundum) {
+            taxonxImportConfigurator.setSecundum(secundum);
+        }
+
+        //        taxonxImportConfigurator.setDoMatchTaxa(true);
+        //        taxonxImportConfigurator.setReUseTaxon(true);
+        return taxonxImportConfigurator;
+    }
+
+    /**
+     * @param importFilter
+     * @param modsList
+     * @param documents
+     * @param documentMap
+     * @return
+     */
+    private static HashMap<String, List<URI>> checkTreatmentPresence(String importFilter, String[] modsList, Map<String, List<String>> documents, HashMap<String, List<URI>> documentMap) {
+        URL plaziURL;
+        //        System.out.println(plaziUrl);
+
+        Map<String, List<String>> docs = new HashMap<String, List<String>>();
+        try {
+            BufferedReader in=null;
             List<String> docList;
             String inputLine;
             String docID;
@@ -98,12 +214,30 @@ public class TaxonXImportLauncher {
             String pageEnd;
             String taxon;
             String link;
-            //TODO lastUpdate field
-//            if(!plaziNotServer){
+            String urlstr="";
+
+            for(String modsID : modsList){
+                //        plaziUrl=plaziUrl+"Eupolybothrus";
+                if (importFilter.equalsIgnoreCase("modsid")) {
+                    urlstr=plaziUrlDoc+modsID;
+                }
+                if (importFilter.equalsIgnoreCase("taxon")) {
+                    urlstr=plaziUrl+modsID;
+                }
+//                System.out.println(url);
+
+                plaziURL = new URL(urlstr);
+                in = new BufferedReader(new InputStreamReader(plaziURL.openStream()));
+
+
+                //TODO lastUpdate field
+                //            if(!plaziNotServer){
                 while ((inputLine = in.readLine()) != null) {
+                    System.out.println(inputLine);
                     if (inputLine.startsWith("<treatment ")){
                         taxon = inputLine.split("taxon=\"")[1].split("\"")[0];
                         docID=inputLine.split("docId=\"")[1].split("\"")[0];
+                        System.out.println("docID: "+docID);
                         link=inputLine.split("link=\"")[1].split("\"")[0];
                         pageStart = inputLine.split("startPage=\"")[1].split("\"")[0];
                         pageEnd = inputLine.split("endPage=\"")[1].split("\"")[0];
@@ -115,7 +249,11 @@ public class TaxonXImportLauncher {
                         documents.put(docID,docList);
                     }
                 }
-//            }
+            }
+            System.out.println("hop");
+
+
+
             for (String docId:documents.keySet()){
                 in = new BufferedReader(new InputStreamReader(new URL(plaziUrlDoc+docId).openStream()));
                 while ((inputLine = in.readLine()) != null) {
@@ -130,14 +268,14 @@ public class TaxonXImportLauncher {
                             docList = new ArrayList<String>();
                         }
                         docList.add(pageStart+"---"+pageEnd+"---"+taxon+"---"+link);
-                        documents.put(docID,docList);
+                        docs.put(docID,docList);
                     }
                 }
             }
-//            if(plaziNotServer) {
-//                sourcesStr.add(plaziUrl);
-//            }
-//            in.close();
+            //            if(plaziNotServer) {
+            //                sourcesStr.add(plaziUrl);
+            //            }
+            //            in.close();
         } catch (MalformedURLException e1) {
             // TODO Auto-generated catch block
             e1.printStackTrace();
@@ -150,9 +288,9 @@ public class TaxonXImportLauncher {
 
         //        sourcesStr.add("/home/pkelbert/Documents/Proibiosphere/ChenopodiumXML/1362148061170_Chenopodium_K_hn_U_1993_tx.xml");
 
-        HashMap<String,List<URI>>documentMap = new HashMap<String, List<URI>>();
-        for (String docId : documents.keySet()){
-            List<String> treatments = new ArrayList<String>(new HashSet<String>(documents.get(docId)));
+        //System.out.println(documents);
+        for (String docId : docs.keySet()){
+            List<String> treatments = new ArrayList<String>(new HashSet<String>(docs.get(docId)));
 
             Map<Integer, List<String>> startPages = new HashMap<Integer, List<String>>();
             for (String treatment:treatments) {
@@ -207,7 +345,7 @@ public class TaxonXImportLauncher {
             else{
                 List<URI> uritmp = documentMap.get(docId);
                 if (uritmp == null) {
-                 uritmp = new ArrayList<URI>();
+                    uritmp = new ArrayList<URI>();
                 }
                 for (int page:pages) {
                     for (String treatment: startPages.get(page)) {
@@ -229,103 +367,33 @@ public class TaxonXImportLauncher {
 
 
         }
-//////        log.info("NB SOURCES : "+sourcesStr.size());
-//        List<URI> sourcesStr = new ArrayList<URI>();
-//        try {
-//            sourcesStr.add(new URI("http://plazi.cs.umb.edu/exist/rest/db/taxonx_docs/cdmSync/B1B975E804E7EF4C836E2B218A8F608F_tx.xml"));
-//            documentMap.put("singlesource", sourcesStr);
-//        } catch (URISyntaxException e) {
-//            // TODO Auto-generated catch block
-//            e.printStackTrace();
-//        }
+        //////        log.info("NB SOURCES : "+sourcesStr.size());
+        //        List<URI> sourcesStr = new ArrayList<URI>();
+        //        try {
+        ////            documentMap = new HashMap<String, List<URI>>();
+        //            sourcesStr.add(new URI("http://plazi.cs.umb.edu/GgServer/cdmSync/8F5B3EA099D371BC41CC5DDBFEDCFBED"));
+        //            documentMap.put("singlesource", sourcesStr);
+        //        } catch (URISyntaxException e) {
+        //            // TODO Auto-generated catch block
+        //            e.printStackTrace();
+        //        }
 
-        log.info("Start import from  TaxonX Data");
-
-        ICdmDataSource destination = cdmDestination;
-        TaxonXImportConfigurator taxonxImportConfigurator = TaxonXImportConfigurator.NewInstance(destination);
-
-        //        taxonxImportConfigurator.setClassificationName(taxonxImportConfigurator.getSourceReferenceTitle());
-        taxonxImportConfigurator.setCheck(check);
-        taxonxImportConfigurator.setDbSchemaValidation(hbm2dll);
-        taxonxImportConfigurator.setDoAutomaticParsing(true);
-
-        // invoke import
-        CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
-
-        taxonxImportConfigurator.setKeepOriginalSecundum(reuseSecundum);
-        if (!reuseSecundum) {
-            taxonxImportConfigurator.setSecundum(secundum);
-        }
-
-
-        //        taxonxImportConfigurator.setDoMatchTaxa(true);
-        //        taxonxImportConfigurator.setReUseTaxon(true);
-
-        for (String document:documentMap.keySet()){
-        if (doImportDocument(document, documentMap.get(document).size())){
-        for (URI source:documentMap.get(document)){
-            System.out.println("START : "+source.getPath());
-            taxonxImportConfigurator.setSource(source);
-
-            Reference<?> reference = ReferenceFactory.newGeneric();
-            //            String tref = askQuestion("Import source? (ie Plazi document ID)");
-            String tref="PLAZI - "+source.getPath().split("/")[source.getPath().split("/").length-1];
-            reference.setTitleCache(tref,true);
-            reference.setTitle(tref);
-            reference.generateTitle();
-
-            taxonxImportConfigurator.setSourceReference(reference);
-            TaxonXImportConfigurator.setSourceRef(reference);
-
-            //            String tnomenclature = askQuestion("ICBN or ICZN ?");
-
-            if (tnomenclature.equalsIgnoreCase("ICBN")) {
-                taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
-                //                taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
-            }
-            if(tnomenclature.equalsIgnoreCase("ICZN")){
-                taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICZN);
-                //                taxonxImportConfigurator.setClassificationName("Ants");
-            }
-            if(tnomenclature.equalsIgnoreCase("ICNB")){
-                taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNB);
-                //                taxonxImportConfigurator.setClassificationName("Bacteria");
-            }
-
-            //   taxonxImportConfigurator.setTaxonReference(null);
-
-            //            log.info("INVOKE");
-
-            taxonImport.invoke(taxonxImportConfigurator);
-            log.info("End import from SpecimenData ("+ source.toString() + ")...");
-
-            //          //deduplicate
-            //            ICdmApplicationConfiguration app = taxonImport.getCdmAppController();
-            //            int count = app.getAgentService().deduplicate(Person.class, null, null);
-            //            logger.warn("Deduplicated " + count + " persons.");
-            //            count = app.getReferenceService().deduplicate(Reference.class, null, null);
-            //            logger.warn("Deduplicated " + count + " references.");
-        }
-        }
-        }
-
+        return documentMap;
 
     }
-
-
 
     /**
      * @param document
      * @return
      */
     private static boolean doImportDocument(String document, int nbtreatments) {
-//        List<String> docDone = Arrays.asList(new String[]{"3540555099", "0910-2878-5652", "5012-9059-4108",
-//                "3784-0748-2261","3-201-00728-5", "FloNuttDuWin1838", "FlNordica_chenop","2580-1363-7530",
-//                "1842460692","5161-7797-8064","FlCaboVerde_Chen","2819-9661-8339","2626-3794-9273"});//,
-//               // "8776-7797-8303"});
-//        if (docDone.contains(document)) {
-//            return false;
-//        }
+        //        List<String> docDone = Arrays.asList(new String[]{"3540555099", "0910-2878-5652", "5012-9059-4108",
+        //                "3784-0748-2261","3-201-00728-5", "FloNuttDuWin1838", "FlNordica_chenop","2580-1363-7530",
+        //                "1842460692","5161-7797-8064","FlCaboVerde_Chen","2819-9661-8339","2626-3794-9273"});//,
+        //               // "8776-7797-8303"});
+        //        if (docDone.contains(document)) {
+        //            return false;
+        //        }
 
         JTextArea textArea = new JTextArea("Should this document be imported ("+nbtreatments+")? \n'"+document+"'");
         JScrollPane scrollPane = new JScrollPane(textArea);

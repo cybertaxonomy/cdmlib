@@ -13,7 +13,7 @@
   
   <groupId>eu.etaxonomy.cdm</groupId>
   <artifactId>cdm-pesi</artifactId>
-  <version>3.2.3-SNAPSHOT</version>
+  <version>3.2.2-SNAPSHOT</version>
   
   <name>CDM PESI</name>
   <description>The PESI package for EDIT's CdmLibrary</description>

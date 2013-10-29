@@ -14,7 +14,7 @@
   <modelVersion>4.0.0</modelVersion>
   <artifactId>xper2-cdm-integration</artifactId>
   <name>xper2 Cdm Integration</name>
-  <description>The Xper integration package for EDIT's CdmLibrary</description>
+  <description>The import-export package for EDIT's cdmLibrary</description>
   <scm>
     <connection>scm:svn:http://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/XperCdmIntegration/</connection>
     <developerConnection>scm:svn:https://dev.e-taxonomy.eu/svn/trunk/cdmlib-apps/XperCdmIntegration/</developerConnection>

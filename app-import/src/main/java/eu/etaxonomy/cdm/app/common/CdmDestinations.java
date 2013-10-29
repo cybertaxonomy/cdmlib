@@ -531,7 +531,7 @@ public class CdmDestinations {
         return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, "mysqlr00t");
     }
 
-   public static ICdmDataSource proibiosphere_local() {
+   public static ICdmDataSource proibiosphere_chenopodium_local() {
         DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
         String cdmServer = "localhost";
         String cdmDB = "cdm_production_proibiosphere_chenopodium_pilot";
@@ -539,6 +539,46 @@ public class CdmDestinations {
         return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
     }
 
+   public static ICdmDataSource proibiosphere_ants_local() {
+       DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+       String cdmServer = "localhost";
+       String cdmDB = "cdm_production_proibiosphere_ants_pilot";
+       String cdmUserName = "root";
+       return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+   }
+
+   public static ICdmDataSource proibiosphere_fungi_local() {
+       DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+       String cdmServer = "localhost";
+       String cdmDB = "cdm_production_proibiosphere_fungi_pilot";
+       String cdmUserName = "root";
+       return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+   }
+
+   public static ICdmDataSource proibiosphere_campylopus_local() {
+       DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+       String cdmServer = "localhost";
+       String cdmDB = "cdm_production_proibiosphere_campylopus_pilot";
+       String cdmUserName = "root";
+       return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+   }
+
+
+   public static ICdmDataSource proibiosphere_eupolybothrus_local() {
+       DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+       String cdmServer = "localhost";
+       String cdmDB = "cdm_production_proibiosphere_eupolybothrus_pilot";
+       String cdmUserName = "root";
+       return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+   }
+
+   public static ICdmDataSource proibiosphere_spiders_local() {
+       DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
+       String cdmServer = "localhost";
+       String cdmDB = "cdm_production_proibiosphere_spiders_pilot";
+       String cdmUserName = "root";
+       return makeDestination(dbType, cdmServer, cdmDB, -1, cdmUserName, null);
+   }
 //	public static ICdmDataSource LAPTOP_HP(){
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.SqlServer2005;
 //		String cdmServer = "LAPTOPHP";
