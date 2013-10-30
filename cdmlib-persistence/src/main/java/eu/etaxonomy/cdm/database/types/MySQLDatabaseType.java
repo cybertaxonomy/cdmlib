@@ -39,7 +39,7 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     //hibernate dialect
     // see #3371 (switch cdm to MySQL InnoDB)
 //    private Dialect hibernateDialect = new MySQL5InnoDBUtf8Dialect();
-    private Dialect hibernateDialect = MySQL5MyISAMUtf8Dialect.getDialect();
+    private Dialect hibernateDialect = new MySQL5MyISAMUtf8Dialect();
 
     //connection String
 	@Override
