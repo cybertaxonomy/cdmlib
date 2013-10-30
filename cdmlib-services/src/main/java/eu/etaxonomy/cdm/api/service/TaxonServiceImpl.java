@@ -1073,8 +1073,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                             for (ITreeNode treeNode: nodesList){
                             	TaxonNode taxonNode = (TaxonNode) treeNode;
-                                if(deleteChildren){
-                                    Object[] childNodes = taxonNode.getChildNodes().toArray();
+                                if(!deleteChildren){
+                                   /* Object[] childNodes = taxonNode.getChildNodes().toArray();
+                                    //nodesList.addAll(taxonNode.getChildNodes());
                                     for (Object childNode: childNodes){
                                         TaxonNode childNodeCast = (TaxonNode) childNode;
                                         deleteTaxon(childNodeCast.getTaxon(), config, classification);
@@ -1084,9 +1085,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                     /*for (TaxonNode childNode: taxonNode.getChildNodes()){
                                         deleteTaxon(childNode.getTaxon(), config, classification);
 
-                                    }*/
-                                    //taxon.removeTaxonNode(taxonNode);
+                                    }
+                                   // taxon.removeTaxonNode(taxonNode);
+                                    //nodeService.delete(taxonNode);
                                 } else{
+                                	*/
                                     Object[] childNodes = taxonNode.getChildNodes().toArray();
                                     for (Object childNode: childNodes){
                                         TaxonNode childNodeCast = (TaxonNode) childNode;

@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -203,10 +204,30 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	if (treeNode instanceof TaxonNode){
         		TaxonNode taxonNode;
 	            taxonNode = (TaxonNode)treeNode;
+	           
+	            	//check whether the node has children or the children are already deleted
+	            if(taxonNode.hasChildNodes()){
+            		Set<ITreeNode> children = new HashSet<ITreeNode> ();
+            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
+        			children.addAll(childNodesList);
+        			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
+        			boolean childHandling = (compare == 0)? true: false;
+            		if (childHandling){
+            			deleteTaxonNodes(children, config);
+            			
+            		} else {
+            			//move the children to the parent
+            			TaxonNode parent = taxonNode.getParent();
+            			for (TaxonNode child: childNodesList){
+            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
+            			}
+            			
+            		}
+            	}
 	            Classification classification = taxonNode.getClassification();
 	            if (classification.getChildNodes().contains(taxonNode)){
 	                classification.deleteChildNode(taxonNode);
-	            } else {
+	            }else{
 	            	taxonNode.getTaxon().removeTaxonNode(taxonNode);
 	            }
 	            dao.delete(taxonNode);

@@ -202,6 +202,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	}
 	
 	
+	@Test
+	public final void testDeleteNode(){
+		
+	}
 	
 	
 
