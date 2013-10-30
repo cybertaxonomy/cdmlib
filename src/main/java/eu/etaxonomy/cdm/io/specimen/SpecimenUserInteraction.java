@@ -158,8 +158,10 @@ public class SpecimenUserInteraction implements ItemListener {
      * @return
      */
     @SuppressWarnings("rawtypes")
-    public List<OriginalSourceBase<?>> askForSourceSource(Map<String, OriginalSourceBase<?>> refMap, String currentElement, String blabla,
+    public List<OriginalSourceBase<?>> askForSource(Map<String, OriginalSourceBase<?>> refMap, String currentElement, String blabla,
             IReferenceService iReferenceService, List<String> docSources) {
+
+        System.out.println(refMap);
         List<String>  possibilities = new ArrayList<String> (refMap.keySet());
 
         Set<String> all = new HashSet<String>();
@@ -182,6 +184,7 @@ public class SpecimenUserInteraction implements ItemListener {
 
         Object[] options = {"Add and close", "Add and continue - I want to add more sources","Close without adding anything"};
 
+        System.out.println(docSources);
         int n=1;
         while (n==1){
             group = new ButtonGroup();
@@ -322,21 +325,34 @@ public class SpecimenUserInteraction implements ItemListener {
         scrollPane.setPreferredSize( new Dimension( 700, 50 ) );
 
         Map<String,TaxonDescription> descrMap = new HashMap<String, TaxonDescription>();
+
+        int descCnt=1;
         for (TaxonDescription description : descriptions){
+            System.out.println("descr. titlecache "+description.getTitleCache());
             Set<IdentifiableSource> sources =  description.getTaxon().getSources();
             sources.addAll(description.getSources());
             List<String> src=new ArrayList<String>();
-            src.add("(");
             for (IdentifiableSource s:sources) {
                 src.add(s.getCitation().getTitleCache());
             }
-            src.add(")");
-            descrMap.put(description.getTitleCache()+StringUtils.join(src,";"),description);
-            //            for (IdentifiableSource source:sources){
-            //                if(ref.equals(source.getCitation())) {
-            //                    taxonDescription = description;
-            //                }
-            //            }
+            List<String> srcb = new ArrayList<String>(new HashSet<String>(src));
+            if (srcb.size()>0) {
+                if(descrMap.containsKey(descCnt+": "+description.getTitleCache()+"("+StringUtils.join(srcb,";")+")")) {
+                    descCnt+=1;
+                }
+                descrMap.put(descCnt+": "+description.getTitleCache()+"("+StringUtils.join(srcb,";")+")",description);
+            }
+            else {
+                if(descrMap.containsKey(description.getTitleCache())) {
+                    descCnt+=1;
+                }
+                descrMap.put(descCnt+": "+description.getTitleCache(),description);
+                //            for (IdentifiableSource source:sources){
+                //                if(ref.equals(source.getCitation())) {
+                //                    taxonDescription = description;
+                //                }
+                //            }
+            }
         }
         List<String>  possibilities = new ArrayList<String> (descrMap.keySet());
         if (possibilities.size()==0) {
