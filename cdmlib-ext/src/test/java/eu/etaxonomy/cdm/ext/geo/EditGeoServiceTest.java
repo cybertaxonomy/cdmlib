@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -35,7 +36,6 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
  * @created 08.10.2008
  */
 public class EditGeoServiceTest extends CdmIntegrationTest {
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
     private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
@@ -200,7 +199,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();
         NamedAreaLevel areaLevel = NamedAreaLevel.NewInstance("Cyprus Division", "Cyprus Division", null);
 
-        TermVocabulary areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea, "Cyprus devisions", "Cyprus divisions", null, null);
+        TermVocabulary<NamedArea> areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea, "Cyprus devisions", "Cyprus divisions", null, null);
         areaVocabulary.setUuid(uuidCyprusDivisionsVocabulary);
 
         for(int i = 1; i <= 8; i++){
@@ -231,7 +230,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
 
 
     public UUID getNamedAreaUuid(String key) {
-        if (CdmUtils.isEmpty(key)){return null;
+        if (StringUtils.isBlank(key)){return null;
         }else if (key.equalsIgnoreCase("1")){return uuidDivision1;
         }else if (key.equalsIgnoreCase("2")){return uuidDivision2;
         }else if (key.equalsIgnoreCase("3")){return uuidDivision3;
@@ -245,7 +244,7 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
         }
     }
 
-    protected NamedArea newNamedArea(UUID uuid, String label, String text, String IdInVocabulary, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc){
+    protected NamedArea newNamedArea(UUID uuid, String label, String text, String IdInVocabulary, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary<NamedArea> voc){
         NamedArea namedArea = NamedArea.NewInstance(text, label, null);
         voc.addTerm(namedArea);
         namedArea.setType(areaType);
