@@ -20,6 +20,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 //import eu.etaxonomy.cdm.model.reference.Book;
@@ -27,6 +28,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 /**
  * @author a.mueller
@@ -99,5 +101,24 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		taxonBase.setUseNameCache(true);
 		assertEquals("Taxon titlecache is wrong", expectedNameCache + " aff. 'schippii' sec. Sp.Pl.", taxonBase.getTitleCache());
 
+		
+	}
+	
+	//test missing "&" in title cache  #3822
+	@Test
+	public void testAndInTitleCache() {
+		TaxonBase<?> taxonBase = Taxon.NewInstance(name, sec);
+		Team team = Team.NewInstance();
+		team.addTeamMember((Person)name.getCombinationAuthorTeam());
+		team.addTeamMember((Person)name.getBasionymAuthorTeam());
+		name.setCombinationAuthorTeam(team);
+		
+		name = BotanicalName.NewInstance(null);
+		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. & A. Huet", null, true);
+		
+		Taxon taxon = Taxon.NewInstance(name, sec);
+		
+		System.out.println(taxon.getTitleCache());
+		
 	}
 }
