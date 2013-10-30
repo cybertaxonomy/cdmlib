@@ -3,7 +3,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:functx="http://www.functx.com"
 	xmlns:fn="http://www.w3.org/2005/xpath-functions">
 	<xsl:import href="src/main/resources/stylesheets/mediawiki/functx-1.0-doc-2007-01.xsl" />
-	<!-- xsl:import href="functx-1.0-doc-2007-01.xsl" /-->
+	<!--xsl:import href="functx-1.0-doc-2007-01.xsl" /-->
 	<!-- xsl:output method="xml" indent="no"/> -->
 	<xsl:strip-space elements="text" />
 
@@ -17,6 +17,12 @@
 	<xsl:variable name="page-prefix">
 		<!-- <xsl:text>Internal:</xsl:text> -->
 		<xsl:value-of select="$prefix"></xsl:value-of>
+	</xsl:variable>
+	
+	<!-- cdm url of source -->
+	<xsl:param name="cdm-url"></xsl:param>
+	<xsl:variable name="cdm-credit-text">
+		<xsl:value-of select="concat('This page was generated automatically from content in ', $cdm-url)"></xsl:value-of>
 	</xsl:variable>
 
 	<!-- create a timestamp for the whole going -->
@@ -196,6 +202,8 @@
 					<xsl:call-template name="wiki-newline" />
 
 					<!-- add contents of taxon page -->
+					<xsl:call-template name="credit" />
+					<xsl:call-template name="wiki-newline" />
 					<xsl:apply-templates select="Taxon" />
 					<xsl:call-template name="display-references" />
 					<xsl:call-template name="wiki-newline" />
@@ -276,6 +284,7 @@
 
 	<!-- we run this for the content of the page -->
 	<xsl:template match="Taxon" name="Taxon">
+		
 		<xsl:apply-templates select="synonymy" />
 		<xsl:apply-templates select="key" />
 		<xsl:apply-templates select="descriptions" />
@@ -531,6 +540,16 @@
 
 	</xsl:template>
 
+	<!-- this template provides the Credit to the source database -->
+	
+	<xsl:template name="credit">
+		<xsl:call-template name="chapter">
+			<xsl:with-param name="title">
+				Credits
+			</xsl:with-param>
+		</xsl:call-template>
+			<xsl:apply-templates select="$cdm-credit-text"/><br></br>
+	</xsl:template>
 
 	<!-- these templates provide the synonomy -->
 
@@ -749,6 +768,7 @@
 				<xsl:for-each select="descriptionelements/descriptionelement">
 					<xsl:value-of
 						select="concat('{{EDIT_Nested_Feature_Element|',multilanguageText_L10n/text, '}}')" />
+					
 					<xsl:choose>
 						<xsl:when test="position() != last()">
 							<xsl:text>{{EDIT_Delimiter}}</xsl:text>
@@ -821,6 +841,14 @@
 		<!-- feature is not "Distribution" -->
 		<xsl:apply-templates
 			select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text" />
+		<xsl:call-template name="reference">
+			<xsl:with-param name="reference-node" select="descriptionelements/descriptionelement[1]/sources[1]/e[1]/citation[1]" />
+		</xsl:call-template>
+		(
+		<xsl:apply-templates
+			select="descriptionelements/descriptionelement[1]/sources[1]/e[1]/citation[1]/titleCache[1]" />
+		)
+		
 		<!-- </xsl:when> </xsl:choose> -->
 		<xsl:text>}}}}</xsl:text>
 		<!-- feature is "Figures -->

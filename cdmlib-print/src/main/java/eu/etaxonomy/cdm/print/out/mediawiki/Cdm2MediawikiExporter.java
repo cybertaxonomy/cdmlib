@@ -112,7 +112,7 @@ public class Cdm2MediawikiExporter {
 	 *             temporary so far boolean for telling if we want to keep the
 	 *             mediawiki xml file ...
 	 */
-	public void export(String serviceUrl, String taxonName, String classificationName, String wikiUrl,
+	public void export(String portalUrl, String serviceUrl, String taxonName, String classificationName, String wikiUrl,
 			String wikiLoginUid, String passwd, String wikiPageNamespace,
 			boolean import2Mediawiki, boolean deleteOutputFiles,
 			boolean importImages) throws MalformedURLException {
@@ -126,7 +126,7 @@ public class Cdm2MediawikiExporter {
 		configurator.addSelectedTaxonNodeElements(factory.getTaxonNodesByName(taxonName, classificationName));
 		
 		
-		export(serviceUrl, wikiUrl, wikiLoginUid, passwd,
+		export(portalUrl, serviceUrl, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
 				importImages, true);
 	}
@@ -148,7 +148,7 @@ public class Cdm2MediawikiExporter {
 	 * @param importImages
 	 * @throws MalformedURLException
 	 */
-	public void exportFromXmlFile(String filename, String serviceUrl,
+	public void exportFromXmlFile(String portalUrl, String filename, String serviceUrl,
 			 String wikiUrl, String wikiLoginUid,
 			String passwd, String wikiPageNamespace, boolean import2Mediawiki,
 			boolean deleteOutputFiles, boolean importImages)
@@ -160,7 +160,7 @@ public class Cdm2MediawikiExporter {
 //		setupConfigurator(serviceUrl);
 		
 		// and run export with usePublisher=false:
-		export(serviceUrl, wikiUrl, wikiLoginUid, passwd,
+		export(portalUrl, serviceUrl, wikiUrl, wikiLoginUid, passwd,
 				wikiPageNamespace, import2Mediawiki, deleteOutputFiles,
 				importImages, false);
 
@@ -172,7 +172,7 @@ public class Cdm2MediawikiExporter {
 	 * stylesheet) export folder - we use a temporary so far boolean for telling
 	 * if we want to keep the mediawiki xml file ...
 	 */
-	private void export(String serviceUrl, String wikiUrl,
+	private void export(String portalUrl, String serviceUrl, String wikiUrl,
 			String wikiLoginUid, String passwd, String wikiPageNamespace,
 			boolean import2Mediawiki, boolean deleteOutputFiles,
 			boolean importImages, boolean usePublisher)
@@ -182,9 +182,9 @@ public class Cdm2MediawikiExporter {
 		// namespace:
 		if (wikiPageNamespace == null
 				|| wikiPageNamespace.replaceAll(" ", "").equals("")) {
-			wikiOutputModule = new MediawikiOutputModule();
+			wikiOutputModule = new MediawikiOutputModule(portalUrl);
 		} else {
-			wikiOutputModule = new MediawikiOutputModule(wikiPageNamespace);
+			wikiOutputModule = new MediawikiOutputModule(wikiPageNamespace, portalUrl);
 		}
 
 		// set username to wikiOutModule for having it in the history of the
