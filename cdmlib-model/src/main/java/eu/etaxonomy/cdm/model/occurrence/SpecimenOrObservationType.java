@@ -49,7 +49,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 * use "DerivedUnit", "Observation" or "OtherSpecimen" instead.
 	 */
 	@XmlEnumValue("Unknown")
-	Unknown(UUID.fromString("971a0c72-d4d2-4e41-8520-c9a87df34f48"), "Unknown term type","UN", null),
+	Unknown(UUID.fromString("971a0c72-d4d2-4e41-8520-c9a87df34f48"), "Unknown unit type","UN", null),
 
 	//5
 	/**
