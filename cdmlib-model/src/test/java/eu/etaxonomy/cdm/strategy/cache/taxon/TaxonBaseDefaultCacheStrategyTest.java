@@ -112,13 +112,14 @@ public class TaxonBaseDefaultCacheStrategyTest {
 		team.addTeamMember((Person)name.getCombinationAuthorTeam());
 		team.addTeamMember((Person)name.getBasionymAuthorTeam());
 		name.setCombinationAuthorTeam(team);
+		System.out.println(taxonBase.generateTitle());
+		assertEquals("Abies alba (L.) Mill. \u0026 L. sec. Sp.Pl.", taxonBase.generateTitle());
 		
 		name = BotanicalName.NewInstance(null);
-		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. & A. Huet", null, true);
-		
+		NonViralNameParserImpl.NewInstance().parseFullName(name, "Cichorium glandulosum Boiss. \u0026 A. Huet", null, true);
 		Taxon taxon = Taxon.NewInstance(name, sec);
+		assertEquals("Cichorium glandulosum Boiss. \u0026 A. Huet sec. Sp.Pl.", taxon.getTitleCache());
 		
-		System.out.println(taxon.getTitleCache());
 		
 	}
 }
