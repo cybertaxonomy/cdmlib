@@ -128,7 +128,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         }
         logger.debug("  get ordered distributions ");
         DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
-        logger.debug("done");
+        if (logger.isDebugEnabled()){ logger.debug("done");}
         return distTree;
     }
 
