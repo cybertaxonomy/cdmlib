@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.database.types;
 
 import org.hibernate.dialect.Dialect;
-import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5InnoDBUtf8Dialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
 
@@ -39,8 +38,8 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
 
     //hibernate dialect
     // see #3371 (switch cdm to MySQL InnoDB)
-    private Dialect hibernateDialect = new MySQL5InnoDBUtf8Dialect();
-//    private Dialect hibernateDialect = MySQL5MyISAMUtf8Dialect.getDialect();
+//    private Dialect hibernateDialect = new MySQL5InnoDBUtf8Dialect();
+    private Dialect hibernateDialect = MySQL5MyISAMUtf8Dialect.getDialect();
 
     //connection String
 	@Override
