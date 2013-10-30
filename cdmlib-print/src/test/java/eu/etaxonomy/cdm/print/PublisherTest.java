@@ -146,7 +146,7 @@ public class PublisherTest {
 		
 		List<IPublishOutputModule> modules = new ArrayList();
 		//modules.add(new XMLOutputModule());
-		modules.add(new MediawikiOutputModule());
+		modules.add(new MediawikiOutputModule(""));
 		configurator.setOutputModules(modules);
 		
 		//configurator.setOutputModules(Arrays.asList(new IPublishOutputModule[]{new XMLOutputModule()}));
