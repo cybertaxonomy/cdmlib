@@ -134,6 +134,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				counter = Long
 						.valueOf(referenceDao
 								.count(eu.etaxonomy.cdm.model.reference.Reference.class));
+				counter -=statisticsDao.countNomenclaturalReferences(); 
 				break;
 
 			case NOMECLATURAL_REFERENCES:
@@ -205,7 +206,10 @@ public class StatisticsServiceImpl implements IStatisticsService {
 							.countTaxonNames((Classification) filter);
 					break;
 				case ALL_REFERENCES:
-					counter = statisticsDao.countReferencesInClassification((Classification) filter);
+//					counter = statisticsDao.countReferencesInClassification((Classification) filter);
+					counter = statisticsDao.countReferencesInClassificationWithUuids((Classification) filter);
+					counter+=statisticsDao
+							.countDescriptive(true, (Classification) filter);
 					break;
 				case DESCRIPTIVE_SOURCE_REFERENCES:
 					counter = statisticsDao

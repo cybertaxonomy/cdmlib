@@ -89,6 +89,9 @@ public interface IStatisticsDao {
 	public List<UUID> getAllChildNodeIds(UUID rootUuid);
 
 
+	Long countReferencesInClassificationWithUuids(Classification classification);
+
+
 	
 
 
