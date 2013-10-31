@@ -184,7 +184,8 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				case CLASSIFICATION:
 					logger.info("there should not be any classification "
 							+ "nested in an other classification");
-					// so do nothing
+					// so we set counter to 1, as a classification itself is one classification
+					counter = new Long(1);
 					break;
 				case ACCEPTED_TAXA:
 					counter = statisticsDao.countTaxaInClassification(
