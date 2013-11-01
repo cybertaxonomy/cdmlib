@@ -92,8 +92,15 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
 	
 	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
 
-//	public Map<UUID, Set<UUID>> missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested);
-
+	/**
+	 * Fills the response map with those term uuids which do exist in the requested map
+	 * but not in the repository (missing terms). The map key is the vocabulary uuid in both cases.
+	 * If parameter vocabularyRepsonse is not <code>null</code> the vocabularies will be fully loaded
+	 * and returned within the map. The later is for using this method together with fast termloading.
+	 * @param uuidsRequested
+	 * @param uuidsRepsonse
+	 * @param vocabularyResponse
+	 */
 	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested,
 			Map<UUID, Set<UUID>> uuidsRepsonse,
 			Map<UUID, TermVocabulary<?>> vocabularyResponse);

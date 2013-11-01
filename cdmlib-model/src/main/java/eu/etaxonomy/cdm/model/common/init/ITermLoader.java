@@ -45,7 +45,7 @@ public interface ITermLoader {
 	public UUID loadUuids(VocabularyEnum vocType, Map<UUID, Set<UUID>> uuidMap);
 
 	/**
-	 * Loads all terms from term loader for the given vocabulary and with the given term uuids.
+	 * Loads all terms for the given vocabulary and with the given term uuids by using the given term loader.
 	 * @param vocType VocabularyEnum
 	 * @param voc vocabulary
 	 * @param missingTerms Set of UUIDs for terms to be loaded.

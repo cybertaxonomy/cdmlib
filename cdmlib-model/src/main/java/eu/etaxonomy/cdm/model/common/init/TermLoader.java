@@ -129,20 +129,20 @@ public class TermLoader implements ITermLoader {
 	}
 
 	/**
-	 * @param terms
-	 * @param nextLine
-	 * @param termClass
-	 * @param voc
-	 * @param termType
-	 * @param abbrevAsId
-	 * @param classDefiningTermInstance
+	 * Handles a single csv line, creates the term and adds it to the vocabulary and to the terms map.
+	 * @param csvLine csv line
+	 * @param terms UUID-Term map this term should be added to
+	 * @param termClass the class of the term to create
+	 * @param voc the vocabulary the term should be added to
+	 * @param abbrevAsId boolean value, if true the abbreviation should be taken as idInVocabulary
+	 * @param classDefiningTermInstance instance for calling readCsvLine
 	 * @return
 	 */
-	private <T extends DefinedTermBase> T handleSingleTerm(String[] nextLine, Map<UUID,DefinedTermBase> terms,
+	private <T extends DefinedTermBase> T handleSingleTerm(String[] csvLine, Map<UUID,DefinedTermBase> terms,
 			Class<? extends DefinedTermBase> termClass,
 			TermVocabulary<T> voc, boolean abbrevAsId,
 			T classDefiningTermInstance) {
-		T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms, abbrevAsId);
+		T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(csvLine), terms, abbrevAsId);
 		term.setTermType(voc.getTermType());
 		voc.addTerm(term);
 		terms.put(term.getUuid(), term);
@@ -190,6 +190,7 @@ public class TermLoader implements ITermLoader {
 	}
 
 	/**
+	 * Returns the {@link CSVReader} for the given {@link VocabularyEnum}.
 	 * @param vocType
 	 * @return
 	 * @throws IOException
@@ -203,6 +204,12 @@ public class TermLoader implements ITermLoader {
 		return reader;
 	}
 
+	/**
+	 * Returns a new instance for the given class by using the default constructor.
+	 * The constructor must be declared but can be unaccessible (e.g. private)
+	 * @param termClass
+	 * @return
+	 */
 	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
 		try {
 			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
