@@ -250,6 +250,24 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		query.setParameterList("uuids",missingTermCandidateUuids);
 		List<?> persistedUuids = query.list();
 
+		
+ 		//fully load and initialize vocabularies if required
+		if (vocabularyResponse != null){
+			String hql2 = " SELECT voc " +
+					" FROM TermVocabulary voc left join fetch voc.terms terms left join fetch terms.representations representations " +
+						" left join fetch voc.representations vocReps " +
+					" WHERE terms.uuid IN (:termUuids) OR  (  voc.uuid IN (:vocUuids) AND voc.terms is empty ) " +
+//					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
+					" ORDER BY voc.uuid ";
+			query = getSession().createQuery(hql2);
+			query.setParameterList("termUuids",missingTermCandidateUuids);
+			query.setParameterList("vocUuids",uuidsRequested.keySet());
+			List<TermVocabulary> o = query.list();
+			for (TermVocabulary<?> voc : o){
+				vocabularyResponse.put(voc.getUuid(), voc);
+			}
+		}
+		
 		//compute missing terms
 		if (missingTermCandidateUuids.size() == persistedUuids.size()){
 			missingTermCandidateUuids.clear();
@@ -270,23 +288,7 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 				}
 			}
 		}
-		
- 		//fully load and initialize vocabularies if required
-		if (vocabularyResponse != null){
-			String hql2 = " SELECT voc " +
-					" FROM TermVocabulary voc left join fetch voc.terms terms left join fetch terms.representations representations " +
-						" left join fetch voc.representations vocReps " +
-					" WHERE terms.uuid IN (:termUuids) OR  (  voc.uuid IN (:vocUuids) AND voc.terms is empty ) " +
-//					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
-					" ORDER BY voc.uuid ";
-			query = getSession().createQuery(hql2);
-			query.setParameterList("termUuids",missingTermCandidateUuids);
-			query.setParameterList("vocUuids",uuidsRequested.keySet());
-			List<TermVocabulary> o = query.list();
-			for (TermVocabulary<?> voc : o){
-				vocabularyResponse.put(voc.getUuid(), voc);
-			}
-		}
+
 
 		return;
 	}
