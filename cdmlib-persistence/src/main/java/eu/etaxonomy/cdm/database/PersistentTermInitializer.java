@@ -108,7 +108,6 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
            
-            //new
             //load uuids from csv files
             logger.info("Start new ... " );
             Map<UUID, Set<UUID>> uuidMap = new HashMap<UUID, Set<UUID>>();
@@ -148,21 +147,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	            }
 	            initializeAndStore(vocabularyType.getClazz(),vocUuid, terms, vocabularyMap);  //TODO 
         	}
-	            
-            //load all persisted vocabularies
-            
-            
-            //end new
-            
-            
-//            for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
-//                logger.info("Start loading " + vocabularyType.getClazz().getSimpleName());
-////            	UUID vocabularyUuid = firstPass(vocabularyType,terms);
-//                UUID vocabularyUuid = vocabularyType.getUuid();
-//                logger.info("Second pass " + vocabularyType.getClazz().getSimpleName());
-//                secondPass(vocabularyType.getClazz(),vocabularyUuid, terms, vocabularyMap);  //TODO 
-//                logger.info(vocabularyType.getClazz().getSimpleName() + " - DONE ");
-//            }
+           
             transactionManager.commit(txStatus);
             
             DateTime end = new DateTime();
