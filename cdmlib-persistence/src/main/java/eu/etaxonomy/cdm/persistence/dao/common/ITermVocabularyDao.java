@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -84,10 +87,16 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param propertyPaths properties to be initialized
      * @return a list of term vocabularies
      */
-	<TERMTYPE extends DefinedTermBase> List<TermVocabulary<? extends TERMTYPE>> listByTermClass(Class<TERMTYPE> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public <TERMTYPE extends DefinedTermBase> List<TermVocabulary<? extends TERMTYPE>> listByTermClass(Class<TERMTYPE> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	
 	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
+
+//	public Map<UUID, Set<UUID>> missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested);
+
+	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested,
+			Map<UUID, Set<UUID>> uuidsRepsonse,
+			Map<UUID, TermVocabulary<?>> vocabularyResponse);
 
 
 }

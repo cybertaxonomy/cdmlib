@@ -10,7 +10,13 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import org.hibernate.Criteria;
 import org.hibernate.Query;
@@ -20,7 +26,9 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -225,6 +233,68 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 		List<TermVocabulary> result = (List<TermVocabulary>)criteria.list();
 	    defaultBeanInitializer.initializeAll(result, propertyPaths);
 		return result;
+	}
+	
+	@Override
+	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested, 
+			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse, Map<UUID, TermVocabulary<?>> vocabularyResponse){
+		
+		Set<UUID> missingTermCandidateUuids = new HashSet<UUID>();
+		String uuidsString = "";  //TODO make it a StringBuffer
+		
+		for (Set<UUID> uuidsPerVocSet : uuidsRequested.values()){
+			missingTermCandidateUuids.addAll(uuidsPerVocSet);
+		}
+		uuidsString = uuidsString.substring(1);
+		
+ 		//search persisted subset of required (usuallay all 
+		String hql = " SELECT terms.uuid " +
+				" FROM TermVocabulary voc join voc.terms terms  " +
+				" WHERE terms.uuid IN (:uuids) " +
+				" ORDER BY voc.uuid ";
+		Query query = getSession().createQuery(hql);
+		query.setParameterList("uuids",missingTermCandidateUuids);
+		List<?> persistedUuids = query.list();
+
+		//compute missing terms
+		if (missingTermCandidateUuids.size() == persistedUuids.size()){
+			missingTermCandidateUuids.clear();
+		}else{
+			missingTermCandidateUuids.removeAll(persistedUuids);
+		}
+		
+		//add missing terms to response
+		for (UUID vocUUID : uuidsRequested.keySet()){
+			for (UUID termUuid : uuidsRequested.get(vocUUID)){
+				if (missingTermCandidateUuids.contains(termUuid)){
+					Set<UUID> r = uuidMissingTermsRepsonse.get(vocUUID);
+					if (r == null){
+						r = new HashSet<UUID>();
+						uuidMissingTermsRepsonse.put(vocUUID, r);
+					}
+					r.add(termUuid);
+				}
+			}
+		}
+		
+ 		//fully load and initialize vocabularies if required
+		if (vocabularyResponse != null){
+			String hql2 = " SELECT voc " +
+					" FROM TermVocabulary voc left join fetch voc.terms terms left join fetch terms.representations representations " +
+						" left join fetch voc.representations vocReps " +
+					" WHERE terms.uuid IN (:termUuids) OR  (  voc.uuid IN (:vocUuids) AND voc.terms is empty ) " +
+//					" WHERE  voc.uuid IN (:vocUuids) AND voc.terms is empty  " +
+					" ORDER BY voc.uuid ";
+			query = getSession().createQuery(hql2);
+			query.setParameterList("termUuids",missingTermCandidateUuids);
+			query.setParameterList("vocUuids",uuidsRequested.keySet());
+			List<TermVocabulary> o = query.list();
+			for (TermVocabulary<?> voc : o){
+				vocabularyResponse.put(voc.getUuid(), voc);
+			}
+		}
+
+		return;
 	}
 
 	/**

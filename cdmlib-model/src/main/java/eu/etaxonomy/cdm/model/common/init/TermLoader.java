@@ -9,12 +9,14 @@
 
 package eu.etaxonomy.cdm.model.common.init;
 
+import java.io.IOException;
 import java.lang.reflect.Constructor;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -28,12 +30,12 @@ import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 
 @Component
 public class TermLoader implements ITermLoader {
 	private static final Logger logger = Logger.getLogger(TermLoader.class);
 
+	@Override
 	public void unloadAllTerms(){
 		for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
 //			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
@@ -47,19 +49,44 @@ public class TermLoader implements ITermLoader {
 		return;
 	}
 
-	
-	
-	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
-		
-		String filename = vocType.name()+".csv";
-		Class<? extends DefinedTermBase> termClass = vocType.getClazz();
-		
-		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
-		logger.debug("strResourceFileName is " + strResourceFileName);
+	@Override
+	public UUID loadUuids(VocabularyEnum vocType, Map<UUID, Set<UUID>> uuidMap) {
 		
 		try {
-			CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
+			CSVReader reader = getCsvReader(vocType);
+			String[] nextLine = reader.readNext();
+			UUID uuidVocabulary = UUID.fromString(nextLine[0]);
+			Set<UUID> termSet = new HashSet<UUID>();
+			uuidMap.put(uuidVocabulary, termSet);
+			
+			while ( (nextLine = reader.readNext()) != null) {
+				UUID uuidTerm = UUID.fromString(nextLine[0]);
+				termSet.add(uuidTerm);
+			}
+			return uuidVocabulary;
+			
+			
+		} catch (Exception e) {
+			logger.error(e + " " + e.getCause() + " " + e.getMessage());
+			for(StackTraceElement ste : e.getStackTrace()) {
+				logger.error(ste);
+			}
+			throw new RuntimeException(e);
+		}
+	
+	}
+	
+	@Override
+	public <T extends DefinedTermBase> TermVocabulary<T> loadTerms(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms) {
+		
+		
+		try {
+			CSVReader reader = getCsvReader(vocType);
+			
 			String [] nextLine = reader.readNext();
+			
+			
+			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
 			
 			//vocabulary
 			TermVocabulary<T> voc;
@@ -86,10 +113,9 @@ public class TermLoader implements ITermLoader {
 					continue;
 				}
 
-				T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms, abbrevAsId);
-				term.setTermType(termType);
-				terms.put(term.getUuid(), term);
-				voc.addTerm(term);
+				handleSingleTerm(nextLine, terms, termClass, voc,
+						abbrevAsId, classDefiningTermInstance);
+
 			}
 			return voc;
 		} catch (Exception e) {
@@ -100,6 +126,81 @@ public class TermLoader implements ITermLoader {
 			throw new RuntimeException(e);
 		}
 		
+	}
+
+	/**
+	 * @param terms
+	 * @param nextLine
+	 * @param termClass
+	 * @param voc
+	 * @param termType
+	 * @param abbrevAsId
+	 * @param classDefiningTermInstance
+	 * @return
+	 */
+	private <T extends DefinedTermBase> T handleSingleTerm(String[] nextLine, Map<UUID,DefinedTermBase> terms,
+			Class<? extends DefinedTermBase> termClass,
+			TermVocabulary<T> voc, boolean abbrevAsId,
+			T classDefiningTermInstance) {
+		T term = (T) classDefiningTermInstance.readCsvLine(termClass,arrayedLine(nextLine), terms, abbrevAsId);
+		term.setTermType(voc.getTermType());
+		voc.addTerm(term);
+		terms.put(term.getUuid(), term);
+		return term;
+	}
+	
+
+	@Override
+	public <T extends DefinedTermBase> Set<T> loadSingleTerms(VocabularyEnum vocType,
+			TermVocabulary<T> voc, Set<UUID> missingTerms) {
+		try {
+			Class<? extends DefinedTermBase> termClass = vocType.getClazz();
+			
+			CSVReader reader = getCsvReader(vocType);
+			String [] nextLine =  reader.readNext();
+			
+			if (! UUID.fromString(nextLine[0]).equals(voc.getUuid())){
+				throw new IllegalStateException("Vocabularies in csv file and vocabulary must be equal");
+			}
+			
+			
+			
+			boolean abbrevAsId = (arrayedLine(nextLine).get(5).equals("1"));
+			T classDefiningTermInstance = getInstance(termClass);// ((Class<T>)termClass).newInstance();
+			Map<UUID,DefinedTermBase> allVocTerms = new HashMap<UUID, DefinedTermBase>();
+			for (T term:voc.getTerms()){
+				allVocTerms.put(term.getUuid(), term);
+			}
+			
+			while ((nextLine = reader.readNext()) != null) {
+				if (nextLine.length == 0){
+					continue;
+				}
+				UUID uuid = UUID.fromString(nextLine[0]);
+				if (missingTerms.contains(uuid)){
+					handleSingleTerm(nextLine, allVocTerms, termClass, voc, abbrevAsId, classDefiningTermInstance);
+				}
+			}
+			
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+	}
+
+	/**
+	 * @param vocType
+	 * @return
+	 * @throws IOException
+	 */
+	private CSVReader getCsvReader(VocabularyEnum vocType) throws IOException {
+		String filename = vocType.name()+".csv";
+		
+		String strResourceFileName = "terms" + CdmUtils.getFolderSeperator() + filename;
+		logger.debug("strResourceFileName is " + strResourceFileName);
+		CSVReader reader = new CSVReader(CdmUtils.getUtf8ResourceReader("terms" + CdmUtils.getFolderSeperator() + filename));
+		return reader;
 	}
 
 	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
@@ -123,4 +224,5 @@ public class TermLoader implements ITermLoader {
 		}
 		return csvTermAttributeList;
 	}
+
 }

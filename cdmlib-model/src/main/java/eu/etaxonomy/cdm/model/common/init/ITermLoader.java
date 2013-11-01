@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.model.common.init;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -33,6 +34,27 @@ public interface ITermLoader {
 	 * will return null.
 	 */
 	public void unloadAllTerms();
+
+	/**
+	 * Loads the {@link UUID}s of all vocabularies and all related terms into the given uuidMap.
+	 * Where the key of the map is the vocabulary uuid and the values are the related term uuids.
+	 * @param vocType vocabulary type
+	 * @param uuidMap the resulting uuid map with the key as vocabulary uuid and the value as set of term uuids
+	 *        belonging to the given vocabulary
+	 */
+	public UUID loadUuids(VocabularyEnum vocType, Map<UUID, Set<UUID>> uuidMap);
+
+	/**
+	 * Loads all terms from term loader for the given vocabulary and with the given term uuids.
+	 * @param vocType VocabularyEnum
+	 * @param voc vocabulary
+	 * @param missingTerms Set of UUIDs for terms to be loaded.
+	 * @return
+	 */
+	public <T extends DefinedTermBase> Set<T> loadSingleTerms(VocabularyEnum vocType, TermVocabulary<T> voc, 
+				Set<UUID> missingTerms);
+
+	
 
 	
 }
