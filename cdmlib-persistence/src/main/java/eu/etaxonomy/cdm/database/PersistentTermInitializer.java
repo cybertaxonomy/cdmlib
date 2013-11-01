@@ -109,7 +109,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
             TransactionStatus txStatus = transactionManager.getTransaction(txDefinition);
            
             //new
-            //load uuids
+            //load uuids from csv files
             logger.info("Start new ... " );
             Map<UUID, Set<UUID>> uuidMap = new HashMap<UUID, Set<UUID>>();
             Map<UUID, VocabularyEnum> vocTypeMap = new HashMap<UUID, VocabularyEnum>();
@@ -146,7 +146,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	                	vocabularyDao.saveOrUpdate(voc);
 	                }
 	            }
-	            secondPass(vocabularyType.getClazz(),vocUuid, terms, vocabularyMap);  //TODO 
+	            initializeAndStore(vocabularyType.getClazz(),vocUuid, terms, vocabularyMap);  //TODO 
         	}
 	            
             //load all persisted vocabularies
@@ -183,7 +183,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
      * 						 loaded terms with their <code>UUID</code> as key
      * @param vocabularyMap 
      */
-    protected void secondPass(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms, Map<UUID, TermVocabulary<?>> vocabularyMap) {
+    protected void initializeAndStore(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms, Map<UUID, TermVocabulary<?>> vocabularyMap) {
         logger.debug("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
 
         TermVocabulary<?> persistedVocabulary;
@@ -195,6 +195,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         
         
         logger.debug("Initializing terms in vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
+        //not really needed anymore as we do term initializing from the beginning now
         if (persistedVocabulary != null){
             for(Object object : persistedVocabulary.getTerms()) {
                 DefinedTermBase<?> definedTermBase = (DefinedTermBase) object;
