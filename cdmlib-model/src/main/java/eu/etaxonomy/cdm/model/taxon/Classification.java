@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -36,7 +35,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.poifs.property.Child;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -80,11 +78,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	@OrderColumn(name="sortIndex")
+	@OrderColumn(name="sortIndex")   //creates problems (#3820) 
 	@OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
-//  @NotNull // avoids creating a UNIQUE key for this field
+//	@NotNull // avoids creating a UNIQUE key for this field
 	private List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
 
 	@XmlElement(name = "reference")
@@ -156,7 +154,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
 	@Override
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
-		return addChildTaxon(taxon, this.rootNodes.size() ,citation, microCitation);
+		return addChildTaxon(taxon, this.rootNodes.size(), citation, microCitation);
 	}
 	
 	@Override
