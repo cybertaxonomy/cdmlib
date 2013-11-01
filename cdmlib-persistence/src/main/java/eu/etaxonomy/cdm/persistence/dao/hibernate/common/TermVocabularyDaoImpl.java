@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -26,9 +24,7 @@ import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 import org.springframework.stereotype.Repository;
 
-import eu.etaxonomy.cdm.hibernate.UUIDUserType;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -240,12 +236,10 @@ public class TermVocabularyDaoImpl extends IdentifiableDaoBase<TermVocabulary> i
 			Map<UUID, Set<UUID>> uuidMissingTermsRepsonse, Map<UUID, TermVocabulary<?>> vocabularyResponse){
 		
 		Set<UUID> missingTermCandidateUuids = new HashSet<UUID>();
-		String uuidsString = "";  //TODO make it a StringBuffer
 		
 		for (Set<UUID> uuidsPerVocSet : uuidsRequested.values()){
 			missingTermCandidateUuids.addAll(uuidsPerVocSet);
 		}
-		uuidsString = uuidsString.substring(1);
 		
  		//search persisted subset of required (usuallay all 
 		String hql = " SELECT terms.uuid " +
