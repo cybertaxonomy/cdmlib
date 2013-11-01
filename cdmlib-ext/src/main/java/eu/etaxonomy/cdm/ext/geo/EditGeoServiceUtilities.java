@@ -324,6 +324,8 @@ public class EditGeoServiceUtilities {
                     if(styleIncrement > 0){
                         // style code has been used before!
                         styleChar = getStyleAbbrev(style + styleIncrement + styleCounter);
+                        //for debugging sometimes failing test  #3831
+                        logger.warn("style: " + style + ", styleIncrement: " +  styleIncrement + ", styleCounter: " + styleCounter);
                         areaStyles.put(style + styleIncrement + styleCounter, areaStyles.get(style));
                     } else {
                         styleChar = getStyleAbbrev(style);
