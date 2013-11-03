@@ -62,19 +62,19 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         indexedClasses[2] = SpecimenDescription.class;
     }
     
-    @Override  //Override for testing
-    public DescriptionBase load(UUID uuid, List<String> propertyPaths){
-    	DescriptionBase bean = findByUuid(uuid);
-        if(bean == null){
-            return bean;
-        }
-        
-        
-        
-        defaultBeanInitializer.initialize(bean, propertyPaths);
-
-        return bean;
-    }
+//    @Override  //Override for testing
+//    public DescriptionBase load(UUID uuid, List<String> propertyPaths){
+//    	DescriptionBase bean = findByUuid(uuid);
+//        if(bean == null){
+//            return bean;
+//        }
+//        
+//        
+//        
+//        defaultBeanInitializer.initialize(bean, propertyPaths);
+//
+//        return bean;
+//    }
 
     @Override
     public int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status) {
