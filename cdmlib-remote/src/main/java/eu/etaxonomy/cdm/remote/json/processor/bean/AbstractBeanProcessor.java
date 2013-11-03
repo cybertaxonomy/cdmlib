@@ -109,8 +109,8 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
         }
 
         JSONObject json =  new JSONObject();
-        Collection exclusions = jsonConfig.getMergedExcludes( bean.getClass() );
-        Set<Class> typeRestrictions = new HashSet<Class>();
+        Collection<?> exclusions = jsonConfig.getMergedExcludes( bean.getClass() );
+        Set<Class<?>> typeRestrictions = new HashSet<Class<?>>();
         typeRestrictions.add(CdmBase.class);
         Set<PropertyDescriptor> props = AbstractBeanInitializer.getProperties(bean, null);
         PropertyFilter jsonPropertyFilter = jsonConfig.getJsonPropertyFilter();
@@ -125,7 +125,7 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
 
             try {
                 // ------ reusing snippet from JSONOnbject._fromBean()
-                Class type = prop.getPropertyType();
+                Class<?> type = prop.getPropertyType();
                 Object value = PropertyUtils.getProperty( bean, key );
 
                 if( jsonPropertyFilter != null && jsonPropertyFilter.apply( bean, key, value ) ){
