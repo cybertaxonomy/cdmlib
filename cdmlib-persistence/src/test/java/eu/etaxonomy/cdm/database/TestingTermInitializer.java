@@ -119,10 +119,8 @@ public class TestingTermInitializer extends PersistentTermInitializer {
             txStatus = transactionManager.getTransaction(txDefinition);
 
             for(VocabularyEnum vocabularyType : VocabularyEnum.values()) {
-                Class<? extends DefinedTermBase<?>> clazz = vocabularyType.getClazz();
-                UUID vocabularyUuid = vocabularyType.getUuid();
-                initializeAndStore(clazz, vocabularyUuid,new HashMap<UUID,DefinedTermBase>(), null);
-            }
+            	initializeAndStore(vocabularyType, new HashMap<UUID,DefinedTermBase>(), null);
+            } 
             transactionManager.commit(txStatus);
             //txStatus = transactionManager.getTransaction(txDefinition);
         }
