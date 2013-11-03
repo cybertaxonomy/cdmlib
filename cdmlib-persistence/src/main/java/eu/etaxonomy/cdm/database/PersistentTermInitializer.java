@@ -145,7 +145,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
 	                	vocabularyDao.saveOrUpdate(voc);
 	                }
 	            }
-	            initializeAndStore(vocabularyType.getClazz(),vocUuid, terms, vocabularyMap);  //TODO 
+	            initializeAndStore(vocabularyType, terms, vocabularyMap);  //TODO 
         	}
            
             transactionManager.commit(txStatus);
@@ -168,8 +168,11 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
      * 						 loaded terms with their <code>UUID</code> as key
      * @param vocabularyMap 
      */
-    protected void initializeAndStore(Class clazz, UUID vocabularyUuid, Map<UUID,DefinedTermBase> terms, Map<UUID, TermVocabulary<?>> vocabularyMap) {
-        logger.debug("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
+    protected void initializeAndStore(VocabularyEnum vocType, Map<UUID,DefinedTermBase> terms, Map<UUID, TermVocabulary<?>> vocabularyMap) {
+    	Class<? extends DefinedTermBase<?>> clazz = vocType.getClazz();
+        UUID vocabularyUuid = vocType.getUuid();
+       
+        if (logger.isDebugEnabled()){ logger.debug("Loading vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );}
 
         TermVocabulary<?> persistedVocabulary;
         if (vocabularyMap == null || vocabularyMap.get(vocabularyUuid) == null ){
@@ -178,8 +181,7 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         	persistedVocabulary = vocabularyMap.get(vocabularyUuid);
         }
         
-        
-        logger.debug("Initializing terms in vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );
+        if (logger.isDebugEnabled()){ logger.debug("Initializing terms in vocabulary for class " + clazz.getSimpleName() + " with uuid " + vocabularyUuid );}
         //not really needed anymore as we do term initializing from the beginning now
         if (persistedVocabulary != null){
             for(Object object : persistedVocabulary.getTerms()) {
@@ -197,9 +199,9 @@ public class PersistentTermInitializer extends DefaultTermInitializer {
         
         
         //fill term store
-        logger.debug("Setting defined Terms for class " + clazz.getSimpleName() + ", " + persistedVocabulary.getTerms().size() + " in vocabulary");
+        if (logger.isDebugEnabled()){ logger.debug("Setting defined Terms for class " + clazz.getSimpleName() + ", " + persistedVocabulary.getTerms().size() + " in vocabulary");}
         super.setDefinedTerms(clazz, persistedVocabulary);
-        logger.debug("Second pass - DONE");
+        if (logger.isDebugEnabled()){ logger.debug("Second pass - DONE");}
 
     }
 
