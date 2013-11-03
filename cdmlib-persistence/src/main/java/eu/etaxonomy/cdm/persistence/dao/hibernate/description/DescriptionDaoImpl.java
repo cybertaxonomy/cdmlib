@@ -68,9 +68,6 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 //        if(bean == null){
 //            return bean;
 //        }
-//        
-//        
-//        
 //        defaultBeanInitializer.initialize(bean, propertyPaths);
 //
 //        return bean;
