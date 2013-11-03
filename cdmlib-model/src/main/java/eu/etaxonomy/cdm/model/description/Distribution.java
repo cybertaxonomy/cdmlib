@@ -238,7 +238,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     public String toString(){
         String result = "null";
         if (this.area != null){
-            result = area.getLabel().toString();
+            result = area.getTitleCache();
         }
         return result;
     }
