@@ -65,7 +65,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 
 		// query = getSession().createQuery(
 		// "select count(distinct(r.id, desc.id)) from DescriptionBase as d "
-		// + "join d.descriptionElements as de "
+		// + "join d.elements as de "
 		// + "join de.sources as des "
 		// + "join des.citation as desc "
 		// + "join d.descriptionSources as r "
@@ -116,7 +116,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// queryStrings
 	// .add("select distinct des.citation.id from TaxonNode as tn "
 	// + "join tn.taxon.descriptions as d "
-	// + "join d.descriptionElements as de "
+	// + "join d.elements as de "
 	// + "join de.sources as des "
 	// + "where tn.classification=:classification "
 	// + "and des.citation is not null ");
@@ -126,7 +126,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// // TaxonNameBase description elements for taxa:
 	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
 	// + "join tn.taxon.name.descriptions as d "
-	// + "join d.descriptionElements as de "
+	// + "join d.elements as de "
 	// + "join de.sources as des "
 	// + "where tn.classification=:classification "
 	// + "and tn.taxon is not null "
@@ -138,7 +138,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// + "join tn.taxon.synonymRelations as syr "
 	// + "join syr.relatedFrom as sy "
 	// + "join sy.name.descriptions as d "
-	// + "join d.descriptionElements as de "
+	// + "join d.elements as de "
 	// + "join de.sources as des "
 	// + "where tn.classification=:classification "
 	// + "and des.citation is not null " + "and sy is not null " // TODO:
@@ -155,7 +155,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// .add("select distinct des.citation.id from DescriptionBase db, TaxonNode tn "
 	// + "join db.describedSpecimenOrObservation as so "
 	// + "join so.determinations as det "
-	// + "join db.descriptionElements as de "
+	// + "join db.elements as de "
 	// + "join de.sources as des "
 	// + "where tn.classification=:classification "
 	// + "and tn.taxon=det.taxon ");
@@ -168,7 +168,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// queryStrings.add("select distinct des.citation.id from TaxonNode tn "
 	// + " join tn.taxon.name.typeDesignations as tdes "
 	// + "join tdes.typeSpecimen.descriptions as d "
-	// + "join d.descriptionElements as de "
+	// + "join d.elements as de "
 	// + "join de.sources as des "
 	// + "where tn.classification=:classification "
 	// + "and tdes.class=:type " + "and tn.taxon is not null "
@@ -184,7 +184,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 	// + "join syr.relatedFrom as sy "
 	// + " join sy.name.typeDesignations as tdes "
 	// + "join tdes.typeSpecimen.descriptions as d "
-	// + "join d.descriptionElements as de "
+	// + "join d.elements as de "
 	// + "join de.sources as des "
 	// + "where tn.classification=:classification "
 	// + "and tdes.class=:type " + "and tn.taxon is not null "
@@ -206,7 +206,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		String selection = "d.id ";
 
 		if (sourceReferences) {
-			sourceRefJoins = "join d.descriptionElements as de "
+			sourceRefJoins = "join d.elements as de "
 					+ "join de.sources as des ";
 			sourceRefWhere = "and des.citation is not null ";
 			selection = "des.citation.id ";
@@ -584,7 +584,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 		queryStrings
 				.add("select distinct cit.id from TaxonNode tn "
 						+ "join tn.taxon.descriptions as db "
-						+ "join db.descriptionElements as ia "
+						+ "join db.elements as ia "
 						+ "join ia.associatedSpecimenOrObservation as so "
 						+ "join so.sequences as seq "
 						+ "join seq.citations as cit "
@@ -619,7 +619,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 //
 //		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
 //				+ "join tn.taxon.descriptions as db "
-//				+ "join db.descriptionElements as ia "
+//				+ "join db.elements as ia "
 //				+ "join ia.associatedSpecimenOrObservation as so "
 //				+ "join so.sequences as seq " 
 //				+ "join seq.chromatograms as me "
@@ -635,7 +635,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 //		// Taxa:
 //		queryStrings.add("select distinct me.citation.id from TaxonNode tn "
 //				+ "join tn.taxon.name.descriptions as d "
-//				+ "join d.descriptionElements as de "
+//				+ "join d.elements as de "
 //				+ "join de.media as me "
 //				+ "where tn.classification=:classification "
 //				+ "and tn.taxon.name is not null "
@@ -648,7 +648,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 //				+ "join tn.taxon.synonymRelations as syr "
 //				+ "join syr.relatedFrom as sy "
 //				+ "join sy.name.descriptions as d "
-//				+ "join d.descriptionElements as de "
+//				+ "join d.elements as de "
 //				+ "join de.media as me "
 //				+ "where tn.classification=:classification "
 //				+ "and sy.name is not null "
@@ -666,7 +666,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 //		// from description element
 //		queryStrings.add("select distinct me.citation.id from TaxonNode as tn "
 //				+ "join tn.taxon.descriptions as d "
-//				+ "join d.descriptionElements as de " 
+//				+ "join d.elements as de " 
 //				+ "join de.media as me "
 //				+ "where tn.classification=:classification "
 //				+ "and me.class=:referencedMediaBase "
@@ -682,7 +682,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 //				.add("select distinct de.area.shape.citation.id, me1.citation.id, "
 //						+ "me2.citation.id, me3.citation.id from TaxonNode as tn "
 //						+ "join tn.taxon.descriptions as d "
-//						+ "join d.descriptionElements as de "
+//						+ "join d.elements as de "
 //						+ "join de.area.media as me1 "
 //						+ "join de.area.waterbodiesOrCountries as wboc "
 //						+ "join wboc.media as me2 "
@@ -747,7 +747,7 @@ public class StatisticsDaoHibernateImpl extends DaoBase implements
 //				.add("select fo.gatheringEvent.country.shape.citation.id, ca.shape.citation.id "
 //						+ "from TaxonNode tn "
 //						+ "join tn.taxon.descriptions as db "
-//						+ "join db.descriptionElements as ia "
+//						+ "join db.elements as ia "
 //						+ "join ia.associatedSpecimenOrObservation as fo "
 //						+ "join fo.gatheringEvent.collectingAreas as ca "
 //						+ "where fo.class=:fieldObservation "

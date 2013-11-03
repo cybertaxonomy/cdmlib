@@ -61,6 +61,20 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         indexedClasses[1] = TaxonNameDescription.class;
         indexedClasses[2] = SpecimenDescription.class;
     }
+    
+    @Override  //Override for testing
+    public DescriptionBase load(UUID uuid, List<String> propertyPaths){
+    	DescriptionBase bean = findByUuid(uuid);
+        if(bean == null){
+            return bean;
+        }
+        
+        
+        
+        defaultBeanInitializer.initialize(bean, propertyPaths);
+
+        return bean;
+    }
 
     @Override
     public int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status) {
@@ -68,9 +82,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         Query query = null;
 
         if(status == null) {
-            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area where area in (:namedAreas)");
+            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.elements element join element.area area where area in (:namedAreas)");
         } else {
-            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.descriptionElements element join element.area area  join element.status status where area in (:namedAreas) and status = :status");
+            query = getSession().createQuery("select count(distinct description) from TaxonDescription description left join description.elements element join element.area area  join element.status status where area in (:namedAreas) and status = :status");
             query.setParameter("status", status);
         }
         query.setParameterList("namedAreas", namedAreas);
@@ -167,7 +181,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             inner = getSession().createCriteria(clazz);
         }
 
-        Criteria elementsCriteria = inner.createCriteria("descriptionElements");
+        Criteria elementsCriteria = inner.createCriteria("elements");
         if(hasText != null) {
             if(hasText) {
                 elementsCriteria.add(Restrictions.isNotEmpty("multilanguageText"));
@@ -509,7 +523,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             inner = getSession().createCriteria(clazz);
         }
 
-        Criteria elementsCriteria = inner.createCriteria("descriptionElements");
+        Criteria elementsCriteria = inner.createCriteria("elements");
         if(hasText != null) {
             if(hasText) {
                 elementsCriteria.add(Restrictions.isNotEmpty("multilanguageText"));
@@ -571,7 +585,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         checkNotInPriorView("DescriptionDaoImpl.searchDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)");
 
         Criteria criteria = getSession().createCriteria(TaxonDescription.class);
-        Criteria elements = criteria.createCriteria("descriptionElements", "descriptionElement", Criteria.LEFT_JOIN);
+        Criteria elements = criteria.createCriteria("elements", "element", Criteria.LEFT_JOIN);
         elements.add(Restrictions.in("area", namedAreas.toArray()));
 
         if(status != null) {
@@ -657,17 +671,17 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
             propertyPaths.add("updatedBy");
             propertyPaths.add("taxon");
             propertyPaths.add("taxonName");
-            propertyPaths.add("descriptionElements");
-            propertyPaths.add("descriptionElements.createdBy");
-            propertyPaths.add("descriptionElements.updatedBy");
-            propertyPaths.add("descriptionElements.feature");
-            propertyPaths.add("descriptionElements.multilanguageText");
-            propertyPaths.add("descriptionElements.multilanguageText.language");
-            propertyPaths.add("descriptionElements.area");
-            propertyPaths.add("descriptionElements.status");
-            propertyPaths.add("descriptionElements.modifyingText");
-            propertyPaths.add("descriptionElementsmodifyingText.language");
-            propertyPaths.add("descriptionElements.modifiers");
+            propertyPaths.add("elements");
+            propertyPaths.add("elements.createdBy");
+            propertyPaths.add("elements.updatedBy");
+            propertyPaths.add("elements.feature");
+            propertyPaths.add("elements.multilanguageText");
+            propertyPaths.add("elements.multilanguageText.language");
+            propertyPaths.add("elements.area");
+            propertyPaths.add("elements.status");
+            propertyPaths.add("elements.modifyingText");
+            propertyPaths.add("elements.modifyingText.language");
+            propertyPaths.add("elements.modifiers");
 
             defaultBeanInitializer.initialize(descriptionBase, propertyPaths);
         }
@@ -719,7 +733,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         }
         String queryString = "select " + listOrCount +
             " from TaxonDescription as td" +
-            " left join td.descriptionElements as de" +
+            " left join td.elements as de" +
             " where td.taxon = :taxon ";
 
         if(type != null){

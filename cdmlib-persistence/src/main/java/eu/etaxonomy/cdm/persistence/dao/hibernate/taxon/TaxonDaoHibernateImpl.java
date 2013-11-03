@@ -835,7 +835,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         String hql= "from Taxon t " +
         "join t.descriptions d "+
-        "join d.descriptionElements e " +
+        "join d.elements e " +
         "join e.feature f " +
         "where f.supportsCommonTaxonName = true and e.name "+matchMode.getMatchOperator()+" :queryString";//and ls.text like 'common%'";
 

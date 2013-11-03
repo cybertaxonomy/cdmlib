@@ -124,7 +124,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
     @OneToMany(fetch=FetchType.LAZY, mappedBy = "inDescription", orphanRemoval=true)
     @Cascade( { CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @ContainedIn
-    private Set<DescriptionElementBase> descriptionElements = new HashSet<DescriptionElementBase>();
+    private Set<DescriptionElementBase> elements = new HashSet<DescriptionElementBase>();
 
     @XmlElement(name = "ImageGallery")
     private boolean imageGallery;
@@ -206,7 +206,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see    #removeElement(DescriptionElementBase)
      */
     public Set<DescriptionElementBase> getElements() {
-        return this.descriptionElements;
+        return this.elements;
     }
     
     /**
@@ -224,7 +224,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             element.getInDescription().removeElement(element);
         }
         element.setInDescription(this);
-        this.descriptionElements.add(element);
+        this.elements.add(element);
     }
 
     /**
@@ -236,7 +236,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @see     		#addElement(DescriptionElementBase)
      */
     public void removeElement(DescriptionElementBase element) {
-        this.descriptionElements.remove(element);
+        this.elements.remove(element);
         element.setInDescription(null);
     }
 
@@ -249,7 +249,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
      * @return	the number of elements of the elementary description data set
      */
     public int size(){
-        return this.descriptionElements.size();
+        return this.elements.size();
     }
 
     /**
@@ -341,7 +341,7 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
             }
 
             //elements
-            result.descriptionElements = new HashSet<DescriptionElementBase>();
+            result.elements = new HashSet<DescriptionElementBase>();
             for (DescriptionElementBase element : getElements()){
                 DescriptionElementBase newElement = (DescriptionElementBase)element.clone();
                 result.addElement(newElement);
