@@ -39,9 +39,9 @@ public class DescriptionTest {
 			
 			TaxonDescription taxonDescription = taxon.getDescriptions().iterator().next();
 			
-			assertNotNull("TaxonDescription.elements must not be null",taxonDescription.getElements());
-			assertFalse("TaxonDescription.elements must not be empty",taxonDescription.getElements().isEmpty());
-			assertEquals("TaxonDescription.elements should contain one DescriptionElement",1,taxonDescription.getElements().size());
+			assertNotNull("TaxonDescription.descriptionElements must not be null",taxonDescription.getElements());
+			assertFalse("TaxonDescription.descriptionElements must not be empty",taxonDescription.getElements().isEmpty());
+			assertEquals("TaxonDescription.descriptionElements should contain one DescriptionElement",1,taxonDescription.getElements().size());
 			
 			TextData textData = (TextData)taxonDescription.getElements().iterator().next();
 			assertEquals("TaxonDescription should equal TextData.inDescription",taxonDescription,textData.getInDescription());	
