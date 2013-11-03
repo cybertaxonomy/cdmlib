@@ -55,8 +55,6 @@ public interface ISourceable<T extends IOriginalSource> {
      * @param idNamespace the namespace for the id in the source
      * @param citation the source as a {@link Reference reference}
      * @param microReference the details (e.g. page number) in the reference
-     * @param nameUsedInSource the taxon name used in the source
-     * @param originalNameString the name as text used in the source
      */
 	public T addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation);
 
