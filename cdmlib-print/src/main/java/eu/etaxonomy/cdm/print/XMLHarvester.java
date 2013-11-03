@@ -429,7 +429,7 @@ public class XMLHarvester {
 				
 				descriptionElementElement.removeChild("feature"); 
 				descriptionElementElement.setName("descriptionelement");
-				XMLHelper.addContent(descriptionElementElement, "elements", feature);
+				XMLHelper.addContent(descriptionElementElement, "descriptionelements", feature);
 				
 			}
 			XMLHelper.addContent(feature, parentFeatureElement);
@@ -480,7 +480,7 @@ public class XMLHarvester {
 			for(Element descriptionElementElement : descriptionElementElements){
 				descriptionElementElement.removeChild("feature");
 				descriptionElementElement.setName("descriptionelement");
-				XMLHelper.addContent(descriptionElementElement, "elements", feature);
+				XMLHelper.addContent(descriptionElementElement, "descriptionelements", feature);
 			}
 		}
 		
