@@ -192,13 +192,13 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 			// TaxonDescription
 			"left join t.descriptions td " +
 			"left join td.descriptionSources td_s " +
-			"left join td.elements td_e " +
+			"left join td.descriptionElements td_e " +
 			"left join td_e.sources td_e_s " +
 			// TaxonNameDescription
 			"left join t.name n " +
 			"left join n.descriptions nd " +
 			"left join nd.descriptionSources nd_s " +
-			"left join nd.elements nd_e " +
+			"left join nd.descriptionElements nd_e " +
 			"left join nd_e.sources nd_e_s " +
 
 			"where td_e_s.citation in (:referenceBase_1) " +
