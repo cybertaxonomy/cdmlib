@@ -187,7 +187,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         return service.findTaxaAndNamesByFullText(searchModes, query,
                 classification, areaSet, status, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                null, initializationStrategy);
+                OrderHint.NOMENCLATURAL_SORT_ORDER, initializationStrategy);
     }
 
     /**
@@ -358,7 +358,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         }
 
         Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, languages,
-                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), OrderHint.NOMENCLATURAL_SORT_ORDER,
+                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), (List<OrderHint>  null),
                 initializationStrategy);
         return pager;
     }
