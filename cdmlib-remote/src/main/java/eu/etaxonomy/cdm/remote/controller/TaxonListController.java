@@ -358,7 +358,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         }
 
         Pager<SearchResult<TaxonBase>> pager = service.findByFullText(clazz, queryString, classification, languages,
-                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), (List<OrderHint>  null),
+                highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)  null),
                 initializationStrategy);
         return pager;
     }

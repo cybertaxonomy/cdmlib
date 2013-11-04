@@ -15,6 +15,7 @@ import static org.junit.Assert.assertTrue;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.URI;
@@ -36,8 +37,10 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.StreamUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
@@ -49,13 +52,13 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
-import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
  * @author a.mueller
  * @created 08.10.2008
  */
-public class EditGeoServiceTest extends CdmIntegrationTest {
+public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     private static final Logger logger = Logger.getLogger(EditGeoServiceTest.class);
 
     private static final String EDIT_MAPSERVICE_URI_STING = "http://edit.africamuseum.be/edit_wp5/v1.2/rest_gen.php";
@@ -68,8 +71,13 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
     private ITermService termService;
 
     @SpringBeanByType
+    private IVocabularyService vocabService;
+
+    @SpringBeanByType
     private GeoServiceAreaAnnotatedMapping mapping;
 
+    @SpringBeanByType
+    private IEditGeoService editGeoService;
 //
 //	/**
 //	 * @throws java.lang.Exception
@@ -192,15 +200,18 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
     public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
     private final Map<String, NamedArea> divisions = new HashMap<String, NamedArea>();
 
-    private boolean makeCyprusAreas() {
+    private boolean makeCyprusAreas() throws IOException {
         //divisions
 
 
         NamedAreaType areaType = NamedAreaType.NATURAL_AREA();
         NamedAreaLevel areaLevel = NamedAreaLevel.NewInstance("Cyprus Division", "Cyprus Division", null);
 
+        termService.saveOrUpdate(areaLevel);
+
         TermVocabulary<NamedArea> areaVocabulary = TermVocabulary.NewInstance(TermType.NamedArea, "Cyprus devisions", "Cyprus divisions", null, null);
         areaVocabulary.setUuid(uuidCyprusDivisionsVocabulary);
+
 
         for(int i = 1; i <= 8; i++){
             UUID divisionUuid = getNamedAreaUuid(String.valueOf(i));
@@ -214,6 +225,24 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
                     areaVocabulary);
             divisions.put(String.valueOf(i), division);
         }
+
+        vocabService.saveOrUpdate(areaVocabulary);
+        commitAndStartNewTransaction(null);
+
+
+        // import and map shapefile attributes from csv
+        InputStream is = getClass().getClassLoader().getResourceAsStream("eu/etaxonomy/cdm/ext/geo/cyprusdivs.csv");
+        List<String> idSearchFields = new ArrayList<String>();
+        idSearchFields.add("bdcode");
+        String wmsLayerName = "cyprusdivs";
+        editGeoService.mapShapeFileToNamedAreas(new InputStreamReader(is), idSearchFields, wmsLayerName, uuidCyprusDivisionsVocabulary, null);
+
+        divisions.clear();
+        Set<DefinedTermBase> terms = vocabService.load(uuidCyprusDivisionsVocabulary).getTerms();
+        for(DefinedTermBase dtb : terms){
+            divisions.put(dtb.getIdInVocabulary(), (NamedArea) dtb);
+        }
+
 
 //		indigenousStatus = (PresenceTerm)getTermService().find(CyprusTransformer.indigenousUuid);
 //		casualStatus = (PresenceTerm)getTermService().find(CyprusTransformer.casualUuid);
