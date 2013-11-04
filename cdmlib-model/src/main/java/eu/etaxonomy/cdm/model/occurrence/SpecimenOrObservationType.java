@@ -27,21 +27,21 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 
 
 /**
- * The specimen or observation type is used to define what a {@link SpecimenOrObservationBase specimen or observation} 
- * instance describes, may it be a {@link FieldUnit field unit} or a 
+ * The specimen or observation type is used to define what a {@link SpecimenOrObservationBase specimen or observation}
+ * instance describes, may it be a {@link FieldUnit field unit} or a
  * {@link DerivedUnit derived unit}.<BR>
  * The vocabulary used derives mainly from the according vocabularies in ABCD, Darwin Core as well
  * as from the former (before v3.3) CDM subclasses of {@link SpecimenOrObservationBase}.
  * <BR><BR>
- * In future versions this enum may also be expressed as a term, not an enum. For now the general policy is to 
+ * In future versions this enum may also be expressed as a term, not an enum. For now the general policy is to
  * transform former classes to general classes with enums as their types.
- * 
+ *
  * @author a.mueller
  * @created 27.06.2013
  */
 @XmlEnum
 public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservationType>, Serializable{
-	
+
 	//0
 	/**
 	 * Unknown specimen or observation the type to be used if no information is available about the type.
@@ -55,11 +55,11 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	/**
 	 * Generalization for all specimen or observation except for FieldUnits. One should use DerivedUnit
 	 * only if no further specialization is available.
-	 * Derived from the former (before v3.3.) CDM class "DerivedUnit".  
+	 * Derived from the former (before v3.3.) CDM class "DerivedUnit".
 	 */
 	@XmlEnumValue("DerivedUnit")
 	DerivedUnit(UUID.fromString("da80443a-360b-4861-abeb-21e13beb5186"), "Derived Unit", "DU", null),
-	
+
 	//1
 	/**
 	 * A physical object representing one or more organisms, part of organism, or artifact(s) of an organism.
@@ -67,10 +67,10 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 */
 	@XmlEnumValue("PreservedSpecimen")
 	PreservedSpecimen(UUID.fromString("95cd9246-4131-444f-ad2f-3b24ca294a1f"), "Preserved Specimen", "PS", DerivedUnit),
-	
+
 	//2
 	/**
-	 * Specialization of PreservedSpecimen, indicating that a specimen is a fossil or is derived 
+	 * Specialization of PreservedSpecimen, indicating that a specimen is a fossil or is derived
 	 * from a fossil.
 	 * Specialization of {@link SpecimenOrObservationType#PreservedSpecimen}.
 	 */
@@ -88,7 +88,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	//4
 	/**
 	 * All specimen types not covered by existing types.
-	 * Specialization of {@link SpecimenOrObservationType#DerivedUnit}.  
+	 * Specialization of {@link SpecimenOrObservationType#DerivedUnit}.
 	 */
 	//TODO does ABCD allow to use this also for Observations?
 	@XmlEnumValue("OtherSpecimen")
@@ -143,7 +143,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	@XmlEnumValue("Media")
 	Media(UUID.fromString("0efa6b3e-e67a-49d4-a758-f3fc688901a7"), "Media", "ME", null),
 
-	
+
 	//10
 	/**
 	 * A photograph, drawing, painting or similar.
@@ -154,7 +154,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 
 	//11
 	/**
-	 * A sequence of still images taken at regular intervals and intended to be played back as a moving image; 
+	 * A sequence of still images taken at regular intervals and intended to be played back as a moving image;
 	 * may include sound.
 	 * Specialization of {@link SpecimenOrObservationType#Media}.
 	 */
@@ -167,7 +167,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 * Specialization of {@link SpecimenOrObservationType#Media}.
 	 */
 	@XmlEnumValue("SoundRecording")
-	SoundRecording(UUID.fromString("2a39ec19-4aae-4b74-bc5c-578c5dc94e7d"), "Moving Image", "SR", Media),
+	SoundRecording(UUID.fromString("2a39ec19-4aae-4b74-bc5c-578c5dc94e7d"), "Sound Recording", "SR", Media),
 
 	//13
 	/**
@@ -176,48 +176,48 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	 */
 	@XmlEnumValue("Multimedia")
 	Multimedia(UUID.fromString("bfe3fef8-d294-4554-847a-c9d8a6b74313"), "Multimedia Object", "MM", Media),
-	
+
 	//14
 	/**
 	 * Type for all field data belonging to a particular object or observation or a set of these.
 	 * Derived from the former (before v3.3 CDM class "FieldUnit".
 	 */
-	//TODO do we really need an own type for FieldUnit or is this covered by any of the other 
+	//TODO do we really need an own type for FieldUnit or is this covered by any of the other
 	//types (e.g. Observation)
 	@XmlEnumValue("FieldUnit")
-	FieldUnit(UUID.fromString("d38d22db-17f9-45ba-a32f-32393788726f"), "Field Unit", "FU", null),	
+	FieldUnit(UUID.fromString("d38d22db-17f9-45ba-a32f-32393788726f"), "Field Unit", "FU", null),
 	;
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationType.class);
 
-	
+
 	private SpecimenOrObservationType(UUID uuid, String defaultString, String key){
 		this(uuid, defaultString, key, null);
 		System.out.println("SpecimenOrObservationType hierarchie not yet fully implemented");
 	}
-	
+
 	private SpecimenOrObservationType(UUID uuid, String defaultString, String key, SpecimenOrObservationType parent){
 		delegateVocTerm = EnumeratedTermVoc.addTerm(getClass(), this, uuid, defaultString, key, parent);
 	}
 
-	
+
 	/**
 	 * Returns <code>true</code>, if it seems to make sense to use the {@link Feature feature}
-	 * {@link Feature#OBSERVATION() observation} for creating an {@link IndividualsAssociation individuals association}. 
+	 * {@link Feature#OBSERVATION() observation} for creating an {@link IndividualsAssociation individuals association}.
 	 */
 	public boolean isFeatureObservation() {
-		if (this == Observation || this == HumanObservation || this == MachineObservation 
+		if (this == Observation || this == HumanObservation || this == MachineObservation
 			){
 			return true;
 		}else{
 			return false;
 		}
 	}
-	
+
 	/**
 	 * Returns <code>true</code>, if it seems to make sense to use the {@link Feature feature}
-	 * {@link Feature#SPECIMEN() specimen} for creating an {@link IndividualsAssociation individuals association}. 
+	 * {@link Feature#SPECIMEN() specimen} for creating an {@link IndividualsAssociation individuals association}.
 	 */
 	public boolean isFeatureSpecimen() {
 		if (isPreservedSpecimen() || this == LivingSpecimen || this == SpecimenOrObservationType.OtherSpecimen
@@ -227,22 +227,22 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 			return false;
 		}
 	}
-	
+
 	/**
 	 * @return true if this type represents a preserved specimen or one of its specializations.
 	 */
 	public boolean isPreservedSpecimen() {
 //		if (this == PreservedSpecimen || this == Fossil
-		if (isKindOf(PreservedSpecimen) || this == PreservedSpecimen 
+		if (isKindOf(PreservedSpecimen) || this == PreservedSpecimen
 			){
 			return true;
 		}else{
 			return false;
 		}
 	}
-	
+
 	/**
-	 * Any field unit. 
+	 * Any field unit.
 	 * @return
 	 */
 	public boolean isFieldUnit() {
@@ -260,7 +260,7 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 	public boolean isAnyDerivedUnit() {
 		return ! isFieldUnit();
 	}
-	
+
 	/**
 	 * Any Media, may it be images, movies, sound recordings or multi media objects
 	 * @return
@@ -271,13 +271,13 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 		}else{
 			return false;
 		}
-	}	
+	}
 
 	/**
 	 * This method was initially created in the former class
 	 * "DerivedUnitFacade.DerivedUnitType" for some specimen imports .
 	 * It may be extended in future. However, it may also be decoupled from
-	 * SpecimenOrObservationType to serve different use-cases. 
+	 * SpecimenOrObservationType to serve different use-cases.
 	 * @param type
 	 * @return
 	 */
@@ -307,32 +307,32 @@ public enum SpecimenOrObservationType implements IEnumTerm<SpecimenOrObservation
 		}
 		return null;
 	}
-	
-	// *************************** DELEGATE **************************************/	
-	
+
+	// *************************** DELEGATE **************************************/
+
 		private static EnumeratedTermVoc<SpecimenOrObservationType> delegateVoc;
 		private IEnumTerm<SpecimenOrObservationType> delegateVocTerm;
 
 		static {
 			delegateVoc = EnumeratedTermVoc.getVoc(SpecimenOrObservationType.class);
 		}
-		
+
 		@Override
 		public String getKey(){return delegateVocTerm.getKey();}
-		
+
 		@Override
 	    public String getMessage(){return delegateVocTerm.getMessage();}
 
 		@Override
 	    public String getMessage(Language language){return delegateVocTerm.getMessage(language);}
 
-			
+
 		@Override
 	    public UUID getUuid() {return delegateVocTerm.getUuid();}
 
 		@Override
 	    public SpecimenOrObservationType getKindOf() {return delegateVocTerm.getKindOf();}
-		
+
 		@Override
 	    public Set<SpecimenOrObservationType> getGeneralizationOf() {return delegateVocTerm.getGeneralizationOf();}
 
