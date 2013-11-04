@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Transient;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -93,10 +95,8 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      */
     public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
 
-        if(logger.isDebugEnabled()){
-            logger.debug(">> starting initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName());
-        }
-        Set<Class> restrictions = new HashSet<Class>();
+        if(logger.isDebugEnabled()){logger.debug(">> starting wildcard initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName()); }
+        Set<Class<?>> restrictions = new HashSet<Class<?>>();
         if(cdmEntities){
             restrictions.add(CdmBase.class);
         }
@@ -383,33 +383,32 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param typeRestrictions
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class> typeRestrictions) {
+    public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class<?>> typeRestrictions) {
 
         Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();
-        PropertyDescriptor[] prop = PropertyUtils.getPropertyDescriptors(bean);
+        PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(bean);
 
-        for (int i = 0; i < prop.length; i++) {
+        for (PropertyDescriptor prop : props) {
             //String propName = prop[i].getName();
 
             // only read methods & skip transient getters
-            if( prop[i].getReadMethod() != null ){
+            if( prop.getReadMethod() != null ){
                   try{
-                     Class transientClass = Class.forName( "javax.persistence.Transient" );
-                     if( prop[i].getReadMethod().getAnnotation( transientClass ) != null ){
+                     Class<Transient> transientClass = (Class<Transient>)Class.forName( "javax.persistence.Transient" );
+                     if( prop.getReadMethod().getAnnotation( transientClass ) != null ){
                         continue;
                      }
                   }catch( ClassNotFoundException cnfe ){
                      // ignore
                   }
                   if(typeRestrictions != null && typeRestrictions.size() > 1){
-                      for(Class type : typeRestrictions){
-                          if(type.isAssignableFrom(prop[i].getPropertyType())){
-                              properties.add(prop[i]);
+                      for(Class<?> restrictedType : typeRestrictions){
+                          if(restrictedType.isAssignableFrom(prop.getPropertyType())){
+                              properties.add(prop);
                           }
                       }
                   } else {
-                      properties.add(prop[i]);
+                      properties.add(prop);
                   }
             }
         }

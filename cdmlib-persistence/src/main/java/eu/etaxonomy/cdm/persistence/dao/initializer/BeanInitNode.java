@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -12,6 +13,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 
 /**
@@ -20,6 +23,8 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  */
 public class BeanInitNode implements Comparable<BeanInitNode>{
 
+	// ************************ ATTRIBUTES *******************************/
+	
 	private BeanInitNode parent;
 	
 	private Map<String, BeanInitNode> children = new HashMap<String, BeanInitNode>();
@@ -30,29 +35,17 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	
 	private boolean isToOneInitialized = false;
 	
+	private BeanInitNode wildcardChildCache;
+	
+	
 	private  Map<Class<?>, Set<Object>> beans = new HashMap<Class<?>, Set<Object>>();
 
+	private  Map<Class<?>, Set<Serializable>> lazyBeans = new HashMap<Class<?>, Set<Serializable>>();
 	
+	private  Map<Class<?>, Map<String, Set<Serializable>>> lazyCollections = new HashMap<Class<?>, Map<String,Set<Serializable>>>();
 	
-	public BeanInitNode(BeanInitNode parent, String part) {
-		this.path = CdmUtils.Nz(part);
-		this.parent = parent;
-		if (parent != null){
-			parent.addChild(part, this);
-		}
-	}
-
-	private void addChild(String part, BeanInitNode child) {
-		children.put(part, child);
-		if (child.isWildcard()){
-			if (part.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD)){
-				this.isToManyInitialized = true;
-			}
-			this.isToOneInitialized = true;
-		}
-	}
-
-
+// *************************** STATIC METHODS *****************************************/
+	
 	public static BeanInitNode createInitTree(List<String> propertyPaths) {
 		
 		//sort paths  //TODO needed?
@@ -74,6 +67,41 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		 
 		return root;
 	}
+	
+	private static boolean isWildcard(String pathPart) {
+		return pathPart.equals(AbstractBeanInitializer.LOAD_2ONE_WILDCARD) || 
+				pathPart.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD);
+	}
+
+
+//***************************** CONSTRUCTOR RELATED ****************************************/	
+	
+	public BeanInitNode(BeanInitNode parent, String part) {
+		this.path = CdmUtils.Nz(part);
+		this.parent = parent;
+		this.isToManyInitialized = this.path.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD);
+		this.isToOneInitialized = this.path.equals(AbstractBeanInitializer.LOAD_2ONE_WILDCARD) || this.isToManyInitialized;
+		if (parent != null){
+			parent.addChild(part, this);
+		}
+	}
+
+	private void addChild(String part, BeanInitNode child) {
+		children.put(part, child);
+		if (child.isWildcard()){
+			//set wildcard child if not exists or if child is stronger then existing wildcard child 
+			if (this.wildcardChildCache == null || (! this.wildcardChildCache.isToManyInitialized) && child.isToManyInitialized ){
+				this.wildcardChildCache = child;
+			}
+		}
+	}
+	
+// ************************** 	***********************************************************/
+	
+	public BeanInitNode getChild(String param){
+		return children.get(param);
+	}
+
 
 
 	public List<BeanInitNode> getChildrenList() {
@@ -81,17 +109,136 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		Collections.sort(result);
 		return result;
 	}
+	
+	public BeanInitNode getSibling(String param) {
+		if (parent == null){
+			return null;
+		}else{
+			return parent.getChild(param);
+		}
+	}
+	
+	public String getPath() {
+		return path;
+	}
+	
+	public boolean isRoot() {
+		return StringUtils.isBlank(path);
+	}
+
+	public boolean hasChildren() {
+		return children.size() > 0;
+	}
+
+	public BeanInitNode getWildcardChild(){
+		return this.wildcardChildCache;
+	}
+	public boolean isWildcard() {
+		return this.isToManyInitialized || this.isToOneInitialized;
+	}
+	public boolean hasWildcardChild() {
+		return this.wildcardChildCache != null;
+	}
+	public boolean hasToManyWildcardChild() {
+		return this.wildcardChildCache != null;
+	}
+
+	public boolean hasWildcardToManySibling() {
+		BeanInitNode sibl = getWildcardSibling();
+		return (sibl != null && sibl.isToManyInitialized);
+	}
+
+	private BeanInitNode getWildcardSibling() {
+		if (!isWildcard() && parent == null){
+			return parent.getWildcardChild();
+		}else{
+			return null;
+		}
+	}
+
+	
+	public boolean isToManyWildcard() {
+		return path.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD);
+	}
 
 
-	public void addBean(Object bean) {
-		if (bean != null){
-			Class<?> key = bean.getClass();
-			Set<Object> classedBeans = beans.get(key);
-			if (classedBeans == null){
-				classedBeans = new HashSet<Object>();
-				beans.put(key, classedBeans);
+// ******************* LAZY COLLECTION *****************************************/
+	public void putLazyCollection(Class<?> ownerClazz, String parameter, Serializable id) {
+		if (ownerClazz != null && parameter != null && id != null){
+			Map<String, Set<Serializable>> lazyParams = lazyCollections.get(ownerClazz);
+			if (lazyParams == null){
+				lazyParams = new HashMap<String, Set<Serializable>>();
+				lazyCollections.put(ownerClazz, lazyParams);
 			}
-			classedBeans.add(bean);
+			Set<Serializable> layzIds = lazyParams.get(parameter);
+			if (layzIds == null){
+				layzIds = new HashSet<Serializable>();
+				lazyParams.put(parameter, layzIds);
+			}
+			layzIds.add(id);
+		}else{
+			throw new IllegalArgumentException("Class, parameter and id should not be null");
+		}
+	}
+	public Map<Class<?>, Map<String, Set<Serializable>>> getLazyCollections(){
+		return this.lazyCollections;
+	}
+	public void resetLazyCollections(){
+		this.lazyCollections.clear();
+	}
+
+	
+// ******************* LAZY BEAN *****************************************/
+	
+	public void putLazyBean(Class<?> clazz, Serializable id) {
+		if (clazz != null && id != null){
+			Set<Serializable> classedLazies= lazyBeans.get(clazz);
+			if (classedLazies == null){
+				classedLazies = new HashSet<Serializable>();
+				lazyBeans.put(clazz, classedLazies);
+			}
+			classedLazies.add(id);
+		}else{
+			throw new IllegalArgumentException("Class and id should not be null");
+		}
+	}
+	public Map<Class<?>, Set<Serializable>> getLazyBeans(){
+		return this.lazyBeans;
+	}
+	public void resetLazyBeans(){
+		this.lazyBeans.clear();
+	}
+	
+// ********************* BEANS ******************************/
+	
+	private Map<Class<?>, Set<Object>> getClassedBeans(){
+		return this.beans;
+	}
+	
+	
+	public Map<Class<?>, Set<Object>> getBeans() {
+		return this.beans;
+	}
+	
+	public Map<Class<?>, Set<Object>> getParentBeans() {
+		if (parent == null){
+			return new HashMap<Class<?>, Set<Object>>();
+		}else{
+			return parent.getClassedBeans();
+		}
+	}
+	
+	public void addBean(Object bean) {
+		if (! isWildcard()){
+			if (bean != null){
+				Class<?> key = bean.getClass();
+				Set<Object> classedBeans = beans.get(key);
+				if (classedBeans == null){
+					classedBeans = new HashSet<Object>();
+					beans.put(key, classedBeans);
+				}
+				classedBeans.add(bean);
+			}
 		}
 	}
 	public void addBeans(Collection<?> beans) {
@@ -100,40 +247,12 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 		}
 	}
 	
-	private Map<Class<?>, Set<Object>> getClassedBeans(){
-		return this.beans;
-	}
-	
 	public void resetBeans(){
 		beans.clear();
 	}
 
-	public String getPath() {
-		return path;
-	}
 
-	public boolean hasChildren() {
-		return children.size() > 0;
-	}
-
-
-	public boolean isWildcard() {
-		return path.equals(AbstractBeanInitializer.LOAD_2ONE_WILDCARD) || 
-				path.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD);
-	}
-	
-	public boolean isToManyWildcard() {
-		return path.equals(AbstractBeanInitializer.LOAD_2ONE_2MANY_WILDCARD);
-	}
-
-
-	public boolean isInitializedIfSingle(){
-		return parent.isToOneInitialized;
-	}
-	
-	public boolean isInitializedAny(){
-		return parent.isToManyInitialized;
-	}
+// ************************* OVERRIDES **********************************/
 	
 	@Override
 	public int compareTo(BeanInitNode o) {
@@ -157,29 +276,32 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	public String toString() {
 		
 		if(parent == null){
-			return "/";
+			return "/";    //for root node
 		}else{
-			return parent.toString() +  ((parent.parent == null) ? "" : ".") + path;
+			String result = parent.toString() + ((parent.parent == null) ? "" : ".") + path;
+			return result;
 		}
+	}
+	
+	public String toStringNoWildcard(){
+		return toString().replace(".$", "").replace(".*", "");
 	}
 	
 	public String toStringTree() {
 		
-		String result = (path.equals("")? "/": path) + "\n";
+		String result = (path.equals("") ? "/" : path) + "\n";
+		
 		for (BeanInitNode child : getChildrenList()){
-			result += toString() + "." + child.toStringTree();
+			result += toString() + (result.endsWith("/\n") ? "" : ".") + child.toStringTree();
 		}
 		
 		return result;
 	}
 
-	public Map<Class<?>, Set<Object>> getParentBeans() {
-		if (parent == null){
-			return new HashMap<Class<?>, Set<Object>>();
-		}else{
-			return parent.getClassedBeans();
-		}
+	public boolean hasWildcardToOneSibling() {
+		BeanInitNode sibl = getWildcardSibling();
+		return (sibl != null && sibl.isToOneInitialized);
 	}
 
-
+		
 }
