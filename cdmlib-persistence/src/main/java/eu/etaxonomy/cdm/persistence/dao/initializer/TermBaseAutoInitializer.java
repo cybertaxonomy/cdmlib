@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
@@ -21,6 +22,11 @@ public class TermBaseAutoInitializer extends AutoPropertyInitializer<TermBase> {
     @Override
     public void initialize(TermBase bean) {
        beanInitializer.initializeInstance(bean.getRepresentations());
+    }
+    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return String.format(" LEFT JOIN FETCH %s.representations ", beanAlias); 
     }
 
 }

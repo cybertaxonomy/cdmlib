@@ -13,7 +13,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.beanutils.BeanUtils;
+import org.apache.commons.beanutils.BeanUtilsBean2;
 import org.apache.commons.lang.StringUtils;
+import org.hibernate.collection.internal.AbstractPersistentCollection;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 
@@ -43,6 +46,9 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	private  Map<Class<?>, Set<Serializable>> lazyBeans = new HashMap<Class<?>, Set<Serializable>>();
 	
 	private  Map<Class<?>, Map<String, Set<Serializable>>> lazyCollections = new HashMap<Class<?>, Map<String,Set<Serializable>>>();
+	
+	//java.util.Set is  not possible here to avoid initializing of collection during .add()
+	private List<AbstractPersistentCollection> uninitializedCollections = new ArrayList<AbstractPersistentCollection>();
 	
 // *************************** STATIC METHODS *****************************************/
 	
@@ -111,7 +117,7 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	}
 	
 	public BeanInitNode getSibling(String param) {
-		if (parent == null){
+		if (getPath().equals(param) || parent == null){
 			return null;
 		}else{
 			return parent.getChild(param);
@@ -163,7 +169,16 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 
 
 // ******************* LAZY COLLECTION *****************************************/
-	public void putLazyCollection(Class<?> ownerClazz, String parameter, Serializable id) {
+	
+	public void putLazyCollection(AbstractPersistentCollection collection) {
+		String parameter = collection.getRole();
+		parameter = parameter.substring(parameter.lastIndexOf(".")+1);
+		putLazyCollection(collection.getOwner().getClass(), parameter, collection.getKey());
+		this.uninitializedCollections.add(collection);
+	}
+		
+	
+	private void putLazyCollection(Class<?> ownerClazz, String parameter, Serializable id) {
 		if (ownerClazz != null && parameter != null && id != null){
 			Map<String, Set<Serializable>> lazyParams = lazyCollections.get(ownerClazz);
 			if (lazyParams == null){
@@ -183,8 +198,12 @@ public class BeanInitNode implements Comparable<BeanInitNode>{
 	public Map<Class<?>, Map<String, Set<Serializable>>> getLazyCollections(){
 		return this.lazyCollections;
 	}
+	public List<AbstractPersistentCollection> getUninitializedCollections(){
+		return this.uninitializedCollections;
+	}
 	public void resetLazyCollections(){
 		this.lazyCollections.clear();
+		this.uninitializedCollections.clear();
 	}
 
 	

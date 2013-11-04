@@ -18,10 +18,12 @@ import javax.persistence.Transient;
 
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.log4j.Logger;
+import org.hamcrest.core.IsInstanceOf;
 import org.hibernate.Hibernate;
 import org.hibernate.HibernateException;
 import org.hibernate.Query;
 import org.hibernate.collection.internal.AbstractPersistentCollection;
+import org.hibernate.collection.internal.PersistentSet;
 import org.hibernate.proxy.HibernateProxy;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -80,7 +82,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		        if(logger.isDebugEnabled()){logger.debug("Start old initalizer ... ");};
 		        Collections.sort(propertyPaths);
 		        for(String propPath : propertyPaths){
-		            initializePropertyPath(bean, propPath);
+//		            initializePropertyPath(bean, propPath);
 		        }
 	        }
 	        
@@ -119,7 +121,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		// if propPath only contains a wildcard (* or $)
         // => do a batch initialization of *toOne or *toMany relations
         private void initializeNodeWildcard(BeanInitNode node) {
-			boolean initToMany = node.isToManyWildcard();
+//			boolean initToMany = node.isToManyWildcard();
 			Map<Class<?>, Set<Object>> parentBeans = node.getParentBeans();
 		    for (Class<?> clazz : parentBeans.keySet()){
 		    	//new
@@ -129,7 +131,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 //				        old: initializeAllEntries((Collection<?>)bean, true, initToMany);  //TODO is this a possible case at all??
 						throw new RuntimeException("Collection no longer expected in 'initializeNodeWildcard()'. Therefore an exception is thrown.");
 				    } else if(Map.class.isAssignableFrom(bean.getClass())) {
-				        initializeAllEntries(((Map<?,?>)bean).values(), true, initToMany);  ////TODO is this a possible case at all?? 
+//				        old: initializeAllEntries(((Map<?,?>)bean).values(), true, initToMany);  ////TODO is this a possible case at all?? 
 						throw new RuntimeException("Map no longer expected in 'initializeNodeWildcard()'. Therefore an exception is thrown.");
 				    } else{
 				        prepareBeanWildcardForBulkLoad(node, bean);
@@ -179,7 +181,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 //                  invokeInitialization(bean, propertyDescriptor);
                     Object propertyValue = PropertyUtils.getProperty( bean, property);
                     
-                    preparePropertyValueForBulkLoad(node, bean, property,  propertyValue );
+                    preparePropertyValueForBulkLoadOrStore(node, bean, property,  propertyValue );
 
                 } catch (IllegalAccessException e) {
                     logger.error("Illegal access on property " + propertyDescriptor.getName());
@@ -223,14 +225,14 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			    	//new			    	
 			    	for (Object parentBean : parentBeans){
 			    		Object propertyValue = PropertyUtils.getProperty(parentBean, property);
-					    preparePropertyValueForBulkLoad(node, parentBean, property, propertyValue);
+					    preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
 			    	}
-			    	bulkLoadLazies(node);
 			    	
 			    	//end new
 			    	
-//			    	initializeNodeNoWildcardOld(node, property, index, parentBeans);
-				}				
+//			    	initializeNodeNoWildcardOld(node, property, index, parentBeans);  //move bulkLoadLazies up again, if uncomment this line
+				}
+		    	bulkLoadLazies(node);  
 
 			} catch (IllegalAccessException e) {
 			    logger.error("Illegal access on property " + property);
@@ -277,20 +279,25 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		 * @param parentBean 
 		 * @param param 
 		 */
-		private void preparePropertyValueForBulkLoad(BeanInitNode node, Object parentBean, String param, Object propertyValue) {
+		private void preparePropertyValueForBulkLoadOrStore(BeanInitNode node, Object parentBean, String param, Object propertyValue) {
 			BeanInitNode sibling = node.getSibling(param);
 			if (propertyValue instanceof AbstractPersistentCollection ){
-				if (!node.hasWildcardToManySibling()){  //if wildcard exists the lazies are already prepared
-					Class<?> parentClass = parentBean.getClass();
-					int parentId = ((CdmBase)parentBean).getId();
-					if (sibling != null){
-						sibling.putLazyCollection(parentClass, param, parentId);
+				if (!node.hasWildcardToManySibling()){  //if wildcard sibling exists the lazies are already prepared there
+					AbstractPersistentCollection collection = (AbstractPersistentCollection)propertyValue;
+					if (collection.wasInitialized()){
+						storeInitializedCollection(collection, node, param);
 					}else{
-						node.putLazyCollection(parentClass, param, parentId);
+//						Class<?> parentClass = parentBean.getClass();
+//						int parentId = ((CdmBase)parentBean).getId();
+						if (sibling != null){
+							sibling.putLazyCollection(collection);
+						}else{
+							node.putLazyCollection(collection);
+						}
 					}
 				}
 			}else{
-				if (!node.hasWildcardToOneSibling()){  //if wildcard exists the lazies are already prepared
+				if (!node.hasWildcardToOneSibling()){  //if wildcard exists the lazies are already prepared there
 					if (! Hibernate.isInitialized(propertyValue)){
 						if (propertyValue instanceof HibernateProxy){
 							Serializable id = ((HibernateProxy)propertyValue).getHibernateLazyInitializer().getIdentifier();
@@ -305,11 +312,32 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	    					logger.warn("Lazy value is not of type HibernateProxy. This is not yet handled.");
 						}
 					}else if (propertyValue == null){
-	//			    	System.out.println("Single: property is null");
+						// do nothing
 					}else{
-	//			    	System.out.println("Single: " + propertyValue);
+				    	autoinitializeBean(propertyValue);
+						node.addBean(propertyValue);
 					}
 				}
+			}
+		}
+
+		private void autoinitializeBean(Object bean) {
+			invokePropertyAutoInitializers(bean);
+		}
+
+		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection, 
+				BeanInitNode node, String param) {
+			Collection<?> collection;
+			
+			if (persistedCollection  instanceof Collection) {
+				collection = (Collection<?>) persistedCollection;
+			}else if (persistedCollection instanceof Map) {
+				collection = ((Map<?,?>)persistedCollection).values();
+			}else{
+				throw new RuntimeException ("Non Map and non Collection cas not handled in storeInitializedCollection()");
+			}
+			for (Object value : collection){
+				preparePropertyValueForBulkLoadOrStore(node, null, param, value);
 			}
 		}
 
@@ -324,16 +352,18 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					
 					if (logger.isDebugEnabled()){logger.debug("bulk load beans of class " +  clazz.getSimpleName());}
 					//TODO use entity name
-					String hql = " FROM " + clazz.getSimpleName() + " WHERE id IN (:idSet) ";
+					String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
+					hql = String.format(hql, clazz.getSimpleName(), addAutoinitFetchLoading(clazz, "c"));
 					Query query = genericDao.getHqlQuery(hql);
 					query.setParameterList("idSet", idSet);
 					List<Object> list = query.list();
 					
 					if (logger.isDebugEnabled()){logger.debug("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
 					for (Object object : list){
-						if (object instanceof HibernateProxy){
+						if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
 							object = initializeInstance(object);
 						}
+						autoinitializeBean(object);
 						node.addBean(object);
 					}
 					if (logger.isDebugEnabled()){logger.debug("bulk load - DONE");}
@@ -351,40 +381,45 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						
 						//TODO use entity name ??
 						//get from repository
-						List<Object> list;
+						List<Object[]> list;
+						String hql = "SELECT oc, oc.%s " +
+								" FROM %s as oc INNER JOIN FETCH oc.%s as col " +
+								" WHERE oc.id IN (:idSet) ";
+						
+//						String hql = "SELECT oc.%s " +
+//								" FROM %s as oc WHERE oc.id IN (:idSet) ";
+//						param = workAroundBeanInconsistency(param, ownerClazz.getSimpleName());
+						hql = String.format(hql, param, ownerClazz.getSimpleName(), param );
+						
 						try {
-							String hql = "SELECT oc.%s " +
-									" FROM %s as oc WHERE oc.id IN (:idSet) ";
-							param = workAroundBeanInconsistency(param, ownerClazz.getSimpleName());
-							hql = String.format(hql, param, ownerClazz.getSimpleName());
+							
 							Query query = genericDao.getHqlQuery(hql);
 							query.setParameterList("idSet", idSet);
 							list = query.list();
 						} catch (HibernateException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 							throw e;
 						}
 						
 						//getTarget and add to child node
 						if (logger.isDebugEnabled()){logger.debug("initialize bulk loaded " + node + " collections - DONE");}
-						for (Object newBean : list){
+						for (Object[] listItems : list){
+							Object newBean = listItems[1];
 							if (newBean instanceof HibernateProxy){
 								newBean = initializeInstance(newBean);
 							}
 							node.addBean(newBean);
 						}
 						if (logger.isDebugEnabled()){logger.debug("bulk load " + node + " collections - DONE");}
-						
-						
 					}	
-					
 				}
-				
-				
-				
-				
 			}
+			for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
+				if (! collection.wasInitialized()){  //should not happen anymore  
+					collection.forceInitialization();
+				}
+			}
+			
 			node.resetLazyCollections();
 			
 			if (logger.isDebugEnabled()){logger.debug("bulk load " +  node + " - DONE ");}
@@ -392,6 +427,25 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		}
 
 		
+		private String addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
+			Set<AutoPropertyInitializer<CdmBase>> inits = getAutoInitializers(clazz);
+			String result = "";
+			for (AutoPropertyInitializer<CdmBase> init: inits){
+				result +=init.hibernateFetchJoin(clazz, beanAlias);
+			}
+			return result;
+		}
+
+		private Set<AutoPropertyInitializer<CdmBase>> getAutoInitializers(Class<?> clazz) {
+			Set<AutoPropertyInitializer<CdmBase>> result = new HashSet<AutoPropertyInitializer<CdmBase>>();
+			for(Class<? extends CdmBase> superClass : getBeanAutoInitializers().keySet()){
+	            if(superClass.isAssignableFrom(clazz)){
+	                result.add(getBeanAutoInitializers().get(superClass));
+	            }
+	        }
+			return result;
+		}
+
 		/**
 		 * Rename bean attributes to hibernate (field) attribute, due to bean inconsistencies
 		 * #3841
