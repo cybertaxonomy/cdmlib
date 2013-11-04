@@ -103,7 +103,7 @@ public class EditGeoServiceUtilities {
              *
              * TODO remove according line from
              * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
-             * cyprus are no further needed !!
+             * cyprus are no longer needed !!
              */
             String onlyTest = System.getProperty("ONLY-A-TEST"); //
             if(onlyTest != null && onlyTest.equals("TRUE")){
@@ -537,11 +537,6 @@ public class EditGeoServiceUtilities {
 
     }
 
-
-
-    //Preliminary as long as user defined areas are not fully implemented
-    public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
-
     private static List<String> projectToWMSSubLayer(NamedArea area){
 
         List<String> layerNames = new ArrayList<String>();
@@ -564,10 +559,6 @@ public class EditGeoServiceUtilities {
             }
             //unrecognized tdwg area
 
-        }
-        //TODO hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
-        if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
-            matchedLayerName = "    :bdcode";
         }
 
         // check if the matched layer equals the layer to project to
@@ -604,10 +595,6 @@ public class EditGeoServiceUtilities {
             //unrecognized tdwg area
             return null;
 
-        }
-        //hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
-        if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
-            return "cyprusdivs:bdcode";
         }
 
         GeoServiceArea areas = mapping.valueOf(area);
