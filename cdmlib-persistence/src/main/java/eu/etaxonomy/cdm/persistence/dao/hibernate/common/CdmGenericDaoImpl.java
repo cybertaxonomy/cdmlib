@@ -372,6 +372,12 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		return result;
 	}
 	
+	@Override
+	public Query getHqlQuery(String hqlQuery){
+		Query query = getSession().createQuery(hqlQuery);
+		return query;
+	}
+	
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		Class<T> clazz = (Class<T>)cdmBase1.getClass();
 		SessionImpl session = (SessionImpl) getSession();
@@ -928,7 +934,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 			boolean cacheProtected = (Boolean)cacheMatcher.getProtectedField(matching).get(objectToMatch);
 			if (cacheProtected == true){
 				String cacheValue = (String)cacheMatcher.getField().get(objectToMatch);
-				if (CdmUtils.isEmpty(cacheValue)){
+				if (StringUtils.isBlank(cacheValue)){
 					return true;  //no match
 				}else{
 					criteria.add(Restrictions.eq(cacheMatcher.getPropertyName(), cacheValue));

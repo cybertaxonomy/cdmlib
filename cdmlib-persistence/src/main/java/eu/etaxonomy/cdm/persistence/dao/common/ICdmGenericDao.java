@@ -14,6 +14,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Query;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -113,4 +114,12 @@ public interface ICdmGenericDao {
 	 * @return
 	 */
 	public List getHqlResult(String hqlQuery);
+
+	/**
+	 * TODO remove as this is Hibernate specific.
+	 * Returns a Query
+	 * @param hqlQuery
+	 * @return
+	 */
+	public Query getHqlQuery(String hqlQuery);
 }
