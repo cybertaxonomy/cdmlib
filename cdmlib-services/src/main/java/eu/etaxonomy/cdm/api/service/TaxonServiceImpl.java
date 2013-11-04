@@ -66,7 +66,6 @@ import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
@@ -1072,7 +1071,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         nodesList.addAll(taxon.getTaxonNodes());
 
                             for (ITreeNode treeNode: nodesList){
-                            	TaxonNode taxonNode = (TaxonNode) treeNode;
+                                TaxonNode taxonNode = (TaxonNode) treeNode;
                                 if(!deleteChildren){
                                    /* Object[] childNodes = taxonNode.getChildNodes().toArray();
                                     //nodesList.addAll(taxonNode.getChildNodes());
@@ -1089,7 +1088,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                    // taxon.removeTaxonNode(taxonNode);
                                     //nodeService.delete(taxonNode);
                                 } else{
-                                	*/
+                                    */
                                     Object[] childNodes = taxonNode.getChildNodes().toArray();
                                     for (Object childNode: childNodes){
                                         TaxonNode childNodeCast = (TaxonNode) childNode;
@@ -1231,7 +1230,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
         }
         this.saveOrUpdate(synonym);
-        
+
         //TODO remove name from homotypical group?
 
         //remove synonym (if necessary)
@@ -1743,7 +1742,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // set sort order and thus override any sort orders which may have been
         // defindes by prepare*Search methods
-        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("id", SortField.STRING, false)};
+        if(orderHints == null){
+            orderHints = OrderHint.NOMENCLATURAL_SORT_ORDER;
+        }
+        SortField[] sortFields = new SortField[orderHints.size()];
+        int i = 0;
+        for(OrderHint oh : orderHints){
+            sortFields[i++] = oh.toSortField();
+        }
+//        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("id", SortField.STRING, false)};
 //        SortField[] sortFields = new SortField[]{new SortField(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortField.STRING, false)};
 
 
