@@ -469,7 +469,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return service.findTaxaAndNamesByFullText(searchModes, query,
                 classification, areaSet, status, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                null, SIMPLE_TAXON_INIT_STRATEGY);
+                OrderHint.NOMENCLATURAL_SORT_ORDER, SIMPLE_TAXON_INIT_STRATEGY);
     }
 
     /**
