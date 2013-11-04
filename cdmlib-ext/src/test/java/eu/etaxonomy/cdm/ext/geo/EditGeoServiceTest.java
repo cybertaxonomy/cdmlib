@@ -204,7 +204,14 @@ public class EditGeoServiceTest extends CdmIntegrationTest {
 
         for(int i = 1; i <= 8; i++){
             UUID divisionUuid = getNamedAreaUuid(String.valueOf(i));
-            NamedArea division = this.newNamedArea(divisionUuid, "Division " + i, "Cyprus: Division " + i, String.valueOf(i), areaType, areaLevel, areaVocabulary);
+            NamedArea division = this.newNamedArea(
+                    divisionUuid,
+                    "Division " + i,
+                    "Cyprus: Division " + i,
+                    String.valueOf(i), // id in vocab
+                    areaType,
+                    areaLevel,
+                    areaVocabulary);
             divisions.put(String.valueOf(i), division);
         }
 

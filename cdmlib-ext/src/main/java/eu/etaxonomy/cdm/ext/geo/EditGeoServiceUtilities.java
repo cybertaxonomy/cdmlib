@@ -513,9 +513,8 @@ public class EditGeoServiceUtilities {
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         String result = null;
 
-        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)
-                || voc.getUuid().equals(uuidCyprusDivisionsVocabulary)) {
-            // TDWG or Cyprus
+        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)) {
+            // TDWG
             result = area.getIdInVocabulary();
             if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())) {
                 result = result.replace("-", "");
@@ -568,7 +567,7 @@ public class EditGeoServiceUtilities {
         }
         //TODO hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
         if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
-            matchedLayerName = "cyprusdivs:bdcode";
+            matchedLayerName = "    :bdcode";
         }
 
         // check if the matched layer equals the layer to project to

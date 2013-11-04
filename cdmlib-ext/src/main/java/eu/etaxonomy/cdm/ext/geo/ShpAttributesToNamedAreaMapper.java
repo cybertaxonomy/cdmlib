@@ -12,12 +12,12 @@ package eu.etaxonomy.cdm.ext.geo;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 
@@ -93,7 +93,7 @@ public class ShpAttributesToNamedAreaMapper {
         String[] headerRow = csvReader.readNext();
         searchColumnMap = new HashMap<String, Integer>();
         for(String colName : idSearchFields){
-            int idx = Arrays.binarySearch(headerRow, colName);
+            int idx = ArrayUtils.indexOf(headerRow, colName);
             if(idx > -1){
                 searchColumnMap.put(colName, idx);
             } else {
@@ -109,6 +109,12 @@ public class ShpAttributesToNamedAreaMapper {
         String matchColName;
         for(NamedArea a : areas){
 
+            if(a.getIdInVocabulary() == null){
+                String message = "has no IdInVocabulary";
+                resultMap.put(a, message);
+                logger.warn(a.getTitleCache() + " " + message);
+                continue;
+            }
             matchIdCode = null;
             matchColName = null;
             // search in each of the columns until found
@@ -117,9 +123,10 @@ public class ShpAttributesToNamedAreaMapper {
                 int idx = searchColumnMap.get(colName);
 
                 for(String[] row : data){
-                    if(a.getIdInVocabulary().equals(row[idx])){
+                    String fieldData = row[idx].trim();
+                    if(a.getIdInVocabulary().equals(fieldData)){
                         // FOUND!
-                        matchIdCode = row[idx];
+                        matchIdCode = fieldData;
                         break;
                     }
                 }
