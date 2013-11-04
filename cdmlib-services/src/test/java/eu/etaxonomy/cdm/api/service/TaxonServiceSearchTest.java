@@ -911,6 +911,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+        SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
+        Assert.assertEquals(Synonym.class, searchResult.getEntity().getClass());
+        // Abies subalpina sec. Kohlbecker, A., Testcase standart views, 2013
 
 
         pager = taxonService.findTaxaAndNamesByFullText(
