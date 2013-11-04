@@ -16,14 +16,21 @@ public abstract class AbstractClassBridge implements FieldBridge {
 
     protected final static NotNullAwareIdBridge idFieldBridge = new NotNullAwareIdBridge();
 
+    /**
+     * see {@link IdFieldOptions}
+     */
     public static LuceneOptions idFieldOptions = new IdFieldOptions();
 
+    /**
+     * see {@link SortFieldOptions}
+     */
     public static LuceneOptions sortFieldOptions = new SortFieldOptions();
 
 
     /* (non-Javadoc)
      * @see org.hibernate.search.bridge.FieldBridge#set(java.lang.String, java.lang.Object, org.apache.lucene.document.Document, org.hibernate.search.bridge.LuceneOptions)
      */
+    @Override
     abstract public void set(String name, Object value, Document document, LuceneOptions luceneOptions);
 
 }

@@ -655,6 +655,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DoiBridge.java -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/GroupByTaxonClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IdFieldOptions.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NomenclaturalSortOrderBrigde.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NotNullAwareIdBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PartialBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/SortFieldOptions.java -text

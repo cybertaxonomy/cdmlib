@@ -1551,7 +1551,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
 
-        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments, null);
 
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
@@ -1597,18 +1597,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param classification
      * @param languages
      * @param highlightFragments
+     * @param sortFields TODO
      * @param directorySelectClass
      * @return
      */
     protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Language> languages,
-            boolean highlightFragments) {
+            boolean highlightFragments, SortField[] sortFields) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        if(sortFields == null){
+            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        }
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
@@ -1641,16 +1644,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * <li>direct, everted: {@link Direction.relatedTo}: TaxonRelationShip.relatedTo.id --&gt; Taxon.id </li>
      * <li>inverse: {@link Direction.relatedFrom}:  TaxonRelationShip.relatedFrom.id --&gt; Taxon.id </li>
      * <ul>
-     *
      * @param queryString
      * @param classification
      * @param languages
      * @param highlightFragments
+     * @param sortFields TODO
+     *
      * @return
      * @throws IOException
      */
     protected LuceneSearch prepareFindByTaxonRelationFullTextSearch(TaxonRelationshipEdge edge, String queryString, Classification classification, List<Language> languages,
-            boolean highlightFragments) throws IOException {
+            boolean highlightFragments, SortField[] sortFields) throws IOException {
 
         String fromField;
         String queryTermField;
@@ -1679,7 +1683,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         joinFromQuery.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
         Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        if(sortFields == null){
+            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        }
         luceneSearch.setSortFields(sortFields);
 
         finalQuery.add(joinQuery, Occur.MUST);
@@ -1734,6 +1740,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(searchModes == null){
             searchModes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa);
         }
+
+        // set sort order and thus override any sort orders which may have been
+        // defindes by prepare*Search methods
+        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("id", SortField.STRING, false)};
+//        SortField[] sortFields = new SortField[]{new SortField(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortField.STRING, false)};
+
 
         boolean addDistributionFilter = namedAreas != null && namedAreas.size() > 0;
 
@@ -1792,7 +1804,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
                 taxonBaseSubclass = Synonym.class;
             }
-            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments));
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
             /* A) does not work!!!!
             if(addDistributionFilter){
@@ -1836,6 +1848,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
             byCommonNameSearch.setQuery(byCommonNameJoinQuery);
+            byCommonNameSearch.setSortFields(sortFields);
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             luceneSearches.add(byCommonNameSearch);
@@ -1868,7 +1881,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
-                    queryString, classification, languages, highlightFragments));
+                    queryString, classification, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             if(addDistributionFilter){
@@ -1936,6 +1949,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (addDistributionFilter){
             multiSearch.setFilter(multiIndexByAreaFilter);
         }
+
+
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
@@ -2071,7 +2086,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
-        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);
+        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments, null);
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 

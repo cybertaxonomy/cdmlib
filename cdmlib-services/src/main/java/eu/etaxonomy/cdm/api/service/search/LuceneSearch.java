@@ -265,7 +265,8 @@ public class LuceneSearch {
         Sort withinGroupSort = Sort.RELEVANCE;
         if(sortFields != null && sortFields.length > 0){
             if(sortFields[0] != SortField.FIELD_SCORE){
-                throw new RuntimeException("Fist sort field must be SortField.FIELD_SCORE");
+                // see inner class TopGroupsWithMaxScore
+                logger.error("Fist sort field must be SortField.FIELD_SCORE otherwise the max score value will not be correct!");
             }
             groupSort = new Sort(sortFields);
         } else {
