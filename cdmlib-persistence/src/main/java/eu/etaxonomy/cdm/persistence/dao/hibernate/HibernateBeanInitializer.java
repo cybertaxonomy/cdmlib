@@ -52,5 +52,7 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
             ( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
         }
     }
+    
+    
 
 }
