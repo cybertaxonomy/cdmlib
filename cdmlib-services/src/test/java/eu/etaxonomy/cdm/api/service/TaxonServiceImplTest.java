@@ -14,6 +14,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
+import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
@@ -62,7 +63,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 
 public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(TaxonServiceImplTest.class);
 
     @SpringBeanByType
@@ -646,7 +646,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
 
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
-        Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
+        
+        List<String> initStrat = new ArrayList<String>();
+        initStrat.add("markers");
+        Synonym synonym1 = (Synonym)service.load(uuidSynonym1, initStrat);
 
         taxon2.removeSynonym(synonym1, false);
         service.saveOrUpdate(taxon2);
@@ -659,6 +662,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("There should  be 4 names in the database", 4, nNames);
         int nRelations = service.countAllRelationships();
         Assert.assertEquals("There should be 1 relationship left in the database", 1, nRelations);
+        
         synonym1.addMarker(Marker.NewInstance(MarkerType.IMPORTED(), true));
         synonym1.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         service.update(synonym1);
