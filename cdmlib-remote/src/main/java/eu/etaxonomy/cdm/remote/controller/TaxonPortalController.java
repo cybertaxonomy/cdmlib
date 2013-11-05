@@ -254,7 +254,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.$",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
             "name.$",
@@ -266,7 +266,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "sources.citation.authorTeam",
-            "sources.nameUsedInSource.originalNameString",
+            "sources.nameUsedInSource",
             "multilanguageText",
             "media",
     });

@@ -68,7 +68,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "elements.markers",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
             "name.$",
@@ -83,7 +83,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "markers",
             "states.$",
             "sources.citation.authorTeam",
-            "sources.nameUsedInSource.originalNameString",
+            "sources.nameUsedInSource",
             "multilanguageText",
             "media"
     });
