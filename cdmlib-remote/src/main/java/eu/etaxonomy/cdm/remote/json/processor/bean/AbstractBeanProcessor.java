@@ -110,8 +110,6 @@ public abstract class AbstractBeanProcessor<T extends Object> implements JsonBea
 
         JSONObject json =  new JSONObject();
         Collection<?> exclusions = jsonConfig.getMergedExcludes( bean.getClass() );
-        Set<Class<?>> typeRestrictions = new HashSet<Class<?>>();
-        typeRestrictions.add(CdmBase.class);
         Set<PropertyDescriptor> props = AbstractBeanInitializer.getProperties(bean, null);
         PropertyFilter jsonPropertyFilter = jsonConfig.getJsonPropertyFilter();
         for(PropertyDescriptor prop: props){
