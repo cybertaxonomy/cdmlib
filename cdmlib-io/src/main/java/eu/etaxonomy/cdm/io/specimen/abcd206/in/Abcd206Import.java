@@ -32,7 +32,6 @@ import org.w3c.dom.NodeList;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
 import eu.etaxonomy.cdm.io.specimen.SpecimenUserInteraction;
@@ -377,7 +376,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // handle collection data
             setCollectionData(state, derivedUnitFacade);
 
-            //<<<<<<< .courant
             //Reference stuff
             SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
             Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
@@ -401,7 +399,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
 
                 try{
-                    if (sour.getCitation() != null){ 
+                    if (sour.getCitation() != null){
 	                    if(StringUtils.isNotBlank(sour.getCitationMicroReference())) {
 	                        dataHolder.docSources.add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
 	                    } else {
@@ -526,13 +524,13 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     //  * it will have serious performance and memory problems with large databases
     //        (databases may easily have >1 Mio source records)
     //  * it does not make sense to search for existing sources and then clone them
-    //    we need to search for existing references instead and use them (if exist) 
+    //    we need to search for existing references instead and use them (if exist)
     //    for our new source.
     private IdentifiableSource getIdentifiableSource(Reference<?> reference, String citationDetail) {
 
         List<OriginalSourceBase> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
 
-        
+
         if (reference != null){
         	try {
 	        	for (OriginalSourceBase<?> osb: issTmp){
@@ -551,7 +549,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 	        	e1.printStackTrace();
 	        }
         }
-        	
+
         IdentifiableSource sour = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
         return sour;
     }
