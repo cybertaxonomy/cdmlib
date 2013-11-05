@@ -76,8 +76,8 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	        
 	        
 	        //old - keep for safety (this may help to initialize those beans that are not yet correctly initialized by the AdvancedBeanInitializer
+	        if(logger.isDebugEnabled()){logger.debug("Start old initalizer ... ");};
 	        for (Object bean :beanList){
-		        if(logger.isDebugEnabled()){logger.debug("Start old initalizer ... ");};
 		        Collections.sort(propertyPaths);
 		        for(String propPath : propertyPaths){
 //		            initializePropertyPath(bean, propPath);
@@ -169,7 +169,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             Set<Class<?>> restrictions = new HashSet<Class<?>>();
             restrictions.add(CdmBase.class);
             if(node.isToManyWildcard()){
-                restrictions.add(Collections.class);
+                restrictions.add(Collection.class);
             }
             Set<PropertyDescriptor> props = getProperties(bean, restrictions);
             for(PropertyDescriptor propertyDescriptor : props){
@@ -279,7 +279,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 		 */
 		private void preparePropertyValueForBulkLoadOrStore(BeanInitNode node, Object parentBean, String param, Object propertyValue) {
 			BeanInitNode sibling = node.getSibling(param);
+			
 			if (propertyValue instanceof AbstractPersistentCollection ){
+				//collections
 				if (!node.hasWildcardToManySibling()){  //if wildcard sibling exists the lazies are already prepared there
 					AbstractPersistentCollection collection = (AbstractPersistentCollection)propertyValue;
 					if (collection.wasInitialized()){
@@ -295,6 +297,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					}
 				}
 			}else{
+				//singles
 				if (!node.hasWildcardToOneSibling()){  //if wildcard exists the lazies are already prepared there
 					if (! Hibernate.isInitialized(propertyValue)){
 						if (propertyValue instanceof HibernateProxy){
@@ -312,7 +315,10 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 					}else if (propertyValue == null){
 						// do nothing
 					}else{
-				    	autoinitializeBean(propertyValue);
+						if (propertyValue instanceof HibernateProxy){  //TODO remove hibernate dependency
+							propertyValue = initializeInstance(propertyValue);
+						}
+						autoinitializeBean(propertyValue);
 						node.addBean(propertyValue);
 					}
 				}
@@ -498,48 +504,5 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			    setProperty(bean, property, unwrappedPropertyBean);
 			}
 		}
-		
-		/**
-	     * This is an adaptation of {@link AbstractBeanInitializer#getProperties(Object, Set)}
-	     * which handles typeRestrictions different (correct IMO).
-	     * The only difference is that it handles type restrictions also when they have
-	     * size = 1
-	     * 
-	     * 
-	     * @param bean
-	     * @param typeRestrictions
-	     * @return
-	     */
-		public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class<?>> typeRestrictions) {
-
-	        Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();
-	        PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(bean);
-
-	        for (PropertyDescriptor prop : props) {
-	            //String propName = prop[i].getName();
-
-	            // only read methods & skip transient getters
-	            if( prop.getReadMethod() != null ){
-	                  try{
-	                     Class<Transient> transientClass = (Class<Transient>)Class.forName( "javax.persistence.Transient" );
-	                     if( prop.getReadMethod().getAnnotation( transientClass ) != null ){
-	                        continue;
-	                     }
-	                  }catch( ClassNotFoundException cnfe ){
-	                     // ignore
-	                  }
-	                  if(typeRestrictions != null ){
-	                      for(Class<?> restrictedType : typeRestrictions){
-	                          if(restrictedType.isAssignableFrom(prop.getPropertyType())){
-	                              properties.add(prop);
-	                          }
-	                      }
-	                  } else {
-	                      properties.add(prop);
-	                  }
-	            }
-	        }
-	        return properties;
-	    }
 
 }
