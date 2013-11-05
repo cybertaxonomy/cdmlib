@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.TermBase;
 
 /**
