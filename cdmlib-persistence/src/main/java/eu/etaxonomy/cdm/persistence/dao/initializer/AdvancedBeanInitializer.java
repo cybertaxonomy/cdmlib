@@ -412,6 +412,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 							if (newBean instanceof HibernateProxy){
 								newBean = initializeInstance(newBean);
 							}
+							autoinitializeBean(newBean);
 							node.addBean(newBean);
 						}
 						if (logger.isDebugEnabled()){logger.debug("bulk load " + node + " collections - DONE");}

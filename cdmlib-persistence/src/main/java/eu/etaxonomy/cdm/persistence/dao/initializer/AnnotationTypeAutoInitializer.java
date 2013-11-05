@@ -26,5 +26,10 @@ public class AnnotationTypeAutoInitializer extends AutoPropertyInitializer<Annot
     public void initialize(Annotation bean) {
         beanInitializer.initializeInstance(bean.getAnnotationType());
     }
+    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return String.format(" LEFT JOIN FETCH %s.annotationType ", beanAlias); 
+    }
 
 }

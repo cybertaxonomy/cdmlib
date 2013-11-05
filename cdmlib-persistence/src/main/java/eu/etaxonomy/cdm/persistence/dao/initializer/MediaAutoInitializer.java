@@ -26,4 +26,10 @@ public class MediaAutoInitializer extends AutoPropertyInitializer<Media> {
             beanInitializer.initializeInstance(r.getParts());
         }
     }
+    
+    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return String.format(" LEFT JOIN FETCH %s.representations r LEFT JOIN FETCH r.mediaRepresentationParts ", beanAlias); 
+    }
 }
