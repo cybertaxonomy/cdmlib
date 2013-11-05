@@ -95,7 +95,7 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
                 	if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
                 	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
                 }
-                if (nonViralName.getRank().isSpeciesAggregate()){
+                if (nonViralName.isSpeciesAggregate()){
                 	if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
                 	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
                 }
