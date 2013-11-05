@@ -209,36 +209,36 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 			    property = property.substring(0, pos);
 			}
 
-			try {
-			    //Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
+		    //Class targetClass = HibernateProxyHelper.getClassWithoutInitializingProxy(bean); // used for debugging
 
-			    for (Class<?> parentClazz : node.getParentBeans().keySet()){
-			    	if (logger.isDebugEnabled()){logger.debug(" invoke initialization on "+ node.toString()+ " beans of class " + parentClazz.getSimpleName() + " ... ");}
-					
-			    	Set<Object> parentBeans = node.getParentBeans().get(parentClazz);
-			    	
-			    	if (index != null){
-			    		logger.warn("Property path index not yet implemented for 'new'");
+		    for (Class<?> parentClazz : node.getParentBeans().keySet()){
+		    	if (logger.isDebugEnabled()){logger.debug(" invoke initialization on "+ node.toString()+ " beans of class " + parentClazz.getSimpleName() + " ... ");}
+				
+		    	Set<Object> parentBeans = node.getParentBeans().get(parentClazz);
+		    	
+		    	if (index != null){
+		    		logger.warn("Property path index not yet implemented for 'new'");
+		    	}
+		    	//new			    	
+		    	for (Object parentBean : parentBeans){
+		    		try{
+		    			Object propertyValue = PropertyUtils.getProperty(parentBean, property);
+		    			preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
+			    	} catch (IllegalAccessException e) {
+			    		logger.error("Illegal access on property " + property);
+			    	} catch (InvocationTargetException e) {
+			    		logger.error("Cannot invoke property " + property + " not found");
+			    	} catch (NoSuchMethodException e) {
+			    		if (logger.isDebugEnabled()){logger.debug("Property " + property + " not found for class " + parentClazz);}
 			    	}
-			    	//new			    	
-			    	for (Object parentBean : parentBeans){
-			    		Object propertyValue = PropertyUtils.getProperty(parentBean, property);
-					    preparePropertyValueForBulkLoadOrStore(node, parentBean, property, propertyValue);
-			    	}
-			    	
-			    	//end new
-			    	
+		    	}
+		    	
+		    	//end new
+		    	
 //			    	initializeNodeNoWildcardOld(node, property, index, parentBeans);  //move bulkLoadLazies up again, if uncomment this line
-				}
-		    	bulkLoadLazies(node);  
-
-			} catch (IllegalAccessException e) {
-			    logger.error("Illegal access on property " + property);
-			} catch (InvocationTargetException e) {
-			    logger.error("Cannot invoke property " + property + " not found");
-			} catch (NoSuchMethodException e) {
-			    logger.info("Property " + property + " not found");
 			}
+	    	bulkLoadLazies(node);  
+			
 		}
 
 		/**
@@ -387,13 +387,13 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						//get from repository
 						List<Object[]> list;
 						String hql = "SELECT oc, oc.%s " +
-								" FROM %s as oc INNER JOIN FETCH oc.%s as col " +
+								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s " +
 								" WHERE oc.id IN (:idSet) ";
 						
 //						String hql = "SELECT oc.%s " +
 //								" FROM %s as oc WHERE oc.id IN (:idSet) ";
-//						param = workAroundBeanInconsistency(param, ownerClazz.getSimpleName());
-						hql = String.format(hql, param, ownerClazz.getSimpleName(), param );
+						hql = String.format(hql, param, ownerClazz.getSimpleName(), param,
+								"" /*addAutoinitFetchLoading(clazz, "col")*/);
 						
 						try {
 							
@@ -409,6 +409,9 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 						if (logger.isDebugEnabled()){logger.debug("initialize bulk loaded " + node + " collections - DONE");}
 						for (Object[] listItems : list){
 							Object newBean = listItems[1];
+							if (newBean == null){
+								System.out.println("Collection is null");
+							}
 							if (newBean instanceof HibernateProxy){
 								newBean = initializeInstance(newBean);
 							}
