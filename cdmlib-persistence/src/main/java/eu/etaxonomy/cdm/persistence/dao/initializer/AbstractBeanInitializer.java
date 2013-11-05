@@ -101,7 +101,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
             restrictions.add(CdmBase.class);
         }
         if(collections){
-            restrictions.add(Collections.class);
+            restrictions.add(Collection.class);
         }
         Set<PropertyDescriptor> props = getProperties(bean, restrictions);
         for(PropertyDescriptor propertyDescriptor : props){
@@ -401,7 +401,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
                   }catch( ClassNotFoundException cnfe ){
                      // ignore
                   }
-                  if(typeRestrictions != null && typeRestrictions.size() > 1){
+                  if(typeRestrictions != null){
                       for(Class<?> restrictedType : typeRestrictions){
                           if(restrictedType.isAssignableFrom(prop.getPropertyType())){
                               properties.add(prop);
