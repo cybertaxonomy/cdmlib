@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.AbstractStringComparator;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 
@@ -79,36 +80,37 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
 
 		String titleCache = null;
 		if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
-			TaxonNameBase name = taxonNode.getTaxon().getName();
-	        if (name instanceof NonViralName){
-            	logger.trace(name + " isNonViralName");
-            	NonViralName nonViralName = (NonViralName)name;
+			TaxonNameBase<?,?> name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName(), TaxonNameBase.class);
+	        
+			if (name instanceof NonViralName){
+				if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
+            	NonViralName<?> nonViralName = (NonViralName<?>)name;
                 if (name.isInfraSpecific()){
-                	logger.trace(name + " isInfraSpecific");
+                	if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
                     if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
                         titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
                     }
                 }
                 if (name.isInfraGeneric()){
-                	logger.trace(name + " isInfraGeneric");
+                	if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
                 	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
                 }
                 if (nonViralName.getRank().isSpeciesAggregate()){
-                	logger.trace(name + " isSpeciesAggregate");
+                	if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
                 	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
                 }
 
             }
             if (titleCache == null){
-            	logger.trace("titleCache still null, using name.getTitleCache()");
+            	if (logger.isTraceEnabled()){logger.trace("titleCache still null, using name.getTitleCache()");}
                 titleCache = name.getTitleCache();
             }
         }
 		if (titleCache == null){
-        	logger.trace("titleCache still null, using taxonNode id");
+			if (logger.isTraceEnabled()){logger.trace("titleCache still null, using taxonNode id");}
             titleCache = String.valueOf(taxonNode.getId());
         }
-        logger.trace("SortableTitleCache: " + titleCache);
+        if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + titleCache);}
 		return titleCache;
 	}
 
