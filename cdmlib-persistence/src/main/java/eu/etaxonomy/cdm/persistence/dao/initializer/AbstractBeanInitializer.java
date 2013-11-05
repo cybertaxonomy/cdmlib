@@ -376,8 +376,10 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
     }
 
     /**
-     * Return all public bean properties which, exclusive those whose return type match any class defined in
-     * the parameter <code>typeRestrictions</code> or which are transient properties.
+     * Return all public bean properties exclusive those whose return type
+     * match any class defined in the parameter <code>typeRestrictions</code>
+     * or which are transient properties.
+     *
      *
      * @param bean
      * @param typeRestrictions
