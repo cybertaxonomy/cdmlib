@@ -161,13 +161,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "*",
-            // taxon relations
-            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference"
+            "name.nomenclaturalReference.authorTeam"
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
