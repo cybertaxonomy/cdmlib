@@ -376,7 +376,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // handle collection data
             setCollectionData(state, derivedUnitFacade);
 
-            //<<<<<<< .courant
             //Reference stuff
             SpecimenUserInteraction sui = state.getConfig().getSpecimenUserInteraction();
             Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
@@ -400,17 +399,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
 
                 try{
-                    if(sour.getCitationMicroReference() !=null && !sour.getCitationMicroReference().isEmpty()) {
-                        dataHolder.docSources.add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
-                    } else {
-                        dataHolder.docSources.add(sour.getCitation().getTitleCache());
+                    if (sour.getCitation() != null){
+	                    if(StringUtils.isNotBlank(sour.getCitationMicroReference())) {
+	                        dataHolder.docSources.add(sour.getCitation().getTitleCache()+ "---"+sour.getCitationMicroReference());
+	                    } else {
+	                        dataHolder.docSources.add(sour.getCitation().getTitleCache());
+	                    }
                     }
                 }catch(Exception e){
                     logger.warn("oups");
                 }
+                //TODO what do we need tmp for?
                 String tmp = sour.getCitation().getTitleCache();
-                if (!sour.getCitationMicroReference().isEmpty()) {
-                    tmp+=" ("+sour.getCitationMicroReference()+")";
+                if (StringUtils.isNotBlank(sour.getCitationMicroReference())) {
+                    tmp +=" ("+sour.getCitationMicroReference()+")";
                 }
                 reference.addSource(sour);
                 getReferenceService().saveOrUpdate(reference);
@@ -518,22 +520,34 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param citationDetail
      * @return
      */
+    //FIXME this method is highly critical, because
+    //  * it will have serious performance and memory problems with large databases
+    //        (databases may easily have >1 Mio source records)
+    //  * it does not make sense to search for existing sources and then clone them
+    //    we need to search for existing references instead and use them (if exist)
+    //    for our new source.
     private IdentifiableSource getIdentifiableSource(Reference<?> reference, String citationDetail) {
 
         List<OriginalSourceBase> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
 
 
-        try {
-            for (OriginalSourceBase<?> osb:issTmp){
-                if (osb.getCitation().getTitleCache().equalsIgnoreCase(reference.getTitleCache())
-                        && osb.getCitationMicroReference().equalsIgnoreCase(citationDetail)) {
-                    System.out.println("REFERENCE FOUND RETURN EXISTING SOURCE");
-                    return (IdentifiableSource) osb.clone();
-                }
-            }
-        } catch (CloneNotSupportedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+        if (reference != null){
+        	try {
+	        	for (OriginalSourceBase<?> osb: issTmp){
+	                if (osb.getCitation() != null && osb.getCitation().getTitleCache().equalsIgnoreCase(reference.getTitleCache())){
+	                	String osbDetail = osb.getCitationMicroReference();
+	                	if (StringUtils.isBlank(osbDetail) && StringUtils.isBlank(citationDetail)
+	                			|| osbDetail != null && osbDetail.equalsIgnoreCase(citationDetail) ) {
+		                    System.out.println("REFERENCE FOUND RETURN EXISTING SOURCE");
+		                    return (IdentifiableSource) osb.clone();
+	                	}
+	                }
+	            }
+	        } catch (CloneNotSupportedException e) {
+	            throw new RuntimeException(e);
+	        } catch (Exception e1){
+	        	e1.printStackTrace();
+	        }
         }
 
         IdentifiableSource sour = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null, reference,citationDetail);
