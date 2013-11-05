@@ -507,9 +507,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     private boolean sourceNotLinkedToElement(DerivedUnitFacade derivedUnitFacade, OriginalSourceBase<?> source) {
         Set<IdentifiableSource> linkedSources = derivedUnitFacade.getSources();
         for (IdentifiableSource is:linkedSources){
-            if (is.getCitation().getTitleCache().equalsIgnoreCase(source.getCitation().getTitleCache())
-                    && is.getCitationMicroReference().equalsIgnoreCase(source.getCitationMicroReference())){
-                return false;
+
+
+            if (is.getCitation()!=null && is.getCitation().getTitleCache().equalsIgnoreCase(source.getCitation().getTitleCache())){
+                String isDetail =  is.getCitationMicroReference();
+                if (StringUtils.isBlank(isDetail) && StringUtils.isBlank(source.getCitationMicroReference())
+                        || isDetail != null && isDetail.equalsIgnoreCase(source.getCitationMicroReference()) ) {
+                    return false;
+                }
             }
         }
         return true;
