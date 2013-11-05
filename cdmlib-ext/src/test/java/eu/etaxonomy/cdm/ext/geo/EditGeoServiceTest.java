@@ -133,7 +133,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(result.matches(".*[a-d]:GER[\\|&].*") );
         assertTrue(result.matches(".*[a-d]:SPA[\\|&].*") );
 //        assertTrue(result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
-        assertTrue(result.matches(".*tdwg4:[a-h]:INDAP[\\|&].*") );
+        assertTrue(result.matches(".*tdwg4:[a-i]:INDAP[\\|&].*") );
         //assertTrue(result.matches("0000ff"));
         //TODO continue
 
