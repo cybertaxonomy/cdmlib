@@ -513,8 +513,7 @@ public class Rank extends OrderedTermBase<Rank> {
 
     /**
      * Returns true if this rank indicates a rank that aggregates species
-     * like species aggregates or species groups, false otherwise. This methods
-     * currently returns false for all user defined ranks.
+     * like species aggregates or species groups, false otherwise.
      * @return
      */
     @Transient
