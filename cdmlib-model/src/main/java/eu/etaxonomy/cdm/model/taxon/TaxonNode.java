@@ -441,7 +441,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Override
     @Deprecated //for CDM lib internal use only, may be removed in future versions
     public int treeId() {
-        return this.classification.getId();
+        if (this.classification == null){
+        	logger.warn("TaxonNode has no classification. This should not happen.");
+        	return -1;
+        }else{
+        	return this.classification.getId();
+        }
     }
 
     public Taxon getTaxon() {
