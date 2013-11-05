@@ -9,6 +9,7 @@
  */
 package eu.etaxonomy.cdm.io.specimen;
 
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -197,10 +198,16 @@ public class SpecimenUserInteraction implements ItemListener {
             checkPanel.add(label);
 
             for (String ch:allList){
+                if (StringUtils.isBlank(ch)) {
+                    continue;
+                }
+                System.out.println("HOP ="+ch+"=");
                 if(docSources.contains(ch)) {
-                    jcb = new JRadioButton("<html><font color=\"blue\">"+ch.replace("---", "<br/>")+"</font></html>");
+                    jcb = new JRadioButton("<html>"+ch.replace("---", "<br/>")+"</html>");
+                    jcb.setForeground(Color.blue);
                 } else {
                     jcb = new JRadioButton("<html>"+ch.replace("---", "<br/>")+"</html>");
+                    jcb.setForeground(Color.black);
                 }
                 jcb.addItemListener(this);
                 group.add(jcb);
@@ -218,6 +225,7 @@ public class SpecimenUserInteraction implements ItemListener {
             if(n<3 && !currentSource.isEmpty() && !currentSource.equalsIgnoreCase("Create a new source")) {
                 sources.add(currentSource);
             }
+            System.out.println("current source: "+currentSource);
             if(currentSource.equalsIgnoreCase("Create a new source")){
                 String a = createNewSource();
                 if (a!=null && !a.isEmpty()) {
