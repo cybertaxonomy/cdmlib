@@ -1655,6 +1655,23 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         }
         return getRank().isInfraSpecific();
     }
+    
+    /**
+     * Returns true if this name's rank indicates a rank that aggregates species like species 
+     * aggregates or species groups, false otherwise. This methods currently returns false 
+     * for all user defined ranks.
+     *
+     *@see Rank#isSpeciesAggregate()
+     * 
+     * @return
+     */
+    @Transient
+    public boolean isSpeciesAggregate() {
+        if (rank == null){
+            return false;
+        }
+        return getRank().isSpeciesAggregate();
+    }
 
 
     /**
