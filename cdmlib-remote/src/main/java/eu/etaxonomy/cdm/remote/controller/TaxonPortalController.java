@@ -138,18 +138,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     private IFeatureTreeService featureTreeService;
 
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-            "*",
+            "$",
+            "sources",
             // taxon relations
-            "relationsToThisName.fromTaxon.name",
+//            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
             "name.rank.representations",
             "name.status.type.representations",
 
-            // taxon descriptions
-//            "descriptions.elements.area.$",
-//            "descriptions.elements.multilanguageText",
-//            "descriptions.elements.media",
+            "descriptions" // TODO remove
 
             });
 
@@ -165,7 +165,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference.authorTeam"
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
+            "taxonNodes.classification"
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -173,6 +175,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -183,7 +186,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
-
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
             "name.homotypicalGroup.typifiedNames.taxonBases.$"
     });
 
@@ -192,6 +195,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -200,6 +204,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
 
             "name.homotypicalGroup.typifiedNames.taxonBases.$",
 
@@ -215,7 +220,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference",
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
 
             "taxonNodes.$",
             "taxonNodes.classification.$",
@@ -237,6 +243,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "type.inverseRepresentations",
             "fromName",
             "toName.$",
+            "toName.nomenclaturalReference.authorTeam",
+            "toName.nomenclaturalReference.inReference",
+
     });
 
 

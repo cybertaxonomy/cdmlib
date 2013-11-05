@@ -231,12 +231,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         child.setParentTreeNode(this, index);
 
-		//TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
-		for(int i = 0; i < childNodes.size(); i++){
-			childNodes.get(i).sortIndex = i;
-		}
-		child.sortIndex = index;
-		
+        //TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
+        for(int i = 0; i < childNodes.size(); i++){
+            childNodes.get(i).sortIndex = i;
+        }
+        child.sortIndex = index;
+
         //TODO workaround (see sortIndex doc)
         for(int i = 0; i < childNodes.size(); i++){
             childNodes.get(i).sortIndex = i;
@@ -519,23 +519,23 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         // add this node to the parent child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
         if (parentChildren.contains(this)){
-        	//avoid duplicates
-        	if (parentChildren.indexOf(this) < index){
-        		index = index -1;
-        	}
-        	parentChildren.remove(this);
-        	parentChildren.add(index, this);
+            //avoid duplicates
+            if (parentChildren.indexOf(this) < index){
+                index = index -1;
+            }
+            parentChildren.remove(this);
+            parentChildren.add(index, this);
         }else{
-        	parentChildren.add(index, this);
+            parentChildren.add(index, this);
         }
 
         //TODO workaround (see sortIndex doc)
-        //TODO check if it is correct to use the parentChildren here 
-		for(int i = 0; i < parentChildren.size(); i++){
-			parentChildren.get(i).sortIndex = i;
-		}
+        //TODO check if it is correct to use the parentChildren here
+        for(int i = 0; i < parentChildren.size(); i++){
+            parentChildren.get(i).sortIndex = i;
+        }
 //		this.sortIndex = index;
-        
+
         // update the children count
         if(parent instanceof TaxonNode){
             TaxonNode parentTaxonNode = (TaxonNode) parent;

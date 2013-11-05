@@ -51,7 +51,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "taxon.sec",
-            "taxon.name"
+            "taxon.name.rank"
             });
 
 

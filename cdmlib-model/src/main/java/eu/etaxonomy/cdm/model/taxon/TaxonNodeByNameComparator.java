@@ -29,9 +29,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 @Component
 public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNode> implements Comparator<TaxonNode>, ITaxonNodeComparator<TaxonNode> {
 
-	private static final String HYBRID_SIGN = "\u00D7";
+    private static final String HYBRID_SIGN = "\u00D7";
 
-	private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
+    private static final Logger logger = Logger.getLogger(TaxonNodeByNameComparator.class);
 
     private boolean ignoreHybridSign = true;
     private boolean sortInfraGenericFirst = true;
@@ -39,13 +39,14 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
     /* (non-Javadoc)
      * @see java.util.Comparator#compare(java.lang.Object, java.lang.Object)
      */
+    @Override
     public int compare(TaxonNode o1, TaxonNode o2) {
 
         String titleCache1 = createSortableTitleCache(o1);
         String titleCache2 = createSortableTitleCache(o2);
 
         if(isIgnoreHybridSign()) {
-        	logger.trace("ignoring Hybrid Signs: " + HYBRID_SIGN);
+            logger.trace("ignoring Hybrid Signs: " + HYBRID_SIGN);
             titleCache1 = titleCache1.replace(HYBRID_SIGN, "");
             titleCache2 = titleCache2.replace(HYBRID_SIGN, "");
         }
@@ -76,49 +77,51 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
     }
 
 
-	private String createSortableTitleCache(TaxonNode taxonNode) {
+    private String createSortableTitleCache(TaxonNode taxonNode) {
 
-		String titleCache = null;
-		if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
-			TaxonNameBase<?,?> name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName(), TaxonNameBase.class);
-	        
-			if (name instanceof NonViralName){
-				if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
-            	NonViralName<?> nonViralName = (NonViralName<?>)name;
+        String titleCache = null;
+        if(taxonNode.getTaxon() != null && taxonNode.getTaxon().getName() != null ){
+            TaxonNameBase<?,?> name = HibernateProxyHelper.deproxy(taxonNode.getTaxon().getName(), TaxonNameBase.class);
+
+            if (name instanceof NonViralName){
+                if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
+                NonViralName<?> nonViralName = (NonViralName<?>)name;
                 if (name.isInfraSpecific()){
-                	if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
+                    if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
                     if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
                         titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
                     }
                 }
                 if (name.isInfraGeneric()){
-                	if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
-                	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
+                    if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
+                    titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
                 }
                 if (nonViralName.isSpeciesAggregate()){
-                	if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
-                	titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
+                    if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
+                    titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
                 }
 
             }
             if (titleCache == null){
-            	if (logger.isTraceEnabled()){logger.trace("titleCache still null, using name.getTitleCache()");}
+                if (logger.isTraceEnabled()){logger.trace("titleCache still null, using name.getTitleCache()");}
                 titleCache = name.getTitleCache();
             }
         }
-		if (titleCache == null){
-			if (logger.isTraceEnabled()){logger.trace("titleCache still null, using taxonNode id");}
+        if (titleCache == null){
+            if (logger.isTraceEnabled()){logger.trace("titleCache still null, using taxonNode id");}
             titleCache = String.valueOf(taxonNode.getId());
         }
         if (logger.isTraceEnabled()){logger.trace("SortableTitleCache: " + titleCache);}
-		return titleCache;
-	}
+        return titleCache;
+    }
 
 
+    @Override
     public boolean isIgnoreHybridSign() {
         return ignoreHybridSign;
     }
 
+    @Override
     public void setIgnoreHybridSign(boolean ignore) {
         this.ignoreHybridSign = ignore;
     }
