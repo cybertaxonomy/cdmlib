@@ -149,7 +149,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.rank.representations",
             "name.status.type.representations",
 
-            "descriptions" // TODO remove
+//            "descriptions" // TODO remove
 
             });
 
