@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -196,18 +197,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public List<UUID> deleteTaxonNodes(Set<ITreeNode> nodes, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+    public List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
         
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
         
-        for (ITreeNode treeNode:nodes){
+        for (ITaxonTreeNode treeNode:nodes){
         	if (treeNode instanceof TaxonNode){
         		TaxonNode taxonNode;
 	            taxonNode = (TaxonNode)treeNode;
 	           
 	            	//check whether the node has children or the children are already deleted
 	            if(taxonNode.hasChildNodes()){
-            		Set<ITreeNode> children = new HashSet<ITreeNode> ();
+            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
             		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
         			children.addAll(childNodesList);
         			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
@@ -248,8 +249,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public UUID deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
-    	
-    	taxonService.deleteTaxon(node.getTaxon(), config, node.getClassification());
+    	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+    	taxonService.deleteTaxon(taxon, config, node.getClassification());
     	
     	return node.getUuid();
     }

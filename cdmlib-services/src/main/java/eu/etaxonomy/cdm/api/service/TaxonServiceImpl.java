@@ -99,6 +99,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -1013,7 +1014,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //    	TaxonDescription
             if (config.isDeleteDescriptions()){
                 Set<TaxonDescription> descriptions = taxon.getDescriptions();
-
+                List<TaxonDescription> removeDescriptions = new ArrayList<TaxonDescription>();
                 for (TaxonDescription desc: descriptions){
                     //TODO use description delete configurator ?
                     //FIXME check if description is ALWAYS deletable
@@ -1022,8 +1023,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 " which also describes specimens or abservations";
                         throw new ReferencedObjectUndeletableException(message);
                     }
+                    removeDescriptions.add(desc);
                     descriptionService.delete(desc);
-                    taxon.removeDescription(desc);
+                   
+                }
+                for (TaxonDescription desc: removeDescriptions){
+                	taxon.removeDescription(desc);
                 }
             }
 
@@ -1067,10 +1072,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                             throw new DataChangeNoRollbackException(message);
                         }
                     } else if (config.isDeleteInAllClassifications()){
-                        Set<ITreeNode> nodesList = new HashSet<ITreeNode>();
+                        Set<ITaxonTreeNode> nodesList = new HashSet<ITaxonTreeNode>();
                         nodesList.addAll(taxon.getTaxonNodes());
 
-                            for (ITreeNode treeNode: nodesList){
+                            for (ITaxonTreeNode treeNode: nodesList){
                                 TaxonNode taxonNode = (TaxonNode) treeNode;
                                 if(!deleteChildren){
                                    /* Object[] childNodes = taxonNode.getChildNodes().toArray();
