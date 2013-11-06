@@ -57,13 +57,15 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	    		return beanList;
 	    	}
 	    	
-	    	//TODO new required?
-//	        invokePropertyAutoInitializers(bean);
-
-	        if(propertyPaths == null){  //TODO if AutoInitializer is not requiredfor top level bean, this can be merged with previous "if"
-	            return beanList;
+	        //autoinitialize
+	        for (Object bean : beanList){
+	        	autoinitializeBean(bean);
 	        }
 
+	        if(propertyPaths == null){
+	            return beanList;
+	        }
+	        
 	        
 	        //new
  	        BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
