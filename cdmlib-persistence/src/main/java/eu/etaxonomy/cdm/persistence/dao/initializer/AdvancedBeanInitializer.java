@@ -67,7 +67,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	        
 	        //new
  	        BeanInitNode rootPath = BeanInitNode.createInitTree(propertyPaths);
-	        System.out.println(rootPath.toStringTree());
+	        if (logger.isDebugEnabled()){logger.debug(rootPath.toStringTree());}
 	        
 
 	        if(logger.isDebugEnabled()){ logger.debug(">> starting to initialize beanlist ; class(e.g.):" + beanList.iterator().next().getClass().getSimpleName());}
@@ -106,7 +106,7 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
 	     * @param propPath
 	     */
 	    private void initializeNode(BeanInitNode node) {
-	        if(logger.isDebugEnabled()){logger.debug(" processing " + node.toString());}
+	        if(logger.isInfoEnabled()){logger.info(" processing " + node.toString());}
 	        if (node.isRoot()){
 	        	return;
 	        }else if (node.isWildcard()){
