@@ -848,6 +848,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
             }*/
         }
+        if(request != null && logger.isInfoEnabled()){
+            logger.info("doGetDescriptions() - DONE");
+        }
         return descriptions;
     }
 
