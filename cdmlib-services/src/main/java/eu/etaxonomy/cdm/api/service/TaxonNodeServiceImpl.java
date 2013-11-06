@@ -198,7 +198,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     @Override
     @Transactional(readOnly = false)
     public List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
-        
+        if (config == null){
+        	config = new TaxonDeletionConfigurator();
+        }
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
         
         for (ITaxonTreeNode treeNode:nodes){
@@ -214,7 +216,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
         			boolean childHandling = (compare == 0)? true: false;
             		if (childHandling){
+            			boolean changeDeleteTaxon = false;
+            			if (!config.getTaxonNodeConfig().isDeleteTaxon()){
+            				config.getTaxonNodeConfig().setDeleteTaxon(true);
+            				changeDeleteTaxon = true;
+            			}
             			deleteTaxonNodes(children, config);
+            			if (changeDeleteTaxon){
+            				config.getTaxonNodeConfig().setDeleteTaxon(false);
+            			}
             			
             		} else {
             			//move the children to the parent
@@ -229,8 +239,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	            if (classification.getChildNodes().contains(taxonNode)){
 	                classification.deleteChildNode(taxonNode);
 	            }else{
+	            	Taxon taxon = taxonNode.getTaxon();
 	            	taxonNode.getTaxon().removeTaxonNode(taxonNode);
+	            	if (config.getTaxonNodeConfig().isDeleteTaxon()){
+		            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+		            	configNew.setDeleteTaxonNodes(false);
+		            	taxonService.deleteTaxon(taxon, configNew, classification);
+	            	}
 	            }
+	           
 	            dao.delete(taxonNode);
         	}else {
         		Classification classification = (Classification) treeNode;

@@ -49,5 +49,19 @@ public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 		return childHandling;
 	}
 	
+	public boolean deleteTaxon = true;
+
+
+	public boolean isDeleteTaxon() {
+		return deleteTaxon;
+	}
+
+
+	public void setDeleteTaxon(boolean deleteTaxon) {
+		this.deleteTaxon = deleteTaxon;
+	}
+	
+	
+	
 	
 }

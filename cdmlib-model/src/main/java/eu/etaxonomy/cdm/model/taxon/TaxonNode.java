@@ -745,6 +745,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         }
     }
 
+	public boolean hasTaxon() {
+		return (taxon!= null);
+	}
+
 
 
 }

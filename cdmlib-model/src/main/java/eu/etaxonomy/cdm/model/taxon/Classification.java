@@ -166,8 +166,10 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public boolean deleteChildNode(TaxonNode node) {
 		boolean result = removeChildNode(node);
 		
-		node.getTaxon().removeTaxonNode(node);
-		node.setTaxon(null);	
+		if (node.hasTaxon()){
+			node.getTaxon().removeTaxonNode(node);
+			node.setTaxon(null);
+		}
 		
 		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
 		for (TaxonNode childNode : childNodes){

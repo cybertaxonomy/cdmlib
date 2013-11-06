@@ -1103,7 +1103,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                     //taxon.removeTaxonNode(taxonNode);
                                 }
                             }
-
+                        config.getTaxonNodeConfig().setDeleteTaxon(false);
                         nodeService.deleteTaxonNodes(nodesList, config);
                     }
                     if (!success){
@@ -1119,7 +1119,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
                     TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
                     //check whether taxon will be deleted or not
-                    if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
+                    if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null){
                         taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
                         name.removeTaxonBase(taxon);
                         nameService.save(name);

@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -208,7 +211,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	
 	@Test
 	@DataSet
-	public final void testDeleteNodes(){
+	public final void testDeleteNode(){
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(rootNodeUuid);
@@ -216,6 +219,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode);
+		newNode = taxonNodeService.load(uuidNewNode);
+		UUID taxUUID = newNode.getTaxon().getUuid();
 		try {
 			taxonNodeService.deleteTaxonNode(node1, null);
 		} catch (DataChangeNoRollbackException e) {
@@ -228,10 +233,41 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		
 		t1 = (Taxon) taxonService.load(t1Uuid);
 		assertNull(t1);
+		Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
+		assertNull(newTaxon);
 		
 		
 	}
-	
+	@Test
+	@DataSet
+	public final void testDeleteNodes(){
+		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
+		node2 = taxonNodeService.load(rootNodeUuid);
+		node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+		
+		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+		UUID uuidNewNode = taxonNodeService.save(newNode);
+		Set<ITaxonTreeNode> treeNodes = new HashSet<ITaxonTreeNode>();
+		treeNodes.add(node1);
+		treeNodes.add(node2);
+		try {
+			taxonNodeService.deleteTaxonNodes(treeNodes, null);
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
+		newNode = taxonNodeService.load(uuidNewNode);
+		node1 = taxonNodeService.load(node1Uuid);
+		assertNull(newNode);
+		assertNull(node1);
+		
+		t1 = (Taxon) taxonService.load(t1Uuid);
+		assertNull(t1);
+		t2 = (Taxon) taxonService.load(t2Uuid);
+		assertNull(t2);
+		
+		
+	}
 	
 
 }
