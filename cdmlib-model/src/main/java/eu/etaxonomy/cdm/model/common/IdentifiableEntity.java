@@ -516,6 +516,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          String specifiedGenusString = "";
          int thisrank_order = 0;
 
+         //TODO we can remove all the deproxies here except for the first one
+         identifiableEntity = HibernateProxyHelper.deproxy(identifiableEntity, IdentifiableEntity.class);
          if(identifiableEntity instanceof NonViralName) {
              specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
              specifiedTitleCache = identifiableEntity.getTitleCache();
