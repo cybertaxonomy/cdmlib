@@ -62,6 +62,7 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -96,6 +97,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -1052,7 +1054,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 	taxon.removeDescription(desc);
                 }
             }
-
+         
 
             //check references with only reverse mapping
         String message = checkForReferences(taxon);
@@ -1187,10 +1189,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     private String checkForReferences(Taxon taxon){
         Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
+        String message;
         for (CdmBase referencingObject : referencingObjects){
             //IIdentificationKeys (Media, Polytomous, MultiAccess)
             if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
-                String message = "Taxon" + taxon.getTitleCache() + "can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
+                message = "Taxon" + taxon.getTitleCache() + "can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
 
                 return message;
             }
@@ -1198,17 +1201,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             //PolytomousKeyNode
             if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
-                String message = "Taxon" + taxon.getTitleCache() + " can't be deleted as it is used in polytomous key node";
+               message = "Taxon" + taxon.getTitleCache() + " can't be deleted as it is used in polytomous key node";
                 return message;
             }
 
             //TaxonInteraction
             if (referencingObject.isInstanceOf(TaxonInteraction.class)){
-                String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
+                message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
                 return message;
             }
+            //Events
+            if (referencingObject.isInstanceOf(DeterminationEvent.class)){
+            	message = "Taxon can't be deleted as it is used in a determination event";
+                return message;
+            }
+            message = "Taxon can't be deleted as it is referenced in a "+ referencingObject.getClass().getName() + " object";
+            return message;
         }
-        
         referencingObjects = null;
         return null;
     }
