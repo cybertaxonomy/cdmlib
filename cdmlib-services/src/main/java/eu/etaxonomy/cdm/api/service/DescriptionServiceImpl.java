@@ -293,7 +293,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         List<UUID> uuids = new ArrayList<UUID>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
-        	uuids.add(taxonDescription.getUuid());
+        	if (! taxonDescription.isImageGallery()){    //image galleries should not have descriptions, but better filter fully on DTYPE of description element
+        		uuids.add(taxonDescription.getUuid());
+        	}
         }
         
         List<DescriptionBase> desclist = dao.list(uuids, null, null, null, propertyPaths);
