@@ -64,6 +64,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
+            "elements.annotations",
             "elements.sources.citation.authorTeam.$",
             "elements.sources.nameUsedInSource",
             "elements.area.level",
@@ -71,9 +72,10 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.states.*",
             "elements.media",
     });
-    
+
     protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
             "elements.$",
+            "elements.annotations",
             "elements.markers",
             "elements.sources.citation.authorTeam.$",
             "elements.sources.nameUsedInSource",
