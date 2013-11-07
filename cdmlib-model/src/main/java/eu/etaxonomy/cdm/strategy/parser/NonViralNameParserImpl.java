@@ -20,6 +20,7 @@ import org.joda.time.DateTimeFieldType;
 import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
@@ -183,6 +184,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return
 	 */
 	private String getLocalFullName(NonViralName<?> nameToBeFilled){
+		nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilled, NonViralName.class);
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooFullName;
 		}else if (nameToBeFilled instanceof BotanicalName) {
@@ -201,6 +203,8 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @return
 	 */
 	private String getLocalSimpleName(NonViralName<?> nameToBeFilled){
+		nameToBeFilled = HibernateProxyHelper.deproxy(nameToBeFilled, NonViralName.class);
+		
 		if (nameToBeFilled instanceof ZoologicalName){
 			return anyZooName;
 		}else if (nameToBeFilled instanceof NonViralName){
