@@ -34,8 +34,10 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -45,6 +47,10 @@ import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -54,6 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -85,6 +92,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     
     @SpringBeanByType
     private IMarkerService markerService;
+    
+    @SpringBeanByType
+    private IEventBaseService eventService;
 
 
 
@@ -1013,7 +1023,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
                 "PolytomousKeyNode","PolytomousKeyNode_AUD",
                 "Media","Media_AUD",
                 "WorkingSet","WorkingSet_AUD",
-                "DescriptionElementBase","DescriptionElementBase_AUD"};
+                "DescriptionElementBase","DescriptionElementBase_AUD",
+        		"DeterminationEvent","DeterminationEvent_AUD"};
 
         UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
@@ -1053,14 +1064,31 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Child should belong to 1 node", 1, child1.getTaxonNodes().size());
 
         TaxonNode node = child1.getTaxonNodes().iterator().next();
+        child1.addSource(IdentifiableSource.NewInstance(OriginalSourceType.Import));
+        
+        SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
+        DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(child1, identifiedUnit);
+        UUID eventUUID = eventService.save(determinationEvent);
+           
+        
         TaxonNode parentNode = node.getParent();
         parentNode =CdmBase.deproxy(parentNode, TaxonNode.class);
         parentNode.deleteChildNode(node);
         nodeService.save(parentNode);
+       // commitAndStartNewTransaction(tableNames);
+
+        try {
+
+            service.deleteTaxon(child1, config, null);
+            Assert.fail("Delete should throw an exception because of the determination event");
+        } catch (DataChangeNoRollbackException e) {
+        	commitAndStartNewTransaction(tableNames);
+        }
+        determinationEvent = (DeterminationEvent)eventService.load(eventUUID);
+        eventService.delete(determinationEvent);
+        
         commitAndStartNewTransaction(tableNames);
-
         child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
-
         assertEquals(0, child1.getTaxonNodes().size());
         try {
 
@@ -1083,6 +1111,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 2 taxa in the database",2, nTaxa);
+        
+        
 //		nNames = nameService.count(TaxonNameBase.class);
 //		Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
 //		int nRelations = service.countAllRelationships();
