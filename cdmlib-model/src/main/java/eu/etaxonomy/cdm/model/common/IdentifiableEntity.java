@@ -540,10 +540,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
              }
          }
 
-         if(this instanceof NonViralName) {
+         if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
-         } else if(this instanceof TaxonBase) {
+         } else if(this.isInstanceOf(TaxonBase.class)) {
              TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
              NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
              thisNameCache = nonViralName.getNameCache();
