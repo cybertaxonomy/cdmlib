@@ -568,8 +568,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
-        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
-        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
+        
+        //new
+        List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
+        synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
+        synonymyGroups.remove(0);
+        synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
+        
+        //old
+//        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
+//        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
+        
+        
         mv.addObject(synonymy);
         return mv;
     }
