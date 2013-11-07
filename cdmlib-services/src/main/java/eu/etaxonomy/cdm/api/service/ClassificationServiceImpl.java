@@ -148,6 +148,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                     PagerUtils.startFor(pageSize, pageIndex), propertyPaths);
         }
 
+        Collections.sort(results, taxonNodeComparator);
         return new DefaultPagerImpl<TaxonNode>(pageIndex, numberOfResults.intValue(), pageSize, results);
 
     }
