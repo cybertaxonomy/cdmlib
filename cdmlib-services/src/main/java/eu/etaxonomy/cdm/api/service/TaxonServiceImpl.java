@@ -624,6 +624,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getHomotypicSynonymsByHomotypicGroup(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
      */
     @Override
+    public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
+    	 List<List<Synonym>> result = new ArrayList<List<Synonym>>();
+    	Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+        
+    	//homotypic
+    	result.add(t.getHomotypicSynonymsByHomotypicGroup());
+    	
+    	//heterotypic
+        List<HomotypicalGroup> homotypicalGroups = t.getHeterotypicSynonymyGroups();
+        for(HomotypicalGroup homotypicalGroup : homotypicalGroups){
+            result.add(t.getSynonymsInGroup(homotypicalGroup));
+        }
+    	
+    	return result;
+    	
+    }
+    
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getHomotypicSynonymsByHomotypicGroup(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
+     */
+    @Override
     public List<Synonym> getHomotypicSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
         Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
         return t.getHomotypicSynonymsByHomotypicGroup();

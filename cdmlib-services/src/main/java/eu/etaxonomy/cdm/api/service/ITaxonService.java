@@ -401,6 +401,32 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * Returns the ordered list of all {@link eu.etaxonomy.cdm.model.name.HomotypicalGroup homotypical groups}
+     * that contain {@link Synonym synonyms} that are heterotypic to the given taxon.
+     * {@link eu.etaxonomy.cdm.model.name.TaxonNameBase Taxon names} of heterotypic synonyms
+     * belong to a homotypical group which cannot be the homotypical group to which the
+     * taxon name of the given taxon belongs. This method does not return the homotypic group the given
+     * taxon belongs to.<BR>
+     * This method does neglect the type of synonym relationship that is defined between the given taxon
+     * and the synonym. So the synonym relationship may be homotypic however a synonym is returned
+     * in one of the result lists as long as the synonym does not belong to the same homotypic group as
+     * the given taxon.<BR>
+     * The list returned is ordered according to the date of publication of the
+     * first published name within each homotypical group.
+     *
+     * @see			#getHeterotypicSynonymyGroups()
+     * @see			#getSynonyms()
+     * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+     * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
+
+     * @param taxon
+     * @param propertyPaths
+     * @return
+     */
+    public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
+
+    
+    /**
      * Returns the list of all synonyms that share the same homotypical group with the given taxon.
      * Only those homotypic synonyms are returned that do have a synonym relationship with the accepted taxon.
      * @param taxon
@@ -898,6 +924,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     void deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
+
 
 
 
