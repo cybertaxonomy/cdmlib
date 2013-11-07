@@ -96,7 +96,6 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -1208,13 +1207,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
                 return message;
             }
-            
-          //TaxonInteraction
-            if (referencingObject.isInstanceOf(DeterminationEvent.class)){
-                String message = "Taxon can't be deleted as it is used in a determination event";
-                return message;
-            }
-            
         }
         
         referencingObjects = null;
