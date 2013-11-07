@@ -162,7 +162,7 @@ public class SpecimenUserInteraction implements ItemListener {
     public List<OriginalSourceBase<?>> askForSource(Map<String, OriginalSourceBase<?>> refMap, String currentElement, String blabla,
             IReferenceService iReferenceService, List<String> docSources) {
 
-        System.out.println(refMap);
+//        System.out.println(refMap);
         List<String>  possibilities = new ArrayList<String> (refMap.keySet());
 
         Set<String> all = new HashSet<String>();
@@ -185,7 +185,7 @@ public class SpecimenUserInteraction implements ItemListener {
 
         Object[] options = {"Add and close", "Add and continue - I want to add more sources","Close without adding anything"};
 
-        System.out.println(docSources);
+//        System.out.println(docSources);
         int n=1;
         while (n==1){
             group = new ButtonGroup();
@@ -201,7 +201,7 @@ public class SpecimenUserInteraction implements ItemListener {
                 if (StringUtils.isBlank(ch)) {
                     continue;
                 }
-                System.out.println("HOP ="+ch+"=");
+//                System.out.println("HOP ="+ch+"=");
                 if(docSources.contains(ch)) {
                     jcb = new JRadioButton("<html>"+ch.replace("---", "<br/>")+"</html>");
                     jcb.setForeground(Color.blue);
@@ -225,7 +225,7 @@ public class SpecimenUserInteraction implements ItemListener {
             if(n<3 && !currentSource.isEmpty() && !currentSource.equalsIgnoreCase("Create a new source")) {
                 sources.add(currentSource);
             }
-            System.out.println("current source: "+currentSource);
+//            System.out.println("current source: "+currentSource);
             if(currentSource.equalsIgnoreCase("Create a new source")){
                 String a = createNewSource();
                 if (a!=null && !a.isEmpty()) {
@@ -336,7 +336,7 @@ public class SpecimenUserInteraction implements ItemListener {
 
         int descCnt=1;
         for (TaxonDescription description : descriptions){
-            System.out.println("descr. titlecache "+description.getTitleCache());
+//            System.out.println("descr. titlecache "+description.getTitleCache());
             Set<IdentifiableSource> sources =  description.getTaxon().getSources();
             sources.addAll(description.getSources());
             List<String> src=new ArrayList<String>();
