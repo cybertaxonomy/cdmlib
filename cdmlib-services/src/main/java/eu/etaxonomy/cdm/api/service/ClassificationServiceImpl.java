@@ -148,7 +148,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                     PagerUtils.startFor(pageSize, pageIndex), propertyPaths);
         }
 
-        Collections.sort(results, taxonNodeComparator);
+        Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
         return new DefaultPagerImpl<TaxonNode>(pageIndex, numberOfResults.intValue(), pageSize, results);
 
     }
