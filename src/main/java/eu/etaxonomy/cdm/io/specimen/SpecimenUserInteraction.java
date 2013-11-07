@@ -191,7 +191,7 @@ public class SpecimenUserInteraction implements ItemListener {
             group = new ButtonGroup();
             checkPanel = new JPanel();
             checkPanel.setLayout(new BoxLayout(checkPanel, BoxLayout.Y_AXIS));
-            allList.removeAll(sources);
+//            allList.removeAll(sources);
             scrollPane = new JScrollPane(checkPanel);
             scrollPane.setPreferredSize( new Dimension( 700, 300 ) );
 
