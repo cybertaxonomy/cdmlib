@@ -144,7 +144,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		
 	}
 	
-	protected Classification makeTree(STATE state, Reference reference){
+	protected Classification makeTree(STATE state, Reference<?> reference){
 		String treeName = "Classification (Import)";
 		if (reference != null && StringUtils.isNotBlank(reference.getTitleCache())){
 			treeName = reference.getTitleCache();
