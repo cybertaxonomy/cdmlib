@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
+import org.junit.Ignore;
 import org.junit.Test;
 
 /**
@@ -28,6 +29,7 @@ import org.junit.Test;
 public class BioCaseQueryServiceWrapperTest extends TestCase{
 
     @Test
+    @Ignore
     public void testQuery() {
         BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
         try {
