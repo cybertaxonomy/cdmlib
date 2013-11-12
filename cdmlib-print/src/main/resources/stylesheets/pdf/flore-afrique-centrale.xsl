@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xsl:stylesheet [<!ENTITY mdash "&#x2014;" > <!ENTITY ndash "&#x2013;" > <!ENTITY male "&#x2642;" > <!ENTITY female "&#x2640;" > <!ENTITY ndash "&#x2715;" > ]> 
+<!DOCTYPE xsl:stylesheet [<!ENTITY hyphen "&#45;" > <!ENTITY mdash "&#x2014;" > <!ENTITY ndash "&#x2013;" > <!ENTITY male "&#x2642;" > <!ENTITY female "&#x2640;" > <!ENTITY ndash "&#x2715;" > ]> 
 
 <!--
   
@@ -7,8 +7,11 @@
   Target Format: Flore d'Afrique Centrale
   
 -->
-<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="http://exslt.org/common" 
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:functx="http://www.functx.com" xmlns:msxsl="http://exslt.org/common" xmlns:fn="http://www.w3.org/2005/xpath-functions" 
   xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
+  
+  
+  <!--xsl:import href="functx-1.0-doc-2007-01.xsl" /-->
   
   <xsl:param name="abstract"/>
   <xsl:param name="title"/>
@@ -755,10 +758,21 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:choose>
+        <xsl:when test="contains(.,&quot;&lt;sup&gt;&quot;)">
         <xsl:call-template name="add-markup">
           <xsl:with-param name="str" select="."/>
-          <xsl:with-param name="tag-name">i</xsl:with-param>
+          <xsl:with-param name="tag-name">sup</xsl:with-param>
         </xsl:call-template>
+        </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="add-markup">
+              <xsl:with-param name="str" select="."/>
+              <xsl:with-param name="tag-name">i</xsl:with-param>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
+        
       </xsl:otherwise>
     </xsl:choose>
 
@@ -805,9 +819,21 @@
             </fo:inline>
           </xsl:when>
           <xsl:otherwise>
+            <xsl:choose>
+              <xsl:when test="$tag-name = 'i'">
             <fo:inline font-style="italic">
               <xsl:value-of select="$inside-tag"/>
             </fo:inline>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="$tag-name = 'sup'">
+                <fo:inline vertical-align="super" font-size="8pt">
+                  <xsl:value-of select="$inside-tag"/>
+                </fo:inline>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+
           </xsl:otherwise>
         </xsl:choose>
         <!-- call template recursively with the remaining text after the tag -->
@@ -1005,8 +1031,9 @@
       <!-- LORNA TRY IMAGE HERE -->
       <!--xsl:apply-templates select="descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/-->
 
-      <xsl:apply-templates
-        select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
+      <!--xsl:apply-templates select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/-->
+      <!--Restionaceae -occurs in the second descrptionelement so select descriptionelement instead of descriptionelement[1]-->
+      <xsl:apply-templates select="descriptionelements/descriptionelement/multilanguageText_L10n/text"/><xsl:text>&#160;</xsl:text>
       
       <!-- get the map associated with the distribution, this is temporarily stored as a media object jpg created by 
         Quentin's GIS software -->
@@ -1279,8 +1306,9 @@
         
     <!--nomenclaturalReference or citation-->
     <!-- problem with this is that if the same reference occurs under citaiton and under nomenclaturalReference it appears twice -->
-    <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]"-->
+    <!--//nomenclaturalReference xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]"-->
     
+    <!--xsl:for-each select="//nomenclaturalReference | //citation"-->
     <xsl:for-each select="//nomenclaturalReference[count(. | key('citations-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]">
     <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1]"-->
       <!--xsl:for-each select="//nomenclaturalReference"-->
@@ -1291,9 +1319,11 @@
         
         <fo:inline>        
           <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->
+          <!--xsl:value-of select="uuid"/> FOR DEBUGGING-->
+          <!--xsl:value-of select="titleCache"/-->
           
           <!--I am only listing references which have at least one author name. If there are other references in the database - why don't these have an author name-->
-              <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">               
+          <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != '' or authorTeam/titleCache != ''">               
                 <!--xsl:text>&#xA;</xsl:text-->
                 <xsl:choose>
                   <xsl:when test="authorTeam/teamMembers/e[1]/lastname != ''">
@@ -1310,12 +1340,24 @@
                       </fo:inline>
                     </xsl:for-each>
                   </xsl:when>
-                  <xsl:otherwise test="authorTeam/lastname != ''">
+                  <xsl:otherwise>
+                    <xsl:choose>
+                      <xsl:when test="authorTeam/lastname != ''">
+                    <!--xsl:if test="authorTeam/lastname != ''"-->
                     <fo:inline>
                       <xsl:value-of select="authorTeam/lastname"/>
                       <xsl:text> </xsl:text>
                       <xsl:value-of select="authorTeam/firstname"/>
-                    </fo:inline>                                 
+                    </fo:inline>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <fo:inline>
+                          <xsl:value-of select="authorTeam/titleCache"/>
+                        </fo:inline>
+                      </xsl:otherwise>
+                    <!--/xsl:if-->
+                    </xsl:choose>
+                    
                   </xsl:otherwise>
                 </xsl:choose>                            
                 
@@ -1352,7 +1394,14 @@
   
   <xsl:template match="*">
 
-    <xsl:value-of select="."/>
+    <xsl:choose>
+      <xsl:when test="name(.) = 'pages'">
+        <xsl:value-of select="replace(.,'&hyphen;','&ndash;')" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="." />
+      </xsl:otherwise>
+    </xsl:choose>
       
     <xsl:if test="name(.) = 'title' or name(.) = 'publisher' or name(.) = 'pages'">
       <!-- . if pages or publisher or title - comma if placePublished -->
@@ -1413,11 +1462,14 @@
                   </fo:inline>
                 </xsl:for-each>
                 </xsl:when>
-                <xsl:otherwise test="authorTeam/lastname != ''">
+                <xsl:otherwise>
+                  <xsl:if test="authorTeam/lastname != ''">
                   <fo:inline font-weight="bold">
                     <xsl:value-of select="authorTeam/lastname"/>
-                  </fo:inline>                                 
+                  </fo:inline>
+                  </xsl:if>
                 </xsl:otherwise>
+                
               </xsl:choose>                            
               
               <xsl:if test="datePublished/start != ''">
