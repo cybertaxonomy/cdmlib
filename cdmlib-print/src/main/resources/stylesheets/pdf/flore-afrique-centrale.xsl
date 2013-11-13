@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xsl:stylesheet [<!ENTITY hyphen "&#45;" > <!ENTITY mdash "&#x2014;" > <!ENTITY ndash "&#x2013;" > <!ENTITY male "&#x2642;" > <!ENTITY female "&#x2640;" > <!ENTITY ndash "&#x2715;" > ]> 
+<!DOCTYPE xsl:stylesheet [<!ENTITY hyphen "&#45;" > <!ENTITY mdash "&#x2014;" > <!ENTITY multip "&#x2715;" > <!ENTITY ndash "&#x2013;" > <!ENTITY male "&#x2642;" > <!ENTITY female "&#x2640;" > <!ENTITY ndash "&#x2715;" > ]> 
 
 <!--
   
@@ -182,7 +182,9 @@
             <!--fo:inline font-weight="bold"><xsl:text>Abstract. </xsl:text></fo:inline-->
             <xsl:value-of select="$abstract"/>
               <xsl:text>&#xA;</xsl:text>
+              
             </fo:block>
+            <xsl:text>&#xA;</xsl:text>
             
             <xsl:for-each select="//TaxonNode">
               <xsl:apply-templates select="."/>
@@ -190,7 +192,7 @@
             
             <fo:block text-align="center" text-transform="uppercase" font-weight="bold" linefeed-treatment="preserve">
               <xsl:text>&#xA;</xsl:text>
-              <!--xsl:text>REFERENCES</xsl:text-->             
+              <xsl:text>REFERENCES</xsl:text>             
             </fo:block>
             <xsl:text>&#xA;</xsl:text>
             <xsl:call-template name="References"/>
@@ -479,7 +481,7 @@
 
 
   <xsl:template name="title">
-    <fo:block margin-bottom="5mm">
+    <fo:block margin-bottom="5mm" keep-together.within-page="always" keep-with-next="always">
       <!-- we need to find a way to store the uuid in a variable xsl:parameter did not work or i was using it wrong -->
       <xsl:choose>
         <!-- family -->
@@ -905,11 +907,21 @@
                       </fo:inline>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:if test="contains($text, '#x2014;')">
-                        <fo:inline font-family="Arial">
-                          <xsl:value-of select="'&mdash;'"/>
-                        </fo:inline>
-                      </xsl:if>
+                      <xsl:choose>
+                        <xsl:when test="contains($text, '#x2014;')">
+                          <fo:inline font-family="Arial">
+                            <xsl:value-of select="'&mdash;'"/>
+                          </fo:inline>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:if test="contains($text, '#x2715;')">
+                            <fo:inline font-family="Segoe UI Symbol">
+                              <xsl:value-of select="'&multip;'"/>
+                            </fo:inline>
+                          </xsl:if>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                      
                     </xsl:otherwise>
                   </xsl:choose>
                 </xsl:otherwise>
@@ -996,7 +1008,7 @@
   </xsl:template>
 
   <xsl:template name="textData">
-    <fo:block text-align="justify" margin-bottom="5mm">
+    <fo:block text-align="justify" margin-bottom="5mm" keep-together.within-page="always">
       <!-- show all feature headlines except "ditribution" -->
       <!--xsl:if test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
         <fo:inline font-weight="bold">
