@@ -42,6 +42,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -614,7 +615,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
         nodeSet.add(this);
         if(this.getParent() != null){
-            nodeSet.addAll(this.getParent().getAncestors());
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+            nodeSet.addAll(parent.getAncestors());
         }
         return nodeSet;
     }
