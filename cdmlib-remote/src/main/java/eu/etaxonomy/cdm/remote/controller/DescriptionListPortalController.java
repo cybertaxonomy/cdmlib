@@ -71,10 +71,6 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
-            "name.$",
-            "name.rank.representations",
-            "name.status.type.representations",
-            "sources.$",
     });
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
@@ -85,7 +81,10 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "sources.citation.authorTeam",
             "sources.nameUsedInSource",
             "multilanguageText",
-            "media"
+            "media",
+            "name.$",
+            "name.rank.representations",
+            "name.status.type.representations",
     });
 
 
@@ -175,7 +174,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
        pagerParams.normalizeAndValidate(response);
 
        Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
-               type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
+               type, pagerParams.getPageSize(), pagerParams.getPageIndex(), DESCRIPTION_ELEMENT_INIT_STRATEGY);
 
        return pager;
    }
