@@ -254,7 +254,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     /**
      * Sets this nodes classification. Updates classification of child nodes recursively
      *
-     * If the former and the actual tree are equal() this method does nothing
+     * If the former and the actual tree are equal() this method does nothing.
+     * 
+     * @throws IllegalArgumentException if newClassifciation is null
      *
      * @param newClassification
      */
