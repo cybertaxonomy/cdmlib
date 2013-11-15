@@ -256,14 +256,17 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * If the former and the actual tree are equal() this method does nothing
      *
-     * @param newTree
+     * @param newClassification
      */
     @Transient
-    private void setClassificationRecursively(Classification newTree) {
-        if(! newTree.equals(this.getClassification())){
-            this.setClassification(newTree);
+    private void setClassificationRecursively(Classification newClassification) {
+        if (newClassification == null){
+        	throw new IllegalArgumentException("New Classification must not be 'null' when setting new classification.");
+        }
+    	if(! newClassification.equals(this.getClassification())){
+            this.setClassification(newClassification);
             for(TaxonNode childNode : this.getChildNodes()){
-                childNode.setClassificationRecursively(newTree);
+                childNode.setClassificationRecursively(newClassification);
             }
         }
     }
