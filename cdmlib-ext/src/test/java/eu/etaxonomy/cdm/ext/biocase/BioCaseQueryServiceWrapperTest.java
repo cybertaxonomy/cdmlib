@@ -18,7 +18,10 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.log4j.Logger;
 import org.junit.Test;
+
+import eu.etaxonomy.cdm.common.UriUtils;
 
 /**
  * @author pplitzner
@@ -27,27 +30,34 @@ import org.junit.Test;
  */
 public class BioCaseQueryServiceWrapperTest extends TestCase{
 
+    public static final Logger logger = Logger.getLogger(BioCaseQueryServiceWrapperTest.class);
+
     @Test
     public void testQuery() {
-        BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
-        try {
-            BioCaseQuery query = new BioCaseQuery();
-            query.taxonName = "Campanula*";
-            InputStream response = queryService.query(query);
-            BufferedReader reader = new BufferedReader(new InputStreamReader(response));
-            String line = null;
-            do {
-                if(line!=null){
-                    System.out.println(line);
-                }
-                line = reader.readLine();
-            } while (line!=null);
-        } catch (ClientProtocolException e) {
-            fail(e.getMessage());
-        } catch (IOException e) {
-            fail(e.getMessage());
-        } catch (URISyntaxException e) {
-            fail(e.getMessage());
+
+        if( UriUtils.isInternetAvailable(null)){
+            BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
+            try {
+                BioCaseQuery query = new BioCaseQuery();
+                query.taxonName = "Campanula*";
+                InputStream response = queryService.query(query);
+                BufferedReader reader = new BufferedReader(new InputStreamReader(response));
+                String line = null;
+                do {
+                    if(line!=null){
+                        System.out.println(line);
+                    }
+                    line = reader.readLine();
+                } while (line!=null);
+            } catch (ClientProtocolException e) {
+                fail(e.getMessage());
+            } catch (IOException e) {
+                fail(e.getMessage());
+            } catch (URISyntaxException e) {
+                fail(e.getMessage());
+            }
+        } else {
+            logger.warn("SKIPPING TEST: no internet connecivity available");
         }
     }
 }

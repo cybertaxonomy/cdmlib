@@ -26,7 +26,11 @@ public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeDeletionConfigurator.class);
 
-
+	/**
+	 * 
+	 * 
+	 *
+	 */
 	public enum ChildHandling{
 		DELETE,
 		MOVE_TO_PARENT
@@ -44,6 +48,20 @@ public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 	public ChildHandling getChildHandling() {
 		return childHandling;
 	}
+	
+	public boolean deleteTaxon = true;
+
+
+	public boolean isDeleteTaxon() {
+		return deleteTaxon;
+	}
+
+
+	public void setDeleteTaxon(boolean deleteTaxon) {
+		this.deleteTaxon = deleteTaxon;
+	}
+	
+	
 	
 	
 }

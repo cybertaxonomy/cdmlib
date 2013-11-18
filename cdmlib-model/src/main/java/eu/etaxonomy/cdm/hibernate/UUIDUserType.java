@@ -21,9 +21,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.type.StandardBasicTypes;
 import org.hibernate.usertype.UserType;
-import org.jadira.usertype.dateandtime.shared.spi.AbstractSingleColumnUserType;
 import org.jadira.usertype.dateandtime.shared.spi.AbstractUserType;
-import org.jadira.usertype.dateandtime.shared.spi.ColumnMapper;
 
 /**
  * @author a.mueller
@@ -91,7 +89,7 @@ public class UUIDUserType  extends AbstractUserType implements UserType {
 //            statement.setNull(index, Types.VARCHAR); old version
             StandardBasicTypes.STRING.nullSafeSet(statement, value, index, session);
         } else { 
-        	UUID uuid = (UUID)value;
+         	UUID uuid = (UUID)value;
 //            statement.setString(index, uuid.toString()); //old version
             StandardBasicTypes.STRING.nullSafeSet(statement, uuid.toString(), index, session);
         }

@@ -28,7 +28,7 @@ public class FeatureTreeListPortalController extends FeatureTreeListController {
             new String[]{
                 "representations",
                 "root.feature.representations",
-                "root.children.feature.representations"
+                "root.childNodes.feature.representations"
             });
 
     public FeatureTreeListPortalController() {

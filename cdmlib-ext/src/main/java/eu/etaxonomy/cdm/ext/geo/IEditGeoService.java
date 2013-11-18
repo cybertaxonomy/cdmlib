@@ -129,34 +129,42 @@ public interface IEditGeoService {
     public void setMapping(NamedArea area, GeoServiceArea geoServiceArea);
 
     /**
-    *
-    * Reads csv data containing the attributes from a shape file and adds the
-    * shapefile data to each area in the given set of {@link NamedAreas}. The
-    * way this data it attached to the areas is specific to the
-    * {@link IGeoServiceAreaMapping} implementation. It is recommended to
-    * create csv file directly from the original shape file by making use of
-    * the {@code org2ogr} command which is contained in the <a
-    * href="http://www.gdal.org/ogr2ogr.html">gdal</a> tools:
-    *
-    * <pre>
-    * ogr2ogr -f csv out.csv input_shape_file.shp
-    * </pre>
-    *
-    * @param csvReader
-    * @param idSearchFields
-    *            An ordered list column names in the the csv file to be
-    *            imported. These columns will be used to search for the
-    *            {@link NamedArea#getIdInVocabulary() IdInVocabulary} of each
-    *            area
-    * @param wmsLayerName
-    * @return the resulting table of the import, also together with diagnostic
-    *         messages per NamedArea (id not found, ambiguous mapping)
-    * @param areaVocabularyUuidy
-    * @return
-    * @throws IOException
-    */
+     * Reads csv data containing the attributes from a shape file and adds the
+     * shapefile data to each area in the given set of {@link NamedAreas}. The
+     * way this data it attached to the areas is specific to the
+     * {@link IGeoServiceAreaMapping} implementation. It is recommended to
+     * create csv file directly from the original shape file by making use of
+     * the {@code org2ogr} command which is contained in the <a
+     * href="http://www.gdal.org/ogr2ogr.html">gdal</a> tools:
+     *
+     * <pre>
+     * ogr2ogr -f csv out.csv input_shape_file.shp
+     * </pre>
+     *
+     * @param csvReader
+     * @param idSearchFields
+     *            An ordered list column names in the the csv file to be
+     *            imported. These columns will be used to search for the
+     *            {@link NamedArea#getIdInVocabulary() IdInVocabulary} of each
+     *            area
+     * @param wmsLayerName
+     * @return the resulting table of the import, also together with diagnostic
+     *         messages per NamedArea (id not found, ambiguous mapping)
+     * @param areaVocabularyUuid
+     *            , can be <code>NULL</code>. The NamedAreas contained in this
+     *            vocabulary will be combined with areas defined in the
+     *            <code>namedAreaUuids</code>
+     * @param namedAreaUuids
+     *            a set of UUIDS for {@link NamedArea}. Can be <code>NULL</code>.
+     *            Will be combined with the vocabulary if the
+     *            <code>areaVocabularyUuid</code> is also given.
+     *
+     * @return
+     * @throws IOException
+     */
     @Transactional(readOnly=false)
-    public abstract Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader, List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuidy)
+    public abstract Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
+            List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
+            Set<UUID> namedAreaUuids)
             throws IOException;
-
 }

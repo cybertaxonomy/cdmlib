@@ -24,13 +24,17 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonNodeComparator;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -57,6 +61,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Autowired
     private ITaxonService taxonService;
+    
+    @Autowired
+    private IClassificationService classService;
 
     @Autowired
     public void setTaxonNodeComparator(ITaxonNodeComparator<? super TaxonNode> taxonNodeComparator){
@@ -190,20 +197,80 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public List<UUID> deleteTaxonNodes(List<TaxonNode> nodes){
-        boolean deleteChildren;
+    public List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+        if (config == null){
+        	config = new TaxonDeletionConfigurator();
+        }
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
-        for (TaxonNode node:nodes){
-            Classification classification = node.getClassification();
-            if (classification.getChildNodes().contains(node)){
-                classification.deleteChildNode(node);
-            } else {
-                node.getTaxon().removeTaxonNode(node);
-            }
-            deletedUUIDs.add(node.getUuid());
-            dao.delete(node);
+        
+        for (ITaxonTreeNode treeNode:nodes){
+        	if (treeNode instanceof TaxonNode){
+        		TaxonNode taxonNode;
+	            taxonNode = (TaxonNode)treeNode;
+	           
+	            	//check whether the node has children or the children are already deleted
+	            if(taxonNode.hasChildNodes()){
+            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
+            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
+        			children.addAll(childNodesList);
+        			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
+        			boolean childHandling = (compare == 0)? true: false;
+            		if (childHandling){
+            			boolean changeDeleteTaxon = false;
+            			if (!config.getTaxonNodeConfig().isDeleteTaxon()){
+            				config.getTaxonNodeConfig().setDeleteTaxon(true);
+            				changeDeleteTaxon = true;
+            			}
+            			deleteTaxonNodes(children, config);
+            			if (changeDeleteTaxon){
+            				config.getTaxonNodeConfig().setDeleteTaxon(false);
+            			}
+            			
+            		} else {
+            			//move the children to the parent
+            			TaxonNode parent = taxonNode.getParent();
+            			for (TaxonNode child: childNodesList){
+            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
+            			}
+            			
+            		}
+            	}
+	            Classification classification = taxonNode.getClassification();
+	            if (classification.getChildNodes().contains(taxonNode)){
+	                classification.deleteChildNode(taxonNode);
+	            }else{
+	            	Taxon taxon = taxonNode.getTaxon();
+	            	taxonNode.getTaxon().removeTaxonNode(taxonNode);
+	            	if (config.getTaxonNodeConfig().isDeleteTaxon()){
+		            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+		            	configNew.setDeleteTaxonNodes(false);
+		            	taxonService.deleteTaxon(taxon, configNew, classification);
+	            	}
+	            }
+	           
+	            dao.delete(taxonNode);
+        	}else {
+        		Classification classification = (Classification) treeNode;
+        		classService.delete(classification);
+        	}
+        	
+            deletedUUIDs.add(treeNode.getUuid());
+            
         }
         return deletedUUIDs;
 
     }
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#deleteTaxonNode(java.util.List)
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public UUID deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+    	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
+    	taxonService.deleteTaxon(taxon, config, node.getClassification());
+    	
+    	return node.getUuid();
+    }
+    
+    
 }

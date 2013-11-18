@@ -126,11 +126,11 @@ public class DistributionTree extends Tree<Distribution>{
 
         List<Distribution> orderedDistList = orderDistributionsByLevel(distList);
 
-        for (Distribution distributionElement : orderedDistList) {
+        for (Distribution distribution : orderedDistList) {
             // get path through area hierarchy
-            List<NamedArea> namedAreaPath = getAreaLevelPath(distributionElement.getArea(), omitLevels);
+            List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevels);
             // order by merging
-            mergeAux(distributionElement, namedAreaPath, this.getRootElement());
+            mergeAux(distribution, namedAreaPath, this.getRootElement());
         }
     }
 

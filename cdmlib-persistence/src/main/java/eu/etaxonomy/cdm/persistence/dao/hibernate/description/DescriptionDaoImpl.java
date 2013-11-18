@@ -52,8 +52,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("descriptionDaoImpl")
 public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> implements IDescriptionDao{
 
-    @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
+	private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
 
     public DescriptionDaoImpl() {
         super(DescriptionBase.class);
@@ -62,6 +61,17 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         indexedClasses[1] = TaxonNameDescription.class;
         indexedClasses[2] = SpecimenDescription.class;
     }
+    
+//    @Override  //Override for testing
+//    public DescriptionBase load(UUID uuid, List<String> propertyPaths){
+//    	DescriptionBase bean = findByUuid(uuid);
+//        if(bean == null){
+//            return bean;
+//        }
+//        defaultBeanInitializer.initialize(bean, propertyPaths);
+//
+//        return bean;
+//    }
 
     @Override
     public int countDescriptionByDistribution(Set<NamedArea> namedAreas, PresenceAbsenceTermBase status) {
@@ -684,9 +694,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
         Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, false);
 
+        if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
         List<T> results = query.list();
+        if (logger.isDebugEnabled()){logger.debug(" dao: initialize ...");}
         defaultBeanInitializer.initializeAll(results, propertyPaths);
-
+        if (logger.isDebugEnabled()){logger.debug(" dao: initialize - DONE");}
         return results;
     }
 

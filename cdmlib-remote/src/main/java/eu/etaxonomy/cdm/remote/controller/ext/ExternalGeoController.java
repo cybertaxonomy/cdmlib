@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -95,13 +96,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy
-     * .cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITaxonService service) {
@@ -152,9 +146,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
 
         List<TaxonDescription> taxonDescriptions = page.getRecords();
-        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
-            backLayer, langs);
+        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
+                presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
         mv.addObject(uriParams);
+
         return mv;
     }
 
@@ -218,9 +213,13 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      *
      * @author a.kohlbecker
      */
-    @RequestMapping(value = { "mapShapeFileToNamedAreas/{uuid}" }, method = RequestMethod.GET)
+    @RequestMapping(value = { "mapShapeFileToNamedAreas" }, method = RequestMethod.GET)
     public ModelAndView doMapShapeFileToNamedAreas(
-            @PathVariable("uuid") UUID vocabUuid,
+            @RequestParam(required=false, value="vocabularyUuid") UUID vocabUuid,
+            @RequestParam(required=false, value="namedAreaUuids") UuidList namedAreaUuids,
+            @RequestParam(required=true, value="localFile") String localFile,
+            @RequestParam(required=true, value="idSearchField") List<String> idSearchFields,
+            @RequestParam(required=true, value="wmsLayerName") String wmsLayerName,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -228,14 +227,15 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         logger.info("doMapShapeFileToNamedAreas() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
 
-        // /home/andreas/data/Euro+Med/Map/em_tiny_jan2003-shapefile/em_tiny_jan2003.csv
-        FileReader reader = new FileReader("/home/andreas/data/Euro+Med/Map/em_tiny_jan2003-shapefile/em_tiny_jan2003.csv");
+        FileReader reader = new FileReader(localFile);
 
-        List<String> idSearchFields = new ArrayList();
-        idSearchFields.add("PARENT");
-        idSearchFields.add("EMAREA");
-        String wmsLayerName = "em_tiny_jan2003";
-        geoservice.mapShapeFileToNamedAreas(reader, idSearchFields , wmsLayerName , vocabUuid);
+        Map<NamedArea, String> resultMap = geoservice.mapShapeFileToNamedAreas(
+                reader, idSearchFields , wmsLayerName , vocabUuid, namedAreaUuids.asSet());
+        Map<String, String> flatResultMap = new HashMap<String, String>(resultMap.size());
+        for(NamedArea area : resultMap.keySet()){
+            flatResultMap.put(area.getTitleCache() + " [" + area.getUuid() + "]", resultMap.get(area));
+        }
+        mv.addObject(flatResultMap);
         return mv;
 
     }

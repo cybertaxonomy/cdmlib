@@ -111,7 +111,9 @@ public class CdmPostDataChangeObservableListener implements
 	
 	public void delayedNotify(){
 		if(delayed && changeEvents.size() > 0){
-			for( ICdmPostDataChangeObserver observer : observers){
+			Set<ICdmPostDataChangeObserver> modificationSaveObservers 
+						= new HashSet<ICdmPostDataChangeObserver>(observers);
+			for( ICdmPostDataChangeObserver observer : modificationSaveObservers){
 				observer.update(changeEvents);
 			}
 			changeEvents.clear();

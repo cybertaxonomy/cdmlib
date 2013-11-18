@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -24,6 +25,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -51,8 +53,6 @@ import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 @Transactional(readOnly = true)
 public class EditGeoService implements IEditGeoService {
     public static final Logger logger = Logger.getLogger(EditGeoService.class);
-
-//    private static final String DEFAULT_BACK_LAYER = "tdwg4";
 
     @Autowired
     private IDescriptionDao dao;
@@ -235,11 +235,25 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     @Transactional(readOnly=false)
-    public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader, List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid) throws IOException {
-        TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
-        ShpAttributesToNamedAreaMapper mapper = new ShpAttributesToNamedAreaMapper(areaVocabulary, areaMapping);
+    public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
+            List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
+            Set<UUID> namedAreaUuids) throws IOException {
+
+        Set<NamedArea> areas = new HashSet<NamedArea>();
+
+        if(areaVocabularyUuid != null){
+            TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
+            areas.addAll(areaVocabulary.getTerms());
+        }
+        if(namedAreaUuids != null && !namedAreaUuids.isEmpty()){
+            for(DefinedTermBase dtb : termDao.list(namedAreaUuids, null, null, null, null)){
+                areas.add((NamedArea)dtb);
+            }
+        }
+
+        ShpAttributesToNamedAreaMapper mapper = new ShpAttributesToNamedAreaMapper(areas, areaMapping);
         Map<NamedArea, String> resultMap = mapper.readCsv(csvReader, idSearchFields, wmsLayerName);
-        vocabDao.saveOrUpdate(areaVocabulary);
+        termDao.saveOrUpdateAll((Collection)areas);
         return resultMap;
     }
 

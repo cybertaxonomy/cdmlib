@@ -516,6 +516,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          String specifiedGenusString = "";
          int thisrank_order = 0;
 
+         //TODO we can remove all the deproxies here except for the first one
+         identifiableEntity = HibernateProxyHelper.deproxy(identifiableEntity, IdentifiableEntity.class);
          if(identifiableEntity instanceof NonViralName) {
              specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
              specifiedTitleCache = identifiableEntity.getTitleCache();
@@ -538,10 +540,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
              }
          }
 
-         if(this instanceof NonViralName) {
+         if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
-         } else if(this instanceof TaxonBase) {
+         } else if(this.isInstanceOf(TaxonBase.class)) {
              TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
              NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
              thisNameCache = nonViralName.getNameCache();

@@ -37,4 +37,10 @@ public abstract class AutoPropertyInitializer<T extends CdmBase> {
      */
     public abstract void initialize(T bean);
 
+
+	public String hibernateFetchJoin(Class<?> clazz, String beanAlias) {
+		return ""; 
+	}
+
+
 }

@@ -24,6 +24,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -50,6 +51,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
 	ITermService termService;
+
+	@SpringBeanByType
+    ICommonService commonService;
 
 
 	private IImportConfigurator configurator;
@@ -94,10 +98,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@Test
 	public void testInit() {
+	    System.out.println("TEST INIT");
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
 		assertNotNull("term service should not be null", termService);
+		assertNotNull("common service should not be null", commonService);
 	}
 
 //	@Test
@@ -115,6 +121,23 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         boolean result = defaultImport.invoke(configurator2);
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+/*<<<<<<< .courant
+        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
+        try {
+            writeDbUnitDataSetFile(new String[] {
+                    "TAXONBASE", "TAXONNAMEBASE",
+                    "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
+                    "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+                    "HOMOTYPICALGROUP", "LANGUAGESTRING","COLLECTION","SPECIMENOROBSERVATIONBASE",
+                    "ORIGINALSOURCEBASE", "GATHERINGEVENT", "DETERMINATIONEVENT",
+                    "DERIVATIONEVENT", "SPECIMENOROBSERVATIONBASE_DERIVATIONEVENT","GATHERINGEVENT",
+                    "HIBERNATE_SEQUENCES",
+             });
+        } catch (FileNotFoundException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        }
+=======*/
         assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnit.class));
 //        try {
 //            writeDbUnitDataSetFile(new String[] {

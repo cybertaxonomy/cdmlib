@@ -401,6 +401,24 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * This method returns in the first entry the list of synonyms of the 
+     * homotypic group of the accepted taxon. All other entries represent the lists of heterotypic 
+     * synonym groups. For detailed information about these 2 groups see 
+     * {@link #getHomotypicSynonymsByHomotypicGroup(Taxon, List)} and
+     * {@link #getHeterotypicSynonymyGroups(Taxon, List)}
+     *  
+     * @see			#getSynonyms()
+     * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+     * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
+
+     * @param taxon the accepted taxon
+     * @param propertyPaths the property path
+     * @return the list of groups of synonyms
+     */
+    public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
+
+    
+    /**
      * Returns the list of all synonyms that share the same homotypical group with the given taxon.
      * Only those homotypic synonyms are returned that do have a synonym relationship with the accepted taxon.
      * @param taxon
@@ -898,6 +916,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     void deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
+
 
 
 

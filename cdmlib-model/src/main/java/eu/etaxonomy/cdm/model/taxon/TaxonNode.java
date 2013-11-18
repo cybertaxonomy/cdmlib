@@ -42,6 +42,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -180,7 +181,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
         if (this.getClassification().isTaxonInTree(taxon)){
-            throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
+            throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
        }
 
        return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
@@ -231,12 +232,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         child.setParentTreeNode(this, index);
 
-		//TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
-		for(int i = 0; i < childNodes.size(); i++){
-			childNodes.get(i).sortIndex = i;
-		}
-		child.sortIndex = index;
-		
+        //TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
+        for(int i = 0; i < childNodes.size(); i++){
+            childNodes.get(i).sortIndex = i;
+        }
+        child.sortIndex = index;
+
         //TODO workaround (see sortIndex doc)
         for(int i = 0; i < childNodes.size(); i++){
             childNodes.get(i).sortIndex = i;
@@ -253,16 +254,21 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     /**
      * Sets this nodes classification. Updates classification of child nodes recursively
      *
-     * If the former and the actual tree are equal() this method does nothing
+     * If the former and the actual tree are equal() this method does nothing.
+     * 
+     * @throws IllegalArgumentException if newClassifciation is null
      *
-     * @param newTree
+     * @param newClassification
      */
     @Transient
-    private void setClassificationRecursively(Classification newTree) {
-        if(! newTree.equals(this.getClassification())){
-            this.setClassification(newTree);
+    private void setClassificationRecursively(Classification newClassification) {
+        if (newClassification == null){
+        	throw new IllegalArgumentException("New Classification must not be 'null' when setting new classification.");
+        }
+    	if(! newClassification.equals(this.getClassification())){
+            this.setClassification(newClassification);
             for(TaxonNode childNode : this.getChildNodes()){
-                childNode.setClassificationRecursively(newTree);
+                childNode.setClassificationRecursively(newClassification);
             }
         }
     }
@@ -441,7 +447,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Override
     @Deprecated //for CDM lib internal use only, may be removed in future versions
     public int treeId() {
-        return this.classification.getId();
+        if (this.classification == null){
+        	logger.warn("TaxonNode has no classification. This should not happen.");  //#3840
+        	return -1;
+        }else{
+        	return this.classification.getId();
+        }
     }
 
     public Taxon getTaxon() {
@@ -519,23 +530,23 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         // add this node to the parent child nodes
         List<TaxonNode> parentChildren = parent.getChildNodes();
         if (parentChildren.contains(this)){
-        	//avoid duplicates
-        	if (parentChildren.indexOf(this) < index){
-        		index = index -1;
-        	}
-        	parentChildren.remove(this);
-        	parentChildren.add(index, this);
+            //avoid duplicates
+            if (parentChildren.indexOf(this) < index){
+                index = index -1;
+            }
+            parentChildren.remove(this);
+            parentChildren.add(index, this);
         }else{
-        	parentChildren.add(index, this);
+            parentChildren.add(index, this);
         }
 
         //TODO workaround (see sortIndex doc)
-        //TODO check if it is correct to use the parentChildren here 
-		for(int i = 0; i < parentChildren.size(); i++){
-			parentChildren.get(i).sortIndex = i;
-		}
+        //TODO check if it is correct to use the parentChildren here
+        for(int i = 0; i < parentChildren.size(); i++){
+            parentChildren.get(i).sortIndex = i;
+        }
 //		this.sortIndex = index;
-        
+
         // update the children count
         if(parent instanceof TaxonNode){
             TaxonNode parentTaxonNode = (TaxonNode) parent;
@@ -609,7 +620,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
         nodeSet.add(this);
         if(this.getParent() != null){
-            nodeSet.addAll(this.getParent().getAncestors());
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+            nodeSet.addAll(parent.getAncestors());
         }
         return nodeSet;
     }
@@ -739,6 +751,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return null;
         }
     }
+
+	public boolean hasTaxon() {
+		return (taxon!= null);
+	}
 
 
 

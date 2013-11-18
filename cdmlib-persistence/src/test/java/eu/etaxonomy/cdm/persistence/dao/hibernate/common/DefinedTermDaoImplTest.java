@@ -209,6 +209,9 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 
 		 assertTrue(Hibernate.isInitialized(extensionTypes.get(0).getRepresentations()));
 		 Set<Representation> representations = extensionTypes.get(0).getRepresentations();
+		 //TODO currently the representations list is empty, is this wanted? If not,
+		 //we should first check, if the list is not empty and then iterate.
+		 //Why is it empty? Does ExtensionType not have representations?
 		 for(Representation representation : representations) {
 			 assertTrue(Hibernate.isInitialized(representation.getLanguage()));
 		 }

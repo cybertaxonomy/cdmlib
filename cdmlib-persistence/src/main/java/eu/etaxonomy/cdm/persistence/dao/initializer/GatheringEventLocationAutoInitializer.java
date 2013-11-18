@@ -27,5 +27,10 @@ public class GatheringEventLocationAutoInitializer extends AutoPropertyInitializ
             /* IGNORE */
         }
     }
+    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return String.format(" LEFT JOIN FETCH %s.exactLocation l LEFT JOIN l.referenceSystem rs LEFT JOIN rs.representations ", beanAlias); 
+    }
 
 }

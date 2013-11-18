@@ -14,6 +14,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.util.HashSet;
+import java.util.Set;
 import java.util.UUID;
 
 import org.junit.Assert;
@@ -24,7 +26,10 @@ import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -32,6 +37,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -67,6 +73,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 //	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
+	private static final UUID rootNodeUuid = UUID.fromString("324a1a77-689c-44be-8e65-347d835f4111");
 
 	private Taxon t1;
 	private Taxon t2;
@@ -202,7 +209,65 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	}
 	
 	
-	
+	@Test
+	@DataSet
+	public final void testDeleteNode(){
+		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
+		node2 = taxonNodeService.load(rootNodeUuid);
+		node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+		
+		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+		UUID uuidNewNode = taxonNodeService.save(newNode);
+		newNode = taxonNodeService.load(uuidNewNode);
+		UUID taxUUID = newNode.getTaxon().getUuid();
+		try {
+			taxonNodeService.deleteTaxonNode(node1, null);
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
+		newNode = taxonNodeService.load(uuidNewNode);
+		node1 = taxonNodeService.load(node1Uuid);
+		assertNull(newNode);
+		assertNull(node1);
+		
+		t1 = (Taxon) taxonService.load(t1Uuid);
+		assertNull(t1);
+		Taxon newTaxon = (Taxon)taxonService.load(taxUUID);
+		assertNull(newTaxon);
+		
+		
+	}
+	@Test
+	@DataSet
+	public final void testDeleteNodes(){
+		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
+		node2 = taxonNodeService.load(rootNodeUuid);
+		node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
+		
+		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
+		UUID uuidNewNode = taxonNodeService.save(newNode);
+		Set<ITaxonTreeNode> treeNodes = new HashSet<ITaxonTreeNode>();
+		treeNodes.add(node1);
+		treeNodes.add(node2);
+		try {
+			taxonNodeService.deleteTaxonNodes(treeNodes, null);
+		} catch (DataChangeNoRollbackException e) {
+			Assert.fail();
+		}
+		newNode = taxonNodeService.load(uuidNewNode);
+		node1 = taxonNodeService.load(node1Uuid);
+		assertNull(newNode);
+		assertNull(node1);
+		
+		t1 = (Taxon) taxonService.load(t1Uuid);
+		assertNull(t1);
+		t2 = (Taxon) taxonService.load(t2Uuid);
+		assertNull(t2);
+		
+		
+	}
 	
 
 }

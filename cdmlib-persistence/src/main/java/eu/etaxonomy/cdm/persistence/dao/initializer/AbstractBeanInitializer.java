@@ -21,6 +21,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import javax.persistence.Transient;
+
 import org.apache.commons.beanutils.PropertyUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
@@ -39,7 +41,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
     public static final Logger logger = Logger.getLogger(AbstractBeanInitializer.class);
 
     @Autowired
-    IMethodCache methodCache;
+    private IMethodCache methodCache;
 
     private Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> beanAutoInitializers = null;
 
@@ -93,15 +95,13 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      */
     public void initializeBean(Object bean, boolean cdmEntities, boolean collections){
 
-        if(logger.isDebugEnabled()){
-            logger.debug(">> starting initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName());
-        }
-        Set<Class> restrictions = new HashSet<Class>();
+        if(logger.isDebugEnabled()){logger.debug(">> starting wildcard initializeBean() of " + bean + " ;class:" + bean.getClass().getSimpleName()); }
+        Set<Class<?>> restrictions = new HashSet<Class<?>>();
         if(cdmEntities){
             restrictions.add(CdmBase.class);
         }
         if(collections){
-            restrictions.add(Collections.class);
+            restrictions.add(Collection.class);
         }
         Set<PropertyDescriptor> props = getProperties(bean, restrictions);
         for(PropertyDescriptor propertyDescriptor : props){
@@ -173,7 +173,8 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param bean
      * @param propPath
      */
-    private void initializePropertyPath(Object bean, String propPath) {
+    //changed form private to protected  (AM)
+    protected void initializePropertyPath(Object bean, String propPath) {
         if(logger.isDebugEnabled()){
             logger.debug("processing " + propPath);
         }
@@ -235,7 +236,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
                     if (Collection.class.isAssignableFrom(unwrappedPropertyBean.getClass())) {
                         // nested collection
                         int i = 0;
-                        for (Object entrybean : (Collection) unwrappedPropertyBean) {
+                        for (Object entrybean : (Collection<?>) unwrappedPropertyBean) {
                             if(index == null){
                                 initializePropertyPath(entrybean, nestedPath);
                             } else if(index.equals(i)){
@@ -273,7 +274,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         }
     }
 
-    private Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
+    protected Object invokeInitialization(Object bean, PropertyDescriptor propertyDescriptor) throws IllegalAccessException, InvocationTargetException, NoSuchMethodException {
 
         if(propertyDescriptor == null || bean == null){
             return null;
@@ -329,7 +330,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param bean
      * @return
      */
-    private void invokePropertyAutoInitializers(Object bean) {
+    protected final void invokePropertyAutoInitializers(Object bean) {
 
         if(beanAutoInitializers == null || bean == null){
             return;
@@ -345,7 +346,7 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
         }
     }
 
-    private void setProperty(Object object, String property, Object value){
+    protected void setProperty(Object object, String property, Object value){
         Method method = methodCache.getMethod(object.getClass(), "set" + StringUtils.capitalize(property), value.getClass());
         if(method != null){
             try {
@@ -368,47 +369,48 @@ public abstract class AbstractBeanInitializer implements IBeanInitializer{
      * @param cdmEntities initialize all *toOne relations to cdm entities
      * @param collections initialize all *toMany relations
      */
-    private void initializeAllEntries(Collection collection, boolean cdmEntities, boolean collections) {
+    protected void initializeAllEntries(Collection collection, boolean cdmEntities, boolean collections) {
         for(Object bean : collection){
             initializeBean(bean, cdmEntities, collections);
         }
     }
 
     /**
-     * Return all public bean properties which, exclusive those whose return type match any class defined in
-     * the parameter <code>typeRestrictions</code> or which are transient properties.
+     * Return all public bean properties exclusive those whose return type
+     * match any class defined in the parameter <code>typeRestrictions</code>
+     * or which are transient properties.
+     *
      *
      * @param bean
      * @param typeRestrictions
      * @return
      */
-    @SuppressWarnings("unchecked")
-    public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class> typeRestrictions) {
+    public static Set<PropertyDescriptor> getProperties(Object bean, Set<Class<?>> typeRestrictions) {
 
         Set<PropertyDescriptor> properties = new HashSet<PropertyDescriptor>();
-        PropertyDescriptor[] prop = PropertyUtils.getPropertyDescriptors(bean);
+        PropertyDescriptor[] props = PropertyUtils.getPropertyDescriptors(bean);
 
-        for (int i = 0; i < prop.length; i++) {
+        for (PropertyDescriptor prop : props) {
             //String propName = prop[i].getName();
 
             // only read methods & skip transient getters
-            if( prop[i].getReadMethod() != null ){
+            if( prop.getReadMethod() != null ){
                   try{
-                     Class transientClass = Class.forName( "javax.persistence.Transient" );
-                     if( prop[i].getReadMethod().getAnnotation( transientClass ) != null ){
+                     Class<Transient> transientClass = (Class<Transient>)Class.forName( "javax.persistence.Transient" );
+                     if( prop.getReadMethod().getAnnotation( transientClass ) != null ){
                         continue;
                      }
                   }catch( ClassNotFoundException cnfe ){
                      // ignore
                   }
-                  if(typeRestrictions != null && typeRestrictions.size() > 1){
-                      for(Class type : typeRestrictions){
-                          if(type.isAssignableFrom(prop[i].getPropertyType())){
-                              properties.add(prop[i]);
+                  if(typeRestrictions != null){
+                      for(Class<?> restrictedType : typeRestrictions){
+                          if(restrictedType.isAssignableFrom(prop.getPropertyType())){
+                              properties.add(prop);
                           }
                       }
                   } else {
-                      properties.add(prop[i]);
+                      properties.add(prop);
                   }
             }
         }

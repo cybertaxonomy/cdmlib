@@ -89,6 +89,7 @@ cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -te
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
 cdmlib-ext/src/test/resources/dbscripts/001-cdm.h2.sql -text
 cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
+cdmlib-ext/src/test/resources/eu/etaxonomy/cdm/ext/geo/cyprusdivs.csv -text
 cdmlib-ext/src/test/resources/log4j.properties -text
 cdmlib-ext/src/test/resources/unitils.properties -text
 cdmlib-io/LICENSE.TXT -text
@@ -655,6 +656,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/DoiBridge.java -tex
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/GroupByTaxonClassBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/IdFieldOptions.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/MultilanguageTextFieldBridge.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NomenclaturalSortOrderBrigde.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/NotNullAwareIdBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/PartialBridge.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/hibernate/search/SortFieldOptions.java -text
@@ -1364,8 +1366,10 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxo
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AbstractBeanInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AdvancedBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AnnotationTypeAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/AutoPropertyInitializer.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/BeanInitNode.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/GatheringEventLocationAutoInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/IBeanInitializer.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/MarkerTypeAutoInitializer.java -text
@@ -1966,6 +1970,7 @@ cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/DataControllerTest.j
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/MetadataControllerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/view/OaiPmhViewTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/view/RdfViewTest.java -text
+cdmlib-remote/src/test/java/eu/etaxonomy/cdm/test/function/GenericRemoteTester.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/test/util/LSIDArguementMatcher.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/test/util/LSIDAuthorityArguementMatcher.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/test/util/LSIDMatchers.java -text

@@ -15,9 +15,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -60,6 +63,16 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) throws DataChangeNoRollbackException;
 	
 	/**
+	 * deletes the given taxon nodes 
+	 *  
+	 * @param nodes
+	 * @param config
+	 * @return 
+	 * 
+	 */
+	List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
+			TaxonDeletionConfigurator config) throws DataChangeNoRollbackException;
+	/**
 	 * deletes the given taxon node the configurator defines whether the children will be deleted too or not
 	 *  
 	 * @param node
@@ -67,6 +80,11 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return 
 	 * 
 	 */
-	public List<UUID> deleteTaxonNodes(List<TaxonNode> nodes);
+	public UUID deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config)
+			throws DataChangeNoRollbackException;
+
+	
+
+
 	
 }

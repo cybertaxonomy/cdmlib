@@ -59,7 +59,8 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	private static final UUID uuidTypicalLowerBoundary = UUID.fromString("8372a89a-35ad-4755-a881-7edae6c37c8f");
 	private static final UUID uuidTypicalUpperBoundary = UUID.fromString("9eff88ba-b8e7-4631-9e55-a50bd16ba79d");
 	private static final UUID uuidStandardDeviation = UUID.fromString("9ee4397e-3496-4fe1-9114-afc7d7bdc652");
-
+	//needed for Xper (later maybe integrated into model)
+	public  static final UUID uuidStatisticalMeasureUnknownData = UUID.fromString("4bbd6e78-6d4e-4ec8-ac14-12f53aae049e");
 
 	//********* FACTORY METHODS **************************************/
 	/** 
@@ -89,6 +90,12 @@ public class StatisticalMeasure extends DefinedTermBase<StatisticalMeasure> {
 	
 //********************************** Constructor *******************************************************************/	
 
+	// ************* CONSTRUCTORS *************/	
+	/** 
+	 * Class constructor: creates a new empty statistical measure instance.
+	 * 
+	 * @see #StatisticalMeasure(String, String, String)
+	 */
 	//for hibernate use only
 	@Deprecated
 	protected StatisticalMeasure() {

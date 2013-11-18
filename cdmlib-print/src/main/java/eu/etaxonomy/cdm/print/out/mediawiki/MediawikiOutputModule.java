@@ -54,16 +54,19 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 	
 	// default wiki - exportparameter
 	public String prefix="";
+	public String sourceUrl="";
 	public String username="CDM Mediawiki Exporter"; 
 	
-	public MediawikiOutputModule(String mediaWikiPagePrefix){
+	public MediawikiOutputModule(String mediaWikiPagePrefix, String sourceUrl){
 		super();
+		this.sourceUrl = sourceUrl;
 		this.prefix=mediaWikiPagePrefix+":";
 	}
 	
 	
-	public MediawikiOutputModule() {
-		// TODO Auto-generated constructor stub
+	public MediawikiOutputModule(String sourceUrl) {
+		super();
+		this.sourceUrl = sourceUrl;
 	}
 
 
@@ -150,6 +153,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 				// Run XSLT transformation 
 				transformer.setParameter("prefix", prefix);
 				transformer.setParameter("username", username);
+				transformer.setParameter("cdm-url", sourceUrl);
 				transformer.transform(source, result);
 
 				// get the wikitext of the generated file
@@ -212,7 +216,7 @@ public class MediawikiOutputModule extends PublishOutputModuleBase {
 
 	public static void main(String[] args) {
 
-		MediawikiOutputModule outputModule = new MediawikiOutputModule();
+		MediawikiOutputModule outputModule = new MediawikiOutputModule("");
 		PublishConfigurator configurator = PublishConfigurator
 				.NewRemoteInstance();
 		configurator.setExportFolder(new File("src/main/resources/tmp"));

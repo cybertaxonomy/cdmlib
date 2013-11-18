@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
  *
  */
 public abstract class AbstractWebApplicationConfigurer {
+	public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
 
     private static final String CDMLIB_REMOTE_PROPERTIES = "cdmlib-remote.properties";
 
@@ -37,8 +38,7 @@ public abstract class AbstractWebApplicationConfigurer {
      */
     private static final String ATTRIBUTE_ERROR_MESSAGES = "cdm.errorMessages";
 
-    public static final Logger logger = Logger.getLogger(AbstractWebApplicationConfigurer.class);
-
+    
     WebApplicationContext webApplicationContext;
 
     static Properties userDefinedProperties = null;

@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.initializer;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -36,7 +37,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     @Override
     public void initialize(IdentifiableEntity<?> bean) {
 
-
+    	bean = HibernateProxyHelper.deproxy(bean, IdentifiableEntity.class);
         // we will implement a bit of redundancy here in order
         // to avoid too much casting
         if(bean instanceof NonViralName){
@@ -86,4 +87,22 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
             bean.getTitleCache();
         }
     }
+
+	@Override
+	public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+		String result = "";
+		if (TaxonNameBase.class.isAssignableFrom(clazz)){
+			result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
+			result += String.format(" LEFT JOIN FETCH %s.relationsToThisName rel LEFT JOIN FETCH rel.relatedFrom ", beanAlias);
+			if (NonViralName.class.isAssignableFrom(clazz)){
+				result += String.format(" LEFT JOIN FETCH %s.combinationAuthorTeam ", beanAlias);
+				result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorTeam ", beanAlias);
+				result += String.format(" LEFT JOIN FETCH %s.basionymAuthorTeam ", beanAlias);
+				result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorTeam ", beanAlias);
+			}
+		}
+		return result;
+	}
+    
+    
 }
