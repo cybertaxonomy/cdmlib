@@ -2174,6 +2174,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImpl
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityWithTransaction.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImplTest2.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplBusinessTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.java -text
@@ -2229,6 +2230,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientific
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/PreferenceServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/SecurityTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/StatisticsServiceImplTest2.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest-indexing.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonNodeServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.testDeleteSynonym.xml -text
