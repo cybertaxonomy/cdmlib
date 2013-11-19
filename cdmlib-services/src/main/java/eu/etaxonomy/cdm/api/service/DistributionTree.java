@@ -16,6 +16,8 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.HibernateProxyHelper;
 
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
@@ -26,8 +28,8 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * TODO javadoc.
- * 
- * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.model.location.NamedArea} 
+ *
+ * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.model.location.NamedArea}
  */
 public class DistributionTree extends Tree<Distribution>{
 
@@ -207,12 +209,24 @@ public class DistributionTree extends Tree<Distribution>{
         if (omitLevels == null || !omitLevels.contains(area.getLevel())){
             result.add(area);
         }
+        // logging special case in order to help solving ticket #3891 (ordered distributions provided by portal/description/${uuid}/DistributionTree randomly broken)
+
+        if(area.getPartOf() == null) {
+            StringBuilder hibernateInfo = new StringBuilder();
+            hibernateInfo.append(", area is of type: ").append(area.getClass());
+            if(area instanceof HibernateProxy){
+                hibernateInfo.append(" target object is ").append(HibernateProxyHelper.getClassWithoutInitializingProxy(area));
+            }
+            logger.warn("area.partOf is NULL for " + area.getLabel() + hibernateInfo.toString());
+        }
         while (area.getPartOf() != null) {
             area = area.getPartOf();
             if (omitLevels == null || !omitLevels.contains(area.getLevel())){
                 result.add(0, area);
             }
         }
+
+
         return result;
     }
 }

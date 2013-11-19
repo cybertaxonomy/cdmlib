@@ -41,6 +41,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.validator.constraints.Length;
 
@@ -200,7 +202,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
        */
       @Override
     public T getKindOf(){
-          return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
+
+          if (this instanceof HibernateProxy) {
+              HibernateProxy proxy = (HibernateProxy) this;
+              LazyInitializer li = proxy.getHibernateLazyInitializer();
+              return (T) ((T)li.getImplementation()).getKindOf();
+          } else {
+              return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
+          }
       }
 
       public void setKindOf(T kindOf){
@@ -234,7 +243,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
       @Override
       public T getPartOf(){
-          return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
+          if (this instanceof HibernateProxy) {
+              HibernateProxy proxy = (HibernateProxy) this;
+              LazyInitializer li = proxy.getHibernateLazyInitializer();
+              return (T) ((T)li.getImplementation()).getPartOf();
+          } else {
+              return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
+          }
       }
 
       /**
