@@ -99,6 +99,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String D_ABIES_ALBA_UUID = "ec8bba03-d993-4c85-8472-18b14942464b";
 
+    private static final String D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = "e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1";
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
@@ -1009,6 +1010,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Set<PresenceAbsenceTermBase<?>> present_native = new HashSet<PresenceAbsenceTermBase<?>>();
         present_native.add(PresenceTerm.PRESENT());
         present_native.add(PresenceTerm.NATIVE());
+        
+        Set<PresenceAbsenceTermBase<?>> absent = new HashSet<PresenceAbsenceTermBase<?>>();
+        absent.add(AbsenceTerm.ABSENT());
 
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
@@ -1054,9 +1058,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
 
-        // FIXME #3730 (Taxon.removeTaxonRelation() raises error on update)
-        /* ----------------------------------------------- START
-        // and now also test if updating of the index works properly
+       
         // 1. remove existing taxon relation
         Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
         Set<TaxonRelationship> relsTo = t_abies_balsamea.getRelationsToThisTaxon();
@@ -1072,9 +1074,12 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", Integer.valueOf(0), pager.getCount());
 
         // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in russia: ABSENT
-        // TODO
-        // ---------------------------------------------- END */
-
+        
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(UUID.fromString(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        t_abies_balsamea.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
+        taxonService.update(t_abies_balsamea);
+       
+        
     }
 
     /**
