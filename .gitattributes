@@ -2169,6 +2169,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBa
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTTT.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/SecurityTest.java -text

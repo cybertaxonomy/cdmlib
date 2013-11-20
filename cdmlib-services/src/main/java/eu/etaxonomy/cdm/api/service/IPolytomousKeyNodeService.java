@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 
 /**
@@ -18,4 +20,5 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
  */
 public interface IPolytomousKeyNodeService extends IVersionableService<PolytomousKeyNode> {
 
+	public UUID delete(PolytomousKeyNode node, boolean deleteChildren);
 }

@@ -9,11 +9,17 @@
 */
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.persistence.dao.description.IPolytomousKeyNodeDao;
 
@@ -32,7 +38,28 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 		this.dao = dao;
 	}
 	
-	
-	
+	@Override
+	public UUID delete(PolytomousKeyNode node, boolean deleteChildren){
+		UUID uuid = node.getUuid();
+		node = (PolytomousKeyNode)HibernateProxyHelper.deproxy(node);
+		List<PolytomousKeyNode> children = node.getChildren();
+		
+		if(!deleteChildren){
+			PolytomousKeyNode parent = node.getParent();
+			for (PolytomousKeyNode child: children){
+				parent.addChild(child);
+			}
+			
+		}
+		if (node.getParent()!= null){
+			node.getParent().removeChild(node);
+		}
+		if (node.getKey().getRoot().equals(node)){
+			node.getKey().setRoot(null);
+		}
+		dao.delete(node);
+		return uuid;
+		
+	}
 
 }
