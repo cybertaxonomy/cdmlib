@@ -68,45 +68,6 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
         return null;
     }
 
-//    /**
-//     * FIXME REMOVE
-//     *
-//     * @param distList
-//     * @return
-//     */
-//    private List<Distribution> orderDistributionsByLevel(List<Distribution> distList){
-//
-//        if(distList == null){
-//            distList = new ArrayList<Distribution>();
-//        }
-//        if(distList.size() == 0){
-//            return distList;
-//        }
-//
-//        Distribution dist;
-//        List<Distribution> orderedList = new ArrayList<Distribution>(distList.size());
-//        orderedList.addAll(distList);
-//
-//        int length = -1;
-//        boolean flag = true;
-//        for (int i = 0; i < length && flag; i++) {
-//            flag = false;
-//            for (int j = 0; j < length-1; j++) {
-//                String level1 = orderedList.get(j).getArea().getLevel().toString();
-//                String level2 = orderedList.get(j+1).getArea().getLevel().toString();
-//                //if level from j+1 is greater than level from j
-//                if (level2.compareTo(
-//                        level1) < 0) {
-//                    dist = orderedList.get(j);
-//                    orderedList.set(j, orderedList.get(j+1));
-//                    orderedList.set(j+1, dist);
-//                    flag = true;
-//                }
-//            }
-//        }
-//        return orderedList;
-//    }
-
     /**
      * @param distList
      * @param omitLevels
