@@ -1892,6 +1892,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/JsonpRedirect.java -tex
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmBeanProcessingRegistry.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractCdmBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DefaultBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DerivedUnitFacadeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/HibernateProxyBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/KeyStatementBeanProcessor.java -text
@@ -1909,6 +1910,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonRel
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TeamOrPersonBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TermBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TextDataBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TreeNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TypeDesignationBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/matcher/CGLibEnhancedBeanProcessorMatcher.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/matcher/CdmProxyBeanProcessorMatcher.java -text
