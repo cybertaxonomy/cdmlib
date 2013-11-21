@@ -22,23 +22,23 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
  */
 public class TeamOrPersonBaseBeanProcessor extends AbstractBeanProcessor<TeamOrPersonBase> {
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#getIgnorePropNames()
-	 */
-	@Override
-	public List<String> getIgnorePropNames() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#getIgnorePropNames()
+     */
+    @Override
+    public List<String> getIgnorePropNames() {
+        // nothing to ignore by default
+        return null;
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
-	 */
-	@Override
-	public JSONObject processBeanSecondStep(TeamOrPersonBase bean, JSONObject json,
-			JsonConfig jsonConfig) {
-		json.element("titleCache", bean.getTitleCache());
-		return json;
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.json.processor.bean.AbstractBeanProcessor#processBeanSecondStep(java.lang.Object, net.sf.json.JSONObject, net.sf.json.JsonConfig)
+     */
+    @Override
+    public JSONObject processBeanSecondStep(TeamOrPersonBase bean, JSONObject json,
+            JsonConfig jsonConfig) {
+        json.element("titleCache", bean.getTitleCache());
+        return json;
+    }
 
 }

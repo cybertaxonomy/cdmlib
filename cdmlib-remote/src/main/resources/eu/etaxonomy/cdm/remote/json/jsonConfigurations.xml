@@ -363,6 +363,9 @@
         <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
         </entry>
+        <entry key="eu.etaxonomy.cdm.common.TreeNode">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TreeNodeBeanProcessor" />
+        </entry>
       </map>
     </property>
         <property name="jsonPropertyFilter">

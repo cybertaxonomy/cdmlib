@@ -116,6 +116,16 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         return annotations;
     }
 
+    /**
+     * NOTICE: required to have a TreeNodeBeanProcessor configured which suppresses the
+     * redundant output of distribution.area
+     *
+     * @param descriptionUuidList
+     * @param levels
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
     public DistributionTree doGetOrderedDistributionsB(
             @PathVariable("uuid_list") UuidList descriptionUuidList,
