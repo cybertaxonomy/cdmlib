@@ -11,7 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.Iterator;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
@@ -21,7 +21,6 @@ import org.hibernate.proxy.HibernateProxyHelper;
 
 import eu.etaxonomy.cdm.common.Tree;
 import eu.etaxonomy.cdm.common.TreeNode;
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
@@ -31,94 +30,82 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
  *
  * There is a somehow similar implementation in {@link eu.etaxonomy.cdm.model.location.NamedArea}
  */
-public class DistributionTree extends Tree<Distribution>{
+public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
 
     public static final Logger logger = Logger.getLogger(DistributionTree.class);
 
     public DistributionTree(){
-        NamedArea area = NamedArea.NewInstance();
-        Distribution data = Distribution.NewInstance();
-        data.setArea(area);
-        data.putModifyingText(Language.ENGLISH(), "test");
-        TreeNode<Distribution> rootElement = new TreeNode<Distribution>();
-        List<TreeNode<Distribution>> children = new ArrayList<TreeNode<Distribution>>();
-
-        rootElement.setData(data);
+        TreeNode<Set<Distribution>, NamedArea> rootElement = new TreeNode<Set<Distribution>, NamedArea>();
+        List<TreeNode<Set<Distribution>, NamedArea>> children = new ArrayList<TreeNode<Set<Distribution>, NamedArea>>();
         rootElement.setChildren(children);
         setRootElement(rootElement);
     }
 
-    public boolean containsChild(TreeNode<Distribution> root, TreeNode<Distribution> treeNode){
-         boolean result = false;
-         Iterator<TreeNode<Distribution>> it = root.getChildren().iterator();
-         while (it.hasNext() && !result) {
-             TreeNode<Distribution> node = it.next();
-             if (node.getData().equalsForTree(treeNode.getData())) {
-                 result = true;
-             }
-         }
-         /*
-         while (!result && it.hasNext()) {
-              if (it.next().data.equalsForTree(treeNode.data)){
-                  result = true;
-              }
-         }
-         */
-         return result;
-     }
-
-    public TreeNode<Distribution> getChild(TreeNode<Distribution> root, TreeNode<Distribution> TreeNode) {
-        boolean found = false;
-        TreeNode<Distribution> result = null;
-        Iterator<TreeNode<Distribution>> it = root.children.iterator();
-        while (!found && it.hasNext()) {
-            result = it.next();
-            if (result.data.equalsForTree(TreeNode.data)){
-                found = true;
-            }
-        }
-        if (!found){
-            try {
-                throw new Exception("The node was not found in among children and that is a precondition of getChild(node) method");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-        return result;
+    /**
+     * @param parentNode
+     * @param nodeToFind
+     * @return false if the node was not found
+     */
+    public boolean hasChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea nodeID) {
+        return findChildNode(parentNode, nodeID) != null;
     }
 
-    private List<Distribution> orderDistributionsByLevel(List<Distribution> distList){
-
-        if(distList == null){
-            distList = new ArrayList<Distribution>();
+    /**
+     * @param parentNode
+     * @param nodeToFind
+     * @return the found node or null
+     */
+    public TreeNode<Set<Distribution>, NamedArea> findChildNode(TreeNode<Set<Distribution>, NamedArea> parentNode, NamedArea  nodeID) {
+        if (parentNode.getChildren() == null) {
+            return null;
         }
-        if(distList.size() == 0){
-            return distList;
-        }
 
-        Distribution dist;
-        List<Distribution> orderedList = new ArrayList<Distribution>(distList.size());
-        orderedList.addAll(distList);
-
-        int length = -1;
-        boolean flag = true;
-        for (int i = 0; i < length && flag; i++) {
-            flag = false;
-            for (int j = 0; j < length-1; j++) {
-                String level1 = orderedList.get(j).getArea().getLevel().toString();
-                String level2 = orderedList.get(j+1).getArea().getLevel().toString();
-                //if level from j+1 is greater than level from j
-                if (level2.compareTo(
-                        level1) < 0) {
-                    dist = orderedList.get(j);
-                    orderedList.set(j, orderedList.get(j+1));
-                    orderedList.set(j+1, dist);
-                    flag = true;
-                }
+        for (TreeNode<Set<Distribution>, NamedArea> node : parentNode.getChildren()) {
+            if (node.getNodeId().equals(nodeID)) {
+                return node;
             }
         }
-        return orderedList;
+        return null;
     }
+
+//    /**
+//     * FIXME REMOVE
+//     *
+//     * @param distList
+//     * @return
+//     */
+//    private List<Distribution> orderDistributionsByLevel(List<Distribution> distList){
+//
+//        if(distList == null){
+//            distList = new ArrayList<Distribution>();
+//        }
+//        if(distList.size() == 0){
+//            return distList;
+//        }
+//
+//        Distribution dist;
+//        List<Distribution> orderedList = new ArrayList<Distribution>(distList.size());
+//        orderedList.addAll(distList);
+//
+//        int length = -1;
+//        boolean flag = true;
+//        for (int i = 0; i < length && flag; i++) {
+//            flag = false;
+//            for (int j = 0; j < length-1; j++) {
+//                String level1 = orderedList.get(j).getArea().getLevel().toString();
+//                String level2 = orderedList.get(j+1).getArea().getLevel().toString();
+//                //if level from j+1 is greater than level from j
+//                if (level2.compareTo(
+//                        level1) < 0) {
+//                    dist = orderedList.get(j);
+//                    orderedList.set(j, orderedList.get(j+1));
+//                    orderedList.set(j+1, dist);
+//                    flag = true;
+//                }
+//            }
+//        }
+//        return orderedList;
+//    }
 
     /**
      * @param distList
@@ -126,39 +113,50 @@ public class DistributionTree extends Tree<Distribution>{
      */
     public void orderAsTree(List<Distribution> distList, Set<NamedAreaLevel> omitLevels){
 
-        List<Distribution> orderedDistList = orderDistributionsByLevel(distList);
-
-        for (Distribution distribution : orderedDistList) {
+        for (Distribution distribution : distList) {
             // get path through area hierarchy
             List<NamedArea> namedAreaPath = getAreaLevelPath(distribution.getArea(), omitLevels);
-            // order by merging
-            mergeAux(distribution, namedAreaPath, this.getRootElement());
+            addDistributionToSubTree(distribution, namedAreaPath, this.getRootElement());
         }
     }
 
-    public void sortChildren(){
-        sortChildrenAux(this.getRootElement());
+    public void recursiveSortChildrenByLabel(){
+        _recursiveSortChildrenByLabel(this.getRootElement());
     }
 
-    private void sortChildrenAux(TreeNode<Distribution> treeNode){
-        DistributionNodeComparator comp = new DistributionNodeComparator();
+    private void _recursiveSortChildrenByLabel(TreeNode<Set<Distribution>, NamedArea> treeNode){
+        DistributionNodeByAreaLabelComparator comp = new DistributionNodeByAreaLabelComparator();
         if (treeNode.children == null) {
             //nothing => stop condition
             return;
         }else {
             Collections.sort(treeNode.children, comp);
-            for (TreeNode<Distribution> child : treeNode.children) {
-                sortChildrenAux(child);
+            for (TreeNode<Set<Distribution>, NamedArea> child : treeNode.children) {
+                _recursiveSortChildrenByLabel(child);
             }
         }
     }
 
-    private void mergeAux(Distribution distributionElement, List<NamedArea> namedAreaPath, TreeNode<Distribution> root){
+    /**
+     * Adds the given <code>distributionElement</code> to the sub tree defined by
+     * the <code>root</code>.
+     *
+     * @param distribution
+     *            the {@link Distribution} to add to the tree at the position
+     *            according to the NamedArea hierarchy.
+     * @param namedAreaPath
+     *            the path to the root of the NamedArea hierarchy starting the
+     *            area used in the given <code>distributionElement</code>. The
+     *            hierarchy is defined by the {@link NamedArea#getPartOf()}
+     *            relationships
+     * @param root
+     *            root element of the sub tree to which the
+     *            <code>distributionElement</code> is to be added
+     */
+    private void addDistributionToSubTree(Distribution distribution, List<NamedArea> namedAreaPath, TreeNode<Set<Distribution>, NamedArea> root){
 
-        TreeNode<Distribution> highestDistNode;
-        TreeNode<Distribution> child;// the new child to add or the child to follow through the tree
 
-         //if the list to merge is empty finish the execution
+        //if the list to merge is empty finish the execution
         if (namedAreaPath.isEmpty()) {
             return;
         }
@@ -166,38 +164,29 @@ public class DistributionTree extends Tree<Distribution>{
         //getting the highest area and inserting it into the tree
         NamedArea highestArea = namedAreaPath.get(0);
 
-        boolean isOnTop = false;
-        if(distributionElement.getArea().getLevel() == null) {
-            // is level is null compare by area only
-//            isOnTop = distributionElement.getArea().getUuid().equals(highestArea.getUuid());
-            isOnTop = false;
-        } else {
-            // otherwise compare by level
-            isOnTop = highestArea.getLevel().getUuid().equals((distributionElement.getArea().getLevel().getUuid()));
+
+        TreeNode<Set<Distribution>, NamedArea> child = findChildNode(root, highestArea);
+        if (child == null) {
+            // the highestDistNode is not yet in the set of children, so we add it
+            child = new TreeNode<Set<Distribution>, NamedArea>(highestArea);
+            child.setData(new HashSet<Distribution>());
+            root.addChild(child);
         }
 
-        if (isOnTop) {
-            highestDistNode = new TreeNode<Distribution>(distributionElement); //distribution.area comes from proxy!!!!
-        }else{
-            //if distribution.status is not relevant
-            Distribution dummyDistributionElement = Distribution.NewInstance(highestArea, null);
-            highestDistNode = new TreeNode<Distribution>(dummyDistributionElement);
+        // add another element to the list of data
+        if(namedAreaPath.get(0).equals(distribution.getArea())){
+            if(namedAreaPath.size() > 1){
+                logger.error("there seems to be something wrong with the area hierarchy");
+            }
+            child.getData().add(distribution);
+            return; // done!
         }
 
-        if (root.getChildren().isEmpty() || !containsChild(root, highestDistNode)) {
-            //if the highest level is not on the depth-1 of the tree we add it.
-            //child = highestDistNode;
-            child = new TreeNode<Distribution>(highestDistNode.data);
-            root.addChild(child);//child.getData().getArea().getUuid().toString().equals("8cfc1722-e1e8-49d3-95a7-9879de6de490");
-        }else {
-            //if the depth-1 of the tree contains the highest area level
-            //get the subtree or create it in order to continuing merging
-            child = getChild(root,highestDistNode);
-        }
-        //continue merging with the next highest area of the list.
+        // Recursively proceed into the namedAreaPath to merge the next node
         List<NamedArea> newList = namedAreaPath.subList(1, namedAreaPath.size());
-        mergeAux(distributionElement, newList, child);
+        addDistributionToSubTree(distribution, newList, child);
     }
+
 
     /**
      * @param area

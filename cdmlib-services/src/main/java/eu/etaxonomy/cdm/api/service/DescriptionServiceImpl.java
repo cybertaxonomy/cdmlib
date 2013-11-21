@@ -293,14 +293,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         List<UUID> uuids = new ArrayList<UUID>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
-        	if (! taxonDescription.isImageGallery()){    //image galleries should not have descriptions, but better filter fully on DTYPE of description element
-        		uuids.add(taxonDescription.getUuid());
-        	}
+            if (! taxonDescription.isImageGallery()){    //image galleries should not have descriptions, but better filter fully on DTYPE of description element
+                uuids.add(taxonDescription.getUuid());
+            }
         }
-        
+
         List<DescriptionBase> desclist = dao.list(uuids, null, null, null, propertyPaths);
         for (DescriptionBase desc : desclist) {
-        	if (desc.isInstanceOf(TaxonDescription.class)){
+            if (desc.isInstanceOf(TaxonDescription.class)){
                 Set<DescriptionElementBase> elements = desc.getElements();
                 for (DescriptionElementBase element : elements) {
                         if (element.isInstanceOf(Distribution.class)) {
@@ -309,10 +309,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
                                 distList.add(distribution);
                             }
                         }
-                }	
-        	}
+                }
+            }
         }
-            
+
         //old
 //        for (TaxonDescription taxonDescription : taxonDescriptions) {
 //            if (logger.isDebugEnabled()){ logger.debug("load taxon description " + taxonDescription.getUuid());}
@@ -328,9 +328,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 //                    }
 //            }
 //        }
-        
+
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
-        
+
         // filter distributions
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList);
         distList.clear();
@@ -340,7 +340,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         //order by areas
         tree.orderAsTree(distList, omitLevels);
-        tree.sortChildren();
+        tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
         if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
     }
@@ -477,10 +477,10 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
         if (logger.isDebugEnabled()){logger.debug(" get count ...");}
-    	Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
+        Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
         List<T> descriptionElements;
         if(AbstractPagerImpl.hasResultsInRange(count, pageNumber, pageSize)){ // no point checking again
-        	if (logger.isDebugEnabled()){logger.debug(" get list ...");}
+            if (logger.isDebugEnabled()){logger.debug(" get list ...");}
             descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
         } else {
             descriptionElements = new ArrayList<T>(0);

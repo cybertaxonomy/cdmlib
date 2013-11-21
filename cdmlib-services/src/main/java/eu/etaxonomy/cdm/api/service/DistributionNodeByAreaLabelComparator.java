@@ -9,12 +9,15 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.Comparator;
+import java.util.Set;
 
 import eu.etaxonomy.cdm.common.TreeNode;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
-public class DistributionNodeComparator implements Comparator<TreeNode<Distribution>>{
-	public int compare(TreeNode<Distribution> arg0, TreeNode<Distribution> arg1) {
-		return arg0.data.getArea().getLabel().compareTo(arg1.data.getArea().getLabel());
-	}
+public class DistributionNodeByAreaLabelComparator implements Comparator<TreeNode<Set<Distribution>, NamedArea>>{
+    @Override
+    public int compare(TreeNode<Set<Distribution>, NamedArea> arg0, TreeNode<Set<Distribution>, NamedArea> arg1) {
+        return arg0.getNodeId().getLabel().compareTo(arg1.getNodeId().getLabel());
+    }
 }

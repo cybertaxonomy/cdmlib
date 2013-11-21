@@ -1711,7 +1711,6 @@ cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/statistics.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/taxon.xsl -text
 cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
-cdmlib-remote-webapp/src/test/resources/log4j.properties -text
 cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
@@ -2014,7 +2013,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeleteResult.java -te
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DeltaTextDataProcessor.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeComparator.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionNodeByAreaLabelComparator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/DistributionTree.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/EventBaseServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImpl.java -text
