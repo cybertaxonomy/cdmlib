@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -763,7 +764,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         cdata.addStateData(statedata);
         d_abies_balsamea.addElement(cdata);
 
-        termService.save(state);
+        UUID termUUID = termService.save(state);
         descriptionService.save(d_abies_balsamea);
 
         commitAndStartNewTransaction(null);
@@ -792,6 +793,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
+        DefinedTermBase term = termService.find(termUUID);
+        termService.delete(term);
     }
 
     @SuppressWarnings("rawtypes")
