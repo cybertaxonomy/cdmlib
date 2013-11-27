@@ -229,8 +229,12 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         FileReader reader = new FileReader(localFile);
 
+        Set<UUID> areaUuidSet = null;
+        if(namedAreaUuids != null) {
+            areaUuidSet = namedAreaUuids.asSet();
+        }
         Map<NamedArea, String> resultMap = geoservice.mapShapeFileToNamedAreas(
-                reader, idSearchFields , wmsLayerName , vocabUuid, namedAreaUuids.asSet());
+                reader, idSearchFields , wmsLayerName , vocabUuid, areaUuidSet);
         Map<String, String> flatResultMap = new HashMap<String, String>(resultMap.size());
         for(NamedArea area : resultMap.keySet()){
             flatResultMap.put(area.getTitleCache() + " [" + area.getUuid() + "]", resultMap.get(area));
