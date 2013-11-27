@@ -61,6 +61,11 @@ public interface ICdmDataSource {
 	 */
 	public String getDatabase();
 	
+	/**
+	 * Returns the database type of the data source. 
+	 * @return the database type of the data source. 
+	 * <code>null</code> if the bean or the driver class property does not exist or the driver class is unknown.
+	 */
 	public DatabaseTypeEnum getDatabaseType();
 	
 	/**
