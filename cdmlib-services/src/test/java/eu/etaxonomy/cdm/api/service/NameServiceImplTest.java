@@ -780,7 +780,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
-
+        //nothing should be deleted
         Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
         Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
         Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
@@ -800,7 +800,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
-
+        //only the types of name1 should be deleted
         Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
         Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
         Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
@@ -829,9 +829,16 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
+        name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
+        this.nameService.update(name3);
+        
+        this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        desigs3 = name3.getTypeDesignations();
+        Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
+        
         nameService.deleteTypeDesignation(name3, desig3);
-
         commitAndStartNewTransaction(tableNames);
+        
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -845,7 +852,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
         Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-        Assert.assertEquals("name3 should have 0 type designations", 0, desigs3.size());
+        Assert.assertEquals("name3 should have 0 type designations", 1, desigs3.size());
         Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 

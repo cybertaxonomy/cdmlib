@@ -93,24 +93,15 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
         TaxonNode taxNode = (TaxonNode) taxonNodeDao.load(uuid1);
         TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.load(uuid2);
-        Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
-
-        rootNodes.add(taxNode);
-
-
-        for (TaxonNode rootNode : rootNodes){
-            classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference());
-        }
-
-        taxNode.addChildNode(taxNode2, null,null);
+      
+        TaxonNode taxNode3 = (TaxonNode) taxonNodeDao.load(uuid3);
         
-        Taxon taxon2 = taxNode2.getTaxon();
-        Taxon taxon = taxNode.getTaxon();
+        
                
         List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
         assertEquals("there should be six taxa", 6, taxa.size());
 
-        taxonNodeDao.delete(taxNode2, true);
+        taxonNodeDao.delete(taxNode3, true);
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         taxa = taxonDao.getAllTaxonBases(10, 0);
         assertEquals("there should be five taxa left", 5, taxa.size());

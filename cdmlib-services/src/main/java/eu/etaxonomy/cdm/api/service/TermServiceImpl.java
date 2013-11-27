@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
@@ -42,6 +44,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringBaseDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ILanguageStringDao;
@@ -214,6 +217,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	@Deprecated
 	public UUID delete(DefinedTermBase term){
 		UUID result = term.getUuid();
+		
 		TermDeletionConfigurator defaultConfig = new TermDeletionConfigurator();
 		delete(term, defaultConfig);
 		return result;
@@ -227,6 +231,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 //		boolean isInternal = config.isInternal();
 		DeleteResult result = new DeleteResult();
 		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
+		CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 		
 		try {
 			//generalization of
@@ -326,7 +331,9 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 			
 			if (result.isOk()){
 				TermVocabulary voc = term.getVocabulary();
-				voc.removeTerm(term);
+				if (voc!= null){
+					voc.removeTerm(term);
+				}
 				//TODO save voc
 				if (true /*!config.isInternal()*/){
 					dao.delete(term);

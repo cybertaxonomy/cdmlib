@@ -92,11 +92,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     
     @SpringBeanByType
     private IMarkerService markerService;
-    
+
     @SpringBeanByType
     private IEventBaseService eventService;
-
-
+    
+    @SpringBeanByType
+    private IOccurrenceService occurenceService;
 
 
 
@@ -1024,7 +1025,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
                 "Media","Media_AUD",
                 "WorkingSet","WorkingSet_AUD",
                 "DescriptionElementBase","DescriptionElementBase_AUD",
-        		"DeterminationEvent","DeterminationEvent_AUD"};
+        		"DeterminationEvent","DeterminationEvent_AUD",
+        		"SpecimenOrObservationBase","SpecimenOrObservationBase_AUD"};
 
         UUID uuidParent=UUID.fromString("b5271d4f-e203-4577-941f-00d76fa9f4ca");
         UUID uuidChild1=UUID.fromString("326167f9-0b97-4e7d-b1bf-4ca47b82e21e");
@@ -1068,14 +1070,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         
         SpecimenOrObservationBase<IIdentifiableEntityCacheStrategy> identifiedUnit = DerivedUnit.NewInstance(SpecimenOrObservationType.DerivedUnit);
         DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(child1, identifiedUnit);
-        UUID eventUUID = eventService.save(determinationEvent);
-           
+        //UUID eventUUID = eventService.save(determinationEvent);
+        UUID identifiedUnitUUID = occurenceService.save(identifiedUnit);
+        
         
         TaxonNode parentNode = node.getParent();
         parentNode =CdmBase.deproxy(parentNode, TaxonNode.class);
         parentNode.deleteChildNode(node);
         nodeService.save(parentNode);
-       // commitAndStartNewTransaction(tableNames);
+        //commitAndStartNewTransaction(tableNames);
 
         try {
 
@@ -1084,11 +1087,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         } catch (DataChangeNoRollbackException e) {
         	commitAndStartNewTransaction(tableNames);
         }
-        determinationEvent = (DeterminationEvent)eventService.load(eventUUID);
-        eventService.delete(determinationEvent);
+       
+        //determinationEvent = (DeterminationEvent)eventService.load(eventUUID);
+        commitAndStartNewTransaction(tableNames);
+        identifiedUnit = occurenceService.load(identifiedUnitUUID);
+        occurenceService.delete(identifiedUnit);
         
         commitAndStartNewTransaction(tableNames);
         child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
+
         assertEquals(0, child1.getTaxonNodes().size());
         try {
 
@@ -1111,8 +1118,6 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 2 taxa in the database",2, nTaxa);
-        
-        
 //		nNames = nameService.count(TaxonNameBase.class);
 //		Assert.assertEquals("There should be 3 names left in the database", 3, nNames);
 //		int nRelations = service.countAllRelationships();
