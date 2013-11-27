@@ -98,5 +98,39 @@
           <b>nameComplete</b>
         </field>
     </mapping>
+    
+	<!-- mappings for the name catalogue dtos-->
+	<mapping wildcard="false">  
+        <class-a>eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.cdm.NameInformationRdf</class-b>
+        <field>
+          <a>request.nameUuid</a>
+          <b>scientificNameID</b>
+        </field>
+        <field>
+          <a>response.name</a>
+          <b>nameComplete</b>
+        </field>
+        <field>
+          <a>response.title</a>
+          <b>title</b>
+        </field>
+        <field>
+          <a>response.rank</a>
+          <b>rankString</b>
+        </field>
+        <field>
+          <a>response.citation</a>
+          <b>references</b>
+        </field>
+        <field>
+          <a>response.nomenclatureStatus</a>
+          <b>typeStatus</b>
+        </field>
+        <field>
+          <a>response.taxonUuids</a>
+          <b>taxonUuids</b>
+        </field>
+    </mapping>
       
 </mappings>

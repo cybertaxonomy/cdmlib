@@ -822,7 +822,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
-                    NonViralName nvn = (NonViralName) taxon.getName();
+                    NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
                     String secTitle = "" ;
                     String modified = "";

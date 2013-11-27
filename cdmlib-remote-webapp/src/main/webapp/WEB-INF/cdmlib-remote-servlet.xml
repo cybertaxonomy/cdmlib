@@ -122,6 +122,7 @@
             <entry key="xml" value="application/xml" />
             <entry key="dc" value="application/xml" />
             <entry key="rdf" value="application/xml" />
+            <entry key="rdfxml" value="application/rdf+xml" />
             <entry key="json" value="application/json" />
            </map>
         </property>
@@ -136,6 +137,13 @@
           </bean>
           <bean id="jsonTypeViewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
               <property name="location" value="/WEB-INF/json-views.xml"/>
+              <!--
+                turn caching off FOR DEBUGING ONLY !!!!
+              <property name="cache" value="false"/>
+              -->
+          </bean>
+          <bean id="rdfTypeViewResolver" class="eu.etaxonomy.cdm.remote.view.PatternViewResolver">
+              <property name="location" value="/WEB-INF/rdf-views.xml"/>
               <!--
                 turn caching off FOR DEBUGING ONLY !!!!
               <property name="cache" value="false"/>

@@ -7,8 +7,10 @@ import java.io.OutputStreamWriter;
 import java.io.StringReader;
 import java.io.Writer;
 import java.net.URI;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
@@ -16,6 +18,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.custommonkey.xmlunit.XMLAssert;
 import org.custommonkey.xmlunit.XMLUnit;
+import org.dozer.Mapper;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
 import org.junit.Before;
@@ -24,9 +27,11 @@ import org.junit.Test;
 import org.springframework.oxm.Marshaller;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.remote.dto.dc.Relation;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.PublicationCitation;
 import eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship;
@@ -41,9 +46,15 @@ import eu.etaxonomy.remote.dto.rdf.Rdf;
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class RdfViewTest extends UnitilsJUnit4 {
 
-	@SpringBeanByType
+	@SpringBeanByName
 	private Marshaller marshaller;
 
+	@SpringBeanByName
+	private Marshaller rdfMarshaller;
+	
+    @SpringBeanByType
+    private Mapper mapper;
+    
 	private Rdf rdf;
 	private TaxonConcept taxonConcept;
 	private SpeciesProfileModel speciesProfileModel;
@@ -123,7 +134,7 @@ public class RdfViewTest extends UnitilsJUnit4 {
 		writer.close();
 
 		String resource = "/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf";
-//		System.out.println(new String(outputStream.toByteArray()));
+		System.out.println(new String(outputStream.toByteArray()));
 		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
 
@@ -139,5 +150,40 @@ public class RdfViewTest extends UnitilsJUnit4 {
 //		System.out.println(new String(outputStream.toByteArray()));
 //		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
 	}
+	
+	@Test
+	public void testNameInformationRdf() throws Exception {
+		
+		Map model = new HashMap<String,List<NameInformation>>();
+		List niList = new ArrayList();
+		NameInformation ni = new NameInformation();
+		ni.setRequest("64cf8cf8-f56a-4411-8f49-c3dc95ea257a");
+		ni.setResponse("Platalea leucorodia Linnaeus, 1758",
+				"Platalea leucorodia",
+				"Species",
+				new HashSet(),
+				null,
+				new HashSet(),
+				new HashSet(),
+				new HashSet());
+		ni.getResponse().addToTaxonUuids("1a5bcb42-146f-42e5-9136-1b21d170163e");
+		niList.add(ni);
+		model.put("64cf8cf8-f56a-4411-8f49-c3dc95ea257a", niList);
+		RdfView rdfView = new RdfView();
+		rdfView.setMapper(mapper);
+		rdfView.setRdfMarshaller(marshaller);
+		rdf = rdfView.buildRdf(model);
+		
+		ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+		Writer writer = new BufferedWriter(new OutputStreamWriter(outputStream,"UTF-8" ));
+		rdfMarshaller.marshal(rdf, new StreamResult(writer));		
+		writer.close();
+		System.out.println(new String(outputStream.toByteArray()));
+		
+		String resource = "/eu/etaxonomy/cdm/remote/view/NameInformationTest.rdf";
+		XMLAssert.assertXMLEqual(new InputStreamReader(this.getClass().getResourceAsStream(resource)),new StringReader(new String(outputStream.toByteArray())));
+	}
+	
+	
 
 }
