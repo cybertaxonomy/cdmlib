@@ -153,15 +153,14 @@ public class CdmDataSource extends CdmDataSourceBase {
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getName()
-	 * A CdmDataSource does not have a name representation therefor the database name is returned
+	 * A CdmDataSource does not have a name representation therefore the database name is returned
 	 */
+	@Override
 	public String getName() {
 		return database;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getDatasourceBean()
-	 */
+	@Override
 	public BeanDefinition getDatasourceBean(){
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDataSourceClass());
 		//attributes
@@ -202,9 +201,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL)
-	 */
+	@Override
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		boolean showSql = false;
 		boolean formatSql = false;
@@ -213,9 +210,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return getHibernatePropertiesBean(hbm2dll, showSql, formatSql, registerSearchListener, cacheProviderClass);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.application.ICdmDataSource#getHibernatePropertiesBean(eu.etaxonomy.cdm.database.CdmPersistentDataSource.HBM2DDL, java.lang.Boolean, java.lang.Boolean, java.lang.Class)
-	 */
+	@Override
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
@@ -268,48 +263,48 @@ public class CdmDataSource extends CdmDataSourceBase {
 		this.destroyMethodName = destroyMethodName;
 	}
 
+	@Override
 	public String getDatabase() {
 		return database;
 	}
 
+	@Override
 	public DatabaseTypeEnum getDatabaseType() {
 		return dbType;
 	}
 
+	@Override
 	public String getFilePath() {
 		return filePath;
 	}
 
 
+	@Override
 	public int getPort() {
 		return port;
 	}
 
+	@Override
 	public String getServer() {
 		return server;
 	}
 
+	@Override
 	public H2Mode getMode() {
 		return mode;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getPassword()
-	 */
+	@Override
 	public String getPassword() {
 		return password;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getUserName()
-	 */
+	@Override
 	public String getUsername() {
 		return username;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getNomenclaturalCode()
-	 */
+	@Override
 	public NomenclaturalCode getNomenclaturalCode() {
 		return nomenclaturalCode;
 	}
