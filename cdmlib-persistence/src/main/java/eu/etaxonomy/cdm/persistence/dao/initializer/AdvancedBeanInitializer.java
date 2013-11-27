@@ -329,110 +329,111 @@ public class AdvancedBeanInitializer extends HibernateBeanInitializer {
             invokePropertyAutoInitializers(bean);
         }
 
-        private void storeInitializedCollection(AbstractPersistentCollection persistedCollection,
-                BeanInitNode node, String param) {
-            Collection<?> collection;
-
-            if (persistedCollection  instanceof Collection) {
-                collection = (Collection<?>) persistedCollection;
-            }else if (persistedCollection instanceof Map) {
-                collection = ((Map<?,?>)persistedCollection).values();
-            }else{
-                throw new RuntimeException ("Non Map and non Collection cas not handled in storeInitializedCollection()");
-            }
-            for (Object value : collection){
-                preparePropertyValueForBulkLoadOrStore(node, null, param, value);
-            }
-        }
-
-        private void bulkLoadLazies(BeanInitNode node) {
-
-            if (logger.isTraceEnabled()){logger.trace("bulk load " +  node);}
-
-            //beans
-            for (Class<?> clazz : node.getLazyBeans().keySet()){
-                Set<Serializable> idSet = node.getLazyBeans().get(clazz);
-                if (idSet != null && ! idSet.isEmpty()){
-
-                    if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
-                    //TODO use entity name
-                    String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
-                    hql = String.format(hql, clazz.getSimpleName(), addAutoinitFetchLoading(clazz, "c"));
-                    Query query = genericDao.getHqlQuery(hql);
-                    query.setParameterList("idSet", idSet);
-                    List<Object> list = query.list();
-
-                    if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
-                    for (Object object : list){
-                        if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
-                            object = initializeInstance(object);
-                        }
-                        autoinitializeBean(object);
-                        node.addBean(object);
-                    }
-                    if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
-                }
-            }
-            node.resetLazyBeans();
-
-            //collections
-            for (Class<?> ownerClazz : node.getLazyCollections().keySet()){
-                Map<String, Set<Serializable>> lazyParams = node.getLazyCollections().get(ownerClazz);
-                for (String param : lazyParams.keySet()){
-                    Set<Serializable> idSet = lazyParams.get(param);
-                    if (idSet != null && ! idSet.isEmpty()){
-                        if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections ; ownerClass=" +  ownerClazz.getSimpleName() + " ; param = " + param);}
-
-                        //TODO use entity name ??
-                        //get from repository
-                        List<Object[]> list;
-                        String hql = "SELECT oc, oc.%s " +
-                                " FROM %s as oc LEFT JOIN FETCH oc.%s as col %s " +
-                                " WHERE oc.id IN (:idSet) ";
-
+		private void storeInitializedCollection(AbstractPersistentCollection persistedCollection, 
+				BeanInitNode node, String param) {
+			Collection<?> collection;
+			
+			if (persistedCollection  instanceof Collection) {
+				collection = (Collection<?>) persistedCollection;
+			}else if (persistedCollection instanceof Map) {
+				collection = ((Map<?,?>)persistedCollection).values();
+			}else{
+				throw new RuntimeException ("Non Map and non Collection cas not handled in storeInitializedCollection()");
+			}
+			for (Object value : collection){
+				preparePropertyValueForBulkLoadOrStore(node, null, param, value);
+			}
+		}
+		
+		private void bulkLoadLazies(BeanInitNode node) {
+			
+			if (logger.isTraceEnabled()){logger.trace("bulk load " +  node);}
+			
+			//beans
+			for (Class<?> clazz : node.getLazyBeans().keySet()){
+				Set<Serializable> idSet = node.getLazyBeans().get(clazz);
+				if (idSet != null && ! idSet.isEmpty()){
+					
+					if (logger.isTraceEnabled()){logger.trace("bulk load beans of class " +  clazz.getSimpleName());}
+					//TODO use entity name
+					String hql = " SELECT c FROM %s as c %s WHERE c.id IN (:idSet) ";
+					hql = String.format(hql, clazz.getSimpleName(), addAutoinitFetchLoading(clazz, "c"));
+					if (logger.isTraceEnabled()){logger.trace(hql);}
+					Query query = genericDao.getHqlQuery(hql);
+					query.setParameterList("idSet", idSet);
+					List<Object> list = query.list();
+					
+					if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded beans of class " +  clazz.getSimpleName());}
+					for (Object object : list){
+						if (object instanceof HibernateProxy){  //TODO remove hibernate dependency
+							object = initializeInstance(object);
+						}
+						autoinitializeBean(object);
+						node.addBean(object);
+					}
+					if (logger.isTraceEnabled()){logger.trace("bulk load - DONE");}
+				}	
+			}
+			node.resetLazyBeans();
+			
+			//collections
+			for (Class<?> ownerClazz : node.getLazyCollections().keySet()){
+				Map<String, Set<Serializable>> lazyParams = node.getLazyCollections().get(ownerClazz);
+				for (String param : lazyParams.keySet()){
+					Set<Serializable> idSet = lazyParams.get(param);
+					if (idSet != null && ! idSet.isEmpty()){
+						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections ; ownerClass=" +  ownerClazz.getSimpleName() + " ; param = " + param);}
+						
+						//TODO use entity name ??
+						//get from repository
+						List<Object[]> list;
+						String hql = "SELECT oc, oc.%s " +
+								" FROM %s as oc LEFT JOIN FETCH oc.%s as col %s " +
+								" WHERE oc.id IN (:idSet) ";
+						
 //						String hql = "SELECT oc.%s " +
 //								" FROM %s as oc WHERE oc.id IN (:idSet) ";
-                        hql = String.format(hql, param, ownerClazz.getSimpleName(), param,
-                                "" /*addAutoinitFetchLoading(clazz, "col")*/);
-
-                        try {
-
-                            Query query = genericDao.getHqlQuery(hql);
-                            query.setParameterList("idSet", idSet);
-                            list = query.list();
-                        } catch (HibernateException e) {
-                            e.printStackTrace();
-                            throw e;
-                        }
-
-                        //getTarget and add to child node
-                        if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded " + node + " collections - DONE");}
-                        for (Object[] listItems : list){
-                            Object newBean = listItems[1];
-                            if (newBean == null){
-                                System.out.println("Collection is null");
-                            }
-                            if (newBean instanceof HibernateProxy){
-                                newBean = initializeInstance(newBean);
-                            }
-                            autoinitializeBean(newBean);
-                            node.addBean(newBean);
-                        }
-                        if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections - DONE");}
-                    }
-                }
-            }
-            for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
-                if (! collection.wasInitialized()){  //should not happen anymore
-                    collection.forceInitialization();
-                }
-            }
-
-            node.resetLazyCollections();
-
-            if (logger.isTraceEnabled()){logger.trace("bulk load " +  node + " - DONE ");}
-
-        }
+						hql = String.format(hql, param, ownerClazz.getSimpleName(), param,
+								"" /*addAutoinitFetchLoading(clazz, "col")*/);
+						
+						try {
+							if (logger.isTraceEnabled()){logger.trace(hql);}
+							Query query = genericDao.getHqlQuery(hql);
+							query.setParameterList("idSet", idSet);
+							list = query.list();
+						} catch (HibernateException e) {
+							e.printStackTrace();
+							throw e;
+						}
+						
+						//getTarget and add to child node
+						if (logger.isTraceEnabled()){logger.trace("initialize bulk loaded " + node + " collections - DONE");}
+						for (Object[] listItems : list){
+							Object newBean = listItems[1];
+							if (newBean == null){
+								System.out.println("Collection is null");
+							}
+							if (newBean instanceof HibernateProxy){
+								newBean = initializeInstance(newBean);
+							}
+							autoinitializeBean(newBean);
+							node.addBean(newBean);
+						}
+						if (logger.isTraceEnabled()){logger.trace("bulk load " + node + " collections - DONE");}
+					}	
+				}
+			}
+			for (AbstractPersistentCollection collection : node.getUninitializedCollections()){
+				if (! collection.wasInitialized()){  //should not happen anymore  
+					collection.forceInitialization();
+				}
+			}
+			
+			node.resetLazyCollections();
+			
+			if (logger.isDebugEnabled()){logger.debug("bulk load " +  node + " - DONE ");}
+			
+		}
 
 
         private String addAutoinitFetchLoading(Class<?> clazz, String beanAlias) {
