@@ -1678,6 +1678,7 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml 
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsp/index.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/rdf-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/xml-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/css/csv_export.css -text
@@ -1804,6 +1805,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/Pref
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/RemoveHTMLReader.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/StripTagsConverter.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/assembler/converter/TimePeriodConverter.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/cdm/NameInformationRdf.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/common/ErrorResponse.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/common/RemoteResponse.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/dc/Relation.java -text
@@ -1978,6 +1980,7 @@ cdmlib-remote/src/test/java/eu/etaxonomy/cdm/test/util/LSIDMatchers.java -text
 cdmlib-remote/src/test/resources/applicationContext.xml -text
 cdmlib-remote/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-remote/src/test/resources/eu/etaxonomy/cdm/override.properties -text
+cdmlib-remote/src/test/resources/eu/etaxonomy/cdm/remote/view/NameInformationTest.rdf -text
 cdmlib-remote/src/test/resources/eu/etaxonomy/cdm/remote/view/RdfViewTest.rdf -text
 cdmlib-remote/src/test/resources/eu/etaxonomy/cdm/remote/view/oaipmh/IdentifyView.xml -text
 cdmlib-remote/src/test/resources/log4j.properties -text
