@@ -40,6 +40,7 @@ import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
@@ -558,7 +559,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-        } finally {
+        }catch(ReferencedObjectUndeletableException e){ 
+        	Assert.fail();
+    	}finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
@@ -627,7 +630,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
-        } finally {
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+    	}	finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();

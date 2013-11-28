@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.ObjectDeletedException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -32,6 +33,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -147,7 +149,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     public final void testRemoveTaxon() {
         Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.UNKNOWN_RANK()), null);
         UUID uuid = service.save(taxon);
-        service.delete(taxon);
+        try {
+			service.deleteTaxon(taxon, null, null);
+		} catch (DataChangeNoRollbackException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
         TaxonBase<?> actualTaxon = service.find(uuid);
         assertNull(actualTaxon);
     }
@@ -1091,8 +1098,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //determinationEvent = (DeterminationEvent)eventService.load(eventUUID);
         commitAndStartNewTransaction(tableNames);
         identifiedUnit = occurenceService.load(identifiedUnitUUID);
-        occurenceService.delete(identifiedUnit);
-        
+        try{
+        	occurenceService.delete(identifiedUnit);
+        }catch (ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         child1 = (Taxon)service.find(TaxonGenerator.SPECIES1_UUID);
 

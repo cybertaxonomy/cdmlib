@@ -38,6 +38,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
@@ -794,7 +795,11 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
         DefinedTermBase term = termService.find(termUUID);
-        termService.delete(term);
+        try {
+        	termService.delete(term);
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
     }
 
     @SuppressWarnings("rawtypes")

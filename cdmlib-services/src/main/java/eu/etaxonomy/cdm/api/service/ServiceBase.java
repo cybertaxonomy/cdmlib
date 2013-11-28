@@ -24,6 +24,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -62,7 +63,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     }
 
     @Transactional(readOnly = false)
-    public UUID delete(T persistentObject) {
+    public UUID delete(T persistentObject) throws ReferencedObjectUndeletableException {
         return dao.delete(persistentObject);
     }
 

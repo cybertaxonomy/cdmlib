@@ -23,6 +23,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -187,7 +188,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Name should still be in database",name1);
         nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
         nameWithBasionym.removeBasionyms();
-        nameService.delete(name1); //should throw now exception
+        try{
+        	nameService.delete(name1); //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -401,7 +406,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         name1.removeHybridChild(child);
-        nameService.delete(name1); //should throw now exception
+        try{
+        	 nameService.delete(name1); //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
+       
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -443,7 +453,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Taxon should still be in database",taxon);
         taxon.setName(basionym);
         taxonService.save(taxon);
-        nameService.delete(name1); //should throw now exception
+        try{
+        	nameService.delete(name1); //should throw now exception
+        }catch (ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -485,15 +499,21 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Specimen should still be in database",name1);
         specimen.setStoredUnder(null);
         occurrenceService.saveOrUpdate(specimen);
-        nameService.delete(name1); //should throw now exception
+        try{
+                	nameService.delete(name1); //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",specimen);
-
-        occurrenceService.delete(specimen); //this is to better run this test in the test suit
-
+        try{
+        	occurrenceService.delete(specimen); //this is to better run this test in the test suit
+    	}catch(ReferencedObjectUndeletableException e){
+    		Assert.fail();
+    	}
     }
 
     /**
@@ -541,7 +561,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         source.setNameUsedInSource(null);
         taxonService.saveOrUpdate(taxon);
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+    	}catch(ReferencedObjectUndeletableException e){
+    		Assert.fail();
+    	}
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -588,8 +612,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
         higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
 //		nameService.deleteTypeDesignation(higherName,commitAndStartNewTransaction(tableNames) );  //deletes the complete designation  //both options can be used
-        nameService.delete(name1);  //should throw now exception
-        commitAndStartNewTransaction(tableNames);
+        try{
+    	   nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
+    	commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
         higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
@@ -617,7 +645,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -635,7 +667,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{	
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -658,7 +694,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //		printDataSet(System.out, tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -695,7 +735,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
