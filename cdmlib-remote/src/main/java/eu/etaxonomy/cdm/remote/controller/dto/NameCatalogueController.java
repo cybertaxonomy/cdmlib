@@ -1183,7 +1183,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                             for (SynonymRelationship sr : synRelationships) {
                                 Taxon accTaxon = sr.getAcceptedTaxon();
-                                NonViralName accNvn = (NonViralName)accTaxon.getName();
+                                NonViralName accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
                                 Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
                             }
