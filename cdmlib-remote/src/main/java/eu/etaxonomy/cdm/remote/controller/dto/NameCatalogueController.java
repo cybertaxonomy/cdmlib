@@ -206,14 +206,14 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "synonymRelations.acceptedTaxon.sources.citation.sources.idInSource",    
             "synonymRelations.type.inverseRepresentations",
             
-            "relationsFromThisTaxon.type.$",
+            "relationsFromThisTaxon.type.inverseRepresentations",
             "relationsFromThisTaxon.toTaxon.name.rank.titleCache",
             "relationsFromThisTaxon.toTaxon.sec.updated",
             "relationsFromThisTaxon.toTaxon.sec.titleCache",
             "relationsFromThisTaxon.toTaxon.sources.citation.sources.idNamespace",
             "relationsFromThisTaxon.toTaxon.sources.citation.sources.idInSource",
             
-            "relationsToThisTaxon.type.$",
+            "relationsToThisTaxon.type.inverseRepresentations",
             "relationsToThisTaxon.fromTaxon.name.rank.titleCache",
             "relationsToThisTaxon.fromTaxon.sec.updated",
             "relationsToThisTaxon.fromTaxon.sec.titleCache",
