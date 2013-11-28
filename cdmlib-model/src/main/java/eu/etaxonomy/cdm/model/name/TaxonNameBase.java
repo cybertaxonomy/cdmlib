@@ -10,11 +10,13 @@
 package eu.etaxonomy.cdm.model.name;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -1329,24 +1331,38 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         ReflectionUtils.invokeMethod(method, taxonBase, new Object[] {null});
         boolean removed = false;
         
+        
+        
         if (taxonBases.contains(taxonBase)){
         	 removed = taxonBases.remove(taxonBase);
         }
         if (!removed){
 	       if (!removed && !taxonBases.isEmpty()){
-		       HashSet<TaxonBase> copyTaxonBase = new HashSet<TaxonBase>();
-		       Iterator<TaxonBase> iterator = taxonBases.iterator();
-		       while (iterator.hasNext()){
-		    	   TaxonBase taxonBaseTest = iterator.next();
-		    	   if (taxonBaseTest.equals(taxonBase)){
-		    		   removed = taxonBases.remove(taxonBaseTest);
+	    	   CopyOnWriteArrayList<TaxonBase> copyTaxonBase = new CopyOnWriteArrayList(taxonBases);
+		       for (TaxonBase temp:taxonBases){
+		    	   copyTaxonBase.add(temp);
+		       }
+		       for (TaxonBase temp:copyTaxonBase){
+		    	   
+		    	   if (temp.equals(taxonBase)){
+		    		   removed = copyTaxonBase.remove(temp);
 		    	   }
 		    	   
 		    	   
 		        }
+		       if (removed){
+		    	   taxonBases.clear();
+		    	   taxonBases.addAll(copyTaxonBase);
+		       }
 	       }
         }
         
+        
+       
+        
+        
+       
+   
         
        
         
