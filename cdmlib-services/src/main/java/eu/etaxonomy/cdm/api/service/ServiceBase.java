@@ -170,9 +170,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return dao.saveOrUpdateAll(transientInstances);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.Iyyy#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
+    @Override
     public void setApplicationContext(ApplicationContext appContext){
         this.appContext = appContext;
     }
