@@ -3,8 +3,6 @@
  */
 package eu.etaxonomy.cdm.model.common;
 
-import eu.etaxonomy.cdm.hibernate.EnumUserType;
-
 
 /**
  * Interface for all enumerations which provide a key for persisting them as strings
