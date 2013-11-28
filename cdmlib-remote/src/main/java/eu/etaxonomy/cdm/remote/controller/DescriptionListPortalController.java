@@ -85,6 +85,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
+            "taxon2.name"
     });
 
 
