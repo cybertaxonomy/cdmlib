@@ -5,24 +5,37 @@ import javax.annotation.PostConstruct;
 import org.apache.commons.io.filefilter.NotFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.server.Page;
+import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.data.validator.StringLengthValidator;
+import com.vaadin.event.ShortcutAction.KeyCode;
+import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.CustomComponent;
+import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
+import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationController;
-import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.TableView;
+import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.DashBoardView;
 
+/**
+ * 
+ * @author a.oppermann
+ *
+ */
 
 @Component
 @Scope("prototype")
-public class LoginForm extends VerticalLayout{
+public class LoginForm extends FormLayout{
 	
     /**
 	 * Automatically generated serial version ID
@@ -73,19 +86,28 @@ public class LoginForm extends VerticalLayout{
 				try{
 					boolean isAuthenticated = authenticationController.authenticate(userName.getValue(), passwordField.getValue());
 					if(isAuthenticated){
-						Page.getCurrent().setUriFragment("!"+ TableView.NAME);
+						Page.getCurrent().setUriFragment("!"+ DashBoardView.NAME);
 					}
-				}catch(Exception e){
+				}catch(AuthenticationException e){
 					Notification.show("Bad credentials",Notification.Type.ERROR_MESSAGE);
 				}
 			}
 		});
+		sendButton.setClickShortcut(KeyCode.ENTER, null);
 		sendButton.setCaption("Send");
 		sendButton.setImmediate(true);
-//		sendButton.setWidth("-1px");
-//		sendButton.setHeight("-1px");
 		
+		Label header = new Label("Vaaditor login...");
+		Label label = new Label("Bitte melden Sie sich mit Ihrem Benutzernamen und Passwort an.");
 		
+		header.setStyleName("h1");
+
+		setSpacing(true);
+		setMargin(true);
+		setSizeUndefined();
+		
+		addComponent(header);
+		addComponent(label);
 		addComponent(userName);
 		addComponent(passwordField);
 		addComponent(sendButton);

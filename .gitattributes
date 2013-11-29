@@ -1709,10 +1709,17 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -te
 cdmlib-remote-webapp/ide/eclipse/cdmserver[!!-~]-[!!-~]run.launch -text svneol=unset#application/xml
 cdmlib-remote-webapp/pom.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/VaaditorUI.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/HorizontalToolbar.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/LoginForm.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/OverViewTable.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/TaxonDetailOverview.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/TaxonTable.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/controller/AuthenticationController.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/controller/RedlistDTO.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/controller/TaxonTableController.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/views/DashBoardView.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/views/ErrorView.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/views/LoginView.java -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/views/TableView.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/views/TableView2.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/widgetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/view/ui/EditWindow.java -text
@@ -1747,6 +1754,10 @@ cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/arrow-left.p
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/arrow-right.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/arrow-up.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/attention.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/bg-column.jpg -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/bg-right-column.jpg -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/bottom-left.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/bottom-right.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/calendar.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/cancel.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/document-add.png -text
@@ -1769,10 +1780,13 @@ cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/folder.png -
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/globe.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/help.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/lock.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/loginpanel.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/note.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/ok.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/reload.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/settings.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/top-left.png -text
+cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/top-right.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/trash-full.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/trash.png -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/user.png -text

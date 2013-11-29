@@ -7,22 +7,107 @@
  * "generated-" prefix means that the style is calculated from some other color, and not directly selected by the editor user
  *
  **/
+ 
 
-
+  
   .v-app {
-background: #d0e2ec;
+/*background: white; #d0e2ec; */ 
+background: url("icons/32/bg-column.jpg") repeat scroll 0 0 rgba(0, 0, 0, 0);
 font-family: "Lucida Grande", Helvetica, Arial, sans-serif;
 color: #222;
 }
-.toolbar {
-background: #ccc url(images/gradient.png) repeat-x bottom left;
+
+
+ .login{
+  /* background:red; */
+ /*  background-color:red; */
+ /* width: 40px; */
+
+ 
+ margin-left: auto;
+ margin-right:auto;
+ 
+ border-radius: 10px 10px 10px 10px;
+-moz-border-radius: 10px 10px 10px 10px;
+-webkit-border-radius: 10px 10px 10px 10px;
+border: 0px solid #000000;
+ 
+-webkit-box-shadow: 5px 5px 10px -3px rgba(0,0,0,0.85);
+-moz-box-shadow: 5px 5px 10px -3px rgba(0,0,0,0.85);
+box-shadow: 5px 5px 10px -3px rgba(0,0,0,0.85);
+/*  -webkit-box-shadow: 7px 7px 7px -1px rgba(0,0,0,0.85);
+-moz-box-shadow: 7px 7px 7px -1px rgba(0,0,0,0.85);
+box-shadow: 7px 7px 7px -1px rgba(0,0,0,0.85);
+ */
+
+/*  -webkit-box-shadow: 7px 13px 14px -1px rgba(0,0,0,0.85);
+-moz-box-shadow: 7px 13px 14px -1px rgba(0,0,0,0.85);
+box-shadow: 7px 13px 14px -1px rgba(0,0,0,0.85); */
+/* -webkit-box-shadow: 19px 10px 16px -1px rgba(0,0,0,0.85);
+-moz-box-shadow: 19px 10px 16px -1px rgba(0,0,0,0.85);
+box-shadow: 19px 10px 16px -1px rgba(0,0,0,0.85);  */
 }
+
+
+.v-panel {
+    background: url("icons/32/top-left.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+/* .login .v-panel {
+    background: url("icons/32/top-left.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+ */
+.login .v-panel-nocaption {
+    background: url("icons/32/top-right.png") no-repeat scroll right top rgba(0, 0, 0, 0);
+}
+
+.login .v-panel-content{
+	border-style: none;
+	background: url("icons/32/loginpanel.png"); /*#98a0ad; */
+	background-url:http://api.thumbr.it/whitenoise-361x370.png?background=c1c6c9ff&noise=626262&density=47&opacity=10;	
+}
+
+
+.login .v-panel-deco:before {
+    background: url("icons/32/bottom-left.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+.login .v-panel-deco {
+    background: url("icons/32/bottom-right.png") no-repeat scroll 0 0 rgba(0, 0, 0, 0);
+}
+
+.descriptiveView .v-verticallayout-descriptiveView{
+	background: white;
+}
+
+.taxonDetailView{
+	background: white;
+}
+
+.descriptiveView{
+	background: white;
+}
+
+/* .descriptiveView .v-tabsheet-tabs-light .v-tabsheet-tabitem{
+	background: url("images/table-header-bg.png") repeat-x bottom left;
+}
+.descriptiveView .v-tabsheet-tabs-light .v-tabsheet-tabitem-selected .v-caption {
+    background: url("images/table-header-bg.png") no-repeat scroll -7px 0 rgba(0, 0, 0, 0);
+}
+
+.descriptiveView .v-tabsheet-tabs-light .v-tabsheet-spacertd div {
+	background: url("images/table-header-bg.png") repeat-x bottom left;
+}
+ */
+.toolbar {
+	background: #ccc url(images/gradient.png) repeat-x bottom left;
+}
+
 .toolbar .v-image{
-  margin-right: 15px;
+   margin-right: 30px; 
 }
 .toolbar .v-label{
   display: block;
-/*  height: 55px; */
+  height: 30px;
   color: #464f52;
   background: transparent;
   border: none;
@@ -36,7 +121,7 @@ background: #ccc url(images/gradient.png) repeat-x bottom left;
 /*  border: none;
   -webkit-border-radius: 0;
   -moz-border-radius: 0;
-  border-radius: 0;
+  border-radius: 0
   -webkit-box-shadow: none;
   -moz-box-shadow: none;
   box-shadow: none;
@@ -95,6 +180,19 @@ background: white;
 padding-top: 8px;
 padding-left: 4px;
 }
+
+/*Tabsheet*/
+
+.v-tabsheet-tabs-light .v-tabsheet-tabitem-selected{
+	color: rgb(94, 92, 92);
+	font-weight: bold;
+}
+
+.v-tabsheet-tabs-light .v-tabsheet-tabitem-selected:hover{
+	color: rgb(94, 92, 92);
+	font-weight: bold;
+}
+
 
 /* Theme table to look bit lighter */
 .v-table-header-wrap {

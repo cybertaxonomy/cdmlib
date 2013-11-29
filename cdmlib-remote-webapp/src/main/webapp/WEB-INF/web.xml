@@ -20,6 +20,9 @@
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
+    <listener>
+        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
+    </listener>
   <context-param>
       <param-name>contextConfigLocation</param-name>
       <param-value>/WEB-INF/applicationContext.xml</param-value>
@@ -84,6 +87,16 @@
     </servlet>
     
     <servlet-mapping>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <url-pattern>/VAADIN/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <url-pattern>/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
         <servlet-name>cdmlib-remote</servlet-name>
         <url-pattern>/</url-pattern>
     </servlet-mapping>
@@ -117,14 +130,6 @@
         <url-pattern>*.js</url-pattern>
     </servlet-mapping>
     
-   <servlet-mapping>
-        <servlet-name>Vaadin Application Servlet</servlet-name>
-        <url-pattern>/VAADIN/*</url-pattern>
-    </servlet-mapping>
-   <servlet-mapping>
-        <servlet-name>Vaadin Application Servlet</servlet-name>
-        <url-pattern>/*</url-pattern>
-    </servlet-mapping>
 
     <!--
         The welcome-file-list will be ignored since the cdmlib-remote servlet is mapped to the root path

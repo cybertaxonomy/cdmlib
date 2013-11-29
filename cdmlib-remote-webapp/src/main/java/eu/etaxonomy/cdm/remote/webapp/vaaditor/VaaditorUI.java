@@ -6,8 +6,11 @@ import org.springframework.stereotype.Component;
 import ru.xpoft.vaadin.DiscoveryNavigator;
 
 import com.vaadin.annotations.PreserveOnRefresh;
+import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
+
+import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.ErrorView;
 
 /**
  * 
@@ -15,7 +18,9 @@ import com.vaadin.ui.UI;
  *
  */
 @Component
-@Scope("protype")
+@Scope("prototype")//maybe session?
+@Theme("mytheme")
+@PreserveOnRefresh
 public class VaaditorUI extends UI {
 
 	/**
@@ -28,6 +33,7 @@ public class VaaditorUI extends UI {
 		setSizeFull();
 		
 		DiscoveryNavigator navigator = new DiscoveryNavigator(this, this);
+		navigator.setErrorView(new ErrorView());
 	}
 	
 

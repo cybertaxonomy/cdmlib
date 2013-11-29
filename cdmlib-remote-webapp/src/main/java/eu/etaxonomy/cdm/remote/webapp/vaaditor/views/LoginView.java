@@ -11,19 +11,36 @@ import ru.xpoft.vaadin.VaadinView;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
+import com.vaadin.server.Page;
+import com.vaadin.server.Sizeable;
+import com.vaadin.server.VaadinService;
+import com.vaadin.server.VaadinSession;
+import com.vaadin.shared.ui.MarginInfo;
+import com.vaadin.ui.AbsoluteLayout;
+import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.ui.Alignment;
+import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
+import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
+import com.vaadin.ui.themes.Reindeer;
 
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.LoginForm;
+
+/**
+ * 
+ * @author a.oppermann
+ *
+ */
 
 @Component
 @Scope("prototype")
 @Theme("mytheme")
 @VaadinView(LoginView.NAME)
-public class LoginView extends Panel implements View{
+public class LoginView extends CustomComponent implements View{
 
 	/**
 	 * Automatically generated serial version ID
@@ -38,19 +55,30 @@ public class LoginView extends Panel implements View{
 	
 	@PostConstruct
 	public void PostConstruct(){
-		setSizeFull();
 		VerticalLayout layout = new VerticalLayout();
+		layout.setWidth("100%");
+		layout.setHeight("100%");
+		Page page = Page.getCurrent();
+//		layout.setHeight(page.getBrowserWindowHeight()+"px");
+//		layout.setMargin(new MarginInfo(true, true, false, true));
+
+		HorizontalLayout hLayout = new HorizontalLayout();
+		int hh = page.getBrowserWindowHeight()-300;
+		setHeight(hh +"px");
 		
-		layout.setSpacing(true);
-		layout.setMargin(true);
 		
-		Label label = new Label("Bitte melden Sie sich mit Ihrem Benutzernamen und Passwort an.");
+		Panel panel = new Panel();
+		panel.setSizeUndefined();
+		panel.setContent(loginForm);
+		panel.setStyleName("login");
 		
-		layout.addComponent(label);
-		layout.addComponent(loginForm);
+		layout.addComponent(hLayout);
+		layout.addComponent(panel);
 		
-		setContent(layout);
-		
+		layout.setSizeFull();
+		layout.setComponentAlignment(panel,  Alignment.MIDDLE_CENTER);
+
+		setCompositionRoot(layout);
 	}
 	
 	@Override
