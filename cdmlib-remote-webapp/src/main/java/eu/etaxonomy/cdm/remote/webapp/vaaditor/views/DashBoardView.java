@@ -364,6 +364,7 @@ public class DashBoardView extends CustomComponent implements View{
             "elements.media",
             "elements.multilanguageText",
             "stateData.$",
+            "textData.$"
 //            "state"
     });
 
