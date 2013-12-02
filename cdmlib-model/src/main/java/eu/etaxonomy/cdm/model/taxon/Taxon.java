@@ -53,6 +53,7 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -91,7 +92,8 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     @ClassBridge(impl = GroupByTaxonClassBridge.class),
     @ClassBridge(impl = TaxonRelationshipClassBridge.class)
 })
-public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> implements IRelated<RelationshipBase>, Cloneable{
+public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> 
+			implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
 

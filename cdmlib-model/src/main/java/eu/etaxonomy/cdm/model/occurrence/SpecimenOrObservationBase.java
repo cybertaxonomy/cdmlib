@@ -59,6 +59,7 @@ import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.MultilanguageText;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.IDescribable;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
@@ -87,7 +88,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements IMultiLanguageTextHolder{
+public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> 
+				implements IMultiLanguageTextHolder, IDescribable<DescriptionBase>  {
 	private static final long serialVersionUID = 6932680139334408031L;
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 
@@ -296,7 +298,6 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		}
 		return specimenDescriptions;
 	}
-
 	
 	/**
 	 * Adds a new description to this specimen or observation
@@ -321,6 +322,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
         }
 	}
 
+	
 	public Set<DerivationEvent> getDerivationEvents() {
 		if(derivationEvents == null) {
 			this.derivationEvents = new HashSet<DerivationEvent>();
