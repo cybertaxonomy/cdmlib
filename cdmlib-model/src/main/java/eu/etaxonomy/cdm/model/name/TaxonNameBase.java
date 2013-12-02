@@ -1337,17 +1337,15 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         	 removed = taxonBases.remove(taxonBase);
         }
         if (!removed){
-	       if (!removed && !taxonBases.isEmpty()){
+	       if (!taxonBases.isEmpty()){
 	    	   CopyOnWriteArrayList<TaxonBase> copyTaxonBase = new CopyOnWriteArrayList(taxonBases);
 		      
 		       for (TaxonBase temp:copyTaxonBase){
-		    	   
+		
 		    	   if (temp.equals(taxonBase)){
 		    		   removed = copyTaxonBase.remove(temp);
-		    	   }
-		    	   
-		    	   
-		        }
+		    	   } 	   
+		       }
 		       if (removed){
 		    	   taxonBases.clear();
 		    	   taxonBases.addAll(copyTaxonBase);
