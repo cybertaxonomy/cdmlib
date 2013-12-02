@@ -17,20 +17,16 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import au.com.bytecode.opencsv.CSVReader;
-
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
-import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.RankClass;
 
 /**
  * @author a.mueller

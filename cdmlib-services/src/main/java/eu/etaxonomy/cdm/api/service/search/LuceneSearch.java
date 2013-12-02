@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service.search;
 
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.Collection;
 
 import org.apache.log4j.Logger;
@@ -264,9 +265,6 @@ public class LuceneSearch {
         Sort groupSort = null;
         Sort withinGroupSort = Sort.RELEVANCE;
         if(sortFields != null && sortFields.length > 0){
-            if(sortFields[0] != SortField.FIELD_SCORE){
-                throw new RuntimeException("Fist sort field must be SortField.FIELD_SCORE");
-            }
             groupSort = new Sort(sortFields);
         } else {
             groupSort = Sort.RELEVANCE; // == SortField.FIELD_SCORE !!
@@ -274,11 +272,12 @@ public class LuceneSearch {
 
         // perform the search (needs two passes for grouping)
         if(logger.isDebugEnabled()){
-            logger.debug("Grouping: sortFields=" + sortFields + ", groupByField=" + groupByField +
+            logger.debug("Grouping: sortFields=" + Arrays.toString(sortFields) + ", groupByField=" + groupByField +
                     ", groupSort=" + groupSort + ", withinGroupSort=" + withinGroupSort + ", limit=" + limit + ", maxDocsPerGroup="+ maxDocsPerGroup);
         }
         // - first pass
-        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(groupByField, withinGroupSort, limit);
+        TermFirstPassGroupingCollector firstPassCollector = new TermFirstPassGroupingCollector(
+                groupByField, groupSort, limit);
 
         getSearcher().search(fullQuery, filter , firstPassCollector);
         Collection<SearchGroup<String>> topGroups = firstPassCollector.getTopGroups(0, true); // no offset here since we need the first item for the max score
@@ -286,13 +285,19 @@ public class LuceneSearch {
         if (topGroups == null) {
               return null;
         }
-        // - second pass
-        boolean getScores = true;
+        // - flags for second pass
+        boolean getScores = false;
         boolean getMaxScores = true;
+        if(groupSort.getSort()[0] != SortField.FIELD_SCORE){
+            getMaxScores = false;
+            // see inner class TopGroupsWithMaxScore
+            logger.error("Fist sort field must be SortField.FIELD_SCORE otherwise the max score value will not be correct! MaxScore calculation will be skipped");
+        }
         boolean fillFields = true;
         TermAllGroupsCollector allGroupsCollector = new TermAllGroupsCollector(groupByField);
         TermSecondPassGroupingCollector secondPassCollector = new TermSecondPassGroupingCollector(
-                groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores, getMaxScores, fillFields
+                groupByField, topGroups, groupSort, withinGroupSort, maxDocsPerGroup , getScores,
+                getMaxScores, fillFields
                 );
         getSearcher().search(fullQuery, filter, MultiCollector.wrap(secondPassCollector, allGroupsCollector));
 
@@ -302,9 +307,11 @@ public class LuceneSearch {
         float maxScore = groupsResult.groups[0].maxScore;
         if(logger.isDebugEnabled()){
             logger.debug("TopGroups: maxScore=" + maxScore + ", offset=" + offset +
-                    ", totalGroupCount=" + allGroupsCollector.getGroupCount() + ", totalGroupedHitCount=" + groupsResult.totalGroupedHitCount);
+                    ", totalGroupCount=" + allGroupsCollector.getGroupCount() +
+                    ", totalGroupedHitCount=" + groupsResult.totalGroupedHitCount);
         }
-        TopGroupsWithMaxScore topGroupsWithMaxScore = new TopGroupsWithMaxScore(groupsResult, offset, allGroupsCollector.getGroupCount(), maxScore);
+        TopGroupsWithMaxScore topGroupsWithMaxScore = new TopGroupsWithMaxScore(groupsResult,
+                offset, allGroupsCollector.getGroupCount(), maxScore);
 
         return topGroupsWithMaxScore;
     }

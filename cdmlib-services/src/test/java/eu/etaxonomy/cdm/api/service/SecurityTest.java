@@ -39,6 +39,8 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.EvaluationFailedException;
 import eu.etaxonomy.cdm.model.common.User;
@@ -48,7 +50,9 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
+import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -99,6 +103,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     @SpringBeanByType
     private IUserService userService;
 
+    @SpringBeanByType
+    private IClassificationService classificationService;
 
     @TestDataSource
     protected DataSource dataSource;
@@ -130,52 +136,56 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     private UsernamePasswordAuthenticationToken tokenForUserManager;
 
 
+
     @Before
     public void setUp(){
         /* User 'admin':
             - ROLE_ADMIN
-            - TAXONBASE.READ
-            - TAXONBASE.CREATE
-            - TAXONBASE.DELETE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[READ]
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[DELETE]
+            - TAXONBASE.[UPDATE]
         */
         tokenForAdmin = new UsernamePasswordAuthenticationToken(Configuration.adminLogin, PASSWORD_ADMIN);
 
         /* User 'userManager':
             - ROLE_ADMIN
-            - TAXONBASE.READ
-            - TAXONBASE.CREATE
-            - TAXONBASE.DELETE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[READ]
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[DELETE]
+            - TAXONBASE.[UPDATE]
         */
         tokenForUserManager = new UsernamePasswordAuthenticationToken("userManager", PASSWORD_ADMIN);
 
         /* User 'taxonEditor':
-            - TAXONBASE.CREATE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[UPDATE]
         */
         tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
 
         /*  User 'descriptionEditor':
-            - DESCRIPTIONBASE.CREATE
-            - DESCRIPTIONBASE.UPDATE
-            - DESCRIPTIONELEMENT(Ecology).CREATE
-            - DESCRIPTIONELEMENT(Ecology).UPDATE
+            - DESCRIPTIONBASE.[CREATE]
+            - DESCRIPTIONBASE.[UPDATE]
+            - DESCRIPTIONELEMENT(Ecology).[CREATE]
+            - DESCRIPTIONELEMENT(Ecology).[UPDATE]
          */
         tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
 
         /* User 'partEditor':
-            - TAXONBASE.ADMIN
-            - TAXONNODE.CREATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
-            - TAXONNODE.UPDATE{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - TAXONBASE.[ADMIN]
+            - TAXONNODE.[UPDATE,CREATE,DELETE,READ,UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
+            - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
+            - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
          */
         tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
 
         /* User 'taxonomist':
-            - TAXONBASE.READ
-            - TAXONBASE.CREATE
-            - TAXONBASE.DELETE
-            - TAXONBASE.UPDATE
+            - TAXONBASE.[READ]
+            - TAXONBASE.[CREATE]
+            - TAXONBASE.[DELETE]
+            - TAXONBASE.[UPDATE]
+            - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
+            - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
          */
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }
@@ -438,7 +448,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -455,7 +465,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
     }
 
@@ -474,7 +484,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         context.setAuthentication(authentication);
 
-        TaxonBase<?>  taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?>  taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
         try{
@@ -491,7 +501,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertTrue("The change must be persited", taxon.isDoubtful());
     }
 
@@ -507,7 +517,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        TaxonBase<?> taxon = taxonService.find(UUID_ACHERONTIA_STYX);
 
         Assert.assertFalse(taxon.isDoubtful());
         taxon.setDoubtful(true);
@@ -526,7 +536,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
         Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTIA_STYX);
+        taxon = taxonService.find(UUID_ACHERONTIA_STYX);
         Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
     }
 
@@ -549,7 +559,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-        } finally {
+        }catch(ReferencedObjectUndeletableException e){ 
+        	Assert.fail();
+    	}finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
@@ -565,11 +577,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
      * test with admin account - should succeed
      */
     @Test
-    @Ignore
-    /*FIXME fails due to org.hibernate.ObjectDeletedException: deleted object would be re-saved by cascade (remove deleted object from associations)
-     *       see ticket #3086
-     */
-    public final void testTaxonDeleteAllow_2() {
+   public final void testTaxonDeleteAllow_2() {
 
         SecurityContext context = SecurityContextHolder.getContext();
 
@@ -577,9 +585,13 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         context.setAuthentication(authentication);
         RuntimeException securityException= null;
 
-        TaxonBase<?> taxon = taxonService.load(UUID_ACHERONTINII);
+        Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
-            taxonService.delete(taxon);
+            try {
+                taxonService.deleteTaxon(taxon, null, null);
+            } catch (DataChangeNoRollbackException e) {
+                Assert.fail();
+            }
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -592,7 +604,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         }
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_ACHERONTINII);
+
+        taxon = (Taxon)taxonService.find(UUID_ACHERONTINII);
         Assert.assertNull("The taxon must be deleted", taxon);
     }
 
@@ -617,7 +630,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
-        } finally {
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+    	}	finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
@@ -665,6 +680,90 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertNotNull("evaluation should fail since the user is not permitted to edit Taxa", securityException);
         taxon = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
         assertTrue(taxon.getDescriptions().contains(description));
+    }
+
+    @Test
+    public void testMoveDescriptionElement(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        context.setAuthentication(authentication);
+
+        RuntimeException securityException = null;
+
+        Taxon t_acherontia_lachesis = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
+        Taxon t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
+
+        TaxonDescription description_acherontia_styx = t_acherontia_styx.getDescriptions().iterator().next();
+        TaxonDescription description_acherontia_lachesis = t_acherontia_lachesis.getDescriptions().iterator().next();
+
+        try {
+            descriptionService.moveDescriptionElementsToDescription(description_acherontia_styx.getElements(), description_acherontia_lachesis, false);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Unexpected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        /*
+         * Expectation:
+         */
+        Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
+
+    }
+
+    @Test
+    public void testAcceptedTaxonToSynomym(){
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        authentication = authenticationManager.authenticate(tokenForPartEditor);
+        context.setAuthentication(authentication);
+
+        RuntimeException securityException = null;
+
+        Taxon t_acherontia_lachesis = (Taxon)taxonService.load(ACHERONTIA_LACHESIS_UUID);
+        Taxon t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
+
+
+        TaxonNode n_acherontia_lachesis = t_acherontia_lachesis.getTaxonNodes().iterator().next();
+        TaxonNode n_acherontia_styx = t_acherontia_styx.getTaxonNodes().iterator().next();
+
+        int numOfSynonymsBefore_styx = t_acherontia_styx.getSynonyms().size();
+        int numOfSynonymsBefore_lachesis = t_acherontia_lachesis.getSynonyms().size();
+
+        UUID synonymUuid = null; // UUID.randomUUID();
+
+        try {
+            Synonym synonym = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachesis, n_acherontia_styx, SynonymRelationshipType.SYNONYM_OF(), null, null);
+            synonymUuid = synonym.getUuid();
+            taxonService.saveOrUpdate(synonym);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.error("Unexpected Exception ", e);
+            Assert.fail("Unexpected Exception: " + e.getMessage());
+        } catch (DataChangeNoRollbackException e) {
+            Assert.fail("Unexpected Exception: " + e.getMessage());
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        /*
+         * Expectation:
+         */
+        Assert.assertNull("evaluation should not fail since the user has sufficient permissions", securityException);
+
+        // reload from db and check assertions
+        t_acherontia_styx = (Taxon)taxonService.load(UUID_ACHERONTIA_STYX);
+        Assert.assertEquals("Acherontia styx now must have a synonym", numOfSynonymsBefore_styx + numOfSynonymsBefore_lachesis +  1, t_acherontia_styx.getSynonyms().size());
+        Assert.assertTrue("Acherontia lachesis now must be a synonym", taxonService.load(synonymUuid) instanceof Synonym);
+        Assert.assertNull("The old TaxonNode should no longer exist", taxonNodeService.find(n_acherontia_lachesis.getUuid()));
     }
 
     @Test
@@ -851,7 +950,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         RuntimeException securityException = null;
-
+        Classification classification = classificationService.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         // test for success
         TaxonNode acherontia_node = taxonNodeService.load(ACHERONTIA_NODE_UUID);
         long numOfChildNodes = acherontia_node.getChildNodes().size();

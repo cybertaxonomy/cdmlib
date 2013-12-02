@@ -42,6 +42,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -51,8 +52,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaxonNode", propOrder = {
-	"classification",
-	"taxon",
+    "classification",
+    "taxon",
     "parent",
     "treeIndex",
     "sortIndex",
@@ -85,12 +86,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @ManyToOne(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private TaxonNode parent;
-    
-   
+
+
     @XmlElement(name = "treeIndex")
     @Size(max=255)
-    private String treeIndex;	
-    
+    private String treeIndex;
+
 
     @XmlElement(name = "classification")
     @XmlIDREF
@@ -111,7 +112,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @OneToMany(mappedBy="parent", fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
     private List<TaxonNode> childNodes = new ArrayList<TaxonNode>();
-     
+
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex = -1;
 
@@ -150,6 +151,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @deprecated setting of classification is handled in the addTaxonNode() method,
      * use TaxonNode(taxon) instead
      */
+    @Deprecated
     protected TaxonNode (Taxon taxon, Classification classification){
         this(taxon);
         setClassification(classification);
@@ -171,18 +173,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
-    	return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
-    
+        return addChildTaxon(taxon, this.childNodes.size(), citation, microCitation);
+
     }
 
 
     @Override
     public TaxonNode addChildTaxon(Taxon taxon, int index, Reference citation, String microCitation) {
         if (this.getClassification().isTaxonInTree(taxon)){
-            throw new IllegalArgumentException(String.format("Taxon may not be in a taxonomic view twice: %s", taxon.getTitleCache()));
+            throw new IllegalArgumentException(String.format("Taxon may not be in a classification twice: %s", taxon.getTitleCache()));
        }
 
-       return addChildNode(new TaxonNode(taxon), index, citation, microCitation);	
+       return addChildNode(new TaxonNode(taxon), index, citation, microCitation);
     }
 
     /**
@@ -197,84 +199,118 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         addChildNode(childNode, childNodes.size(), reference, microReference);
         return childNode;
     }
-    
-	/**
-	 * Inserts the given taxon node in the list of children of <i>this</i> taxon node
-	 * at the given (index + 1) position. If the given index is out of bounds
-	 * an exception will arise.<BR>
-	 * Due to bidirectionality this method must also assign <i>this</i> taxon node
-	 * as the parent of the given child.
-	 * 
-	 * @param	child	the taxon node to be added 
-	 * @param	index	the integer indicating the position at which the child
-	 * 					should be added 
-	 * @see				#getChildNodes()
-	 * @see				#addChildNode(TaxonNode, Reference, String, Synonym) 
-	 * @see				#deleteChildNode(TaxonNode)
-	 * @see				#deleteChildNode(int) 
-	 */
+
+    /**
+     * Inserts the given taxon node in the list of children of <i>this</i> taxon node
+     * at the given (index + 1) position. If the given index is out of bounds
+     * an exception will arise.<BR>
+     * Due to bidirectionality this method must also assign <i>this</i> taxon node
+     * as the parent of the given child.
+     *
+     * @param	child	the taxon node to be added
+     * @param	index	the integer indicating the position at which the child
+     * 					should be added
+     * @see				#getChildNodes()
+     * @see				#addChildNode(TaxonNode, Reference, String, Synonym)
+     * @see				#deleteChildNode(TaxonNode)
+     * @see				#deleteChildNode(int)
+     */
     @Override
     public TaxonNode addChildNode(TaxonNode child, int index, Reference reference, String microReference){
-		if (index < 0 || index > childNodes.size() + 1){
-			throw new IndexOutOfBoundsException("Wrong index: " + index);
-		}
-	       // check if this node is a descendant of the childNode
+        if (index < 0 || index > childNodes.size() + 1){
+            throw new IndexOutOfBoundsException("Wrong index: " + index);
+        }
+           // check if this node is a descendant of the childNode
         if(child.getParentTreeNode() != this && child.isAncestor(this)){
             throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
         }
-   
-		
+
+
 //		if (child.getParent() != null){
 //			child.getParent().deleteChildNode(child);
 //		}
 
-		child.setParentTreeNode(this, index);
+        child.setParentTreeNode(this, index);
 
-		
-//		child.setParent(this);
-//		child.setClassification(this.getClassification());
-//		childNodes.add(index, child);
-		//TODO workaround (see sortIndex doc)
-		for(int i = 0; i < childNodes.size(); i++){
-			childNodes.get(i).sortIndex = i;
-		}
-		child.sortIndex = index;
-		
+        //TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
+        for(int i = 0; i < childNodes.size(); i++){
+            childNodes.get(i).sortIndex = i;
+        }
+        child.sortIndex = index;
+
+        //TODO workaround (see sortIndex doc)
+        for(int i = 0; i < childNodes.size(); i++){
+            childNodes.get(i).sortIndex = i;
+        }
+        child.sortIndex = index;
+
         child.setReference(reference);
         child.setMicroReference(microReference);
-//        childNode.setSynonymToBeUsed(synonymToBeUsed);
 
         return child;
 
-	}
+    }
 
     /**
      * Sets this nodes classification. Updates classification of child nodes recursively
      *
-     * If the former and the actual tree are equal() this method does nothing
+     * If the former and the actual tree are equal() this method does nothing.
+     * 
+     * @throws IllegalArgumentException if newClassifciation is null
      *
-     * @param newTree
+     * @param newClassification
      */
     @Transient
-    private void setClassificationRecursively(Classification newTree) {
-        if(! newTree.equals(this.getClassification())){
-            this.setClassification(newTree);
+    private void setClassificationRecursively(Classification newClassification) {
+        if (newClassification == null){
+        	throw new IllegalArgumentException("New Classification must not be 'null' when setting new classification.");
+        }
+    	if(! newClassification.equals(this.getClassification())){
+            this.setClassification(newClassification);
             for(TaxonNode childNode : this.getChildNodes()){
-                childNode.setClassificationRecursively(newTree);
+                childNode.setClassificationRecursively(newClassification);
             }
         }
     }
-    
-	@Override
+
+    @Override
     public boolean deleteChildNode(TaxonNode node) {
         boolean result = removeChildNode(node);
-
-        node.getTaxon().removeTaxonNode(node);
+        Taxon taxon = node.getTaxon();
         node.setTaxon(null);
+        taxon.removeTaxonNode(node);
+
 
         ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
         for(TaxonNode childNode : childNodes){
             node.deleteChildNode(childNode);
+        }
+
+//		// two iterations because of ConcurrentModificationErrors
+//        Set<TaxonNode> removeNodes = new HashSet<TaxonNode>();
+//        for (TaxonNode grandChildNode : node.getChildNodes()) {
+//                removeNodes.add(grandChildNode);
+//        }
+//        for (TaxonNode childNode : removeNodes) {
+//                childNode.deleteChildNode(node);
+//        }
+
+        return result;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+     */
+    public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
+        boolean result = removeChildNode(node);
+        Taxon taxon = node.getTaxon();
+        node.setTaxon(null);
+        taxon.removeTaxonNode(node);
+        if (deleteChildren){
+            ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+            for(TaxonNode childNode : childNodes){
+                node.deleteChildNode(childNode, deleteChildren);
+            }
         }
 
 //		// two iterations because of ConcurrentModificationErrors
@@ -297,16 +333,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @return
      */
     protected boolean removeChildNode(TaxonNode childNode){
-        boolean result = false;
-       
-	    if(childNode == null){
-	    	throw new IllegalArgumentException("TaxonNode may not be null");
-	    }
+        boolean result = true;
+
+        if(childNode == null){
+            throw new IllegalArgumentException("TaxonNode may not be null");
+        }
         int index = childNodes.indexOf(childNode);
-		if (index >= 0){
-			removeChild(index);
-		}
-        
+        if (index >= 0){
+            removeChild(index);
+        } else {
+            result = false;
+        }
+
 
 //		OLD
 //        if(HibernateProxyHelper.deproxy(childNode.getParent(), TaxonNode.class) != this){
@@ -323,47 +361,47 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         return result;
     }
-    
-	/** 
-	 * Removes the child node placed at the given (index + 1) position
-	 * from the list of {@link #getChildNodes() children} of <i>this</i> taxon node.
-	 * Sets the parent and the classification of the child
+
+    /**
+     * Removes the child node placed at the given (index + 1) position
+     * from the list of {@link #getChildNodes() children} of <i>this</i> taxon node.
+     * Sets the parent and the classification of the child
      * node to null.
-	 * If the given index is out of bounds no child will be removed. 
-	 *
-	 * @param  index	the integer indicating the position of the taxon node to
-	 * 					be removed
-	 * @see     		#getChildNodes()
-	 * @see				#addChildNode(TaxonNode, Reference, String) 
-	 * @see				#addChildNode(TaxonNode, int, Reference, String)
-	 * @see				#deleteChildNode(TaxonNode)
-	 */
-	public void removeChild(int index){
-		
-		TaxonNode child = childNodes.get(index);
-		child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
-		
-		if (child != null){
-			
-			TaxonNode parent = HibernateProxyHelper.deproxy(child.getParent(), TaxonNode.class);
-			TaxonNode thisNode = HibernateProxyHelper.deproxy(this, TaxonNode.class);
-	        if(parent != null && parent != thisNode){
-	            throw new IllegalArgumentException("Child TaxonNode (id:" + child.getId() +") must be a child of this (id:" + thisNode.getId() + " node. Sortindex is: " + index + ", parent-id:" + parent.getId());
-	        }else if (parent == null){
-	            throw new IllegalStateException("Parent of child is null in TaxonNode.removeChild(int). This should not happen.");
-	        }
-			childNodes.remove(index);
-			this.countChildren = childNodes.size();
-			child.setParent(null);
-			//TODO workaround (see sortIndex doc)
-			for(int i = 0; i < countChildren; i++){
-				TaxonNode childAt = childNodes.get(i);
-				childAt.sortIndex = i;
-			}
-			child.sortIndex = null;
-			child.setClassification(null);
-		}
-	}
+     * If the given index is out of bounds no child will be removed.
+     *
+     * @param  index	the integer indicating the position of the taxon node to
+     * 					be removed
+     * @see     		#getChildNodes()
+     * @see				#addChildNode(TaxonNode, Reference, String)
+     * @see				#addChildNode(TaxonNode, int, Reference, String)
+     * @see				#deleteChildNode(TaxonNode)
+     */
+    public void removeChild(int index){
+
+        TaxonNode child = childNodes.get(index);
+        child = HibernateProxyHelper.deproxy(child, TaxonNode.class); //strange that this is required, but otherwise child.getParent() returns null for some lazy-loaded items.
+
+        if (child != null){
+
+            TaxonNode parent = HibernateProxyHelper.deproxy(child.getParent(), TaxonNode.class);
+            TaxonNode thisNode = HibernateProxyHelper.deproxy(this, TaxonNode.class);
+            if(parent != null && parent != thisNode){
+                throw new IllegalArgumentException("Child TaxonNode (id:" + child.getId() +") must be a child of this (id:" + thisNode.getId() + " node. Sortindex is: " + index + ", parent-id:" + parent.getId());
+            }else if (parent == null){
+                throw new IllegalStateException("Parent of child is null in TaxonNode.removeChild(int). This should not happen.");
+            }
+            childNodes.remove(index);
+            this.countChildren = childNodes.size();
+            child.setParent(null);
+            //TODO workaround (see sortIndex doc)
+            for(int i = 0; i < countChildren; i++){
+                TaxonNode childAt = childNodes.get(i);
+                childAt.sortIndex = i;
+            }
+            child.sortIndex = null;
+            child.setClassification(null);
+        }
+    }
 
 
     /**
@@ -379,26 +417,44 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         }
     }
 
+    /**
+     * Remove this taxonNode From its taxonomic parent
+     *
+     * @return true on success
+     */
+    public boolean delete(boolean deleteChildren){
+        if(isTopmostNode()){
+            return classification.deleteChildNode(this, deleteChildren);
+        }else{
+            return getParent().deleteChildNode(this, deleteChildren);
+        }
+    }
+
 //*********** GETTER / SETTER ***********************************/
 
-	@Override
+    @Override
     public String treeIndex() {
-		return treeIndex;
-	}
-	
-	@Override
-	@Deprecated //for CDM lib internal use only, may be removed in future versions
-	public void setTreeIndex(String treeIndex) {
-		this.treeIndex = treeIndex;
-	}
-    
+        return treeIndex;
+    }
 
-	@Override
-	@Deprecated //for CDM lib internal use only, may be removed in future versions
-	public int treeId() {
-		return this.classification.getId();
-	}
-    
+    @Override
+    @Deprecated //for CDM lib internal use only, may be removed in future versions
+    public void setTreeIndex(String treeIndex) {
+        this.treeIndex = treeIndex;
+    }
+
+
+    @Override
+    @Deprecated //for CDM lib internal use only, may be removed in future versions
+    public int treeId() {
+        if (this.classification == null){
+        	logger.warn("TaxonNode has no classification. This should not happen.");  //#3840
+        	return -1;
+        }else{
+        	return this.classification.getId();
+        }
+    }
+
     public Taxon getTaxon() {
         return taxon;
     }
@@ -416,6 +472,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return parent;
     }
 
+    @Override
     public TaxonNode getParent(){
         return parent;
     }
@@ -448,13 +505,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     protected void setParentTreeNode(ITaxonTreeNode parent, int index){
         // remove ourselves from the old parent
         ITaxonTreeNode formerParent = this.getParentTreeNode();
-        
+
         //special case, child already exists for same parent
         if (formerParent != null && formerParent.equals(parent)){
-        	int currentIndex = formerParent.getChildNodes().indexOf(this);
-        	if (currentIndex != -1 && currentIndex < index){
-        		index--;
-        	}	
+            int currentIndex = formerParent.getChildNodes().indexOf(this);
+            if (currentIndex != -1 && currentIndex < index){
+                index--;
+            }
         }
         //remove old parent
         if(formerParent instanceof TaxonNode){  //child was a child itself
@@ -471,14 +528,25 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         setClassificationRecursively(classification);
 
         // add this node to the parent child nodes
-        parent.getChildNodes().add(index, this);
-		//TODO workaround (see sortIndex doc)
-        //FIXME don't we need to update the parent's childNode index here??
-		for(int i = 0; i < childNodes.size(); i++){
-			childNodes.get(i).sortIndex = i;
-		}
-		this.sortIndex = index;
-        
+        List<TaxonNode> parentChildren = parent.getChildNodes();
+        if (parentChildren.contains(this)){
+            //avoid duplicates
+            if (parentChildren.indexOf(this) < index){
+                index = index -1;
+            }
+            parentChildren.remove(this);
+            parentChildren.add(index, this);
+        }else{
+            parentChildren.add(index, this);
+        }
+
+        //TODO workaround (see sortIndex doc)
+        //TODO check if it is correct to use the parentChildren here
+        for(int i = 0; i < parentChildren.size(); i++){
+            parentChildren.get(i).sortIndex = i;
+        }
+//		this.sortIndex = index;
+
         // update the children count
         if(parent instanceof TaxonNode){
             TaxonNode parentTaxonNode = (TaxonNode) parent;
@@ -552,7 +620,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
         nodeSet.add(this);
         if(this.getParent() != null){
-            nodeSet.addAll(((TaxonNode) this.getParent()).getAncestors());
+        	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
+            nodeSet.addAll(parent.getAncestors());
         }
         return nodeSet;
     }
@@ -682,6 +751,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             return null;
         }
     }
+
+	public boolean hasTaxon() {
+		return (taxon!= null);
+	}
 
 
 

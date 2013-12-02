@@ -78,7 +78,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	//4
 	/**
 	 * Data Transformation is a specialization of {@value #Lineage} and describes a data 
-	 * transformation process that happens primarily  on the given dataset but may also 
+	 * transformation process that happens primarily on the given dataset but may also 
 	 * include external data.
 	 */
 	@XmlEnumValue("Data Transformation")
@@ -87,7 +87,7 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 
 	//5
 	/**
-	 * Data aggregation is a spcification of {@value #Lineage} and describes the 
+	 * Data aggregation is a specification of {@value #Lineage} and describes the 
 	 * data transformation process that primarily includes data aggregation processes 
 	 * but may also include data imports and transformations.
 	 */
@@ -95,13 +95,6 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	Aggregation(UUID.fromString("944f2f40-5144-4c81-80d9-f61aa10507b8"), "Data Aggregation", "DAG", Lineage),
 
 	//6
-	/**
-	 * <code>Other</code> is the type to be used if none of the other types is applicable.
-	 */
-	@XmlEnumValue("Other")
-	Other(UUID.fromString("b7c4b7fe-0aef-428a-bb7b-9153a11bf845"), "Other", "OTH", null),
-
-	//7
 	/**
 	 * Primary Media Source describes the original source for any media file. 
 	 * E.g. a taxonomist may have used three books/articles/other references to gather information
@@ -112,6 +105,14 @@ public enum OriginalSourceType implements IEnumTerm<OriginalSourceType>, Seriali
 	 */
 	@XmlEnumValue("Primary Media Source")
 	PrimaryMediaSource(UUID.fromString("72be3615-a6da-4728-948a-b3c5797fa4bc"), "Primary Media Source", "PMS", null),
+
+
+	//7
+	/**
+	 * <code>Other</code> is the type to be used if none of the other types is applicable.
+	 */
+	@XmlEnumValue("Other")
+	Other(UUID.fromString("b7c4b7fe-0aef-428a-bb7b-9153a11bf845"), "Other", "OTH", null),
 
 	;
 	

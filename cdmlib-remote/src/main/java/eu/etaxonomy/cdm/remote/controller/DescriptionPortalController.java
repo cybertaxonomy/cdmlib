@@ -64,12 +64,22 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
+            "elements.annotations",
             "elements.sources.citation.authorTeam.$",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.area.level",
             "elements.modifyingText",
             "elements.states.*",
             "elements.media",
+    });
+
+    protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "elements.$",
+            "elements.annotations",
+            "elements.markers",
+            "elements.sources.citation.authorTeam.$",
+            "elements.sources.nameUsedInSource",
+            "elements.area.level",
     });
 
 
@@ -106,6 +116,16 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         return annotations;
     }
 
+    /**
+     * NOTICE: required to have a TreeNodeBeanProcessor configured which suppresses the
+     * redundant output of distribution.area
+     *
+     * @param descriptionUuidList
+     * @param levels
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
     public DistributionTree doGetOrderedDistributionsB(
             @PathVariable("uuid_list") UuidList descriptionUuidList,
@@ -115,10 +135,13 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {
-            description = (TaxonDescription) service.load(descriptionUuid, DESCRIPTION_INIT_STRATEGY);
+            logger.debug("  loading description " + descriptionUuid.toString() );
+            description = (TaxonDescription) service.load(descriptionUuid, null);
             taxonDescriptions.add(description);
         }
-        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, DESCRIPTION_INIT_STRATEGY);
+        logger.debug("  get ordered distributions ");
+        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
+        if (logger.isDebugEnabled()){ logger.debug("done");}
         return distTree;
     }
 

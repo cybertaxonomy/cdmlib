@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
@@ -155,7 +156,12 @@ public class TestService {
 		UUID uuidTaxon2 = taxonService.save(taxon2);
 		logger.info("  UUID: " + uuidTaxon2);
 		logger.info("Remove taxon ...");
-		UUID uuid = taxonService.delete(taxon1);
+		UUID uuid = null;
+		try {
+			uuid = taxonService.deleteTaxon(taxon1, null, null);
+		} catch (DataChangeNoRollbackException e) {
+			logger.info(e.getMessage());
+		}
 		logger.info("  UUID: " + uuid);
 	}
 

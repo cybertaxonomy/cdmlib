@@ -141,7 +141,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	@Override
     public boolean isValid(){
 		boolean result = true;
-		if (source == null){
+		if (getSource() == null){
 			logger.warn("Connection to source could not be established");
 			result = false;
 		}

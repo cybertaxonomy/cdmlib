@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -24,6 +25,7 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.BooleanUtils;
 import org.apache.log4j.Logger;
 import org.apache.lucene.queryParser.ParseException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,9 +45,11 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.TaxaAndNamesSearchMode;
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
@@ -56,6 +60,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
@@ -75,8 +80,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
@@ -131,18 +138,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     private IFeatureTreeService featureTreeService;
 
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-            "*",
+            "$",
+            "sources",
             // taxon relations
-            "relationsToThisName.fromTaxon.name",
+//            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
             "name.rank.representations",
             "name.status.type.representations",
 
-            // taxon descriptions
-            "descriptions.elements.area.$",
-            "descriptions.elements.multilanguageText",
-            "descriptions.elements.media",
+//            "descriptions" // TODO remove
 
             });
 
@@ -154,13 +161,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "*",
-            // taxon relations
-            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference"
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
+            "taxonNodes.classification"
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -168,6 +175,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -178,7 +186,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
-
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
             "name.homotypicalGroup.typifiedNames.taxonBases.$"
     });
 
@@ -187,6 +195,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -195,6 +204,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
 
             "name.homotypicalGroup.typifiedNames.taxonBases.$",
 
@@ -210,7 +220,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference",
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
 
             "taxonNodes.$",
             "taxonNodes.classification.$",
@@ -232,6 +243,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "type.inverseRepresentations",
             "fromName",
             "toName.$",
+            "toName.nomenclaturalReference.authorTeam",
+            "toName.nomenclaturalReference.inReference",
+
     });
 
 
@@ -240,7 +254,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.$",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
             "name.$",
@@ -252,7 +266,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "sources.citation.authorTeam",
-            "sources.nameUsedInSource.originalNameString",
+            "sources.nameUsedInSource",
             "multilanguageText",
             "media",
     });
@@ -312,6 +326,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
 
     }
 
@@ -327,41 +342,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return tb;
     }
      */
-    /**
-     * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;find</b>
-     *
-     * @param query
-     *            the string to query for. Since the wildcard character '*'
-     *            internally always is appended to the query string, a search
-     *            always compares the query string with the beginning of a name.
-     *            - <i>required parameter</i>
-     * @param treeUuid
-     *            the {@link UUID} of a {@link Classification} to which the
-     *            search is to be restricted. - <i>optional parameter</i>
-     * @param areas
-     *            restrict the search to a set of geographic {@link NamedArea}s.
-     *            The parameter currently takes a list of TDWG area labels.
-     *            - <i>optional parameter</i>
-     * @param pageNumber
-     *            the number of the page to be returned, the first page has the
-     *            pageNumber = 1 - <i>optional parameter</i>
-     * @param pageSize
-     *            the maximum number of entities returned per page (can be -1
-     *            to return all entities in a single page) - <i>optional parameter</i>
-     * @param doTaxa
-     *            weather to search for instances of {@link Taxon} - <i>optional parameter</i>
-     * @param doSynonyms
-     *            weather to search for instances of {@link Synonym} - <i>optional parameter</i>
-     * @param doTaxaByCommonNames
-     *            for instances of {@link Taxon} by a common name used - <i>optional parameter</i>
-     * @param matchMode
-     *           valid values are "EXACT", "BEGINNING", "ANYWHERE", "END" (case sensitive !!!)
-     * @return a Pager on a list of {@link IdentifiableEntity}s initialized by
-     *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
-     * @throws IOException
-     */
+
     @RequestMapping(method = RequestMethod.GET,
             value = {"/portal/taxon/find"}) //TODO map to path /*/portal/taxon/
     public Pager<IdentifiableEntity> doFind(
@@ -405,6 +386,100 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     }
 
     /**
+     * <b>NOTE and TODO</b>: this method is a direct copy of the same method in {@link TaxonListController},
+     * refactorting needed to avoid method dublication
+     * <p>
+     * Find Taxa, Synonyms, Common Names by name, either globally or in a specific geographic area.
+     * <p>
+     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;find</b>
+     *
+     * @param query
+     *            the string to query for. Since the wildcard character '*'
+     *            internally always is appended to the query string, a search
+     *            always compares the query string with the beginning of a name.
+     *            - <i>required parameter</i>
+     * @param treeUuid
+     *            the {@link UUID} of a {@link Classification} to which the
+     *            search is to be restricted. - <i>optional parameter</i>
+     * @param areas
+     *            restrict the search to a set of geographic {@link NamedArea}s.
+     *            The parameter value must be a list of comma separated NamedArea uuids
+     *            - <i>optional parameter</i>
+     * @param pageNumber
+     *            the number of the page to be returned, the first page has the
+     *            pageNumber = 1 - <i>optional parameter</i>
+     * @param pageSize
+     *            the maximum number of entities returned per page (can be -1
+     *            to return all entities in a single page) - <i>optional parameter</i>
+     * @param doTaxa
+     *            weather to search for instances of {@link Taxon} - <i>optional parameter</i>
+     * @param doSynonyms
+     *            weather to search for instances of {@link Synonym} - <i>optional parameter</i>
+     * @param doTaxaByCommonNames
+     *            for instances of {@link Taxon} by a common name used - <i>optional parameter</i>
+     * @return a Pager on a list of {@link IdentifiableEntity}s initialized by
+     *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
+     * @throws IOException
+     * @throws LuceneMultiSearchException
+     * @throws ParseException
+     */
+    @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/search"})
+    public Pager<SearchResult<TaxonBase>> doSearch(
+            @RequestParam(value = "query", required = true) String query,
+            @RequestParam(value = "tree", required = false) UUID treeUuid,
+            @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
+            @RequestParam(value = "status", required = false) Set<PresenceAbsenceTermBase<?>> status,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "doTaxa", required = false) Boolean doTaxa,
+            @RequestParam(value = "doSynonyms", required = false) Boolean doSynonyms,
+            @RequestParam(value = "doMisappliedNames", required = false) Boolean doMisappliedNames,
+            @RequestParam(value = "doTaxaByCommonNames", required = false) Boolean doTaxaByCommonNames,
+            HttpServletRequest request,
+            HttpServletResponse response
+            )
+             throws IOException, ParseException, LuceneMultiSearchException {
+
+
+        logger.info("search : " + requestPathAndQuery(request) );
+
+        Set<NamedArea> areaSet = null;
+        if(areaList != null){
+            areaSet = new HashSet<NamedArea>(areaList.size());
+            areaSet.addAll(areaList);
+            TaxonListController.includeAllSubAreas(areaSet, termService);
+        }
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        // TODO change type of do* parameters  to TaxaAndNamesSearchMode
+        EnumSet<TaxaAndNamesSearchMode> searchModes = EnumSet.noneOf(TaxaAndNamesSearchMode.class);
+        if(BooleanUtils.toBoolean(doTaxa)) {
+            searchModes.add(TaxaAndNamesSearchMode.doTaxa);
+        }
+        if(BooleanUtils.toBoolean(doSynonyms)) {
+            searchModes.add(TaxaAndNamesSearchMode.doSynonyms);
+        }
+        if(BooleanUtils.toBoolean(doMisappliedNames)) {
+            searchModes.add(TaxaAndNamesSearchMode.doMisappliedNames);
+        }
+        if(BooleanUtils.toBoolean(doTaxaByCommonNames)) {
+            searchModes.add(TaxaAndNamesSearchMode.doTaxaByCommonNames);
+        }
+
+        Classification classification = null;
+        if(treeUuid != null){
+            classification = classificationService.find(treeUuid);
+        }
+
+        return service.findTaxaAndNamesByFullText(searchModes, query,
+                classification, areaSet, status, null,
+                false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                OrderHint.NOMENCLATURAL_SORT_ORDER, SIMPLE_TAXON_INIT_STRATEGY);
+    }
+
+    /**
      * @param clazz
      * @param queryString
      * @param treeUuid
@@ -418,6 +493,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      * @throws IOException
      * @throws ParseException
      */
+    @SuppressWarnings("rawtypes")
     @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/findByDescriptionElementFullText"})
     public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
             @RequestParam(value = "clazz", required = false) Class clazz,
@@ -433,7 +509,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             )
              throws IOException, ParseException {
 
-         logger.info("findByDescriptionElementFullText : " + request.getRequestURI() + "?" + request.getQueryString() );
+         logger.info("findByDescriptionElementFullText : " + requestPathAndQuery(request) );
 
          PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
          pagerParams.normalizeAndValidate(response);
@@ -487,13 +563,23 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
         if(request != null){
-            logger.info("doGetSynonymy() " + request.getRequestURI());
+            logger.info("doGetSynonymy() " + requestPathAndQuery(request));
         }
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
-        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
-        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
+        
+        //new
+        List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
+        synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
+        synonymyGroups.remove(0);
+        synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
+        
+        //old
+//        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
+//        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
+        
+        
         mv.addObject(synonymy);
         return mv;
     }
@@ -520,7 +606,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
                 throws IOException {
 
         if(request != null){
-            logger.info("getAccepted() " + request.getRequestURI());
+            logger.info("getAccepted() " + requestPathAndQuery(request));
         }
 
         TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
@@ -603,7 +689,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public List<TaxonRelationship> doGetTaxonRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
 
-        logger.info("doGetTaxonRelations()" + request.getRequestURI());
+        logger.info("doGetTaxonRelations()" + requestPathAndQuery(request));
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         List<TaxonRelationship> toRelationships = service.listToTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
         List<TaxonRelationship> fromRelationships = service.listFromTaxonRelationships(taxon, null, null, null, null, TAXONRELATIONSHIP_INIT_STRATEGY);
@@ -658,7 +744,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             method = RequestMethod.GET)
     public List<NameRelationship> doGetFromNameRelations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameFromNameRelations()" + request.getRequestURI());
+        logger.info("doGetNameFromNameRelations()" + requestPathAndQuery(request));
 
         TaxonBase taxonbase = getCdmBaseInstance(TaxonBase.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
         List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
@@ -730,7 +816,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             HttpServletRequest request,
             HttpServletResponse response)throws IOException {
         if(request != null){
-            logger.info("doGetDescriptions()" + request.getRequestURI());
+            logger.info("doGetDescriptions()" + requestPathAndQuery(request));
         }
         List<DefinedTermBase> markerTypeTerms = null;
         Set<UUID> sMarkerTypeUUIDs = null;
@@ -772,6 +858,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
             }*/
         }
+        if(request != null && logger.isInfoEnabled()){
+            logger.info("doGetDescriptions() - DONE");
+        }
         return descriptions;
     }
 
@@ -780,7 +869,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElements() - " + request.getRequestURI());
+        logger.info("doGetDescriptionElements() - " + requestPathAndQuery(request));
 
         //ModelAndView mv = new ModelAndView();
         Taxon t = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
@@ -814,7 +903,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             @RequestParam(value = "count", required = false, defaultValue = "false") Boolean doCount,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDescriptionElementsByType() - " + request.getRequestURI());
+        logger.info("doGetDescriptionElementsByType() - " + requestPathAndQuery(request));
 
         ModelAndView mv = new ModelAndView();
 

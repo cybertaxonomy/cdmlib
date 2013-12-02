@@ -46,6 +46,16 @@ public class DerivedUnitFacadeController extends AbstractController<SpecimenOrOb
 
     private IOccurrenceService service;
 
+    private final List<String> ocurrenceInitSrategy = Arrays.asList(new String []{
+            "$",
+            "titleCache"
+    });
+
+    public DerivedUnitFacadeController(){
+        setInitializationStrategy(ocurrenceInitSrategy);
+    }
+
+    @Override
     @Autowired
     public void setService(IOccurrenceService service) {
         this.service = service;

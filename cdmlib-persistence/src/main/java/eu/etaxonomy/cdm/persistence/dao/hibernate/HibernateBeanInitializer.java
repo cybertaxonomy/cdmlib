@@ -16,7 +16,7 @@ import org.hibernate.envers.entities.mapper.relation.lazy.proxy.CollectionProxy;
 import org.hibernate.envers.entities.mapper.relation.lazy.proxy.MapProxy;
 import org.hibernate.proxy.HibernateProxy;
 
-import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 
 /**
  * @author a.kohlbecker
@@ -26,7 +26,8 @@ import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 //@Component("defaultBeanInitializer")
 public class HibernateBeanInitializer extends AbstractBeanInitializer{
 
-    public static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(HibernateBeanInitializer.class);
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer#initializeInstance(java.lang.Object)
@@ -51,5 +52,7 @@ public class HibernateBeanInitializer extends AbstractBeanInitializer{
             ( ( MapProxy ) proxy ).isEmpty(); // checkInit is protected, unfortunately;
         }
     }
+    
+    
 
 }

@@ -10,6 +10,7 @@ import javax.xml.transform.stream.StreamResult;
 
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -28,6 +29,7 @@ public abstract class OaiPmhResponseView extends AbstractView {
 	protected Mapper mapper;
 	
 	@Autowired
+	@Qualifier("marshaller")
 	public void setMarshaller(Marshaller marshaller) {
 		this.marshaller = marshaller;
 	}

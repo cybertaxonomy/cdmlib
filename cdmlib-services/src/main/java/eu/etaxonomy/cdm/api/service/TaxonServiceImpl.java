@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -36,14 +37,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
-import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
-import eu.etaxonomy.cdm.api.service.search.DocIdBitSetPrinter;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
 import eu.etaxonomy.cdm.api.service.search.ISearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearch;
@@ -61,6 +62,7 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -94,9 +96,11 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -105,9 +109,9 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
@@ -142,6 +146,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     private INameService nameService;
 
     @Autowired
+    private ITaxonNodeService nodeService;
+
+
+    @Autowired
     private ICdmGenericDao genericDao;
 
     @Autowired
@@ -158,7 +166,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
-
 
     /**
      * Constructor
@@ -271,7 +278,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#changeSynonymToAcceptedTaxon(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
      */
-    //TODO correct delete handling still needs to be implemented / checked
+
     @Override
     @Transactional(readOnly = false)
     public Taxon changeSynonymToAcceptedTaxon(Synonym synonym, Taxon acceptedTaxon, boolean deleteSynonym, boolean copyCitationInfo, Reference citation, String microCitation) throws HomotypicalGroupChangeException{
@@ -301,12 +308,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         //synonym.getName().removeTaxonBase(synonym);
-        //TODO correct delete handling still needs to be implemented / checked
+
         if (deleteSynonym){
 //			deleteSynonym(synonym, taxon, false);
             try {
                 this.dao.flush();
-                this.delete(synonym);
+                this.deleteSynonym(synonym, acceptedTaxon, new SynonymDeletionConfigurator());
 
             } catch (Exception e) {
                 logger.info("Can't delete old synonym from database");
@@ -426,9 +433,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#findTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
      */
     @Override
-    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz,
-            String uninomial,	String infragenericEpithet, String specificEpithet,
-            String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
+    public Pager<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String uninomial,	String infragenericEpithet, String specificEpithet,	String infraspecificEpithet, Rank rank, Integer pageSize,Integer pageNumber) {
         Integer numberOfResults = dao.countTaxaByName(clazz, uninomial, infragenericEpithet, specificEpithet, infraspecificEpithet, rank);
 
         List<TaxonBase> results = new ArrayList<TaxonBase>();
@@ -438,7 +443,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         return new DefaultPagerImpl<TaxonBase>(pageNumber, numberOfResults, pageSize, results);
     }
-
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#listTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
@@ -617,6 +621,27 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return new DefaultPagerImpl<SynonymRelationship>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getHomotypicSynonymsByHomotypicGroup(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
+     */
+    @Override
+    public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
+    	 List<List<Synonym>> result = new ArrayList<List<Synonym>>();
+    	Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+        
+    	//homotypic
+    	result.add(t.getHomotypicSynonymsByHomotypicGroup());
+    	
+    	//heterotypic
+        List<HomotypicalGroup> homotypicalGroups = t.getHeterotypicSynonymyGroups();
+        for(HomotypicalGroup homotypicalGroup : homotypicalGroups){
+            result.add(t.getSynonymsInGroup(homotypicalGroup));
+        }
+    	
+    	return result;
+    	
+    }
+    
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getHomotypicSynonymsByHomotypicGroup(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
      */
@@ -852,7 +877,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 // Collection
                 //TODO why may collections have media attached? #
                 if (occurrence.isInstanceOf(DerivedUnit.class)) {
-                	DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
+                    DerivedUnit derivedUnit = CdmBase.deproxy(occurrence, DerivedUnit.class);
                     if (derivedUnit.getCollection() != null){
                         taxonMedia.addAll(derivedUnit.getCollection().getMedia());
                     }
@@ -860,18 +885,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                 // pherograms & gelPhotos
                 if (occurrence.isInstanceOf(DnaSample.class)) {
-                	DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
-                	Set<Sequence> sequences = dnaSample.getSequences();
-                	//we do show only those gelPhotos which lead to a consensus sequence
-                	for (Sequence sequence : sequences) {
-                		Set<Media> dnaRelatedMedia = new HashSet<Media>();
-                    	for (SingleRead singleRead : sequence.getSingleReads()){
-                    		Amplification amplification = singleRead.getAmplification();
-                    		dnaRelatedMedia.add(amplification.getGelPhoto());
-                    		dnaRelatedMedia.add(singleRead.getPherogram());
-                    		dnaRelatedMedia.remove(null);
-                    	}
-                    	taxonMedia.addAll(dnaRelatedMedia);
+                    DnaSample dnaSample = CdmBase.deproxy(occurrence, DnaSample.class);
+                    Set<Sequence> sequences = dnaSample.getSequences();
+                    //we do show only those gelPhotos which lead to a consensus sequence
+                    for (Sequence sequence : sequences) {
+                        Set<Media> dnaRelatedMedia = new HashSet<Media>();
+                        for (SingleRead singleRead : sequence.getSingleReads()){
+                            Amplification amplification = singleRead.getAmplification();
+                            dnaRelatedMedia.add(amplification.getGelPhoto());
+                            dnaRelatedMedia.add(singleRead.getPherogram());
+                            dnaRelatedMedia.remove(null);
+                        }
+                        taxonMedia.addAll(dnaRelatedMedia);
                     }
                 }
 
@@ -940,98 +965,267 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator)
      */
     @Override
-    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException {
+    public UUID deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws DataChangeNoRollbackException {
         if (config == null){
             config = new TaxonDeletionConfigurator();
         }
 
-            //    	TaxonNode
-            if (! config.isDeleteTaxonNodes()){
-                if (taxon.getTaxonNodes().size() > 0){
-                    String message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion.";
-                    throw new ReferencedObjectUndeletableException(message);
-                }
-            }
-
-
-            //    	SynonymRelationShip
+            // --- DeleteSynonymRelations
             if (config.isDeleteSynonymRelations()){
                 boolean removeSynonymNameFromHomotypicalGroup = false;
-                for (SynonymRelationship synRel : taxon.getSynonymRelations()){
+                // use tmp Set to avoid concurrent modification
+                Set<SynonymRelationship> synRelsToDelete = new HashSet<SynonymRelationship>();
+                synRelsToDelete.addAll(taxon.getSynonymRelations());
+                for (SynonymRelationship synRel : synRelsToDelete){
                     Synonym synonym = synRel.getSynonym();
+                    // taxon.removeSynonymRelation will set the accepted taxon and the synonym to NULL
+                    // this will cause hibernate to delete the relationship since
+                    // the SynonymRelationship field on both is annotated with removeOrphan
+                    // so no further explicit deleting of the relationship should be done here
                     taxon.removeSynonymRelation(synRel, removeSynonymNameFromHomotypicalGroup);
+
+                    // --- DeleteSynonymsIfPossible
                     if (config.isDeleteSynonymsIfPossible()){
                         //TODO which value
                         boolean newHomotypicGroupIfNeeded = true;
-                        deleteSynonym(synonym, taxon, config.isDeleteNameIfPossible(), newHomotypicGroupIfNeeded);
-                    }else{
-                        deleteSynonymRelationships(synonym, taxon);
+                        SynonymDeletionConfigurator synConfig = new SynonymDeletionConfigurator();
+                        deleteSynonym(synonym, taxon, synConfig);
+                    }
+                    // relationship will be deleted by hibernate automatically,
+                    // see comment above and http://dev.e-taxonomy.eu/trac/ticket/3797
+                    // else{
+                    //     deleteSynonymRelationships(synonym, taxon);
+                    // }
+                }
+            }
+
+            // --- DeleteTaxonRelationships
+            if (! config.isDeleteTaxonRelationships()){
+                if (taxon.getTaxonRelations().size() > 0){
+                    String message = "Taxon can't be deleted as it is related to another taxon. " +
+                            "Remove taxon from all relations to other taxa prior to deletion.";
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+            } else{
+                for (TaxonRelationship taxRel: taxon.getTaxonRelations()){
+                    if (config.isDeleteMisappliedNamesAndInvalidDesignations()){
+                        if (taxRel.getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR()) || taxRel.getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR())){
+                            if (taxon.equals(taxRel.getToTaxon())){
+                                this.deleteTaxon(taxRel.getFromTaxon(), config, classification);
+                            }
+                        }
+                    }
+                    taxon.removeTaxonRelation(taxRel);
+                    /*if (taxFrom.equals(taxon)){
+                        try{
+                            this.deleteTaxon(taxTo, taxConf, classification);
+                        } catch(DataChangeNoRollbackException e){
+                            logger.debug("A related taxon will not be deleted." + e.getMessage());
+                        }
+                    } else {
+                        try{
+                            this.deleteTaxon(taxFrom, taxConf, classification);
+                        } catch(DataChangeNoRollbackException e){
+                            logger.debug("A related taxon will not be deleted." + e.getMessage());
+                        }
+
+                    }*/
+                }
+            }
+
+            //    	TaxonDescription
+            if (config.isDeleteDescriptions()){
+                Set<TaxonDescription> descriptions = taxon.getDescriptions();
+                List<TaxonDescription> removeDescriptions = new ArrayList<TaxonDescription>();
+                for (TaxonDescription desc: descriptions){
+                    //TODO use description delete configurator ?
+                    //FIXME check if description is ALWAYS deletable
+                    if (desc.getDescribedSpecimenOrObservation() != null){
+                        String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
+                                " which also describes specimens or abservations";
+                        throw new ReferencedObjectUndeletableException(message);
+                    }
+                    removeDescriptions.add(desc);
+                    descriptionService.delete(desc);
+                   
+                }
+                for (TaxonDescription desc: removeDescriptions){
+                	taxon.removeDescription(desc);
+                }
+            }
+
+
+            //check references with only reverse mapping
+        String message = checkForReferences(taxon);
+        if (message != null){
+            throw new ReferencedObjectUndeletableException(message.toString());
+        }
+
+         if (! config.isDeleteTaxonNodes() || (!config.isDeleteInAllClassifications() && classification == null )){
+                if (taxon.getTaxonNodes().size() > 0){
+                    message = "Taxon can't be deleted as it is used in a classification node. Remove taxon from all classifications prior to deletion or define a classification where it should be deleted or adapt the taxon deletion configurator.";
+                    throw new ReferencedObjectUndeletableException(message);
+                }
+            }else{
+                if (taxon.getTaxonNodes().size() != 0){
+                    Set<TaxonNode> nodes = taxon.getTaxonNodes();
+                    Iterator<TaxonNode> iterator = nodes.iterator();
+                    TaxonNode node = null;
+                    boolean deleteChildren;
+                    if (config.getTaxonNodeConfig().getChildHandling().equals(ChildHandling.DELETE)){
+                        deleteChildren = true;
+                    }else {
+                        deleteChildren = false;
+                    }
+                    boolean success = true;
+                    if (!config.isDeleteInAllClassifications() && !(classification == null)){
+                        while (iterator.hasNext()){
+                            node = iterator.next();
+                            if (node.getClassification().equals(classification)){
+                                break;
+                            }
+                            node = null;
+                        }
+                        if (node != null){
+                            success =taxon.removeTaxonNode(node, deleteChildren);
+                            nodeService.delete(node);
+                        } else {
+                            message = "Taxon is not used in defined classification";
+                            throw new DataChangeNoRollbackException(message);
+                        }
+                    } else if (config.isDeleteInAllClassifications()){
+                        Set<ITaxonTreeNode> nodesList = new HashSet<ITaxonTreeNode>();
+                        nodesList.addAll(taxon.getTaxonNodes());
+
+                            for (ITaxonTreeNode treeNode: nodesList){
+                                TaxonNode taxonNode = (TaxonNode) treeNode;
+                                if(!deleteChildren){
+                                   /* Object[] childNodes = taxonNode.getChildNodes().toArray();
+                                    //nodesList.addAll(taxonNode.getChildNodes());
+                                    for (Object childNode: childNodes){
+                                        TaxonNode childNodeCast = (TaxonNode) childNode;
+                                        deleteTaxon(childNodeCast.getTaxon(), config, classification);
+
+                                    }
+
+                                    /*for (TaxonNode childNode: taxonNode.getChildNodes()){
+                                        deleteTaxon(childNode.getTaxon(), config, classification);
+
+                                    }
+                                   // taxon.removeTaxonNode(taxonNode);
+                                    //nodeService.delete(taxonNode);
+                                } else{
+                                    */
+                                    Object[] childNodes = taxonNode.getChildNodes().toArray();
+                                    for (Object childNode: childNodes){
+                                        TaxonNode childNodeCast = (TaxonNode) childNode;
+                                        taxonNode.getParent().addChildNode(childNodeCast, childNodeCast.getReference(), childNodeCast.getMicroReference());
+                                    }
+
+                                    //taxon.removeTaxonNode(taxonNode);
+                                }
+                            }
+                        config.getTaxonNodeConfig().setDeleteTaxon(false);
+                        nodeService.deleteTaxonNodes(nodesList, config);
+                    }
+                    if (!success){
+                         message = "The taxon node could not be deleted.";
+                        throw new DataChangeNoRollbackException(message);
                     }
                 }
             }
-
-            //    	TaxonRelationship
-            if (! config.isDeleteTaxonRelationships()){
-                if (taxon.getTaxonRelations().size() > 0){
-                    String message = "Taxon can't be deleted as it is related to another taxon. Remove taxon from all relations to other taxa prior to deletion.";
-                    throw new ReferencedObjectUndeletableException(message);
-                }
-            }
-
-
-            //    	TaxonDescription
-                    Set<TaxonDescription> descriptions = taxon.getDescriptions();
-
-                    for (TaxonDescription desc: descriptions){
-                        if (config.isDeleteDescriptions()){
-                            //TODO use description delete configurator ?
-                            //FIXME check if description is ALWAYS deletable
-                            descriptionService.delete(desc);
-                        }else{
-                            if (desc.getDescribedSpecimenOrObservation() != null){
-                                String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
-                                        " which also describes specimens or abservations";
-                                    throw new ReferencedObjectUndeletableException(message);
-                                }
-                            }
-                        }
-
-
-                //check references with only reverse mapping
-            Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
-            for (CdmBase referencingObject : referencingObjects){
-                //IIdentificationKeys (Media, Polytomous, MultiAccess)
-                if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
-                    String message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
-                    message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                    throw new ReferencedObjectUndeletableException(message);
-                }
-
-
-                //PolytomousKeyNode
-                if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
-                    String message = "Taxon can't be deleted as it is used in polytomous key node";
-                    throw new ReferencedObjectUndeletableException(message);
-                }
-
-                //TaxonInteraction
-                if (referencingObject.isInstanceOf(TaxonInteraction.class)){
-                    String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
-                    throw new ReferencedObjectUndeletableException(message);
-                }
-            }
-
-
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
                 try {
-                    nameService.delete(taxon.getName(), config.getNameDeletionConfig());
+
+                    //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
+                    TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
+                    //check whether taxon will be deleted or not
+                    if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null){
+                        taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
+                        name.removeTaxonBase(taxon);
+                        nameService.save(name);
+                        nameService.delete(name, config.getNameDeletionConfig());
+                    }
                 } catch (ReferencedObjectUndeletableException e) {
                     //do nothing
                     if (logger.isDebugEnabled()){logger.debug("Name could not be deleted");}
+
                 }
             }
 
+//        	TaxonDescription
+           /* Set<TaxonDescription> descriptions = taxon.getDescriptions();
+
+            for (TaxonDescription desc: descriptions){
+                if (config.isDeleteDescriptions()){
+                    //TODO use description delete configurator ?
+                    //FIXME check if description is ALWAYS deletable
+                    taxon.removeDescription(desc);
+                    descriptionService.delete(desc);
+                }else{
+                    if (desc.getDescribedSpecimenOrObservations().size()>0){
+                        String message = "Taxon can't be deleted as it is used in a TaxonDescription" +
+                                " which also describes specimens or observations";
+                            throw new ReferencedObjectUndeletableException(message);
+    }
+                    }
+                }*/
+
+            if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
+                dao.delete(taxon);
+                return taxon.getUuid();
+            } else{
+                message = "Taxon can't be deleted as it is used in another Taxonnode";
+                if (!config.isDeleteInAllClassifications() && classification != null) {
+                    message += "The Taxonnode in " + classification.getTitleCache() + " was deleted.";
+                }
+                throw new ReferencedObjectUndeletableException(message);
+            }
+
+
+    }
+
+    private String checkForReferences(Taxon taxon){
+        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(taxon);
+        for (CdmBase referencingObject : referencingObjects){
+            //IIdentificationKeys (Media, Polytomous, MultiAccess)
+            if (HibernateProxyHelper.isInstanceOf(referencingObject, IIdentificationKey.class)){
+                String message = "Taxon" + taxon.getTitleCache() + "can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
+
+                return message;
+            }
+
+
+            //PolytomousKeyNode
+            if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
+                String message = "Taxon" + taxon.getTitleCache() + " can't be deleted as it is used in polytomous key node";
+                return message;
+            }
+
+            //TaxonInteraction
+            if (referencingObject.isInstanceOf(TaxonInteraction.class)){
+                String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
+                return message;
+            }
+            
+          //TaxonInteraction
+            if (referencingObject.isInstanceOf(DeterminationEvent.class)){
+                String message = "Taxon can't be deleted as it is used in a determination event";
+                return message;
+            }
+            
+        }
+        
+        referencingObjects = null;
+        return null;
+    }
+
+    @Transactional(readOnly = false)
+    public UUID delete(Synonym syn){
+        UUID result = syn.getUuid();
+        this.deleteSynonym(syn, null);
+        return result;
     }
 
     /* (non-Javadoc)
@@ -1039,9 +1233,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     @Transactional(readOnly = false)
     @Override
-    public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible,boolean newHomotypicGroupIfNeeded) {
+    public void deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config) {
+        deleteSynonym(synonym, null, config);
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
+     */
+    @Transactional(readOnly = false)
+    @Override
+    public void deleteSynonym(Synonym synonym, Taxon taxon, SynonymDeletionConfigurator config) {
         if (synonym == null){
             return;
+        }
+        if (config == null){
+            config = new SynonymDeletionConfigurator();
         }
         synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
 
@@ -1054,23 +1262,25 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         for (Taxon relatedTaxon : taxonSet){
 //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
-            relatedTaxon.removeSynonym(synonym, newHomotypicGroupIfNeeded);
+            relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
         }
         this.saveOrUpdate(synonym);
 
         //TODO remove name from homotypical group?
 
         //remove synonym (if necessary)
+
+
         if (synonym.getSynonymRelations().isEmpty()){
             TaxonNameBase<?,?> name = synonym.getName();
             synonym.setName(null);
             dao.delete(synonym);
 
             //remove name if possible (and required)
-            if (name != null && removeNameIfPossible){
+            if (name != null && config.isDeleteNameIfPossible()){
                 try{
-                    nameService.delete(name, new NameDeletionConfigurator());
-                }catch (DataChangeNoRollbackException ex){
+                    nameService.delete(name, config.getNameDeletionConfig());
+                }catch (ReferencedObjectUndeletableException ex){
                     if (logger.isDebugEnabled()) {
                         logger.debug("Name wasn't deleted as it is referenced");
                     }
@@ -1375,7 +1585,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             boolean highlightFragments, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException {
 
 
-        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments);
+        LuceneSearch luceneSearch = prepareFindByFullTextSearch(clazz, queryString, classification, languages, highlightFragments, null);
 
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = luceneSearch.executeSearch(pageSize, pageNumber);
@@ -1421,18 +1631,21 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * @param classification
      * @param languages
      * @param highlightFragments
+     * @param sortFields TODO
      * @param directorySelectClass
      * @return
      */
     protected LuceneSearch prepareFindByFullTextSearch(Class<? extends CdmBase> clazz, String queryString, Classification classification, List<Language> languages,
-            boolean highlightFragments) {
+            boolean highlightFragments, SortField[] sortFields) {
         BooleanQuery finalQuery = new BooleanQuery();
         BooleanQuery textQuery = new BooleanQuery();
 
         LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        if(sortFields == null){
+            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        }
         luceneSearch.setSortFields(sortFields);
 
         // ---- search criteria
@@ -1465,16 +1678,17 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      * <li>direct, everted: {@link Direction.relatedTo}: TaxonRelationShip.relatedTo.id --&gt; Taxon.id </li>
      * <li>inverse: {@link Direction.relatedFrom}:  TaxonRelationShip.relatedFrom.id --&gt; Taxon.id </li>
      * <ul>
-     *
      * @param queryString
      * @param classification
      * @param languages
      * @param highlightFragments
+     * @param sortFields TODO
+     *
      * @return
      * @throws IOException
      */
     protected LuceneSearch prepareFindByTaxonRelationFullTextSearch(TaxonRelationshipEdge edge, String queryString, Classification classification, List<Language> languages,
-            boolean highlightFragments) throws IOException {
+            boolean highlightFragments, SortField[] sortFields) throws IOException {
 
         String fromField;
         String queryTermField;
@@ -1495,7 +1709,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         BooleanQuery finalQuery = new BooleanQuery();
 
-        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, TaxonBase.class);
+        LuceneSearch luceneSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, TaxonBase.class);
         QueryFactory taxonBaseQueryFactory = luceneIndexToolProvider.newQueryFactoryFor(TaxonBase.class);
 
         BooleanQuery joinFromQuery = new BooleanQuery();
@@ -1503,7 +1717,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         joinFromQuery.add(taxonBaseQueryFactory.newEntityIdQuery("type.id", edge.getTaxonRelationshipType()), Occur.MUST);
         Query joinQuery = taxonBaseQueryFactory.newJoinQuery(fromField, toField, joinFromQuery, TaxonRelationship.class);
 
-        SortField[] sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        if(sortFields == null){
+            sortFields = new  SortField[]{SortField.FIELD_SCORE, new SortField("titleCache__sort", SortField.STRING,  false)};
+        }
         luceneSearch.setSortFields(sortFields);
 
         finalQuery.add(joinQuery, Occur.MUST);
@@ -1533,6 +1749,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths)
             throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
+        // FIXME: allow taxonomic ordering
+        //  hql equivalent:  order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
+        // this require building a special sort column by a special classBridge
         if(highlightFragments){
             logger.warn("findTaxaAndNamesByFullText() : fragment highlighting is " +
                     "currently not fully supported by this method and thus " +
@@ -1555,6 +1774,20 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if(searchModes == null){
             searchModes = EnumSet.of(TaxaAndNamesSearchMode.doTaxa);
         }
+
+        // set sort order and thus override any sort orders which may have been
+        // defindes by prepare*Search methods
+        if(orderHints == null){
+            orderHints = OrderHint.NOMENCLATURAL_SORT_ORDER;
+        }
+        SortField[] sortFields = new SortField[orderHints.size()];
+        int i = 0;
+        for(OrderHint oh : orderHints){
+            sortFields[i++] = oh.toSortField();
+        }
+//        SortField[] sortFields = new SortField[]{SortField.FIELD_SCORE, new SortField("id", SortField.STRING, false)};
+//        SortField[] sortFields = new SortField[]{new SortField(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortField.STRING, false)};
+
 
         boolean addDistributionFilter = namedAreas != null && namedAreas.size() > 0;
 
@@ -1613,7 +1846,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             } else if (!searchModes.contains(TaxaAndNamesSearchMode.doTaxa) && searchModes.contains(TaxaAndNamesSearchMode.doSynonyms)) {
                 taxonBaseSubclass = Synonym.class;
             }
-            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments));
+            luceneSearches.add(prepareFindByFullTextSearch(taxonBaseSubclass, queryString, classification, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
             /* A) does not work!!!!
             if(addDistributionFilter){
@@ -1657,6 +1890,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             LuceneSearch byCommonNameSearch = new LuceneSearch(luceneIndexToolProvider, GroupByTaxonClassBridge.GROUPBY_TAXON_FIELD, Taxon.class);
             byCommonNameSearch.setCdmTypRestriction(Taxon.class);
             byCommonNameSearch.setQuery(byCommonNameJoinQuery);
+            byCommonNameSearch.setSortFields(sortFields);
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             luceneSearches.add(byCommonNameSearch);
@@ -1689,7 +1923,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             //
             luceneSearches.add(prepareFindByTaxonRelationFullTextSearch(
                     new TaxonRelationshipEdge(TaxonRelationshipType.MISAPPLIED_NAME_FOR(), Direction.relatedTo),
-                    queryString, classification, languages, highlightFragments));
+                    queryString, classification, languages, highlightFragments, sortFields));
             idFieldMap.put(CdmBaseType.TAXON, "id");
 
             if(addDistributionFilter){
@@ -1728,7 +1962,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
 //                debug code for bug described above
                 DocIdSet filterMatchSet = filter.getDocIdSet(luceneIndexToolProvider.getIndexReaderFor(Taxon.class));
-                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
+//                System.err.println(DocIdBitSetPrinter.docsAsString(filterMatchSet, 100));
 
                 multiIndexByAreaFilter.add(filter, Occur.SHOULD);
             }
@@ -1757,6 +1991,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (addDistributionFilter){
             multiSearch.setFilter(multiIndexByAreaFilter);
         }
+
+
         // --- execute search
         TopGroupsWithMaxScore topDocsResultSet = multiSearch.executeSearch(pageSize, pageNumber);
 
@@ -1892,7 +2128,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
 
         LuceneSearch luceneSearchByDescriptionElement = prepareByDescriptionElementFullTextSearch(null, queryString, classification, null, languages, highlightFragments);
-        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments);
+        LuceneSearch luceneSearchByTaxonBase = prepareFindByFullTextSearch(null, queryString, classification, languages, highlightFragments, null);
 
         LuceneMultiSearch multiSearch = new LuceneMultiSearch(luceneIndexToolProvider, luceneSearchByDescriptionElement, luceneSearchByTaxonBase);
 
@@ -2472,23 +2708,23 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // Add the original source
         if (idInSourceSyn != null && idInSourceTaxon != null) {
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
 
         }else{
             logger.error("There is an idInSource missing: " + idInSourceSyn + " of Synonym or " + idInSourceTaxon + " of Taxon");
-            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredGenus.addSource(originalSource);
 
-            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-            		idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
+            originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                    idInSourceSyn + "; " + idInSourceTaxon, INFERRED_GENUS_NAMESPACE, sourceReference, null);
             inferredSynName.addSource(originalSource);
             originalSource = null;
         }
@@ -2519,8 +2755,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         Reference<?> sourceReference = syn.getSec();
 
         if (sourceReference == null){
-            logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());
-            sourceReference = taxon.getSec();
+             logger.warn("The synonym has no sec reference because it is a misapplied name! Take the sec reference of taxon" + taxon.getSec());
+             sourceReference = taxon.getSec();
         }
 
         synName = syn.getName();
@@ -2578,13 +2814,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String taxonId = idInSourceTaxon+ "; " + idInSourceSyn;
 
 
-        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        IdentifiableSource originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredEpithet.addSource(originalSource);
 
-        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation, 
-        		taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
+        originalSource = IdentifiableSource.NewInstance(OriginalSourceType.Transformation,
+                taxonId, INFERRED_EPITHET_NAMESPACE, sourceReference, null);
 
         inferredSynName.addSource(originalSource);
 

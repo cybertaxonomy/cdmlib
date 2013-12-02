@@ -11,6 +11,8 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,12 +20,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.persistence.dao.reference.IReferenceDao;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -33,7 +38,9 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IReferenceDao> implements IReferenceService {
 	
 	static Logger logger = Logger.getLogger(ReferenceServiceImpl.class);
-
+	  
+	@Autowired
+private ICdmGenericDao genericDao;
 	/**
 	 * Constructor
 	 */
@@ -80,5 +87,17 @@ public class ReferenceServiceImpl extends IdentifiableServiceBase<Reference,IRef
 		
 		return taxonList;
 	}
-
+	
+	@Override
+	public UUID delete(Reference reference) throws ReferencedObjectUndeletableException{
+		//check whether the reference is used somewhere
+		Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(reference);
+		
+		if (referencingObjects.size()>0){
+			
+			throw new ReferencedObjectUndeletableException();
+		}
+		
+		return reference.getUuid();
+	}
 }

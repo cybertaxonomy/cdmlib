@@ -11,9 +11,11 @@ package eu.etaxonomy.cdm.model.metadata;
 
 import java.io.Serializable;
 
+import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.validation.constraints.Size;
 
 import org.hibernate.validator.constraints.Length;
 
@@ -59,10 +61,10 @@ public final class CdmPreference implements Serializable {
 	public static class PrefKey implements Serializable{
 		private static final long serialVersionUID = 9019957853773606194L;
 
-		@Length(max=100)  //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
+		@Column(name="key_subject", length=100) //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
 		private String subject;
 		
-		@Length(max=100)  //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
+		@Column(name="key_predicate", length=100) //for now we keep the combined key short as indizes for such keys are very limited in size in some DBMS. Size may be increased later
 		private String predicate;
 		
 		//for hibernate use only

@@ -123,29 +123,37 @@ public class CdmUpdater {
 	 * @return
 	 */
 	private boolean updateSingleValue(ICdmDataSource datasource, IProgressMonitor monitor, String table, Integer oldVal){
+		if (table.equals("default")){  //found in flora central africa test database
+			return true;
+		}
 		try {
 			Integer newVal;
 			try {
 				String sql = " SELECT max(id) FROM %s ";
 				newVal = (Integer)datasource.getSingleValue(String.format(sql, table));
 			} catch (Exception e) {
-				String message = "Could not retrieve max value for table '%s'. Will not update hibernate_sequence for this table. Usually this will not cause problems, however, if new data has been added to this table by the update script one may encounter 'unique identifier' exceptions when trying to add further data.";
-				monitor.warning(message, e);
+				String message = "Could not retrieve max value for table '%s'. Will not update hibernate_sequence for this table. " +
+						"Usually this will not cause problems, however, if new data has been added to " +
+						"this table by the update script one may encounter 'unique identifier' " +
+						"exceptions when trying to add further data.";
+				monitor.warning(String.format(message,table), e);
 				//TODO
 				return true;
 			}
 			
-			//This is how {@link PooledOptimizer#generate(org.hibernate.id.enhanced.AccessCallback)} works
-			//it substracts the increment size from the value in hibernate_sequences to get the initial value.
-			//Haven't checked why.
-			//For the correct increment size see eu.etaxonomy.cdm.model.common.package-info.java
-			int incrementSize = 10;
-			newVal = newVal + incrementSize;
-			if (newVal != null && newVal >= oldVal){
-				String sql = " UPDATE hibernate_sequences " +
-						" SET next_val = %d " +
-						" WHERE sequence_name = '%s' ";
-				datasource.executeUpdate(String.format(sql, newVal + 1 , table) );
+			if (newVal != null){
+				//This is how {@link PooledOptimizer#generate(org.hibernate.id.enhanced.AccessCallback)} works
+				//it substracts the increment size from the value in hibernate_sequences to get the initial value.
+				//Haven't checked why.
+				//For the correct increment size see eu.etaxonomy.cdm.model.common.package-info.java
+				int incrementSize = 10;
+				newVal = newVal + incrementSize;
+				if (newVal != null && newVal >= oldVal){
+					String sql = " UPDATE hibernate_sequences " +
+							" SET next_val = %d " +
+							" WHERE sequence_name = '%s' ";
+					datasource.executeUpdate(String.format(sql, newVal + 1 , table) );
+				}
 			}
 			return true;
 		} catch (Exception e) {

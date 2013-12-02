@@ -11,6 +11,9 @@ package eu.etaxonomy.cdm.persistence.dao.common;
 
 
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
@@ -84,10 +87,23 @@ public interface ITermVocabularyDao extends IIdentifiableDao<TermVocabulary> {
      * @param propertyPaths properties to be initialized
      * @return a list of term vocabularies
      */
-	<TERMTYPE extends DefinedTermBase> List<TermVocabulary<? extends TERMTYPE>> listByTermClass(Class<TERMTYPE> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+	public <TERMTYPE extends DefinedTermBase> List<TermVocabulary<? extends TERMTYPE>> listByTermClass(Class<TERMTYPE> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	
 	public List<TermVocabulary> listEmpty(Integer limit, Integer start,List<OrderHint> orderHints, List<String> propertyPaths);
+
+	/**
+	 * Fills the response map with those term uuids which do exist in the requested map
+	 * but not in the repository (missing terms). The map key is the vocabulary uuid in both cases.
+	 * If parameter vocabularyRepsonse is not <code>null</code> the vocabularies will be fully loaded
+	 * and returned within the map. The later is for using this method together with fast termloading.
+	 * @param uuidsRequested
+	 * @param uuidsRepsonse
+	 * @param vocabularyResponse
+	 */
+	public void missingTermUuids(Map<UUID, Set<UUID>> uuidsRequested,
+			Map<UUID, Set<UUID>> uuidsRepsonse,
+			Map<UUID, TermVocabulary<?>> vocabularyResponse);
 
 
 }

@@ -578,7 +578,11 @@ public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureN
 	@Override
 	@Deprecated
 	public int treeId() {
-		return this.featureTree.getId();
+		if (this.featureTree == null){
+			return -1;
+		}else{
+			return this.featureTree.getId();
+		}
 	}
 
 	

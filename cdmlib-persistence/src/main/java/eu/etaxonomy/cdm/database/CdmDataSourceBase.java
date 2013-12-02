@@ -28,7 +28,7 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
 abstract class CdmDataSourceBase implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
-	private static final int TIMEOUT = 10;
+//	private static final int TIMEOUT = 10;
 	private Connection connection;
 	
 

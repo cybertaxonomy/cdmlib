@@ -69,7 +69,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             "$",
             "elements.$",
             "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
     });

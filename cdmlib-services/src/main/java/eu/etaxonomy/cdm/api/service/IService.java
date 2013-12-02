@@ -22,9 +22,10 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.security.core.Authentication;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -82,8 +83,9 @@ public interface IService<T extends ICdmBase>{
      *
      * @param persistentObject the object to be deleted
      * @return the unique identifier of the deleted entity
+     * @throws ReferencedObjectUndeletableException 
      */
-    public UUID delete(T persistentObject);
+    public UUID delete(T persistentObject) throws ReferencedObjectUndeletableException;
 
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the

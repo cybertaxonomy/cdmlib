@@ -21,6 +21,7 @@ import org.apache.lucene.queryParser.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
+import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
@@ -53,7 +54,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -163,7 +164,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * but also it is than difficult to decide how to handle other names
      * in the homotypic group. It is up to the implementing class to
      * handle this situation via an exception or in another way.
-     * TODO Open issue: does the old synonym need to be deleted from the database?
+     *
      *
      * @param synonym
      * 				the synonym to change into an accepted taxon
@@ -210,11 +211,22 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
-     * Deletes all synonym relationships of a given synonym. If taxon is given only those relationships to the taxon are deleted.
-     * @param syn the synonym
+     * Deletes all synonym relationships of a given synonym. If taxon is given
+     * only those relationships to the taxon are deleted.
+     *
+     * @param syn
+     *            the synonym
      * @param taxon
      * @return
+     * @deprecated This method must no longer being used since the
+     *             SynonymRelationship is annotated at the {@link Taxon} and at
+     *             the {@link Synonym} with <code>orphanDelete=true</code>. Just
+     *             remove the from and to entities from the relationship and
+     *             hibernate will care for the deletion. Using this method can cause
+     *             <code>StaleStateException</code> (see http://dev.e-taxonomy.eu/trac/ticket/3797)
+     *
      */
+    @Deprecated
     public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
     /**
@@ -223,7 +235,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param config
      * @throws ReferencedObjectUndeletableException
      */
-    public void deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config) throws ReferencedObjectUndeletableException;
+    public UUID deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws DataChangeNoRollbackException;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -388,6 +400,24 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
+    /**
+     * This method returns in the first entry the list of synonyms of the 
+     * homotypic group of the accepted taxon. All other entries represent the lists of heterotypic 
+     * synonym groups. For detailed information about these 2 groups see 
+     * {@link #getHomotypicSynonymsByHomotypicGroup(Taxon, List)} and
+     * {@link #getHeterotypicSynonymyGroups(Taxon, List)}
+     *  
+     * @see			#getSynonyms()
+     * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
+     * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
+
+     * @param taxon the accepted taxon
+     * @param propertyPaths the property path
+     * @return the list of groups of synonyms
+     */
+    public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
+
+    
     /**
      * Returns the list of all synonyms that share the same homotypical group with the given taxon.
      * Only those homotypic synonyms are returned that do have a synonym relationship with the accepted taxon.
@@ -785,6 +815,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public long deleteSynonymRelationships(Synonym syn);
 
 
+
+
+
     /**
      * Removes a synonym.<BR><BR>
      *
@@ -805,7 +838,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param removeNameIfPossible
      * @throws DataChangeNoRollbackException
      */
-    public void deleteSynonym(Synonym synonym, Taxon taxon, boolean removeNameIfPossible, boolean newHomotypicGroupIfNeeded);
+    public void deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
 
     /**
@@ -857,6 +890,34 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return list of inferred synonyms
      */
     public List<Synonym>  createAllInferredSynonyms(Taxon taxon, Classification tree, boolean doWithMisappliedNames);
+
+
+
+
+    /**
+     * Removes a synonym.<BR><BR>
+     *
+     * In detail it removes
+     *  <li>all synonym relationship to the given taxon or to all taxa if taxon is <code>null</code></li>
+     *  <li>the synonym concept if it is not referenced by any synonym relationship anymore</li>
+     *  <BR><BR>
+     *  If <code>config.removeNameIfPossible</code> is true
+     *  it also removes the synonym name if it is not used in any other context
+     *  (part of a concept, in DescriptionElementSource, part of a name relationship, used inline, ...)<BR><BR>
+     *  If <code>config.newHomotypicGroupIfNeeded</code> is <code>true</code> and the synonym name is not deleted and
+     *  the name is homotypic to the taxon the name is moved to a new homotypical group.<BR><BR>
+     *
+     *  If synonym is <code>null</code> the method has no effect.
+     *
+     * @param taxon
+     * @param synonym
+     * @param config
+     * @throws DataChangeNoRollbackException
+     */
+    void deleteSynonym(Synonym synonym, Taxon taxon,
+            SynonymDeletionConfigurator config);
+
+
 
 
 

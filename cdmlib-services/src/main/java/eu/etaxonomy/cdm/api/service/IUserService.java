@@ -21,7 +21,7 @@ import org.springframework.security.provisioning.UserDetailsManager;
 
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 

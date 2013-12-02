@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -94,13 +96,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy
-     * .cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITaxonService service) {
@@ -151,9 +146,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
 
         List<TaxonDescription> taxonDescriptions = page.getRecords();
-        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
-            backLayer, langs);
+        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
+                presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
         mv.addObject(uriParams);
+
         return mv;
     }
 
@@ -188,7 +184,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Boolean doReturnImage = null;
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
-        logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
+        logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
@@ -204,5 +200,49 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         mv.addObject(uriParams);
         return mv;
     }
+
+    /**
+     * EXPERIMENTAL !!!!!
+     * DO NOT USE   !!!!!
+     *
+     * @param vocabUuid
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     *
+     * @author a.kohlbecker
+     */
+    @RequestMapping(value = { "mapShapeFileToNamedAreas" }, method = RequestMethod.GET)
+    public ModelAndView doMapShapeFileToNamedAreas(
+            @RequestParam(required=false, value="vocabularyUuid") UUID vocabUuid,
+            @RequestParam(required=false, value="namedAreaUuids") UuidList namedAreaUuids,
+            @RequestParam(required=true, value="localFile") String localFile,
+            @RequestParam(required=true, value="idSearchField") List<String> idSearchFields,
+            @RequestParam(required=true, value="wmsLayerName") String wmsLayerName,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        logger.info("doMapShapeFileToNamedAreas() " + requestPathAndQuery(request));
+        ModelAndView mv = new ModelAndView();
+
+        FileReader reader = new FileReader(localFile);
+
+        Set<UUID> areaUuidSet = null;
+        if(namedAreaUuids != null) {
+            areaUuidSet = namedAreaUuids.asSet();
+        }
+        Map<NamedArea, String> resultMap = geoservice.mapShapeFileToNamedAreas(
+                reader, idSearchFields , wmsLayerName , vocabUuid, areaUuidSet);
+        Map<String, String> flatResultMap = new HashMap<String, String>(resultMap.size());
+        for(NamedArea area : resultMap.keySet()){
+            flatResultMap.put(area.getTitleCache() + " [" + area.getUuid() + "]", resultMap.get(area));
+        }
+        mv.addObject(flatResultMap);
+        return mv;
+
+    }
+
 
 }

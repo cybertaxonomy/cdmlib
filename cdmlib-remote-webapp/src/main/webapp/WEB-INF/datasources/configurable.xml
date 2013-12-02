@@ -30,6 +30,7 @@
               <!-- disabling hibernate search for testing (speed up and lesser heap usage)
               <prop key="hibernate.search.autoregister_listeners">false</prop>
               -->
+
             </props>
         </property>
     </bean>

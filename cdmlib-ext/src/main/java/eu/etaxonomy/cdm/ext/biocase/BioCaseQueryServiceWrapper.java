@@ -19,6 +19,7 @@ import java.util.List;
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.message.BasicNameValuePair;
 import org.jdom.Document;
 import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
@@ -30,50 +31,55 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
+ * This service provides access to BioCASe providers.<br>
+ * It sends a {@link BioCaseQuery} via HTTP POST to a given provider
  * @author pplitzner
  * @date 13.09.2013
  *
  */
 public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase>{
-//    String content =
-//          "<entry xmlns='http://www.w3.org/2005/Atom'>"
-//          + "<content>" + comment + "</content>"
-//          + "<category scheme='http://schemas.google.com/g/2005#kind'"
-//          + " term='http://schemas.google.com/photos/2007#comment'/>"
-//          + "</entry>";
-//
-//      try {
-//          StringEntity entity = new StringEntity(content);
-//          entity.setContentType(new BasicHeader("Content-Type",
-//              "application/atom+xml"));
-//          postRequest.setEntity(entity);
 
     private final BioCaseResponseSchemaAdapter schemaAdapter;
+
+    private static final String BASE_URL = "http://ww3.bgbm.org";
+    private static final String SUB_PATH = "/biocase/pywrapper.cgi";
+    //capability testing
+    //http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar&capabilities=1
+    private static final BasicNameValuePair SUBMIT_PARAM = new BasicNameValuePair("Submit", "Submit");
+    private static final String QUERY_PARAM_NAME = "query";
+    private static final String DSA_PARAM_NAME = "dsa";
+    private static final BasicNameValuePair CAPABILITY_TEST_PARAM = new BasicNameValuePair("capabilities", "1");
 
     /**
      * Constructs a new BioCaseServiceWrapper with the baseUrl: <i>http://ww3.bgbm.org/biocase/pywrapper.cgi</i>
      */
     public BioCaseQueryServiceWrapper() {
-        setBaseUrl("http://ww3.bgbm.org");
+        setBaseUrl(BASE_URL);
         schemaAdapter = new BioCaseResponseSchemaAdapter();
         addSchemaAdapter(schemaAdapter);
     }
+
+    public InputStream query(BioCaseQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+        //TODO: remove default herbar querying. Maybe make other query method public
+        return query(query, "herbar");
+    }
+
 
     /**
      * Queries the BioCASE provider with the given {@link BioCaseQuery}.
      * @return The response as an {@link InputStream}
      */
-    public InputStream query(BioCaseQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+    private InputStream query(BioCaseQuery query, String dsaName) throws ClientProtocolException, IOException, URISyntaxException{
         Document doc = new BioCaseQueryGenerator().generateXMLQuery(query);
         String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
         List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
-        addNameValuePairTo(queryParamsPOST, "Submit", "Submit");
-        addNameValuePairTo(queryParamsPOST, "query", xmlOutputString);
+        queryParamsPOST.add(SUBMIT_PARAM);
+        addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
         UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
         List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
-        addNameValuePairTo(queryParamsGET, "dsa", "herbar");
-        URI uri = createUri("/biocase/pywrapper.cgi", queryParamsGET);
+        addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, dsaName);
+        URI uri = createUri(SUB_PATH, queryParamsGET);
 
         return executeHttpPost(uri, null, httpEntity);
 //        InputStream responseStream = executeHttpPost(new URI("http", "ww3.bgbm.org", "/biocase/pywrapper.cgi" , "dsa=Herbar", null), null, httpEntity);

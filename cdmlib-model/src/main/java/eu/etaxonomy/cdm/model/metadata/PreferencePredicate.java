@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.common.Language;
  */
 public enum PreferencePredicate  implements IEnumTerm<PreferencePredicate>{
 	NomenclaturalCode(UUID.fromString("39c5cb91-9370-4803-abf7-fa01e7dbe4e2"), "Nomenclatural Code", "NC"),
+	TaxonNodeOrder(UUID.fromString("ce06bd8e-4371-4ee5-8f57-cf23930cfd12"), "TaxonNode order", "TNO"),
 	Test(UUID.fromString("b71214ab-2524-4b5d-8e2b-0581767ac839"), "Test", "Test")
 	;
 	

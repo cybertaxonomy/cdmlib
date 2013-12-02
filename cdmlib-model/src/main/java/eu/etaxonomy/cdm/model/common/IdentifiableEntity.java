@@ -221,7 +221,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     @Override
     public void setTitleCache(String titleCache){
-        this.titleCache = titleCache;
+    	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?  
+    	this.titleCache = getTruncatedCache(titleCache);
     }
 
     /* (non-Javadoc)
@@ -241,9 +242,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
      */
     @Transient
     protected String getTruncatedCache(String cache) {
-        if (cache != null && cache.length() > 1023){
+        int maxLength = 800;
+    	if (cache != null && cache.length() > maxLength){
             logger.warn("Truncation of cache: " + this.toString() + "/" + cache);
-            cache = cache.substring(0, 1020) + "...";
+            cache = cache.substring(0, maxLength - 4) + "...";   //TODO do we need -4 or is -3 enough
         }
         return cache;
     }
@@ -514,6 +516,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          String specifiedGenusString = "";
          int thisrank_order = 0;
 
+         //TODO we can remove all the deproxies here except for the first one
+         identifiableEntity = HibernateProxyHelper.deproxy(identifiableEntity, IdentifiableEntity.class);
          if(identifiableEntity instanceof NonViralName) {
              specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
              specifiedTitleCache = identifiableEntity.getTitleCache();
@@ -536,10 +540,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
              }
          }
 
-         if(this instanceof NonViralName) {
+         if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
-         } else if(this instanceof TaxonBase) {
+         } else if(this.isInstanceOf(TaxonBase.class)) {
              TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
              NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
              thisNameCache = nonViralName.getNameCache();

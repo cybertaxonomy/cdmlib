@@ -12,7 +12,11 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.common;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
+import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -23,8 +27,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
@@ -90,5 +94,26 @@ public class TermVocabularyDaoImplTest extends CdmIntegrationTest {
 		assertEquals("The empty vocabulary should be the one defined", uuidEmptyVoc, emptyVocs.get(0).getUuid());
 	}
 	
+	@Test
+	public void testmissingTermUuids() {
+		Set<UUID> uuidSet = new HashSet<UUID>();
+		uuidSet.add(Language.uuidEnglish);
+		uuidSet.add(Language.uuidFrench);
+		UUID uuidNotExisting = UUID.fromString("e93e8c10-d9d2-4ad6-9907-952da6d139c4");
+		uuidSet.add(uuidNotExisting);
+		Map<UUID, Set<UUID>> uuidVocs = new HashMap<UUID, Set<UUID>>();
+		uuidVocs.put( Language.uuidLanguageVocabulary, uuidSet);
+		Map<UUID, Set<UUID>> notExisting = new HashMap<UUID, Set<UUID>>();
+		Map<UUID, TermVocabulary<?>> vocabularyMap = new HashMap<UUID, TermVocabulary<?>>();
+        
+		dao.missingTermUuids(uuidVocs, notExisting, vocabularyMap);
+		
+		//assert missing terms
+		assertEquals(Integer.valueOf(1), Integer.valueOf(notExisting.keySet().size()));
+		assertEquals(Language.uuidLanguageVocabulary, notExisting.keySet().iterator().next());
+		Set<UUID> missingLanguageTerms = notExisting.get(Language.uuidLanguageVocabulary );
+		assertEquals(Integer.valueOf(1), Integer.valueOf(missingLanguageTerms.size()));
+		assertEquals(uuidNotExisting, missingLanguageTerms.iterator().next());
+	}
 	
 }

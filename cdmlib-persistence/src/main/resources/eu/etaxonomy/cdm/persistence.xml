@@ -3,10 +3,10 @@
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
   xmlns:tx="http://www.springframework.org/schema/tx" xmlns:aop="http://www.springframework.org/schema/aop"
   xsi:schemaLocation="
-    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
-    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
-    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
-    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-2.5.xsd
+    http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-3.0.xsd
+    http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd
     ">
 
   <bean id="transactionManager" class="org.springframework.orm.hibernate4.HibernateTransactionManager">
@@ -42,18 +42,21 @@
     <!--
        Configuration for the BeanInitialization
      -->
-    <bean id="titleCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TitleCacheAutoInitializer"></bean>
-    <bean id="annotationTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.AnnotationTypeAutoInitializer"></bean>
-    <bean id="markerTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.MarkerTypeAutoInitializer"></bean>
-    <bean id="gatheringEventLocationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.GatheringEventLocationAutoInitializer"></bean>
-    <bean id="termBaseAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TermBaseAutoInitializer"></bean>
-    <bean id="mediaAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.MediaAutoInitializer"></bean>
-    <bean id="typeDesignationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.TypeDesignationAutoInitializer"></bean>
+    <bean id="titleAndNameCacheAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TitleAndNameCacheAutoInitializer"></bean>
+    <bean id="annotationTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.AnnotationTypeAutoInitializer"></bean>
+    <bean id="markerTypeAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.MarkerTypeAutoInitializer"></bean>
+    <bean id="gatheringEventLocationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.GatheringEventLocationAutoInitializer"></bean>
+    <bean id="termBaseAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TermBaseAutoInitializer"></bean>
+    <bean id="mediaAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.MediaAutoInitializer"></bean>
+    <bean id="typeDesignationAutoInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.TypeDesignationAutoInitializer"></bean>
 
+    
+    <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.initializer.AdvancedBeanInitializer">
+    <!--
     <bean id="defaultBeanInitializer" class="eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer">
-       <property name="beanAutoInitializers">
+     -->    <property name="beanAutoInitializers">
            <map>
-               <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleCacheAutoInitializer" />
+               <entry key="eu.etaxonomy.cdm.model.common.IdentifiableEntity"  value-ref="titleAndNameCacheAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.Annotation"  value-ref="annotationTypeAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.common.Marker"  value-ref="markerTypeAutoInitializer" />
                <entry key="eu.etaxonomy.cdm.model.occurrence.GatheringEvent"  value-ref="gatheringEventLocationAutoInitializer" />

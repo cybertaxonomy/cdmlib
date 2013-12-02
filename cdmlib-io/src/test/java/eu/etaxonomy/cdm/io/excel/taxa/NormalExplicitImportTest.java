@@ -95,7 +95,7 @@ public class NormalExplicitImportTest extends CdmTransactionalIntegrationTest{
 		url = this.getClass().getResource(inputFile);
 	 	assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
 		uuidConfigurator = NormalExplicitImportConfigurator.NewInstance(url.toURI(), null, NomenclaturalCode.ICNAFP, null);
-		assertNotNull("Configurator could not be created", configurator);
+		assertNotNull("Configurator could be created", configurator);
 		
 	}
 	

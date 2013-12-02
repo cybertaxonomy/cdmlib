@@ -117,12 +117,12 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
         logger.setLevel(Level.DEBUG);
         if(logger.isDebugEnabled()){
             logger.debug("-------------");
-        for (TaxonNode node: taxonNodes){
-                logger.debug(node.getTaxon().getName().getTitleCache() );
-            /*for (TaxonNode child : node.getChildNodes()){
-                    logger.debug(child.getTaxon().getName().getTitleCache());
-            }*/
-        }
+	        for (TaxonNode node: taxonNodes){
+	                logger.debug(node.getTaxon().getName().getTitleCache() );
+	            /*for (TaxonNode child : node.getChildNodes()){
+	                    logger.debug(child.getTaxon().getName().getTitleCache());
+	            }*/
+	        }
         }
 
         Assert.assertEquals("Acacia subg. Aculeiferum Pedley", taxonNodes.get(0).getTaxon().getName().getTitleCache());

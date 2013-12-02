@@ -15,6 +15,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -102,7 +103,7 @@ public class EditGeoServiceUtilities {
              *
              * TODO remove according line from
              * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
-             * cyprus are no further needed !!
+             * cyprus are no longer needed !!
              */
             String onlyTest = System.getProperty("ONLY-A-TEST"); //
             if(onlyTest != null && onlyTest.equals("TRUE")){
@@ -212,8 +213,14 @@ public class EditGeoServiceUtilities {
          */
         boolean generateMultipleAreaDataParameters = false;
 
+        /**
+         * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
+         * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
+         */
+        boolean doNotReuseStyles = true;
+
         List<String>  perLayerAreaData = new ArrayList<String>();
-        List<String> areaStyles = new ArrayList<String>();
+       Map<Integer, String> areaStyles = new HashMap<Integer, String>();
         List<String> legendLabels = new ArrayList<String>();
 
 
@@ -222,17 +229,17 @@ public class EditGeoServiceUtilities {
         String borderDashingPattern = "";
 
 
-		//handle empty set
-		if(distributions == null || distributions.size() == 0){
-			return "";
-		}
+        //handle empty set
+        if(distributions == null || distributions.size() == 0){
+            return "";
+        }
 
-		Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions);
 
-		Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
-		List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
+        Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
+        List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 
-		groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
+        groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
@@ -247,17 +254,15 @@ public class EditGeoServiceUtilities {
         if(ms != null){
             parameters.put("ms", ms);
         }
-        //layer
-        if (StringUtils.isBlank(baseLayerName)){
-            baseLayerName = "earth";
+        if (!StringUtils.isBlank(baseLayerName)){
+            parameters.put("l", baseLayerName);
         }
-        parameters.put("l", baseLayerName);
 
         //style
-        int i = 0;
+        int styleCounter = 0;
         for (PresenceAbsenceTermBase<?> status: statusList){
 
-            char styleId = getStyleAbbrev(i);
+            char styleCode = getStyleAbbrev(styleCounter);
 
             //getting the area title
             if (languages == null){
@@ -286,38 +291,75 @@ public class EditGeoServiceUtilities {
             }
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
-            areaStyles.add(styleId + ID_FROM_VALUES_SEPARATOR + styleValues);
-            legendLabels.add(styleId + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
-            i++;
+            areaStyles.put(styleCounter, styleValues);
+            legendLabels.add(styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
+            styleCounter++;
+        }
+
+        // area data
+        List<String> styledAreasPerLayer;
+        List<String> areasPerStyle;
+        /**
+         * Used to avoid reusing styles in multiple layers
+         *
+         * key: the style id
+         * value: the count of how often the style has been used for different layers, starts with 0 for first time use
+         */
+        Map<Integer, Integer> styleUsage = new HashMap<Integer, Integer>();
+        char styleChar;
+        for (String layerString : layerMap.keySet()){
+            // each layer
+            styledAreasPerLayer = new ArrayList<String>();
+            Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
+            for (int style: styleMap.keySet()){
+                // stylesPerLayer
+                if(doNotReuseStyles) {
+                    if(!styleUsage.containsKey(style)){
+                        styleUsage.put(style, 0);
+                    } else {
+                        // increment by 1
+                        styleUsage.put(style, styleUsage.get(style) + 1);
+                    }
+                    Integer styleIncrement = styleUsage.get(style);
+                    if(styleIncrement > 0){
+                        // style code has been used before!
+                        styleChar = getStyleAbbrev(style + styleIncrement + styleCounter);
+                        //for debugging sometimes failing test  #3831
+                        logger.warn("style: " + style + ", styleIncrement: " +  styleIncrement + ", styleCounter: " + styleCounter);
+                        areaStyles.put(style + styleIncrement + styleCounter, areaStyles.get(style));
+                    } else {
+                        styleChar = getStyleAbbrev(style);
+                    }
+                } else {
+                    styleChar = getStyleAbbrev(style);
+                }
+                Set<Distribution> distributionSet = styleMap.get(style);
+                areasPerStyle = new ArrayList<String>();
+                for (Distribution distribution: distributionSet){
+                    // areasPerStyle
+                    areasPerStyle.add(encode(getAreaCode(distribution, mapping)));
+                }
+                styledAreasPerLayer.add(styleChar + ID_FROM_VALUES_SEPARATOR + StringUtils.join(areasPerStyle.iterator(), SUBENTRY_DELIMITER));
+            }
+            perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(styledAreasPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
         }
 
         if(areaStyles.size() > 0){
-            parameters.put("as", StringUtils.join(areaStyles.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
+            styleIds.addAll(areaStyles.keySet());
+            Collections.sort(styleIds);
+            StringBuilder db = new StringBuilder();
+            for(Integer sid : styleIds){
+                if(db.length() > 0){
+                    db.append(VALUE_LIST_ENTRY_SEPARATOR);
+                }
+                db.append( getStyleAbbrev(sid)).append(ID_FROM_VALUES_SEPARATOR).append(areaStyles.get(sid));
+            }
+            parameters.put("as", db.toString());
         }
         if(legendLabels.size() > 0){
             parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
         }
-
-		// area data
-		List<String> stylesPerLayer;
-		List<String> areasPerStyle;
-		for (String layerString : layerMap.keySet()){
-			// each layer
-			stylesPerLayer = new ArrayList<String>();
-			Map<Integer, Set<Distribution>> styleMap = layerMap.get(layerString);
-			for (int style: styleMap.keySet()){
-				// stylesPerLayer
-				char styleChar = getStyleAbbrev(style);
-				Set<Distribution> distributionSet = styleMap.get(style);
-				areasPerStyle = new ArrayList<String>();
-				for (Distribution distribution: distributionSet){
-					// areasPerStyle
-					areasPerStyle.add(encode(getAreaAbbrev(distribution, mapping)));
-				}
-				stylesPerLayer.add(styleChar + ID_FROM_VALUES_SEPARATOR + StringUtils.join(areasPerStyle.iterator(), SUBENTRY_DELIMITER));
-			}
-			perLayerAreaData.add(encode(layerString) + ID_FROM_VALUES_SEPARATOR + StringUtils.join(stylesPerLayer.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
-		}
 
 
         if(generateMultipleAreaDataParameters){
@@ -334,83 +376,78 @@ public class EditGeoServiceUtilities {
 
 
     /**
-	 * Fills the layerMap and the statusList
-	 *
-	 * @param distributions
-	 * @param layerMap see {@link #addAreaToLayerMap(Map, List, Distribution, NamedArea, IGeoServiceAreaMapping)}
-	 * @param statusList
-	 */
-	private static void groupStylesAndLayers(Collection<Distribution> distributions,
-			Map<String, Map<Integer,Set<Distribution>>> layerMap,
-			List<PresenceAbsenceTermBase<?>> statusList,
-			IGeoServiceAreaMapping mapping) {
+     * Fills the layerMap and the statusList
+     *
+     * @param distributions
+     * @param layerMap see {@link #addAreaToLayerMap(Map, List, Distribution, NamedArea, IGeoServiceAreaMapping)}
+     * @param statusList
+     */
+    private static void groupStylesAndLayers(Collection<Distribution> distributions,
+            Map<String, Map<Integer,Set<Distribution>>> layerMap,
+            List<PresenceAbsenceTermBase<?>> statusList,
+            IGeoServiceAreaMapping mapping) {
 
 
-		//iterate through distributions and group styles and layers
-		//and collect necessary information
-		for (Distribution distribution : distributions){
-			//collect status
-			PresenceAbsenceTermBase<?> status = distribution.getStatus();
-			if(status == null){
-				status = defaultStatus;
-			}
-			if (! statusList.contains(status)){
-				statusList.add(status);
-			}
-			//group areas by layers and styles
-			NamedArea area = distribution.getArea();
+        //iterate through distributions and group styles and layers
+        //and collect necessary information
+        for (Distribution distribution : distributions){
+            //collect status
+            PresenceAbsenceTermBase<?> status = distribution.getStatus();
+            if(status == null){
+                status = defaultStatus;
+            }
+            if (! statusList.contains(status)){
+                statusList.add(status);
+            }
+            //group areas by layers and styles
+            NamedArea area = distribution.getArea();
 
             addAreaToLayerMap(layerMap, statusList, distribution, area, mapping);
         }
     }
 
-	/**
-	 * A layer map holds the following information:
-	 *
-	 * <ul>
-	 *   <li><b>String</b>: the WMSLayerName which matches the level of the
-	 *   contained distributions areas</li>
-	 *   <li><b>StyleMap</b>:</li>
-	 *   <ul>
-	 *     <li><b>Integer</b>: the index of the status in the
-	 *     <code>statusList</code></li>
-	 *     <li><b>Set{@code<Distribution>}</b>: the set of distributions having the
-	 *     same Status, the status list is populated in {@link #groupStylesAndLayers(Set, Map, List, IGeoServiceAreaMapping)}</li>
-	 *   </ul>
-	 * </ul>
-	 *
-	 * @param layerMap
-	 * @param statusList
-	 * @param distribution
-	 * @param area
-	 */
-	private static void addAreaToLayerMap(Map<String, Map<Integer,
-			Set<Distribution>>> layerMap,
-			List<PresenceAbsenceTermBase<?>> statusList,
-			Distribution distribution,
-			NamedArea area,
-			IGeoServiceAreaMapping mapping) {
+    /**
+     * Adds the areas to the layer map. Areas which do not have layer information
+     * mapped to them are ignored.
+     * <p>
+     * A layer map holds the following information:
+     *
+     * <ul>
+     *   <li><b>String</b>: the WMSLayerName which matches the level of the
+     *   contained distributions areas</li>
+     *   <li><b>StyleMap</b>:</li>
+     *   <ul>
+     *     <li><b>Integer</b>: the index of the status in the
+     *     <code>statusList</code></li>
+     *     <li><b>Set{@code<Distribution>}</b>: the set of distributions having the
+     *     same Status, the status list is populated in {@link #groupStylesAndLayers(Set, Map, List, IGeoServiceAreaMapping)}</li>
+     *   </ul>
+     * </ul>
+     *
+     * @param layerMap
+     * @param statusList
+     * @param distribution
+     * @param area
+     */
+    private static void addAreaToLayerMap(Map<String, Map<Integer,
+            Set<Distribution>>> layerMap,
+            List<PresenceAbsenceTermBase<?>> statusList,
+            Distribution distribution,
+            NamedArea area,
+            IGeoServiceAreaMapping mapping) {
 
         if (area != null){
             String geoLayerString = getWMSLayerName(area, mapping);
 
             if(geoLayerString == null){
-
-                // if no layer is mapped this area descend into sub areas in order to project
-                // the distribution to those
-                for(NamedArea subArea : area.getIncludes()){
-                    addAreaToLayerMap(layerMap, statusList, distribution, subArea, mapping);
-                }
-
+               /* IGNORE areas for which no layer is mapped */
             } else {
-
                 Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
                 if (styleMap == null) {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
                     layerMap.put(geoLayerString, styleMap);
                 }
                 addDistributionToStyleMap(distribution, styleMap, statusList);
-
             }
         }
     }
@@ -471,36 +508,34 @@ public class EditGeoServiceUtilities {
         return queryString.toString();
     }
 
-	private static String getAreaAbbrev(Distribution distribution, IGeoServiceAreaMapping mapping){
-		NamedArea area = distribution.getArea();
-		TermVocabulary<NamedArea> voc = area.getVocabulary();
-		String result = null;
-		if (voc !=  null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary) || voc.getUuid().equals(uuidCyprusDivisionsVocabulary) ){
-			Representation representation = area.getRepresentation(Language.DEFAULT());
-			result = representation.getAbbreviatedLabel();
-			if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())){
-				result = result.replace("-", "");
-			}
+    private static String getAreaCode(Distribution distribution, IGeoServiceAreaMapping mapping){
+        NamedArea area = distribution.getArea();
+        TermVocabulary<NamedArea> voc = area.getVocabulary();
+        String result = null;
 
-		}else{
-			GeoServiceArea areas =mapping.valueOf(area);
-			if ((areas != null) && areas.size()>0){
-				//FIXME multiple layers
-				List<String> values= areas.getAreasMap().values().iterator().next().values().iterator().next();
-				for (String value : values){
-					result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
-				}
-			}
+        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)) {
+            // TDWG
+            result = area.getIdInVocabulary();
+            if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())) {
+                result = result.replace("-", "");
+            }
+        } else {
+            // use generic GeoServiceArea data stored in technical annotations
+            // of the
+            // named area
+            GeoServiceArea areas = mapping.valueOf(area);
+            if ((areas != null) && areas.size() > 0) {
+                // FIXME multiple layers
+                List<String> values = areas.getAreasMap().values().iterator().next().values().iterator().next();
+                for (String value : values) {
+                    result = CdmUtils.concat(SUBENTRY_DELIMITER, result, value);
+                }
+            }
 
-		}
-		return CdmUtils.Nz(result, "-");
+        }
+        return CdmUtils.Nz(result, "-");
 
-	}
-
-
-
-    //Preliminary as long as user defined areas are not fully implemented
-    public static final UUID uuidCyprusDivisionsVocabulary = UUID.fromString("2119f610-1f93-4d87-af28-40aeefaca100");
+    }
 
     private static List<String> projectToWMSSubLayer(NamedArea area){
 
@@ -525,10 +560,6 @@ public class EditGeoServiceUtilities {
             //unrecognized tdwg area
 
         }
-        //TODO hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
-        if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
-            matchedLayerName = "cyprusdivs:bdcode";
-        }
 
         // check if the matched layer equals the layer to project to
         // if not: recurse into the sub-level in order to find the specified one.
@@ -544,43 +575,40 @@ public class EditGeoServiceUtilities {
         return null;
     }
 
-	private static String getWMSLayerName(NamedArea area, IGeoServiceAreaMapping mapping){
-		TermVocabulary<NamedArea> voc = area.getVocabulary();
-		//TDWG areas
-		if (voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
-			NamedAreaLevel level = area.getLevel();
-			if (level != null) {
-				//TODO integrate into CDM
-				if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
-					return "tdwg1";
-				} else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
-					return "tdwg2";
-				}else if (level.equals(NamedAreaLevel.TDWG_LEVEL3())) {
-					return "tdwg3";
-				}else if (level.equals(NamedAreaLevel.TDWG_LEVEL4())) {
-					return "tdwg4";
-				}
-			}
-			//unrecognized tdwg area
-			return null;
+    private static String getWMSLayerName(NamedArea area, IGeoServiceAreaMapping mapping){
+        TermVocabulary<NamedArea> voc = area.getVocabulary();
+        //TDWG areas
+        if (voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
+            NamedAreaLevel level = area.getLevel();
+            if (level != null) {
+                //TODO integrate into CDM
+                if (level.equals(NamedAreaLevel.TDWG_LEVEL1())) {
+                    return "tdwg1";
+                } else if (level.equals(NamedAreaLevel.TDWG_LEVEL2())) {
+                    return "tdwg2";
+                }else if (level.equals(NamedAreaLevel.TDWG_LEVEL3())) {
+                    return "tdwg3";
+                }else if (level.equals(NamedAreaLevel.TDWG_LEVEL4())) {
+                    return "tdwg4";
+                }
+            }
+            //unrecognized tdwg area
+            return null;
 
-		}
-		//hardcoded for cyprus (as long as user defined areas are not fully implemented). Remove afterwards.
-		if (voc.getUuid().equals(uuidCyprusDivisionsVocabulary)){
-			return "cyprusdivs:bdcode";
-		}
+        }
 
-		GeoServiceArea areas = mapping.valueOf(area);
-		if (areas != null && areas.getAreasMap().size() > 0){
-			//FIXME multiple layers
-			String layer = areas.getAreasMap().keySet().iterator().next();
-			Map<String, List<String>> fields = areas.getAreasMap().get(layer);
-			String field = fields.keySet().iterator().next();
-			return layer + ":" + field;
-		}
+        GeoServiceArea areas = mapping.valueOf(area);
+        if (areas != null && areas.getAreasMap().size() > 0){
+            //FIXME multiple layers
+            String layer = areas.getAreasMap().keySet().iterator().next();
+            Map<String, List<String>> fields = areas.getAreasMap().get(layer);
+            String field = fields.keySet().iterator().next();
+            String layerString = layer + ":" + field;
+            return layerString.toLowerCase();
+        }
 
-		return null;
-	}
+        return null;
+    }
 
 
     private static void addDistributionToStyleMap(Distribution distribution, Map<Integer, Set<Distribution>> styleMap,
@@ -619,10 +647,10 @@ public class EditGeoServiceUtilities {
      *  &os=1%3Ac%2FFFD700%2F10%2FAporrectodea caliginosa
      */
     public static String getOccurrenceServiceRequestParameterString(
-            	List<Point> fieldUnitPoints,
-            	List<Point> derivedUnitPoints,
-            	Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
-            	Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
+                List<Point> fieldUnitPoints,
+                List<Point> derivedUnitPoints,
+                Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
+                Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
 
             specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 

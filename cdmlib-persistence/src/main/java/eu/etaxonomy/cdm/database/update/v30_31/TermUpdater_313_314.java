@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ITermUpdater;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.SingleTermRemover;
 import eu.etaxonomy.cdm.database.update.SingleTermUpdater;
 import eu.etaxonomy.cdm.database.update.TermUpdaterBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -73,11 +74,14 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 		UUID uuidTerm = UUID.fromString("5c397f7b-59ef-4c11-a33c-45691ceda91b");
 		UUID oldUuid = UUID.fromString("8ad9e9df-49cd-4b6a-880b-51ec4de4ce32");
 		
+//		SingleTermRemover termRemover = SingleTermRemover.NewInstance(stepName, uuidTerm, checkUsedQueries);
+		
+		
 		String updateQuery = "UPDATE DefinedTermBase " + 
 			"SET DTYPE='AbsenceTerm', uuid='"+uuidTerm+"', defaultColor = 'ccb462', orderIndex=6 "+
 			"WHERE uuid = '"+oldUuid+"'";
 		stepName = "Move 'native: formerly native' to absence terms";
-		SimpleSchemaUpdaterStep formerlyUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		SimpleSchemaUpdaterStep formerlyUpdater = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateQuery, "DefinedTermBase");
 		list.add(formerlyUpdater);
 	
 		//FIXME vocabulary 

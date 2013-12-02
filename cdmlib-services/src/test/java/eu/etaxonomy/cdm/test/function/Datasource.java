@@ -24,6 +24,10 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -44,6 +48,7 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -60,14 +65,24 @@ public class Datasource {
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
 		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
 		System.out.println(lsDataSources);
-//		CdmPersistentDataSource dataSource = lsDataSources.get(0);
+		ICdmDataSource dataSource;
+		
+		dataSource = lsDataSources.get(1);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
 //		String database = "cdm_test";
 		String database = "test";
 		String username = "edit";
-		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		String server = "test.e-taxonomy.eu";
+////		String database = "cdm_test";
+//		String database = "cdm_test_eckhard";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+		
 		
 //		//SQLServer
 //		database = "CDMTest";
@@ -77,11 +92,11 @@ public class Datasource {
 //		
 //		//H2
 //		username = "sa";
-////		dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
 		
-		CdmUpdater updater = new CdmUpdater();
-		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+//		CdmUpdater updater = new CdmUpdater();
+//		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
 		
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
@@ -89,10 +104,34 @@ public class Datasource {
 		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
 		
 //		insertSomeData(appCtr);
-		
-		
+//		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		
 		
 		appCtr.close();
+	}
+
+
+	private void deleteHighLevelNode(CdmApplicationController appCtr) {
+		TransactionStatus tx = appCtr.startTransaction();
+		ITaxonNodeService service = appCtr.getTaxonNodeService();
+		TaxonNode node = service.find(60554);
+//		service.delete(node);
+		ITaxonService taxonService = appCtr.getTaxonService();
+		Taxon taxon = node.getTaxon();
+		try {
+			taxonService.deleteTaxon(taxon, new TaxonDeletionConfigurator(), node.getClassification());
+			
+		} catch (DataChangeNoRollbackException e) {
+			e.printStackTrace();
+		}
+		try {
+			appCtr.commitTransaction(tx);
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		TaxonNode node2 = service.find(60554);
+		
+		
 	}
 
 	private void insertSomeData(CdmApplicationController appCtr) {

@@ -31,16 +31,16 @@ public class ChildTaxaMustDeriveNameFromParentValidator implements
 			
 			Taxon parent = taxonRelationship.getToTaxon();
 			Taxon child = taxonRelationship.getFromTaxon();
-			TaxonNameBase parentName = CdmBase.deproxy(parent.getName(), TaxonNameBase.class);
-			TaxonNameBase childName = CdmBase.deproxy(child.getName(), TaxonNameBase.class);
+			TaxonNameBase<?,?> parentName = CdmBase.deproxy(parent.getName(), TaxonNameBase.class);
+			TaxonNameBase<?,?> childName = CdmBase.deproxy(child.getName(), TaxonNameBase.class);
 			if(parentName instanceof NonViralName && childName instanceof NonViralName) {
-				if(((NonViralName)childName).getRank().isSpecies() || ((NonViralName)childName).getRank().isInfraSpecific()) {
-				    if(!((NonViralName)parentName).getGenusOrUninomial().equals(((NonViralName)childName).getGenusOrUninomial())) {
+				if(((NonViralName<?>)childName).getRank().isSpecies() || ((NonViralName<?>)childName).getRank().isInfraSpecific()) {
+				    if(!((NonViralName<?>)parentName).getGenusOrUninomial().equals(((NonViralName<?>)childName).getGenusOrUninomial())) {
 					valid = false;
 					constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("genusOrUninomial").addConstraintViolation();
 				}
-				if(((NonViralName)parentName).getRank().isSpecies() || ((NonViralName)parentName).getRank().isInfraSpecific()) {
-					if(!((NonViralName)parentName).getSpecificEpithet().equals(((NonViralName)childName).getSpecificEpithet())) {
+				if(((NonViralName<?>)parentName).getRank().isSpecies() || ((NonViralName<?>)parentName).getRank().isInfraSpecific()) {
+					if(!((NonViralName<?>)parentName).getSpecificEpithet().equals(((NonViralName<?>)childName).getSpecificEpithet())) {
 						valid = false;
 						constraintContext.buildConstraintViolationWithTemplate("{eu.etaxonomy.cdm.validation.annotation.ChildTaxaMustDeriveNameFromParent.message}").addNode("fromTaxon").addNode("name").addNode("specificEpithet").addConstraintViolation();
 					}	

@@ -1,6 +1,6 @@
 /**
  * Copyright (C) 2008 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
  */
 
@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 /**
  * This is an exporter that invokes the application aware defaultExport when
  * invoked itself
- * 
+ *
  * @author a.babadshanjan
  * @created 17.11.2008
  */
@@ -27,13 +27,13 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 
 	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
 
-	
+
 	protected ICdmApplicationConfiguration cdmApp = null;
 
 	/**
 	 * Creates a new {@link CdmApplicationController} if it does not exist yet
 	 * or if createNew is <ocde>true</code>
-	 * 
+	 *
 	 * @param config
 	 * @param destination
 	 * @param omitTermLoading
@@ -71,7 +71,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	 * Returns the {@link CdmApplicationController}. This is null if invoke()
 	 * has not been called yet and if the controller has not been set manually
 	 * by setCdmApp() yet.
-	 * 
+	 *
 	 * @return the cdmApp
 	 */
 	public ICdmApplicationConfiguration getCdmAppController() {

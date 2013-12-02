@@ -83,6 +83,8 @@ public class Country extends NamedArea {
 	protected static Map<String, UUID> labelMap = null;
 	protected static Map<String, UUID> isoA2Map = null;
 	
+	public static final UUID uuidCountryVocabulary = UUID.fromString("006b1870-7347-4624-990f-e5ed78484a1a");
+    
 	private static final UUID uuidAfghanistan = UUID.fromString("974ce01a-5bce-4be8-b728-a46869354960");
 	private static final UUID uuidAlbaniaPeoplesSocialistRepublicof = UUID.fromString("238a6a93-8857-4fd6-af9e-6437c90817ac");
 	private static final UUID uuidAlgeriaPeoplesDemocraticRepublicof = UUID.fromString("a14b38ac-e963-4c1a-85c2-de1f17f8c72a");

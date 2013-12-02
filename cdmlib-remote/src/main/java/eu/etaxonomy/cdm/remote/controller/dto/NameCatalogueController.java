@@ -1,4 +1,11 @@
-
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.remote.controller.dto;
 
 import java.io.File;
@@ -197,16 +204,16 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
             "synonymRelations.acceptedTaxon.sec.titleCache",
             "synonymRelations.acceptedTaxon.sources.citation.sources.idNamespace",
             "synonymRelations.acceptedTaxon.sources.citation.sources.idInSource",    
-            "synonymRelations.type.$",
+            "synonymRelations.type.inverseRepresentations",
             
-            "relationsFromThisTaxon.type.$",
+            "relationsFromThisTaxon.type.inverseRepresentations",
             "relationsFromThisTaxon.toTaxon.name.rank.titleCache",
             "relationsFromThisTaxon.toTaxon.sec.updated",
             "relationsFromThisTaxon.toTaxon.sec.titleCache",
             "relationsFromThisTaxon.toTaxon.sources.citation.sources.idNamespace",
             "relationsFromThisTaxon.toTaxon.sources.citation.sources.idInSource",
             
-            "relationsToThisTaxon.type.$",
+            "relationsToThisTaxon.type.inverseRepresentations",
             "relationsToThisTaxon.fromTaxon.name.rank.titleCache",
             "relationsToThisTaxon.fromTaxon.sec.updated",
             "relationsToThisTaxon.fromTaxon.sec.titleCache",
@@ -822,7 +829,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
-                    NonViralName nvn = (NonViralName) taxon.getName();
+                    NonViralName nvn = CdmBase.deproxy(taxon.getName(),NonViralName.class);
 
                     String secTitle = "" ;
                     String modified = "";
@@ -1176,7 +1183,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             Set<SynonymRelationship> synRelationships = synonym.getSynonymRelations();
                             for (SynonymRelationship sr : synRelationships) {
                                 Taxon accTaxon = sr.getAcceptedTaxon();
-                                NonViralName accNvn = (NonViralName)accTaxon.getName();
+                                NonViralName accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
                                 Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
                             }

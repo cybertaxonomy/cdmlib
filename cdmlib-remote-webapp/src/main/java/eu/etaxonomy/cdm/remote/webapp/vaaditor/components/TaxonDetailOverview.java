@@ -11,9 +11,6 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.gargoylesoftware.htmlunit.javascript.host.Text;
-import com.vaadin.addon.jpacontainer.JPAContainer;
-import com.vaadin.addon.jpacontainer.JPAContainerFactory;
-import com.vaadin.addon.jpacontainer.fieldfactory.FieldFactory;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
 import com.vaadin.data.fieldgroup.BeanFieldGroup;
@@ -37,7 +34,7 @@ import com.vaadin.ui.Button.ClickEvent;
 
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.TaxonServiceImpl;
-import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
+//import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -148,45 +145,7 @@ public class TaxonDetailOverview extends CustomComponent {
 		
 		return form;
 	}
-	
-	@SuppressWarnings("deprecation")
-	public Form constructJpaForm(){
-		
-		final JPAContainer<RedlistDTO> redlist = JPAContainerFactory.make(RedlistDTO.class, "sessionFactory");		
-		RedlistDTO redlistDTO = new RedlistDTO(taxon);
-		final Form form = new Form();
-		FieldFactory jpaContainerFieldFactory = new FieldFactory();
-		form.setFormFieldFactory(jpaContainerFieldFactory);
-//		form.setItemDataSource(taxonTable.getTaxonBaseContainer().getItem("1L"));
-		form.setItemDataSource((Item) redlistDTO);
-		
-		
-		
-	     // Handle saves on the form
-        final Button save = new Button("Save");
-        form.getFooter().removeAllComponents();
-        form.getFooter().addComponent(save);
-        save.addClickListener(new ClickListener() {
 
-			private static final long serialVersionUID = 1L;
-
-			@Override
-            public void buttonClick(ClickEvent event) {
-                try {
-                    form.commit();
-                    redlist.commit();
-                    form.setEnabled(false);
-                } catch (InvalidValueException e) {
-                	logger.info("InvalidValueException: " + e);
-                }
-            }
-        });
-		
-		
-		
-		return form;
-		
-	}
 }
 
 

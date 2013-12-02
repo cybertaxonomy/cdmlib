@@ -95,9 +95,16 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     public static final String ATTRIBUTE_JDBC_JNDI_NAME = "cdm.jdbcJndiName";
 
+    /**
+     * Force a schema update when the cdmlib-remote-webapp instance is starting up
+     * see also <code>eu.etaxonomy.cdm.server.instance.SharedAttributes.ATTRIBUTE_FORCE_SCHEMA_UPDATE</code>
+     */
+    public static final String ATTRIBUTE_FORCE_SCHEMA_UPDATE = "cdm.forceSchemaUpdate";
+
     protected static final String DATASOURCE_BEANDEF_DEFAULT = CdmUtils.getCdmHomeDir().getPath() + File.separator + "datasources.xml";
 
     protected static String beanDefinitionFile = DATASOURCE_BEANDEF_DEFAULT;
+
 
     private String cmdServerInstanceName = null;
 
@@ -127,6 +134,8 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
 
     @Bean
     public DataSource dataSource() {
+
+
 
         String beanName = findProperty(ATTRIBUTE_DATASOURCE_NAME, true);
         String jndiName = null;
@@ -184,6 +193,27 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             throw re;
 
         }
+
+
+        String forceSchemaUpdate = findProperty(ATTRIBUTE_FORCE_SCHEMA_UPDATE, false);
+        if(forceSchemaUpdate != null){
+            logger.error("Unable to update data source due to #3910 (eu.etaxonomy.cdm.database.ICdmDataSource is not compatible to javax.sql.DataSource)");
+/*
+ *          DISABLED due to #3910 (eu.etaxonomy.cdm.database.ICdmDataSource is not compatible to javax.sql.DataSource)
+ *          CdmUpdater updater = CdmUpdater.NewInstance();
+            String hiernateDialectName = inferHibernateDialectName(dataSource);
+            DatabaseTypeEnum dbType = null;
+            if(hiernateDialectName.equals(MySQL5MyISAMUtf8Dialect.class.getName())) {
+                dbType = DatabaseTypeEnum.MySQL;
+            }
+            RuntimeException re =   new RuntimeException("Unable to update data source, CdmUpdater.updateToCurrentVersion() cannot use javax.sql.DataSource or javax.sql.DataSource");
+
+            CdmDataSource cdmDataSource = CdmDataSource.NewInstance(dbType, dataSource.ge, database, username, password)
+            updater.updateToCurrentVersion(dataSource, null);
+*/
+
+        }
+
         return dataSource;
     }
 
@@ -280,8 +310,26 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
         return props;
     }
 
+    /**
+     * Returns the full class name of the according {@link org.hibernate.dialect.Dialect} implementation
+     *
+     * @param ds the DataSource
+     * @return the name
+     */
     public String inferHibernateDialectName() {
         DataSource ds = dataSource();
+        return inferHibernateDialectName(ds);
+    }
+
+
+
+    /**
+     * Returns the full class name of the according {@link org.hibernate.dialect.Dialect} implementation
+     *
+     * @param ds the DataSource
+     * @return the name
+     */
+    public String inferHibernateDialectName(DataSource ds) {
         String url = "<SEE PRIOR REFLECTION ERROR>";
         Method m = null;
         try {
@@ -317,7 +365,7 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             return MySQL5MyISAMUtf8Dialect.class.getName();
         }
 
-        logger.error("hibernate dialect mapping for "+url+ " not jet implemented or unavailable");
+        logger.error("hibernate dialect mapping for "+url+ " not yet implemented or unavailable");
         return null;
     }
 

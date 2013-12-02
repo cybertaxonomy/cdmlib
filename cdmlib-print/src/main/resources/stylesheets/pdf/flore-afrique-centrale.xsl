@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE xsl:stylesheet [<!ENTITY mdash "&#x2014;" > <!ENTITY ndash "&#x2013;" > <!ENTITY ndash "&#x2715;" >]> 
+<!DOCTYPE xsl:stylesheet [<!ENTITY hyphen "&#45;" > <!ENTITY mdash "&#x2014;" > <!ENTITY multip "&#x2715;" > <!ENTITY ndash "&#x2013;" > <!ENTITY male "&#x2642;" > <!ENTITY female "&#x2640;" > <!ENTITY ndash "&#x2715;" > ]> 
 
 <!--
   
@@ -7,8 +7,11 @@
   Target Format: Flore d'Afrique Centrale
   
 -->
-<xsl:stylesheet version="1.1" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:msxsl="http://exslt.org/common" 
+<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:functx="http://www.functx.com" xmlns:msxsl="http://exslt.org/common" xmlns:fn="http://www.w3.org/2005/xpath-functions" 
   xmlns:fo="http://www.w3.org/1999/XSL/Format" exclude-result-prefixes="fo">
+  
+  
+  <!--xsl:import href="functx-1.0-doc-2007-01.xsl" /-->
   
   <xsl:param name="abstract"/>
   <xsl:param name="title"/>
@@ -176,10 +179,12 @@
               <xsl:text>&#xA;</xsl:text>
             </fo:block>
             <fo:block linefeed-treatment="preserve">
-            <fo:inline font-weight="bold"><xsl:text>Abstract. </xsl:text></fo:inline>
+            <!--fo:inline font-weight="bold"><xsl:text>Abstract. </xsl:text></fo:inline-->
             <xsl:value-of select="$abstract"/>
               <xsl:text>&#xA;</xsl:text>
+              
             </fo:block>
+            <xsl:text>&#xA;</xsl:text>
             
             <xsl:for-each select="//TaxonNode">
               <xsl:apply-templates select="."/>
@@ -476,7 +481,7 @@
 
 
   <xsl:template name="title">
-    <fo:block margin-bottom="5mm">
+    <fo:block margin-bottom="5mm" keep-together.within-page="always" keep-with-next="always">
       <!-- we need to find a way to store the uuid in a variable xsl:parameter did not work or i was using it wrong -->
       <xsl:choose>
         <!-- family -->
@@ -621,17 +626,23 @@
 
                 <xsl:if test="not(starts-with($desc_element_text, 'Figure'))">
 
-                  <xsl:choose>
+                  <!--xsl:apply-templates select="multilanguageText_L10n/text"/-->
+                  <!-- Might need this filtering for Ericaceae, but Restionaceae seems ok without -->
+                  <!--xsl:value-of select="multilanguageText_L10n/text"></xsl:value-of-->
+                  <xsl:apply-templates select="multilanguageText_L10n/text"/>
+                  
+                  <!--xsl:choose>
                     <xsl:when test="position() = 1">
                       <xsl:apply-templates select="multilanguageText_L10n/text"/>
                     </xsl:when>
                     <xsl:otherwise>
-                      <xsl:if test="$desc_element_text != $prev_desc_element_text">
+                      <xsl:if test="$desc_element_text != $prev_desc_element_text"-->
                         <!-- checked in the tax editor and looks like only descriptionelement[1] refers to the species so don't need below-->
-                        <!--xsl:apply-templates select="multilanguageText_L10n/text"/-->
+                        <!-- comment in for restionaceae but not for ericaceae - why? -->
+                        <!--xsl:apply-templates select="multilanguageText_L10n/text"/>
                       </xsl:if>
                     </xsl:otherwise>
-                  </xsl:choose>
+                  </xsl:choose-->
 
                 </xsl:if>
 
@@ -740,6 +751,7 @@
       <xsl:with-param name="tag-name" select="b"/>
     </xsl:call-template-->
     <xsl:choose>
+
       <xsl:when test="contains(.,&quot;&lt;b&gt;&quot;)">
         <xsl:call-template name="add-markup">
           <xsl:with-param name="str" select="."/>
@@ -748,10 +760,21 @@
         </xsl:call-template>
       </xsl:when>
       <xsl:otherwise>
+        <xsl:choose>
+        <xsl:when test="contains(.,&quot;&lt;sup&gt;&quot;)">
         <xsl:call-template name="add-markup">
           <xsl:with-param name="str" select="."/>
-          <xsl:with-param name="tag-name">i</xsl:with-param>
+          <xsl:with-param name="tag-name">sup</xsl:with-param>
         </xsl:call-template>
+        </xsl:when>
+          <xsl:otherwise>
+            <xsl:call-template name="add-markup">
+              <xsl:with-param name="str" select="."/>
+              <xsl:with-param name="tag-name">i</xsl:with-param>
+            </xsl:call-template>
+          </xsl:otherwise>
+        </xsl:choose>
+        
       </xsl:otherwise>
     </xsl:choose>
 
@@ -777,40 +800,19 @@
         <xsl:variable name="inside-tag"
           select="substring-before(substring-after($str,$opening-tag),$closing-tag)"/>
         <xsl:variable name="after-tag" select="substring-after($str, $closing-tag)"/>
-        <xsl:choose>
-          <xsl:when test="contains($before-tag, '#x2014;')">
-            <xsl:call-template name="replace-string">
-              <xsl:with-param name="text" select="$before-tag"/>
-              <xsl:with-param name="replace" select="'&amp;#x2014;'" />
-              <xsl:with-param name="with" select="'&mdash;'"/>
-            </xsl:call-template>
-          </xsl:when>
-          <xsl:otherwise>
-            <xsl:choose>
-              <xsl:when test="contains($before-tag, '#x2013;')">
-                <xsl:call-template name="replace-string">
-                  <xsl:with-param name="text" select="$before-tag"/>
-                  <xsl:with-param name="replace" select="'&amp;#x2013;'" />
-                  <xsl:with-param name="with" select="'&ndash;'"/>
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:choose>
-                  <xsl:when test="contains($str, '#x2716;')">
-                    <xsl:call-template name="replace-string">
-                      <xsl:with-param name="text" select="$before-tag"/>
-                      <xsl:with-param name="replace" select="'&amp;#x2715;'" />
-                      <xsl:with-param name="with" select="'&ndash;'"/>
-                    </xsl:call-template>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="$before-tag"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:otherwise>
-        </xsl:choose>
+          <xsl:choose>        
+            <xsl:when test="contains($before-tag, '#x')">
+              <xsl:call-template name="replace-symbols">
+                <xsl:with-param name="str" select="$before-tag"/>
+                <xsl:with-param name="tag-name" select="$tag-name"/>
+              </xsl:call-template>
+            </xsl:when>         
+            <xsl:otherwise>
+              <!--Remaining string contains no further symbols-->
+              <xsl:value-of select="$before-tag"/>
+            </xsl:otherwise>                 
+          </xsl:choose>
+        
         <!-- add BOLD or italics when inside the appropriate tags -->
         <xsl:choose>
           <xsl:when test="$tag-name = 'b'">
@@ -819,9 +821,21 @@
             </fo:inline>
           </xsl:when>
           <xsl:otherwise>
+            <xsl:choose>
+              <xsl:when test="$tag-name = 'i'">
             <fo:inline font-style="italic">
               <xsl:value-of select="$inside-tag"/>
             </fo:inline>
+              </xsl:when>
+              <xsl:otherwise>
+                <xsl:if test="$tag-name = 'sup'">
+                <fo:inline vertical-align="super" font-size="8pt">
+                  <xsl:value-of select="$inside-tag"/>
+                </fo:inline>
+                </xsl:if>
+              </xsl:otherwise>
+            </xsl:choose>
+
           </xsl:otherwise>
         </xsl:choose>
         <!-- call template recursively with the remaining text after the tag -->
@@ -830,64 +844,90 @@
           <xsl:with-param name="tag-name" select="$tag-name"/>
         </xsl:call-template>
       </xsl:when>
-      <xsl:otherwise>
-        <xsl:choose>
-          <xsl:when test="contains($str, '#x2014;')">
-            <xsl:call-template name="replace-string">
-              <xsl:with-param name="text" select="$before-tag"/>
-              <xsl:with-param name="replace" select="'&amp;#x2014;'" />
-              <xsl:with-param name="with" select="'&mdash;'"/>
+      <xsl:otherwise>               
+        <xsl:choose>        
+          <xsl:when test="contains($str, '#x')">
+            <xsl:call-template name="replace-symbols">
+              <xsl:with-param name="str" select="$str"/>
+              <xsl:with-param name="tag-name" select="$tag-name"/>
             </xsl:call-template>
-          </xsl:when>
+          </xsl:when>         
           <xsl:otherwise>
-            <xsl:choose>
-              <xsl:when test="contains($str, '#x2013;')">
-                <xsl:call-template name="replace-string">
-                  <xsl:with-param name="text" select="$before-tag"/>
-                  <xsl:with-param name="replace" select="'&amp;#x2013;'" />
-                  <xsl:with-param name="with" select="'&ndash;'"/>
-                </xsl:call-template>
-              </xsl:when>
-              <xsl:otherwise>
-                <xsl:choose>
-                  <xsl:when test="contains($str, '#x2716;')">
-                    <xsl:call-template name="replace-string">
-                      <xsl:with-param name="text" select="$before-tag"/>
-                      <xsl:with-param name="replace" select="'&amp;#x2715;'" />
-                      <xsl:with-param name="with" select="'&ndash;'"/>
-                    </xsl:call-template>
-                  </xsl:when>
-                  <xsl:otherwise>
-                    <xsl:value-of select="$str"/>
-                  </xsl:otherwise>
-                </xsl:choose>
-              </xsl:otherwise>
-            </xsl:choose>
-          </xsl:otherwise>
+            <!--Remaining string contains no further symbols-->
+            <xsl:value-of select="$str"/>
+          </xsl:otherwise>                 
         </xsl:choose>
       </xsl:otherwise>
     </xsl:choose>
   </xsl:template>
   
+  <xsl:template name="replace-symbols">
+    <xsl:param name="str"/>
+    <xsl:param name="tag-name"/>
+    <!--xsl:value-of select="replace($str,$pattern, $new-pattern)"></xsl:value-of-->
+    <!--xsl:value-of select="concat(substring-before($str,'#x'), 'hello', substring($str, '#x'), 'bye')"></xsl:value-of-->
+    <!--Replace symbols -->
+    <xsl:variable name="stringStart"><xsl:value-of select="substring-before($str,'#x')"></xsl:value-of></xsl:variable>
+    <xsl:variable name="stringLength"><xsl:value-of select="string-length($stringStart)"></xsl:value-of></xsl:variable>
+    <xsl:call-template name="replace-string">
+      <xsl:with-param name="text" select="concat($stringStart, substring($str, $stringLength+1, 8))"/> 
+      <xsl:with-param name="replace" select="substring($str, $stringLength, 8)" /> 
+    </xsl:call-template>                                           
+    
+    <xsl:call-template name="add-markup">
+      <xsl:with-param name="str" select="substring($str, $stringLength+8)"/>
+      <xsl:with-param name="tag-name" select="$tag-name"/>
+    </xsl:call-template>
+  </xsl:template>
+  
+  <!-- Perhaps we can make this more generic rather than test for each string to replace -->
   <xsl:template name="replace-string">
     <xsl:param name="text"/>
     <xsl:param name="replace"/>
-    <xsl:param name="with"/>
-    <xsl:choose>
-      <xsl:when test="contains($text,$replace)">
-        <xsl:value-of select="substring-before($text,$replace)"/>
-        <xsl:value-of select="$with"/>
-        <xsl:call-template name="replace-string">
-          <xsl:with-param name="text"
-            select="substring-after($text,$replace)"/>
-          <xsl:with-param name="replace" select="$replace"/>
-          <xsl:with-param name="with" select="$with"/>
-        </xsl:call-template>
-      </xsl:when>
-      <xsl:otherwise>
-        <xsl:value-of select="$text"/>
-      </xsl:otherwise>
-    </xsl:choose>
+    <!--xsl:param name="with"/-->
+    <xsl:value-of select="substring-before($text,$replace)"/>     
+          <xsl:choose>
+            <xsl:when test="contains($text, '#x2642;')">              
+              <fo:inline font-family="Arial">
+                <xsl:value-of select="'&male;'"/> 
+              </fo:inline>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:choose>
+                <xsl:when test="contains($text, '#x2640;')">
+                  <fo:inline font-family="Arial">
+                    <xsl:value-of select="'&female;'"/>
+                  </fo:inline>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:choose>
+                    <xsl:when test="contains($text, '#x2013;')">
+                      <fo:inline font-family="Arial">
+                        <xsl:value-of select="'&ndash;'"/>
+                      </fo:inline>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:choose>
+                        <xsl:when test="contains($text, '#x2014;')">
+                          <fo:inline font-family="Arial">
+                            <xsl:value-of select="'&mdash;'"/>
+                          </fo:inline>
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:if test="contains($text, '#x2715;')">
+                            <fo:inline font-family="Segoe UI Symbol">
+                              <xsl:value-of select="'&multip;'"/>
+                            </fo:inline>
+                          </xsl:if>
+                        </xsl:otherwise>
+                      </xsl:choose>
+                      
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:otherwise>
+          </xsl:choose>                          
   </xsl:template>
 
   <xsl:template name="remove_ampersands">
@@ -968,7 +1008,7 @@
   </xsl:template>
 
   <xsl:template name="textData">
-    <fo:block text-align="justify" margin-bottom="5mm">
+    <fo:block text-align="justify" margin-bottom="5mm" keep-together.within-page="always">
       <!-- show all feature headlines except "ditribution" -->
       <!--xsl:if test="uuid!='9fc9d10c-ba50-49ee-b174-ce83fc3f80c6'">
         <fo:inline font-weight="bold">
@@ -1003,8 +1043,9 @@
       <!-- LORNA TRY IMAGE HERE -->
       <!--xsl:apply-templates select="descriptionelements/descriptionelement[1]/media/e/representations/e/parts/e/uri"/-->
 
-      <xsl:apply-templates
-        select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/>
+      <!--xsl:apply-templates select="descriptionelements/descriptionelement[1]/multilanguageText_L10n/text"/-->
+      <!--Restionaceae -occurs in the second descrptionelement so select descriptionelement instead of descriptionelement[1]-->
+      <xsl:apply-templates select="descriptionelements/descriptionelement/multilanguageText_L10n/text"/><xsl:text>&#160;</xsl:text>
       
       <!-- get the map associated with the distribution, this is temporarily stored as a media object jpg created by 
         Quentin's GIS software -->
@@ -1277,8 +1318,9 @@
         
     <!--nomenclaturalReference or citation-->
     <!-- problem with this is that if the same reference occurs under citaiton and under nomenclaturalReference it appears twice -->
-    <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]"-->
+    <!--//nomenclaturalReference xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]"-->
     
+    <!--xsl:for-each select="//nomenclaturalReference | //citation"-->
     <xsl:for-each select="//nomenclaturalReference[count(. | key('citations-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]">
     <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1]"-->
       <!--xsl:for-each select="//nomenclaturalReference"-->
@@ -1289,9 +1331,11 @@
         
         <fo:inline>        
           <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->
+          <!--xsl:value-of select="uuid"/> FOR DEBUGGING-->
+          <!--xsl:value-of select="titleCache"/-->
           
           <!--I am only listing references which have at least one author name. If there are other references in the database - why don't these have an author name-->
-              <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">               
+          <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != '' or authorTeam/titleCache != ''">               
                 <!--xsl:text>&#xA;</xsl:text-->
                 <xsl:choose>
                   <xsl:when test="authorTeam/teamMembers/e[1]/lastname != ''">
@@ -1308,12 +1352,24 @@
                       </fo:inline>
                     </xsl:for-each>
                   </xsl:when>
-                  <xsl:otherwise test="authorTeam/lastname != ''">
+                  <xsl:otherwise>
+                    <xsl:choose>
+                      <xsl:when test="authorTeam/lastname != ''">
+                    <!--xsl:if test="authorTeam/lastname != ''"-->
                     <fo:inline>
                       <xsl:value-of select="authorTeam/lastname"/>
                       <xsl:text> </xsl:text>
                       <xsl:value-of select="authorTeam/firstname"/>
-                    </fo:inline>                                 
+                    </fo:inline>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <fo:inline>
+                          <xsl:value-of select="authorTeam/titleCache"/>
+                        </fo:inline>
+                      </xsl:otherwise>
+                    <!--/xsl:if-->
+                    </xsl:choose>
+                    
                   </xsl:otherwise>
                 </xsl:choose>                            
                 
@@ -1350,7 +1406,14 @@
   
   <xsl:template match="*">
 
-    <xsl:value-of select="."/>
+    <xsl:choose>
+      <xsl:when test="name(.) = 'pages'">
+        <xsl:value-of select="replace(.,'&hyphen;','&ndash;')" />
+      </xsl:when>
+      <xsl:otherwise>
+        <xsl:value-of select="." />
+      </xsl:otherwise>
+    </xsl:choose>
       
     <xsl:if test="name(.) = 'title' or name(.) = 'publisher' or name(.) = 'pages'">
       <!-- . if pages or publisher or title - comma if placePublished -->
@@ -1411,11 +1474,14 @@
                   </fo:inline>
                 </xsl:for-each>
                 </xsl:when>
-                <xsl:otherwise test="authorTeam/lastname != ''">
+                <xsl:otherwise>
+                  <xsl:if test="authorTeam/lastname != ''">
                   <fo:inline font-weight="bold">
                     <xsl:value-of select="authorTeam/lastname"/>
-                  </fo:inline>                                 
+                  </fo:inline>
+                  </xsl:if>
                 </xsl:otherwise>
+                
               </xsl:choose>                            
               
               <xsl:if test="datePublished/start != ''">

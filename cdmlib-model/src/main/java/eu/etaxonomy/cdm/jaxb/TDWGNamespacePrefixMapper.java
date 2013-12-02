@@ -17,6 +17,7 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	private static final String XML_PREFIX = "xml";
 	private static final String DC_PREFIX = "dc";
 	private static final String DCTERMS_PREFIX = "dcterms";
+	private static final String DCTERMS_TDWG_PREFIX = "dwcterms";
 	private static final String OWL_PREFIX = "owl";
 	private static final String TAXONNAME_PREFIX = "tn";
 	private static final String TAXONCONCEPT_PREFIX = "tc";
@@ -28,11 +29,14 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	private static final String GEOGRAPHICALREGION_PREFIX = "gr";
 	private static final String OAIPMH_PREFIX = "oai";
 	private static final String OAIDC_PREFIX = "oai_dc";
+	
+	private static final String CDM_NAMEINFO_PREFIX = "cdmni";
 		
 	public static final String XML_NAMESPACE = "http://www.w3.org/XML/1998/namespace";
 	public static final String RDF_NAMESPACE = "http://www.w3.org/1999/02/22-rdf-syntax-ns#";
 	public static final String DC_NAMESPACE = "http://purl.org/dc/elements/1.1/";
 	public static final String DCTERMS_NAMESPACE = "http://purl.org/dc/terms/";
+	public static final String DCTERMS_TDWG_NAMESPACE = "http://rs.tdwg.org/dwc/terms/";
 	public static final String OWL_NAMESPACE = "http://www.w3.org/2002/07/owl#";
 	public static final String TAXONNAME_NAMESPACE = "http://rs.tdwg.org/ontology/voc/TaxonName#";
 	public static final String TAXONCONCEPT_NAMESPACE = "http://rs.tdwg.org/ontology/voc/TaxonConcept#";
@@ -44,6 +48,8 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 	public static final String GEOGRAPHICALREGION_NAMESPACE = "http://rs.tdwg.org/ontology/voc/GeographicRegion#";
 	public static final String OAIPMH_NAMESPACE = "http://www.openarchives.org/OAI/2.0/";
 	public static final String OAIDC_NAMESPACE = "http://www.openarchives.org/OAI/2.0/oai_dc/";
+	
+	public static final String CDM_NAMEINFORMATION_NAMESPACE = "http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#";
 	
 	public String getPreferredPrefix(String namespaceURI, String suggestion, boolean requirePrefix) {
 		String result = suggestion;
@@ -64,6 +70,10 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 		
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.DCTERMS_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.DCTERMS_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.DCTERMS_TDWG_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.DCTERMS_TDWG_PREFIX;
 		}
 		
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OWL_NAMESPACE)) {
@@ -112,6 +122,10 @@ public class TDWGNamespacePrefixMapper extends NamespacePrefixMapper {
 		
 		if(namespaceURI.equals(TDWGNamespacePrefixMapper.OAIDC_NAMESPACE)) {
 			return TDWGNamespacePrefixMapper.OAIDC_PREFIX;
+		}
+		
+		if(namespaceURI.equals(TDWGNamespacePrefixMapper.CDM_NAMEINFORMATION_NAMESPACE)) {
+			return TDWGNamespacePrefixMapper.CDM_NAMEINFO_PREFIX;
 		}
 		
 		return result;

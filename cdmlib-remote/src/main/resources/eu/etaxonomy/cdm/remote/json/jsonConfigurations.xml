@@ -15,7 +15,7 @@
          <set>
            <!--
              the exceptions listed here should be covered by implementations of
-             eu.etaxonomy.cdm.persistence.dao.AutoPropertyInitializer.
+             eu.etaxonomy.cdm.persistence.dao.initializer.AutoPropertyInitializer.
              The according configuration files are
               - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence_security.xml
               - /cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml
@@ -362,6 +362,9 @@
         </entry>
         <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.common.TreeNode">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TreeNodeBeanProcessor" />
         </entry>
       </map>
     </property>

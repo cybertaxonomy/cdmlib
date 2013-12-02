@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,19 +29,21 @@ import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 public class PolytomousKeyNodeController extends BaseController<PolytomousKeyNode, IPolytomousKeyNodeService> {
 
 
-	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
-			"$",
+    private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
+            "$",
             "question.label",
-            "statement.label"
-	});
+            "statement.label",
+            "children.$"
+    });
 
-	public PolytomousKeyNodeController() {
-		super();
-		setInitializationStrategy(NODE_INIT_STRATEGY);
-	}
-	
-	@Autowired
-	public void setService(IPolytomousKeyNodeService service) {
-		this.service = service;
-	}	
+    public PolytomousKeyNodeController() {
+        super();
+        setInitializationStrategy(NODE_INIT_STRATEGY);
+    }
+
+    @Override
+    @Autowired
+    public void setService(IPolytomousKeyNodeService service) {
+        this.service = service;
+    }
 }

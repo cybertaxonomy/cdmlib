@@ -15,15 +15,13 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
-import eu.etaxonomy.cdm.io.berlinModel.CdmOneToManyMapper;
+import eu.etaxonomy.cdm.io.common.mapping.berlinModel.CdmOneToManyMapper;
 import eu.etaxonomy.cdm.io.common.mapping.IXmlMapper;
-import eu.etaxonomy.cdm.io.common.mapping.CdmSingleAttributeMapperBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author a.mueller
  * @created 24.03.2009
- * @version 1.0
  */
 public class CdmOneToManyXmlMapper<ONE extends CdmBase, MANY extends CdmBase, SINGLE_MAPPER extends CdmSingleAttributeXmlMapperBase> extends
 		CdmOneToManyMapper<ONE, MANY, SINGLE_MAPPER> implements IXmlMapper{

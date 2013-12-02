@@ -14,9 +14,9 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 
 /**
- * This class is used to configure taxon node deletion.
+ * This class is used to configure term deletion.
  * 
- * @see ITaxonNodeService#delete(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+ * @see ITermService#delete(eu.etaxonomy.cdm.common.DefinedTermBase)
  * 
  * @author a.mueller
  * @date 09.11.2011

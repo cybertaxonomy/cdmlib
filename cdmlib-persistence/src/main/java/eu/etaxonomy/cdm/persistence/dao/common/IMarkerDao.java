@@ -13,7 +13,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IMarkerDao extends IVersionableDao<Marker> {

@@ -219,7 +219,7 @@ public class DescriptionListController extends IdentifiableListController<Descri
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = "/descriptionElement/byTaxon", method = RequestMethod.GET)
+    @RequestMapping(value = "/descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST})
     public <T extends DescriptionElementBase> Pager<T> getDescriptionElementsForTaxon(
             @RequestParam(value = "taxon", required = true) UUID taxon_uuid,
             @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
@@ -244,6 +244,22 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
         Pager<T> pager = service.pageDescriptionElementsForTaxon(taxon, features.asSet(), type, pageSize,
                 pageNumber, getInitializationStrategy());
+
+        return pager;
+    }
+
+    @RequestMapping(value = "namedAreasInUse", method = RequestMethod.GET)
+    public Pager<NamedArea> doPageNamedAreasInUse(
+            @RequestParam(value = "pageSize", required = false) Integer pageSize,
+            @RequestParam(value = "pageNumber", required = false) Integer pageNumber, HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doPageNamedAreasInUse : " + requestPathAndQuery(request));
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        Pager<NamedArea> pager = service.pageNamedAreasInUse(pageSize, pageNumber, getInitializationStrategy());
 
         return pager;
     }

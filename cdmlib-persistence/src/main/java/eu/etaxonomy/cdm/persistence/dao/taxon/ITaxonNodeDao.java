@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.persistence.dao.taxon;
 
+import java.util.UUID;
+
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
 
@@ -17,5 +19,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IAnnotatableDao;
  *
  */
 public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
+	
+	public UUID delete(TaxonNode persistentObject, boolean deleteChildren);
 	
 }

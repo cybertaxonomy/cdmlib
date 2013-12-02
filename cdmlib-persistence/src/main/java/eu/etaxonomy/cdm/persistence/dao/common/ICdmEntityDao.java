@@ -20,12 +20,12 @@ import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * an data access interface that all data access classes implement
+ * An data access interface that all data access classes implement
  * @author m.doering
  * @version 1.0
  * @created 02-Nov-2007 19:36:10

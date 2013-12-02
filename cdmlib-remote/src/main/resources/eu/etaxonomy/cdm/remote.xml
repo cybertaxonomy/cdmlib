@@ -10,7 +10,7 @@
     ">
 
 
-  <bean id="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+  <bean id="marshaller" name="marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
     <property name="classesToBeBound">
       <list>
         <value>eu.etaxonomy.remote.dto.rdf.Rdf</value>
@@ -27,6 +27,22 @@
         </entry>
         <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/human.xsl'?&gt;"/>
         <entry key="com.sun.xml.bind.xmlHeaders" value="&lt;?xml-stylesheet type='text/xsl' href='../xsl/oai2.xsl'?&gt;"/>
+      </map>
+    </property>
+  </bean>
+  
+  <bean id="rdfMarshaller" name="rdfMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+    <property name="classesToBeBound">
+      <list>
+        <value>eu.etaxonomy.remote.dto.rdf.Rdf</value>
+        <value>eu.etaxonomy.cdm.remote.dto.cdm.NameInformationRdf</value>
+      </list>
+    </property>
+    <property name="marshallerProperties">
+      <map>
+        <entry key="com.sun.xml.bind.namespacePrefixMapper">
+          <bean class="eu.etaxonomy.cdm.jaxb.TDWGNamespacePrefixMapper"/>
+        </entry>
       </map>
     </property>
   </bean>

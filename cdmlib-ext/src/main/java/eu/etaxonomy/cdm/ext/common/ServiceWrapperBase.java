@@ -41,7 +41,7 @@ public class ServiceWrapperBase<T extends CdmBase> {
 
 	private URL baseUrl;
 
-	private boolean followRedirects = true;
+	private final boolean followRedirects = true;
 
 	protected Map<String, SchemaAdapterBase<T>> schemaAdapterMap;
 
@@ -85,20 +85,37 @@ public class ServiceWrapperBase<T extends CdmBase> {
 		return schemaAdapterMap;
 	}
 
-
+    /**
+     * Send an HTTP GET request to the given URI.
+     * @param uri the URI of this HTTP request
+     * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
+     * @return the response as an {@link InputStream}
+     * @throws ClientProtocolException
+     * @throws IOException
+     */
 	protected InputStream executeHttpGet(URI uri, Map<String, String> requestHeaders) throws ClientProtocolException, IOException{
         return executeHttp(uri, requestHeaders, HttpMethod.GET, null);
 	}
 
+	/**
+	 * Send an HTTP POST request to the given URI.
+     * @param uri the URI of this HTTP request
+     * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
+     * @param entity the {@link HttpEntity} attached to a HTTP POST request
+     * @return the response as an {@link InputStream}
+	 * @throws ClientProtocolException
+	 * @throws IOException
+	 */
 	protected InputStream executeHttpPost(URI uri, Map<String, String> requestHeaders, HttpEntity httpEntity) throws ClientProtocolException, IOException{
 	    return executeHttp(uri, requestHeaders, HttpMethod.POST, httpEntity);
 	}
 
     /**
-     * @param uri
-     * @param requestHeaders
-     * @param httpMethod
-     * @return
+     * @param uri the URI of this HTTP request
+     * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
+     * @param httpMethod defines if method is POST or GET
+     * @param entity the {@link HttpEntity} attached to a HTTP POST request
+     * @return the response as an {@link InputStream}
      * @throws IOException
      * @throws ClientProtocolException
      */
@@ -116,12 +133,24 @@ public class ServiceWrapperBase<T extends CdmBase> {
 	    }
     }
 
+    /**
+     * Adds a {@link BasicNameValuePair} to the given {@link List}.
+     * @param listOfPairs the list to add the name-value pair to
+     * @param name the name
+     * @param value the value
+     */
 	public static void addNameValuePairTo(List<NameValuePair> listOfPairs, String name, String value){
 		if(value != null){
 		    listOfPairs.add(new BasicNameValuePair(name, value));
 		}
 	}
 
+	/**
+     * Adds a {@link BasicNameValuePair} to the given {@link List}.
+     * @param listOfPairs the list to add the name-value pair to
+     * @param name the name
+     * @param value the String representation of the object (toString())
+     */
 	public static void addNameValuePairTo(List<NameValuePair> listOfPairs, String name, Object value){
 		if(value != null){
 		    listOfPairs.add(new BasicNameValuePair(name, value.toString()));
@@ -129,6 +158,13 @@ public class ServiceWrapperBase<T extends CdmBase> {
 	}
 
 
+	/**
+	 * Creates a {@link URI} based on the {@link ServiceWrapperBase#baseUrl} and the given subPath and qParams
+	 * @param subPath the sub path of the URI to be created
+	 * @param qparams the parameters added as GET parameters to the URI
+	 * @return a URI consisting of the baseURL, the subPath and qParams
+	 * @throws URISyntaxException
+	 */
 	protected URI createUri(String subPath, List<NameValuePair> qparams) throws	URISyntaxException {
 
 		return UriUtils.createUri(baseUrl, subPath, qparams, null);

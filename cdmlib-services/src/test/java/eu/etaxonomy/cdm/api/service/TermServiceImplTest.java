@@ -14,22 +14,30 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.net.URI;
+import java.util.Set;
 import java.util.UUID;
+
+import org.junit.Assert;
 
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.junit.Test;
+import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -181,6 +189,40 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	
     	termBase = termService.find(fromString);
     	assertEquals("Title cache did not update after adding a new representation for default language and saving the term", expecteTitleCacheAfterRepresentationChange, termBase.getTitleCache());
+    }
+    
+    
+    @Test
+    public void testDeleteTerms(){
+    	final String[] tableNames = new String[]{
+                "DefinedTermBase","Representation"};
+   
+    	//commitAndStartNewTransaction(tableNames);
+    	/*TermVocabulary<DefinedTerm> vocs = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
+    	vocs.addTerm(DefinedTerm.NewInstance(TermType.State, "green", "green", "gn"));
+    	UUID vocUUIDs = vocabularyService.save(vocs);*/
+    	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
+    	if (term.getCount() != 0){
+    		try{
+    			termService.delete(term.getRecords().get(0));
+    		}catch(ReferencedObjectUndeletableException e){
+    			Assert.fail();
+    		}
+    		commitAndStartNewTransaction(tableNames);
+       	}
+    	TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);
+    	voc.addTerm(DefinedTerm.NewDnaMarkerInstance("test", "marker", "t"));
+    	UUID vocUUID = vocabularyService.save(voc);
+    	
+    	voc = (TermVocabulary)vocabularyService.find(vocUUID);
+    	Set<DefinedTerm> terms = voc.getTerms();
+    	DefinedTermBase termBase =(DefinedTerm)terms.iterator().next();
+    	UUID termUUID = termBase.getUuid();
+    	termService.delete(termBase, null);
+    	//commitAndStartNewTransaction(tableNames);
+    	termBase =  (DefinedTerm)termService.load(termUUID);
+    	assertNull(termBase);
+    	
     }
 	
 }

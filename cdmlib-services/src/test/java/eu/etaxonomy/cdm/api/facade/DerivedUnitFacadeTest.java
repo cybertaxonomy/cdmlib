@@ -284,8 +284,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @DataSet
     @Ignore // TODO generally works causes has id problems with following tests when running in suite
     public void testGetFieldObjectImageGalleryBooleanPersisted() {
-        UUID specimenUUID = UUID
-                .fromString("25383fc8-789b-4eff-92d3-a770d0622351");
+        UUID specimenUUID = UUID.fromString("25383fc8-789b-4eff-92d3-a770d0622351");
         DerivedUnit specimen = (DerivedUnit) service.load(specimenUUID);
         Assert.assertNotNull("Specimen should exist (persisted)", specimen);
         try {
@@ -296,8 +295,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                     UUID.fromString("8cb772e9-1577-45c6-91ab-dbec1413c060"),
                     imageGallery.getUuid());
             Assert.assertEquals("The image gallery should be flagged as such",true, imageGallery.isImageGallery());
-            Assert.assertEquals(
-                    "There should be one TextData in image gallery", 1,
+            Assert.assertEquals("There should be one TextData in image gallery", 1,
                     imageGallery.getElements().size());
             List<Media> media = imageGallery.getElements().iterator().next().getMedia();
             Assert.assertEquals("There should be 1 media", 1, media.size());
@@ -746,8 +744,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertTrue("field object should not be null (depends on specimen facade initialization !!)",
                 specimenFacade.hasFieldObject());
 
-        Field fieldUnitField = DerivedUnitFacade.class
-                .getDeclaredField("fieldUnit");
+        Field fieldUnitField = DerivedUnitFacade.class.getDeclaredField("fieldUnit");
         fieldUnitField.setAccessible(true);
         fieldUnitField.set(specimenFacade, null);
         Assert.assertFalse("The field unit should be null now",

@@ -80,9 +80,12 @@ public class DescriptionUtility {
                 if(distribution.getArea() != null){
                     NamedArea parentArea = distribution.getArea().getPartOf();
                     while(parentArea != null){
-                        for(Distribution parentDistribution : computedDistributions.get(areaKey(parentArea))) {
-                            if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
-                                removeCandidates.add(parentDistribution);
+                        Set<Distribution> computedDistributionSet = computedDistributions.get(areaKey(parentArea));
+                        if(computedDistributionSet != null){
+                            for(Distribution parentDistribution : computedDistributionSet) {
+                                if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
+                                    removeCandidates.add(parentDistribution);
+                                }
                             }
                         }
                         parentArea = parentArea.getPartOf();

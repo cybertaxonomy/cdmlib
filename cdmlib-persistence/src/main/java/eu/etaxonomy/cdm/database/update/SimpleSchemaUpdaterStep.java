@@ -38,7 +38,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 // *************************** FACTORY ********************************/
 	
 	/**
-	 * @deprecated use  {@link #NewInstance(String, String)}, 
+	 * @deprecated use  {@link #NewNonAuditedInstance(String, String)}, 
 	 * {@link #NewAuditedInstance(String, String, boolean, String)}, 
 	 * or {@link #NewExplicitAuditedInstance(String, String, String)} instead
 	 */

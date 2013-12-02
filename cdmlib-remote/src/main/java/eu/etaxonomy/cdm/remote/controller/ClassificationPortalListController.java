@@ -51,7 +51,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
             "taxon.sec",
-            "taxon.name"
+            "taxon.name.rank"
             });
 
 
@@ -150,7 +150,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
         }
         rank = findRank(rankUuid);
 
-        return service.loadRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
+        return service.listRankSpecificRootNodes(tree, rank, null, null, NODE_INIT_STRATEGY);
     }
 
 

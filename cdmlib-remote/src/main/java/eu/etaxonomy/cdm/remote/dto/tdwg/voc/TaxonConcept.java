@@ -176,17 +176,17 @@ public class TaxonConcept extends Concept implements CycleRecoverable {
 		@XmlElement(name = "Relationship", namespace = "http://rs.tdwg.org/ontology/voc/TaxonConcept#")
 		private Relationship relationship;
 		
-		protected HasRelationship() {}
+		public HasRelationship() {}
 		
-		protected HasRelationship(Relationship relationship) {
+		public HasRelationship(Relationship relationship) {
 			this.relationship = relationship;
 		}
 		
-		protected Relationship getRelationship() {
+		public Relationship getRelationship() {
 			return relationship;
 		}
 
-		protected void setRelationship(Relationship relationship) {
+		public void setRelationship(Relationship relationship) {
 			this.relationship = relationship;
 		}
 	}

@@ -86,7 +86,7 @@ public class UriUtils {
 		if (uri.getScheme().equals("http") || uri.getScheme().equals("https")){
 			HttpResponse response = UriUtils.getResponse(uri, requestHeaders);
 			if(UriUtils.isOk(response)){
-	        	InputStream stream = response.getEntity().getContent();
+	        	InputStream stream = getContent(response);
 	        	return stream;
 	        } else {
 	        	throw new HttpException("HTTP Reponse code is not = 200 (OK): " + UriUtils.getStatus(response));
@@ -145,24 +145,29 @@ public class UriUtils {
 	}
 
 	/**
-	 *
-	 * @param response
-	 * @return
+	 * Checks if the given HTTP return status is OK
+	 * @param response the {@link HttpResponse} to check
+	 * @return <code>true</code> if response is OK, <code>false</code> otherwise
 	 */
 	public static boolean isOk(HttpResponse response){
 		return response.getStatusLine().getStatusCode() == HttpStatus.SC_OK;
 	}
 
 	/**
-	 *
-	 * @param response
-	 * @return
+	 * Retrieves the content of an {@link HttpResponse} as an {@link InputStream}
+	 * @param response the HTTPResponse to retrieve the content from
+	 * @return the content as InputStream
 	 * @throws IOException
 	 */
 	public static InputStream getContent(HttpResponse response) throws IOException{
 		return response.getEntity().getContent();
 	}
 
+	/**
+	 * Gets the status of the given {@link HttpResponse} as a string
+	 * @param response the response to get the status for
+	 * @return status as a string
+	 */
 	public static String getStatus(HttpResponse response){
 		StatusLine statusLine = response.getStatusLine();
 		return "(" + statusLine.getStatusCode() + ")" + statusLine.getReasonPhrase();
@@ -171,7 +176,7 @@ public class UriUtils {
     /**
      * Sends a HTTP GET request to the defined URI and returns the {@link HttpResponse}.
      * @param uri the URI of this HTTP request
-     * @param requestHeaders the parameters of the connection
+     * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
      * @return the {@link HttpResponse} of the request
      * @throws IOException
      * @throws ClientProtocolException
@@ -183,8 +188,8 @@ public class UriUtils {
     /**
      * Sends a HTTP POST request to the defined URI and returns the {@link HttpResponse}.
      * @param uri the URI of this HTTP request
-     * @param requestHeaders the parameters of the connection
-     * @param entity the {@link HttpEntity} that should be attached to this request
+     * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
+     * @param entity the {@link HttpEntity} attached to a HTTP POST request
      * @return the {@link HttpResponse} of the request
      * @throws IOException
      * @throws ClientProtocolException
@@ -196,8 +201,9 @@ public class UriUtils {
     /**
      * Sends a HTTP request of the given {@link HttpMethod} to the defined URI and returns the {@link HttpResponse}.
      * @param uri the URI of this HTTP request
-     * @param requestHeaders the parameters of the connection
+     * @param requestHeaders the parameters (name-value pairs) of the connection added to the header of the request
      * @param httpMethod defines if method is POST or GET
+     * @param entity the {@link HttpEntity} attached to a HTTP POST request
      * @return the {@link HttpResponse} of the request
      * @throws IOException
      * @throws ClientProtocolException
@@ -237,6 +243,14 @@ public class UriUtils {
 	    return client.execute(method);
     }
 
+    /**
+     * Creates a {@link URI} based on the baseUrl and the given subPath, qParams and fragment
+     * @param subPath the sub path of the URI
+     * @param qparams the parameters added as GET parameters to the URI
+     * @param fragment the fragment of the URI
+     * @return a URI consisting of the baseURL, the subPath and qParams
+     * @throws URISyntaxException
+     */
 	public static URI createUri(URL baseUrl, String subPath, List<NameValuePair> qparams, String fragment) throws	URISyntaxException {
 
 		String path = baseUrl.getPath();

@@ -51,7 +51,7 @@ public class Abcd206DataHolder {
 	protected List<SpecimenTypeDesignationStatus> statusList;
 	protected List<HashMap<String, String>> atomisedIdentificationList;
 	protected List<String> namedAreaList;
-	protected List<String> referenceList;
+	protected List<String[]> referenceList;
 	protected List<String> multimediaObjects;
 
 	protected List<String> knownABCDelements = new ArrayList<String>();
@@ -60,6 +60,9 @@ public class Abcd206DataHolder {
 
 	public List<String> gatheringAgentList;
     protected List<String> gatheringTeamList;
+
+
+    protected List<String> docSources;
 
 
 

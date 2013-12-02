@@ -16,13 +16,13 @@ import java.util.UUID;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -31,14 +31,12 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.persistence.dao.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 import eu.etaxonomy.cdm.persistence.dao.common.ITitledDao;
+import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 
 /**
  * @author a.mueller
@@ -231,6 +229,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return The List<Taxon> of root taxa.
      * @deprecated obsolete when using classification
      */
+    @Deprecated
     public List<Taxon> getRootTaxa(Reference sec);
 
 
@@ -244,6 +243,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return The List<Taxon> of root taxa.
      * @deprecated obsolete when using classification
      */
+    @Deprecated
     public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications);
 
 
@@ -270,6 +270,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @return The List<Taxon> of root taxa.
      * @deprecated obsolete when using classification
      */
+    @Deprecated
     public List<Taxon>
     getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths);
 
@@ -442,7 +443,14 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param synonym the synonym
      * @param taxon the taxon, may be <code>null</code>
      * @return
+     * @deprecated This method must no longer being used since the
+     *             SynonymRelationship is annotated at the {@link Taxon} and at
+     *             the {@link Synonym} with <code>orphanDelete=true</code>. Just
+     *             remove the from and to entities from the relationship and
+     *             hibernate will care for the deletion. Using this method can cause
+     *             <code>StaleStateException</code> (see http://dev.e-taxonomy.eu/trac/ticket/3797)
      */
+    @Deprecated
     public long deleteSynonymRelationships(Synonym syn, Taxon taxon);
 
     public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPath);

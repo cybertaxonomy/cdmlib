@@ -161,25 +161,25 @@ public class BioCaseQuery {
     @Override
     public String toString() {
         String string = "BioCaseQuery ";
-        if(taxonName!=null){
+        if(taxonName!=null && !taxonName.trim().isEmpty()){
             string += " taxonName=" + taxonName;
         }
-        if(collector!=null){
+        if(collector!=null && !collector.trim().isEmpty()){
             string += " collector=" + collector;
         }
-        if(collectorsNumber!=null){
+        if(collectorsNumber!=null && !collectorsNumber.trim().isEmpty()){
             string += " collectorsNumber=" + collectorsNumber;
         }
-        if(accessionNumber!=null){
+        if(accessionNumber!=null && !accessionNumber.trim().isEmpty()){
             string += " accessionNumber=" + accessionNumber;
         }
-        if(herbarium!=null){
+        if(herbarium!=null && !herbarium.trim().isEmpty()){
             string += " herbarium=" + herbarium;
         }
-        if(country!=null){
+        if(country!=null && !country.trim().isEmpty()){
             string += " country=" + country;
         }
-        if(locality!=null){
+        if(locality!=null && !locality.trim().isEmpty()){
             string += " locality=" + locality;
         }
         if(date!=null){

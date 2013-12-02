@@ -557,11 +557,11 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
 
     @Override
     protected void setDefaultTerms(TermVocabulary<NamedArea> termVocabulary) {
-        if (termVocabulary.getUuid().equals(this.uuidTdwgAreaVocabulary)){
+        if (termVocabulary.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)){
         	this.setTdwgDefaultTerms(termVocabulary);
-        }else if (termVocabulary.getUuid().equals(this.uuidContinentVocabulary)){
+        }else if (termVocabulary.getUuid().equals(NamedArea.uuidContinentVocabulary)){
         	this.setDefaultContinentTerms(termVocabulary);
-        }else if (termVocabulary.getUuid().equals(this.uuidWaterbodyVocabulary)){
+        }else if (termVocabulary.getUuid().equals(NamedArea.uuidWaterbodyVocabulary)){
         	this.setDefaultWaterbodyTerms(termVocabulary);
         }else{
 	    	termMap = new HashMap<UUID, NamedArea>();

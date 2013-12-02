@@ -13,11 +13,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
+import org.apache.lucene.search.SortField;
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.AuditQuery;
 
+import eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.persistence.dao.common.OperationNotSupportedInPriorViewException;
@@ -48,13 +51,19 @@ public class OrderHint {
         }
     }
 
+    public static final Logger logger = Logger.getLogger(OrderHint.class);
+
     private final String propertyName;
 
     private final SortOrder sortOrder;
 
+    public final String LUCENE_SCORE = "LUCENE_SCORE";
+
     public static final List<OrderHint> ORDER_BY_ID = Arrays.asList(new OrderHint[]{new OrderHint("id", SortOrder.ASCENDING)});
 
     public static final List<OrderHint> ORDER_BY_TITLE_CACHE = Arrays.asList(new OrderHint[]{new OrderHint("titleCache", SortOrder.ASCENDING)});
+
+    public static final List<OrderHint> NOMENCLATURAL_SORT_ORDER = Arrays.asList(new OrderHint[]{new OrderHint(NomenclaturalSortOrderBrigde.NAME_SORT_FIELD_NAME, SortOrder.ASCENDING)});
 
     /**
      * @param clazz
@@ -164,7 +173,20 @@ public class OrderHint {
      * @return an hql order by clause element
      */
     public String toHql(){
+        if(propertyName.equals(LUCENE_SCORE)){
+            logger.error("LUCENE_SCORE not allowed in hql query");
+        }
         return propertyName + " " + sortOrder.toHql();
+    }
+
+    /**
+     * @return a Lucene {@link SortField} for the Lucene field type <code>Sting</code>
+     */
+    public SortField toSortField() {
+        if(propertyName.equals(LUCENE_SCORE)){
+            return SortField.FIELD_SCORE;
+        }
+        return new SortField(propertyName, SortField.STRING, sortOrder.equals(SortOrder.DESCENDING));
     }
 
     @Override
