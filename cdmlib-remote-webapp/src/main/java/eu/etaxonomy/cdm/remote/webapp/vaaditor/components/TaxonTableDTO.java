@@ -11,17 +11,13 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import com.vaadin.data.util.BeanItem;
 import com.vaadin.data.util.BeanItemContainer;
-import com.vaadin.event.ItemClickEvent;
-import com.vaadin.event.ItemClickEvent.ItemClickListener;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Table;
-import com.vaadin.ui.VerticalLayout;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.RedlistDTO;
@@ -34,7 +30,7 @@ import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.RedlistDTO;
 
 @Component
 @Scope("request")
-public class TaxonTable extends Table{
+public class TaxonTableDTO extends Table{
 
 	/**
 	 * automatic generated ID
@@ -43,12 +39,13 @@ public class TaxonTable extends Table{
 	ITaxonService taxonService;
 	@Autowired
 	INameService nameService;
+	@Autowired
+	IDescriptionService descriptionService;
 	
-	private BeanItemContainer<TaxonBase> taxonBaseContainer = null;
 	
 
 
-	Logger logger = Logger.getLogger(TaxonTable.class);
+	Logger logger = Logger.getLogger(TaxonTableDTO.class);
 	
 	private static final long serialVersionUID = -8449485694571526437L;
 	
@@ -57,30 +54,33 @@ public class TaxonTable extends Table{
 	void PostConstruct(){
 		setSizeFull();
 		
-//		final BeanItemContainer<RedlistDTO> taxonContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
-//		final BeanItemContainer<TaxonNameBase> taxonBaseContainer = new BeanItemContainer<TaxonNameBase>(TaxonNameBase.class);
-		taxonBaseContainer = new BeanItemContainer<TaxonBase>(TaxonBase.class);
+		final BeanItemContainer<RedlistDTO> redListContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
 		Collection<TaxonBase> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
-//		List<TaxonNameBase> listTaxonNameBase = nameService.list(TaxonNameBase.class, null, null, null, NODE_INIT_STRATEGY);
 		
-//		taxonContainer.addAll(listTaxon);
-		taxonBaseContainer.addAll(listTaxon);
-//		taxonContainer.addAll((Collection<? extends RedlistDTO>) listTaxon);
 		
-//		table.setContainerDataSource(taxonBaseContainer);
-		setContainerDataSource(taxonBaseContainer);
+		for(TaxonBase taxonBase:listTaxon){
+			
+			if(taxonBase instanceof Taxon){
+				Taxon taxon = (Taxon) taxonBase;
+				List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
+				RedlistDTO redlistDTO = new RedlistDTO(taxon, listTaxonDescription);
+				redListContainer.addBean(redlistDTO);
+			}
+		}
+		
+//		taxonBaseContainer.addAll(listTaxon);
+		
+		setContainerDataSource(redListContainer);
 		setColumnReorderingAllowed(true);
-//
-//		String[] columns = new String[]{"taxa", "rank", "uuid", "synonyms","descriptions", "genus"};
-		String[] columns = new String[]{"titleCache", "uuid"};
+
+		String[] columns = new String[]{"fullTitleCache", "rank", "UUID", "distributionStatus"};
 		setVisibleColumns(columns);
-//		table.setColumnHeaders(new String[]{"Wissenschaftlicher Name", "Rang", "ID", "Synonyme", "Beschreibung"});
+		setColumnHeaders(new String[]{"Taxon", "Rang" , "UUID", "Deutschland"});
 		setImmediate(true);
 		setColumnCollapsingAllowed(true);
 		setSelectable(true);
 		setSizeFull();
 		setPageLength(10);
-//		table.setPageLength(table.size());
 
 		
 	}
@@ -92,17 +92,6 @@ public class TaxonTable extends Table{
     		"description.state",
     		"feature",
     		"feature.*",
-//    		"State",
-//    		"state",
-//    		"states",
-//    		"stateData.*",
-//    		"stateData.state",
-//    		"categoricalData",
-//    		"categoricalData.*",
-//    		"categoricalData.states.state",
-//    		"categoricalData.States.State",
-//    		"categoricalData.states.*",
-//    		"categoricalData.stateData.state",
     		"childNodes",
     		"childNodes.taxon",
     		"childNodes.taxon.name",
@@ -131,8 +120,18 @@ public class TaxonTable extends Table{
             "sources.$",
             "stateData.$"
     });
-	
-	public BeanItemContainer<TaxonBase> getTaxonBaseContainer() {
-		return taxonBaseContainer;
-	}
+ 
+	protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "elements.*",
+            "elements.sources.citation.authorTeam.$",
+            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.area.level",
+            "elements.modifyingText",
+            "elements.states.*",
+            "elements.media",
+            "elements.multilanguageText",
+            "multilanguageText",
+            "stateData.$"
+    });
 }

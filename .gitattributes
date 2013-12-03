@@ -1672,6 +1672,7 @@ cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/compo
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/OverViewTable.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/TaxonDetailOverview.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/TaxonTable.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/components/TaxonTableDTO.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/controller/AuthenticationController.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/controller/RedlistDTO.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/webapp/vaaditor/controller/TaxonTableController.java -text

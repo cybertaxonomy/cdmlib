@@ -10,6 +10,8 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
+
 import com.gargoylesoftware.htmlunit.javascript.host.Text;
 import com.vaadin.data.Item;
 import com.vaadin.data.Validator.InvalidValueException;
@@ -32,8 +34,10 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 import com.vaadin.ui.Button.ClickEvent;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.TaxonServiceImpl;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 //import eu.etaxonomy.cdm.io.berlinModel.CdmStringMapper;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -53,6 +57,9 @@ public class TaxonDetailOverview extends CustomComponent {
 	
 	@Autowired
 	private ITaxonService taxonService;
+	
+	@Autowired
+	IDescriptionService descriptionService;
 	
 	@Autowired
 	private ApplicationContext applicationContext;
@@ -80,8 +87,8 @@ public class TaxonDetailOverview extends CustomComponent {
 	@SuppressWarnings("unchecked")
 	public Table constructTable(){
 		taxonBaseContainer = new BeanItemContainer(RedlistDTO.class);
-		
-		RedlistDTO redlistDTO = new RedlistDTO(taxon);
+		Collection list = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, null);
+		RedlistDTO redlistDTO = new RedlistDTO(taxon, list);
 		taxonBaseContainer.addBean(redlistDTO);
 
 		Table table = new Table();
@@ -94,7 +101,9 @@ public class TaxonDetailOverview extends CustomComponent {
 	}
 	
 	public FormLayout constructForm(){
-		RedlistDTO redlistDTO = new RedlistDTO(taxon);
+		Collection list = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, null);
+
+		RedlistDTO redlistDTO = new RedlistDTO(taxon, list);
 
 		final BeanFieldGroup<RedlistDTO> binder = new BeanFieldGroup<RedlistDTO>(RedlistDTO.class);
 		binder.setItemDataSource(redlistDTO);

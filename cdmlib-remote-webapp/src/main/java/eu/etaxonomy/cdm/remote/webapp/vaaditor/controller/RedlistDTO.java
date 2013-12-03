@@ -1,50 +1,15 @@
 package eu.etaxonomy.cdm.remote.webapp.vaaditor.controller;
 
-import java.util.HashSet;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Set;
+import java.util.UUID;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.validation.Valid;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElementWrapper;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-
-import org.hibernate.annotations.Cascade;
-import org.hibernate.annotations.CascadeType;
-import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.ContainedIn;
-import org.hibernate.search.annotations.IndexedEmbedded;
-import org.hibernate.validator.constraints.NotEmpty;
-import org.springframework.stereotype.Component;
-import org.springframework.stereotype.Controller;
-import org.springframework.util.ReflectionUtils;
-
-import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
-import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
-import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.strategy.cache.name.CacheUpdate;
-import eu.etaxonomy.cdm.strategy.match.Match;
-import eu.etaxonomy.cdm.strategy.match.MatchMode;
-import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
-import eu.etaxonomy.cdm.validation.Level2;
 
 
 public class RedlistDTO{
@@ -58,14 +23,15 @@ public class RedlistDTO{
 
     private Taxon taxon;
 
-    private TaxonDescription taxonDescription; 
+    private Collection<DescriptionElementBase> listTaxonDescription;
 
 	private String fullTitleCache;
 	private Rank rank;
 
     
-    public RedlistDTO(Taxon taxon){
+    public RedlistDTO(Taxon taxon, Collection<DescriptionElementBase> listTaxonDescription){
     	this.taxon = taxon;
+    	this.listTaxonDescription = listTaxonDescription;
     }
     
     
@@ -83,10 +49,7 @@ public class RedlistDTO{
     public Taxon getTaxon() {
 		return taxon;
 	}
-    
-    public Set<TaxonDescription> getTaxonDescription(){
-    	return taxon.getDescriptions();
-    }
+
     
     
     /**
@@ -98,12 +61,40 @@ public class RedlistDTO{
     	rank = taxon.getName().getRank();
     	return rank;
     }
+    
+    public UUID getUUID(){
+    	return taxon.getUuid();
+    }
 
     /**
      * @see  #getRank()
      */
     public void setRank(Rank rank){
     	taxon.getName().setRank(rank);
+    }
+    
+    public PresenceAbsenceTermBase<?> getDistributionStatus(){
+    	Distribution db = getDistribution();
+    	if(db != null){
+    		return db.getStatus();
+    	}
+		return null;
+    }
+    
+    public void setDistributionStatus(PresenceAbsenceTermBase<?> status){
+    	Distribution db = getDistribution();
+    	if(db != null){
+    		db.setStatus(status);
+    	}
+    }
+    
+    private Distribution getDistribution(){
+    	for(DescriptionElementBase deb : listTaxonDescription){
+			if(deb instanceof Distribution){
+				return (Distribution)deb;
+			}
+    	}
+    	return null;
     }
     
 }

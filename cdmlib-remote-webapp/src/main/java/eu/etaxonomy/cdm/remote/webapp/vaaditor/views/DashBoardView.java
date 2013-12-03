@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.TaxonTable;
+import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.TaxonTableDTO;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationController;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.RedlistDTO;
 
@@ -84,7 +85,7 @@ public class DashBoardView extends CustomComponent implements View{
 	private HorizontalToolbar toolbar;
 
 	@Autowired
-	private TaxonTable taxonTable;
+	private TaxonTableDTO taxonTable;
 	
 	@Autowired
 	ITaxonService taxonService;
@@ -94,6 +95,10 @@ public class DashBoardView extends CustomComponent implements View{
 	
 	@Autowired
 	IDescriptionService descriptionService;
+
+	
+	private Collection<DescriptionElementBase>listDescriptions;
+
 	
 	private Table detailTable;
 	
@@ -154,18 +159,19 @@ public class DashBoardView extends CustomComponent implements View{
 		}
 	}
 
-	private void createTaxonTableItemClickListener(
-			final VerticalLayout detailViewLayout,
-			final VerticalLayout descriptionViewLayout) {
+	private void createTaxonTableItemClickListener(final VerticalLayout detailViewLayout, final VerticalLayout descriptionViewLayout) {
+		
 		taxonTable.addItemClickListener(new ItemClickListener() {
-			
 			@Override
 			public void itemClick(ItemClickEvent event) {
+				
 				Object taxonbean = ((BeanItem<?>)event.getItem()).getBean();
-				if(taxonbean instanceof Taxon){
+				if(taxonbean instanceof RedlistDTO){
 					detailViewLayout.removeAllComponents();
 					descriptionViewLayout.removeAllComponents();
-					currentTaxon = (Taxon)taxonbean;
+//					currentTaxon = (Taxon)taxonbean;
+					RedlistDTO red = (RedlistDTO) taxonbean;
+					currentTaxon = red.getTaxon();
 					detailViewLayout.addComponent(constructTable(currentTaxon));
 					descriptionViewLayout.addComponent(constructDetailPanel(currentTaxon));
 					logger.info("ItemID: "+event.getItemId());
@@ -176,8 +182,9 @@ public class DashBoardView extends CustomComponent implements View{
 	
 	private Table constructTable(Taxon taxon){
 		taxonBaseContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
-		
-		RedlistDTO redlistDTO = new RedlistDTO(taxon);
+		listDescriptions = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
+
+		RedlistDTO redlistDTO = new RedlistDTO(taxon, listDescriptions);
 		taxonBaseContainer.addBean(redlistDTO);
 
 		detailTable = new Table();
@@ -190,7 +197,7 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 	
 	private FormLayout constructForm(Taxon taxon, final Window window){
-		RedlistDTO redlistDTO = new RedlistDTO(taxon);
+		RedlistDTO redlistDTO = new RedlistDTO(taxon, listDescriptions);
 		final BeanFieldGroup<RedlistDTO> binder = new BeanFieldGroup<RedlistDTO>(RedlistDTO.class);
 		binder.setItemDataSource(redlistDTO);
 		binder.setBuffered(true);
@@ -240,7 +247,6 @@ public class DashBoardView extends CustomComponent implements View{
 		tree.setSizeUndefined();
 		String parent = "Descriptive Data";
 		tree.setValue(parent);
-		Collection<DescriptionElementBase>listDescriptions = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
 		initDescriptionTree(tree, listDescriptions, parent);
 		return tree;
 	}
