@@ -773,6 +773,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Distribution.java 
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/Feature.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/FeatureTree.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IDescribable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IIdentificationKey.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IModifiable.java -text svneol=unset#text/plain
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/description/IndividualsAssociation.java -text

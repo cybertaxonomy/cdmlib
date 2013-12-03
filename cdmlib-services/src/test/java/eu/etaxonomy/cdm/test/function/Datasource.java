@@ -78,7 +78,7 @@ public class Datasource {
 
 //		String server = "test.e-taxonomy.eu";
 ////		String database = "cdm_test";
-//		String database = "cdm_test_eckhard";
+//		String database = "cdm_demo3";
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 

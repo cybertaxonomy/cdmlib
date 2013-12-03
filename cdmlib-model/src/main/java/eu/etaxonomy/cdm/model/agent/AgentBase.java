@@ -21,6 +21,8 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Index;
 import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
@@ -63,7 +65,8 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
     @Embedded
     @Merge(MergeMode.MERGE)
     @Match(MatchMode.IGNORE)
-    private Contact contact;
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
+	private Contact contact;
 	
 	/** 
 	 * Returns the {@link Contact contact} of <i>this</i> person.

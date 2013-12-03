@@ -202,11 +202,11 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         	config = new TaxonDeletionConfigurator();
         }
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
-        
+        Classification classification = null;
         for (ITaxonTreeNode treeNode:nodes){
         	if (treeNode instanceof TaxonNode){
         		TaxonNode taxonNode;
-	            taxonNode = (TaxonNode)treeNode;
+	            taxonNode = (TaxonNode)HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
 	           
 	            	//check whether the node has children or the children are already deleted
 	            if(taxonNode.hasChildNodes()){
@@ -235,10 +235,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             			
             		}
             	}
-	            Classification classification = taxonNode.getClassification();
+	           
+	            classification = taxonNode.getClassification();
 	            if (classification.getChildNodes().contains(taxonNode)){
 	                classification.deleteChildNode(taxonNode);
+	                classification = null;
 	            }else{
+	            	classification = null;
 	            	Taxon taxon = taxonNode.getTaxon();
 	            	taxonNode.getTaxon().removeTaxonNode(taxonNode);
 	            	if (config.getTaxonNodeConfig().isDeleteTaxon()){
@@ -250,12 +253,15 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 	           
 	            dao.delete(taxonNode);
         	}else {
-        		Classification classification = (Classification) treeNode;
-        		classService.delete(classification);
+        		classification = (Classification) treeNode;
+        		
         	}
         	
             deletedUUIDs.add(treeNode.getUuid());
             
+        }
+        if (classification != null){
+        	classService.delete(classification);
         }
         return deletedUUIDs;
 

@@ -68,6 +68,38 @@ public class Contact implements Serializable, Cloneable {
 	private static final Logger logger = Logger.getLogger(Contact.class);
 
 
+	@XmlElementWrapper(name = "EmailAddresses", nillable = true)
+	@XmlElement(name = "EmailAddress")
+	@ElementCollection(fetch = FetchType.LAZY)
+	@Column(name = "contact_emailaddresses_element")
+	private List<String> emailAddresses;
+
+	@XmlElementWrapper(name = "URLs", nillable = true)
+	@XmlElement(name = "URL")
+    @XmlSchemaType(name = "anyURI")
+	@ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "contact_urls_element")
+	private List<String> urls;
+
+	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
+	@XmlElement(name = "PhoneNumber")
+	@ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "contact_phonenumbers_element")
+	private List<String> phoneNumbers;
+
+	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
+	@XmlElement(name = "FaxNumber")
+	@ElementCollection(fetch = FetchType.LAZY)
+    @Column(name = "contact_faxnumbers_element")
+	private List<String> faxNumbers;
+
+    @XmlElementWrapper(name = "Addresses", nillable = true)
+    @XmlElement(name = "Address")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
+	protected Set<Address> addresses;
+
+	
 	public static Contact NewInstance() {
 		return new Contact();
 	}
@@ -139,37 +171,6 @@ public class Contact implements Serializable, Cloneable {
 	 */
 	public Contact() {
 	}
-
-	@XmlElementWrapper(name = "EmailAddresses", nillable = true)
-	@XmlElement(name = "EmailAddress")
-	@ElementCollection(fetch = FetchType.LAZY)
-	@Column(name = "contact_emailaddresses_element")
-	private List<String> emailAddresses;
-
-	@XmlElementWrapper(name = "URLs", nillable = true)
-	@XmlElement(name = "URL")
-    @XmlSchemaType(name = "anyURI")
-	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_urls_element")
-	private List<String> urls;
-
-	@XmlElementWrapper(name = "PhoneNumbers", nillable = true)
-	@XmlElement(name = "PhoneNumber")
-	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_phonenumbers_element")
-	private List<String> phoneNumbers;
-
-	@XmlElementWrapper(name = "FaxNumbers", nillable = true)
-	@XmlElement(name = "FaxNumber")
-	@ElementCollection(fetch = FetchType.LAZY)
-    @Column(name = "contact_faxnumbers_element")
-	private List<String> faxNumbers;
-
-    @XmlElementWrapper(name = "Addresses", nillable = true)
-    @XmlElement(name = "Address")
-    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
-	@Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-	protected Set<Address> addresses;
 
 
 	public void merge(Contact contact2) throws MergeException{

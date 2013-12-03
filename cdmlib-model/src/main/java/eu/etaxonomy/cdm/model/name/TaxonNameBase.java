@@ -1336,35 +1336,22 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
         if (taxonBases.contains(taxonBase)){
         	 removed = taxonBases.remove(taxonBase);
         }
-        if (!removed){
-	       if (!removed && !taxonBases.isEmpty()){
+        if (!removed){  //see #3596
+	       if (!taxonBases.isEmpty()){
 	    	   CopyOnWriteArrayList<TaxonBase> copyTaxonBase = new CopyOnWriteArrayList(taxonBases);
 		      
 		       for (TaxonBase temp:copyTaxonBase){
-		    	   
+		
 		    	   if (temp.equals(taxonBase)){
 		    		   removed = copyTaxonBase.remove(temp);
-		    	   }
-		    	   
-		    	   
-		        }
+		    	   } 	   
+		       }
 		       if (removed){
 		    	   taxonBases.clear();
 		    	   taxonBases.addAll(copyTaxonBase);
 		       }
 	       }
         }
-        
-        
-       
-        
-        
-       
-   
-        
-       
-        
-        
        
     }
 
