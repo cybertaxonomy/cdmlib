@@ -92,7 +92,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     @ClassBridge(impl = GroupByTaxonClassBridge.class),
     @ClassBridge(impl = TaxonRelationshipClassBridge.class)
 })
-public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>> 
+public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
 			implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
@@ -165,9 +165,9 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @XmlElement(name = "TaxonomicChildrenCount")
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
     private int taxonomicChildrenCount;
-    
+
 // ************************* FACTORY METHODS ********************************/
-    
+
     /**
      * Creates a new (accepted/correct) taxon instance with
      * the {@link eu.etaxonomy.cdm.model.name.TaxonNameBase taxon name} used and the {@link eu.etaxonomy.cdm.model.reference.Reference reference}
@@ -230,6 +230,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * @see #addDescription(TaxonDescription)
      * @see eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
      */
+    @Override
     public Set<TaxonDescription> getDescriptions() {
         if(descriptions == null) {
             descriptions = new HashSet<TaxonDescription>();
@@ -250,6 +251,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * @see     		  	#removeDescription(TaxonDescription)
      * @see 			  	eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
      */
+    @Override
     public void addDescription(TaxonDescription description) {
         if (description.getTaxon() != null){
             description.getTaxon().removeDescription(description);
@@ -271,6 +273,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * @see     		  	#addDescription(TaxonDescription)
      * @see 			  	eu.etaxonomy.cdm.model.description.TaxonDescription#getTaxon()
      */
+    @Override
     public void removeDescription(TaxonDescription description) {
         //description.setTaxon(null) for not visible method
         Field field = ReflectionUtils.findField(TaxonDescription.class, "taxon", Taxon.class);
@@ -314,7 +317,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     protected void addTaxonNode(TaxonNode taxonNode){
         taxonNodes.add(taxonNode);
     }
-    
+
     public boolean removeTaxonNode(TaxonNode taxonNode){
     	if (!taxonNodes.contains(taxonNode)){
     		return false;
@@ -325,35 +328,35 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         }
         taxonNode.setTaxon(null);
         return taxonNodes.remove(taxonNode);
-        
+
     }
-    
+
     public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
     	TaxonNode parent = taxonNode.getParent();
-    	boolean success = true; 
-    	
+    	boolean success = true;
+
 		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
-			
+
 			taxonNode.delete();
-			
+
 		} else if (!taxonNode.isTopmostNode()){
 			List<TaxonNode> children =  taxonNode.getChildNodes();
-			
+
 			for (TaxonNode childNode: children){
-				
+
 				children.remove(childNode);
 				parent.addChildNode(childNode, null, null);
-				
-			}	
-			
+
+			}
+
 			taxonNode.delete();
-			
+
 		} else if (taxonNode.isTopmostNode()){
 			success = false;
 		}
 		return success;
     }
-    
+
     public boolean removeTaxonNodes(boolean deleteChildren){
     	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
     	TaxonNode node;
@@ -374,14 +377,14 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     					childNode.setParent(null);
     				}
     			}
-    			
+
     			for (int i = 0; i<node.getChildNodes().size(); i++){
     				node.removeChild(i);
     			}
-    			
-    			
+
+
     		}
-    		    		
+
     		removeNodes.add(node);
 	 	}
     	for (int i = 0; i<removeNodes.size(); i++){
@@ -391,7 +394,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     		removeTaxonNode(removeNode);
     	}
     	return success;
-    	
+
     }
 
 

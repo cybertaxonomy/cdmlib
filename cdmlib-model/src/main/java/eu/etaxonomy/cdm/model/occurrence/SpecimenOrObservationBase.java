@@ -88,20 +88,20 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Audited
 @Inheritance(strategy=InheritanceType.SINGLE_TABLE)
 @Table(appliesTo="SpecimenOrObservationBase", indexes = { @Index(name = "specimenOrObservationBaseTitleCacheIndex", columnNames = { "titleCache" }) })
-public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> 
+public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S>
 				implements IMultiLanguageTextHolder, IDescribable<DescriptionBase>  {
 	private static final long serialVersionUID = 6932680139334408031L;
 	private static final Logger logger = Logger.getLogger(SpecimenOrObservationBase.class);
 
 	/**
 	 * An indication of what the unit record describes.
-	 * 
+	 *
 	 * NOTE: The name of the attribute was chosen against the common naming conventions of the CDM
 	 * as it is well known in common standards like ABCD and DarwinCore. According to CDM naming
-	 * conventions it would specimenOrObservationType. 
-	 * 
+	 * conventions it would specimenOrObservationType.
+	 *
 	 * @see ABCD: DataSets/DataSet/Units/Unit/RecordBasis
-	 * @see Darwin Core: http://wiki.tdwg.org/twiki/bin/view/DarwinCore/BasisOfRecord 
+	 * @see Darwin Core: http://wiki.tdwg.org/twiki/bin/view/DarwinCore/BasisOfRecord
 	 */
 	@XmlAttribute(name ="RecordBasis")
 	@Column(name="recordBasis")
@@ -111,7 +111,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     )
 	private SpecimenOrObservationType recordBasis;
 
-	
+
 	@XmlElementWrapper(name = "Descriptions")
 	@XmlElement(name = "Description")
 	@OneToMany(mappedBy="describedSpecimenOrObservation", fetch = FetchType.LAZY)
@@ -119,8 +119,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @ContainedIn
     @NotNull
 	private Set<DescriptionBase> descriptions = new HashSet<DescriptionBase>();
-	
-	
+
+
 	@XmlElementWrapper(name = "Determinations")
 	@XmlElement(name = "Determination")
 	@OneToMany(mappedBy="identifiedUnit", orphanRemoval=true)
@@ -140,11 +140,11 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DefinedTerm lifeStage;
-	
+
 	/**
 	 * Part(s) of organism or class of materials represented by this unit.
 	 * Example: fruits, seeds, tissue, gDNA, leaves
-	 * 
+	 *
 	 * @see ABCD: DataSets/DataSet/Units/Unit/KindOfUnit
 	 * @see TermType#KindOfUnit
 	 */
@@ -181,12 +181,12 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.DELETE})
     @NotNull
 	protected Set<DerivationEvent> derivationEvents = new HashSet<DerivationEvent>();
-    
+
     @XmlAttribute(name = "publish")
     private boolean publish = true;
 
 
-//********************************** CONSTRUCTOR *********************************/	
+//********************************** CONSTRUCTOR *********************************/
 
   	//for hibernate use only
   	@Deprecated
@@ -197,8 +197,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		if (recordBasis == null){ throw new IllegalArgumentException("RecordBasis must not be null");}
 		this.recordBasis = recordBasis;
 	}
-	
-//************************* GETTER / SETTER ***********************/	
+
+//************************* GETTER / SETTER ***********************/
 
 	/**
 	 * @see #recordBasis
@@ -215,13 +215,13 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setRecordBasis(SpecimenOrObservationType recordBasis) {
 		this.recordBasis = recordBasis;
 	}
-	
+
 
 	/**
-	 * Returns the boolean value indicating if this specimen or observation should be withheld 
+	 * Returns the boolean value indicating if this specimen or observation should be withheld
 	 * (<code>publish=false</code>) or not (<code>publish=true</code>) during any publication
 	 * process to the general public.
-	 * This publish flag implementation is preliminary and may be replaced by a more general 
+	 * This publish flag implementation is preliminary and may be replaced by a more general
 	 * implementation of READ rights in future.<BR>
 	 * The default value is <code>true</code>.
 	 */
@@ -236,7 +236,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setPublish(boolean publish) {
 		this.publish = publish;
 	}
-	
+
 	/**
 	 * The descriptions this specimen or observation is part of.<BR>
 	 * A specimen can not only have it's own {@link SpecimenDescription specimen description }
@@ -245,7 +245,8 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * @see #getSpecimenDescriptions()
 	 * @return
 	 */
-	public Set<DescriptionBase> getDescriptions() {
+	@Override
+    public Set<DescriptionBase> getDescriptions() {
 		if(descriptions == null) {
 			this.descriptions = new HashSet<DescriptionBase>();
 		}
@@ -298,12 +299,13 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 		}
 		return specimenDescriptions;
 	}
-	
+
 	/**
 	 * Adds a new description to this specimen or observation
 	 * @param description
 	 */
-	public void addDescription(DescriptionBase description) {
+	@Override
+    public void addDescription(DescriptionBase description) {
 		if (description.getDescribedSpecimenOrObservation() != null){
 			description.getDescribedSpecimenOrObservation().removeDescription(description);
 		}
@@ -315,14 +317,15 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	 * Removes a specimen from a description (removes a description from this specimen)
 	 * @param description
 	 */
-	public void removeDescription(DescriptionBase description) {
+	@Override
+    public void removeDescription(DescriptionBase description) {
         boolean existed = descriptions.remove(description);
         if (existed){
         	description.setDescribedSpecimenOrObservation(null);
         }
 	}
 
-	
+
 	public Set<DerivationEvent> getDerivationEvents() {
 		if(derivationEvents == null) {
 			this.derivationEvents = new HashSet<DerivationEvent>();
@@ -373,7 +376,7 @@ public abstract class SpecimenOrObservationBase<S extends IIdentifiableEntityCac
 	public void setLifeStage(DefinedTerm lifeStage) {
 		this.lifeStage = lifeStage;
 	}
-	
+
 
 	/**
 	 * @see #kindOfUnit
