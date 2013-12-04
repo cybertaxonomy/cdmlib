@@ -263,9 +263,9 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	/**
-	 * @see #getBarcodeSequence()
+	 * @see #getBarcodeSequencePart()
 	 */
-	public void setBarcodeSequence(SequenceString barcodeSequencePart) {
+	public void setBarcodeSequencePart(SequenceString barcodeSequencePart) {
 		if (barcodeSequencePart == null){
 			barcodeSequencePart = SequenceString.NewInstance();
 		}
