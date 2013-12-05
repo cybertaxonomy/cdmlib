@@ -679,7 +679,12 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isTopmostNode(){
-        return parent == null;
+        if (classification != null){
+        	return classification.getChildNodes().contains(this);
+        } else {
+        	logger.warn("The node has no classification!");
+        	return false;
+        }
     }
 
     /**
