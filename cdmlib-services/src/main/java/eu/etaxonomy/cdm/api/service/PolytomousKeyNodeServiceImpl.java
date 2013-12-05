@@ -48,8 +48,11 @@ public class PolytomousKeyNodeServiceImpl  extends VersionableServiceBase<Polyto
 			PolytomousKeyNode parent = node.getParent();
 			for (PolytomousKeyNode child: children){
 				parent.addChild(child);
+				parent.removeChild(node);
+				dao.update(child);
 			}
 			
+			dao.update(node);
 		}
 		if (node.getParent()!= null){
 			node.getParent().removeChild(node);
