@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.database;
 
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -28,7 +29,11 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
 abstract class CdmDataSourceBase implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
-//	private static final int TIMEOUT = 10;
+	
+
+	
+
+	//	private static final int TIMEOUT = 10;
 	private Connection connection;
 	
 
@@ -230,4 +235,68 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			logger.error("Error closing the connection");
 		}
 	}
+	
+	// ************ javax.sql.DataSource base interfaces ********************/
+	
+	
+	@Override
+	public PrintWriter getLogWriter() throws SQLException {
+		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+		throw new UnsupportedOperationException("getLogWriter");
+	}
+
+
+	@Override
+	public void setLogWriter(PrintWriter out) throws SQLException {
+		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+		throw new UnsupportedOperationException("setLogWriter");
+	}
+
+
+	@Override
+	public void setLoginTimeout(int seconds) throws SQLException {
+		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+		throw new UnsupportedOperationException("setLoginTimeout");
+	}
+
+
+	@Override
+	public int getLoginTimeout() throws SQLException {
+		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+		return 0;
+	}
+
+
+	/* 
+	 * This is a preliminary implementation to be compliant with 
+	 * java.sql.Datasource (1.6). It may not be fully working.
+	 * Please let the developers know if this doesn't work.
+	 */
+	
+	//---------------------------------------------------------------------
+	// Implementation of JDBC 4.0's Wrapper interface
+	//---------------------------------------------------------------------
+
+	@SuppressWarnings("unchecked")
+	public <T> T unwrap(Class<T> iface) throws SQLException {
+		if (iface.isInstance(this)) {
+			return (T) this;
+		}
+		throw new SQLException("DataSource of type [" + getClass().getName() +
+				"] cannot be unwrapped as [" + iface.getName() + "]");
+	}
+
+	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+		return iface.isInstance(this);
+	}
+
+//
+//	//---------------------------------------------------------------------
+//	// Implementation of JDBC 4.1's getParentLogger method
+//	//---------------------------------------------------------------------
+//
+//	public Logger getParentLogger() {
+//		return Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+//	}
+	
 }
