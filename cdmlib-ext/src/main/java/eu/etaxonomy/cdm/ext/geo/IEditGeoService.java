@@ -44,6 +44,12 @@ public interface IEditGeoService {
      *
      * @param taxonDescriptions
      * 			A List of <code>TaxonDescription</code> holding the distribution data
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
@@ -59,14 +65,25 @@ public interface IEditGeoService {
      */
     public String getDistributionServiceRequestParameterString(
             List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-            int width, int height, String bbox, String backLayer,
+            int width,
+            int height,
+            String bbox,
+            String backLayer,
             List<Language> langs);
 
 
     /**
      *
      * @param distributions
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param presenceAbsenceTermColors
      * @param width
      * @param height
@@ -75,9 +92,10 @@ public interface IEditGeoService {
      * @param langs
      * @return
      */
-    public String getDistributionServiceRequestParameterString(Set<Distribution> distributions, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width,
-            int height, String bbox, String backLayer, List<Language> langs);
-
+    public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
+            boolean subAreaPreference, boolean statusOrderPreference,
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
+            String backLayer, List<Language> langs);
 
     /**
      * Retrieve a parameter string to pass to an EditGeoService endpoint
@@ -86,6 +104,12 @@ public interface IEditGeoService {
      *
      * @param description
      * 			The <code>TaxonDescription</code> holding the distribution data
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
@@ -102,6 +126,8 @@ public interface IEditGeoService {
      */
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription description,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
             int width,
             int height,

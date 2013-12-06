@@ -473,7 +473,30 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public <T extends DescriptionElementBase> Pager<T>  pageDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
-    public DistributionTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
+    /**
+     * @param taxonDescriptions
+     *
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection,
+     *            boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to
+     *            true, see {@link
+     *            DescriptionUtility#filterDistributions(Collection, boolean,
+     *            boolean}
+     * @param omitLevels
+     *            A Set NamedArea levels to omit - optional
+     * @param propertyPaths
+     *            the initialization strategy
+     * @return
+     */
+    public DistributionTree getOrderedDistributions(
+            Set<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<NamedAreaLevel> omitLevels,
+            List<String> propertyPaths);
 
     /**
       * Generate a string representation of the structured <code>description</code> supplied in natural language

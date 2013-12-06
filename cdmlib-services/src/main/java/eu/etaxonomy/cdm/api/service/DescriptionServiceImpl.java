@@ -64,6 +64,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @created 24.06.2008
  * @version 1.0
  */
+/**
+ * @author a.kohlbecker
+ * @date Dec 5, 2013
+ *
+ */
 @Service
 @Transactional(readOnly = true)
 public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionBase,IDescriptionDao> implements IDescriptionService {
@@ -279,11 +284,14 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
-
-
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getOrderedDistributions(java.util.Set, boolean, boolean, java.util.Set, java.util.List)
+     */
     @Override
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             Set<NamedAreaLevel> omitLevels,
             List<String> propertyPaths){
 
@@ -332,7 +340,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, false, false);
         distList.clear();
         distList.addAll(filteredDistributions);
 

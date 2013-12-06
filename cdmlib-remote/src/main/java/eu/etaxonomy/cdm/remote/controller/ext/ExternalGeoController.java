@@ -110,14 +110,23 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
      *
+     *
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param request
      * @param response
      * @return URI parameter Strings for the EDIT Map Service
-     * @throws IOException TODO write controller method documentation
+     * @throws IOException
      */
     @RequestMapping(value = { "taxonDistributionFor/{uuid}" }, method = RequestMethod.GET)
     public ModelAndView doGetDistributionMapUriParams(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -147,6 +156,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
 
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
+                subAreaPreference, statusOrderPreference,
                 presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
         mv.addObject(uriParams);
 

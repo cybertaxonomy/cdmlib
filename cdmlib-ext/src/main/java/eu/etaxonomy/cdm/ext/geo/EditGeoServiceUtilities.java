@@ -169,6 +169,12 @@ public class EditGeoServiceUtilities {
      *
      * @param distributions
      *            A set of distributions that should be shown on the map
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param presenceAbsenceTermColors
      *            A map that defines the colors of PresenceAbsenceTerms. The
      *            PresenceAbsenceTerms are defined by their uuid. If a
@@ -196,6 +202,8 @@ public class EditGeoServiceUtilities {
     @Transient
     public static String getDistributionServiceRequestParameterString(
             Set<Distribution> distributions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             IGeoServiceAreaMapping mapping,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
             int width,
@@ -234,7 +242,7 @@ public class EditGeoServiceUtilities {
             return "";
         }
 
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference);
 
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
         List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();

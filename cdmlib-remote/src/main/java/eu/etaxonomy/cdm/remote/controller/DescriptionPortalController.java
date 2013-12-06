@@ -20,7 +20,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -110,7 +109,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAnnotations() - " + request.getRequestURI());
+        logger.info("getAnnotations() - " + requestPathAndQuery(request) );
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
@@ -121,7 +120,13 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
      * redundant output of distribution.area
      *
      * @param descriptionUuidList
-     * @param levels
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param omitLevels
      * @param request
      * @param response
      * @return
@@ -129,9 +134,14 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     @RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
     public DistributionTree doGetOrderedDistributionsB(
             @PathVariable("uuid_list") UuidList descriptionUuidList,
-            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
-            HttpServletRequest request, HttpServletResponse response) {
-        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getRequestURI());
+            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        logger.info("getOrderedDistributionsB() - " + requestPathAndQuery(request) );
+
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {
@@ -140,7 +150,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             taxonDescriptions.add(description);
         }
         logger.debug("  get ordered distributions ");
-        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
+        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, subAreaPreference, statusOrderPreference,
+                omitLevels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
         if (logger.isDebugEnabled()){ logger.debug("done");}
         return distTree;
     }

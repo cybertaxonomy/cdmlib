@@ -91,13 +91,16 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
             String backLayer, List<Language> langs) {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
             List<Distribution> result = (List) dao.getDescriptionElements(
-                    taxonDescription, null,
+                    taxonDescription,
+                    null,
                     getDistributionFeatures(),
                     Distribution.class,
                     null,
@@ -106,7 +109,10 @@ public class EditGeoService implements IEditGeoService {
             distributions.addAll(result);
         }
 
-        String uriParams = getDistributionServiceRequestParameterString(distributions, presenceAbsenceTermColors,
+        String uriParams = getDistributionServiceRequestParameterString(distributions,
+                subAreaPreference,
+                statusOrderPreference,
+                presenceAbsenceTermColors,
                 width, height, bbox, backLayer, langs);
 
         return uriParams;
@@ -117,14 +123,22 @@ public class EditGeoService implements IEditGeoService {
      * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#getDistributionServiceRequestParameterString(java.util.Set, java.util.Map, int, int, java.lang.String, java.lang.String, java.util.List)
      */
     @Override
-    public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
+    public String getDistributionServiceRequestParameterString(
+            Set<Distribution> distributions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            int width,
+            int height,
+            String bbox,
             String backLayer, List<Language> langs) {
 
 //        if (backLayer == null) {
 //            backLayer = DEFAULT_BACK_LAYER;
 //        }
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
+                subAreaPreference,
+                statusOrderPreference,
                 areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
         return uriParams;
     }
@@ -140,13 +154,18 @@ public class EditGeoService implements IEditGeoService {
     @Override
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
             String backLayer, List<Language> langs) {
 
         List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
         taxonDescriptions.add(taxonDescription);
 
-        return getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width,
+        return getDistributionServiceRequestParameterString(taxonDescriptions,
+                subAreaPreference,
+                statusOrderPreference,
+                presenceAbsenceTermColors, width,
                 height, bbox, backLayer, langs);
     }
 
