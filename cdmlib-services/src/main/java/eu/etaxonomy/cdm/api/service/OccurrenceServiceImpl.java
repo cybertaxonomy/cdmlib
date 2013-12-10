@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.api.service;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -366,6 +367,37 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             luceneSearch.setHighlightFields(queryFactory.getTextFieldNamesAsArray());
         }
         return luceneSearch;
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getFieldUnits(eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
+     */
+    @Override
+    public Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
+        //FIXME: use HQL queries to increase performance
+        Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
+        getFieldUnits(derivedUnit, fieldUnits);
+        return fieldUnits;
+    }
+
+
+    /**
+     * @param original
+     * @param fieldUnits
+     */
+    private void getFieldUnits(DerivedUnit derivedUnit, Collection<FieldUnit> fieldUnits) {
+        Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
+        if(originals!=null && !originals.isEmpty()){
+            for(SpecimenOrObservationBase<?> original:originals){
+                if(original instanceof FieldUnit){
+                    fieldUnits.add((FieldUnit) original);
+                }
+                else if(original instanceof DerivedUnit){
+                    getFieldUnits((DerivedUnit) original, fieldUnits);
+                }
+            }
+        }
     }
 
 }

@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 
@@ -193,6 +194,15 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link FieldUnit}s for the given {@link DerivedUnit}.<br>
+     * It will search for all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
+     *  from which this DerivedUnit was derived.
+     * @param derivedUnit the derived unit for which the
+     * @return a collection of FieldUnits this DerivedUnit was derived from or an empty collection if no FieldUnits were found
+     */
+    public Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit);
 
     /**
      * @param clazz
