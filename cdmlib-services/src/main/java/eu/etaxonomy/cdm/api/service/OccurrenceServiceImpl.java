@@ -19,6 +19,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
@@ -374,10 +375,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
      * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#getFieldUnits(eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
      */
     @Override
-    public Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit) {
+    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid) {
+        //It will search recursively over all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
+        //from which this DerivedUnit was derived until all FieldUnits are found.
+
         //FIXME: use HQL queries to increase performance
         Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
-        getFieldUnits(derivedUnit, fieldUnits);
+        SpecimenOrObservationBase derivedUnit = load(derivedUnitUuid);
+        if(derivedUnit instanceof DerivedUnit){
+            getFieldUnits((DerivedUnit) derivedUnit, fieldUnits);
+        }
         return fieldUnits;
     }
 

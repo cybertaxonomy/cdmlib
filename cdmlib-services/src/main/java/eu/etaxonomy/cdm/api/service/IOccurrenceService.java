@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -196,13 +197,11 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Retrieves all {@link FieldUnit}s for the given {@link DerivedUnit}.<br>
-     * It will search for all {@link DerivationEvent}s and get the "originals" ({@link SpecimenOrObservationBase})
-     *  from which this DerivedUnit was derived.
-     * @param derivedUnit the derived unit for which the
+     * Retrieves all {@link FieldUnit}s for the {@link DerivedUnit} with the given {@link UUID}.<br>
+     * @param derivedUnitUuid the UUID of the derived unit
      * @return a collection of FieldUnits this DerivedUnit was derived from or an empty collection if no FieldUnits were found
      */
-    public Collection<FieldUnit> getFieldUnits(DerivedUnit derivedUnit);
+    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid);
 
     /**
      * @param clazz
