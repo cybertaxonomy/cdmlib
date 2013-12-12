@@ -37,7 +37,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  * @author a.mueller
  *
  */
-@Service
+@Service("databaseService")
 @Transactional(readOnly = true)
 public class DatabaseServiceHibernateImpl  implements IDatabaseService, ApplicationContextAware {
 	private static final Logger logger = Logger.getLogger(DatabaseServiceHibernateImpl.class);

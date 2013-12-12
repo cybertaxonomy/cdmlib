@@ -65,7 +65,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @version 1.0
  */
 @Component
-public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfiguration, ApplicationContextAware {
+public class CdmApplicationDefaultConfiguration implements ICdmApplicationLocalConfiguration, ApplicationContextAware {
     private static final Logger logger = Logger.getLogger(CdmApplicationDefaultConfiguration.class);
 
     protected ApplicationContext applicationContext;

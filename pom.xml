@@ -1239,6 +1239,7 @@
                 <artifactId>org.springframework.context.support</artifactId>
                 <version>${spring.version}</version>
             </dependency> -->
+
             <dependency>
                 <groupId>org.springframework</groupId>
                 <artifactId>spring-context-support</artifactId>
@@ -1249,6 +1250,17 @@
                 <artifactId>org.springframework.oxm</artifactId>
                 <version>${spring.version}</version>
             </dependency>
+			<dependency>
+				<groupId>org.springframework.security</groupId>
+				<artifactId>spring-security-remoting</artifactId>
+				<version>${spring-security.version}</version>
+				<exclusions>
+                  <exclusion>
+                    <groupId>org.springframework</groupId>
+                  	<artifactId>spring-web</artifactId>
+                  </exclusion>
+                </exclusions>
+			</dependency>            
             <dependency>
                 <groupId>org.springframework.security</groupId>
                 <artifactId>spring-security-core</artifactId>

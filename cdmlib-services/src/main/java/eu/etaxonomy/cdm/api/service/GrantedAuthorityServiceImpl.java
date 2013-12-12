@@ -23,7 +23,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IGrantedAuthorityDao;
  * @date Sep 13, 2012
  *
  */
-@Service
+@Service("grantedAuthorityService")
 @Transactional(readOnly = true)
 @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
 public class GrantedAuthorityServiceImpl extends ServiceBase<GrantedAuthorityImpl, IGrantedAuthorityDao> implements IGrantedAuthorityService {

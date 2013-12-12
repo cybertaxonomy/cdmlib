@@ -1450,6 +1450,7 @@ cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hibernate.cfg.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/hsql-datasource.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/persistence_security.xml -text
+cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/remoting_persistence_security.xml -text
 cdmlib-persistence/src/main/resources/eu/etaxonomy/cdm/spelling.xml -text
 cdmlib-persistence/src/main/resources/log4j.properties -text
 cdmlib-persistence/src/main/resources/spy.properties -text
@@ -1993,11 +1994,16 @@ cdmlib-services/README.TXT -text
 cdmlib-services/pom.xml -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationController.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationDefaultConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationRemoteController.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationRemoteDefaultConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/FirstDataInserter.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationLocalConfiguration.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationRemoteConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolderMock.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategy.java -text
@@ -2151,7 +2157,12 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/DescriptionUtility.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/config.properties -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpInvokerServiceClients.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpInvokerServices.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/remotingApplicationContext.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/remoting_services_security.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services_security.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
