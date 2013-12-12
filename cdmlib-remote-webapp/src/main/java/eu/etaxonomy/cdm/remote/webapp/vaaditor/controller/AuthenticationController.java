@@ -26,6 +26,11 @@ import org.apache.log4j.Logger;
 
 /**
  * 
+ * This class handles the whole login procedure with the spring security layer.
+ * There are still some issues to be solved concerning session handling, see ticket
+ * {@link http://dev.e-taxonomy.eu/trac/ticket/3830}.<p>
+ * 
+ * 
  * @author a.oppermann
  *
  */

@@ -15,6 +15,11 @@ import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.ErrorView;
 /**
  * 
  * @author a.oppermann
+ * 
+ * This class is the entry point for the Vaadin Application.
+ * The UI Session,different Views and more get initialized here. 
+ * The navigator auto-discovers all the views by looking for 
+ * the @VaadinView Annotation at the beginning of each class. 
  *
  */
 @Component

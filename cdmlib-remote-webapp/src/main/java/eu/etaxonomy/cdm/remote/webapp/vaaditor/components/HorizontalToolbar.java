@@ -24,6 +24,8 @@ import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationControll
 
 /**
  * 
+ * This component creates a simple toolbar. It also makes use of the AuthenticationController.
+ * 
  * @author a.oppermann
  *
  */
@@ -36,15 +38,12 @@ public class HorizontalToolbar extends HorizontalLayout{
 	/**
 	 * automatically generated ID
 	 */
-	
+	private static final long serialVersionUID = 5344340511582993289L;
 	
 	@Autowired
 	private AuthenticationController authenticationController;
 	
-	private static final long serialVersionUID = 5344340511582993289L;
 	private final Button editButton = new Button("Edit");
-
-
 
 	private final Button logoutButton= new Button("Logout");
 

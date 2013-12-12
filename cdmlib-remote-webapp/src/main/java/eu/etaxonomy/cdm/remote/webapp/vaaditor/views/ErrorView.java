@@ -1,7 +1,5 @@
 package eu.etaxonomy.cdm.remote.webapp.vaaditor.views;
 
-import java.security.GeneralSecurityException;
-
 import javax.annotation.PostConstruct;
 
 import org.springframework.context.annotation.Scope;
@@ -13,16 +11,15 @@ import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.ExternalResource;
 import com.vaadin.server.Page;
-import com.vaadin.server.VaadinRequest;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinServletResponse;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Link;
 import com.vaadin.ui.VerticalLayout;
 
 /**
+ * 
+ * This view is intended to be the default error view. It doesn't work yet as intended, but it will be only
+ * a matter of time until the right wiring is found, so this view will serve its purpose in the near future.
  * 
  * @author a.oppermann
  *

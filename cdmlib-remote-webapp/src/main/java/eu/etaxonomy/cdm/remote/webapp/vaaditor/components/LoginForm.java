@@ -29,6 +29,11 @@ import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.DashBoardView;
 
 /**
  * 
+ * 
+ * Yet another component, which creates a simple login form layout. It makes use of the 
+ * AuthenticationController.
+ * 
+ * 
  * @author a.oppermann
  *
  */

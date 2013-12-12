@@ -32,6 +32,9 @@ import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.LoginForm;
 
 /**
  * 
+ * This view displays the login screen and makes use of the LoginForm component.
+ * It will be displayed as the first view, because it has an empty NAME string.
+ * 
  * @author a.oppermann
  *
  */
@@ -59,10 +62,9 @@ public class LoginView extends CustomComponent implements View{
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		Page page = Page.getCurrent();
-//		layout.setHeight(page.getBrowserWindowHeight()+"px");
-//		layout.setMargin(new MarginInfo(true, true, false, true));
 
 		HorizontalLayout hLayout = new HorizontalLayout();
+		//TODO: Quick'n'dirty hack, better solutions are possible
 		int hh = page.getBrowserWindowHeight()-300;
 		setHeight(hh +"px");
 		
