@@ -63,9 +63,9 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 				return 	connection;
 			}
 		} catch (ClassNotFoundException e) {
-			logger.error("Database driver class could not be loaded\n" + "Exception: " + e.toString());
+			throw new RuntimeException("Database driver class could not be loaded\n" + "Exception: " + e.toString(),e);
 		} catch(SQLException e) {
-			logger.error("Problems with database connection\n" + "Exception: " + e.toString());
+			throw new RuntimeException("Problems with database connection\n" + "Exception: " + e.toString(), e);
 		}
 		return null;
 	}
@@ -290,13 +290,15 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		return iface.isInstance(this);
 	}
 
-//
-//	//---------------------------------------------------------------------
-//	// Implementation of JDBC 4.1's getParentLogger method
-//	//---------------------------------------------------------------------
-//
-//	public Logger getParentLogger() {
-//		return Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
-//	}
+
+	//---------------------------------------------------------------------
+	// Implementation of JDBC 4.1's getParentLogger method
+	// Required in Java >=7.x
+	//---------------------------------------------------------------------
+
+	public Logger getParentLogger() {
+		//copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
+		return Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+	}
 	
 }
