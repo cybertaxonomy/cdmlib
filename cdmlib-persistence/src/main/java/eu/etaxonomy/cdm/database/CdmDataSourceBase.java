@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License VeresultSetion 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -29,20 +29,22 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
 abstract class CdmDataSourceBase implements ICdmDataSource {
 	private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
-	
 
-	
+
+
 
 	//	private static final int TIMEOUT = 10;
 	private Connection connection;
-	
 
-	public Connection getConnection() throws SQLException {
+
+	@Override
+    public Connection getConnection() throws SQLException {
 		return getConnection(getUsername(), getPassword());
 	}
-	
 
-	public Connection getConnection(String username, String password) throws SQLException {
+
+	@Override
+    public Connection getConnection(String username, String password) throws SQLException {
 		try {
 			if(connection != null){
 				boolean isValid = true;
@@ -74,7 +76,8 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
 	 */
-	public boolean testConnection() throws ClassNotFoundException, SQLException {
+	@Override
+    public boolean testConnection() throws ClassNotFoundException, SQLException {
 
 		IDatabaseType dbType = getDatabaseType().getDatabaseType();
 		String classString = dbType.getClassString();
@@ -84,13 +87,13 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		if (connection != null){
 			return true;
 		}
-		
+
 		return false;
 	}
 
 	@Override
 	public Object getSingleValue(String query) throws SQLException{
-		String queryString = query == null? "(null)": query;  
+		String queryString = query == null? "(null)": query;
 		ResultSet resultSet = executeQuery(query);
 		if (resultSet == null || resultSet.next() == false){
 			logger.info("No record returned for query " +  queryString);
@@ -107,12 +110,12 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		}
 		return object;
 	}
-	
-	
+
+
     /**
      * Executes a query and returns the ResultSet.
      * @return ResultSet for the query.
-     * @throws SQLException 
+     * @throws SQLException
      */
 	@Override
 	public ResultSet executeQuery (String query) throws SQLException {
@@ -132,14 +135,14 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 		return resultSet;
 
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#executeUpdate(java.lang.String)
 	 */
 	@Override
 	public int executeUpdate (String sqlUpdate) throws SQLException{
-		
+
 		int result;
 		Connection connection = null;
 		try {
@@ -163,7 +166,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			throw e;
 		}
 	}
-	
+
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#startTransaction()
@@ -194,7 +197,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			throw e;
 		}
 	}
-	
+
 	@Override
 	public void rollback() throws SQLException {
 		try {
@@ -205,7 +208,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			throw e;
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getMetaData()
 	 */
@@ -220,7 +223,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			return null;
 		}
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#closeOpenConnections()
 	 */
@@ -235,10 +238,10 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 			logger.error("Error closing the connection");
 		}
 	}
-	
+
 	// ************ javax.sql.DataSource base interfaces ********************/
-	
-	
+
+
 	@Override
 	public PrintWriter getLogWriter() throws SQLException {
 		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
@@ -267,17 +270,18 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	}
 
 
-	/* 
-	 * This is a preliminary implementation to be compliant with 
+	/*
+	 * This is a preliminary implementation to be compliant with
 	 * java.sql.Datasource (1.6). It may not be fully working.
 	 * Please let the developers know if this doesn't work.
 	 */
-	
+
 	//---------------------------------------------------------------------
 	// Implementation of JDBC 4.0's Wrapper interface
 	//---------------------------------------------------------------------
 
-	@SuppressWarnings("unchecked")
+	@Override
+    @SuppressWarnings("unchecked")
 	public <T> T unwrap(Class<T> iface) throws SQLException {
 		if (iface.isInstance(this)) {
 			return (T) this;
@@ -286,7 +290,8 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 				"] cannot be unwrapped as [" + iface.getName() + "]");
 	}
 
-	public boolean isWrapperFor(Class<?> iface) throws SQLException {
+	@Override
+    public boolean isWrapperFor(Class<?> iface) throws SQLException {
 		return iface.isInstance(this);
 	}
 
@@ -296,9 +301,9 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 	// Required in Java >=7.x
 	//---------------------------------------------------------------------
 
-	public Logger getParentLogger() {
+	public java.util.logging.Logger getParentLogger() {
 		//copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
-		return Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+		return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
 	}
-	
+
 }
