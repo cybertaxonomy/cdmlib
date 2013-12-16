@@ -114,7 +114,7 @@ public class CdmDataSource extends CdmDataSourceBase {
 		//FIXME in work
 		int port = -1;
 		H2Mode mode = H2Mode.EMBEDDED;
-		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, null, mode, code);
+		CdmDataSource dataSource = new CdmDataSource(DatabaseTypeEnum.H2, null, database, port, username, password, filePath, mode, code);
 		return dataSource;
 	}
 
