@@ -32,10 +32,10 @@ public class CdmApplicationUtils {
 //	static final String MUST_EXIST_FILE = "applicationContext.xml";
 
     /**
-     * Returns the directory path to the writable resources (cdm.datasources.xml and hsqldb databases).
+     * Returns the directory path to the writable resources (cdm.datasources.xml and H2 databases).
      * (Resources must be copied to this directory, this is automatically done for the cdm.datasources.xml)
      * @return
-     * @throws IOException if resource dir is not writable
+     * @throws IOException if resource directory is not writable
      */
     public static File getWritableResourceDir() throws IOException{
         //compute only once
