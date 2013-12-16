@@ -27,7 +27,7 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
  * @veresultSetion 1.0
  */
 abstract class CdmDataSourceBase implements ICdmDataSource {
-	
+
 
     private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
@@ -36,13 +36,13 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     private Connection connection;
 
 
-	@Override
+    @Override
     public Connection getConnection() throws SQLException {
         return getConnection(getUsername(), getPassword());
     }
 
 
-	@Override
+    @Override
     public Connection getConnection(String username, String password) throws SQLException {
         try {
             if(connection != null){
@@ -75,7 +75,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
      */
-	@Override
+    @Override
     public boolean testConnection() throws ClassNotFoundException, SQLException {
 
         IDatabaseType dbType = getDatabaseType().getDatabaseType();
@@ -92,7 +92,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
 
     @Override
     public Object getSingleValue(String query) throws SQLException{
-		String queryString = query == null? "(null)": query;
+        String queryString = query == null? "(null)": query;
         ResultSet resultSet = executeQuery(query);
         if (resultSet == null || resultSet.next() == false){
             logger.info("No record returned for query " +  queryString);
@@ -269,8 +269,8 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     }
 
 
-	/*
-	 * This is a preliminary implementation to be compliant with
+    /*
+     * This is a preliminary implementation to be compliant with
      * java.sql.Datasource (1.6). It may not be fully working.
      * Please let the developers know if this doesn't work.
      */
@@ -279,7 +279,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     // Implementation of JDBC 4.0's Wrapper interface
     //---------------------------------------------------------------------
 
-	@Override
+    @Override
     @SuppressWarnings("unchecked")
     public <T> T unwrap(Class<T> iface) throws SQLException {
         if (iface.isInstance(this)) {
@@ -289,7 +289,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
                 "] cannot be unwrapped as [" + iface.getName() + "]");
     }
 
-	@Override
+    @Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
         return iface.isInstance(this);
     }
@@ -298,12 +298,13 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     //---------------------------------------------------------------------
     // Implementation of JDBC 4.1's getParentLogger method
     // Required in Java >=7.x
+    // must not have the @Override annotation for compatibility with
+    // java 1.6
     //---------------------------------------------------------------------
 
-   @Override
     public java.util.logging.Logger getParentLogger() {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
-		return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
+        return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     }
 
 }
