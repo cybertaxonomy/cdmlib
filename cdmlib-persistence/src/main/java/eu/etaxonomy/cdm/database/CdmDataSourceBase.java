@@ -27,89 +27,88 @@ import eu.etaxonomy.cdm.database.types.IDatabaseType;
  * @veresultSetion 1.0
  */
 abstract class CdmDataSourceBase implements ICdmDataSource {
-	private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
+	
+
+    private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
 
 
-
-
-
-	//	private static final int TIMEOUT = 10;
-	private Connection connection;
+    //	private static final int TIMEOUT = 10;
+    private Connection connection;
 
 
 	@Override
     public Connection getConnection() throws SQLException {
-		return getConnection(getUsername(), getPassword());
-	}
+        return getConnection(getUsername(), getPassword());
+    }
 
 
 	@Override
     public Connection getConnection(String username, String password) throws SQLException {
-		try {
-			if(connection != null){
-				boolean isValid = true;
+        try {
+            if(connection != null){
+                boolean isValid = true;
 //				try{
 //					isValid = connection.isValid(TIMEOUT);
 //				} catch (java.lang.AbstractMethodError e){
 //					logger.error("Problems with Connection.isValid method\n" + "Exception: " + e.toString());
 //				}
-				if (isValid){
-					return connection;
-				}
-			}else{
-				IDatabaseType dbType = getDatabaseType().getDatabaseType();
-				String classString = dbType.getClassString();
-				Class.forName(classString);
-				String mUrl = dbType.getConnectionString(this);
-				Connection connection = DriverManager.getConnection(mUrl, username, password);
-				return 	connection;
-			}
-		} catch (ClassNotFoundException e) {
-			throw new RuntimeException("Database driver class could not be loaded\n" + "Exception: " + e.toString(),e);
-		} catch(SQLException e) {
-			throw new RuntimeException("Problems with database connection\n" + "Exception: " + e.toString(), e);
-		}
-		return null;
-	}
+                if (isValid){
+                    return connection;
+                }
+            }else{
+                IDatabaseType dbType = getDatabaseType().getDatabaseType();
+                String classString = dbType.getClassString();
+                Class.forName(classString);
+                String mUrl = dbType.getConnectionString(this);
+                Connection connection = DriverManager.getConnection(mUrl, username, password);
+                return 	connection;
+            }
+        } catch (ClassNotFoundException e) {
+            throw new RuntimeException("Database driver class could not be loaded\n" + "Exception: " + e.toString(),e);
+        } catch(SQLException e) {
+            throw new RuntimeException("Problems with database connection\n" + "Exception: " + e.toString(), e);
+        }
+        return null;
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
-	 */
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
+     */
 	@Override
     public boolean testConnection() throws ClassNotFoundException, SQLException {
 
-		IDatabaseType dbType = getDatabaseType().getDatabaseType();
-		String classString = dbType.getClassString();
-		Class.forName(classString);
-		String mUrl = dbType.getConnectionString(this);
-		Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
-		if (connection != null){
-			return true;
-		}
+        IDatabaseType dbType = getDatabaseType().getDatabaseType();
+        String classString = dbType.getClassString();
+        Class.forName(classString);
+        String mUrl = dbType.getConnectionString(this);
+        Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
+        if (connection != null){
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	@Override
-	public Object getSingleValue(String query) throws SQLException{
+    @Override
+    public Object getSingleValue(String query) throws SQLException{
 		String queryString = query == null? "(null)": query;
-		ResultSet resultSet = executeQuery(query);
-		if (resultSet == null || resultSet.next() == false){
-			logger.info("No record returned for query " +  queryString);
-			return null;
-		}
-		if (resultSet.getMetaData().getColumnCount() != 1){
-			logger.info("More than one column selected in query" +  queryString);
-			//first value will be taken
-		}
-		Object object = resultSet.getObject(1);
-		if (resultSet.next()){
-			logger.info("Multiple results for query " +  queryString);
-			//first row will be taken
-		}
-		return object;
-	}
+        ResultSet resultSet = executeQuery(query);
+        if (resultSet == null || resultSet.next() == false){
+            logger.info("No record returned for query " +  queryString);
+            return null;
+        }
+        if (resultSet.getMetaData().getColumnCount() != 1){
+            logger.info("More than one column selected in query" +  queryString);
+            //first value will be taken
+        }
+        Object object = resultSet.getObject(1);
+        if (resultSet.next()){
+            logger.info("Multiple results for query " +  queryString);
+            //first row will be taken
+        }
+        return object;
+    }
 
 
     /**
@@ -117,193 +116,194 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
      * @return ResultSet for the query.
      * @throws SQLException
      */
-	@Override
-	public ResultSet executeQuery (String query) throws SQLException {
+    @Override
+    public ResultSet executeQuery (String query) throws SQLException {
 
-		ResultSet resultSet;
+        ResultSet resultSet;
 
-		if (query == null){
-			return null;
-		}
-		Connection connection = getConnection();
-		if (connection != null){
-			Statement statement = connection.createStatement();
-			resultSet = statement.executeQuery(query);
-		}else{
-			throw new RuntimeException("Could not establish connection to database");
-		}
-		return resultSet;
+        if (query == null){
+            return null;
+        }
+        Connection connection = getConnection();
+        if (connection != null){
+            Statement statement = connection.createStatement();
+            resultSet = statement.executeQuery(query);
+        }else{
+            throw new RuntimeException("Could not establish connection to database");
+        }
+        return resultSet;
 
-	}
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#executeUpdate(java.lang.String)
-	 */
-	@Override
-	public int executeUpdate (String sqlUpdate) throws SQLException{
-
-		int result;
-		Connection connection = null;
-		try {
-			if (sqlUpdate == null){
-				return 0;
-			}
-			connection = getConnection();
-			Statement statement = connection.createStatement();
-			result = statement.executeUpdate(sqlUpdate);
-			return result;
-		} catch(SQLException e) {
-			try{
-				if (! connection.getAutoCommit()){
-					connection.rollback();
-				}
-			}catch (SQLException ex){
-				//do nothing -  maybe throw RuntimeException in future
-				throw new RuntimeException(ex);
-			}
-			logger.error("Problems when executing update\n  " + sqlUpdate + " \n" + "Exception: " + e);
-			throw e;
-		}
-	}
+    }
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#startTransaction()
-	 */
-	@Override
-	public void startTransaction() {
-		try {
-			Connection connection = getConnection();
-			this.connection = connection;
-			connection.setAutoCommit(false);
-			return;
-		} catch(SQLException e) {
-			logger.error("Problems when starting transaction \n" + "Exception: " + e);
-			return;
-		}
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.ICdmDataSource#executeUpdate(java.lang.String)
+     */
+    @Override
+    public int executeUpdate (String sqlUpdate) throws SQLException{
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#commitTransaction()
-	 */
-	@Override
-	public void commitTransaction() throws SQLException {
-		try {
-			Connection connection = getConnection();
-			connection.commit();
-	    } catch(SQLException e) {
-			logger.error("Problems when commiting transaction \n" + "Exception: " + e);
-			throw e;
-		}
-	}
-
-	@Override
-	public void rollback() throws SQLException {
-		try {
-			Connection connection = getConnection();
-			connection.rollback();
-	    } catch(SQLException e) {
-			logger.error("Problems when rolling back transaction \n" + "Exception: " + e);
-			throw e;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getMetaData()
-	 */
-	@Override
-	public DatabaseMetaData getMetaData() {
-		Connection connection = null;
-		try {
-			connection = getConnection();
-			return connection.getMetaData();
-		} catch (SQLException e) {
-			logger.error("Could not get metadata for datasource", e);
-			return null;
-		}
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#closeOpenConnections()
-	 */
-	@Override
-	public void closeOpenConnections() {
-		try {
-			if(connection != null && !connection.isClosed()){
-				connection.close();
-				connection = null;
-			}
-		} catch (SQLException e) {
-			logger.error("Error closing the connection");
-		}
-	}
-
-	// ************ javax.sql.DataSource base interfaces ********************/
+        int result;
+        Connection connection = null;
+        try {
+            if (sqlUpdate == null){
+                return 0;
+            }
+            connection = getConnection();
+            Statement statement = connection.createStatement();
+            result = statement.executeUpdate(sqlUpdate);
+            return result;
+        } catch(SQLException e) {
+            try{
+                if (! connection.getAutoCommit()){
+                    connection.rollback();
+                }
+            }catch (SQLException ex){
+                //do nothing -  maybe throw RuntimeException in future
+                throw new RuntimeException(ex);
+            }
+            logger.error("Problems when executing update\n  " + sqlUpdate + " \n" + "Exception: " + e);
+            throw e;
+        }
+    }
 
 
-	@Override
-	public PrintWriter getLogWriter() throws SQLException {
-		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
-		throw new UnsupportedOperationException("getLogWriter");
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.ICdmDataSource#startTransaction()
+     */
+    @Override
+    public void startTransaction() {
+        try {
+            Connection connection = getConnection();
+            this.connection = connection;
+            connection.setAutoCommit(false);
+            return;
+        } catch(SQLException e) {
+            logger.error("Problems when starting transaction \n" + "Exception: " + e);
+            return;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.ICdmDataSource#commitTransaction()
+     */
+    @Override
+    public void commitTransaction() throws SQLException {
+        try {
+            Connection connection = getConnection();
+            connection.commit();
+        } catch(SQLException e) {
+            logger.error("Problems when commiting transaction \n" + "Exception: " + e);
+            throw e;
+        }
+    }
+
+    @Override
+    public void rollback() throws SQLException {
+        try {
+            Connection connection = getConnection();
+            connection.rollback();
+        } catch(SQLException e) {
+            logger.error("Problems when rolling back transaction \n" + "Exception: " + e);
+            throw e;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.ICdmDataSource#getMetaData()
+     */
+    @Override
+    public DatabaseMetaData getMetaData() {
+        Connection connection = null;
+        try {
+            connection = getConnection();
+            return connection.getMetaData();
+        } catch (SQLException e) {
+            logger.error("Could not get metadata for datasource", e);
+            return null;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.database.ICdmDataSource#closeOpenConnections()
+     */
+    @Override
+    public void closeOpenConnections() {
+        try {
+            if(connection != null && !connection.isClosed()){
+                connection.close();
+                connection = null;
+            }
+        } catch (SQLException e) {
+            logger.error("Error closing the connection");
+        }
+    }
+
+    // ************ javax.sql.DataSource base interfaces ********************/
 
 
-	@Override
-	public void setLogWriter(PrintWriter out) throws SQLException {
-		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
-		throw new UnsupportedOperationException("setLogWriter");
-	}
+    @Override
+    public PrintWriter getLogWriter() throws SQLException {
+        //implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+        throw new UnsupportedOperationException("getLogWriter");
+    }
 
 
-	@Override
-	public void setLoginTimeout(int seconds) throws SQLException {
-		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
-		throw new UnsupportedOperationException("setLoginTimeout");
-	}
+    @Override
+    public void setLogWriter(PrintWriter out) throws SQLException {
+        //implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+        throw new UnsupportedOperationException("setLogWriter");
+    }
 
 
-	@Override
-	public int getLoginTimeout() throws SQLException {
-		//implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
-		return 0;
-	}
+    @Override
+    public void setLoginTimeout(int seconds) throws SQLException {
+        //implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+        throw new UnsupportedOperationException("setLoginTimeout");
+    }
+
+
+    @Override
+    public int getLoginTimeout() throws SQLException {
+        //implementations copied from org.springframework.jdbc.datasource.AbstractDataSource;
+        return 0;
+    }
 
 
 	/*
 	 * This is a preliminary implementation to be compliant with
-	 * java.sql.Datasource (1.6). It may not be fully working.
-	 * Please let the developers know if this doesn't work.
-	 */
+     * java.sql.Datasource (1.6). It may not be fully working.
+     * Please let the developers know if this doesn't work.
+     */
 
-	//---------------------------------------------------------------------
-	// Implementation of JDBC 4.0's Wrapper interface
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // Implementation of JDBC 4.0's Wrapper interface
+    //---------------------------------------------------------------------
 
 	@Override
     @SuppressWarnings("unchecked")
-	public <T> T unwrap(Class<T> iface) throws SQLException {
-		if (iface.isInstance(this)) {
-			return (T) this;
-		}
-		throw new SQLException("DataSource of type [" + getClass().getName() +
-				"] cannot be unwrapped as [" + iface.getName() + "]");
-	}
+    public <T> T unwrap(Class<T> iface) throws SQLException {
+        if (iface.isInstance(this)) {
+            return (T) this;
+        }
+        throw new SQLException("DataSource of type [" + getClass().getName() +
+                "] cannot be unwrapped as [" + iface.getName() + "]");
+    }
 
 	@Override
     public boolean isWrapperFor(Class<?> iface) throws SQLException {
-		return iface.isInstance(this);
-	}
+        return iface.isInstance(this);
+    }
 
 
-	//---------------------------------------------------------------------
-	// Implementation of JDBC 4.1's getParentLogger method
-	// Required in Java >=7.x
-	//---------------------------------------------------------------------
+    //---------------------------------------------------------------------
+    // Implementation of JDBC 4.1's getParentLogger method
+    // Required in Java >=7.x
+    //---------------------------------------------------------------------
 
-	public java.util.logging.Logger getParentLogger() {
-		//copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
+   @Override
+    public java.util.logging.Logger getParentLogger() {
+        //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
 		return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
-	}
+    }
 
 }
