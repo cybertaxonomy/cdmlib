@@ -94,6 +94,7 @@ public class GenericRemoteTester {
                 descriptionUuidList,
                 subAreaPreference ,
                 statusOrderPreference,
+                null,
                 levels, request, response);
         tree.toString();
     }

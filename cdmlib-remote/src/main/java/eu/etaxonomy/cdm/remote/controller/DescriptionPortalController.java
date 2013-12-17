@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -32,7 +33,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -127,6 +131,10 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true,
      *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param omitLevels
      * @param request
      * @param response
@@ -137,6 +145,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("uuid_list") UuidList descriptionUuidList,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "hideMarkedAreas", required = false) Set<MarkerType> hideMarkedAreas,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
             HttpServletRequest request,
             HttpServletResponse response) {
@@ -152,7 +161,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         }
         logger.debug("  get ordered distributions ");
         DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, subAreaPreference, statusOrderPreference,
-                omitLevels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
+                hideMarkedAreas, omitLevels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
         if (logger.isDebugEnabled()){ logger.debug("done");}
         return distTree;
     }

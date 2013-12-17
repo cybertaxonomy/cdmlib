@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -39,10 +40,13 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -117,6 +121,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true,
      *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param request
      * @param response
      * @return URI parameter Strings for the EDIT Map Service
@@ -127,6 +135,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "hideMarkedAreas", required = false) Set<MarkerType> hideMarkedAreas,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -157,7 +166,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference,
-                presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+                hideMarkedAreas, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
         mv.addObject(uriParams);
 
         return mv;

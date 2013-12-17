@@ -19,6 +19,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -35,7 +36,7 @@ public class DescriptionUtility {
     private static final Logger logger = Logger.getLogger(DescriptionUtility.class);
 
     /**
-     * <b>NOTE: This method must only be used in a transactional context.</b>
+     * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
      *
      * Filters the given set of {@link Distribution}s for publication purposes
      * The following rules are respected during the filtering:
@@ -58,7 +59,7 @@ public class DescriptionUtility {
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
      * <code>subAreaPreference</code></li>
-     * <li>Skip distributions without area mapping to a specific named shapefile. This rule is optional</li>
+     * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s
      * </ol>
      *
      * @param distributions
@@ -67,10 +68,12 @@ public class DescriptionUtility {
      *            enables the <b>Sub area preference rule</b> if set to true
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to true
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
      * @return the filtered collection of distribution elements.
      */
     public static Collection<Distribution> filterDistributions(Collection<Distribution> distributions,
-            boolean subAreaPreference, boolean statusOrderPreference) {
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas) {
 
         Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
         Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
@@ -80,26 +83,44 @@ public class DescriptionUtility {
         Set<Distribution> removeCandidatesDistribution = new HashSet<Distribution>();
         Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
 
-        // 0) if desired skip distributions without area mapping to a specific named shapefile
-        // TODO IMPLEMENT
-        // ... collect all named areas and create exclude set
+        Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
+
 
         // 1) sort by computed / not computed
         for(Distribution distribution : distributions){
-            if(distribution.getArea() == null) {
+
+
+            // 1.1) skip distributions having an area with markers matching hideMarkedAreas
+            NamedArea area = distribution.getArea();
+            if(area == null) {
                 logger.debug("skipping distribution with NULL area");
                 continue;
+            } if(areasHiddenByMarker.contains(area)){
+                logger.debug("skipping distribution with marked area, area previously recognized and cached");
+                continue;
+            }else {
+                if(hideMarkedAreas != null){
+                    for(MarkerType markerType : hideMarkedAreas){
+                        if(area.hasMarker(markerType, true)){
+                            areasHiddenByMarker.add(area);
+                            logger.debug("skipping distribution with marked area");
+                            continue;
+                        }
+                    }
+                }
+
             }
+
             if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
-                if(!computedDistributions.containsKey(distribution.getArea())){
-                    computedDistributions.put(distribution.getArea(), new HashSet<Distribution>());
+                if(!computedDistributions.containsKey(area)){
+                    computedDistributions.put(area, new HashSet<Distribution>());
                 }
-                computedDistributions.get(distribution.getArea()).add(distribution);
+                computedDistributions.get(area).add(distribution);
             } else {
-                if(!otherDistributions.containsKey(distribution.getArea())){
-                    otherDistributions.put(distribution.getArea(), new HashSet<Distribution>());
+                if(!otherDistributions.containsKey(area)){
+                    otherDistributions.put(area, new HashSet<Distribution>());
                 }
-                otherDistributions.get(distribution.getArea()).add(distribution);
+                otherDistributions.get(area).add(distribution);
             }
         }
 

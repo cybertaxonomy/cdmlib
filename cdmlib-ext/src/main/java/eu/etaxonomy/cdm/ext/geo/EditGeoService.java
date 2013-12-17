@@ -27,6 +27,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -93,8 +94,8 @@ public class EditGeoService implements IEditGeoService {
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
-            String backLayer, List<Language> langs) {
+            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height,
+            String bbox, String backLayer, List<Language> langs) {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
@@ -112,6 +113,7 @@ public class EditGeoService implements IEditGeoService {
         String uriParams = getDistributionServiceRequestParameterString(distributions,
                 subAreaPreference,
                 statusOrderPreference,
+                hideMarkedAreas,
                 presenceAbsenceTermColors,
                 width, height, bbox, backLayer, langs);
 
@@ -127,6 +129,7 @@ public class EditGeoService implements IEditGeoService {
             Set<Distribution> distributions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
             int width,
             int height,
@@ -139,6 +142,7 @@ public class EditGeoService implements IEditGeoService {
         String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 subAreaPreference,
                 statusOrderPreference,
+                hideMarkedAreas,
                 areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
         return uriParams;
     }
@@ -156,6 +160,7 @@ public class EditGeoService implements IEditGeoService {
     public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
             boolean subAreaPreference,
             boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
             String backLayer, List<Language> langs) {
 
@@ -165,8 +170,8 @@ public class EditGeoService implements IEditGeoService {
         return getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference,
                 statusOrderPreference,
-                presenceAbsenceTermColors, width,
-                height, bbox, backLayer, langs);
+                hideMarkedAreas, presenceAbsenceTermColors,
+                width, height, bbox, backLayer, langs);
     }
 
     /*

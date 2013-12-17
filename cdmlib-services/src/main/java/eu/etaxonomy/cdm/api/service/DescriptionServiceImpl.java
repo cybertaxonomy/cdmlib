@@ -292,8 +292,8 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Set<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<NamedAreaLevel> omitLevels,
-            List<String> propertyPaths){
+            Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
 
         DistributionTree tree = new DistributionTree();
         List<Distribution> distList = new ArrayList<Distribution>();
@@ -340,7 +340,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
 
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, false, false);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         distList.clear();
         distList.addAll(filteredDistributions);
 

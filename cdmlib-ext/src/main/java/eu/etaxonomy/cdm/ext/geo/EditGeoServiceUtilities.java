@@ -31,6 +31,8 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -171,10 +173,18 @@ public class EditGeoServiceUtilities {
      *            A set of distributions that should be shown on the map
      * @param subAreaPreference
      *            enables the <b>Sub area preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     *            see {@link DescriptionUtility#filterDistributions(Collection,
+     *            boolean, boolean}
+     *
      * @param statusOrderPreference
-     *            enables the <b>Status order preference rule</b> if set to true,
-     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     *            enables the <b>Status order preference rule</b> if set to
+     *            true, see {@link
+     *            DescriptionUtility#filterDistributions(Collection, boolean,
+     *            boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param presenceAbsenceTermColors
      *            A map that defines the colors of PresenceAbsenceTerms. The
      *            PresenceAbsenceTerms are defined by their uuid. If a
@@ -204,14 +214,14 @@ public class EditGeoServiceUtilities {
             Set<Distribution> distributions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
             IGeoServiceAreaMapping mapping,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
             int width,
             int height,
             String bbox,
             String baseLayerName,
-            String projectToLayer,
-            List<Language> languages){
+            String projectToLayer, List<Language> languages){
 
 
         /**
@@ -242,7 +252,7 @@ public class EditGeoServiceUtilities {
             return "";
         }
 
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
 
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
         List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();

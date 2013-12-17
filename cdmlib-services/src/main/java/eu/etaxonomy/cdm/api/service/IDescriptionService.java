@@ -17,9 +17,11 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -475,28 +477,33 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
 
     /**
      * @param taxonDescriptions
-     *
      * @param subAreaPreference
      *            enables the <b>Sub area preference rule</b> if set to true,
      *            see {@link DescriptionUtility#filterDistributions(Collection,
      *            boolean, boolean}
+
      * @param statusOrderPreference
      *            enables the <b>Status order preference rule</b> if set to
      *            true, see {@link
      *            DescriptionUtility#filterDistributions(Collection, boolean,
      *            boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param omitLevels
      *            A Set NamedArea levels to omit - optional
      * @param propertyPaths
      *            the initialization strategy
+     *
      * @return
      */
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<NamedAreaLevel> omitLevels,
-            List<String> propertyPaths);
+            Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels, List<String> propertyPaths);
 
     /**
       * Generate a string representation of the structured <code>description</code> supplied in natural language
