@@ -682,7 +682,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         if (classification != null){
         	return classification.getChildNodes().contains(this);
         } else {
-        	logger.warn("The node has no classification!");
+//        	logger.warn("The node has no classification!");  //don't log as this is also called during TaxonNode creation
         	return false;
         }
     }
