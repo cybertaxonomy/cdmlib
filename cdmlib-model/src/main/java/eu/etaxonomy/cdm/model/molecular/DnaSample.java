@@ -102,7 +102,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	 * Constructor
 	 */
 	private DnaSample() {
-		super(SpecimenOrObservationType.PreservedSpecimen);
+		super(SpecimenOrObservationType.DnaSample);
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
 	}
 	
