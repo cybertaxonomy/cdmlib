@@ -20,7 +20,7 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
+//import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -44,6 +44,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 @Service
 @Transactional(readOnly = true)
 public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalSourceDao> implements ICommonService {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CommonServiceImpl.class);
 	
 	@Autowired
@@ -57,18 +58,20 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	protected void setDao(IOriginalSourceDao dao) {
 		this.dao = dao;
 	}
+	
+	@Override
+	public CdmBase find(Class<? extends CdmBase> clazz, int id){
+		return genericDao.find(clazz, id);
+	}
+	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectsByIdInSource(java.lang.Class, java.util.List, java.lang.String)
-	 */
+	@Override
 	public Map<String, ? extends ISourceable> getSourcedObjectsByIdInSource(Class clazz, Set<String> idInSourceSet, String idNamespace) {
 		Map<String, ? extends ISourceable> list = originalSourceDao.findOriginalSourcesByIdInSource(clazz, idInSourceSet, idNamespace);
 		return list;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getSourcedObjectById(java.lang.String, java.lang.String)
-	 */
+	@Override
 	public ISourceable getSourcedObjectByIdInSource(Class clazz, String idInSource, String idNamespace) {
 		ISourceable result = null;
 		List<IdentifiableEntity> list = originalSourceDao.findOriginalSourceByIdInSource(clazz, idInSource, idNamespace);
@@ -78,9 +81,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getReferencingObjects(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
+	@Override
 	public Set<CdmBase> getReferencingObjects(CdmBase referencedCdmBase){
 		return this.genericDao.getReferencingObjects(referencedCdmBase);
 	}	
@@ -203,13 +204,12 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //		return result;
 //	}
 	
+	@Override
 	public List getHqlResult(String hqlQuery){
 		return genericDao.getHqlResult(hqlQuery);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#merge(eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergable, eu.etaxonomy.cdm.strategy.merge.IMergeStragegy)
-	 */
+	@Override
 	public <T extends IMergable> void merge(T mergeFirst, T mergeSecond, IMergeStrategy mergeStrategy) throws MergeException {
 		if (mergeStrategy == null){
 			mergeStrategy = DefaultMergeStrategy.NewInstance(((CdmBase)mergeFirst).getClass());
@@ -218,6 +218,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 	}
 
 
+	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException {
 		if (matchStrategy == null){
 			matchStrategy = DefaultMatchStrategy.NewInstance(((objectToMatch).getClass()));
@@ -230,6 +231,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.api.service.IService#list(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
 //	 */
+//	@Override
 //	public <TYPE extends OriginalSourceBase> Pager<TYPE> list(Class<TYPE> type,
 //			Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
 //			List<String> propertyPaths) {
@@ -237,10 +239,8 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 //		return null;
 //	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#saveAll(java.util.Collection)
-	 */
 	@Transactional(readOnly = false)
+	@Override
 	public void saveAllMetaData(Collection<CdmMetaData> metaData) {
 		Iterator<CdmMetaData> iterator = metaData.iterator();
 		while(iterator.hasNext()){
@@ -249,9 +249,7 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ICommonService#getCdmMetaData()
-	 */
+	@Override
 	public Map<MetaDataPropertyName, CdmMetaData> getCdmMetaData() {
 		Map<MetaDataPropertyName, CdmMetaData> result = new HashMap<MetaDataPropertyName, CdmMetaData>();
 		List<CdmMetaData> metaDataList = genericDao.getMetaData();
