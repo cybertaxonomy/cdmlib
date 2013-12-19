@@ -545,9 +545,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 	@Test
 	@Ignore
 	public void testMergeCdmBaseReferenceAndIdentifiable() throws MergeException {
-		cdmGenericDao.test();
-		
-		
+				
 		BotanicalName name1 = BotanicalName.NewInstance(Rank.SPECIES());
 		name1.setTitleCache("BotanicalName1", true);
 		
