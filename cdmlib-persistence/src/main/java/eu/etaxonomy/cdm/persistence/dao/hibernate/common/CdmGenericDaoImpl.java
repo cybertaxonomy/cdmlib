@@ -378,6 +378,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		return query;
 	}
 	
+	@Override
 	public <T extends CdmBase> void   merge(T cdmBase1, T cdmBase2, IMergeStrategy mergeStrategy) throws MergeException {
 		Class<T> clazz = (Class<T>)cdmBase1.getClass();
 		SessionImpl session = (SessionImpl) getSession();
@@ -453,7 +454,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		
 		SessionFactoryImpl sessionFactory = (SessionFactoryImpl) session.getSessionFactory();
 		
-		Map allClassMetadata = sessionFactory.getAllClassMetadata();
+		Map<String, ClassMetadata> allClassMetadata = sessionFactory.getAllClassMetadata();
 		
 		//TODO cast
 		getCollectionRoles(clazz, sessionFactory);
@@ -841,10 +842,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#test()
-	 */
-	public void test() {
+	//TODO Move to test classes if still needed
+	private void test() {
 		SessionFactoryImpl factory = (SessionFactoryImpl)getSession().getSessionFactory();
 		Type propType = factory.getReferencedPropertyType(BotanicalName.class.getCanonicalName(), "titleCache");
 		Map collMetadata = factory.getAllCollectionMetadata();
@@ -862,16 +861,16 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		
 	}
 
+	@Override
 	public <T extends CdmBase> T find(Class<T> clazz, int id){
 		Session session;
 		session =  getSession();
 		//session = getSession().getSessionFactory().getCurrentSession();
-		return (T)session.get(clazz, id);
+		Object o = session.get(clazz, id);
+		return (T)o;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao#findMatching(eu.etaxonomy.cdm.strategy.match.IMatchable, eu.etaxonomy.cdm.strategy.match.IMatchStrategy)
-	 */
+	@Override
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch,
 			IMatchStrategy matchStrategy) throws MatchException {
 		try {
@@ -891,10 +890,10 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 	}
 	
-	public <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
+	private <T extends IMatchable> List<T> findMatchingNullSafe(T objectToMatch,	IMatchStrategy matchStrategy) throws IllegalArgumentException, IllegalAccessException, MatchException {
 		List<T> result = new ArrayList<T>();
 		Session session = getSession();
-		Class matchClass = objectToMatch.getClass();
+		Class<?> matchClass = objectToMatch.getClass();
 		ClassMetadata classMetaData = session.getSessionFactory().getClassMetadata(matchClass.getCanonicalName());
 		Criteria criteria = session.createCriteria(matchClass);
 		boolean noMatch = makeCriteria(objectToMatch, matchStrategy, classMetaData, criteria);
