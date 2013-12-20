@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImportState, URI> implements IImportConfigurator {
     //	private static final Logger logger = Logger.getLogger(TaxonXImportConfigurator.class);
 
+    private String defaultImportClassification = null;
     //if true the information in the mods part (taxonxHeader)
     private boolean doMods = true;
     private boolean doFacts = true;
@@ -58,6 +59,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     private boolean keepOriginalSecundum;
     private Rank maxRank;
     private boolean askedForHRank =false;
+    private Reference<?> sourceURL;
 
 
     @SuppressWarnings("unchecked")
@@ -276,6 +278,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
             secundum = ReferenceFactory.newGeneric();
             secundum.setTitle("default secundum");
         }
+
         return secundum;
     }
 
@@ -300,4 +303,32 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     public void setHasAskedForHigherRank(boolean asked){
         askedForHRank=asked;
     }
+
+    /**
+     * @return
+     */
+    public String getImportClassificationName() {
+       return defaultImportClassification;
+    }
+
+    public void setImportClassificationName(String className){
+        defaultImportClassification=className;
+    }
+
+    /**
+     * @param referenceUrl
+     */
+    public void addOriginalSource(Reference<?> referenceUrl) {
+       this.sourceURL = referenceUrl;
+
+    }
+
+    /**
+     * @return the sourceURL
+     */
+    public Reference<?> getOriginalSourceURL() {
+        return sourceURL;
+    }
+
+
 }
