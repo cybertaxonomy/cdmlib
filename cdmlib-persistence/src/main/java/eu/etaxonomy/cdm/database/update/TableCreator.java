@@ -296,11 +296,19 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			if (isRevAttribute(attribute) || attribute.endsWith(idSuffix)){
 				idSuffix = "";
 			}
-			String updateQuery = "ALTER TABLE @tableName ADD INDEX @index (@attribute), ADD CONSTRAINT @index FOREIGN KEY (@attribute) REFERENCES @referencedTable (@id)";
+			//OLD - don't remember why we used ADD INDEX here
+//			String updateQuery = "ALTER TABLE @tableName ADD INDEX @index (@attribute), ADD FOREIGN KEY (@attribute) REFERENCES @referencedTable (@id)";
+			String updateQuery = "ALTER TABLE @tableName ADD @constraintName FOREIGN KEY (@attribute) REFERENCES @referencedTable (@id)";
 			updateQuery = updateQuery.replace("@tableName", tableName);
-			updateQuery = updateQuery.replace("@index", index);
+//			updateQuery = updateQuery.replace("@index", index);
 			updateQuery = updateQuery.replace("@attribute", attribute + idSuffix);
 			updateQuery = updateQuery.replace("@referencedTable", referencedTable);
+			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
+				updateQuery = updateQuery.replace("@constraintName", "CONSTRAINT " + index);
+			}else{
+				updateQuery = updateQuery.replace("@constraintName", "");  //H2 does not support "CONSTRAINT", didn't check for others
+			}
+			
 			if (isRevAttribute(attribute)){
 				updateQuery = updateQuery.replace("@id", "revisionnumber");
 			}else{
@@ -313,7 +321,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 				String message = "Problem when creating Foreign Key for " + tableName +"." + attribute +": " + e.getMessage();
 				monitor.warning(message);
 				logger.warn(message, e);
-				return true;
+				return true;   //we do not interrupt update if only foreign key generation did not work
 			}
 			return result;			
 		}else{
