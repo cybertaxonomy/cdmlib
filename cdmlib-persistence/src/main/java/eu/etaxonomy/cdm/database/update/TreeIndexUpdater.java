@@ -79,12 +79,41 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			Long n;
 			do {
 			
-				sql = String.format(" UPDATE %s child INNER JOIN %s parent ON child.%s = parent.id " +
+				//MySQL
+				sql = String.format(" UPDATE %s child " +
+						" INNER JOIN %s parent ON child.%s = parent.id " +
 						" SET child.%s = CONCAT( parent.%s, child.id, '%s') " +
 						" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ", 
-							tableName, tableName, parentIdColumnName, 
+							tableName, 
+							tableName, parentIdColumnName, 
 							indexColumnName, indexColumnName, separator,
 							indexColumnName, indexColumnName);
+				
+//				ANSI
+				//http://stackoverflow.com/questions/1293330/how-can-i-do-an-update-statement-with-join-in-sql
+				sql = String.format(" UPDATE %s " +
+						" SET %s = ( " +
+							" ( SELECT CONCAT ( parent.%s, %s.id, '%s') " + 
+								" FROM %s parent " +
+								" WHERE parent.id = %s.%s ) " +
+							" ) " +
+						" WHERE EXISTS ( " +
+								" SELECT * " +
+								" FROM %s parent " +
+								" WHERE parent.id = %s.%s AND parent.%s IS NOT NULL AND %s.%s IS NULL " +
+							") " +
+							" ",
+						tableName,
+						indexColumnName,
+							indexColumnName, tableName, separator,
+							tableName,
+							tableName, parentIdColumnName,
+							
+							tableName,
+							tableName, parentIdColumnName, indexColumnName, tableName, indexColumnName
+						);
+				
+				
 				datasource.executeUpdate(sql);
 				
 				n = (Long)datasource.getSingleValue(sqlCount);

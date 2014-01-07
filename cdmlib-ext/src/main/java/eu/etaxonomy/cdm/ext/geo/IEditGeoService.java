@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.ext.geo;
 import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -21,7 +22,10 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -44,6 +48,15 @@ public interface IEditGeoService {
      *
      * @param taxonDescriptions
      * 			A List of <code>TaxonDescription</code> holding the distribution data
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
@@ -52,21 +65,35 @@ public interface IEditGeoService {
      * @param height
      * 			The height of the map image
      * @param bbox
-     *
      * @param backLayer
      * @return
      *
      */
     public String getDistributionServiceRequestParameterString(
             List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-            int width, int height, String bbox, String backLayer,
-            List<Language> langs);
+            int width,
+            int height,
+            String bbox,
+            String backLayer, List<Language> langs);
 
 
     /**
      *
      * @param distributions
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param presenceAbsenceTermColors
      * @param width
      * @param height
@@ -75,9 +102,11 @@ public interface IEditGeoService {
      * @param langs
      * @return
      */
-    public String getDistributionServiceRequestParameterString(Set<Distribution> distributions, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width,
-            int height, String bbox, String backLayer, List<Language> langs);
-
+    public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
+            boolean subAreaPreference, boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
+            String backLayer, List<Language> langs);
 
     /**
      * Retrieve a parameter string to pass to an EditGeoService endpoint
@@ -86,6 +115,16 @@ public interface IEditGeoService {
      *
      * @param description
      * 			The <code>TaxonDescription</code> holding the distribution data
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
@@ -102,6 +141,9 @@ public interface IEditGeoService {
      */
     @Deprecated
     public String getDistributionServiceRequestParameterString(TaxonDescription description,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
             int width,
             int height,

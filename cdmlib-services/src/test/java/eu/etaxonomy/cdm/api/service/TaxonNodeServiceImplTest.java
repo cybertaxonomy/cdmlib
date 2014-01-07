@@ -15,12 +15,17 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
+
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.database.annotations.Transactional;
+import org.unitils.database.util.TransactionMode;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -238,6 +243,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		
 		
 	}
+	
 	@Test
 	@DataSet
 	public final void testDeleteNodes(){
@@ -264,9 +270,22 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		t1 = (Taxon) taxonService.load(t1Uuid);
 		assertNull(t1);
 		t2 = (Taxon) taxonService.load(t2Uuid);
-		assertNull(t2);
+		assertNull(t2);		
 		
-		
+	}
+	
+	@Test
+	@DataSet
+	@Transactional(TransactionMode.DISABLED)
+	public final void testLazyLoading(){
+		classification = classificationService.load(classificationUuid);
+		List<TaxonNode> tnodeList = classification.getChildNodes();		
+		Iterator<TaxonNode> tnodeItr = tnodeList.iterator();
+		while(tnodeItr.hasNext()) {
+			TaxonNode tnode = tnodeItr.next();
+			Taxon taxon = tnode.getTaxon();
+			System.out.println("tnode : " + taxon.getTitleCache());
+		}
 	}
 	
 

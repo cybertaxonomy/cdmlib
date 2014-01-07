@@ -165,7 +165,7 @@ public enum DatabaseTypeEnum {
     }
 	
     /**
-     * Returns the {@link Dialect hiberante dialect} used for this database type.
+     * Returns the {@link Dialect hibernate dialect} used for this database type.
 	 * @return hibernate dialect
 	 */
     public Dialect getHibernateDialect(){

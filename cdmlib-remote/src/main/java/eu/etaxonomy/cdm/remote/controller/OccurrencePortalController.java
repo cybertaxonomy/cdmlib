@@ -55,7 +55,8 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
             "sequences.$",
             "sequences.annotations",
             "markers.markerType",
-            "gatheringEvent.$"
+            "gatheringEvent.$",
+            "descriptions"
     });
 
 

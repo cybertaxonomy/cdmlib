@@ -16,6 +16,7 @@ import javax.validation.groups.Default;
 
 import org.joda.time.DateTime;
 
+//import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 
@@ -55,5 +56,7 @@ public interface ICdmBase {
 	public User getCreatedBy();
 
 	public void setCreatedBy(User createdBy);
+	
+	//public IService getService();
 
 }

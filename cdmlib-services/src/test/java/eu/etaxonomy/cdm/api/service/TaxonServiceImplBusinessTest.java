@@ -10,11 +10,18 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
+import java.util.HashSet;
 import java.util.List;
+import java.util.UUID;
 
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -26,6 +33,7 @@ import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
 
@@ -42,7 +50,11 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	private Synonym s2;
 	private Taxon t2;
 	private Taxon t1;
+	@SpringBeanByType
 	private ITaxonService service;
+
+	@SpringBeanByType
+	private INameService nameService;
 	private String referenceDetail;
 	private Reference<?> reference;
 	private SynonymRelationshipType homoTypicSynonymRelationshipType;
@@ -57,8 +69,9 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	 */
 	@Before
 	public void setUp() throws Exception {
-		service = new TaxonServiceImpl();
-
+		//service = new TaxonServiceImpl();
+		//nameService = new NameServiceImpl();
+		
 		t1n = NonViralName.NewInstance(null);
 		t1 = Taxon.NewInstance(t1n, reference);
 
@@ -194,7 +207,25 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 	@Test
 	public final void testChangeSynonymToRelatedTaxon() {
 		t1.addSynonym(s1, homoTypicSynonymRelationshipType);
-		service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
+		HashSet newInstances = new HashSet<TaxonBase>();
+		newInstances.add(s1);
+		newInstances.add(t1);
+		newInstances.add(t2);
+		service.save(newInstances);
+		TaxonNameBase synonymName = s1.getName();
+		UUID synNameUUID = synonymName.getUuid();
+		Taxon newTaxon = service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
+		//check removeTaxonBase()
+		service.update(s1);
+		UUID newTaxonUUID = service.save(newTaxon);
+		service.update(t2);
+		s1 =(Synonym)service.find(s1.getUuid());
+		newTaxon = (Taxon)service.find(newTaxonUUID);
+		assertNull(s1.getName());
+		synonymName = nameService.find(synNameUUID);
+		assertFalse(synonymName.getTaxonBases().contains(s1));
+		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
+		
 	}
 //
 //	Moved to TaxonServiceImplTest
