@@ -2011,6 +2011,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeConfi
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeFieldUnitCacheStrategy.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeNotSupportedException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDerivedUnitTypeException.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/lazyloading/CdmLazyLoader.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
@@ -2157,6 +2158,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/DescriptionUtility.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
+cdmlib-services/src/main/resources/META-INF/aop.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/config.properties -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpInvokerServiceClients.xml -text
@@ -2214,6 +2216,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestAgentService.ja
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestC3P0Configuration.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLTWLazyLoading.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLocationServiceImpl.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
@@ -2265,10 +2268,12 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthori
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServicesWithKnownLSID-result.wsdl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.testGetMetadata-result.rdf -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-ltw-test.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-securityTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.unused.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/LTWLazyLoadingTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text

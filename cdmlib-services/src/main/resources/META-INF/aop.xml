@@ -1,0 +1,15 @@
+<!DOCTYPE aspectj PUBLIC
+        "-//AspectJ//DTD//EN" "http://www.eclipse.org/aspectj/dtd/aspectj.dtd">
+<aspectj>
+  	<weaver options="-verbose -showWeaveInfo">
+    	<include within="org.hibernate.proxy.*" />
+    	<!--include within="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer.*"/-->
+    	<!--<include within="eu.etaxonomy.cdm.model.taxon.*" />-->
+    	<include within="eu.etaxonomy.cdm.api.lazyloading.*" />
+  	</weaver>
+    <aspects>
+        <!-- use only this aspect for weaving -->
+        <aspect name="eu.etaxonomy.cdm.api.lazyloading.CdmLazyLoader" />
+    </aspects>
+</aspectj>
+             
