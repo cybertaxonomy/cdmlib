@@ -54,7 +54,7 @@ public class TaxonXImportLauncher {
 
     //database validation status (create, update, validate ...)
     static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
+    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_chenopodium_local();
 
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
@@ -71,10 +71,13 @@ public class TaxonXImportLauncher {
     }
 
     public static void main(String[] args) {
-        String[] taxonList = new String[] {"Eupolybothrus", "Polybothrus"};
+        String[] taxonList = new String[] {"Chenopodium"};
 //       /*ants*/ String[] modsList = new String[] {"3924", "3743", "4375","6757","6752","3481","21401_fisher_smith_plos_2008","2592","4096","6877","6192","8071"};
-        String[] modsList = new String[] {"1313-2970","zt%2000904"};
-        String tnomenclature = "ICZN";
+//        String[] modsList = new String[] {"FloNuttDuWin1838"};
+//        modsList = new String[] {"Zapparoli-1986-Eupolybothrus-fasciatus"};
+        String tnomenclature = "ICNAFP";
+
+        String defaultClassif="Goosefoots";
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
         HashMap<String,List<URI>>documentMap = new HashMap<String, List<URI>>();
@@ -86,8 +89,8 @@ public class TaxonXImportLauncher {
             secundum = askForSecundum();
         }
 
-//        checkTreatmentPresence("taxon",taxonList, documents,documentMap);
-        checkTreatmentPresence("modsid",modsList, documents,documentMap);
+        checkTreatmentPresence("taxon",taxonList, documents,documentMap);
+//        checkTreatmentPresence("modsid",modsList, documents,documentMap);
 
         TaxonXImportConfigurator taxonxImportConfigurator =null;
         CdmDefaultImport<TaxonXImportConfigurator> taxonImport = new CdmDefaultImport<TaxonXImportConfigurator>();
@@ -95,20 +98,25 @@ public class TaxonXImportLauncher {
         ICdmDataSource destination = cdmDestination;
         taxonxImportConfigurator = prepareTaxonXImport(destination,reuseSecundum, secundum);
 
+        taxonxImportConfigurator.setImportClassificationName(defaultClassif);
         log.info("Start import from  TaxonX Data");
 
+        taxonxImportConfigurator.setLastImport(false);
 
+        int j=0;
         for (String document:documentMap.keySet()){
+            j++;
             if (doImportDocument(document, documentMap.get(document).size())){
                 int i=0;
                 for (URI source:documentMap.get(document)){
                     System.out.println("START "+i+" ("+(documentMap.get(document)).size()+"): "+source.getPath());
                     i++;
-
-                    prepareReferenceAndSource(taxonxImportConfigurator,source);
+                    if (j==documentMap.keySet().size() && i==documentMap.get(document).size()) {
+                        taxonxImportConfigurator.setLastImport(true);
+                    }
+                        prepareReferenceAndSource(taxonxImportConfigurator,source);
                     prepareNomenclature(taxonxImportConfigurator,tnomenclature);
                     //   taxonxImportConfigurator.setTaxonReference(null);
-
                     taxonImport.invoke(taxonxImportConfigurator);
                     log.info("End import from SpecimenData ("+ source.toString() + ")...");
 
@@ -121,8 +129,6 @@ public class TaxonXImportLauncher {
                 }
             }
         }
-
-
     }
 
 
@@ -133,7 +139,7 @@ public class TaxonXImportLauncher {
      */
     private static void prepareNomenclature(TaxonXImportConfigurator taxonxImportConfigurator, String tnomenclature) {
         //            String tnomenclature = askQuestion("ICBN or ICZN ?");
-
+        taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
         if (tnomenclature.equalsIgnoreCase("ICBN")) {
             taxonxImportConfigurator.setNomenclaturalCode(NomenclaturalCode.ICNAFP);
             //                taxonxImportConfigurator.setClassificationName("Chenopodiaceae");
@@ -165,6 +171,13 @@ public class TaxonXImportLauncher {
         taxonxImportConfigurator.setSourceReference(reference);
         TaxonXImportConfigurator.setSourceRef(reference);
 
+        Reference<?> referenceUrl = ReferenceFactory.newWebPage();
+        referenceUrl.setTitleCache(source.toString(), true);
+        referenceUrl.setTitle(source.toString());
+        reference.setUri(source);
+        referenceUrl.generateTitle();
+
+        taxonxImportConfigurator.addOriginalSource(referenceUrl);
         taxonxImportConfigurator.setSource(source);
     }
 
@@ -181,6 +194,8 @@ public class TaxonXImportLauncher {
         taxonxImportConfigurator.setCheck(check);
         taxonxImportConfigurator.setDbSchemaValidation(hbm2dll);
         taxonxImportConfigurator.setDoAutomaticParsing(true);
+
+        taxonxImportConfigurator.setInteractWithUser(true);
 
 
         taxonxImportConfigurator.setKeepOriginalSecundum(reuseSecundum);
@@ -309,6 +324,8 @@ public class TaxonXImportLauncher {
 
             log.info("Document "+docId+" should have "+treatments.size()+" treatments");
             int cnt=0;
+            if(treatments.size()<150){
+
             for (String source:treatments){
                 DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
                 DocumentBuilder builder;
@@ -327,6 +344,7 @@ public class TaxonXImportLauncher {
                 }
             }
             log.info("Document "+docId+" has "+cnt+" treatments available");
+            }
             if(treatments.size() != cnt)
             {
                 File file = new File("/home/pkelbert/Bureau/urlTaxonXToDoLater.txt");
@@ -387,6 +405,8 @@ public class TaxonXImportLauncher {
      * @return
      */
     private static boolean doImportDocument(String document, int nbtreatments) {
+        return true;
+      /*
         //        List<String> docDone = Arrays.asList(new String[]{"3540555099", "0910-2878-5652", "5012-9059-4108",
         //                "3784-0748-2261","3-201-00728-5", "FloNuttDuWin1838", "FlNordica_chenop","2580-1363-7530",
         //                "1842460692","5161-7797-8064","FlCaboVerde_Chen","2819-9661-8339","2626-3794-9273"});//,
@@ -409,6 +429,7 @@ public class TaxonXImportLauncher {
         } else {
             return false;
         }
+        */
     }
 
     /**

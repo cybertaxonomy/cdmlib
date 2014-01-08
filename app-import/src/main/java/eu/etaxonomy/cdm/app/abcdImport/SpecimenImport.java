@@ -56,11 +56,11 @@ public class SpecimenImport {
 
 ////            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
             specimenImportConfigurator.setSourceSecId("specimen");
-//            specimenImportConfigurator.setCheck(check);
-//            specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
-            specimenImportConfigurator.setParseNameAutomatically(false);
+            specimenImportConfigurator.setCheck(check);
+            specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
+            specimenImportConfigurator.setParseNameAutomatically(true);
             specimenImportConfigurator.setReuseExistingMetadata(true);
-            specimenImportConfigurator.reuseExistingDescriptiveGroups(false);
+            specimenImportConfigurator.reuseExistingDescriptiveGroups(true);
 //
             specimenImportConfigurator.setReuseExistingTaxaWhenPossible(true);
 //
@@ -73,7 +73,6 @@ public class SpecimenImport {
 
             // invoke import
             CdmDefaultImport<Abcd206ImportConfigurator> specimenImport = new CdmDefaultImport<Abcd206ImportConfigurator>();
-            System.out.println("TJS LA");
             //new Test().invoke(tcsImportConfigurator);
             specimenImport.invoke(specimenImportConfigurator);
             System.out.println("End import from SpecimenData ("+ source.toString() + ")...");
