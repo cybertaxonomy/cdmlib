@@ -29,8 +29,8 @@ public class TaxonXXMLFieldGetter {
     TaxonXModsExtractor modsextractor;
     TaxonXTreatmentExtractor treatmentextractor ;
 
-    public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document, TaxonXImport taxonXImport, TaxonXImportState taxonXstate,
-            Classification classif, Map<String,Feature> featuresMap){
+    public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document, TaxonXImport taxonXImport,
+            TaxonXImportState taxonXstate, Classification classif, Map<String,Feature> featuresMap){
         this.doc = document;
         this.importer = taxonXImport;
         this.nomenclaturalCode = taxonXstate.getConfig().getNomenclaturalCode();
@@ -39,7 +39,7 @@ public class TaxonXXMLFieldGetter {
         this.taxonXstate=taxonXstate;
         modsextractor = new TaxonXModsExtractor(importer);
         Reference<?> originalSourceUrl =taxonXstate.getConfig().getOriginalSourceURL();
-        treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, taxonXstate, featuresMap,originalSourceUrl);
+        treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, taxonXstate,featuresMap,originalSourceUrl );
     }
 
 

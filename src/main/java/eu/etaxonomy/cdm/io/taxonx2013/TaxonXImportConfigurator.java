@@ -60,6 +60,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     private Rank maxRank;
     private boolean askedForHRank =false;
     private Reference<?> sourceURL;
+    private boolean lastImport=false;
 
 
     @SuppressWarnings("unchecked")
@@ -330,5 +331,15 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
         return sourceURL;
     }
 
+    /**
+     * @param b
+     */
+    public void setLastImport(boolean b) {
+        lastImport=b;
+    }
+
+    public boolean getLastImport(){
+        return  lastImport;
+    }
 
 }

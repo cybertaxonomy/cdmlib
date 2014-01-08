@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -56,6 +57,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -758,6 +760,80 @@ public class TaxonXExtractor {
                 null,
                 "Other");
         return s;
+    }
+
+    /**
+     * @param taxonnamebase2
+     * @param bestMatchingTaxon
+     * @param refMods
+     * @return
+     */
+    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference<?> refMods) {
+        Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
+                UIManager.getString("OptionPane.noButtonText")};
+
+        String sec = refMods.getTitleCache();
+        String secBest = "";
+        try{
+            secBest=bestMatchingTaxon.getSec().getTitleCache();
+        }
+        catch(NullPointerException e){
+            logger.warn("no sec - ignore");
+        }
+
+        Object defaultOption=options[0];
+        if(sec.equalsIgnoreCase(secBest) ||
+                taxonnamebase2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())
+                ) {
+            defaultOption=options[0];
+        } else {
+            defaultOption=options[1];
+        }
+
+        String sourcesStr="";
+
+        Set<IdentifiableSource> sources = bestMatchingTaxon.getSources();
+        for (IdentifiableSource src:sources){
+            try{
+                String srcSec=src.getCitation().getTitleCache();
+                if(!srcSec.isEmpty()){
+                    sourcesStr+="\n "+srcSec;
+                    if (srcSec.equalsIgnoreCase(sec)) {
+                        defaultOption=options[0];
+                    }
+                }
+            }catch(Exception e){
+                logger.warn("the source reference is maybe null, just ignore it.");
+            }
+        }
+
+        JTextArea textArea =null;
+        if (!sourcesStr.isEmpty()) {
+            textArea = new JTextArea("Does "+taxonnamebase2.toString()+" correspond to "
+                    + bestMatchingTaxon.toString()+" ?\n Click \"Yes\". if it does, click \"No\" if it does not."
+                    + "\n The current sources are:"+ sourcesStr);
+        } else {
+            textArea = new JTextArea("Does "+taxonnamebase2.toString()+" correspond to "
+                    + bestMatchingTaxon.toString()+" ?\n Click \"Yes\". if it does, click \"No\" if it does not.");
+        }
+        JScrollPane scrollPane = new JScrollPane(textArea);
+        textArea.setLineWrap(true);
+        textArea.setWrapStyleWord(true);
+        scrollPane.setPreferredSize( new Dimension( 600, 70 ) );
+
+        int addTaxon = JOptionPane.showOptionDialog(null,
+                scrollPane,
+                refMods.toString(),
+                JOptionPane.YES_NO_OPTION,
+                0,
+                null,
+                options,
+                defaultOption);
+        if(addTaxon==1) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**

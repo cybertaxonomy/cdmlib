@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
@@ -264,9 +265,8 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             taxonXFieldGetter.updateClassification(classification);
             //            logger.info("classif :"+classification);
             taxonXFieldGetter.parseTreatment(ref,sourceName);
-            System.out.println("featuresMap before: "+featuresMap.toString());
             featuresMap = taxonXFieldGetter.getFeaturesUsed();
-            System.out.println("featuresMap after: "+featuresMap.toString());
+//            System.out.println("featuresMap after: "+featuresMap.toString());
 
             //        } catch (MalformedURLException e) {
             //            // TODO Auto-generated catch block
@@ -300,9 +300,19 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             logger.warn(sourceName);
         }
 
-
-
+        //TODO:check how deduplicate work (and if it works..)
+//        if(taxonXstate.getConfig().getLastImport()) {
+//            deduplicate();
+//        }
         commitTransaction(tx);
+    }
+
+    public void deduplicate(){
+        System.out.println("DEDUPLICATE REFERENCE");
+        getReferenceService().deduplicate(Reference.class, null,null);
+        System.out.println("DEDUPLICATE TAXONBASE");
+        getTaxonService().deduplicate(TaxonBase.class, null, null);
+        System.out.println("DEDUP END");
     }
 
 
