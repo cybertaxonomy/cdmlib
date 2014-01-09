@@ -69,6 +69,10 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 	public static DefinedTerm NewModifierInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.Modifier, description, label, labelAbbrev);
 	}
+	
+	public static DefinedTerm NewInstitutionTypeInstance(String description, String label, String labelAbbrev){
+		return new DefinedTerm(TermType.InstitutionType, description, label, labelAbbrev);
+	}
 
 	public static DefinedTerm NewStageInstance(String description, String label, String labelAbbrev){
 		return new DefinedTerm(TermType.Stage, description, label, labelAbbrev);
@@ -86,7 +90,9 @@ public class DefinedTerm extends DefinedTermBase<DefinedTerm> {
 		return new DefinedTerm(TermType.DnaMarker, description, label, labelAbbrev);
 	}
 
-
+	public static DefinedTerm NewKindOfUnitInstance(String description, String label, String labelAbbrev){
+		return new DefinedTerm(TermType.KindOfUnit, description, label, labelAbbrev);
+	}
 //******************* CONSTRUCTOR ***********************************/
 
 	//for hibernate/javassist use only

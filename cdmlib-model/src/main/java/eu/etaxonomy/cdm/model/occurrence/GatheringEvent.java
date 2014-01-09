@@ -44,6 +44,7 @@ import org.joda.time.Partial;
 
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.EventBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -264,6 +265,10 @@ public class GatheringEvent extends EventBase implements Cloneable{
 	public void setLocality(LanguageString locality){
 		this.locality = locality;
 	}
+	public void putLocality(Language language, String locality){
+		this.setLocality(LanguageString.NewInstance(locality, language));
+	}
+	
 
 	/**
 	 * EventBase managed attributes

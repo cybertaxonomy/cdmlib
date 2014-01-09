@@ -838,11 +838,48 @@ public class BerlinModelTransformer {
 			return UUID.fromString("1d287011-2054-41c5-a919-17ac1d0a9270");
 		}else if (markerCategoryId == 9){
 			return UUID.fromString("cc5eca5c-1ae5-4feb-9a95-507fc167b0c9");
+		//Salvador
+		}else if (markerCategoryId == 5){
+			return UUID.fromString("7d8875b3-107c-4189-97e5-cadb470e543a");
+		}else if (markerCategoryId == 20){
+			return UUID.fromString("3574e2b0-6431-4d71-b456-bc967c80f622");
+		}else if (markerCategoryId == 30){
+			return UUID.fromString("9924b27e-0dbe-4d95-ae9b-096fbbc3edcb");
+		}else if (markerCategoryId == 40){
+			return UUID.fromString("69241b97-f4d2-4f60-9aed-1c4ccb5bced5");
+		}else if (markerCategoryId == 50){
+			return UUID.fromString("f3b62ce3-0212-4542-a74c-0c68d08859b1");
+		}else if (markerCategoryId == 55){
+			return UUID.fromString("bec822f2-8242-425f-ad46-f11f0b82f69b");
+		}else if (markerCategoryId == 60){
+			return UUID.fromString("722fca60-0416-4bf0-aa4b-a07400f9710d");
+		}else if (markerCategoryId == 70){
+			return UUID.fromString("ed57857b-1001-4b09-b48e-d88ab146bb2b");
+		}else if (markerCategoryId == 80){
+			return UUID.fromString("637e8b77-1202-462b-9d77-1023f3c192d9");
+		}else if (markerCategoryId == 90){
+			return UUID.fromString("c769c231-6e76-46df-88f7-2c459342a3c2");
+		}else if (markerCategoryId == 93){
+			return UUID.fromString("075ee97e-246f-4f3d-aa96-16930df6268c");
+		}else if (markerCategoryId == 100){
+			return UUID.fromString("e17065bf-3e44-417a-b05c-f82929f680c3");
+		}else if (markerCategoryId == 110){
+			return UUID.fromString("e2b8de07-770e-4fda-b445-c4735f4e95c8");
+		}else if (markerCategoryId == 900){
+			return UUID.fromString("d029c3c9-944a-4bb9-bba6-12c95da94a04");
+		}else if (markerCategoryId == 920){
+			return UUID.fromString("98af97b1-e5e3-4ee4-902e-15032316bfc3");
+		}else if (markerCategoryId == 930){
+			return UUID.fromString("4b6c3130-4e50-4f45-8461-d2698cf5f80b");
+		}else if (markerCategoryId == 950){
+			return UUID.fromString("1e53f58c-6528-42c6-99ae-0f75a3c3c264");
+		}else if (markerCategoryId == 960){
+			return UUID.fromString("1903d460-94cc-4fc4-b2a8-a3fb0cfd69a0");			
 		}else{
 			logger.warn("Unknown webMarker category: " + markerCategoryId);
 			return null;
 		}
-		
+
 	}
 	
 }

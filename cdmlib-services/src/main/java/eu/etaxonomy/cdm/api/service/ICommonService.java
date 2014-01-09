@@ -15,12 +15,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.hibernate.Session;
+
 import eu.etaxonomy.cdm.database.DatabaseSchemaMismatchException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
+import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
 import eu.etaxonomy.cdm.strategy.match.IMatchStrategy;
 import eu.etaxonomy.cdm.strategy.match.IMatchable;
 import eu.etaxonomy.cdm.strategy.match.MatchException;
@@ -103,7 +107,16 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 */
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException;
 		
-	
+	/**
+	 * A generic method to retrieve any CdmBase object by its id and class.<BR>
+	 * @see ICdmGenericDao#find(Class, int)
+	 * @see Session#get(Class, java.io.Serializable)
+	 * @param clazz the CdmBase class
+	 * @param id the cdmBase identifier
+	 * @return the CdmBase object defined by clazz and id
+	 */
+	public CdmBase find(Class<? extends CdmBase> clazz, int id);
+
 	public List getHqlResult(String hqlQuery);
 
 }

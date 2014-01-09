@@ -16,7 +16,6 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import com.sun.tools.xjc.reader.gbind.Sequence;
 
 import eu.etaxonomy.cdm.database.update.ClassChanger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
@@ -54,6 +53,7 @@ import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignationStatus;
@@ -1581,18 +1581,34 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 	private void updateIdInVocabulary(List<ISchemaUpdaterStep> stepList) {
 		String tableName = "DefinedTermBase";
 
-		String queryVocUuid = " UPDATE DefinedTermBase dtb INNER JOIN TermVocabulary voc ON voc.id = dtb.vocabulary_id"
-				+ " SET dtb.idInVocabulary = (SELECT abbreviatedlabel "
-				+ " FROM DefinedTermBase_Representation MN "
-				+ " INNER JOIN Representation r ON r.id = MN.representations_id "
-				+ " WHERE MN.DefinedTermBase_id = dtb.id) "
-				+ " WHERE voc.uuid = '%s'";
+		//NOT ANSI  - works with MySQL http://stackoverflow.com/questions/1293330/how-can-i-do-an-update-statement-with-join-in-sql
+//		String queryVocUuid = " UPDATE DefinedTermBase dtb INNER JOIN TermVocabulary voc ON voc.id = dtb.vocabulary_id"
+//				+ " SET dtb.idInVocabulary = (SELECT abbreviatedlabel "
+//				+ " FROM DefinedTermBase_Representation MN "
+//				+ " INNER JOIN Representation r ON r.id = MN.representations_id "
+//				+ " WHERE MN.DefinedTermBase_id = dtb.id) "
+//				+ " WHERE voc.uuid = '%s'";
+		
+		//ANSI
+		String queryVocUuid = " UPDATE DefinedTermBase "
+				+ " SET idInVocabulary = " +
+					" (SELECT abbreviatedlabel "
+					+ " FROM DefinedTermBase_Representation MN "
+					+ " INNER JOIN Representation r ON r.id = MN.representations_id "
+					+ " WHERE MN.DefinedTermBase_id = DefinedTermBase.id) "
+				+ " WHERE EXISTS (SELECT * FROM TermVocabulary voc WHERE voc.id = DefinedTermBase.vocabulary_id " +
+						" AND voc.uuid = '%s') ";
+		
 
 		// Languages (ISO)
 		String stepName = "Update idInVocabulary for Languages ";
-		String query = "UPDATE DefinedTermBase dtb INNER JOIN TermVocabulary voc ON voc.id = dtb.vocabulary_id "
-				+ " SET dtb.idInVocabulary = dtb.iso639_2 "
-				+ " WHERE voc.uuid = '45ac7043-7f5e-4f37-92f2-3874aaaef2de' ";
+//		String query = "UPDATE DefinedTermBase dtb INNER JOIN TermVocabulary voc ON voc.id = dtb.vocabulary_id "
+//				+ " SET dtb.idInVocabulary = dtb.iso639_2 "
+//				+ " WHERE voc.uuid = '45ac7043-7f5e-4f37-92f2-3874aaaef2de' ";
+		String query = "UPDATE DefinedTermBase "
+				+ " SET idInVocabulary = iso639_2 "
+				+ " WHERE EXISTS (SELECT * FROM TermVocabulary voc WHERE voc.id = DefinedTermBase.vocabulary_id " +
+						" AND voc.uuid = '45ac7043-7f5e-4f37-92f2-3874aaaef2de') ";
 		ISchemaUpdaterStep step = SimpleSchemaUpdaterStep
 				.NewNonAuditedInstance(stepName, query).setDefaultAuditing(
 						tableName); // not fully correct as we should join with
@@ -1634,14 +1650,18 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// avoid duplicate for section (bot.)
 		stepName = "Update idInVoc for section (bot.)";
-		String sql = " UPDATE DefinedTermBase SET idInVocabulary = 'sect.(bot.)' WHERE uuid = '3edff68f-8527-49b5-bf91-7e4398bb975c'";
+		String sql = " UPDATE DefinedTermBase " +
+				" SET idInVocabulary = 'sect.(bot.)' " +
+				" WHERE uuid = '3edff68f-8527-49b5-bf91-7e4398bb975c'";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql,
 				"DefinedTermBase");
 		stepList.add(step);
 
 		// avoid duplicate for subsection (bot.)
 		stepName = "Update idInVoc for subsection (bot.)";
-		sql = " UPDATE DefinedTermBase SET idInVocabulary = 'subsect.(bot.)' WHERE uuid = 'd20f5b61-d463-4448-8f8a-c1ff1f262f59'";
+		sql = " UPDATE DefinedTermBase " +
+				" SET idInVocabulary = 'subsect.(bot.)' " +
+				" WHERE uuid = 'd20f5b61-d463-4448-8f8a-c1ff1f262f59'";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql,
 				"DefinedTermBase");
 		stepList.add(step);
@@ -1765,12 +1785,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// InstitutionType, MeasurementUnit, Scope, Stage, State, TextFormat,
 		// Modifier, PreservationMethod => dummies
 		stepName = "Update idInVocabulary for dummy terms in several vocabularies";
-		query = " UPDATE DefinedTermBase dtb "
-				+ " SET dtb.idInVocabulary = (SELECT abbreviatedlabel "
-				+ " FROM DefinedTermBase_Representation MN "
-				+ " INNER JOIN Representation r ON r.id = MN.representations_id "
-				+ " WHERE MN.DefinedTermBase_id = dtb.id) "
-				+ " WHERE dtb.termType IN ('%s','%s','%s','%s','%s','%s','%s','%s')";
+		query = " UPDATE DefinedTermBase "
+				+ " SET idInVocabulary = (SELECT abbreviatedlabel "
+					+ " FROM DefinedTermBase_Representation MN "
+					+ " INNER JOIN Representation r ON r.id = MN.representations_id "
+					+ " WHERE MN.DefinedTermBase_id = DefinedTermBase.id) "
+				+ " WHERE termType IN ('%s','%s','%s','%s','%s','%s','%s','%s')";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(
 				stepName,
 				String.format(query, TermType.InstitutionType.getKey(),
@@ -1782,23 +1802,23 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 
 		stepName = "Update idInVocabulary for dummy state";
-		query = " UPDATE DefinedTermBase dtb "
-				+ " SET dtb.idinvocabulary = 'std' "
-				+ " WHERE dtb.uuid = '881b9c80-626d-47a6-b308-a63ee5f4178f' ";
+		query = " UPDATE DefinedTermBase "
+				+ " SET idinvocabulary = 'std' "
+				+ " WHERE uuid = '881b9c80-626d-47a6-b308-a63ee5f4178f' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
 		stepList.add(step);
 
 		stepName = "Update idInVocabulary for dummy stage";
-		query = " UPDATE DefinedTermBase dtb "
-				+ " SET dtb.idinvocabulary = 'sgd' "
-				+ " WHERE dtb.uuid = '48f8e8a7-a2ac-4974-9ce8-6944afc5095e' ";
+		query = " UPDATE DefinedTermBase "
+				+ " SET idinvocabulary = 'sgd' "
+				+ " WHERE uuid = '48f8e8a7-a2ac-4974-9ce8-6944afc5095e' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
 		stepList.add(step);
 
 		stepName = "Update idInVocabulary for dummy modifier";
-		query = " UPDATE DefinedTermBase dtb "
-				+ " SET dtb.idinvocabulary = 'md' "
-				+ " WHERE dtb.uuid = 'efc38dad-205c-4028-ad9d-ae509a14b37a' ";
+		query = " UPDATE DefinedTermBase "
+				+ " SET idinvocabulary = 'md' "
+				+ " WHERE uuid = 'efc38dad-205c-4028-ad9d-ae509a14b37a' ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query);
 		stepList.add(step);
 

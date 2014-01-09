@@ -373,9 +373,23 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 				//child is still topmost node
 				//TODO test if child is topmostNode otherwise throw IllegalStateException
 				if (! this.isTopmostInTree(child)){
-					throw new IllegalStateException("Child is not a topmost node but must be");
+					//throw new IllegalStateException("Child is not a topmost node but must be");
+					if (childNode.getClassification() != null){
+						logger.warn("Child has no parent and is not a topmost node, child: " + child.getId() + " classification: " + childNode.getClassification().getId());
+					}else{
+						logger.warn("ChildNode has no classification: " + childNode.getId());
+					}
+						parentNode.addChildNode(childNode, citation, microCitation);
+					if (!parentNode.isTopmostNode()){
+						this.addChildNode(parentNode, citation, microCitation);
+						logger.warn("parent is added as a topmost node");
+					}else{
+						logger.warn("parent is already a topmost node");
+					}
+				}else{
+					this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
+			
 				}
-				this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
 			}
 			return childNode;
 		} catch (IllegalStateException e) {

@@ -17,7 +17,9 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -35,6 +37,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.name.INameCacheStrategy;
 
 /**
@@ -703,7 +706,18 @@ public class TaxonNameBaseTest {
 		nameBase1.setRank(null);
 		assertFalse(nameBase1.isSupraGeneric());
 	}
-
+	
+	@Test
+	public void testRemoveTaxonBases(){
+		
+		Taxon newTaxon = new Taxon(nameBase1, null);
+		assertEquals(1, nameBase1.getTaxonBases().size());
+		
+		
+		nameBase1.removeTaxonBase(newTaxon);
+		assertEquals(0, nameBase1.getTaxonBases().size());
+		
+	}
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.name.TaxonNameBase#isGenus()}.
 	 */

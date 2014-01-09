@@ -806,7 +806,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaLevel.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/NamedAreaType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/Point.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/ReferenceSystem.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/TdwgArea_Old.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/location/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/media/AudioFile.java -text
@@ -1467,6 +1466,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2000Da
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SqlServer2005DatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseTypeTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/database/update/CdmUpdaterTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/FullCoverageDataGenerator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/BeanInitializerIntegration.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/MethodCacheImplTest.java -text
@@ -2110,15 +2110,19 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/JsonpRedirect.java -tex
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/CdmBeanProcessingRegistry.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractCdmBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/AbstractModifiableThingBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DefaultBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DerivedUnitFacadeBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/DescriptionElementBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/HibernateProxyBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/IMultilanguageTextBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/KeyStatementBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/LuceneDocumentBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/MediaBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/NameRelationshipBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/PointBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/ReferenceBaseBeanProcessor.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/StateDataBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonNameBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonNameDescriptionBeanProcessor.java -text
@@ -2127,7 +2131,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonNod
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TaxonRelationshipBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TeamOrPersonBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TermBaseBeanProcessor.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TextDataBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TreeNodeBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/bean/TypeDesignationBaseBeanProcessor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/json/processor/matcher/CGLibEnhancedBeanProcessorMatcher.java -text

@@ -252,13 +252,16 @@ public class  DwcTaxonStreamItem2CdmTaxonConverter<CONFIG extends DwcaDataImport
 	private void handleCommonNames(StreamItem item,TaxonBase<?> taxonBase) {
 		//TODO: handle comma separated values
 		String commonName = item.get(TermUri.DWC_VERNACULAR_NAME);
-		Language language = getLanguage(item);	
-		CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonName, language);
-		if(taxonBase instanceof Taxon){
-			Taxon taxon = (Taxon) taxonBase;
-			TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
-			taxonDescription.addElement(commonTaxonName);
-			logger.info("Common name " + commonName + " added to " + taxon.getTitleCache());
+		if (StringUtils.isNotBlank(commonName)){
+		
+			Language language = getLanguage(item);	
+			CommonTaxonName commonTaxonName = CommonTaxonName.NewInstance(commonName, language);
+			if(taxonBase instanceof Taxon){
+				Taxon taxon = (Taxon) taxonBase;
+				TaxonDescription taxonDescription = getTaxonDescription(taxon, false);
+				taxonDescription.addElement(commonTaxonName);
+				logger.info("Common name " + commonName + " added to " + taxon.getTitleCache());
+			}
 		}
 	}
 

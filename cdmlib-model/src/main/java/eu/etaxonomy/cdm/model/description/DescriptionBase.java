@@ -226,6 +226,16 @@ public abstract class DescriptionBase<S extends IIdentifiableEntityCacheStrategy
         element.setInDescription(this);
         this.descriptionElements.add(element);
     }
+    
+    /**
+     * Convenience method to add multiple elements.
+     * @param elements
+     */
+    public void addElements(DescriptionElementBase ... elements) {
+    	for (DescriptionElementBase element : elements){
+    		addElement(element);
+    	}
+    }
 
     /**
      * Removes one element from the set of {@link #getElements() elementary description data} which

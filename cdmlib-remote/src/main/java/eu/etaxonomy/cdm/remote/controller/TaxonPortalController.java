@@ -257,6 +257,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
+            "elements.modifyingText",
+            "elements.modifiers",
+            "elements.stateData",
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
@@ -568,18 +571,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
-        
+
         //new
         List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
         synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
         synonymyGroups.remove(0);
         synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
-        
+
         //old
 //        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
 //        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
-        
-        
+
+
         mv.addObject(synonymy);
         return mv;
     }
@@ -857,9 +860,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
 
             }*/
-        }
-        if(request != null && logger.isInfoEnabled()){
-            logger.info("doGetDescriptions() - DONE");
         }
         return descriptions;
     }

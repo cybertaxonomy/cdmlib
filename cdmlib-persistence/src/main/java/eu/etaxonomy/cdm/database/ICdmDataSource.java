@@ -13,12 +13,14 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
-public interface ICdmDataSource {
+public interface ICdmDataSource extends DataSource {
 
 	/**
 	 * Returns a BeanDefinition object of type  DataSource that contains

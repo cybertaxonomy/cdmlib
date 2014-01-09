@@ -128,6 +128,10 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 			throw new IllegalArgumentException("Non-audit query must not be blank");
 		}
 		String auditQuery = nonAuditQuery.replace(" " + tableName + " ", " " + tableName + "_AUD ");
+		if (auditQuery.contains(" " + tableName + ".")){
+			logger.debug("audit query contains ' TableName.' in query. Will be replaced by ' TableName_AUD.' ");  
+			auditQuery = auditQuery.replace(" " + tableName + ".", " " + tableName + "_AUD.");
+		}
 		//TODO warning if nothing changed
 		this.auditQueryMap.put(dbType, auditQuery);
 	}
