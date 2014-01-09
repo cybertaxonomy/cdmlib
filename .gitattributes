@@ -1222,6 +1222,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2005Da
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SqlServer2008DatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/types/SybaseDatabaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/AuditedSchemaUpdaterStepBase.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CaseType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/CdmUpdater.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ClassChanger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/ColumnAdder.java -text

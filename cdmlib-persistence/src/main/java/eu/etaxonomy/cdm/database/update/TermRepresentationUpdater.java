@@ -56,10 +56,11 @@ public class TermRepresentationUpdater extends SchemaUpdaterStepBase<TermReprese
 
 	
 
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
 		
-		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
-		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
+		String sqlCheckTermExists = " SELECT count(*) as n FROM @@DefinedTermBase@@ WHERE uuid = '" + uuidTerm + "'";
+		
+		Long n = (Long)datasource.getSingleValue(caseType.replaceTableNames(sqlCheckTermExists));
 		if (n == 0){
 			String name = label != null ? label : abbrev != null ? abbrev : description;
 			monitor.warning("Term for representations update does not exist. Term not updated: " + CdmUtils.Nz(name) + "(" + uuidTerm + ")");
@@ -69,7 +70,7 @@ public class TermRepresentationUpdater extends SchemaUpdaterStepBase<TermReprese
 		//language id
 		Integer langId = null;
 		if (uuidLanguage != null){
-			langId = getLanguageId(uuidLanguage, datasource, monitor);
+			langId = getLanguageId(uuidLanguage, datasource, monitor, caseType);
 			if (langId == null){
 				String warning = "Language for language uuid (%s) could not be found. Term representations not updated.";
 				warning = String.format(warning, uuidLanguage.toString());
@@ -78,13 +79,14 @@ public class TermRepresentationUpdater extends SchemaUpdaterStepBase<TermReprese
 			}
 		}
 		
-		Integer repId = getRepresentationId(datasource, monitor, langId);
+		Integer repId = getRepresentationId(datasource, monitor, langId, caseType);
 		if (repId == null){
 			return null;
 		}
 		
 		//standard representation
-		String sqlUpdateRepresentationFormat = " UPDATE Representation r SET %s = '%s' WHERE r.id = %d ";
+		String sqlUpdateRepresentationFormat = " UPDATE @@Representation@@ r SET %s = '%s' WHERE r.id = %d ";
+		sqlUpdateRepresentationFormat = caseType.replaceTableNames(sqlUpdateRepresentationFormat);
 		if (description != null){
 			String sqlUpdateRepresentation = String.format(sqlUpdateRepresentationFormat, "text", description, repId);
 			datasource.executeUpdate(sqlUpdateRepresentation);
@@ -105,20 +107,23 @@ public class TermRepresentationUpdater extends SchemaUpdaterStepBase<TermReprese
 	 * @param datasource
 	 * @param monitor
 	 * @param langId
+	 * @param caseType 
 	 * @return
 	 * @throws SQLException
 	 */
 	private Integer getRepresentationId(ICdmDataSource datasource,
-			IProgressMonitor monitor, Integer langId) throws SQLException {
+			IProgressMonitor monitor, Integer langId, CaseType caseType) throws SQLException {
 		//representation
 		
 		String tableName = isReverse ? "RelationshipTermBase_inverseRepresentation" : "DefinedTermBase_Representation" ;
 		String repIdFkCol = isReverse ? "inverserepresentations_id" : "representations_id";
 		String sqlId = " SELECT rep.id " + 
-			" FROM Representation rep INNER JOIN %s MN ON MN.%s = rep.id " + 
-			" INNER JOIN DefinedTermBase dtb ON MN.DefinedTermBase_id = dtb.id " +
+			" FROM @@Representation@@ rep INNER JOIN %s MN ON MN.%s = rep.id " + 
+			" INNER JOIN @@DefinedTermBase@@ dtb ON MN.DefinedTermBase_id = dtb.id " +
 			" WHERE dtb.uuid = '%s' ";
+		tableName = caseType.transformTo(tableName);
 		sqlId = String.format(sqlId, tableName, repIdFkCol, uuidTerm.toString());
+		sqlId = caseType.replaceTableNames(sqlId);
 		if (uuidLanguage != null){
 			sqlId += " AND rep.language_id = " + langId;
 		}
@@ -134,7 +139,5 @@ public class TermRepresentationUpdater extends SchemaUpdaterStepBase<TermReprese
 		}
 		return repId;
 	}
-
-
 
 }

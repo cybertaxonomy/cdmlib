@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
@@ -33,7 +32,7 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(SingleTermRemover.class);
 	
-	public static final SingleTermRemover NewInstance(String stepName, String uuidTerm, List<String> checkUsedQueries){
+	public static final SingleTermRemover NewInstance(String stepName, String uuidTerm, List<String> checkUsedQueries, int adapt){
 		return new SingleTermRemover(stepName, uuidTerm, checkUsedQueries);	
 	}
 	
@@ -42,7 +41,7 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 	 * if this term is used at the given place.
 	 * @return
 	 */
-	public static final SingleTermRemover NewInstance(String stepName, String uuidTerm, String firstCheckUsedQuery){
+	public static final SingleTermRemover NewInstance(String stepName, String uuidTerm, String firstCheckUsedQuery, int adapt){
 		List<String> checkUsedQueries = new ArrayList<String>();
 		checkUsedQueries.add(firstCheckUsedQuery);
 		return new SingleTermRemover(stepName, uuidTerm, checkUsedQueries);	
@@ -60,53 +59,62 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
  		//get term id
-		String sql = " SELECT id FROM DefinedTermBase WHERE uuid = '%s'";
-		Integer id = (Integer)datasource.getSingleValue(String.format(sql, this.uuidTerm));
+		String sql = " SELECT id FROM %s WHERE uuid = '%s'";
+		Integer id = (Integer)datasource.getSingleValue(String.format(sql, 
+				caseType.transformTo("DefinedTermBase"), this.uuidTerm));
 		if (id == null || id == 0){
 			return 0;
 		}
 		
 		//check if in use
-		if (checkTermInUse(datasource, monitor, id)){
+		if (checkTermInUse(datasource, monitor, id, caseType)){
 			return 0;
 		}
 		
 		//if not ... remove
-		removeTerm(datasource, monitor, id);
+		removeTerm(datasource, monitor, id, caseType);
 		
 		return 0;
 	}
 
-	private void removeTerm(ICdmDataSource datasource, IProgressMonitor monitor, int id) throws SQLException {
+	private void removeTerm(ICdmDataSource datasource, IProgressMonitor monitor, int id, CaseType caseType) throws SQLException {
 		
 		//get representation ids
 		List<Integer> repIDs = new ArrayList<Integer>();
-		getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation" );
-		getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation");
+		getRepIds(datasource, id, repIDs, "representations_id", "DefinedTermBase_Representation", caseType );
+		getRepIds(datasource, id, repIDs, "inverserepresentations_id", "RelationshipTermBase_inverseRepresentation", caseType);
 		
 		//remove MN table
-		String sql = " DELETE FROM DefinedTermBase_Representation WHERE DefinedTermBase_id = " + id;
+		String sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
+		sql = String.format(sql, caseType.transformTo("DefinedTermBase_Representation"), id);
 		datasource.executeUpdate(sql);
-		sql = " DELETE FROM RelationshipTermBase_inverseRepresentation WHERE DefinedTermBase_id = " +id;
+		sql = " DELETE FROM %s WHERE DefinedTermBase_id = %d";
+		sql = String.format(sql, caseType.transformTo("RelationshipTermBase_inverseRepresentation"), id);
 		datasource.executeUpdate(sql);
 		
 		//remove representations
 		for (Integer repId : repIDs){
-			sql = " DELETE FROM Representation WHERE id = " + repId;
+			sql = " DELETE FROM %s WHERE id = %d ";
+			sql = String.format(sql, 
+					caseType.transformTo("Representation"), 
+					repId);
 			datasource.executeUpdate(sql);
 		}
 		
 		//remove term
-		sql = " DELETE FROM DefinedTermBase WHERE id = " + id;
+		sql = " DELETE FROM %s WHERE id = %d";
+		sql = String.format(sql, 
+				caseType.transformTo("DefinedTermBase"), 
+				id);
 		datasource.executeUpdate(sql);
 	}
 
 	private void getRepIds(ICdmDataSource datasource, int id,
-			List<Integer> repIDs, String mnRepresentationIdAttr, String mnTableName) throws SQLException {
+			List<Integer> repIDs, String mnRepresentationIdAttr, String mnTableName, CaseType caseType) throws SQLException {
 		String sql = " SELECT DISTINCT %s as repId FROM %s WHERE DefinedTermBase_id = %d";
-		sql = String.format(sql, mnRepresentationIdAttr, mnTableName, id);
+		sql = String.format(sql, mnRepresentationIdAttr, caseType.transformTo(mnTableName), id);
 		ResultSet rs = datasource.executeQuery(sql);
 		while (rs.next()){
 			Integer repId = rs.getInt("repId");  //TODO nullSafe, but should not happen
@@ -116,9 +124,9 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 		}
 	}
 
-	private boolean checkTermInUse(ICdmDataSource datasource, IProgressMonitor monitor, int id) throws SQLException {
+	private boolean checkTermInUse(ICdmDataSource datasource, IProgressMonitor monitor, int id, CaseType caseType) throws SQLException {
 		for (String query : checkUsedQueries){
-			query = String.format(query, id);
+			query = String.format(caseType.replaceTableNames(query), id);
 			Number i = (Number)datasource.getSingleValue(query);
 			if (i != null && (Long)i > 0.0){
 				return true;
@@ -127,7 +135,7 @@ public class SingleTermRemover extends SchemaUpdaterStepBase<SingleTermRemover> 
 		return false;
 	}
 
-	public SingleTermRemover addCheckUsedQuery(String query){
+	public SingleTermRemover addCheckUsedQuery(String query, int adapt){
 		this.checkUsedQueries.add(query);
 		return this;
 	}

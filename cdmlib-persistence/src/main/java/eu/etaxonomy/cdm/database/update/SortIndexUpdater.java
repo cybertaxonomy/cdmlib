@@ -56,18 +56,18 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
-		result &= addColumn(tableName, datasource, monitor);
+		result &= addColumn(caseType.transformTo(tableName), datasource, monitor, caseType);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= addColumn(tableName + aud, datasource, monitor);
+			result &= addColumn(caseType.transformTo(tableName + aud), datasource, monitor, caseType);
 		}
 		return (result == true )? 0 : null;
 	}
 
-	private boolean addColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		
+	private boolean addColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+		//Note: caseType not required here
 		Map<Integer, Set<Integer>> indexMap = makeIndexMap(datasource);
 		
 		updateIndices(tableName, datasource, indexMap);

@@ -43,27 +43,21 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 		this.setStepName(stepName);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep#invoke(eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
-	public abstract Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep#setStepName(java.lang.String)
-	 */
+	@Override
+	public abstract Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
+
+
+	@Override
 	public void setStepName(String stepName) {
 		this.stepName = stepName;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep#getStepName()
-	 */
+	@Override
 	public String getStepName() {
 		return stepName;
 	}
 	
-
-
 	protected String getBoolean(boolean value, ICdmDataSource datasource) {
 		String result;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
@@ -83,8 +77,8 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 		return result;
 	}
 	
-	protected Integer getEnglishLanguageId(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
-		return getLanguageId(Language.uuidEnglish, datasource, monitor);
+	protected Integer getEnglishLanguageId(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+		return getLanguageId(Language.uuidEnglish, datasource, monitor, caseType);
 	}
 
 	/**
@@ -94,10 +88,12 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	 * @return
 	 * @throws SQLException
 	 */
-	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected Integer getLanguageId(UUID uuidLanguage, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
+		
 		ResultSet rs;
 		Integer langId = null;
-		String sqlLangId = " SELECT id FROM DefinedTermBase WHERE uuid = '" + uuidLanguage + "'";
+		String sqlLangId = " SELECT id FROM %s WHERE uuid = '%s'";
+		sqlLangId = String.format(sqlLangId, caseType.transformTo("DefinedTermBase"), uuidLanguage.toString() );
 		rs = datasource.executeQuery(sqlLangId);
 		if (rs.next()){
 			langId = rs.getInt("id");

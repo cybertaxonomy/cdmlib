@@ -85,17 +85,12 @@ public class SchemaUpdater_30_301 extends SchemaUpdaterBase {
 		return stepList;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterBase#getNextUpdater()
-	 */
+
 	@Override
 	public ISchemaUpdater getNextUpdater() {
 		return SchemaUpdater_31_33.NewInstance();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.SchemaUpdaterBase#getPreviousUpdater()
-	 */
 	@Override
 	public ISchemaUpdater getPreviousUpdater() {
 		return SchemaUpdater_25_30.NewInstance();

@@ -44,9 +44,10 @@ public abstract class SchemaUpdaterBase extends UpdaterBase<ISchemaUpdaterStep, 
 	}
 
 	@Override
-	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 			int intSchemaVersion = 0;
-			String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
+			String sqlUpdateSchemaVersion = "UPDATE %s SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
+			sqlUpdateSchemaVersion = String.format(sqlUpdateSchemaVersion, caseType.transformTo("CdmMetaData"), this.targetVersion);
 			try {
 				int n = datasource.executeUpdate(sqlUpdateSchemaVersion);
 				return n > 0;
@@ -58,9 +59,10 @@ public abstract class SchemaUpdaterBase extends UpdaterBase<ISchemaUpdaterStep, 
 	}
 
 	@Override
-	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		int intSchemaVersion = 0;
-		String sqlSchemaVersion = "SELECT value FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
+		String sqlSchemaVersion = caseType.replaceTableNames( "SELECT value FROM @@CdmMetaData@@ WHERE propertyname = " +  intSchemaVersion);
+		
 		try {
 			String value = (String)datasource.getSingleValue(sqlSchemaVersion);
 			return value;

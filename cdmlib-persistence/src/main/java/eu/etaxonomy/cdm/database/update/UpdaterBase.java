@@ -32,32 +32,33 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	protected String startVersion;
 	protected String targetVersion;
 	
-	protected abstract boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
 	
-	protected abstract String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
+	protected abstract boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
+	
+	protected abstract String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
 	
 	@Override
-	public int countSteps(ICdmDataSource datasource, IProgressMonitor monitor){
+	public int countSteps(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType){
 		int result = 0;
 		//TODO test if previous updater is needed
-		if (isToBeInvoked(/*targetVerison, */datasource, monitor)){
+		if (isToBeInvoked(datasource, monitor, caseType)){
 			for (T step: list){
 				result++; //+= list.size();
 				result += step.getInnerSteps().size();
 			}	
 			if (getPreviousUpdater() != null){
-				result += getPreviousUpdater().countSteps(/*targetVerison, */datasource, monitor);
+				result += getPreviousUpdater().countSteps(datasource, monitor, caseType);
 			}
 		}
 		return result;
 	}
 	
 	
-	private boolean isToBeInvoked(ICdmDataSource datasource, IProgressMonitor monitor) {
+	private boolean isToBeInvoked(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		String datasourceVersion;
 		try {
-			datasourceVersion = getCurrentVersion(datasource, monitor);
+			datasourceVersion = getCurrentVersion(datasource, monitor, caseType);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
@@ -78,20 +79,18 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	
 	
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception{
 		String currentLibrarySchemaVersion = CdmMetaData.getDbSchemaVersion();
-		return invoke(currentLibrarySchemaVersion, datasource, monitor);
+		return invoke(currentLibrarySchemaVersion, datasource, monitor, caseType);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.IUpdater#invoke(java.lang.String, eu.etaxonomy.cdm.database.ICdmDataSource, eu.etaxonomy.cdm.common.IProgressMonitor)
-	 */
 	@Override
-	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
+	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception{
 		boolean result = true;
 		String datasourceVersion;
+		
 		try {
-			datasourceVersion = getCurrentVersion(datasource, monitor);
+			datasourceVersion = getCurrentVersion(datasource, monitor, caseType);
 		} catch (SQLException e1) {
 			monitor.warning("SQLException", e1);
 			return false;
@@ -126,7 +125,7 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 				monitor.warning(warning, exeption);
 				throw exeption;
 			}
-			result &= getPreviousUpdater().invoke(startVersion, datasource, monitor);
+			result &= getPreviousUpdater().invoke(startVersion, datasource, monitor, caseType);
 		}
 		
 
@@ -144,13 +143,13 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 //		datasource.startTransaction();  transaction already started by CdmUpdater
 		try {
 			for (T step : list){
-				result &= handleSingleStep(datasource, monitor, result, step, false);
+				result &= handleSingleStep(datasource, monitor, result, step, false, caseType);
 				if (result == false){
 					break;
 				}
 			}
 			if (result == true){
-				result &= updateVersion(datasource, monitor);
+				result &= updateVersion(datasource, monitor, caseType);
 			}else{
 				datasource.rollback();
 			}
@@ -166,14 +165,14 @@ public abstract class UpdaterBase<T extends ISchemaUpdaterStep, U extends IUpdat
 	
 //	protected abstract boolean handleSingleStep(ICdmDataSource datasource,	IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step, boolean isInnerStep) throws Exception;
 	
-	protected boolean handleSingleStep(ICdmDataSource datasource, IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step, boolean isInnerStep)
+	protected boolean handleSingleStep(ICdmDataSource datasource, IProgressMonitor monitor, boolean result, ISchemaUpdaterStep step, boolean isInnerStep, CaseType caseType)
 			throws Exception {
 		try {
 			monitor.subTask(step.getStepName());
-			Integer invokeResult = step.invoke(datasource, monitor);
+			Integer invokeResult = step.invoke(datasource, monitor, caseType);
 			result &= (invokeResult != null);
 			for (ISchemaUpdaterStep innerStep : step.getInnerSteps()){
-				result &= handleSingleStep(datasource, monitor, result, innerStep, true);
+				result &= handleSingleStep(datasource, monitor, result, innerStep, true, caseType);
 			}
 //			if (! isInnerStep){
 				monitor.worked(1);

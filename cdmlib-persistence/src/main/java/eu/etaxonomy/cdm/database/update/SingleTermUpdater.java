@@ -81,8 +81,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
- 		String sqlCheckTermExists = " SELECT count(*) as n FROM DefinedTermBase WHERE uuid = '" + uuidTerm + "'";
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
+ 		String sqlCheckTermExists = " SELECT count(*) as n " +
+ 				" FROM " + caseType.transformTo("DefinedTermBase") +
+ 				" WHERE uuid = '" + uuidTerm + "'";
 		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
 		if (n != 0){
 			monitor.warning("Term already exists: " + label + "(" + uuidTerm + ")");
@@ -91,7 +93,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		
 		//vocabulary id
 		int vocId;
-		String sqlVocId = " SELECT id FROM TermVocabulary WHERE uuid = '" + uuidVocabulary + "'";
+		String sqlVocId = " SELECT id " +
+				" FROM  " + caseType.transformTo("TermVocabulary") +
+				" WHERE uuid = '" + uuidVocabulary + "'";
 		ResultSet rs = datasource.executeQuery(sqlVocId);
 		if (rs.next()){
 			vocId = rs.getInt("id");
@@ -102,7 +106,7 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 		
 		Integer termId;
-		String sqlMaxId = " SELECT max(id)+1 as maxId FROM DefinedTermBase";
+		String sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("DefinedTermBase");
 		rs = datasource.executeQuery(sqlMaxId);
 		if (rs.next()){
 			termId = rs.getInt("maxId");
@@ -118,19 +122,20 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		String protectedTitleCache = getBoolean(false, datasource);
 		String orderIndex;
 		if (isOrdered){
-			orderIndex = getOrderIndex(datasource, vocId, monitor);
+			orderIndex = getOrderIndex(datasource, vocId, monitor, caseType);
 		}else{
 			orderIndex = "null";
 		}
 		String titleCache = label != null ? label : (abbrev != null ? abbrev : description );
 		String idInVocStr = idInVocabulary == null ? "NULL" : "'" + idInVocabulary + "'";
-		String sqlInsertTerm = " INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, termtype, idInVocabulary, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
+		String sqlInsertTerm = " INSERT INTO @@DefinedTermBase@@ (DTYPE, id, uuid, created, termtype, idInVocabulary, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id)" +
 				"VALUES ('" + dtype + "', " + id + ", '" + uuidTerm + "', '" + created + "', '" + termType.getKey() + "', " + idInVocStr +  ", " + protectedTitleCache + ", '" + titleCache + "', " + orderIndex + ", " + defaultColor + ", " + vocId + ")"; 
-		datasource.executeUpdate(sqlInsertTerm);
 		
-		updateFeatureTerms(termId, datasource, monitor);
-		updateRelationshipTerms(termId, datasource, monitor);
-		updateRanks(termId, datasource, monitor);
+		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertTerm));
+		
+		updateFeatureTerms(termId, datasource, monitor, caseType);
+		updateRelationshipTerms(termId, datasource, monitor, caseType);
+		updateRanks(termId, datasource, monitor, caseType);
 		
 //
 //		INSERT INTO DefinedTermBase (DTYPE, id, uuid, created, protectedtitlecache, titleCache, orderindex, defaultcolor, vocabulary_id) 
@@ -139,14 +144,14 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 //
 
 		//language id
-		Integer langId = getLanguageId(uuidLanguage, datasource, monitor);
+		Integer langId = getLanguageId(uuidLanguage, datasource, monitor, caseType);
 		if (langId == null){
 			return null;
 		}
 		
 		//representation
 		int repId;
-		sqlMaxId = " SELECT max(id)+1 as maxId FROM Representation";
+		sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("Representation");
 		rs = datasource.executeQuery(sqlMaxId);
 		if (rs.next()){
 			repId = rs.getInt("maxId");
@@ -158,29 +163,29 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		
 		//standard representation
 		UUID uuidRepresentation = UUID.randomUUID();
-		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
+		String sqlInsertRepresentation = " INSERT INTO @@Representation@@ (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
 				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', " + nullSafeStr(description) +  ", " +nullSafeStr( label) +  ", " + nullSafeStr(abbrev) +  ", " + langId + ")"; 
 		
-		datasource.executeUpdate(sqlInsertRepresentation);
+		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertRepresentation));
 		
-		String sqlInsertMN = "INSERT INTO DefinedTermBase_Representation (DefinedTermBase_id, representations_id) " + 
+		String sqlInsertMN = "INSERT INTO @@DefinedTermBase_Representation@@ (DefinedTermBase_id, representations_id) " + 
 				" VALUES ("+ termId +"," +repId+ " )";		
 		
-		datasource.executeUpdate(sqlInsertMN);
+		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertMN));
 		
 		//reverse representation
 		if (hasReverseRepresentation()){
 			int reverseRepId = repId + 1;
 			UUID uuidReverseRepresentation = UUID.randomUUID();
-			String sqlInsertReverseRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
+			String sqlInsertReverseRepresentation = " INSERT INTO @@Representation@@ (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
 					"VALUES (" + reverseRepId + ", '" + created + "', '" + uuidReverseRepresentation + "', " + nullSafeStr(reverseDescription) +  ", " + nullSafeStr(reverseLabel) +  ",  " + nullSafeStr(reverseAbbrev) +  ", " + langId + ")"; 
 			
-			datasource.executeUpdate(sqlInsertReverseRepresentation);
+			datasource.executeUpdate(caseType.replaceTableNames(sqlInsertReverseRepresentation));
 			
-			String sqlReverseInsertMN = "INSERT INTO RelationshipTermBase_inverseRepresentation (DefinedTermBase_id, inverserepresentations_id) " + 
+			String sqlReverseInsertMN = "INSERT INTO @@RelationshipTermBase_inverseRepresentation@@ (DefinedTermBase_id, inverserepresentations_id) " + 
 					" VALUES ("+ termId +"," +reverseRepId+ " )";		
 			
-			datasource.executeUpdate(sqlReverseInsertMN);
+			datasource.executeUpdate(caseType.replaceTableNames(sqlReverseInsertMN));
 		}			
 		
 		return termId;
@@ -194,9 +199,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 	}
 
-	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private void updateFeatureTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		if (dtype.equals(Feature.class.getSimpleName())){
-			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
+			String sqlUpdate = "UPDATE  " + caseType.transformTo("DefinedTermBase") + 
+				" SET " + 
 				" supportscategoricaldata = " + getBoolean(false, datasource) + ", " + 
 				" supportscommontaxonname = " + getBoolean(false, datasource) + ", " + 
 				" supportsdistribution = " + getBoolean(false, datasource) + ", " +
@@ -209,9 +215,10 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 	}
 
-	private void updateRelationshipTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private void updateRelationshipTerms(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		if (dtype.contains("Relationship")){
-			String sqlUpdate = "UPDATE DefinedTermBase SET " + 
+			String sqlUpdate = "UPDATE "  + caseType.transformTo("DefinedTermBase") + 
+				" SET " + 
 				" symmetrical = " + getBoolean(symmetric, datasource) + ", " + 
 				" transitive = " + getBoolean(transitive, datasource) + " " + 
 				" WHERE id = " + termId;
@@ -219,9 +226,9 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 		}
 	}
 	
-	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private void updateRanks(Integer termId, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		if (dtype.equals(Rank.class.getSimpleName())){
-			String sqlUpdate = "UPDATE DefinedTermBase  " + 
+			String sqlUpdate = "UPDATE " + caseType.transformTo("DefinedTermBase") +  
 				" SET rankClass = '" + rankClass.getKey() + "'" +  
 				" WHERE id = " + termId;
 			datasource.executeUpdate(sqlUpdate);
@@ -239,28 +246,32 @@ public class SingleTermUpdater extends SchemaUpdaterStepBase<SingleTermUpdater> 
 	 * @param datasource
 	 * @param vocId
 	 * @param monitor
+	 * @param caseType 
 	 * @return
 	 * @throws SQLException
 	 */
-	private String getOrderIndex(ICdmDataSource datasource, int vocId, IProgressMonitor monitor) throws SQLException {
+	private String getOrderIndex(ICdmDataSource datasource, int vocId, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		ResultSet rs;
 		Integer intOrderIndex = null;
 		if (uuidAfterTerm == null){
 			return "1";
 		}
-		String sqlOrderIndex = " SELECT orderindex FROM DefinedTermBase WHERE uuid = '"+uuidAfterTerm+"' AND vocabulary_id = "+vocId+"";
+		String sqlOrderIndex = " SELECT orderindex FROM %s WHERE uuid = '%s' AND vocabulary_id = %d ";
+		sqlOrderIndex = String.format(sqlOrderIndex, caseType.transformTo("DefinedTermBase"), uuidAfterTerm.toString(), vocId);
 		rs = datasource.executeQuery(sqlOrderIndex);
 		if (rs.next()){
 			intOrderIndex = rs.getInt("orderindex") + 1;
 			
-			String sqlUpdateLowerTerms = "UPDATE DefinedTermBase SET orderindex = orderindex + 1 WHERE vocabulary_id = " + vocId+ " AND orderindex >= " + intOrderIndex;
+			String sqlUpdateLowerTerms = "UPDATE %s SET orderindex = orderindex + 1 WHERE vocabulary_id = %d AND orderindex >= %d ";
+			sqlUpdateLowerTerms = String.format(sqlUpdateLowerTerms, "DefinedTermBase", vocId, intOrderIndex );
 			datasource.executeUpdate(sqlUpdateLowerTerms);
 		}else{
 			String warning = "The previous term has not been found in vocabulary. Put term to the end";
 			monitor.warning(warning);
 		}
 		if (intOrderIndex == null){
-			String sqlMaxOrderIndex = " SELECT max(orderindex) FROM DefinedTermBase WHERE vocabulary_id = " + vocId + "";
+			String sqlMaxOrderIndex = " SELECT max(orderindex) FROM %s WHERE vocabulary_id = %d";
+			sqlMaxOrderIndex = String.format(sqlMaxOrderIndex, caseType.transformTo("DefinedTermBase"), vocId);
 			intOrderIndex = (Integer)datasource.getSingleValue(sqlMaxOrderIndex);
 			if (intOrderIndex != null){
 				intOrderIndex++;

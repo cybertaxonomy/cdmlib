@@ -42,13 +42,14 @@ public class CdmUpdater {
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
+        CaseType caseType = CaseType.caseTypeOfDatasource(datasource);
 
         ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
         // TODO do we really always update the terms??
         ITermUpdater currentTermUpdater = getCurrentTermUpdater();
 
-        int steps = currentSchemaUpdater.countSteps(datasource, monitor);
-        steps += currentTermUpdater.countSteps(datasource, monitor);
+        int steps = currentSchemaUpdater.countSteps(datasource, monitor, caseType);
+        steps += currentTermUpdater.countSteps(datasource, monitor, caseType);
         steps++;  //for hibernate_sequences update
 
         String taskName = "Update to schema version " + currentSchemaUpdater.getTargetVersion() + " and to term version " + currentTermUpdater.getTargetVersion(); //+ currentSchemaUpdater.getVersion();
@@ -56,9 +57,9 @@ public class CdmUpdater {
 
         try {
             datasource.startTransaction();
-            result &= currentSchemaUpdater.invoke(datasource, monitor);
+            result &= currentSchemaUpdater.invoke(datasource, monitor, caseType);
             if (result == true){
-                result &= currentTermUpdater.invoke(datasource, monitor);
+                result &= currentTermUpdater.invoke(datasource, monitor, caseType);
                 updateHibernateSequence(datasource, monitor);
             }
             if (result == false){
@@ -86,7 +87,8 @@ public class CdmUpdater {
     }
 
 
-    /**
+
+	/**
      * Updating terms often inserts new terms, vocabularies and representations.
      * Therefore the counter in hibernate_sequences must be increased.
      * We do this once at the end of term updating.

@@ -25,10 +25,11 @@ public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 	 * not equal the current CDM schema version.
 	 * @param datasource the datasource
 	 * @param monitor the progress monitor and event listener
+	 * @param caseType the 
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;
 	
 
 	
@@ -42,7 +43,7 @@ public interface ISchemaUpdater extends IUpdater<ISchemaUpdater>{
 	 * @return
 	 * @throws Exception 
 	 */
-	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;
+	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;
 
 	public String getTargetVersion();
 

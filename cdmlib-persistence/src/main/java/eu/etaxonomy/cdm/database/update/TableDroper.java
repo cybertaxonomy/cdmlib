@@ -50,7 +50,7 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
@@ -68,6 +68,7 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 
 	private boolean removeFromHibernateSequences(ICdmDataSource datasource, IProgressMonitor monitor, String tableName) {
 		try {
+			//TODO do we need to "case" this table name?
 			String sql = " DELETE FROM hibernate_sequences WHERE sequence_name = '%s'";
 			sql = String.format(sql, tableName);
 			datasource.executeUpdate(sql);
@@ -81,6 +82,14 @@ public class TableDroper extends AuditedSchemaUpdaterStepBase<TableDroper> imple
 		
 	}
 
+	/**
+	 * @param tableName cased tableName
+	 * @param datasource
+	 * @param monitor
+	 * @param caseType
+	 * @return
+	 * @throws DatabaseTypeNotSupportedException
+	 */
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();

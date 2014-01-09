@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -49,13 +50,13 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		try {
 			boolean result = true;
-			result &= movePolytomousKeys(featureTreeTableName, featureNodeTableName, polytomousKeyTableName, polytomousKeyNodeTableName, datasource, monitor, false);
+			result &= movePolytomousKeys(caseType.transformTo(featureTreeTableName), caseType.transformTo(featureNodeTableName), caseType.transformTo(polytomousKeyTableName), caseType.transformTo(polytomousKeyNodeTableName), datasource, monitor, false, caseType);
 			if (includeAudTable){
 				String aud = "_AUD";
-				result &= movePolytomousKeys(featureTreeTableName + aud, featureNodeTableName + aud, polytomousKeyTableName + aud, polytomousKeyNodeTableName + aud, datasource, monitor, true);
+				result &= movePolytomousKeys(caseType.transformTo(featureTreeTableName + aud), caseType.transformTo(featureNodeTableName + aud), caseType.transformTo(polytomousKeyTableName + aud), caseType.transformTo(polytomousKeyNodeTableName + aud), datasource, monitor, true, caseType);
 			}
 			return (result == true )? 0 : null;
 		} catch (Exception e) {
@@ -65,20 +66,20 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		}
 	}
 
-	private boolean movePolytomousKeys(String featureTreeTableName, String featureNodeTableName, String polytomousKeyTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, IProgressMonitor monitor, boolean isAudit) throws SQLException {
+	private boolean movePolytomousKeys(String featureTreeTableName, String featureNodeTableName, String polytomousKeyTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, IProgressMonitor monitor, boolean isAudit, CaseType caseType) throws SQLException {
 		boolean result = true;
 		result &= movePolytomousKey(featureTreeTableName, polytomousKeyTableName, datasource, isAudit);
-		result &= movePolytomousKeyMns(featureTreeTableName, polytomousKeyTableName, datasource, isAudit);
+		result &= movePolytomousKeyMns(featureTreeTableName, polytomousKeyTableName, datasource, isAudit, caseType);
 		result &= movePolytomousKeyNodes(featureTreeTableName, featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
 
-		result &= moveQuestions(featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit);
+		result &= moveQuestions(featureNodeTableName, polytomousKeyNodeTableName, datasource, isAudit, caseType);
 		
-		result &= deleteOldData(datasource, isAudit);
+		result &= deleteOldData(datasource, isAudit, caseType);
 		return result;
 	}
 
 
-	private boolean moveQuestions(String featureNodeTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit) throws SQLException {
+	private boolean moveQuestions(String featureNodeTableName, String polytomousKeyNodeTableName, ICdmDataSource datasource, boolean isAudit, CaseType caseType) throws SQLException {
 		boolean result = true;
 		String aud = "";
 		String audValue = "";
@@ -90,13 +91,13 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		}
 		//For each Question 
 		String questionSql = " SELECT * " + 
-			" FROM FeatureNode_Representation@_aud mn INNER JOIN Representation@_aud r ON mn.questions_id = r.id ";
+			" FROM @@FeatureNode_Representation@_aud@@ mn INNER JOIN Representation@_aud r ON mn.questions_id = r.id ";
 		questionSql = questionSql.replace("@_aud", aud);
-		ResultSet rs = datasource.executeQuery(questionSql);
+		ResultSet rs = datasource.executeQuery(caseType.replaceTableNames(questionSql));
 		while (rs.next()){
 			
 			//Created KeyStatement
-			String updateQuery = " INSERT INTO KeyStatement@_aud (id, uuid, created, updated, createdby_id, updatedby_id @audParam)" + 
+			String updateQuery = " INSERT INTO @@KeyStatement@_aud@@ (id, uuid, created, updated, createdby_id, updatedby_id @audParam)" + 
 				" VALUES (@id, @uuid, @createdWhen, @updatedWhen, @createdby_id, @updatedby_id @audValue)";
 			updateQuery = updateQuery.replace("@audValue", audValue);
 			updateQuery = updateQuery.replace("@id", rs.getObject("FeatureNode_id").toString()); //use feature node id for key statement id 
@@ -112,14 +113,14 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			updateQuery = updateQuery.replace("@_aud", aud);
 			updateQuery = updateQuery.replace("@audParam", audParam);
 			try {
-				datasource.executeUpdate(updateQuery);
+				datasource.executeUpdate(caseType.replaceTableNames(updateQuery));
 			} catch (SQLException e) {
 				logger.error(e);
 				result = false;
 			}
 			
 			//create entry in Language String
-			updateQuery = " INSERT INTO LanguageString@_aud (id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @audParam) " + 
+			updateQuery = " INSERT INTO @@LanguageString@_aud@@ (id, created, uuid, updated, text, createdby_id, updatedby_id, language_id @audParam) " + 
 				" VALUES (@id, @createdWhen, @uuid, @updatedWhen, @text, @createdby_id, @updatedby_id, @language_id @audValue)";
 			updateQuery = updateQuery.replace("@audValue", audValue);
 			updateQuery = updateQuery.replace("@id", rs.getObject("id").toString());
@@ -137,14 +138,14 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			updateQuery = updateQuery.replace("@_aud", aud);
 			updateQuery = updateQuery.replace("@audParam", audParam);
 			try {
-				datasource.executeUpdate(updateQuery);
+				datasource.executeUpdate(caseType.replaceTableNames(updateQuery));
 			} catch (SQLException e) {
 				logger.error(e);
 				result = false;
 			}
 					
 			//create entry in KeyStatement_LanguageString
-			updateQuery = " INSERT INTO KeyStatement_LanguageString@_aud (KeyStatement_id, label_id, label_mapkey_id @audParam) " + 
+			updateQuery = " INSERT INTO @@KeyStatement_LanguageString@_aud@@ (KeyStatement_id, label_id, label_mapkey_id @audParam) " + 
 				" VALUES (@keystatement_id, @languagestring_id, @language_id @audValue) ";
 			updateQuery = updateQuery.replace("@audValue", audValue);
 			updateQuery = updateQuery.replace("@keystatement_id", nullSafe(rs.getObject("FeatureNode_id")));
@@ -157,20 +158,20 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 			updateQuery = updateQuery.replace("@_aud", aud);
 			updateQuery = updateQuery.replace("@audParam", audParam);
 			try {
-				datasource.executeUpdate(updateQuery);
+				datasource.executeUpdate(caseType.replaceTableNames(updateQuery));
 			} catch (SQLException e) {
 				logger.error(e);
 				result = false;
 			}
 			
 			//link polytomouskeynode statement to KeyStatement
-			updateQuery = " UPDATE PolytomousKeyNode@_aud " + 
+			updateQuery = " UPDATE @@PolytomousKeyNode@_aud@@ " + 
 					" SET statement_id = id " + 
 					" WHERE id = @id ";
 			updateQuery = updateQuery.replace("@id", nullSafe(rs.getObject("FeatureNode_id")));
 			updateQuery = updateQuery.replace("@_aud", aud);
 			try {
-				datasource.executeUpdate(updateQuery);
+				datasource.executeUpdate(caseType.replaceTableNames(updateQuery));
 			} catch (SQLException e) {
 				logger.error(e);
 				result = false;
@@ -257,13 +258,13 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		}
 	}
 
-	private boolean deleteOldData(ICdmDataSource datasource, boolean isAudit) {
+	private boolean deleteOldData(ICdmDataSource datasource, boolean isAudit, CaseType caseType) {
 		boolean result = true;
 		String updateQuery; 
-		String featureNodeTable = "FeatureNode" +  (isAudit ? "_AUD" : "");
-		String featureTreeTable = "FeatureTree" + (isAudit ? "_AUD" : "");
-		String representationTable = "Representation" + (isAudit ? "_AUD" : "");
-		String oldMnTable = "FeatureNode_Representation" + (isAudit ? "_AUD" : "");
+		String featureNodeTable = caseType.transformTo("FeatureNode" +  (isAudit ? "_AUD" : ""));
+		String featureTreeTable = caseType.transformTo("FeatureTree" + (isAudit ? "_AUD" : ""));
+		String representationTable = caseType.transformTo("Representation" + (isAudit ? "_AUD" : ""));
+		String oldMnTable = caseType.transformTo("FeatureNode_Representation" + (isAudit ? "_AUD" : ""));
 		
 //		statements
 		updateQuery = " DELETE FROM @representationTable WHERE id IN (SELECT questions_id FROM @oldMnTable)";
@@ -335,15 +336,15 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		return true;
 	}
 
-	private boolean  movePolytomousKeyMns(String featureTreeTableName, String polytomousKeyTableName, ICdmDataSource datasource, boolean isAudit) {
+	private boolean  movePolytomousKeyMns(String featureTreeTableName, String polytomousKeyTableName, ICdmDataSource datasource, boolean isAudit, CaseType caseType) {
 		//PolytomousKey MN update
 		boolean result = true;
-		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Annotation", null, datasource, isAudit, false);
-		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Credit", null, datasource, isAudit, true);
-		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Extension", null, datasource, isAudit, false);
-		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Marker", null, datasource, isAudit, false);
-		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "OriginalSourceBase", "Sources", datasource, isAudit, false);
-		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Rights", "Rights", datasource, isAudit, false);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Annotation", null, datasource, isAudit, false, caseType);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Credit", null, datasource, isAudit, true, caseType);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Extension", null, datasource, isAudit, false, caseType);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Marker", null, datasource, isAudit, false, caseType);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "OriginalSourceBase", "Sources", datasource, isAudit, false, caseType);
+		result &= updateMnTables(featureTreeTableName, polytomousKeyTableName, "Rights", "Rights", datasource, isAudit, false, caseType);
 		return result;
 	}
 
@@ -371,15 +372,15 @@ public class PolytomousKeyDataMover extends SchemaUpdaterStepBase implements ISc
 		return true;
 	}
 
-	private boolean updateMnTables(String featureTreeTableName, String polytomousKeyTableName, String attributeName, String attributePluralString, ICdmDataSource datasource, boolean isAudit, boolean hasSortIndex) {
+	private boolean updateMnTables(String featureTreeTableName, String polytomousKeyTableName, String attributeName, String attributePluralString, ICdmDataSource datasource, boolean isAudit, boolean hasSortIndex, CaseType caseType) {
 		String updateQuery;
 		String audit;
 		if (isAudit){
-			featureTreeTableName = featureTreeTableName.replace("_AUD", "");
-			polytomousKeyTableName = polytomousKeyTableName.replace("_AUD", "");
+			featureTreeTableName = featureTreeTableName.replace(caseType.transformTo("_AUD"), "");
+			polytomousKeyTableName = polytomousKeyTableName.replace(caseType.transformTo("_AUD"), "");
 		}
-		String newMnTable = polytomousKeyTableName + "_" + attributeName + (isAudit? "_AUD" : "");
-		String oldMnTable = featureTreeTableName + "_" + attributeName + (isAudit? "_AUD" : "");
+		String newMnTable = caseType.transformTo(polytomousKeyTableName + "_" + attributeName + (isAudit? "_AUD" : ""));
+		String oldMnTable = caseType.transformTo(featureTreeTableName + "_" + attributeName + (isAudit? "_AUD" : ""));
 		String pluralIdAttribute = ((attributePluralString == null) ? attributeName + "s" : attributePluralString)  + "_id";
 		String sortIndex = (hasSortIndex ? ", sortIndex" : "");
 		updateQuery = " INSERT INTO @newMnTable(PolytomousKey_id, @pluralIdAttribute @sortIndex @audit) " + 

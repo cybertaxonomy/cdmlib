@@ -101,18 +101,11 @@ public class TermUpdater_24_25 extends TermUpdaterBase implements ITermUpdater {
 		return list;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
-	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
 		return TermUpdater_25_30.NewInstance();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getPreviousUpdater()
-	 */
 	@Override
 	public ITermUpdater getPreviousUpdater() {
 		return null;
