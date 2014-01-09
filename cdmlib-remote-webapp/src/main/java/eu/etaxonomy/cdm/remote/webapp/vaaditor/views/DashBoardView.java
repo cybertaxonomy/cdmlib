@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.remote.webapp.vaaditor.views;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -51,6 +52,7 @@ import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -61,6 +63,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.TaxonTableDTO;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationController;
@@ -106,23 +109,20 @@ public class DashBoardView extends CustomComponent implements View{
 	private TaxonTableDTO taxonTable;
 	
 	@Autowired
-	ITaxonService taxonService;
+	private ITaxonService taxonService;
 	
 	@Autowired
-	ITermService termService;
+	private ITermService termService;
 	
 	@Autowired
-	IFeatureTreeService featureTreeService;
+	private IFeatureTreeService featureTreeService;
 	
 	@Autowired
-	IDescriptionService descriptionService;
+	private IDescriptionService descriptionService;
 	
 	@Autowired
-	INameService nameService;
+	private INameService nameService;
 	
-
-    
-    
 	private Collection<DescriptionElementBase>listDescriptions;
 	
 	private Table detailTable;
@@ -131,6 +131,7 @@ public class DashBoardView extends CustomComponent implements View{
 
 	private BeanItemContainer<RedlistDTO> taxonBaseContainer;
 
+	private VerticalLayout layout;
 
 	/*
 	 * Method will be called initially, but executed after dependency injection
@@ -141,7 +142,7 @@ public class DashBoardView extends CustomComponent implements View{
 	public void PostConstruct(){
 		if(authenticationController.isAuthenticated()){
 
-			VerticalLayout layout = new VerticalLayout();
+			layout = new VerticalLayout();
 			layout.setSizeFull();
 			layout.setHeight("100%");
 			
@@ -187,9 +188,9 @@ public class DashBoardView extends CustomComponent implements View{
 		}
 	}
 
-	  //\\--||----||==--\\ //---------------------------------------------------------------------------------------//
-	 //--\\-||----||==---\//--------------------Begin of helper methods--------------------------------------------//
-	//----\\||===-||==-- /\\--------------------------------------------------------------------------------------//
+	 //---------------------------------------------------------------------------------------//
+	//--------------------Begin of helper methods--------------------------------------------//
+   //---------------------------------------------------------------------------------------//
 	
 	private void createTaxonTableListener(final VerticalLayout detailViewLayout, final VerticalLayout descriptionViewLayout) {
 		
@@ -324,6 +325,7 @@ public class DashBoardView extends CustomComponent implements View{
 		tab1.addComponent(constructDescriptionTree(taxon));
 		tab2.addComponent(initComboBox(dto));
 		tab4.addComponent(constructGenerateButton());
+		tab4.addComponent(constructDeleteButton());
 		
 		tabsheet.addTab(tab1, "Description Data");
 		tabsheet.addTab(tab2, "Taxon Data");
@@ -412,6 +414,7 @@ public class DashBoardView extends CustomComponent implements View{
 
 	private void updateTables() {
 		taxonTable.markAsDirtyRecursive();
+//		taxonTable.refreshRowCache();
 	}
 	
 	private void openDetailWindow(Taxon taxon){
@@ -446,11 +449,12 @@ public class DashBoardView extends CustomComponent implements View{
 	 //------------------------------------Example Data Creation------------------------------------------//
 	//---------------------------------------------------------------------------------------------------//
 	public void createExampleData(){
-		List<Taxon> listTaxa = taxonService.getAllTaxa(0, 0);
-		for(Taxon taxon : listTaxa){
+		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
+		for(TaxonBase taxonBase : listTaxa){
+			Taxon taxon = (Taxon) taxonBase;
 			TaxonDescription td = getTaxonDescription(taxon, false, true);
-			NamedArea na = NamedArea.NewInstance();
-			na = (NamedArea) termService.load(UUID.fromString("0a9727d2-8d1f-4a88-ad4c-d6ef4ebc112a"));
+			NamedArea na = NamedArea.NewInstance();//0a9727d2-8d1f-4a88-ad4c-d6ef4ebc112a
+			na = (NamedArea) termService.load(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
 			PresenceAbsenceTermBase<?> absenceTermBase = (PresenceAbsenceTermBase<?>) termService.load(UUID.fromString("cef81d25-501c-48d8-bbea-542ec50de2c2"));
 			Distribution db = Distribution.NewInstance(na, absenceTermBase);
 			descriptionService.saveDescriptionElement(db);
@@ -459,6 +463,34 @@ public class DashBoardView extends CustomComponent implements View{
 		}
 		
 	}
+	
+	public void deleteExampleData(){
+		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+		Iterator<TaxonBase> taxonIterator = listTaxa.iterator();
+		while(taxonIterator.hasNext()){
+			TaxonBase taxonBase = taxonIterator.next();
+			Taxon taxon = (Taxon) taxonBase;
+			TaxonDescription td = getTaxonDescription(taxon, false, false);
+			Iterator<DescriptionElementBase> descriptionIterator = td.getElements().iterator();
+			while(descriptionIterator.hasNext()){
+				DescriptionElementBase descriptionElementBase = descriptionIterator.next();
+				if(descriptionElementBase instanceof Distribution){
+					logger.info("Will be deleted: " + descriptionIterator);
+					td.removeElement(descriptionElementBase);
+					taxonService.saveOrUpdate(taxon);
+					break;
+				}
+			}
+		}
+	}
+
+	private void refreshLayout(){
+		//TODO: refresh of Taxon Table does not work properly
+		layout.markAsDirtyRecursive();
+		taxonTable.markAsDirtyRecursive();
+		taxonTable.refreshRowCache();
+	}
+	
 	
 	private TaxonDescription getTaxonDescription(Taxon taxon, boolean isImageGallery, boolean createNewIfNotExists) {
 		TaxonDescription result = null;
@@ -475,6 +507,22 @@ public class DashBoardView extends CustomComponent implements View{
 		}
 		return result;
 	}
+	
+	private Button constructDeleteButton() {
+		Button deleteButton = new Button("Delete Data");
+		deleteButton.addClickListener(new ClickListener() {
+
+			private static final long serialVersionUID = 1L;
+
+			@Override
+			public void buttonClick(ClickEvent event) {
+				deleteExampleData();
+				refreshLayout();
+			}
+		});
+		return deleteButton;
+	}
+	
 	
 	private Button constructGenerateButton() {
 		Button generateButton = new Button("Generate Data");
