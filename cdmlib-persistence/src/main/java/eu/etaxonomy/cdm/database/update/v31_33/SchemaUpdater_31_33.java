@@ -2498,10 +2498,10 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update max
 		stepName = "Update gathering elevation max";
 		// all audits to unknown type
-		String query = " UPDATE @@GatheringEvent@@ ge "
-				+ " SET ge.absoluteElevationMax = ge.absoluteElevation + ge.absoluteElevationError,  "
-				+ "     ge.absoluteElevation =  ge.absoluteElevation - ge.absoluteElevationError"
-				+ " WHERE ge.absoluteElevationError is not null ";
+		String query = " UPDATE @@GatheringEvent@@ "
+				+ " SET absoluteElevationMax = absoluteElevation + absoluteElevationError,  "
+				+ "     absoluteElevation =  absoluteElevation - absoluteElevationError"
+				+ " WHERE absoluteElevationError is not null ";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
 				.setDefaultAuditing(audTableName);
 		stepList.add(step);
