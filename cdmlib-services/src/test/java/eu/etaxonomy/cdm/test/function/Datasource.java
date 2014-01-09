@@ -72,10 +72,12 @@ public class Datasource {
 		
 		String server = "localhost";
 //		String database = "cdm_test";
-		String database = "test";
-		String username = "edit";
-		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
+		String database = "testCDM";
+		String username = "postgres";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null)); 
+		
+		
 //		String server = "test.e-taxonomy.eu";
 ////		String database = "cdm_test";
 //		String database = "cdm_demo3";
@@ -95,8 +97,8 @@ public class Datasource {
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
 		
-//		CdmUpdater updater = new CdmUpdater();
-//		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+		CdmUpdater updater = new CdmUpdater();
+		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
 		
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);

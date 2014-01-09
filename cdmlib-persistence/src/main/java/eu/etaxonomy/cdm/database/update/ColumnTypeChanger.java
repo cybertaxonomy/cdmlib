@@ -123,7 +123,11 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 			throw new DatabaseTypeNotSupportedException(warning);
 		}
 		if (isNotNull){
-			updateQuery += " NOT NULL";
+			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.PostgreSQL)){
+				logger.warn("NOT NULL not implementd for POSTGRES");
+			}else{
+				updateQuery += " NOT NULL";
+			}
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@columnName", columnName);

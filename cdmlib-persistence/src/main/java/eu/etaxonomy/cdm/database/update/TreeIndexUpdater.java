@@ -63,9 +63,9 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			//start
 			String separator = ITreeNode.separator;
 			String treePrefix = ITreeNode.treePrefix;
-			sql = String.format(" UPDATE %s tn " +
-					" SET tn.%s = CONCAT('%s%s', tn.%s, '%s', tn.id, '%s') " +
-					" WHERE tn.%s IS NULL AND tn.%s IS NOT NULL ", 
+			sql = String.format(" UPDATE %s " +
+					" SET %s = CONCAT('%s%s', %s, '%s', id, '%s') " +
+					" WHERE %s IS NULL AND %s IS NOT NULL ", 
 						tableName, 
 						indexColumnName, separator, treePrefix, treeIdColumnName, separator, separator, 
 						parentIdColumnName, treeIdColumnName);

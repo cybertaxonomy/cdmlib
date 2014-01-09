@@ -106,15 +106,15 @@ public class ClassChanger extends AuditedSchemaUpdaterStepBase<ClassChanger> imp
 	
 	public String getDtypeUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
-		updateQuery = " UPDATE @tableName t " + 
-				" SET t.DTYPE = '@newTableName' " +
+		updateQuery = " UPDATE @tableName " + 
+				" SET DTYPE = '@newTableName' " +
 				" WHERE (1=0 @dtypes)";
 		
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@newTableName", getSimpleName(newClassName));
 		String dtypes = "";
 		for (String oldClassName : oldClassNames){
-			dtypes += String.format(" OR t.DTYPE = '%s' ", getSimpleName(oldClassName)) ;
+			dtypes += String.format(" OR DTYPE = '%s' ", getSimpleName(oldClassName)) ;
 		}
 		updateQuery = updateQuery.replace("@dtypes", dtypes);
 		

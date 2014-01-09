@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -146,8 +148,12 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		String result = columnType;
 		DatabaseTypeEnum dbType = datasource.getDatabaseType();
 		//nvarchar
-		if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){
+		if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){  //TODO use PostgeSQL82 Dialect infos
 			result = result.replace("nvarchar", "varchar");
+			result = result.replace("double", "float8");
+			result = result.replace("bit", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.BIT));
+			result = result.replace("datetime", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TIMESTAMP));
+			result = result.replace("tinyint", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TINYINT));
 		}
 		//CLOB
 		if (columnType.equalsIgnoreCase("clob")){

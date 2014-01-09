@@ -186,14 +186,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			String updateQuery = "CREATE TABLE @tableName (";
 			//AUDIT
 			if (isAuditing){
-				updateQuery += " REV integer not null, revtype tinyint, ";
+				updateQuery += " REV integer not null, revtype " + ColumnAdder.getDatabaseColumnType(datasource, "tinyint") + ", ";
 			}
 			//CdmBase
 			if (includeCdmBaseAttributes){
-					updateQuery += " id integer not null,"
-						+ " created datetime, "
+					updateQuery += " id integer NOT NULL,"
+						+ " created " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
 						+ " uuid varchar(36),"
-						+ " updated datetime, "
+						+ " updated " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
 						+ " createdby_id integer,"
 						+ " updatedby_id integer, ";
 			}
