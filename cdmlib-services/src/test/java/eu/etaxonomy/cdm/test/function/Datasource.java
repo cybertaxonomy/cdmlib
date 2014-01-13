@@ -70,20 +70,22 @@ public class Datasource {
 		dataSource = lsDataSources.get(1);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
-		String server = "localhost";
+//		String server = "localhost";
 //		String database = "cdm_test";
-		String database = "testCDM";
-		String username = "postgres";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null)); 
-		
-		
-//		String server = "test.e-taxonomy.eu";
-////		String database = "cdm_test";
-//		String database = "cdm_demo3";
+////		String database = "test";
 //		String username = "edit";
 //		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
+		String server = "test.e-taxonomy.eu";
+//		String database = "cdm_test";
+		String database = "cdm_edit_flora_central_africa";
+		String username = "edit";
+		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		String server = "localhost";
+//		String database = "testCDM";
+//		String username = "postgres";
+//		dataSource = CdmDataSource.NewInstance(DatabaseTypeEnum.PostgreSQL, server, database, DatabaseTypeEnum.PostgreSQL.getDefaultPort(), username, AccountStore.readOrStorePassword(server, database, username, null)); 
 		
 		
 //		//SQLServer
@@ -92,14 +94,19 @@ public class Datasource {
 //		username = "pesiexport";
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //		
-//		//H2
-//		username = "sa";
-//    	dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+		//H2
+//		String username = "edit";
+//    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2",   NomenclaturalCode.ICNAFP);
+//    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
+    	
 		
-		CdmUpdater updater = new CdmUpdater();
-		updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-		
+		try {
+			CdmUpdater updater = new CdmUpdater();
+			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+		} catch (Exception e) {
+//			xx;
+		}
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
