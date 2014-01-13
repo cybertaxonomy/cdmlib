@@ -65,7 +65,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	
 
 	/** Retrieves data from a CDM DB and serializes them CDM to CSV.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms, relationships, descriptive data, red list status (features).
+	 * Starts with root taxa and traverses the classification to retrieve 
+	 * children taxa, synonyms, relationships, descriptive data, red list 
+	 * status (features). 
 	 * Taxa that are not part of the classification are not found.
 	 * 
 	 * @param exImpConfig
@@ -136,7 +138,7 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * @param config
 	 * @return
 	 */
-	private Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
+	protected Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
 		if(config != null){
 			Set<UUID> classificationUuidSet = config.getClassificationUuids();
 			List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
@@ -175,11 +177,16 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * Takes positive List of areas and iterates over a given classification 
 	 * and their {@link Taxon} to return all {@link Taxon} with the desired 
 	 * geographical attribute.
-	 * @param selectedAreas
+	 * 
+	 * <p><p>
+	 *
+	 * If selectedAreas is null all {@link TaxonNode}s of the given {@link Classification} will be returned.
+	 * 
+	 * @param selectedAreas 
 	 * @param classificationSet
 	 * @return
 	 */
-	private List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
+	protected List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
 			Set<Classification> classificationSet) {
 		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
 		List<TaxonNode> allNodes =  getAllNodes(classificationSet);
