@@ -1,9 +1,9 @@
 // $Id$
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -15,7 +15,6 @@ import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-
 
 import eu.etaxonomy.cdm.database.update.ClassChanger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
@@ -48,11 +47,11 @@ import eu.etaxonomy.cdm.model.description.NaturalLanguageTerm;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TextFormat;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
@@ -338,7 +337,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		query = "UPDATE @@Media@@ SET DTYPE = 'Media' WHERE DTYPE = 'Figure'";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "Media", 99);
 		stepList .add(step);
-		
+
 		// add doi to reference
 		stepName = "Add doi to Reference";
 		tableName = "Reference";
@@ -536,7 +535,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		tableName = "Sequence_Extension";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
-		
+
 		//remove table Sequence_Media #3360
 		stepName = "Remove table Sequence_Media";
 		tableName = "Sequence_Media";
@@ -823,12 +822,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update publish with existing publish false markers
 		stepName = "update TaxonBase publish if publish false markers exist";
 		query = " UPDATE @@TaxonBase@@ "
-				+ " SET publish = '0' "
+				+ " SET publish = 0 "
 				+ " WHERE id IN ( "
 				 + " SELECT DISTINCT MN.TaxonBase_id "
 				 + " FROM @@Marker@@ m INNER JOIN @@TaxonBase_Marker@@ MN ON MN.markers_id = m.id "
 				 + " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
-				 + " WHERE m.flag = '0' AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
+				 + " WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonBase", 99);
 		stepList.add(step);
@@ -871,12 +870,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update publish with existing publish false markers
 		stepName = "update SpecimenOrObservationBase publish if publish false markers exist";
 		query = " UPDATE @@SpecimenOrObservationBase@@ "
-				+ " SET publish = '0' "
+				+ " SET publish = 0 "
 				+ " WHERE id IN ( "
 				+ " SELECT DISTINCT MN.SpecimenOrObservationBase_id "
 				+ " FROM @@Marker@@ m INNER JOIN @@SpecimenOrObservationBase_Marker@@ MN ON MN.markers_id = m.id "
 				+ " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
-				+ " WHERE m.flag = '0' AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
+				+ " WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "SpecimenOrObservationBase", 99);
 		stepList.add(step);
@@ -1441,7 +1440,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update reference title, set null where abbrev title very likely";
 		query = " UPDATE @@Reference@@ "
 				+ " SET title = NULL "
-				+ " WHERE title IS NOT NULL AND protectedTitleCache = '0' AND "
+				+ " WHERE title IS NOT NULL AND protectedTitleCache = 0 AND "
 				+ " ( LENGTH(title) <= 15 AND title like '%.%.%' OR LENGTH(title) < 30 AND title like '%.%.%.%' OR LENGTH(title) < 45 AND title like '%.%.%.%.%' OR LENGTH(title) < 60 AND title like '%.%.%.%.%.%' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
@@ -1451,7 +1450,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update reference abbrevTitle, set null where abbrev title very unlikely";
 		query = " UPDATE @@Reference@@ "
 				+ " SET abbrevTitle = NULL "
-				+ " WHERE title IS NOT NULL AND protectedTitleCache = '0' AND "
+				+ " WHERE title IS NOT NULL AND protectedTitleCache = 0 AND "
 				+ " ( title NOT like '%.%' OR LENGTH(title) > 30 AND title NOT like '%.%.%' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
@@ -1574,7 +1573,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 //				+ " INNER JOIN @@Representation@@ r ON r.id = MN.representations_id "
 //				+ " WHERE MN.DefinedTermBase_id = dtb.id) "
 //				+ " WHERE voc.uuid = '%s'";
-		
+
 		//ANSI
 		String queryVocUuid = " UPDATE @@DefinedTermBase@@ "
 				+ " SET idInVocabulary = " +
@@ -1584,7 +1583,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 					+ " WHERE MN.DefinedTermBase_id = @@DefinedTermBase@@.id) "
 				+ " WHERE EXISTS (SELECT * FROM @@TermVocabulary@@ voc WHERE voc.id = @@DefinedTermBase@@.vocabulary_id " +
 						" AND voc.uuid = '%s') ";
-		
+
 
 		// Languages (ISO)
 		String stepName = "Update idInVocabulary for Languages ";
@@ -2055,7 +2054,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		String tableName = "DefinedTermBase";
 
 		//NamedArea
-		String query = " UPDATE @@DefinedTermBase@@ " + 
+		String query = " UPDATE @@DefinedTermBase@@ " +
 				" SET termType = '" + TermType.NamedArea.getKey() + "' " +
 				" WHERE DTYPE = '" + NamedArea.class.getSimpleName() + "' OR DTYPE = 'TdwgArea' " +
 						"OR DTYPE = 'WaterbodyOrCountry' OR DTYPE = '"+ Country.class.getSimpleName() + "' OR DTYPE = 'Continent' ";
