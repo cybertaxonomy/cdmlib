@@ -459,7 +459,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 */
 	@Transient
 	public URI getGenBankUri() {
-		return createExternalUri(GENBANK_BASE_URI);
+		return createExternalUri(GENBANK_BASE_URI, geneticAccessionNumber);
 	}
 
 	/**
@@ -468,7 +468,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 */
 	@Transient
 	public URI getEmblUri() {
-		return createExternalUri(EMBL_BASE_URI);
+		return createExternalUri(EMBL_BASE_URI, geneticAccessionNumber);
 	}
 
 	/**
@@ -477,7 +477,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 */
 	@Transient
 	public URI getDdbjUri() {
-		return createExternalUri(DDBJ_BASE_URI);
+		return createExternalUri(DDBJ_BASE_URI, geneticAccessionNumber);
 	}
 	
 	/**
@@ -486,17 +486,18 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 */
 	@Transient
 	public URI getBoldUri() {
-		return createExternalUri(BOLD_BASE_URI);
+		return createExternalUri(BOLD_BASE_URI, boldProcessId);
 	}
-
 	
-	private URI createExternalUri(String baseUri){
+	private URI createExternalUri(String baseUri, String id){
 		if (StringUtils.isNotBlank(geneticAccessionNumber)){
 			return URI.create(String.format(baseUri, geneticAccessionNumber.trim()));
 		}else{
 			return null;
 		}
 	}
+
+
 	
 	
 	//*********************** CLONE ********************************************************/
