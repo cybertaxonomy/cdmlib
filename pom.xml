@@ -1066,25 +1066,26 @@
                 <artifactId>xom</artifactId>
                 <version>1.0</version>
             </dependency>
-	<!-- ******* SAXON (ViBRANT)******* -->
-	<dependency>
-		<groupId>net.sf.saxon</groupId>
-		<artifactId>Saxon-HE</artifactId>
-		<version>9.5.1-2</version>
-	</dependency>
-		<dependency>
+			<!-- ******* SAXON (ViBRANT)******* -->
+			<dependency>
+				<groupId>net.sf.saxon</groupId>
+				<artifactId>Saxon-HE</artifactId>
+				<version>9.5.1-2</version>
+			</dependency>
+			<!-- ******* http components (ViBRANT)******* -->
+			<dependency>
                 <groupId>org.apache.httpcomponents</groupId>
                 <artifactId>httpmime</artifactId>
                 <version>${httpcomponents.version}</version>
-	</dependency>
-	<dependency>
-		<groupId>org.json</groupId>
-		<artifactId>json</artifactId>
-		<version>20090211</version>
-	</dependency>
-
+			</dependency>
+			<!-- ***** json ********************-->
+			<dependency>
+				<groupId>org.json</groupId>
+				<artifactId>json</artifactId>
+				<version>20090211</version>
+			</dependency>
             <!-- ******* HIBERNATE / EJB3 ******* -->
-       <dependency>
+			<dependency>
                 <groupId>org.hibernate.javax.persistence</groupId>
                 <artifactId>hibernate-jpa-2.0-api</artifactId>
                 <version>1.0.1.Final</version>
