@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -28,14 +28,14 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(SortIndexUpdater.class);
-	
-	private String tableName;
-	private String sortIndexColumn;
-	private String parentColumn;
+
+	private final String tableName;
+	private final String sortIndexColumn;
+	private final String parentColumn;
 	private String idColumn = "id";
-	private boolean includeAudTable;
+	private final boolean includeAudTable;
 	private Integer baseValue = 0;
-	
+
 	public static final SortIndexUpdater NewInstance(String stepName, String tableName, String parentColumn, String sortIndexColumn, boolean includeAudTable){
 		return new SortIndexUpdater(stepName, tableName, parentColumn, sortIndexColumn, "id", includeAudTable, 0);
 	}
@@ -44,7 +44,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 		return new SortIndexUpdater(stepName, tableName, parentColumn,sortIndexColumn, idColumn, includeAudTable, 0);
 	}
 
-	
+
 	protected SortIndexUpdater(String stepName, String tableName, String parentColumn, String sortIndexColumn, String idColumn, boolean includeAudTable, Integer baseValue) {
 		super(stepName);
 		this.tableName = tableName;
@@ -68,25 +68,26 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 
 	private boolean addColumn(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		//Note: caseType not required here
-		Map<Integer, Set<Integer>> indexMap = makeIndexMap(datasource);
-		
+		Map<Integer, Set<Integer>> indexMap = makeIndexMap(tableName, datasource);
+
 		updateIndices(tableName, datasource, indexMap);
-		
+
 		return true;
 	}
 
 	/**
-	 * @param datasource 
+	 * @param tableName
+	 * @param datasource
 	 * @param rs
 	 * @param index
 	 * @param oldParentId
 	 * @return
 	 * @throws SQLException
 	 */
-	private Map<Integer, Set<Integer>> makeIndexMap(ICdmDataSource datasource) throws SQLException {
+	private Map<Integer, Set<Integer>> makeIndexMap(String tableName, ICdmDataSource datasource) throws SQLException {
 		String resulsetQuery = "SELECT @id as id, @parentColumn " +
 				" FROM @tableName " +
-				" WHERE @parentColumn IS NOT NULL " + 
+				" WHERE @parentColumn IS NOT NULL " +
 				" ORDER BY @parentColumn,    @id";
 		resulsetQuery = resulsetQuery.replace("@tableName", tableName);
 		resulsetQuery = resulsetQuery.replace("@parentColumn", parentColumn);
@@ -95,10 +96,10 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 		ResultSet rs = datasource.executeQuery(resulsetQuery);
 		Integer index = baseValue;
 		int oldParentId = -1;
-		
-		
+
+
 		//increase index with each row, set to 0 if parent is not the same as the previous one
-		Map<Integer, Set<Integer>> indexMap = new HashMap<Integer, Set<Integer>>(); 
+		Map<Integer, Set<Integer>> indexMap = new HashMap<Integer, Set<Integer>>();
 		while (rs.next() ){
 			int id = rs.getInt("id");
 			Object oParentId = rs.getObject(parentColumn);
@@ -125,7 +126,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 		for (Integer index :  indexMap.keySet()){
 			Set<Integer> set = indexMap.get(index);
 			String idSetString = makeIdSetString(set);
-			
+
 			String updateQuery = "UPDATE @tableName SET @sortIndexColumn = @index WHERE @id IN (@idList) ";
 			updateQuery = updateQuery.replace("@tableName", tableName);
 			updateQuery = updateQuery.replace("@sortIndexColumn", sortIndexColumn);
@@ -145,7 +146,7 @@ public class SortIndexUpdater extends SchemaUpdaterStepBase<SortIndexUpdater> im
 	}
 
 	/**
-	 * Adds the id to the index (each id is attached to an (sort)index) 
+	 * Adds the id to the index (each id is attached to an (sort)index)
 	 */
 	private void putIndex(Integer id, Integer index, Map<Integer, Set<Integer>> indexMap) {
 		Set<Integer> set = indexMap.get(index);
