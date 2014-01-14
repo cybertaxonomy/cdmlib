@@ -1134,6 +1134,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                 }
             }
+         
+         
+         	//PolytomousKey TODO
+         	
+         	boolean usedInPolytomousKey = checkForPolytomousKeys(taxon);
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
                 try {
@@ -1141,7 +1146,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
                     TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
                     //check whether taxon will be deleted or not
-                    if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null){
+                    if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null && !usedInPolytomousKey){
                         taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
                         name.removeTaxonBase(taxon);
                         nameService.save(name);
@@ -1172,10 +1177,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                 }*/
 
-            if (taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0){
+            if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && !usedInPolytomousKey ){
                 dao.delete(taxon);
                 return taxon.getUuid();
-            } else{
+            } else if (usedInPolytomousKey){
+            	return null;
+            }else{
                 message = "Taxon can't be deleted as it is used in another Taxonnode";
                 if (!config.isDeleteInAllClassifications() && classification != null) {
                     message += "The Taxonnode in " + classification.getTitleCache() + " was deleted.";
@@ -1197,11 +1204,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
 
 
-            //PolytomousKeyNode
+           /* //PolytomousKeyNode
             if (referencingObject.isInstanceOf(PolytomousKeyNode.class)){
                 String message = "Taxon" + taxon.getTitleCache() + " can't be deleted as it is used in polytomous key node";
                 return message;
-            }
+            }*/
 
             //TaxonInteraction
             if (referencingObject.isInstanceOf(TaxonInteraction.class)){
@@ -1219,6 +1226,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         
         referencingObjects = null;
         return null;
+    }
+    
+    private boolean checkForPolytomousKeys(Taxon taxon){
+    	boolean result = false;
+    	List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon);
+    	if (!list.isEmpty()) {
+    		result = true;
+    	}
+    	return result;
     }
 
     @Transactional(readOnly = false)
