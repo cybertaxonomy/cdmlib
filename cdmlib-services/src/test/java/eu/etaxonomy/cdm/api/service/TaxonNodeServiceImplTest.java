@@ -196,9 +196,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node1 = taxonNodeService.load(node1Uuid);
-		Assert.assertEquals("Node1 treeindex is not correct", "#t2#2#", node1.treeIndex());
+		Assert.assertEquals("Node1 treeindex is not correct", "#t2#8#2#", node1.treeIndex());
 		node6 = taxonNodeService.load(node6Uuid);
-		Assert.assertEquals("Node6 treeindex is not correct", "#t2#2#4#6#", node6.treeIndex());
+		Assert.assertEquals("Node6 treeindex is not correct", "#t2#8#2#4#6#", node6.treeIndex());
 
 		//into new classification
 		node2 = taxonNodeService.load(node2Uuid);
@@ -207,7 +207,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		taxonNodeService.saveOrUpdate(node5);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = taxonNodeService.load(node2Uuid);
-		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node2.treeIndex());
+		Assert.assertEquals("Node3 treeindex is not correct", "#t2#8#2#5#3#", node2.treeIndex());
 
 }
 

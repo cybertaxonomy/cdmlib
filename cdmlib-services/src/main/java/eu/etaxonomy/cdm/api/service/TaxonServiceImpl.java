@@ -2314,7 +2314,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         String genusOfTaxon = taxonName.getGenusOrUninomial();
         Set<TaxonNode> nodes = taxon.getTaxonNodes();
-         List<String> taxonNames = new ArrayList<String>();
+        List<String> taxonNames = new ArrayList<String>();
 
         for (TaxonNode node: nodes){
            // HashMap<String, String> synonymsGenus = new HashMap<String, String>(); // Changed this to be able to store the idInSource to a genusName
