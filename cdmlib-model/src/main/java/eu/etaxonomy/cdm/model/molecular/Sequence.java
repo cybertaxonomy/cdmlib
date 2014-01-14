@@ -490,8 +490,8 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 	
 	private URI createExternalUri(String baseUri, String id){
-		if (StringUtils.isNotBlank(geneticAccessionNumber)){
-			return URI.create(String.format(baseUri, geneticAccessionNumber.trim()));
+		if (StringUtils.isNotBlank(id)){
+			return URI.create(String.format(baseUri, id.trim()));
 		}else{
 			return null;
 		}
