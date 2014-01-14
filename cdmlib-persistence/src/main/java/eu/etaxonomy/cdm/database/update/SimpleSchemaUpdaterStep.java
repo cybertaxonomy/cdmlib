@@ -104,7 +104,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 			query = queryMap.get(null);
 		}
 		if (query != null){
-			result = executeQuery(datasource, caseType.replaceTableNames(query));
+			query = doReplacements(query, caseType, datasource);
+			result = executeQuery(datasource, query);
 		}else{
 			//TODO exception ?
 			logger.warn("No query found to execute");
@@ -112,9 +113,16 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return result;
 	}
 
-	private boolean executeQuery(ICdmDataSource datasource,  String query) {
+	private String doReplacements(String query, CaseType caseType, ICdmDataSource datasource) {
+		query = caseType.replaceTableNames(query);
+		query = query.replaceAll("@FALSE@", getBoolean(false, datasource));
+		query = query.replaceAll("@TRUE@", getBoolean(true, datasource));
+		return null;
+	}
+
+	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery) {
 		try {
-			datasource.executeUpdate(query);
+			datasource.executeUpdate(replacedQuery);
 		} catch (SQLException e) {
 			logger.error(e);
 			return false;

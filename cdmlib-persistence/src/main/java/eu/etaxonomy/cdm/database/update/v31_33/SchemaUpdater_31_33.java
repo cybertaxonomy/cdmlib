@@ -822,12 +822,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update publish with existing publish false markers
 		stepName = "update TaxonBase publish if publish false markers exist";
 		query = " UPDATE @@TaxonBase@@ "
-				+ " SET publish = 0 "
+				+ " SET publish = @FALSE@ "
 				+ " WHERE id IN ( "
 				 + " SELECT DISTINCT MN.TaxonBase_id "
 				 + " FROM @@Marker@@ m INNER JOIN @@TaxonBase_Marker@@ MN ON MN.markers_id = m.id "
 				 + " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
-				 + " WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
+				 + " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonBase", 99);
 		stepList.add(step);
@@ -870,12 +870,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update publish with existing publish false markers
 		stepName = "update SpecimenOrObservationBase publish if publish false markers exist";
 		query = " UPDATE @@SpecimenOrObservationBase@@ "
-				+ " SET publish = 0 "
+				+ " SET publish = @FALSE@ "
 				+ " WHERE id IN ( "
 				+ " SELECT DISTINCT MN.SpecimenOrObservationBase_id "
 				+ " FROM @@Marker@@ m INNER JOIN @@SpecimenOrObservationBase_Marker@@ MN ON MN.markers_id = m.id "
 				+ " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
-				+ " WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
+				+ " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "SpecimenOrObservationBase", 99);
 		stepList.add(step);
@@ -1440,7 +1440,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update reference title, set null where abbrev title very likely";
 		query = " UPDATE @@Reference@@ "
 				+ " SET title = NULL "
-				+ " WHERE title IS NOT NULL AND protectedTitleCache = 0 AND "
+				+ " WHERE title IS NOT NULL AND protectedTitleCache = @FALSE@ AND "
 				+ " ( LENGTH(title) <= 15 AND title like '%.%.%' OR LENGTH(title) < 30 AND title like '%.%.%.%' OR LENGTH(title) < 45 AND title like '%.%.%.%.%' OR LENGTH(title) < 60 AND title like '%.%.%.%.%.%' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
@@ -1450,7 +1450,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update reference abbrevTitle, set null where abbrev title very unlikely";
 		query = " UPDATE @@Reference@@ "
 				+ " SET abbrevTitle = NULL "
-				+ " WHERE title IS NOT NULL AND protectedTitleCache = 0 AND "
+				+ " WHERE title IS NOT NULL AND protectedTitleCache = @FALSE@ AND "
 				+ " ( title NOT like '%.%' OR LENGTH(title) > 30 AND title NOT like '%.%.%' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
