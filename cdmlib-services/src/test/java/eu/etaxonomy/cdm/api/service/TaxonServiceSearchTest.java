@@ -674,6 +674,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxonService.saveOrUpdate(t_abies_balsamea);
         commitAndStartNewTransaction(null);
 
+        t_abies_balsamea = (Taxon)taxonService.find(t_abies_balsamea.getUuid());
 
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Balsam-Tanne", null, null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
         Assert.assertEquals("'Balsam-Tanne' should no longer be found", Integer.valueOf(0), pager.getCount());
