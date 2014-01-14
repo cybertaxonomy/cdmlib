@@ -9,7 +9,6 @@
 
 package eu.etaxonomy.cdm.model.description;
 
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -31,10 +30,7 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
-import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
-import org.hibernate.search.annotations.Analyze;
-import org.hibernate.search.annotations.Field;
 import org.hibernate.search.annotations.Indexed;
 
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -64,7 +60,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FeatureTree", propOrder = {
     "root",
-    "uri",
     "representations"
 })
 @XmlRootElement(name = "FeatureTree")
@@ -93,10 +88,6 @@ public class FeatureTree extends IdentifiableEntity<IIdentifiableEntityCacheStra
     // @IndexedEmbedded no need for embedding since we are using the DefinedTermBaseClassBridge
     private Set<Representation> representations = new HashSet<Representation>();
 	
-    @XmlElement(name = "URI")
-    @Field(analyze = Analyze.NO)
-    @Type(type="uriUserType")
-    private URI uri;
 		
 //******************** FACTORY METHODS ******************************************/	
 
