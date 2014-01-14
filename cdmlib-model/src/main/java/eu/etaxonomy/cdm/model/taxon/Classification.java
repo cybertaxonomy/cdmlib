@@ -45,6 +45,7 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -55,9 +56,10 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {
     "name",
-    "rootNodes",
+    "rootNode",
     "reference",
     "microReference"
+   
 })
 @XmlRootElement(name = "Classification")
 @Entity
@@ -74,17 +76,16 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@IndexedEmbedded
 	private LanguageString name;
 	
-	@XmlElementWrapper(name = "rootNodes")
+	
 	@XmlElement(name = "rootNode")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-	@OrderColumn(name="sortIndex")   //creates problems (#3820) 
-	@OneToMany(fetch=FetchType.LAZY)
+	@XmlIDREF
+	@XmlSchemaType(name = "IDREF")
+   	@OneToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
 //	@NotNull // avoids creating a UNIQUE key for this field
-	private List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
-
+	private TaxonNode rootNode;
+	
 	@XmlElement(name = "reference")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -92,6 +93,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@Cascade({CascadeType.SAVE_UPDATE})
 	private Reference<?> reference;
 	
+	
+		
 	@XmlElement(name = "microReference")
 	private String microReference;
 	
@@ -131,19 +134,34 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		LanguageString langName = LanguageString.NewInstance(name, language);
 		setName(langName);
 		setReference(reference);
+		this.rootNode = new TaxonNode();
+		rootNode.setClassification(this);
 	}
 	
 //********************** xxxxxxxxxxxxx ******************************************/	
+	/** 
+	 * Returns the topmost {@link TaxonNode taxon node} (root node) of <i>this</i>
+	 * classification. The root node does not have any parent and no taxon. Since taxon nodes
+	 * recursively point to their child nodes the complete classification is
+	 * defined by its root node.
+	 */
+	public TaxonNode getRootNode(){
+		return rootNode;
+	}
+	
+	public void setRootNode(TaxonNode root){
+		this.rootNode = root;
+	}
 	
 	@Override
 	public TaxonNode addChildNode(TaxonNode childNode, Reference citation, String microCitation) {
-		return addChildNode(childNode, rootNodes.size(), citation, microCitation);
+		return addChildNode(childNode, rootNode.getCountChildren(), citation, microCitation);
 	}
 	
 	@Override
 	public TaxonNode addChildNode(TaxonNode childNode, int index, Reference citation, String microCitation) {
 		
-		childNode.setParentTreeNode(this, index);
+		childNode.setParentTreeNode(this.rootNode, index);
 		
 		childNode.setReference(citation);
 		childNode.setMicroReference(microCitation);
@@ -154,7 +172,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
 	@Override
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
-		return addChildTaxon(taxon, this.rootNodes.size(), citation, microCitation);
+		return addChildTaxon(taxon, rootNode.getCountChildren(), citation, microCitation);
 	}
 	
 	@Override
@@ -173,7 +191,9 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		
 		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
 		for (TaxonNode childNode : childNodes){
-			node.deleteChildNode(childNode);
+			if (childNode != null){
+				node.deleteChildNode(childNode);
+			}
 		}
 		return result;
 	}
@@ -184,8 +204,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
 		boolean result = removeChildNode(node);
 		
-		//node.getTaxon().removeTaxonNode(node);
-		node.setTaxon(null);	
+		node.getTaxon().removeTaxonNode(node);
+		//node.setTaxon(null);	
 		if (deleteChildren){
 			ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
 			for (TaxonNode childNode : childNodes){
@@ -202,16 +222,29 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	 */
 	protected boolean removeChildNode(TaxonNode node){
 		boolean result = false;
-		if(!rootNodes.contains(node)){
+		if(!rootNode.getChildNodes().contains(node)){
 			throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
 		}
 		
-		result = rootNodes.remove(node);
+		result = rootNode.getChildNodes().remove(node);
 
 		node.setParent(null);
 		node.setClassification(null);
 		
 		return result;
+	}
+	
+	public boolean removeRootNode(){
+		boolean result = false;
+		
+		if (rootNode != null){
+			this.rootNode.setChildNodes(new ArrayList<TaxonNode>());
+			this.rootNode.setParent(null);
+			rootNode = null;
+			result = true;
+		}
+		return result;
+		
 	}
 	
 	/**
@@ -434,11 +467,15 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	
 	@Override
 	public List<TaxonNode> getChildNodes() {
-		return rootNodes;
+		if (rootNode.hasChildNodes()){
+			return rootNode.getChildNodes();
+		}else{
+			return null;
+		}
 	}
 
 	private void setRootNodes(List<TaxonNode> rootNodes) {
-		this.rootNodes = rootNodes;
+		this.rootNode.setChildNodes(rootNodes);
 	}
 
 	@Override
@@ -495,10 +532,12 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		Classification result;
 		try{
 			result = (Classification)super.clone();
-			result.rootNodes = new ArrayList<TaxonNode>();
+			//result.rootNode.childNodes = new ArrayList<TaxonNode>();
 			List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
 			TaxonNode rootNodeClone;
-			rootNodes = this.rootNodes;
+			
+			
+			rootNodes.addAll(rootNode.getChildNodes());
 			TaxonNode rootNode;
 			Iterator<TaxonNode> iterator = rootNodes.iterator();
 			
@@ -521,5 +560,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		
 		
 		
+		
 	}
+
+	
 }

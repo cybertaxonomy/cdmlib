@@ -234,16 +234,18 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         //TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
         for(int i = 0; i < childNodes.size(); i++){
-            childNodes.get(i).sortIndex = i;
+        	if (childNodes.get(i) != null){
+        		childNodes.get(i).sortIndex = i;
+        	}
         }
         child.sortIndex = index;
 
-        //TODO workaround (see sortIndex doc)
+        /*//TODO workaround (see sortIndex doc)
         for(int i = 0; i < childNodes.size(); i++){
             childNodes.get(i).sortIndex = i;
         }
         child.sortIndex = index;
-
+         */
         child.setReference(reference);
         child.setMicroReference(microReference);
 
@@ -396,7 +398,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             //TODO workaround (see sortIndex doc)
             for(int i = 0; i < countChildren; i++){
                 TaxonNode childAt = childNodes.get(i);
-                childAt.sortIndex = i;
+                if (childAt != null){
+                	childAt.sortIndex = i;
+                }
             }
             child.sortIndex = null;
             child.setClassification(null);
@@ -467,7 +471,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Transient
     public ITaxonTreeNode getParentTreeNode() {
         if(isTopmostNode()){
-            return getClassification();
+            return getClassification().getRootNode();
         }
         return parent;
     }
@@ -543,7 +547,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         //TODO workaround (see sortIndex doc)
         //TODO check if it is correct to use the parentChildren here
         for(int i = 0; i < parentChildren.size(); i++){
-            parentChildren.get(i).sortIndex = i;
+        	if (parentChildren.get(i) != null){
+        		parentChildren.get(i).sortIndex = i;
+        	}
         }
 //		this.sortIndex = index;
 
@@ -680,8 +686,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     @Transient
     public boolean isTopmostNode(){
         if (classification != null){
-        	return classification.getChildNodes().contains(this);
-        } else {
+        	return classification.getRootNode().getChildNodes().contains(this);
+        }	else{
 //        	logger.warn("The node has no classification!");  //don't log as this is also called during TaxonNode creation
         	return false;
         }
@@ -759,6 +765,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
 	public boolean hasTaxon() {
 		return (taxon!= null);
+	}
+
+	public void setChildNodes(List<TaxonNode> childNodes) {
+		this.childNodes = childNodes;
+		
 	}
 
 

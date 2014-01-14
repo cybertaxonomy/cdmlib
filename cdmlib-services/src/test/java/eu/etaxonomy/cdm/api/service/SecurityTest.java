@@ -466,7 +466,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
         taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        Assert.assertTrue("The change must be persited", taxon.isDoubtful());
+        Assert.assertTrue("The change must be persisted", taxon.isDoubtful());
     }
 
     /**

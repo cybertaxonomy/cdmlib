@@ -204,61 +204,82 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         List<UUID> deletedUUIDs = new ArrayList<UUID>();
         Classification classification = null;
         for (ITaxonTreeNode treeNode:nodes){
-        	if (treeNode instanceof TaxonNode){
-        		TaxonNode taxonNode;
-	            taxonNode = (TaxonNode)HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
-	           
-	            	//check whether the node has children or the children are already deleted
-	            if(taxonNode.hasChildNodes()){
-            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
-            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
-        			children.addAll(childNodesList);
-        			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
-        			boolean childHandling = (compare == 0)? true: false;
-            		if (childHandling){
-            			boolean changeDeleteTaxon = false;
-            			if (!config.getTaxonNodeConfig().isDeleteTaxon()){
-            				config.getTaxonNodeConfig().setDeleteTaxon(true);
-            				changeDeleteTaxon = true;
-            			}
-            			deleteTaxonNodes(children, config);
-            			if (changeDeleteTaxon){
-            				config.getTaxonNodeConfig().setDeleteTaxon(false);
-            			}
-            			
-            		} else {
-            			//move the children to the parent
-            			TaxonNode parent = taxonNode.getParent();
-            			for (TaxonNode child: childNodesList){
-            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
-            			}
-            			
-            		}
-            	}
-	           
-	            classification = taxonNode.getClassification();
-	            if (classification.getChildNodes().contains(taxonNode)){
-	                classification.deleteChildNode(taxonNode);
-	                classification = null;
-	            }else{
-	            	classification = null;
-	            	Taxon taxon = taxonNode.getTaxon();
-	            	taxonNode.getTaxon().removeTaxonNode(taxonNode);
-	            	if (config.getTaxonNodeConfig().isDeleteTaxon()){
-		            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
-		            	configNew.setDeleteTaxonNodes(false);
-		            	taxonService.deleteTaxon(taxon, configNew, classification);
+        	if (treeNode != null){
+	        	if (treeNode instanceof TaxonNode){
+	        		TaxonNode taxonNode;
+		            taxonNode = (TaxonNode)HibernateProxyHelper.deproxy(treeNode, TaxonNode.class);
+		           
+		            	//check whether the node has children or the children are already deleted
+		            if(taxonNode.hasChildNodes()){
+	            		Set<ITaxonTreeNode> children = new HashSet<ITaxonTreeNode> ();
+	            		List<TaxonNode> childNodesList = taxonNode.getChildNodes();
+	        			children.addAll(childNodesList);
+	        			int compare = config.getTaxonNodeConfig().getChildHandling().compareTo(ChildHandling.DELETE);
+	        			boolean childHandling = (compare == 0)? true: false;
+	            		if (childHandling){
+	            			boolean changeDeleteTaxon = false;
+	            			if (!config.getTaxonNodeConfig().isDeleteTaxon()){
+	            				config.getTaxonNodeConfig().setDeleteTaxon(true);
+	            				changeDeleteTaxon = true;
+	            			}
+	            			deleteTaxonNodes(children, config);
+	            			if (changeDeleteTaxon){
+	            				config.getTaxonNodeConfig().setDeleteTaxon(false);
+	            			}
+	            			
+	            		} else {
+	            			//move the children to the parent
+	            			TaxonNode parent = taxonNode.getParent();
+	            			for (TaxonNode child: childNodesList){
+	            				parent.addChildNode(child, child.getReference(), child.getMicroReference());
+	            			}
+	            			
+	            		}
 	            	}
-	            }
-	           
-	            dao.delete(taxonNode);
-        	}else {
-        		classification = (Classification) treeNode;
-        		
-        	}
-        	
-            deletedUUIDs.add(treeNode.getUuid());
-            
+		           
+		            classification = taxonNode.getClassification();
+		           
+		            if (classification.getRootNode().equals(taxonNode)){
+		            	classification.removeRootNode();
+		            	classification = null;
+		            }else if (classification.getChildNodes().contains(taxonNode)){
+	            		Taxon taxon = taxonNode.getTaxon();
+	            		classification.deleteChildNode(taxonNode);
+		            	//node is rootNode
+		            	if (taxon != null){
+		            		
+		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
+				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+				            	configNew.setDeleteTaxonNodes(false);
+				            	taxonService.deleteTaxon(taxon, configNew, classification);
+			            	}
+		            	}
+	            		classification = null;
+		            	
+		            }else {
+		            	classification = null;
+		            	Taxon taxon = taxonNode.getTaxon();
+		            	//node is rootNode
+		            	if (taxon != null){
+		            		taxonNode.getTaxon().removeTaxonNode(taxonNode);
+		            		if (config.getTaxonNodeConfig().isDeleteTaxon()){
+				            	TaxonDeletionConfigurator configNew = new TaxonDeletionConfigurator();
+				            	configNew.setDeleteTaxonNodes(false);
+				            	taxonService.deleteTaxon(taxon, configNew, classification);
+			            	}
+		            	}
+		            	
+		            }
+		           
+		            dao.delete(taxonNode);
+	        	}else {
+	        		classification = (Classification) treeNode;
+	        		
+	        	}
+	        	
+	            deletedUUIDs.add(treeNode.getUuid());
+	            
+	        }
         }
         if (classification != null){
         	classService.delete(classification);

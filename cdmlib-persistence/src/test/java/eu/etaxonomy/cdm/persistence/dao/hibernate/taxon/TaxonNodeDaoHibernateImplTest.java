@@ -24,6 +24,10 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -50,6 +54,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid3;
     
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
+            "rootNode"
+    });
+    private static final List<String> TAXONNODE_INIT_STRATEGY = Arrays.asList(new String[]{
+    		"taxon",
             "childNodes"
     });
 
@@ -91,23 +99,28 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
         assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
-        TaxonNode taxNode = (TaxonNode) taxonNodeDao.load(uuid1);
-        TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.load(uuid2);
+        TaxonNode taxNode = (TaxonNode) taxonNodeDao.load(uuid1,TAXONNODE_INIT_STRATEGY);
+        TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.load(uuid2,TAXONNODE_INIT_STRATEGY);
       
-        TaxonNode taxNode3 = (TaxonNode) taxonNodeDao.load(uuid3);
+        TaxonNode taxNode3 = (TaxonNode) taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
         
         
                
         List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
         assertEquals("there should be six taxa", 6, taxa.size());
-
+        taxNode3 = HibernateProxyHelper.deproxy(taxNode3, TaxonNode.class);
+        taxNode = HibernateProxyHelper.deproxy(taxNode, TaxonNode.class);
+        taxNode2 = HibernateProxyHelper.deproxy(taxNode2, TaxonNode.class);
+        TaxonNode rootNode = HibernateProxyHelper.deproxy(classification.getRootNode(), TaxonNode.class);
+        rootNode.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null), null, null);
         taxonNodeDao.delete(taxNode3, true);
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be five taxa left", 5, taxa.size());
-
+        assertEquals("there should be five taxa left", 6, taxa.size());
+        taxonNodeDao.flush();
         classificationDao.delete(classification);  
         classification = null;
+        
         classificationDao.flush();
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         assertEquals("The tree should be null", null, classification);

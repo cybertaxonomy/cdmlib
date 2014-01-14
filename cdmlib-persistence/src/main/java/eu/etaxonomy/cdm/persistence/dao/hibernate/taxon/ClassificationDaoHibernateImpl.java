@@ -132,7 +132,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
             
            
         }
-
+        
+        TaxonNode rootNode = persistentObject.getRootNode();
+        persistentObject.removeRootNode();
+        taxonNodeDao.delete(rootNode);
         super.delete(persistentObject);
 
         return persistentObject.getUuid();
