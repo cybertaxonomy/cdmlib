@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
+import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
 
@@ -84,6 +85,22 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		tableName = "Classification_TaxonNode";
 		step = TableDroper.NewInstance(stepName, tableName, INCLUDE_AUDIT);
 		stepList.add(step);
+		
+		//add rootnode column for classification
+		stepName = "Add unknownData column to DescriptionElementBase";
+		tableName = "DescriptionElementBase";
+		columnName = "unknownData";
+		Boolean defaultValue = null;
+		step = ColumnAdder.NewBooleanInstance(stepName, tableName, columnName, INCLUDE_AUDIT, defaultValue);
+		stepList.add(step);
+			
+		//set default value to false where adaquate
+		String query = " UPDATE @@DescriptionElementBase@@ " +
+					" SET unknownData = @FALSE@ " + 
+					" WHERE DTYPE IN ('CategoricalData', 'QuantitativeData') ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "DescriptionElementBase", 99);
+		stepList.add(step);
+		
 		
 		return stepList;
 
