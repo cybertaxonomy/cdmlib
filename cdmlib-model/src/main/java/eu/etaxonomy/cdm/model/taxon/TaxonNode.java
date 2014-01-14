@@ -221,7 +221,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             throw new IndexOutOfBoundsException("Wrong index: " + index);
         }
            // check if this node is a descendant of the childNode
-        if(child.getParentTreeNode() != this && child.isAncestor(this)){
+        if(child.getParent() != this && child.isAncestor(this)){
             throw new IllegalAncestryException("New parent node is a descendant of the node to be moved.");
         }
 
@@ -468,13 +468,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             taxon.addTaxonNode(this);
         }
     }
-    @Transient
-    public ITaxonTreeNode getParentTreeNode() {
-        if(isTopmostNode()){
-            return getClassification().getRootNode();
-        }
-        return parent;
-    }
+//    @Transient
+//    public TaxonNode getParentTreeNode() {
+//        if(isTopmostNode()){
+//            return getClassification().getRootNode();
+//        }
+//        return parent;
+//    }
 
     @Override
     public TaxonNode getParent(){
@@ -491,11 +491,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @see setParentTreeNode(ITreeNode)
      */
-    protected void setParent(ITaxonTreeNode parent) {
-        if(parent instanceof Classification){
-            this.parent = null;
-            return;
-        }
+    protected void setParent(TaxonNode parent) {
         this.parent = (TaxonNode) parent;
     }
 
@@ -506,29 +502,28 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @param parent
      */
     @Transient
-    protected void setParentTreeNode(ITaxonTreeNode parent, int index){
+    protected void setParentTreeNode(TaxonNode parent, int index){
         // remove ourselves from the old parent
-        ITaxonTreeNode formerParent = this.getParentTreeNode();
+        TaxonNode formerParent = this.getParent();
 
         //special case, child already exists for same parent
-        if (formerParent != null && formerParent.equals(parent)){
-            int currentIndex = formerParent.getChildNodes().indexOf(this);
-            if (currentIndex != -1 && currentIndex < index){
-                index--;
-            }
+        if (formerParent != null){
+        	if (formerParent.equals(parent)){
+                int currentIndex = formerParent.getChildNodes().indexOf(this);
+                if (currentIndex != -1 && currentIndex < index){
+                    index--;
+                }
+        	}
+        	
+        	//remove old parent
+            formerParent.removeChildNode(this);
         }
-        //remove old parent
-        if(formerParent instanceof TaxonNode){  //child was a child itself
-            ((TaxonNode) formerParent).removeChildNode(this);
-        } else if((formerParent instanceof Classification) && ! formerParent.equals(parent)){ //child was root in old tree
-            ((Classification) formerParent).removeChildNode(this);
-        }
-
+        
         // set the new parent
         setParent(parent);
 
         // set the classification to the parents classification
-        Classification classification = (parent instanceof Classification) ? (Classification) parent : ((TaxonNode) parent).getClassification();
+        Classification classification = parent.getClassification();
         setClassificationRecursively(classification);
 
         // add this node to the parent child nodes
@@ -554,10 +549,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 //		this.sortIndex = index;
 
         // update the children count
-        if(parent instanceof TaxonNode){
-            TaxonNode parentTaxonNode = (TaxonNode) parent;
-            parentTaxonNode.setCountChildren(parent.getChildNodes().size());
-        }
+        parent.setCountChildren(parent.getChildNodes().size());
     }
 
     public Classification getClassification() {
@@ -688,7 +680,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         if (classification != null){
         	return classification.getRootNode().getChildNodes().contains(this);
         }	else{
-//        	logger.warn("The node has no classification!");  //don't log as this is also called during TaxonNode creation
         	return false;
         }
     }

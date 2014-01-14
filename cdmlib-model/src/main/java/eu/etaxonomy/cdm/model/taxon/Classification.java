@@ -198,9 +198,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
-	 */
 	public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
 		boolean result = removeChildNode(node);
 		
@@ -325,8 +322,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		for (TaxonNode taxonNode: taxon.getTaxonNodes()){
 			if (taxonNode.getClassification().equals(this)){
 				if (this.getChildNodes().contains(taxonNode)){
-					if (taxonNode.getParentTreeNode() instanceof TaxonNode){
-						logger.warn("A topmost node should have a Classification as parent but actually has a TaxonNode parent");
+					if (taxonNode.getParent() != null){
+						logger.warn("A topmost node should have no parent but actually has a parent");
 					}
 					return taxonNode;
 				}
@@ -385,8 +382,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 			//no multiple parents are allowed in the tree
 			if (childNode != null && ! childNode.isTopmostNode()){
 				//...different to the parent taxon  throw exception
-				if ((childNode.getParentTreeNode() instanceof TaxonNode) && !((TaxonNode)childNode.getParent()).getTaxon().equals(parent) ){
-					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the one than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + ((TaxonNode) childNode.getParent()).getTaxon().toString()) ;
+				if ( !(childNode.getParent().getTaxon().equals(parent) )){
+					throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + ((TaxonNode) childNode.getParent()).getTaxon().toString()) ;
 				//... same as the parent taxon do nothing but overwriting citation and microCitation
 				}else{
 					handleCitationOverwrite(childNode, citation, microCitation);
@@ -467,11 +464,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	
 	@Override
 	public List<TaxonNode> getChildNodes() {
-		if (rootNode.hasChildNodes()){
-			return rootNode.getChildNodes();
-		}else{
-			return null;
-		}
+		return rootNode.getChildNodes();
 	}
 
 	private void setRootNodes(List<TaxonNode> rootNodes) {
@@ -500,9 +493,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		this.microReference = microReference;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 */
 	@Override
 	public String generateTitle() {
 		return name.getText();
