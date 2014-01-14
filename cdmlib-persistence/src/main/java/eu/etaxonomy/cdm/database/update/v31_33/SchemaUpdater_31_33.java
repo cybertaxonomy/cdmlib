@@ -2620,7 +2620,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_33_331.NewInstance();
 	}
 
 	@Override
