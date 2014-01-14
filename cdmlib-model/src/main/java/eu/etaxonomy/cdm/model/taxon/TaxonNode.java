@@ -679,7 +679,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     public boolean isTopmostNode(){
         if (classification != null){
         	return classification.getRootNode().getChildNodes().contains(this);
-        }	else{
+        }else{
         	return false;
         }
     }
