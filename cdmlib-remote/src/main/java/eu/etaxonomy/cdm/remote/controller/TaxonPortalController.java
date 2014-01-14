@@ -80,8 +80,10 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.MatchModePropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 
@@ -136,18 +138,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     private IFeatureTreeService featureTreeService;
 
     private static final List<String> TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-            "*",
+            "$",
+            "sources",
             // taxon relations
-            "relationsToThisName.fromTaxon.name",
+//            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
             "name.rank.representations",
             "name.status.type.representations",
 
-            // taxon descriptions
-            "descriptions.elements.area.$",
-            "descriptions.elements.multilanguageText",
-            "descriptions.elements.media",
+//            "descriptions" // TODO remove
 
             });
 
@@ -159,13 +161,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
             "*",
-            // taxon relations
-            "relationsToThisName.fromTaxon.name",
             // the name
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference"
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
+            "taxonNodes.classification"
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -173,6 +175,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -183,7 +186,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
-
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
             "name.homotypicalGroup.typifiedNames.taxonBases.$"
     });
 
@@ -192,6 +195,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "synonymRelations.$",
             "synonymRelations.synonym.$",
             "synonymRelations.synonym.name.status.type.representation",
+            "synonymRelations.synonym.name.nomenclaturalReference.authorTeam",
             "synonymRelations.synonym.name.nomenclaturalReference.inReference",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.$",
             "synonymRelations.synonym.name.homotypicalGroup.typifiedNames.taxonBases.$",
@@ -200,6 +204,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.homotypicalGroup.$",
             "name.homotypicalGroup.typifiedNames.$",
             "name.homotypicalGroup.typifiedNames.nomenclaturalReference.authorTeam",
+            "name.homotypicalGroup.typifiedNames.nomenclaturalReference.inReference",
 
             "name.homotypicalGroup.typifiedNames.taxonBases.$",
 
@@ -215,7 +220,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "name.nomenclaturalReference",
+            "name.nomenclaturalReference.authorTeam",
+            "name.nomenclaturalReference.inReference",
 
             "taxonNodes.$",
             "taxonNodes.classification.$",
@@ -237,6 +243,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "type.inverseRepresentations",
             "fromName",
             "toName.$",
+            "toName.nomenclaturalReference.authorTeam",
+            "toName.nomenclaturalReference.inReference",
+
     });
 
 
@@ -245,9 +254,12 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "elements.$",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
+            "elements.modifyingText",
+            "elements.modifiers",
+            "elements.stateData",
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
@@ -257,7 +269,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "sources.citation.authorTeam",
-            "sources.nameUsedInSource.originalNameString",
+            "sources.nameUsedInSource",
             "multilanguageText",
             "media",
     });
@@ -317,6 +329,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(MatchMode.class, new MatchModePropertyEditor());
         binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<NamedArea>(termService));
 
     }
 
@@ -393,7 +406,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      *            search is to be restricted. - <i>optional parameter</i>
      * @param areas
      *            restrict the search to a set of geographic {@link NamedArea}s.
-     *            The parameter currently takes a list of TDWG area labels.
+     *            The parameter value must be a list of comma separated NamedArea uuids
      *            - <i>optional parameter</i>
      * @param pageNumber
      *            the number of the page to be returned, the first page has the
@@ -417,7 +430,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
-            @RequestParam(value = "area", required = false) Set<NamedArea> areas,
+            @RequestParam(value = "area", required = false) DefinedTermBaseList<NamedArea> areaList,
             @RequestParam(value = "status", required = false) Set<PresenceAbsenceTermBase<?>> status,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
             @RequestParam(value = "pageSize", required = false) Integer pageSize,
@@ -432,6 +445,13 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
 
 
         logger.info("search : " + requestPathAndQuery(request) );
+
+        Set<NamedArea> areaSet = null;
+        if(areaList != null){
+            areaSet = new HashSet<NamedArea>(areaList.size());
+            areaSet.addAll(areaList);
+            TaxonListController.includeAllSubAreas(areaSet, termService);
+        }
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
@@ -457,9 +477,9 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         }
 
         return service.findTaxaAndNamesByFullText(searchModes, query,
-                classification, areas, status, null,
+                classification, areaSet, status, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                null, SIMPLE_TAXON_INIT_STRATEGY);
+                OrderHint.NOMENCLATURAL_SORT_ORDER, SIMPLE_TAXON_INIT_STRATEGY);
     }
 
     /**
@@ -551,8 +571,18 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         ModelAndView mv = new ModelAndView();
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
         Map<String, List<?>> synonymy = new Hashtable<String, List<?>>();
-        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
-        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
+
+        //new
+        List<List<Synonym>> synonymyGroups = service.getSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY);
+        synonymy.put("homotypicSynonymsByHomotypicGroup", synonymyGroups.get(0));
+        synonymyGroups.remove(0);
+        synonymy.put("heterotypicSynonymyGroups", synonymyGroups);
+
+        //old
+//        synonymy.put("homotypicSynonymsByHomotypicGroup", service.getHomotypicSynonymsByHomotypicGroup(taxon, SYNONYMY_INIT_STRATEGY));
+//        synonymy.put("heterotypicSynonymyGroups", service.getHeterotypicSynonymyGroups(taxon, SYNONYMY_INIT_STRATEGY));
+
+
         mv.addObject(synonymy);
         return mv;
     }

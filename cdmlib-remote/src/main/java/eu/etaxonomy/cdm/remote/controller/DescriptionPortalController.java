@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -20,7 +21,6 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.ObjectUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
@@ -33,7 +33,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -64,12 +67,23 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
+            "elements.multilanguageText.*",
+            "elements.annotations",
             "elements.sources.citation.authorTeam.$",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.area.level",
             "elements.modifyingText",
             "elements.states.*",
             "elements.media",
+    });
+
+    protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{
+            "elements.$",
+            "elements.annotations",
+            "elements.markers",
+            "elements.sources.citation.authorTeam.$",
+            "elements.sources.nameUsedInSource",
+            "elements.area.level",
     });
 
 
@@ -100,25 +114,55 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("getAnnotations() - " + request.getRequestURI());
+        logger.info("getAnnotations() - " + requestPathAndQuery(request) );
         DescriptionElementBase annotatableEntity = service.getDescriptionElementByUuid(uuid);
         Pager<Annotation> annotations = service.getDescriptionElementAnnotations(annotatableEntity, null, null, 0, null, getInitializationStrategy());
         return annotations;
     }
 
+    /**
+     * NOTICE: required to have a TreeNodeBeanProcessor configured which suppresses the
+     * redundant output of distribution.area
+     *
+     * @param descriptionUuidList
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+     * @param omitLevels
+     * @param request
+     * @param response
+     * @return
+     */
     @RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
     public DistributionTree doGetOrderedDistributionsB(
             @PathVariable("uuid_list") UuidList descriptionUuidList,
-            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> levels,
-            HttpServletRequest request, HttpServletResponse response) {
-        logger.info("getOrderedDistributionsB(" + ObjectUtils.toString(levels) + ") - " + request.getRequestURI());
+            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "hideMarkedAreas", required = false) Set<MarkerType> hideMarkedAreas,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+        logger.info("getOrderedDistributionsB() - " + requestPathAndQuery(request) );
+
         Set<TaxonDescription> taxonDescriptions = new HashSet<TaxonDescription>();
         TaxonDescription description;
         for (UUID descriptionUuid : descriptionUuidList) {
-            description = (TaxonDescription) service.load(descriptionUuid, DESCRIPTION_INIT_STRATEGY);
+            logger.debug("  loading description " + descriptionUuid.toString() );
+            description = (TaxonDescription) service.load(descriptionUuid, null);
             taxonDescriptions.add(description);
         }
-        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, levels, DESCRIPTION_INIT_STRATEGY);
+        logger.debug("  get ordered distributions ");
+        DistributionTree distTree = service.getOrderedDistributions(taxonDescriptions, subAreaPreference, statusOrderPreference,
+                hideMarkedAreas, omitLevels, ORDERED_DISTRIBUTION_INIT_STRATEGY);
+        if (logger.isDebugEnabled()){ logger.debug("done");}
         return distTree;
     }
 

@@ -61,7 +61,7 @@ public class DwcaTaxExport extends DwcaExportBase {
 		this.ioName = this.getClass().getSimpleName();
 	}
 
-	/** Retrieves data from a CDM DB and serializes them CDM to XML.
+	/** Retrieves data from a CDM DB and serializes the CDM to XML.
 	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms and relationships.
 	 * Taxa that are not part of the classification are not found.
 	 * 

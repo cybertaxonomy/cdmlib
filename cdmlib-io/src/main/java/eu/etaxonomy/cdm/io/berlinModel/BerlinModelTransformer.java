@@ -45,10 +45,12 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public class BerlinModelTransformer {
 	private static final Logger logger = Logger.getLogger(BerlinModelTransformer.class);
+	
+	//source Refs
+	public static final UUID uuidSourceRefEuroMed = UUID.fromString("0603a84a-f024-4454-ab92-9e2ac0139126");
 	
 	//ranks
 	public static UUID uuidRankCollSpecies = UUID.fromString("e14630ee-9446-4bb4-a7b7-4c3881bc5d94");
@@ -110,6 +112,9 @@ public class BerlinModelTransformer {
 	
 	//Marker Types
 	public static final UUID uuidMisappliedCommonName = UUID.fromString("25f5cfc3-16ab-4aba-a008-0db0f2cf7f9d");
+	public static final UUID uuidEurArea = UUID.fromString("71dd0368-835c-4b53-889a-2bf316e10297");
+	public static final UUID uuidEurMedArea = UUID.fromString("aa6a5b25-3ee3-4771-b4d1-b91918f23fa5");
+	
 	
 	//Extension Types
 	public static final UUID uuidSpeciesExpertName = UUID.fromString("2e8153d2-7412-49e4-87e1-5c38f4c5153a");
@@ -117,6 +122,15 @@ public class BerlinModelTransformer {
 	
 	public static final UUID DETAIL_EXT_UUID = UUID.fromString("c3959b4f-d876-4b7a-a739-9260f4cafd1c");
 	public static final UUID ID_IN_SOURCE_EXT_UUID = UUID.fromString("23dac094-e793-40a4-bad9-649fc4fcfd44");
+	public static final UUID uuidIsoCode = UUID.fromString("048b8153-e3ee-451c-a72c-f1c8bc291c3e");
+	public static final UUID uuidTdwgAreaCode = UUID.fromString("73ad0288-b71b-4a14-9c2e-7f81f1e64a36");
+	public static final UUID uuidMclCode = UUID.fromString("aa27083a-6a96-42aa-a2f8-5541cf057067");
+	
+	//Area Level
+	public static final UUID uuidAreaLevelTop = UUID.fromString("190d5758-4b96-4016-9412-6dc9c36ef5fd");
+	public static final UUID uuidAreaLevelFirst = UUID.fromString("d21503e3-875e-4abc-82ec-f812e3cfea84");
+	public static final UUID uuidAreaLevelSecond = UUID.fromString("97ac0bf5-b31c-487a-8ed5-a576f46c902c");
+	
 	
 	//languages
 	public static final UUID uuidLangMajorcan = UUID.fromString("82d696d7-cb4e-49de-ac89-63a0e12ca766");
@@ -824,11 +838,48 @@ public class BerlinModelTransformer {
 			return UUID.fromString("1d287011-2054-41c5-a919-17ac1d0a9270");
 		}else if (markerCategoryId == 9){
 			return UUID.fromString("cc5eca5c-1ae5-4feb-9a95-507fc167b0c9");
+		//Salvador
+		}else if (markerCategoryId == 5){
+			return UUID.fromString("7d8875b3-107c-4189-97e5-cadb470e543a");
+		}else if (markerCategoryId == 20){
+			return UUID.fromString("3574e2b0-6431-4d71-b456-bc967c80f622");
+		}else if (markerCategoryId == 30){
+			return UUID.fromString("9924b27e-0dbe-4d95-ae9b-096fbbc3edcb");
+		}else if (markerCategoryId == 40){
+			return UUID.fromString("69241b97-f4d2-4f60-9aed-1c4ccb5bced5");
+		}else if (markerCategoryId == 50){
+			return UUID.fromString("f3b62ce3-0212-4542-a74c-0c68d08859b1");
+		}else if (markerCategoryId == 55){
+			return UUID.fromString("bec822f2-8242-425f-ad46-f11f0b82f69b");
+		}else if (markerCategoryId == 60){
+			return UUID.fromString("722fca60-0416-4bf0-aa4b-a07400f9710d");
+		}else if (markerCategoryId == 70){
+			return UUID.fromString("ed57857b-1001-4b09-b48e-d88ab146bb2b");
+		}else if (markerCategoryId == 80){
+			return UUID.fromString("637e8b77-1202-462b-9d77-1023f3c192d9");
+		}else if (markerCategoryId == 90){
+			return UUID.fromString("c769c231-6e76-46df-88f7-2c459342a3c2");
+		}else if (markerCategoryId == 93){
+			return UUID.fromString("075ee97e-246f-4f3d-aa96-16930df6268c");
+		}else if (markerCategoryId == 100){
+			return UUID.fromString("e17065bf-3e44-417a-b05c-f82929f680c3");
+		}else if (markerCategoryId == 110){
+			return UUID.fromString("e2b8de07-770e-4fda-b445-c4735f4e95c8");
+		}else if (markerCategoryId == 900){
+			return UUID.fromString("d029c3c9-944a-4bb9-bba6-12c95da94a04");
+		}else if (markerCategoryId == 920){
+			return UUID.fromString("98af97b1-e5e3-4ee4-902e-15032316bfc3");
+		}else if (markerCategoryId == 930){
+			return UUID.fromString("4b6c3130-4e50-4f45-8461-d2698cf5f80b");
+		}else if (markerCategoryId == 950){
+			return UUID.fromString("1e53f58c-6528-42c6-99ae-0f75a3c3c264");
+		}else if (markerCategoryId == 960){
+			return UUID.fromString("1903d460-94cc-4fc4-b2a8-a3fb0cfd69a0");			
 		}else{
 			logger.warn("Unknown webMarker category: " + markerCategoryId);
 			return null;
 		}
-		
+
 	}
 	
 }

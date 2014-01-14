@@ -391,6 +391,7 @@ public class HomotypicalGroup extends AnnotatableEntity {
      * @param basionymName
      * @throws IllegalArgumentException if basionymName is not member in this homotypical group
      */
+	@Transient
 	public void setGroupBasionym(TaxonNameBase basionymName) throws IllegalArgumentException{
     	setGroupBasionym(basionymName, null, null, null);
     }	

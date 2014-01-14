@@ -10,8 +10,6 @@
 
 package eu.etaxonomy.cdm.persistence.hibernate;
 
-import java.util.List;
-import java.util.Observer;
 
 
 /**
@@ -20,7 +18,6 @@ import java.util.Observer;
  * 
  * @author n.hoffmann
  * @created 17.03.2009
- * @version 1.0
  */
 public interface ICdmPostDataChangeObserver {
 	

@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee
          http://java.sun.com/xml/ns/j2ee/web-app_2_4.xsd">
-    <description>EDIT CDM Community Server</description>
-    <display-name>CDM Community Server</display-name>
+    <description>cdmlib-remote web-application instance</description>
+    <display-name>cdmlib-remote-webapp</display-name>
 
   <!-- ==================================================================
          load /WEB-INF/applicationContext.xml

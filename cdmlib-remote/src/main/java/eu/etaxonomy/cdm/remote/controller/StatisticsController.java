@@ -31,7 +31,7 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 /**
  * this controller provides a method to count different entities in the entire
  * database as well as from a particular classification items of different types
- * can be choosen have a look at doStatistics method
+ * can be chosen have a look at doStatistics method
  * 
  * @author s.buers
  * @created 07.11.2012

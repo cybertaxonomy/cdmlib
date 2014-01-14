@@ -49,12 +49,12 @@ public class ColumnNameChanger extends AuditedSchemaUpdaterStepBase<ColumnNameCh
 		this.datatype = datatype;
 	}
 
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	@Override
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		try {
 			boolean result = true;
 			DatabaseTypeEnum type = datasource.getDatabaseType();
 			String updateQuery;
-			
 			
 			if (type.equals(DatabaseTypeEnum.SqlServer2005)){
 				logger.warn("SQLServer column name changer syntax not yet tested");

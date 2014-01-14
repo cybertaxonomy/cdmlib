@@ -46,7 +46,6 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -64,6 +63,11 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * @author a.mueller
  * @created 24.06.2008
  * @version 1.0
+ */
+/**
+ * @author a.kohlbecker
+ * @date Dec 5, 2013
+ *
  */
 @Service
 @Transactional(readOnly = true)
@@ -280,38 +284,72 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
     }
 
 
-
-
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getOrderedDistributions(java.util.Set, boolean, boolean, java.util.Set, java.util.List)
+     */
     @Override
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,
-            Set<NamedAreaLevel> omitLevels,
-            List<String> propertyPaths){
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
 
         DistributionTree tree = new DistributionTree();
         List<Distribution> distList = new ArrayList<Distribution>();
+        if (logger.isDebugEnabled()){logger.debug("create tree ...");}
 
+        List<UUID> uuids = new ArrayList<UUID>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
-            taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid(), propertyPaths);
-            Set<DescriptionElementBase> elements = taxonDescription.getElements();
-            for (DescriptionElementBase element : elements) {
-                    if (element.isInstanceOf(Distribution.class)) {
-                        Distribution distribution = (Distribution) element;
-                        if(distribution.getArea() != null){
-                            distList.add(distribution);
-                        }
-                    }
+            if (! taxonDescription.isImageGallery()){    //image galleries should not have descriptions, but better filter fully on DTYPE of description element
+                uuids.add(taxonDescription.getUuid());
             }
         }
 
+        List<DescriptionBase> desclist = dao.list(uuids, null, null, null, propertyPaths);
+        for (DescriptionBase desc : desclist) {
+            if (desc.isInstanceOf(TaxonDescription.class)){
+                Set<DescriptionElementBase> elements = desc.getElements();
+                for (DescriptionElementBase element : elements) {
+                        if (element.isInstanceOf(Distribution.class)) {
+                            Distribution distribution = (Distribution) element;
+                            if(distribution.getArea() != null){
+                                distList.add(distribution);
+                            }
+                        }
+                }
+            }
+        }
+
+        //old
+//        for (TaxonDescription taxonDescription : taxonDescriptions) {
+//            if (logger.isDebugEnabled()){ logger.debug("load taxon description " + taxonDescription.getUuid());}
+//        	//TODO why not loading all description via .list ? This may improve performance
+//            taxonDescription = (TaxonDescription) dao.load(taxonDescription.getUuid(), propertyPaths);
+//            Set<DescriptionElementBase> elements = taxonDescription.getElements();
+//            for (DescriptionElementBase element : elements) {
+//                    if (element.isInstanceOf(Distribution.class)) {
+//                        Distribution distribution = (Distribution) element;
+//                        if(distribution.getArea() != null){
+//                            distList.add(distribution);
+//                        }
+//                    }
+//            }
+//        }
+
+        if (logger.isDebugEnabled()){logger.debug("filter tree for " + distList.size() + " distributions ...");}
+
         // filter distributions
-        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList);
+        Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distList, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         distList.clear();
         distList.addAll(filteredDistributions);
 
+        if (logger.isDebugEnabled()){logger.debug("order tree ...");}
+
         //order by areas
         tree.orderAsTree(distList, omitLevels);
-        tree.sortChildren();
+        tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
+        if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
         return tree;
     }
 
@@ -446,13 +484,16 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Taxon taxon, Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
+        if (logger.isDebugEnabled()){logger.debug(" get count ...");}
         Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
         List<T> descriptionElements;
         if(AbstractPagerImpl.hasResultsInRange(count, pageNumber, pageSize)){ // no point checking again
+            if (logger.isDebugEnabled()){logger.debug(" get list ...");}
             descriptionElements = listDescriptionElementsForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
         } else {
             descriptionElements = new ArrayList<T>(0);
         }
+        if (logger.isDebugEnabled()){logger.debug(" service - DONE ...");}
         return new DefaultPagerImpl<T>(pageNumber, count.intValue(), pageSize, descriptionElements);
     }
 
@@ -609,10 +650,13 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         }
     }
 
-    public void aggregateDistributions(List<NamedArea> superAreas, Rank lowerRank, Rank upperRank) {
+    @Override
+    public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths){
 
-//        transmissionEngineDistribution engine = new transmissionEngineDistribution(superAreas, lowerRank, upperRank);
-
+        List<NamedArea> results = dao.listNamedAreasInUse(pageSize, pageNumber, propertyPaths);
+        return new DefaultPagerImpl<NamedArea>(pageNumber, results.size(), pageSize, results);
     }
+
 
 }

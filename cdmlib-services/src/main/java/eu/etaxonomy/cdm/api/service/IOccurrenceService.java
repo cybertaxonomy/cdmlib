@@ -11,8 +11,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -193,6 +195,13 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Retrieves all {@link FieldUnit}s for the {@link DerivedUnit} with the given {@link UUID}.<br>
+     * @param derivedUnitUuid the UUID of the derived unit
+     * @return a collection of FieldUnits this DerivedUnit was derived from or an empty collection if no FieldUnits were found
+     */
+    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid);
 
     /**
      * @param clazz

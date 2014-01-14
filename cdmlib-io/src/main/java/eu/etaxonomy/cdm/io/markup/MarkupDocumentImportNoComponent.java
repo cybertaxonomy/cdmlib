@@ -268,7 +268,14 @@ public class MarkupDocumentImportNoComponent extends MarkupImportBase {
 					tree.addChildTaxon(taxon, null, null);
 				}
 			} else if (thisRank.isHigher(lastRank)) {
-				doTaxonRelation(state, taxon, lastNode.getParent().getTaxon(),	dataLocation);
+				TaxonNode parent = lastNode.getParent();
+				if (parent != null){
+					doTaxonRelation(state, taxon, parent.getTaxon(),	dataLocation);
+				}else{
+					String warning = "No parent available for lastNode. Classification can not be build correctly. Maybe the rank was missing for the lastNode";
+					fireWarningEvent(warning, makeLocationStr(dataLocation), 16);
+					//TODO what to do in this case (haven't spend time to think about yet
+				}
 				// TaxonNode parentNode = handleTaxonRelation(state, taxon,
 				// lastNode.getParent().getTaxon());
 				// parentNode.addChildTaxon(taxon, null, null, null);

@@ -36,9 +36,10 @@ public abstract class TermUpdaterBase extends UpdaterBase<ITermUpdaterStep, ITer
 	}
 	
 	@Override
-	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected boolean updateVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		int intSchemaVersion = 1;
-		String sqlUpdateSchemaVersion = "UPDATE CdmMetaData SET value = '" + this.targetVersion + "' WHERE propertyname = " +  intSchemaVersion;
+		String sqlUpdateSchemaVersion = "UPDATE %s SET value = '%s' WHERE propertyname = " +  intSchemaVersion;
+		sqlUpdateSchemaVersion = String.format(sqlUpdateSchemaVersion, caseType.transformTo("CdmMetaData"), this.targetVersion);
 		try {
 			int n = datasource.executeUpdate(sqlUpdateSchemaVersion);
 			return n > 0;
@@ -52,27 +53,27 @@ public abstract class TermUpdaterBase extends UpdaterBase<ITermUpdaterStep, ITer
 
 	
 	@Override
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception{
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception{
 		String currentLibrarySchemaVersion = CdmMetaData.getTermsVersion();
-		return invoke(currentLibrarySchemaVersion, datasource, monitor);
+		return invoke(currentLibrarySchemaVersion, datasource, monitor, caseType);
 	}
 
 	@Override
-	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	protected String getCurrentVersion(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		int intSchemaVersion = 1;
 		try {
-			String sqlCount = "SELECT count(*) FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
-			Long count = (Long)datasource.getSingleValue(sqlCount);
+			String sqlCount = "SELECT count(*) FROM @@CdmMetaData@@ WHERE propertyname = " +  intSchemaVersion;
+			Long count = (Long)datasource.getSingleValue(caseType.replaceTableNames(sqlCount));
 			if (count == 0){
 				String defaultVersion = "2.4.2.2.201006011715";
-				String sqlMaxId = "SELECT max(id) FROM CdmMetaData";
+				String sqlMaxId = caseType.replaceTableNames("SELECT max(id) FROM @@CdmMetaData@@");
 				Integer maxId = (Integer)datasource.getSingleValue(sqlMaxId) + 1;
-				String sqlUpdate = "INSERT INTO CdmMetaData (id, created, uuid, propertyname, value) VALUES (" + maxId + ", '2010-09-21 13:52:54', '"+UUID.randomUUID()+"', 1, '" + defaultVersion + "')";
-				datasource.executeUpdate(sqlUpdate);
+				String sqlUpdate = "INSERT INTO @@CdmMetaData@@ (id, created, uuid, propertyname, value) VALUES (" + maxId + ", '2010-09-21 13:52:54', '"+UUID.randomUUID()+"', 1, '" + defaultVersion + "')";
+				datasource.executeUpdate(caseType.replaceTableNames(sqlUpdate));
 				return defaultVersion;
 			}else{
-				String sqlSchemaVersion = "SELECT value FROM CdmMetaData WHERE propertyname = " +  intSchemaVersion;
-				String value = (String)datasource.getSingleValue(sqlSchemaVersion);
+				String sqlSchemaVersion = "SELECT value FROM @@CdmMetaData@@ WHERE propertyname = " +  intSchemaVersion;
+				String value = (String)datasource.getSingleValue(caseType.replaceTableNames(sqlSchemaVersion));
 				return value;
 			}
 		} catch (SQLException e) {

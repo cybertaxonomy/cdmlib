@@ -41,7 +41,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		try {
 			if (checkExists(datasource)){
 				String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
@@ -58,7 +58,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		if (type.equals(DatabaseTypeEnum.MySQL)){
 			String sql = "SELECT count(*)	FROM information_schema.TABLE_CONSTRAINTS " + 
-			" WHERE table_name ='@tableName' AND CONSTRAINT_SCHEMA = '@dbName' AND CONSTRAINT_TYPE = 'UNIQUE' ";
+					" WHERE table_name ='@tableName' AND CONSTRAINT_SCHEMA = '@dbName' AND CONSTRAINT_TYPE = 'UNIQUE' ";
 			sql = sql.replace("@tableName", tableName);
 			sql = sql.replace("@columnName", indexColumn);
 			sql = sql.replace("@dbName", datasource.getDatabase());
@@ -78,6 +78,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 
 
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException, SQLException {
+		//NOTE: no caseType required here
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
 		String indexName = getIndexName(datasource);
@@ -127,6 +128,7 @@ public class UniqueIndexDropper extends AuditedSchemaUpdaterStepBase<UniqueIndex
 			String constraintName = (String)datasource.getSingleValue(sql);
 			result = constraintName;
 		}else if (type.equals(DatabaseTypeEnum.PostgreSQL)){
+			//TODO do we need this cased?
 			result = this.tableName + "_" + this.indexColumn + "_key";
 		}else{
 			throw new DatabaseTypeNotSupportedException(type.toString());

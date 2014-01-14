@@ -213,18 +213,44 @@ public class Abcd206XMLFieldGetter {
         NodeList results, reference;
         results = result.getChildNodes();
         boolean referencefound = false;
+        String[] refDetails =new String[3];;
         for (int k = 0; k < results.getLength(); k++) {
             if (results.item(k).getNodeName().equals(prefix + "SourceReference")) {
                 reference = results.item(k).getChildNodes();
                 for (int l = 0; l < reference.getLength(); l++) {
                     if (reference.item(l).getNodeName().equals(prefix + "TitleCitation")) {
                         path = reference.item(l).getNodeName();
-                        dataHolder.referenceList.add(reference.item(l).getTextContent());
+                        refDetails[0]=reference.item(l).getTextContent();
                         getHierarchie(reference.item(l));
                         dataHolder.knownABCDelements.add(path);
                         path = "";
                         referencefound = true;
                     }
+                    if (reference.item(l).getNodeName().equals(prefix + "CitationDetail")) {
+                        path = reference.item(l).getNodeName();
+                        refDetails[1]=reference.item(l).getTextContent();
+                        getHierarchie(reference.item(l));
+                        dataHolder.knownABCDelements.add(path);
+                        path = "";
+                        referencefound = true;
+                    }
+                    if (reference.item(l).getNodeName().equals(prefix + "URI")) {
+                        path = reference.item(l).getNodeName();
+                        refDetails[2]=reference.item(l).getTextContent();
+                        getHierarchie(reference.item(l));
+                        dataHolder.knownABCDelements.add(path);
+                        path = "";
+                        referencefound = true;
+                    }
+                }
+                if (refDetails!=null){
+                    for (int i=0;i<3;i++) {
+                        if (refDetails[i]==null) {
+                            refDetails[i]="";
+                        }
+                    }
+                    dataHolder.referenceList.add(refDetails);
+                    refDetails =new String[3];
                 }
             }
         }

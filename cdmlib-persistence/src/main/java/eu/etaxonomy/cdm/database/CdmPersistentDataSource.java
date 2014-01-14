@@ -153,10 +153,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		dataSourceName = strDataSource;
 	}
 	
-	/**
-	 * Returns the name of the bean.
-	 * @return
-	 */
+	@Override
 	public String getName(){
 		return dataSourceName;
 	}
@@ -172,31 +169,33 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 
 
 	
+	@Override
 	public String getDatabase() {
 		return getDatabaseProperty(DbProperties.DATABASE);
 	}
 
 
+	@Override
 	public String getFilePath() {
 		//TODO null
 		return getDatabaseProperty(DbProperties.FILEPATH);
 	}
 
 
+	@Override
 	public H2Mode getMode() {
 		//TODO null
 		return H2Mode.fromString(getDatabaseProperty(DbProperties.MODE));
 	}
 	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.ICdmDataSource#getNomenclaturalCode()
-	 */
+	@Override
 	public NomenclaturalCode getNomenclaturalCode() {
 		// TODO null
 		return NomenclaturalCode.fromString(getDatabaseProperty(DbProperties.NOMENCLATURAL_CODE));
 	}
 
+	@Override
 	public int getPort() {
 		String port = CdmUtils.Nz(getDatabaseProperty(DbProperties.PORT));
 		if ("".equals(port)){
@@ -208,14 +207,13 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	}
 
 
+	@Override
 	public String getServer() {
 		return getDatabaseProperty(DbProperties.SERVER);
 	}
 
-	/**
-	 * Returns the database type of the data source. 
-	 * @return the database type of the data source. Null if the bean or the driver class property does not exist or the driver class is unknown.
-	 */
+
+	@Override
 	public DatabaseTypeEnum getDatabaseType(){
 		Element bean = getDatasourceBeanXml(this.dataSourceName);
 		if (bean == null){
@@ -342,6 +340,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @return
 	 */
 	@SuppressWarnings("unchecked")
+	@Override
 	public BeanDefinition getDatasourceBean(){
 		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDatasourceProperty(DbProperties.DRIVER_CLASS));
 		
@@ -387,6 +386,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param showSql
 	 * @return
 	 */
+	@Override
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll){
 		boolean showSql = false;
 		boolean formatSql = false;
@@ -401,6 +401,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param showSql
 	 * @return
 	 */
+	@Override
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass){
 		//Hibernate default values
 		if (hbm2dll == null){
@@ -646,25 +647,16 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		return dataSources;
 	}
 	
+	@Override
 	public String getUsername(){
 		return getDatasourceProperty(DbProperties.USERNAME);
 	}
 	
+	@Override
 	public String getPassword(){
 		return getDatasourceProperty(DbProperties.PASSWORD);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
-	public String toString(){
-		if (this.dataSourceName != null){
-			return dataSourceName;
-		}else{
-			return null;
-		}
-	}
 
 
 	
@@ -739,6 +731,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		}
 	}
 	
+	@Override
 	public boolean equals(Object obj){
 		if (obj == null){
 			return false;
@@ -750,4 +743,14 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		}
 
 	}
+	
+	@Override
+	public String toString(){
+		if (this.dataSourceName != null){
+			return dataSourceName;
+		}else{
+			return null;
+		}
+	}
+
 }

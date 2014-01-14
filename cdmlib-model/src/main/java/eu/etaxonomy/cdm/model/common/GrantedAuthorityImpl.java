@@ -60,8 +60,7 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
      */
     public int compareTo(Object o) {
         if (o instanceof GrantedAuthority) {
-            return this.authority.compareTo(((GrantedAuthority) o)
-                    .getAuthority());
+            return this.authority.compareTo(((GrantedAuthority) o).getAuthority());
         }
         return 0;
     }

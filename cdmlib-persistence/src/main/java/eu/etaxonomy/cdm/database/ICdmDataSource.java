@@ -13,12 +13,14 @@ import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
+import javax.sql.DataSource;
+
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
-public interface ICdmDataSource {
+public interface ICdmDataSource extends DataSource {
 
 	/**
 	 * Returns a BeanDefinition object of type  DataSource that contains
@@ -61,6 +63,11 @@ public interface ICdmDataSource {
 	 */
 	public String getDatabase();
 	
+	/**
+	 * Returns the database type of the data source. 
+	 * @return the database type of the data source. 
+	 * <code>null</code> if the bean or the driver class property does not exist or the driver class is unknown.
+	 */
 	public DatabaseTypeEnum getDatabaseType();
 	
 	/**

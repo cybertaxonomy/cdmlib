@@ -23,8 +23,12 @@ import org.hibernate.event.spi.SaveOrUpdateEventListener;
  *
  */
 public interface ITreeNode<T extends ITreeNode<T>> extends ICdmBase {
+	
 	//Constants
+	//the separator used in the tree index to separate the id's of the parent nodes
 	public static final String separator = "#";
+	
+	//The prefix used in the tree index for the id of the tree itself
 	public static final String treePrefix = "t";
 	
 	

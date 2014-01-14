@@ -38,6 +38,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.FindTaxaAndNamesConfiguratorImpl;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.ICdmMassIndexer;
 import eu.etaxonomy.cdm.api.service.search.LuceneMultiSearchException;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
@@ -78,6 +80,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
+import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
@@ -90,6 +93,8 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String ABIES_BALSAMEA_UUID = "f65d47bd-4f49-4ab1-bc4a-bc4551eaa1a8";
 
+    private static final String ABIES_ALBA_UUID = "7dbd5810-a3e5-44b6-b563-25152b8867f4";
+
     private static final String CLASSIFICATION_UUID = "2a5ceebb-4830-4524-b330-78461bf8cb6b";
 
     private static final String CLASSIFICATION_ALT_UUID = "d7c741e3-ae9e-4a7d-a566-9e3a7a0b51ce";
@@ -98,6 +103,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
     private static final String D_ABIES_ALBA_UUID = "ec8bba03-d993-4c85-8472-18b14942464b";
 
+    private static final String D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID = "e9d8c2fd-6409-46d5-9c2e-14a2bbb1b2b1";
     private static final int NUM_OF_NEW_RADOM_ENTITIES = 1000;
 
     private static Logger logger = Logger.getLogger(TaxonServiceSearchTest.class);
@@ -495,7 +501,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         // test with findByDescriptionElementFullText
         pager = taxonService.findByDescriptionElementFullText(CommonTaxonName.class, "Rot*", null, null, null, highlightFragments, pageSize, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("All matches should be grouped into a single SearchResult element", 1, pager.getRecords().size());
         Assert.assertEquals("The count property of the pager must be set correctly", 1, pager.getCount().intValue());
         Map<String, String[]> highlightMap = pager.getRecords().get(0).getFieldHighlightMap();
@@ -505,7 +511,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         // test with findByEverythingFullText
         pager = taxonService.findByEverythingFullText( "Rot*", null, null, highlightFragments, pageSize, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("All matches should be grouped into a single SearchResult element", 1, pager.getRecords().size());
         Assert.assertEquals("The count property of the pager must be set correctly", 1, pager.getCount().intValue());
         highlightMap = pager.getRecords().get(0).getFieldHighlightMap();
@@ -524,7 +530,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         Pager<SearchResult<TaxonBase>> pager;
         pager = taxonService.findByDescriptionElementFullText(TextData.class, "Abies", null, null, null, false, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting one entity when searching for any TextData", Integer.valueOf(1), pager.getCount());
         Assert.assertEquals("Abies balsamea sec. Kohlbecker, A., Testcase standart views, 2013", pager.getRecords().get(0).getEntity().getTitleCache());
         Assert.assertTrue("Expecting two docs, one for RUSSIAN and one for GERMAN", pager.getRecords().get(0).getDocs().size() == 2);
@@ -759,7 +765,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         cdata.addStateData(statedata);
         d_abies_balsamea.addElement(cdata);
 
-        termService.save(state);
+        UUID termUUID = termService.save(state);
         descriptionService.save(d_abies_balsamea);
 
         commitAndStartNewTransaction(null);
@@ -786,8 +792,14 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxonService.saveOrUpdate(taxon);
         commitAndStartNewTransaction(null);
 
-        taxon = taxonService.load(taxon.getUuid());
+        taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
+        DefinedTermBase term = termService.find(termUUID);
+        try {
+        	termService.delete(term);
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
     }
 
     @SuppressWarnings("rawtypes")
@@ -842,7 +854,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Pager<SearchResult<TaxonBase>> pager;
 
         pager = taxonService.findByFullText(null, "Abies", null, null, true, null, null, null, null); // --> 7
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 8 entities", Integer.valueOf(8), pager.getCount());
 
         pager = taxonService.findByFullText(Taxon.class, "Abies", null, null, true, null, null, null, null); // --> 6
@@ -911,6 +923,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 EnumSet.of(TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, null, null, null, true, null, null, null, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+        SearchResult<TaxonBase> searchResult = pager.getRecords().get(0);
+        Assert.assertEquals(Synonym.class, searchResult.getEntity().getClass());
+        // Abies subalpina sec. Kohlbecker, A., Testcase standart views, 2013
 
 
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -928,8 +943,58 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
                 "kawakamii", null, null, null, null, true, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("Expecting 1 entity", Integer.valueOf(1), pager.getCount());
+
+    }
+
+    @Test
+    @DataSet
+    public final void testFindTaxaAndNamesByFullText_Sort() throws CorruptIndexException, IOException, ParseException, LuceneMultiSearchException {
+
+        refreshLuceneIndex();
+
+        Pager<SearchResult<TaxonBase>> pager;
+
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+
+        String[] docFields2log = new String[]{"id"};
+
+        // SortById
+        orderHints.addAll(OrderHint.ORDER_BY_ID);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
+                "Abies", null, null, null, null, true, null, null, orderHints, null);
+//        logSearchResults(pager, Level.DEBUG, docFields2log);
+        int lastId = -1;
+        for(SearchResult<TaxonBase> rs : pager.getRecords()){
+            if(lastId != -1){
+                Assert.assertTrue("results not sorted by id", lastId < rs.getEntity().getId());
+            }
+            lastId = rs.getEntity().getId();
+        }
+
+        orderHints.addAll(OrderHint.ORDER_BY_ID);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, null, null, null, true, null, null, orderHints, null);
+//        logSearchResults(pager, Level.DEBUG, docFields2log);
+
+        lastId = -1;
+        for(SearchResult<TaxonBase> rs : pager.getRecords()){
+            if(lastId != -1){
+                Assert.assertTrue("results not sorted by id", lastId < rs.getEntity().getId());
+            }
+            lastId = rs.getEntity().getId();
+        }
+
+        // Sortby NOMENCLATURAL_SORT_ORDER TODO make assertions !!!
+        orderHints.clear();
+        orderHints.addAll(OrderHint.NOMENCLATURAL_SORT_ORDER);
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
+                "Abies", null, null, null, null, true, null, null, orderHints, null);
+        logSearchResults(pager, Level.DEBUG, null);
 
     }
 
@@ -956,10 +1021,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         present_native.add(PresenceTerm.PRESENT());
         present_native.add(PresenceTerm.NATIVE());
 
+        Set<PresenceAbsenceTermBase<?>> absent = new HashSet<PresenceAbsenceTermBase<?>>();
+        absent.add(AbsenceTerm.ABSENT());
+
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("taxa with matching area filter", Integer.valueOf(2), pager.getCount());
 
         // abies_kawakamii_sensu_komarov as missapplied name for t_abies_balsamea
@@ -971,7 +1039,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         pager = taxonService.findTaxaAndNamesByFullText(
                 EnumSet.of(TaxaAndNamesSearchMode.doTaxa, TaxaAndNamesSearchMode.doSynonyms),
                 "Abies", null, a_germany_canada_russia, null, null, true, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("taxa and synonyms with matching area filter", Integer.valueOf(3), pager.getCount());
 
         pager = taxonService.findTaxaAndNamesByFullText(
@@ -1000,9 +1068,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
                 "Abies", null, a_germany_canada_russia, present_native, null, true, null, null, null, null);
         Assert.assertEquals("misappliedNames with matching area & status filter", Integer.valueOf(1), pager.getCount());
 
-        // FIXME #3730 (Taxon.removeTaxonRelation() raises error on update)
-        /* ----------------------------------------------- START
-        // and now also test if updating of the index works properly
+
         // 1. remove existing taxon relation
         Taxon t_abies_balsamea = (Taxon)taxonService.find(UUID.fromString(ABIES_BALSAMEA_UUID));
         Set<TaxonRelationship> relsTo = t_abies_balsamea.getRelationsToThisTaxon();
@@ -1018,8 +1084,16 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("misappliedNames with matching area & status filter, should match nothing now", Integer.valueOf(0), pager.getCount());
 
         // 2. now add abies_kawakamii_sensu_komarov as misapplied name for t_abies_alba and search for misapplications in russia: ABSENT
-        // TODO
-        // ---------------------------------------------- END */
+        Taxon t_abies_kawakamii_sensu_komarov = (Taxon)taxonService.find(UUID.fromString(D_ABIES_KAWAKAMII_SEC_KOMAROV_UUID));
+        Taxon t_abies_alba = (Taxon)taxonService.find(UUID.fromString(ABIES_ALBA_UUID));
+        t_abies_alba.addMisappliedName(t_abies_kawakamii_sensu_komarov, null, null);
+        taxonService.update(t_abies_alba);
+        commitAndStartNewTransaction(null);
+
+        pager = taxonService.findTaxaAndNamesByFullText(
+                EnumSet.of(TaxaAndNamesSearchMode.doMisappliedNames),
+                "Abies", null, a_germany_canada_russia, absent, null, true, null, null, null, null);
+        Assert.assertEquals("misappliedNames with matching area & status filter, should find one", Integer.valueOf(1), pager.getCount());
 
     }
 
@@ -1041,7 +1115,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         // via Taxon
         pager = taxonService.findByEverythingFullText("Abies", null, null, true, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertTrue("Expecting at least 7 entities for 'Abies'", pager.getCount() > 7);
         Assert.assertNotNull("Expecting entity", pager.getRecords().get(0).getEntity());
         Assert.assertEquals("Expecting Taxon entity", Taxon.class, pager.getRecords().get(0).getEntity().getClass());
@@ -1069,7 +1143,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
 
         //FIXME FAILS: abies balamea is returned twice, see also testFullText_Grouping()
         pager = taxonService.findByEverythingFullText("Balsam-Tanne", null, Arrays.asList(new Language[]{Language.GERMAN()}), false, null, null, null, null);
-        logPagerRecords(pager, Level.DEBUG);
+        logSearchResults(pager, Level.DEBUG, null);
         Assert.assertEquals("expecting to find the Abies balsamea via the GERMAN DescriptionElements", Integer.valueOf(1), pager.getCount());
 
         pager = taxonService.findByEverythingFullText("Abies", null, null, true, null, null, null, null);
@@ -1190,6 +1264,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         BotanicalName n_abies_alba = BotanicalName.NewInstance(Rank.SPECIES());
         n_abies_alba.setNameCache("Abies alba", true);
         Taxon t_abies_alba = Taxon.NewInstance(n_abies_alba, sec);
+        t_abies_alba.setUuid(UUID.fromString(ABIES_ALBA_UUID));
         taxonService.save(t_abies_alba);
 
         BotanicalName n_abies_subalpina = BotanicalName.NewInstance(Rank.SPECIES());
@@ -1351,7 +1426,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(null);
     }
 
-    private <T extends CdmBase> void logPagerRecords(Pager<SearchResult<T>> pager, Level level){
+    private <T extends CdmBase> void logSearchResults(Pager<SearchResult<T>> pager, Level level, String[] docFields){
         if(level == null){
             level = Level.DEBUG;
         }
@@ -1360,13 +1435,30 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
             b.append("\n");
             int i = 0;
             for(SearchResult sr : pager.getRecords()){
-                CdmBase entity = sr.getEntity();
+
                 b.append(" ").append(i++).append(" - ");
+                b.append("score:").append(sr.getScore()).append(", ");
+
+                if(docFields != null){
+                    b.append("docs : ");
+                    for(Document doc : sr.getDocs()) {
+                        b.append("<");
+                        for(String f : docFields){
+                            b.append(f).append(":").append(Arrays.toString(doc.getValues(f)));
+                        }
+                        b.append(">");
+                    }
+                }
+
+                CdmBase entity = sr.getEntity();
                 if(entity == null){
                     b.append("NULL");
                 } else {
-                    b.append(entity.getClass().getSimpleName()).append(" : ").append(entity.toString());
-                    b.append(" [").append(entity.getUuid()).append("]");
+                    b.append(entity.getClass().getSimpleName()).
+                        append(" [").append(entity.getId()).
+                        append(" | ").append(entity.getUuid()).append("] : ").
+                        append(entity.toString());
+
                 }
                 b.append("\n");
             }

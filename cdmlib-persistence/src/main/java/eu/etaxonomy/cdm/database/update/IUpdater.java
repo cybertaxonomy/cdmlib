@@ -37,14 +37,15 @@ public interface IUpdater<U extends IUpdater<U>> {
 	 * Returns the number of steps to run to update the datasource
 	 * to the schema this schema updater is updating to.
 	 * This includes needed steps in previous updaters.
+	 * @param caseType 
 	 * @see #getPreviousUpdater()
 	 * @return number of steps
 	 */
-	int countSteps(ICdmDataSource datasource, IProgressMonitor monitor);
+	int countSteps(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType);
 	
 	
-	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;
+	public boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;
 		
-	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;
+	public boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;
 
 }

@@ -1,0 +1,3 @@
+This package includes some classes already used for the Berlin Model import (references). 
+As some of them are linked by mapping class and have a generic character they were not moved to pesi
+together with all other berlin model io classes.

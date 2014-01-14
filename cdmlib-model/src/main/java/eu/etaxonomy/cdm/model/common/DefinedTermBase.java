@@ -41,6 +41,8 @@ import org.codehaus.plexus.util.StringUtils;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
+import org.hibernate.proxy.HibernateProxy;
+import org.hibernate.proxy.LazyInitializer;
 import org.hibernate.search.annotations.ClassBridge;
 import org.hibernate.validator.constraints.Length;
 
@@ -106,7 +108,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @Cascade(CascadeType.SAVE_UPDATE)
     private T kindOf;
     /**
-     * FIXME - Hibernate retuns this as a collection of CGLibProxy$$DefinedTermBase objects
+     * FIXME - Hibernate returns this as a collection of CGLibProxy$$DefinedTermBase objects
      * which can't be cast to instances of T - can we explicitly initialize these terms using
      * Hibernate.initialize(), does this imply a distinct load, and find methods in the dao?
      */
@@ -155,10 +157,10 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade(CascadeType.SAVE_UPDATE)
     protected TermVocabulary<T> vocabulary;
-    
+
   //the unique tabel this term uses in its given vocabulary #3479
    //open issues: is null allowed? If not, implement unique constraint
-    
+
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
     private String idInVocabulary;  //the unique tabel this term uses in its given vocabulary #3479
@@ -168,7 +170,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     //for javassit only
     @Deprecated
     protected DefinedTermBase(){};
-    
+
     protected DefinedTermBase(TermType type) {
         super(type);
     }
@@ -177,29 +179,37 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     }
 
 
-//********************** GETTER /SETTER *************************************    
-    
-  	/* (non-Javadoc)
-  	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIdInVocabulary()
-  	 */
-  	@Override
-  	public String getIdInVocabulary() {
-  		return idInVocabulary;
-  	}
-  	
-  	/* (non-Javadoc)
-  	 * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIdInVocabulary(java.lang.String)
-  	 */
-  	@Override
-  	public void setIdInVocabulary(String idInVocabulary) {
-  		this.idInVocabulary = idInVocabulary;
-  	}
-      
+//********************** GETTER /SETTER *************************************
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIdInVocabulary()
+       */
+      @Override
+      public String getIdInVocabulary() {
+          return idInVocabulary;
+      }
+
+      /* (non-Javadoc)
+       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIdInVocabulary(java.lang.String)
+       */
+      @Override
+      public void setIdInVocabulary(String idInVocabulary) {
+          this.idInVocabulary = idInVocabulary;
+      }
+
       /* (non-Javadoc)
        * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
        */
-      public T getKindOf(){
-          return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
+      @Override
+    public T getKindOf(){
+
+          if (this instanceof HibernateProxy) {
+              HibernateProxy proxy = (HibernateProxy) this;
+              LazyInitializer li = proxy.getHibernateLazyInitializer();
+              return (T) ((T)li.getImplementation()).getKindOf();
+          } else {
+              return (T)DefinedTermBase.deproxy(this.kindOf, this.getClass());
+          }
       }
 
       public void setKindOf(T kindOf){
@@ -233,7 +243,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
       @Override
       public T getPartOf(){
-          return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
+          if (this instanceof HibernateProxy) {
+              HibernateProxy proxy = (HibernateProxy) this;
+              LazyInitializer li = proxy.getHibernateLazyInitializer();
+              return (T) ((T)li.getImplementation()).getPartOf();
+          } else {
+              return (T)DefinedTermBase.deproxy(this.partOf, this.getClass());
+          }
       }
 
       /**
@@ -262,7 +278,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           includes.setPartOf(this);
           this.includes.add(includes);
       }
-      
+
       /**
        * @see #getIncludes()
        */
@@ -301,33 +317,33 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     }
 
 //******************************* METHODS ******************************************************/
-   
 
-  	@Override
-  	public boolean isKindOf(T ancestor) {
-  		if (kindOf == null || ancestor == null){
-			return false;
-		}else if (kindOf.equals(ancestor)){
-			return true;
-		}else{
-			return kindOf.isKindOf(ancestor);
-		}
-  	}
 
-  	@Override
-  	public Set<T> getGeneralizationOf(boolean recursive) {
-  		Set<T> result = new HashSet<T>();
-		result.addAll(this.generalizationOf);
-		if (recursive){
-			for (T child : this.generalizationOf){
-				result.addAll(child.getGeneralizationOf());
-			}
-		}
-		return result;
-  	}
-  
-      
-    
+      @Override
+      public boolean isKindOf(T ancestor) {
+          if (kindOf == null || ancestor == null){
+            return false;
+        }else if (kindOf.equals(ancestor)){
+            return true;
+        }else{
+            return kindOf.isKindOf(ancestor);
+        }
+      }
+
+      @Override
+      public Set<T> getGeneralizationOf(boolean recursive) {
+          Set<T> result = new HashSet<T>();
+        result.addAll(this.generalizationOf);
+        if (recursive){
+            for (T child : this.generalizationOf){
+                result.addAll(child.getGeneralizationOf());
+            }
+        }
+        return result;
+      }
+
+
+
     public abstract void resetTerms();
 
     protected abstract void setDefaultTerms(TermVocabulary<T> termVocabulary);
@@ -348,56 +364,56 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
             throw new RuntimeException(e);
         }
     }
-    
-	protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
+
+    protected static <TERM extends DefinedTermBase> TERM readCsvLine(TERM newInstance, List<String> csvLine, Language lang, boolean abbrevAsId) {
         newInstance.setUuid(UUID.fromString(csvLine.get(0)));
         newInstance.setUri( URI.create(csvLine.get(1)));
         String label = csvLine.get(2).trim();
         String description = csvLine.get(3);
         String abbreviatedLabel = csvLine.get(4);
         if (StringUtils.isBlank(abbreviatedLabel)){
-        	abbreviatedLabel = null;
+            abbreviatedLabel = null;
         }
         if (abbrevAsId){
-        	newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
+            newInstance.setIdInVocabulary(abbreviatedLabel);  //new in 3.3
         }
         newInstance.addRepresentation(Representation.NewInstance(description, label, abbreviatedLabel, lang) );
-        
+
         return newInstance;
     }
-    
+
     protected void readIsPartOf(T newInstance, List<String> csvLine, Map<UUID, DefinedTermBase> terms){
         int index = partOfCsvLineIndex();
- 		if (index != -1){
-	        String partOfString = csvLine.get(index);
-	         if(StringUtils.isNotBlank(partOfString)) {
-	             UUID partOfUuid = UUID.fromString(partOfString);
-	             DefinedTermBase partOf = (DefinedTermBase)terms.get(partOfUuid);
-	             partOf.addIncludes(newInstance);
-	         }
- 		}
- 	
+         if (index != -1){
+            String partOfString = csvLine.get(index);
+             if(StringUtils.isNotBlank(partOfString)) {
+                 UUID partOfUuid = UUID.fromString(partOfString);
+                 DefinedTermBase partOf = terms.get(partOfUuid);
+                 partOf.addIncludes(newInstance);
+             }
+         }
+
     }
-    
-	/**
-	 * Get the 
-	 * @return
-	 */
-	protected int partOfCsvLineIndex() {
-		return -1;
-	}
+
+    /**
+     * Get the
+     * @return
+     */
+    protected int partOfCsvLineIndex() {
+        return -1;
+    }
 
 
-	private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
-		try {
-			Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
-			c.setAccessible(true);
-			T termInstance = c.newInstance();
-			return termInstance;
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
+    private  <T extends DefinedTermBase> T getInstance(Class<? extends DefinedTermBase> termClass) {
+        try {
+            Constructor<T> c = ((Class<T>)termClass).getDeclaredConstructor();
+            c.setAccessible(true);
+            T termInstance = c.newInstance();
+            return termInstance;
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+    }
 
     @Override
     public void writeCsvLine(CSVWriter writer, T term) {
@@ -438,13 +454,13 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
         result.generalizationOf = new HashSet<DefinedTermBase>();
         for (DefinedTermBase generalizationOf : this.generalizationOf){
-            result.generalizationOf.add((DefinedTermBase) generalizationOf.clone());
+            result.generalizationOf.add(generalizationOf.clone());
         }
 
         result.includes = new HashSet<DefinedTermBase>();
 
         for (DefinedTermBase include: this.includes){
-            result.includes.add((DefinedTermBase) include.clone());
+            result.includes.add(include.clone());
         }
 
         result.media = new HashSet<Media>();

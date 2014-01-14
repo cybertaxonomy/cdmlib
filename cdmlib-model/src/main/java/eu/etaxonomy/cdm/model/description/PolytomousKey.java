@@ -177,6 +177,9 @@ public class PolytomousKey extends IdentifiableEntity<PolytomousKeyDefaultCacheS
 	 */
 	public void setRoot(PolytomousKeyNode root) {
 		this.root = root;
+		if (root != null){
+			root.setKey(this);
+		}
 	}
 
 	/**

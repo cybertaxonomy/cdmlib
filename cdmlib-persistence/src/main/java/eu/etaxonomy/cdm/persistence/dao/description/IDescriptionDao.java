@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -33,43 +34,43 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
-	/**
-	 * List the descriptions of type <TYPE>, filtered using the following parameters
-	 *  
-	 * @param type The type of description returned (Taxon, TaxonName, or Specimen)
-	 * @param hasMedia Restrict the description to those that do (true) or don't (false) contain <i>elements</i> that have one or more media (can be null)
-	 * @param hasText Restrict the description to those that do (true) or don't (false) contain TextData <i>elements</i> that have some textual content (can be null)
-	 * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
-	 * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
-	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
-	 * @param orderHints may be null
-	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
-	 * @return a List of DescriptionBase instances
-	 */
-	 List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-	
-	/**
-	 * Count the descriptions of type <TYPE>, filtered using the following parameters
-	 * 
-	 * @param type The type of description returned (Taxon, TaxonName, or Specimen)
-	 * @param hasMedia Restrict the description to those that do (true) or don't (false) contain <i>elements</i> that have one or more media (can be null)
-	 * @param hasText Restrict the description to those that do (true) or don't (false) contain TextData <i>elements</i> that have some textual content (can be null)
-	 * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
-	 * @return a count of DescriptionBase instances
-	 */
-	 int countDescriptions(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
-	
-	/**
-	 * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
-	 * 
-	 * @param taxon Restrict the results to those descriptions that refer to a specific taxon (can be null for all TaxonDescription instances)
-	 * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
-	 * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
-	 * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
-	 * @return a count of TaxonDescription instances
-	 */
-	int countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
-	
+    /**
+     * List the descriptions of type <TYPE>, filtered using the following parameters
+     *
+     * @param type The type of description returned (Taxon, TaxonName, or Specimen)
+     * @param hasMedia Restrict the description to those that do (true) or don't (false) contain <i>elements</i> that have one or more media (can be null)
+     * @param hasText Restrict the description to those that do (true) or don't (false) contain TextData <i>elements</i> that have some textual content (can be null)
+     * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
+     * @param pageSize The maximum number of descriptions returned (can be null for all descriptions)
+     * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
+     * @param orderHints may be null
+     * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
+     * @return a List of DescriptionBase instances
+     */
+     List<DescriptionBase> listDescriptions(Class<? extends DescriptionBase> type, Boolean hasMedia, Boolean hasText, Set<Feature> feature, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Count the descriptions of type <TYPE>, filtered using the following parameters
+     *
+     * @param type The type of description returned (Taxon, TaxonName, or Specimen)
+     * @param hasMedia Restrict the description to those that do (true) or don't (false) contain <i>elements</i> that have one or more media (can be null)
+     * @param hasText Restrict the description to those that do (true) or don't (false) contain TextData <i>elements</i> that have some textual content (can be null)
+     * @param feature Restrict the description to those <i>elements</i> which are scoped by one of the Features passed (can be null or empty)
+     * @return a count of DescriptionBase instances
+     */
+     int countDescriptions(Class<? extends DescriptionBase> type, Boolean hasImages, Boolean hasText, Set<Feature> feature);
+
+    /**
+     * Returns a count of TaxonDescription instances, optionally filtered by parameters passed to this method
+     *
+     * @param taxon Restrict the results to those descriptions that refer to a specific taxon (can be null for all TaxonDescription instances)
+     * @param scopes Restrict the results to those descriptions which are scoped by one of the Scope instances passed (can be null or empty)
+     * @param geographicalScope Restrict the results to those descriptions which have a geographical scope that overlaps with the NamedArea instances passed (can be null or empty)
+     * @param markerType Restrict the results to those descriptions which are marked as true by one of the given marker types (can be null or empty)
+     * @return a count of TaxonDescription instances
+     */
+    int countTaxonDescriptions(Taxon taxon, Set<DefinedTerm> scopes, Set<NamedArea> geographicalScope, Set<MarkerType> markerType);
+
     /**
      * Returns description elements of type <TYPE>, belonging to a given description, optionally filtered by one or more features
      *
@@ -274,4 +275,15 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      */
     <T extends DescriptionElementBase> long countDescriptionElementForTaxon(Taxon taxon,
             Set<Feature> features, Class<T> type);
+
+    /**
+     * Method to list all {@link NamedAreas} instances which are currently used
+     * by {@link Distribution} elements.
+     *
+     * @param pageSize
+     * @param pageNumber
+     * @param propertyPaths
+     * @return
+     */
+    List<NamedArea> listNamedAreasInUse(Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 }

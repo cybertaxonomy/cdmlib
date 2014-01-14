@@ -22,9 +22,10 @@ import com.ibm.lsid.server.LSIDServerException;
 import eu.etaxonomy.cdm.api.service.lsid.impl.LsidRegistryImpl;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 @DataSet("LSIDAuthorityServiceTest.testGetAvailableServices.xml")
-public class LSIDDataServiceTest extends CdmIntegrationTest {
+public class LSIDDataServiceTest extends CdmTransactionalIntegrationTest {
 	@SpringBeanByType
 	private LSIDDataService lsidDataService;
 	
@@ -48,6 +49,7 @@ public class LSIDDataServiceTest extends CdmIntegrationTest {
 	
 	@Test
 	public void testGetDataWithKnownLSID() throws Exception {
+		commitAndStartNewTransaction(null);
 		Object object = lsidDataService.getData(knownLsid);
 		assertNull("getData should return a null response",object);
 	}

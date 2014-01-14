@@ -40,9 +40,6 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-	 */
 	@Override
 	@Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends TermVocabulary> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TermVocabulary> cacheStrategy, IProgressMonitor monitor) {
@@ -52,14 +49,6 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
 
-	
-	public TermVocabulary<DefinedTermBase> getVocabulary(VocabularyEnum vocabularyType){
-		return dao.findByUuid(vocabularyType.getUuid());
-	}
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IVocabularyService#listByTermClass(java.lang.Class, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
 	@Override
 	public <TERM extends DefinedTermBase> List<TermVocabulary<TERM>> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		boolean includeSubclasses = false;
@@ -67,10 +56,12 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		return (List)listByTermClass(clazz, includeSubclasses, includeEmptyVocs, limit, start, orderHints, propertyPaths);
 	}	
 
+	@Override
 	public <TERM extends DefinedTermBase> List<TermVocabulary<? extends TERM>> listByTermClass(Class<TERM> clazz, boolean includeSubclasses, boolean includeEmptyVocs, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return dao.listByTermClass(clazz, includeSubclasses, includeEmptyVocs,limit, start, orderHints, propertyPaths);
 	}
 	
+	@Override
 	public <T extends DefinedTermBase> List<TermVocabulary<T>> findByTermType(TermType termType) {
 		return dao.findByTermType(termType);
 	}
@@ -80,6 +71,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 	 * FIXME candidate for harmonization
 	 * is this the same as getVocabulary(VocabularyEnum.Language)
 	 */
+	@Override
 	public TermVocabulary<Language> getLanguageVocabulary() {
 		String uuidString = "45ac7043-7f5e-4f37-92f2-3874aaaef2de";
 		UUID uuid = UUID.fromString(uuidString);
@@ -87,6 +79,7 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 		return languageVocabulary;
 	}
 
+	@Override
 	public Pager<DefinedTermBase> getTerms(TermVocabulary vocabulary, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
         Integer numberOfResults = dao.countTerms(vocabulary);
 		
@@ -97,7 +90,5 @@ public class VocabularyServiceImpl extends IdentifiableServiceBase<TermVocabular
 			
 		return new DefaultPagerImpl<DefinedTermBase>(pageNumber, numberOfResults, pageSize, results);
 	}
-
-
 
 }

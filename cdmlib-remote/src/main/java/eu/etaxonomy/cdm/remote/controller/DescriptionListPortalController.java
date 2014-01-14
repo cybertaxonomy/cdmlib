@@ -64,15 +64,28 @@ public class DescriptionListPortalController extends IdentifiableListController<
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
+            "elements.annotations",
+            "elements.markers",
             "elements.states.$",
             "elements.sources.citation.authorTeam",
-            "elements.sources.nameUsedInSource.originalNameString",
+            "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
+    });
+
+    protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{
+            "$",
+            "annotations",
+            "markers",
+            "states.$",
+            "sources.citation.authorTeam",
+            "sources.nameUsedInSource",
+            "multilanguageText",
+            "media",
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
-            "sources.$",
+            "taxon2.name"
     });
 
 
@@ -162,7 +175,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
        pagerParams.normalizeAndValidate(response);
 
        Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
-               type, pagerParams.getPageSize(), pagerParams.getPageIndex(), getInitializationStrategy());
+               type, pagerParams.getPageSize(), pagerParams.getPageIndex(), DESCRIPTION_ELEMENT_INIT_STRATEGY);
 
        return pager;
    }
@@ -203,16 +216,17 @@ public class DescriptionListPortalController extends IdentifiableListController<
            }
        }
        //TODO it seems as if the InitializationStrategy is not appropriate here !!!
-       //   see #3728 (DescriptionListPortalController.getDescriptionElementsForTaxon() seems to be using inapproptiate init strategy)
+       //   see #3728 (DescriptionListPortalController.getDescriptionElementsForTaxon() seems to be using in-appropriate init strategy)
+       if (logger.isDebugEnabled()){logger.debug("get pager ...");}
        Pager<T> pager = service.pageDescriptionElementsForTaxon(
                taxon,
                (features != null ? features.asSet() : null),
                type,
                pagerParams.getPageSize(),
                pagerParams.getPageIndex(),
-               getInitializationStrategy()
+               DESCRIPTION_ELEMENT_INIT_STRATEGY
               );
-
+       if (logger.isDebugEnabled()){logger.debug("get pager - DONE");}
        return pager;
    }
 }

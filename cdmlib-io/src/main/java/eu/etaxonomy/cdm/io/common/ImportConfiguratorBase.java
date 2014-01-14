@@ -141,7 +141,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 	@Override
     public boolean isValid(){
 		boolean result = true;
-		if (source == null){
+		if (getSource() == null){
 			logger.warn("Connection to source could not be established");
 			result = false;
 		}
@@ -191,18 +191,11 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.ioClassList = ioClassList;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCheck()
-	 */
 	@Override
     public CHECK getCheck() {
 		return this.check;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#setCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK)
-	 */
 	@Override
     public void setCheck(CHECK check) {
 		this.check = check;
@@ -244,61 +237,35 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.ignoreNull = ignoreNull;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getDestination()
-	 */
 	@Override
     public ICdmDataSource getDestination() {
 		return destination;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setDestination(eu.etaxonomy.cdm.database.ICdmDataSource)
-	 */
 	@Override
     public void setDestination(ICdmDataSource destination) {
 		this.destination = destination;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReference()
-	 */
 	@Override
     public abstract Reference getSourceReference();
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReference(eu.etaxonomy.cdm.model.reference.Reference)
-	 */
 	@Override
     public void setSourceReference(Reference sourceReference) {
 		this.sourceReference = sourceReference;
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getSourceReferenceTitle()
-	 */
 	@Override
     public String getSourceReferenceTitle() {
 		return getSourceReference().getTitleCache();
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setSourceReferenceTitle(java.lang.String)
-	 */
 	@Override
     public void setSourceReferenceTitle(String sourceReferenceTitle) {
 		getSourceReference().setTitleCache(sourceReferenceTitle, true);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#getCommentator()
-	 */
 	@Override
     public Person getCommentator() {
 		return commentator;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.tcsrdf.IImportConfigurator#setCommentator(eu.etaxonomy.cdm.model.agent.Person)
-	 */
 	@Override
     public void setCommentator(Person commentator) {
 		this.commentator = commentator;
@@ -336,9 +303,7 @@ public abstract class ImportConfiguratorBase<STATE extends ImportStateBase, SOUR
 		this.classificationUuid = classificationUuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSecUuid()
-	 */
+
 	@Override
     public UUID getSecUuid() {
 		return secUuid;

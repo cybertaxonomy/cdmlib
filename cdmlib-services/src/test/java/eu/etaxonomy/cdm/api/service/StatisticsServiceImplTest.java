@@ -12,6 +12,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.collections.functors.ForClosure;
 import org.apache.commons.lang.RandomStringUtils;
 import org.apache.log4j.Logger;
 import org.junit.After;
@@ -192,6 +193,11 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 	// *************** more members: *****************+
 
+	// **********vars to count what i create *********
+
+	MyCounter countAll = new MyCounter();
+	ArrayList<MyCounter> classificationCounters = new ArrayList<MyCounter>();
+
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -213,7 +219,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 	 */
 
 	@Before
-//	@DataSet
+	// @DataSet
 	public void setUp() throws Exception {
 
 		// missing in this example data:
@@ -228,6 +234,9 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					.NewInstance("European Abies" + i);
 			classifications.add(classification);
 			classificationService.save(classification);
+			(countAll.classifications)++;
+			classificationCounters.add(new MyCounter());
+
 		}
 		// create all taxa, references and synonyms and attach them to one or
 		// more classifications
@@ -270,6 +279,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				String randomName = RandomStringUtils.randomAlphabetic(5) + " "
 						+ RandomStringUtils.randomAlphabetic(10);
 
+				MyCounter taxonContextCounter = new MyCounter();
 				// create a name for the taxon
 				BotanicalName name = BotanicalName.NewInstance(Rank.SPECIES());
 				name.setNameCache(randomName, true);
@@ -281,6 +291,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					Reference nomRef = ReferenceFactory.newBook();
 					name.setNomenclaturalReference(nomRef);
 					referenceService.save(nomRef);
+					(taxonContextCounter.allReferences)++;
+					(taxonContextCounter.nomenclRef)++;
 					nomRefCounter++;
 				}
 
@@ -300,22 +312,32 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 					// create a description and 2 description elements with
 					// references for taxon name
-					TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
+					TaxonNameDescription nameDescr = TaxonNameDescription
+							.NewInstance();
 					CommonTaxonName nameElement = CommonTaxonName.NewInstance(
 							"Veilchen" + taxonCounter, Language.GERMAN());
 					TextData textElement = new TextData();
 					Reference nameElementRef = ReferenceFactory.newArticle();
-					Reference textElementRef = ReferenceFactory.newBookSection();
-					nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
-					textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
+					Reference textElementRef = ReferenceFactory
+							.newBookSection();
+					nameElement.addSource(
+							OriginalSourceType.PrimaryTaxonomicSource, null,
+							null, nameElementRef, "name: ");
+					textElement.addSource(
+							OriginalSourceType.PrimaryTaxonomicSource, null,
+							null, textElementRef, "text: ");
 					nameDescr.addElement(nameElement);
 					nameDescr.addElement(textElement);
 					name.addDescription(nameDescr);
 					// taxon.getName().addDescription(nameDescr);
 					referenceService.save(nameElementRef);
 					referenceService.save(textElementRef);
+					(taxonContextCounter.descrSourceRef)++;
+					(taxonContextCounter.descrSourceRef)++;
 					descriptionService.save(nameDescr);
+					(taxonContextCounter.descriptions)++;
 
+					// ###
 					// create descriptions, description sources and their
 					// references
 					// for taxon
@@ -330,31 +352,36 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						descriptionElement.addSource(descriptionElementSource);
 						taxonDescription.addElement(descriptionElement);
 						referenceService.save(article);
-						descriptionService.saveDescriptionElement(descriptionElement);
+						(taxonContextCounter.descrSourceRef)++;
+						descriptionService
+								.saveDescriptionElement(descriptionElement);
 
 					}
 					descriptionService.save(taxonDescription);
+					(taxonContextCounter.descriptions)++;
 					taxon.addDescription(taxonDescription);
 
 					// create a Specimen for taxon with description, descr.
 					// element and referece
-//
-//					Specimen specimen = Specimen.NewInstance();
-//					SpecimenDescription specimenDescription = SpecimenDescription.NewInstance(specimen);
-//					DescriptionElementBase descrElement = new TextData();
-//					Reference specimenRef = ReferenceFactory.newArticle();
-//					descrElement.addSource(null, null, specimenRef, null);
-//					
-//					
-//					descriptionService.save(specimenDescription);
-//					taxon.add(specimen);
+					//
+					// Specimen specimen = Specimen.NewInstance();
+					// SpecimenDescription specimenDescription =
+					// SpecimenDescription.NewInstance(specimen);
+					// DescriptionElementBase descrElement = new TextData();
+					// Reference specimenRef = ReferenceFactory.newArticle();
+					// descrElement.addSource(null, null, specimenRef, null);
+					//
+					//
+					// descriptionService.save(specimenDescription);
+					// taxon.add(specimen);
 
 					no_of_descriptive_source_references += descriptiveElementsPerTaxon + 2 + 1;
 
 				}
 
 				// add taxon to classification
-				classifications.get(classiCounter).addChildTaxon(taxon, null, null);
+				classifications.get(classiCounter).addChildTaxon(taxon, null,
+						null);
 
 				// now if there are any left, we create a synonym for the taxon
 				if (synonymCounter < NO_OF_SYNONYMS) {
@@ -371,6 +398,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						Reference nomRef = ReferenceFactory.newBook();
 						name.setNomenclaturalReference(nomRef);
 						referenceService.save(nomRef);
+						(taxonContextCounter.nomenclRef)++;
 						nomRefCounter++;
 					}
 
@@ -379,7 +407,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 
 						// create a description and 2 description elements with
 						// references for synonym name
-						TaxonNameDescription nameDescr = TaxonNameDescription.NewInstance();
+						TaxonNameDescription nameDescr = TaxonNameDescription
+								.NewInstance();
 						CommonTaxonName nameElement = CommonTaxonName
 								.NewInstance("anderes Veilchen" + taxonCounter,
 										Language.GERMAN());
@@ -388,8 +417,12 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 								.newArticle();
 						Reference textElementRef = ReferenceFactory
 								.newBookSection();
-						nameElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameElementRef, "name: ");
-						textElement.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, textElementRef, "text: ");
+						nameElement.addSource(
+								OriginalSourceType.PrimaryTaxonomicSource,
+								null, null, nameElementRef, "name: ");
+						textElement.addSource(
+								OriginalSourceType.PrimaryTaxonomicSource,
+								null, null, textElementRef, "text: ");
 						nameDescr.addElement(nameElement);
 						nameDescr.addElement(textElement);
 						name.addDescription(nameDescr);
@@ -398,6 +431,7 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 						referenceService.save(textElementRef);
 						descriptionService.save(nameDescr);
 						no_of_descriptive_source_references += 2;
+						(taxonContextCounter.nomenclRef)++;
 					}
 
 					// create a new reference for every other synonym:
@@ -406,6 +440,8 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					}
 					Synonym synonym = Synonym.NewInstance(name, sec);
 					taxonService.save(synonym);
+					(taxonContextCounter.synonyms)++;
+					(taxonContextCounter.allTaxa)++;
 					taxon.addSynonym(synonym,
 							SynonymRelationshipType.SYNONYM_OF());
 
@@ -415,9 +451,13 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 				// if this is not the last classification and there are
 				// taxa left that should be in more than one classification
 				// we add the taxon to the next class in the list too.
+
+				(taxonContextCounter.aceptedTaxa)++;
+				(taxonContextCounter.allTaxa)++;
 				if (classiCounter < NO_OF_CLASSIFICATIONS
 						&& sharedClassification < NO_OF_SHARED_TAXA) {
-					classifications.get(classiCounter + 1).addChildTaxon(taxon, null, null);
+					classifications.get(classiCounter + 1).addChildTaxon(taxon,
+							null, null);
 
 					// we remember that this taxon is attached to 2
 					// classifications:
@@ -425,11 +465,18 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 					sharedClassification++;
 					classificationService.saveOrUpdate(classifications
 							.get(classiCounter + 1));
+					
+					(classificationCounters.get(classiCounter + 1))
+					.addAll(taxonContextCounter);
 				}
 
+
 				taxonService.save(taxon);
+				(classificationCounters.get(classiCounter))
+						.addAll(taxonContextCounter);
 				classificationService.saveOrUpdate(classifications
 						.get(classiCounter));
+				(countAll.classifications)++;
 
 				// count the data created with this taxon:
 				int c = classiCounter;
@@ -559,6 +606,9 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		for (Map<String, Number> map : expectedCountmapList) {
 			logger.info(map.toString());
 		}
+		logger.info("expected2:");
+		logger.info(countAll.toString());
+		logger.info(classificationCounters.toString());
 		logger.info("statistics: ");
 		for (Statistics statistics : statisticsList) {
 			logger.info(statistics.getCountMap().toString());
@@ -745,6 +795,53 @@ public class StatisticsServiceImplTest extends CdmTransactionalIntegrationTest {
 		}
 
 		return configuratorList;
+	}
+
+	public class MyCounter {
+		protected long classifications = 0;
+		protected long allTaxa = 0;
+		protected long aceptedTaxa = 0;
+		protected long taxonNames = 0;
+		protected long synonyms = 0;
+		protected long descrSourceRef = 0;
+		protected long nomenclRef = 0;
+		protected long allReferences = 0;
+		protected long descriptions = 0;
+
+		public void addAll(MyCounter otherCounter) {
+			classifications += otherCounter.classifications;
+			allTaxa += otherCounter.allTaxa;
+			aceptedTaxa += otherCounter.aceptedTaxa;
+			taxonNames += otherCounter.taxonNames;
+			synonyms += otherCounter.synonyms;
+			descrSourceRef += otherCounter.descrSourceRef;
+			nomenclRef += otherCounter.nomenclRef;
+			allReferences += otherCounter.allReferences;
+			descriptions += otherCounter.descriptions;
+		}
+
+		public void reset() {
+			classifications = 0;
+			allTaxa = 0;
+			aceptedTaxa = 0;
+			taxonNames = 0;
+			synonyms = 0;
+			descrSourceRef = 0;
+			nomenclRef = 0;
+			allReferences = 0;
+			descriptions = 0;
+		}
+
+		@Override
+		public String toString() {
+			return "{Taxon_names=" + taxonNames + ", Synonyms=" + synonyms
+					+ ", Accepted_taxa=" + aceptedTaxa
+					+ ", Nomeclatural_references=" + nomenclRef
+					+ ", Classifications=" + classifications
+					+ ", Descriptive_source_references=" + descrSourceRef
+					+ ", References=" + allReferences + ", All_taxa=" + allTaxa
+					+ "}\n";
+		}
 	}
 
 }

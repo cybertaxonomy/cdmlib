@@ -529,7 +529,14 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
                 }
 
-                logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
+                if(taxonPager != null){
+                    if(logger.isDebugEnabled()){
+                               logger.debug("accumulateByRank() - taxon " + taxonPager.getFirstRecord() + " to " + taxonPager.getLastRecord() + " of " + taxonPager.getCount() + "]");
+                    }
+                } else {
+                    logger.error("accumulateByRank() - taxonNode pager was NULL");
+                }
+
 
                 isLastPage = taxonPager.getRecords().size() < batchSize;
                 if (taxonPager.getRecords().size() == 0){
@@ -684,7 +691,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
 
         // find existing one
         for (TaxonDescription description : taxon.getDescriptions()) {
-        	if (description.hasMarker(MarkerType.COMPUTED(), true)) {
+            if (description.hasMarker(MarkerType.COMPUTED(), true)) {
                 logger.debug("reusing description for " + taxon.getTitleCache());
                 if (doClear) {
                     int deleteCount = 0;

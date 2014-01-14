@@ -77,11 +77,11 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 //		SingleTermRemover termRemover = SingleTermRemover.NewInstance(stepName, uuidTerm, checkUsedQueries);
 		
 		
-		String updateQuery = "UPDATE DefinedTermBase " + 
+		String updateQuery = "UPDATE @@DefinedTermBase@@ " + 
 			"SET DTYPE='AbsenceTerm', uuid='"+uuidTerm+"', defaultColor = 'ccb462', orderIndex=6 "+
 			"WHERE uuid = '"+oldUuid+"'";
 		stepName = "Move 'native: formerly native' to absence terms";
-		SimpleSchemaUpdaterStep formerlyUpdater = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateQuery, "DefinedTermBase");
+		SimpleSchemaUpdaterStep formerlyUpdater = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, updateQuery, "DefinedTermBase", 99);
 		list.add(formerlyUpdater);
 	
 		//FIXME vocabulary 
@@ -89,11 +89,11 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 		uuidTerm = UUID.fromString("b74dc30b-ee93-496d-8c00-4d00abae1ec7");
 		oldUuid = UUID.fromString("2522c527-e488-45d4-87df-a5a5ef0fdbbd");
 		
-		updateQuery = "UPDATE DefinedTermBase " + 
+		updateQuery = "UPDATE @@DefinedTermBase@@ " + 
 			"SET DTYPE='AbsenceTerm', uuid='"+uuidTerm+"', defaultColor = 'ccebcc', orderIndex=7 "+
 			"WHERE uuid = '"+oldUuid+"'";
 		stepName = "Move 'introduced: formerly introduced' to absence terms";
-		formerlyUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery);
+		formerlyUpdater = SimpleSchemaUpdaterStep.NewInstance(stepName, updateQuery, 99);
 		list.add(formerlyUpdater);
 	
 		
@@ -114,18 +114,11 @@ public class TermUpdater_313_314 extends TermUpdaterBase implements ITermUpdater
 		return list;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
-	 */
 	@Override
 	public ITermUpdater getNextUpdater() {
 		return TermUpdater_314_315.NewInstance();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getPreviousUpdater()
-	 */
 	@Override
 	public ITermUpdater getPreviousUpdater() {
 		return TermUpdater_312_313.NewInstance();

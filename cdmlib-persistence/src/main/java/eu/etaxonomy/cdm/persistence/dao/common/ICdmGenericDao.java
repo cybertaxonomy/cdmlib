@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -101,16 +103,39 @@ public interface ICdmGenericDao {
 	public <T extends IMatchable> List<T> findMatching(T objectToMatch, IMatchStrategy matchStrategy) throws MatchException; 
 	
 	
-	//TODO remove
-	public void test();
-	//for testing
+	/**
+	 * A generic method to retrieve any CdmBase object by its id and class.<BR>
+	 * Return the persistent instance of the given entity class with the given identifier, 
+	 * or null if there is no such persistent instance. (If the instance is already 
+	 * associated with the session, return that instance. This method never returns 
+	 * an uninitialized instance.)
+	 * TODO: the behaviour for abstract high level classes (such as CdmBase itself) 
+	 * is not yet tested. 
+	 * @see Session#get(Class, java.io.Serializable)
+	 * @param clazz the CdmBase class 
+	 * @param id the identifier
+	 * @return the CdmBase instance
+	 */
 	public <T extends CdmBase> T find(Class<T> clazz, int id);
 	
 	/**
 	 * Returns the result of an hql query
 	 * TODO implement parameters
+	 * @deprecated this is not clean implemantation as it is hibernate related.
 	 * @param hqlQuery
 	 * @return
 	 */
+	@Deprecated
 	public List getHqlResult(String hqlQuery);
+
+	/**
+	 * TODO remove as this is Hibernate specific.
+	 * Returns a Query
+	 * @deprecated this is not clean implemantation as it is hibernate related.
+	 * Will be replaced in future
+	 * @param hqlQuery
+	 * @return
+	 */
+	@Deprecated
+	public Query getHqlQuery(String hqlQuery);
 }

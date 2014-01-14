@@ -16,9 +16,14 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
@@ -28,61 +33,119 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
  */
 public class DescriptionUtility {
 
+    private static final Logger logger = Logger.getLogger(DescriptionUtility.class);
+
     /**
-     * <b>NOTE: This method must only be used in a transactional context.</b>
+     * <b>NOTE: To avoid LayzyLoadingExceptions this method must be used in a transactional context.</b>
      *
-     * Filters the given set of {@link Distribution}s for publication.
-     * Computed elements are preferred over entered or imported elements.
-     * Computed description elements are identified by the {@link  MarkerType.COMPUTED()}.
-     *
+     * Filters the given set of {@link Distribution}s for publication purposes
      * The following rules are respected during the filtering:
      * <ol>
-     * <li>If a entered or imported status information exist for the same area for which computed
-     *   data is available, the computed data has to be given preference over other data.</li>
-     * <li>If there is an area with a sub area and both areas have the same computed status only the subarea
-     *  status should be shown in the map, whereas the super area should be ignored.</li>
+     * <li>Computed elements are preferred over entered or imported elements.
+     * (Computed description elements are identified by the {@link
+     * MarkerType.COMPUTED()}). This means if a entered or imported status
+     * information exist for the same area for which computed data is available,
+     * the computed data has to be given preference over other data.</li>
+     * <li>In computed distributions, distributions in parent areas are
+     * preferred over those for <i>direct sub areas</i> if they have the same
+     * status</li>
+     * <li><b>Status order preference rule</b>: In case of multiple distribution
+     * status ({@link PresenceAbsenceTermBase}) for the same area the status
+     * with the highest order is preferred, see
+     * {@link OrderedTermBase#compareTo(OrderedTermBase)}. This rule is
+     * optional, see parameter <code>statusOrderPreference</code></li>
+     * <li><b>Sub area preference rule</b>: If there is an area with a <i>direct
+     * sub area</i> and both areas have the same computed status only the
+     * information on the sub area should be reported, whereas the super area
+     * should be ignored. This rule is optional, see parameter
+     * <code>subAreaPreference</code></li>
+     * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s
      * </ol>
      *
      * @param distributions
+     *            the distributions to filter
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
      * @return the filtered collection of distribution elements.
      */
-    public static Collection<Distribution> filterDistributions(Collection<Distribution> distributions) {
+    public static Collection<Distribution> filterDistributions(Collection<Distribution> distributions,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas) {
 
-        Map<String, Set<Distribution>> computedDistributions = new HashMap<String, Set<Distribution>>(distributions.size());
-        Map<String, Set<Distribution>> otherDistributions = new HashMap<String, Set<Distribution>>(distributions.size());
-        Set<Distribution> removeCandidates = new HashSet<Distribution>();
+        Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
+        Map<NamedArea, Set<Distribution>> otherDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
 
-        // 1. sort by computed / not computed
+        Map<NamedArea, Set<Distribution>> filteredDistributions;
+
+        Set<Distribution> removeCandidatesDistribution = new HashSet<Distribution>();
+        Set<NamedArea> removeCandidatesArea = new HashSet<NamedArea>();
+
+        Set<NamedArea> areasHiddenByMarker = new HashSet<NamedArea>();
+
+
+        // 1) sort by computed / not computed
         for(Distribution distribution : distributions){
+
+
+            // 1.1) skip distributions having an area with markers matching hideMarkedAreas
+            NamedArea area = distribution.getArea();
+            if(area == null) {
+                logger.debug("skipping distribution with NULL area");
+                continue;
+            } if(areasHiddenByMarker.contains(area)){
+                logger.debug("skipping distribution with marked area, area previously recognized and cached");
+                continue;
+            }else {
+                if(hideMarkedAreas != null){
+                    for(MarkerType markerType : hideMarkedAreas){
+                        if(area.hasMarker(markerType, true)){
+                            areasHiddenByMarker.add(area);
+                            logger.debug("skipping distribution with marked area");
+                            continue;
+                        }
+                    }
+                }
+
+            }
+
             if(distribution.hasMarker(MarkerType.COMPUTED(), true)){
-                if(!computedDistributions.containsKey(areaKey(distribution))){
-                    computedDistributions.put(areaKey(distribution), new HashSet<Distribution>());
+                if(!computedDistributions.containsKey(area)){
+                    computedDistributions.put(area, new HashSet<Distribution>());
                 }
-                computedDistributions.get(areaKey(distribution)).add(distribution);
+                computedDistributions.get(area).add(distribution);
             } else {
-                if(!otherDistributions.containsKey(areaKey(distribution))){
-                    otherDistributions.put(areaKey(distribution), new HashSet<Distribution>());
+                if(!otherDistributions.containsKey(area)){
+                    otherDistributions.put(area, new HashSet<Distribution>());
                 }
-                otherDistributions.get(areaKey(distribution)).add(distribution);
+                otherDistributions.get(area).add(distribution);
             }
         }
 
         // if there are computed elements apply the filter rules
         if(computedDistributions.size() > 0){
 
-            // 2. apply the filter rules
-            // prepare removal of all not computed areas for which a computed area exists
-            for(String keyComputed : computedDistributions.keySet()){
-                otherDistributions.remove(otherDistributions);
+            // 2) apply filter rules
+            // 2.a) prepare removal of all not computed areas for which a computed area exists
+            for(NamedArea keyComputed : computedDistributions.keySet()){
+                otherDistributions.remove(keyComputed);
             }
 
+            // 2.b) in computed distributions prefer parent areas over sub areas if they have the same status
             for(Distribution distribution : valuesOfAllInnerSets(computedDistributions.values())){
                 if(distribution.getArea() != null){
                     NamedArea parentArea = distribution.getArea().getPartOf();
                     while(parentArea != null){
-                        for(Distribution parentDistribution : computedDistributions.get(areaKey(parentArea))) {
-                            if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
-                                removeCandidates.add(parentDistribution);
+                        // get all distributions for the parent area
+                        Set<Distribution> parentAreaDistributions = computedDistributions.get(parentArea);
+                        if(parentAreaDistributions != null){
+                            // check all computed distributions of the parent area
+                            for(Distribution parentDistribution : parentAreaDistributions) {
+                                if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
+                                    removeCandidatesDistribution.add(parentDistribution);
+                                }
                             }
                         }
                         parentArea = parentArea.getPartOf();
@@ -91,17 +154,77 @@ public class DescriptionUtility {
             }
         }
 
+        filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(otherDistributions.size() + computedDistributions.size());
+
         // finally remove computed distributions if necessary and combine computed and non computed distributions again
-        Set<Distribution> filteredDistributions = new HashSet<Distribution>(otherDistributions.size() + computedDistributions.size());
-        filteredDistributions.addAll(valuesOfAllInnerSets(computedDistributions.values()));
-        for(Distribution distribution : removeCandidates){
-            computedDistributions.remove(areaKey(distribution));
+        // and apply the Status order preference filter
+        for(Distribution removeDistribution : removeCandidatesDistribution){
+            computedDistributions.remove(removeDistribution.getArea()); //FIXME is this correct? or should we only remove the specific distribution???
+        }
+        for(NamedArea key : computedDistributions.keySet()){
+            filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(computedDistributions.get(key)));
         }
 
-        filteredDistributions.addAll(valuesOfAllInnerSets(otherDistributions.values()));
+        // add the non computed distributions to combine them again and apply the Status order preference filter
+        for(NamedArea key : otherDistributions.keySet()){
+            filteredDistributions.put(key, byHighestOrderPresenceAbsenceTerm(otherDistributions.get(key)));
+        }
 
-        return filteredDistributions;
+        // 3) Sub area preference rule
+        if(subAreaPreference){
+            for(NamedArea key : filteredDistributions.keySet()){
+                if(removeCandidatesArea.contains(key)){
+                    continue;
+                }
+                if(key.getPartOf() != null && filteredDistributions.containsKey(key.getPartOf())){
+                    removeCandidatesArea.add(key.getPartOf());
+                }
+            }
+            for(NamedArea removeKey : removeCandidatesArea){
+                filteredDistributions.remove(removeKey);
+            }
+         }
 
+
+        return valuesOfAllInnerSets(filteredDistributions.values());
+
+    }
+
+    /**
+     * Implements the Status order preference filter for a given set to Distributions.
+     * The distributions should all be for the same area
+     *
+     * @param distributions
+     * @return the distribution with the highest status
+     */
+    private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
+
+        Set<Distribution> preferred = new HashSet<Distribution>();
+        PresenceAbsenceTermBase highestStatus = null;
+        int compareResult;
+        for (Distribution distribution : distributions) {
+            if(highestStatus == null){
+                highestStatus = distribution.getStatus();
+                preferred.add(distribution);
+            } else {
+                if(distribution.getStatus() == null){
+                    // highestStatus is considered higher if
+                    // highestStatus != null && distribution.getStatus() == null
+                    compareResult = highestStatus != null ? -1 : 0;
+                } else {
+                    compareResult = highestStatus.compareTo(distribution.getStatus());
+                }
+                if(compareResult < 0){
+                    highestStatus = distribution.getStatus();
+                    preferred.clear();
+                    preferred.add(distribution);
+                } else if(compareResult == 0) {
+                    preferred.add(distribution);
+                }
+            }
+        }
+
+        return preferred;
     }
 
     private static <T extends CdmBase> Collection<T> valuesOfAllInnerSets(Collection<Set<T>> collectionOfSets){
@@ -112,20 +235,35 @@ public class DescriptionUtility {
         return allValues;
     }
 
-    private static String areaKey(NamedArea area){
-        return String.valueOf(area.getUuid());
-    }
+    /**
+     * Provides a consistent string based key of the given NamedArea , see also
+     * {@link #areaKey(Distribution)}
+     *
+     * @param area
+     * @return the string representation of the NamedArea.uuid
+     */
+//    private static String areaKey(NamedArea area){
+//        return String.valueOf(area.getUuid());
+//    }
 
-    private static String areaKey(Distribution distribution){
-        StringBuilder keyBuilder = new StringBuilder();
-
-        if(distribution.getArea() != null){
-            keyBuilder.append(distribution.getArea().getUuid());
-        } else {
-            keyBuilder.append("NULL");
-        }
-
-        return keyBuilder.toString();
-    }
+    /**
+     * Provides a consistent string based key of the given NamedArea contained
+     * in the given distribution, see also {@link #areaKey(Distribution)}
+     *
+     * @param distribution
+     * @return the string representation of the NamedArea.uuid or
+     *         <code>"NULL"</code> in case the Distribution had no NamedArea
+     */
+//    private static String areaKey(Distribution distribution){
+//        StringBuilder keyBuilder = new StringBuilder();
+//
+//        if(distribution.getArea() != null){
+//            keyBuilder.append(distribution.getArea().getUuid());
+//        } else {
+//            keyBuilder.append("NULL");
+//        }
+//
+//        return keyBuilder.toString();
+//    }
 
 }

@@ -490,6 +490,8 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
     		case Scope:
     		case Sex:
     		case Stage:
+    		case KindOfUnit:
+    		case PresenceAbsenceTerm:
     		case DnaMarker:
     			return DefinedTerm.NewInstance(this, null, "Untitled", null);    	
     		case Feature:

@@ -41,13 +41,13 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
-		result &= invokeOnTable(oldName, newName, datasource, monitor);
+		result &= invokeOnTable(caseType.transformTo(oldName), caseType.transformTo(newName), datasource, monitor);
 		updateHibernateSequence(datasource, monitor, newName, oldName); //no result&= as hibernateSequence problems may not lead to a complete fail
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= invokeOnTable(oldName + aud, newName + aud, datasource, monitor);
+			result &= invokeOnTable(caseType.transformTo(oldName + aud), caseType.transformTo(newName + aud), datasource, monitor);
 		}
 		return (result == true )? 0 : null;
 	}
@@ -91,6 +91,7 @@ public class TableNameChanger extends SchemaUpdaterStepBase<TableNameChanger> im
 	 */
 	private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor, String newName, String oldName){
 		try{
+			//TODO do we need to "case" this table name?
 			String sql = " UPDATE hibernate_sequences SET sequence_name = '%s' WHERE sequence_name = '%s'";	
 			datasource.executeUpdate(String.format(sql, newName ,oldName));
 			return true;

@@ -55,10 +55,11 @@ public class TermMover extends SchemaUpdaterStepBase<TermMover> implements ITerm
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
  		//get new vocabulary id
-		String sql = " SELECT id FROM TermVocabulary WHERE uuid = '%s'";
-		Integer id = (Integer)datasource.getSingleValue(String.format(sql, this.uuidNewVocabulary));
+		String sql = " SELECT id FROM %s WHERE uuid = '%s'";
+		Integer id = (Integer)datasource.getSingleValue(String.format(sql, 
+				caseType.transformTo("TermVocabulary") , this.uuidNewVocabulary));
 		if (id == null || id == 0){
 			String messageString = "New vocabulary ("+uuidNewVocabulary+") does not exist. Can't move terms";
 			monitor.warning(messageString);
@@ -68,15 +69,13 @@ public class TermMover extends SchemaUpdaterStepBase<TermMover> implements ITerm
 		
 		//check if in use
 		for (String uuid : this.termUuids){
-			sql = " UPDATE DefinedTermBase SET vocabulary_id = %d WHERE uuid = '%s' ";
-			sql = String.format(sql, id, uuid);
+			sql = " UPDATE %s SET vocabulary_id = %d WHERE uuid = '%s' ";
+			sql = String.format(sql, caseType.transformTo("DefinedTermBase"), id, uuid);
 			datasource.executeUpdate(sql);
 		}
 		
 		return 0;
 	}
-
-
 
 	public TermMover addTermUuid(UUID uuid){
 		this.termUuids.add(uuid.toString());

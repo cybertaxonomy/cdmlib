@@ -67,6 +67,14 @@ public class ReferenceFactory {
 		return bookSection;
 	}
 	
+	
+	public static Reference newSection(){
+		//TODO we still need a separate cache strategy
+		Reference<GenericDefaultCacheStrategy<Reference>> section = new Reference<GenericDefaultCacheStrategy<Reference>>(ReferenceType.Section);
+		section.setCacheStrategy(ReferenceType.BookSection.getCacheStrategy());
+		return section;
+	}
+	
 	public static Reference newCdDvd(){
 		Reference<CdDvdDefaultCacheStrategy<Reference>> cdDvd= new Reference<CdDvdDefaultCacheStrategy<Reference>>(ReferenceType.CdDvd);
 		cdDvd.setCacheStrategy(ReferenceType.CdDvd.getCacheStrategy());

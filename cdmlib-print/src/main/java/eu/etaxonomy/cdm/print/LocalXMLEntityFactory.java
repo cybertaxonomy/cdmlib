@@ -528,4 +528,22 @@ public class LocalXMLEntityFactory extends XmlEntityFactoryBase {
 		// TODO Auto-generated method stub
 		return null;
 	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getTaxonNodesByName(java.lang.String)
+	 */
+	@Override
+	public Element getTaxonNodesByName(String taxonName, String classification) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.print.IXMLEntityFactory#getMedia(org.jdom.Element)
+	 */
+	@Override
+	public List<Element> getMedia(Element taxonElement) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

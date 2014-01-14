@@ -23,6 +23,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -187,7 +188,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Name should still be in database",name1);
         nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
         nameWithBasionym.removeBasionyms();
-        nameService.delete(name1); //should throw now exception
+        try{
+        	nameService.delete(name1); //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -401,7 +406,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         name1.removeHybridChild(child);
-        nameService.delete(name1); //should throw now exception
+        try{
+        	 nameService.delete(name1); //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
+       
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -443,7 +453,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Taxon should still be in database",taxon);
         taxon.setName(basionym);
         taxonService.save(taxon);
-        nameService.delete(name1); //should throw now exception
+        try{
+        	nameService.delete(name1); //should throw now exception
+        }catch (ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -455,7 +469,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+   // @Ignore //currently does not run in suite
     public void testDeleteTaxonNameBaseAsStoredUnder() {
         final String[] tableNames = new String[]{"TaxonNameBase","SpecimenOrObservationBase"};
 
@@ -485,15 +499,21 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Specimen should still be in database",name1);
         specimen.setStoredUnder(null);
         occurrenceService.saveOrUpdate(specimen);
-        nameService.delete(name1); //should throw now exception
+        try{
+                	nameService.delete(name1); //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",specimen);
-
-        occurrenceService.delete(specimen); //this is to better run this test in the test suit
-
+        try{
+        	occurrenceService.delete(specimen); //this is to better run this test in the test suit
+    	}catch(ReferencedObjectUndeletableException e){
+    		Assert.fail();
+    	}
     }
 
     /**
@@ -541,7 +561,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         source.setNameUsedInSource(null);
         taxonService.saveOrUpdate(taxon);
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+    	}catch(ReferencedObjectUndeletableException e){
+    		Assert.fail();
+    	}
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -556,7 +580,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+   // @Ignore //currently does not run in suite
     public void testDeleteTaxonNameBaseAsType() {
         final String[] tableNames = new String[]{"TaxonNameBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -588,8 +612,12 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
         higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
 //		nameService.deleteTypeDesignation(higherName,commitAndStartNewTransaction(tableNames) );  //deletes the complete designation  //both options can be used
-        nameService.delete(name1);  //should throw now exception
-        commitAndStartNewTransaction(tableNames);
+        try{
+    	   nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
+    	commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
         higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
@@ -603,7 +631,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+    //@Ignore //currently does not run in suite
     public void testDeleteTaxonNameBase() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -617,7 +645,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -635,7 +667,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{	
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -658,7 +694,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //		printDataSet(System.out, tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -669,7 +709,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.
      */
     @Test
-    @Ignore //currently does not run in suite
+    //@Ignore //currently does not run in suite
     public void testDeleteTaxonNameBaseWithTypeInHomotypicalGroup() {
         final String[] tableNames = new String[]{"TaxonNameBase","NameRelationship","HybridRelationship","DescriptionBase","NomenclaturalStatus","TaxonBase","SpecimenOrObservationBase","OriginalSourceBase","DescriptionElementBase","TypeDesignationBase","TaxonNameBase_TypeDesignationBase"};
 
@@ -695,7 +735,11 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        nameService.delete(name1);  //should throw now exception
+        try{
+        	nameService.delete(name1);  //should throw now exception
+        }catch(ReferencedObjectUndeletableException e){
+        	Assert.fail();
+        }
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -780,7 +824,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
-
+        //nothing should be deleted
         Assert.assertEquals("name1 should have 2 type designations", 2, desigs1.size());
         Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
         Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
@@ -800,7 +844,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         desigs1 = name1.getTypeDesignations();
         desigs2 = name2.getTypeDesignations();
         desigs3 = name3.getTypeDesignations();
-
+        //only the types of name1 should be deleted
         Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
         Assert.assertEquals("name2 should have 1 type designations", 1, desigs2.size());
         Assert.assertEquals("name3 should have 1 type designations", 1, desigs3.size());
@@ -829,9 +873,16 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 
         NameTypeDesignation desig3 = (NameTypeDesignation)name3.getTypeDesignations().iterator().next();
+        name3.addTypeDesignation(SpecimenTypeDesignation.NewInstance(), false);
+        this.nameService.update(name3);
+        
+        this.nameService.load(UUID.fromString("e1e66264-f16a-4df9-80fd-6ab5028a3c28"));
+        desigs3 = name3.getTypeDesignations();
+        Assert.assertEquals("name3 should have 2 type designations", 2, desigs3.size());
+        
         nameService.deleteTypeDesignation(name3, desig3);
-
         commitAndStartNewTransaction(tableNames);
+        
 
         name1 =  this.nameService.load(UUID.fromString("6dbd41d1-fe13-4d9c-bb58-31f051c2c384"));
         name2 = this.nameService.load(UUID.fromString("f9e9c13f-5fa5-48d3-88cf-712c921a099e"));
@@ -845,7 +896,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Assert.assertEquals("name1 should have 0 type designations", 0, desigs1.size());
         Assert.assertEquals("name2 should have 0 type designations", 0, desigs2.size());
-        Assert.assertEquals("name3 should have 0 type designations", 0, desigs3.size());
+        Assert.assertEquals("name3 should have 0 type designations", 1, desigs3.size());
         Assert.assertEquals("Specimen1 should be used in 0 type designation", 0, specimen1.getSpecimenTypeDesignations().size());
         Assert.assertEquals("Fossil should be used in 0 type designation", 0, fossil.getSpecimenTypeDesignations().size());
 

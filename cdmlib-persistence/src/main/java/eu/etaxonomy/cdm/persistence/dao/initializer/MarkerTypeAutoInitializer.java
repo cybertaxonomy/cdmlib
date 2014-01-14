@@ -26,5 +26,10 @@ public class MarkerTypeAutoInitializer extends AutoPropertyInitializer<Marker> {
     public void initialize(Marker bean) {
         beanInitializer.initializeInstance(bean.getMarkerType());
     }
+    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return String.format(" LEFT JOIN FETCH %s.markerType ", beanAlias); 
+    }
 
 }

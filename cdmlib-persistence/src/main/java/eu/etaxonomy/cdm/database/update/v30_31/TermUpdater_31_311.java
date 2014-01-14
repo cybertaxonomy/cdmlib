@@ -90,49 +90,42 @@ public class TermUpdater_31_311 extends TermUpdaterBase implements ITermUpdater 
 //		stepName = "Add 'unranked' rank to ranks";
 //		list.add( SingleTermUpdater.NewInstance(stepName, uuidTerm, description, label, abbrev, dtype, uuidVocabulary, uuidLang, isOrdered, uuidAfterTerm));
 
-		String sql = "UPDATE Representation SET text = 'Unranked Infrageneric Rank: The infrageneric name on purpose has no rank', label = 'Unranked (infrageneric)', abbreviatedlabel = '[infragen.]'" +
+		String sql = "UPDATE @@Representation@@ SET text = 'Unranked Infrageneric Rank: The infrageneric name on purpose has no rank', label = 'Unranked (infrageneric)', abbreviatedlabel = '[infragen.]'" +
 		" WHERE abbreviatedlabel = 't.infgen.'";
 		stepName = "Update unranked infrageneric representation";
-		SimpleSchemaUpdaterStep infraGenStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		SimpleSchemaUpdaterStep infraGenStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql, 99);
 		list.add(infraGenStep);
 
-		sql = "UPDATE DefinedTermBase SET titleCache = 'Unranked (infrageneric)' " +
+		sql = "UPDATE @@DefinedTermBase@@ SET titleCache = 'Unranked (infrageneric)' " +
 			" WHERE titleCache  = 'Infrageneric Taxon'";
 		stepName = "Update unranked infrageneric title cache";
-		SimpleSchemaUpdaterStep infraGenTitleStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		SimpleSchemaUpdaterStep infraGenTitleStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql, 99);
 		list.add(infraGenTitleStep);
 
 		
 		
-		sql = "UPDATE Representation SET text = 'Unranked Infraspecific Rank: The infraspecific name on purpose has no rank', label = 'Unranked (infraspecific)', abbreviatedlabel = '[infraspec.]' " +
+		sql = "UPDATE @@Representation@@ SET text = 'Unranked Infraspecific Rank: The infraspecific name on purpose has no rank', label = 'Unranked (infraspecific)', abbreviatedlabel = '[infraspec.]' " +
 		" WHERE abbreviatedlabel = 't.infr.'";
 		stepName = "Update unranked infraspecific representation";
-		SimpleSchemaUpdaterStep infraSpecStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		SimpleSchemaUpdaterStep infraSpecStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql, 99);
 		list.add(infraSpecStep);
 
-		sql = "UPDATE DefinedTermBase SET titleCache = 'Unranked (infraspecific)' " +
+		sql = "UPDATE @@DefinedTermBase@@ SET titleCache = 'Unranked (infraspecific)' " +
 			" WHERE titleCache  = 'Infraspecific Taxon'";
 		stepName = "Update unranked infraspecific title cache";
-		SimpleSchemaUpdaterStep infraSpecTitleStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql);
+		SimpleSchemaUpdaterStep infraSpecTitleStep = SimpleSchemaUpdaterStep.NewInstance(stepName, sql, 99);
 		list.add(infraSpecTitleStep);
 
 
 		
 		return list;
 	}
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getNextUpdater()
-	 */
+
 	@Override
 	public ITermUpdater getNextUpdater() {
 		return TermUpdater_311_312.NewInstance();
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.database.update.ICdmUpdater#getPreviousUpdater()
-	 */
 	@Override
 	public ITermUpdater getPreviousUpdater() {
 		return TermUpdater_30_31.NewInstance();

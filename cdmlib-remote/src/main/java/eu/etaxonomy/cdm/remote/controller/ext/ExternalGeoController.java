@@ -10,8 +10,11 @@
 package eu.etaxonomy.cdm.remote.controller.ext;
 
 import java.awt.Color;
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -37,10 +40,13 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -94,13 +100,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
     }
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * eu.etaxonomy.cdm.remote.controller.BaseController#setService(eu.etaxonomy
-     * .cdm.api.service.IService)
-     */
     @Autowired
     @Override
     public void setService(ITaxonService service) {
@@ -115,14 +114,28 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
      *
+     *
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param request
      * @param response
      * @return URI parameter Strings for the EDIT Map Service
-     * @throws IOException TODO write controller method documentation
+     * @throws IOException
      */
     @RequestMapping(value = { "taxonDistributionFor/{uuid}" }, method = RequestMethod.GET)
     public ModelAndView doGetDistributionMapUriParams(
             @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "hideMarkedAreas", required = false) Set<MarkerType> hideMarkedAreas,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
@@ -151,9 +164,11 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Pager<TaxonDescription> page = descriptionService.pageTaxonDescriptions(taxon, scopes, geographicalScope, pageSize, pageNumber, propertyPaths);
 
         List<TaxonDescription> taxonDescriptions = page.getRecords();
-        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions, presenceAbsenceTermColors, width, height, bbox,
-            backLayer, langs);
+        String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
+                subAreaPreference, statusOrderPreference,
+                hideMarkedAreas, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
         mv.addObject(uriParams);
+
         return mv;
     }
 
@@ -188,7 +203,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         Boolean doReturnImage = null;
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
-        logger.info("doGetOccurrenceMapUriParams() " + request.getRequestURI() + "?" + request.getQueryString());
+        logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
 
         Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
@@ -204,5 +219,49 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         mv.addObject(uriParams);
         return mv;
     }
+
+    /**
+     * EXPERIMENTAL !!!!!
+     * DO NOT USE   !!!!!
+     *
+     * @param vocabUuid
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     *
+     * @author a.kohlbecker
+     */
+    @RequestMapping(value = { "mapShapeFileToNamedAreas" }, method = RequestMethod.GET)
+    public ModelAndView doMapShapeFileToNamedAreas(
+            @RequestParam(required=false, value="vocabularyUuid") UUID vocabUuid,
+            @RequestParam(required=false, value="namedAreaUuids") UuidList namedAreaUuids,
+            @RequestParam(required=true, value="localFile") String localFile,
+            @RequestParam(required=true, value="idSearchField") List<String> idSearchFields,
+            @RequestParam(required=true, value="wmsLayerName") String wmsLayerName,
+            HttpServletRequest request,
+            HttpServletResponse response)
+            throws IOException {
+
+        logger.info("doMapShapeFileToNamedAreas() " + requestPathAndQuery(request));
+        ModelAndView mv = new ModelAndView();
+
+        FileReader reader = new FileReader(localFile);
+
+        Set<UUID> areaUuidSet = null;
+        if(namedAreaUuids != null) {
+            areaUuidSet = namedAreaUuids.asSet();
+        }
+        Map<NamedArea, String> resultMap = geoservice.mapShapeFileToNamedAreas(
+                reader, idSearchFields , wmsLayerName , vocabUuid, areaUuidSet);
+        Map<String, String> flatResultMap = new HashMap<String, String>(resultMap.size());
+        for(NamedArea area : resultMap.keySet()){
+            flatResultMap.put(area.getTitleCache() + " [" + area.getUuid() + "]", resultMap.get(area));
+        }
+        mv.addObject(flatResultMap);
+        return mv;
+
+    }
+
 
 }

@@ -22,5 +22,10 @@ public class TermBaseAutoInitializer extends AutoPropertyInitializer<TermBase> {
     public void initialize(TermBase bean) {
        beanInitializer.initializeInstance(bean.getRepresentations());
     }
+    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+    	return String.format(" LEFT JOIN FETCH %s.representations ", beanAlias); 
+    }
 
 }

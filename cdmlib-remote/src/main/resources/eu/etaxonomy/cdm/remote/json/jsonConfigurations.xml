@@ -116,9 +116,6 @@
           </property>
         </bean>
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.description.TextData">
-          <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TextDataBeanProcessor" />
-        </entry>
         <entry key="eu.etaxonomy.cdm.model.taxon.TaxonNode">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNodeBeanProcessor" />
         </entry>
@@ -133,6 +130,12 @@
         </entry>
         <entry key="eu.etaxonomy.cdm.model.agent.TeamOrPersonBase">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TeamOrPersonBaseBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.DescriptionElementBase">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DescriptionElementBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.StateData">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor" />
         </entry>
         <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
@@ -327,12 +330,6 @@
             </property>
           </bean>
         </entry>
-        <entry key="eu.etaxonomy.cdm.model.description.TextData">
-          <bean
-            class="eu.etaxonomy.cdm.remote.json.processor.bean.TextDataBeanProcessor">
-            <property name="replaceMultilanguageText" value="true" />
-          </bean>
-        </entry>
         <entry key="eu.etaxonomy.cdm.model.media.Media">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.MediaBeanProcessor">
             <property name="replaceTitle" value="true" />
@@ -362,6 +359,19 @@
         </entry>
         <entry key="org.apache.lucene.document.Document">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.LuceneDocumentBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.common.TreeNode">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TreeNodeBeanProcessor" />
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.DescriptionElementBase">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.DescriptionElementBeanProcessor">
+                <property name="replaceMultilanguageText" value="true" />
+            </bean>
+        </entry>
+        <entry key="eu.etaxonomy.cdm.model.description.StateData">
+            <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.StateDataBeanProcessor">
+                <property name="replaceMultilanguageText" value="true" />
+            </bean>
         </entry>
       </map>
     </property>

@@ -61,11 +61,11 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 
 // ******************************* METHODS *************************************************/
 
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException{
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException{
 		ResultSet rs;
 		
-		String sqlCheckTermExists = " SELECT count(*) as n FROM TermVocabulary WHERE uuid = '" + uuidVocabulary + "'";
-		Long n = (Long)datasource.getSingleValue(sqlCheckTermExists);
+		String sqlCheckTermExists = " SELECT count(*) as n FROM @@TermVocabulary@@ WHERE uuid = '" + uuidVocabulary + "'";
+		Long n = (Long)datasource.getSingleValue(caseType.replaceTableNames(sqlCheckTermExists));
 		if (n != 0){
 			monitor.warning("Vocabulary already exists: " + label + "(" + uuidVocabulary + ")");
 			return null;
@@ -74,7 +74,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		
 		//vocId
 		Integer vocId;
-		String sqlMaxId = " SELECT max(id)+1 as maxId FROM TermVocabulary";
+		String sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("TermVocabulary");
 		rs = datasource.executeQuery(sqlMaxId);
 		if (rs.next()){
 			vocId = rs.getInt("maxId");
@@ -89,22 +89,22 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		String created  = getNowString();
 		String dtype;
 		if (isOrdered){
-			dtype = "OrderedTermVocabulary";
+			dtype = "OrderedTermVocabulary";  //TODO case required here?
 		}else{
 			dtype = "TermVocabulary";
 		}
 		String titleCache = (StringUtils.isNotBlank(label))? label : ( (StringUtils.isNotBlank(abbrev))? abbrev : description );  
 		String protectedTitleCache = getBoolean(false, datasource);
 		String termSourceUri = termClass.getCanonicalName();
-		String sqlInsertTerm = " INSERT INTO TermVocabulary (DTYPE, id, uuid, created, protectedtitlecache, titleCache, termsourceuri, termType)" +
+		String sqlInsertTerm = " INSERT INTO @@TermVocabulary@@ (DTYPE, id, uuid, created, protectedtitlecache, titleCache, termsourceuri, termType)" +
 				"VALUES ('" + dtype + "', " + id + ", '" + uuidVocabulary + "', '" + created + "', " + protectedTitleCache + ", '" + titleCache + "', '" + termSourceUri + "', '" + termType.getKey() + "')"; 
-		datasource.executeUpdate(sqlInsertTerm);
+		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertTerm));
 		
 		//language id
 		int langId;
 		String uuidLanguage = Language.uuidEnglish.toString();
-		String sqlLangId = " SELECT id FROM DefinedTermBase WHERE uuid = '" + uuidLanguage + "'";
-		rs = datasource.executeQuery(sqlLangId);
+		String sqlLangId = " SELECT id FROM @@DefinedTermBase@@ WHERE uuid = '" + uuidLanguage + "'";
+		rs = datasource.executeQuery(caseType.replaceTableNames(sqlLangId));
 		if (rs.next()){
 			langId = rs.getInt("id");
 		}else{
@@ -115,7 +115,7 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		
 		//representation
 		int repId;
-		sqlMaxId = " SELECT max(id)+1 as maxId FROM Representation";
+		sqlMaxId = " SELECT max(id)+1 as maxId FROM " + caseType.transformTo("Representation");
 		rs = datasource.executeQuery(sqlMaxId);
 		if (rs.next()){
 			repId = rs.getInt("maxId");
@@ -126,16 +126,16 @@ public class VocabularyCreator extends SchemaUpdaterStepBase<VocabularyCreator> 
 		}
 		
 		UUID uuidRepresentation = UUID.randomUUID();
-		String sqlInsertRepresentation = " INSERT INTO Representation (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
+		String sqlInsertRepresentation = " INSERT INTO @@Representation@@ (id, created, uuid, text, label, abbreviatedlabel, language_id) " +
 				"VALUES (" + repId + ", '" + created + "', '" + uuidRepresentation + "', '" + description +  "', '" + label +  "'," + nullSafeString(abbrev) +  ", " + langId + ")"; 
 		
-		datasource.executeUpdate(sqlInsertRepresentation);
+		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertRepresentation));
 		
 		//Vocabulary_representation
-		String sqlInsertMN = "INSERT INTO TermVocabulary_Representation (TermVocabulary_id, representations_id) " + 
+		String sqlInsertMN = "INSERT INTO @@TermVocabulary_Representation@@ (TermVocabulary_id, representations_id) " + 
 				" VALUES ("+ vocId +"," +repId+ " )";		
 		
-		datasource.executeUpdate(sqlInsertMN);
+		datasource.executeUpdate(caseType.replaceTableNames(sqlInsertMN));
 		
 		return vocId;
 	}

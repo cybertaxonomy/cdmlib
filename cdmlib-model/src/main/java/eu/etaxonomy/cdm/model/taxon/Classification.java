@@ -16,7 +16,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.ElementCollection;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
@@ -25,6 +24,7 @@ import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -35,7 +35,6 @@ import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.poifs.property.Child;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
 import org.hibernate.envers.Audited;
@@ -52,7 +51,6 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 /**
  * @author a.mueller
  * @created 31.03.2009
- * @version 1.0
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Classification", propOrder = {
@@ -80,11 +78,11 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	@XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-	@OrderColumn(name="sortIndex")
+	@OrderColumn(name="sortIndex")   //creates problems (#3820) 
 	@OneToMany(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
 	//TODO
-//    @NotNull // avoids creating a UNIQUE key for this field
+//	@NotNull // avoids creating a UNIQUE key for this field
 	private List<TaxonNode> rootNodes = new ArrayList<TaxonNode>();
 
 	@XmlElement(name = "reference")
@@ -156,7 +154,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 
 	@Override
 	public TaxonNode addChildTaxon(Taxon taxon, Reference citation, String microCitation) {
-		return addChildTaxon(taxon, this.rootNodes.size() ,citation, microCitation);
+		return addChildTaxon(taxon, this.rootNodes.size(), citation, microCitation);
 	}
 	
 	@Override
@@ -168,12 +166,31 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	public boolean deleteChildNode(TaxonNode node) {
 		boolean result = removeChildNode(node);
 		
-		node.getTaxon().removeTaxonNode(node);
-		node.setTaxon(null);	
+		if (node.hasTaxon()){
+			node.getTaxon().removeTaxonNode(node);
+			node.setTaxon(null);
+		}
 		
 		ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
 		for (TaxonNode childNode : childNodes){
 			node.deleteChildNode(childNode);
+		}
+		return result;
+	}
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
+	 */
+	public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
+		boolean result = removeChildNode(node);
+		
+		//node.getTaxon().removeTaxonNode(node);
+		node.setTaxon(null);	
+		if (deleteChildren){
+			ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes()); 
+			for (TaxonNode childNode : childNodes){
+				node.deleteChildNode(childNode);
+			}
 		}
 		return result;
 	}
@@ -185,7 +202,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 	 */
 	protected boolean removeChildNode(TaxonNode node){
 		boolean result = false;
-		
 		if(!rootNodes.contains(node)){
 			throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
 		}
@@ -357,9 +373,23 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 				//child is still topmost node
 				//TODO test if child is topmostNode otherwise throw IllegalStateException
 				if (! this.isTopmostInTree(child)){
-					throw new IllegalStateException("Child is not a topmost node but must be");
+					//throw new IllegalStateException("Child is not a topmost node but must be");
+					if (childNode.getClassification() != null){
+						logger.warn("Child has no parent and is not a topmost node, child: " + child.getId() + " classification: " + childNode.getClassification().getId());
+					}else{
+						logger.warn("ChildNode has no classification: " + childNode.getId());
+					}
+						parentNode.addChildNode(childNode, citation, microCitation);
+					if (!parentNode.isTopmostNode()){
+						this.addChildNode(parentNode, citation, microCitation);
+						logger.warn("parent is added as a topmost node");
+					}else{
+						logger.warn("parent is already a topmost node");
+					}
+				}else{
+					this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
+			
 				}
-				this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
 			}
 			return childNode;
 		} catch (IllegalStateException e) {

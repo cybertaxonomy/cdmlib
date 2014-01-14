@@ -49,6 +49,11 @@ public interface IXMLEntityFactory {
 	 */
 	public Element getTaxonNode(UUID taxonNodeUuid);
 	
+	/*
+	 * Returns the taxonNodes for a specific name
+	 */
+	public Element getTaxonNodesByName(String taxonName, String classification);
+	
 	/**
 	 * Returns the {@link FeatureTree FeatureTrees} available with this CDM Server 
 	 * 
@@ -134,4 +139,11 @@ public interface IXMLEntityFactory {
 	 * @return a list of elements
 	 */
 	public Element getPolytomousKey(Element taxonElement); 
+	
+	/**
+	 * Gets the Media associated with a particular taxon
+	 * @param taxonElement
+	 * @return
+	 */
+	public List<Element> getMedia(Element taxonElement);
 }

@@ -12,13 +12,13 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertEquals;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.junit.After;
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -46,8 +46,12 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private ITaxonDao taxonDao;
 
     private UUID uuid1;
-    private UUID uuid3;
     private UUID uuid2;
+    private UUID uuid3;
+    
+    private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
+            "childNodes"
+    });
 
     @Before
     public void setUp(){
@@ -73,63 +77,40 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet
     public void testFindByUuid() {
-        TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
+        TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid1);
+        Classification.class.getDeclaredConstructors();
         assertNotNull("findByUuid should return a taxon node", taxonNode);
     }
 
     @Test
     @DataSet
     public void testClassification() {
-        Classification classification =  classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+    	
+        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"), CLASSIFICATION_INIT_STRATEGY);
 
         assertNotNull("findByUuid should return a taxon tree", classification);
         assertNotNull("classification should have a name",classification.getName());
         assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
-        TaxonNode taxNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
-        TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.findByUuid(uuid2);
-        Set<TaxonNode> rootNodes = new HashSet<TaxonNode>();
-
-        rootNodes.add(taxNode);
-
-
-        for (TaxonNode rootNode : rootNodes){
-            classification.addChildNode(rootNode, rootNode.getReference(), rootNode.getMicroReference()); //, rootNode.getSynonymToBeUsed()
-        }
-
-        taxNode.addChildNode(taxNode2, null, null);
-
-        Taxon taxon2 = taxNode2.getTaxon();
-        Taxon taxon = taxNode.getTaxon();
+        TaxonNode taxNode = (TaxonNode) taxonNodeDao.load(uuid1);
+        TaxonNode taxNode2 = (TaxonNode) taxonNodeDao.load(uuid2);
+      
+        TaxonNode taxNode3 = (TaxonNode) taxonNodeDao.load(uuid3);
         
+        
+               
         List<TaxonBase> taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be only 5 taxa", 5, taxa.size());
+        assertEquals("there should be six taxa", 6, taxa.size());
 
-        taxonNodeDao.delete(taxNode2);
-
+        taxonNodeDao.delete(taxNode3, true);
+        classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         taxa = taxonDao.getAllTaxonBases(10, 0);
-        assertEquals("there should be only one taxon left", 4, taxa.size());
+        assertEquals("there should be five taxa left", 5, taxa.size());
 
-        classificationDao.delete(classification);
+        classificationDao.delete(classification);  
+        classification = null;
+        classificationDao.flush();
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         assertEquals("The tree should be null", null, classification);
 
-    }
-    
-    @Test
-    @DataSet
-    public void testSortIndex() {
-    	TaxonNode taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
-        TaxonNode node2 = taxonNode.getChildNodes().get(1);
-        Assert.assertEquals(uuid2, node2.getUuid());
-        //move node
-        taxonNode.addChildNode(node2, 0, null, null);
-        taxonNodeDao.saveOrUpdate(taxonNode);
-        commitAndStartNewTransaction(new String[]{"TAXONNODE","CLASSIFICATION_TAXONNODE"});
-        taxonNode = (TaxonNode) taxonNodeDao.findByUuid(uuid3);
-        node2 = taxonNode.getChildNodes().get(0);
-        Assert.assertEquals("node2 must now be first in the list", uuid2, node2.getUuid());
-        TaxonNode node1 = taxonNode.getChildNodes().get(1);
-        Assert.assertEquals("node1 must now be second in the list", uuid1, node1.getUuid());
-        
     }
 }

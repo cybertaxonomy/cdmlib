@@ -126,7 +126,11 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         
         
         for(TaxonNode node : nodesTmp){
-            taxonNodeDao.delete(node);
+       
+        	persistentObject.deleteChildNode(node, true);
+            taxonNodeDao.delete(node, true);
+            
+           
         }
 
         super.delete(persistentObject);

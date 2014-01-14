@@ -38,7 +38,7 @@ public class ColumnRemover extends AuditedSchemaUpdaterStepBase<ColumnRemover> i
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);

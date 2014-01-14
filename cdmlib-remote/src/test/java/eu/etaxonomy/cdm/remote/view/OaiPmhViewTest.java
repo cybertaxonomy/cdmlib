@@ -21,6 +21,7 @@ import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.oxm.Marshaller;
 import org.unitils.UnitilsJUnit4;
 import org.unitils.spring.annotation.SpringApplicationContext;
+import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -49,7 +50,7 @@ public class OaiPmhViewTest extends UnitilsJUnit4 {
 
     public static final Logger logger = Logger.getLogger(OaiPmhViewTest.class);
 
-    @SpringBeanByType
+    @SpringBeanByName
     private Marshaller marshaller;
 
     @SpringBeanByType

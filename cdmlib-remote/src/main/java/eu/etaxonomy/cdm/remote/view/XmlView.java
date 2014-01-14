@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.xml.transform.stream.StreamResult;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.oxm.Marshaller;
 import org.springframework.web.servlet.view.AbstractView;
 
@@ -40,6 +41,7 @@ public class XmlView extends AbstractView {
     }
 
     @Autowired
+    @Qualifier("marshaller")
     public void setMarshaller(Marshaller marshaller) {
         this.marshaller = marshaller;
     }

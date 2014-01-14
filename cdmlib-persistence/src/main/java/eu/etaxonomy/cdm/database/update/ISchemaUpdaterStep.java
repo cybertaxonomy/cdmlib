@@ -12,10 +12,11 @@ public interface ISchemaUpdaterStep {
 	 * 
 	 * @param datasource
 	 * @param monitor
+	 * @param caseType 
 	 * @return identifier of newly created term
 	 * @throws SQLException
 	 */
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException;
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException;
 
 	public void setStepName(String stepName);
 

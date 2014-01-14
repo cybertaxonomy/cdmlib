@@ -17,13 +17,16 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
@@ -472,7 +475,35 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
     public <T extends DescriptionElementBase> Pager<T>  pageDescriptionElementsForTaxon(Taxon taxon, Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 
-    public DistributionTree getOrderedDistributions(Set<TaxonDescription> taxonDescriptions, Set<NamedAreaLevel> levels, List<String> propertyPaths);
+    /**
+     * @param taxonDescriptions
+     * @param subAreaPreference
+     *            enables the <b>Sub area preference rule</b> if set to true,
+     *            see {@link DescriptionUtility#filterDistributions(Collection,
+     *            boolean, boolean}
+
+     * @param statusOrderPreference
+     *            enables the <b>Status order preference rule</b> if set to
+     *            true, see {@link
+     *            DescriptionUtility#filterDistributions(Collection, boolean,
+     *            boolean}
+     * @param hideMarkedAreas
+     *            distributions where the area has a {@link Marker} with one of
+     *            the specified {@link MarkerType}s will be skipped, see
+     *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+     * @param omitLevels
+     *            A Set NamedArea levels to omit - optional
+     * @param propertyPaths
+     *            the initialization strategy
+     *
+     * @return
+     */
+    public DistributionTree getOrderedDistributions(
+            Set<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels, List<String> propertyPaths);
 
     /**
       * Generate a string representation of the structured <code>description</code> supplied in natural language
@@ -507,4 +538,22 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public void moveDescriptionElementsToDescription(Collection<DescriptionElementBase> descriptionElements, DescriptionBase targetDescription, boolean isPaste);
 
+    /**
+     * Pager method to get all {@link NamedAreas} instances which are currently used
+     * by {@link Distribution} elements.
+     *
+     * @param pageSize
+     *            The maximum number of description elements returned
+     * @param pageNumber
+     *            The offset (in pageSize chunks) from the start of the result
+     *            set (0 - based)
+     * @param propertyPaths
+     *            Properties to initialize in the returned entities, following
+     *            the syntax described in
+     *            {@link IBeanInitializer#initialize(Object, List)}
+     * @return a Pager for all NamedAreas instances which are currently in use.
+     *
+     */
+    public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
+            Integer pageNumber, List<String> propertyPaths);
 }

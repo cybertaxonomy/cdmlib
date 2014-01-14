@@ -30,8 +30,8 @@ import eu.etaxonomy.cdm.io.specimen.abcd206.in.Abcd206ImportConfigurator;
 import eu.etaxonomy.cdm.io.specimen.excel.in.SpecimenSynthesysExcelImportConfigurator;
 import eu.etaxonomy.cdm.io.taxonx2013.TaxonXImportConfigurator;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 
 /**
  * @author p.kelbert
@@ -94,7 +94,7 @@ public class UnitsGatheringArea {
             for (DefinedTermBase na:termsList){
                 if (na.getTitleCache().toLowerCase().indexOf(namedAreaStr.toLowerCase()) != -1) {
                     if (na.getClass().toString().indexOf("eu.etaxonomy.cdm.model.location.") != -1) {
-                        matchingTerms.put(na.toString()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
+                        matchingTerms.put(na.getTitleCache()+" ("+na.getClass().toString().split("eu.etaxonomy.cdm.model.location.")[1]+")",na.getUuid());
                     }
                 }
             }

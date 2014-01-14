@@ -27,7 +27,6 @@ import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.validation.Level2;
 
@@ -154,42 +153,6 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     }
 
     /**
-     * Special equal method for building an sorted distribution tree.
-     * @param dist the distribution to compare <code>this</code> area with.
-     * @return true, if both areas do have equal labels and both area levels
-     * do have equal label or are both null, false otherwise.
-     *
-     * FIXME comparing by label is not a good idea! Do we need this method at all?
-     */
-    public boolean equalsForTree(Distribution dist){
-        boolean result = false;
-           NamedArea thisArea = this.getArea();
-           NamedArea distArea = dist.getArea();
-
-           //avoid NPE
-           if (thisArea == null || distArea == null || thisArea.getLabel() == null) {
-           return false;
-        }
-        //same area level and area label returns true
-        if (thisArea.getLabel().compareTo(distArea.getLabel()) == 0 ){
-            NamedAreaLevel thisLevel = thisArea.getLevel();
-            NamedAreaLevel distLevel = distArea.getLevel();
-
-            if ((thisLevel == null) && (distLevel == null)){
-                result = true;
-            }else{
-                if ((thisLevel == null) || (thisLevel.getLabel() == null) || (distLevel == null)){
-                    return false;
-                }
-                if (thisLevel.getLabel().compareTo(distLevel.getLabel()) == 0){
-                    result = true;
-                }
-            }
-        }
-       return result;
-    }
-
-    /**
      * Special function for building the sorted distribution tree. The function returns true
      * if the sources of the two different objects are different
      * @param dist
@@ -238,7 +201,7 @@ public class Distribution extends DescriptionElementBase implements Cloneable {
     public String toString(){
         String result = "null";
         if (this.area != null){
-            result = area.getLabel().toString();
+            result = area.getTitleCache();
         }
         return result;
     }

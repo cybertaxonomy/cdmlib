@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
@@ -427,7 +428,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID delete(User persistentObject) {
+    public UUID delete(User persistentObject) throws ReferencedObjectUndeletableException {
         return super.delete(persistentObject);
     }
 

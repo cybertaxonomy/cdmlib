@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 /**
- * an data access interface that all data access classes implement
+ * An data access interface that all data access classes implement
  * @author m.doering
  * @version 1.0
  * @created 02-Nov-2007 19:36:10

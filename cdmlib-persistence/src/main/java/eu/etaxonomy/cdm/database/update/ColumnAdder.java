@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.database.update;
 
+import java.sql.Types;
+
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
@@ -83,7 +85,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		try {
 			String updateQuery = getUpdateQueryString(tableName, datasource, monitor);
@@ -96,7 +98,7 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 				datasource.executeUpdate(updateQuery);
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable);
+				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType);
 			}
 			
 			return result;
@@ -107,6 +109,14 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		}
 	}
 
+	/**
+	 * Returns the update query string. tableName must already be cased correctly. See {@link CaseType}. 
+	 * @param tableName correctly cased table name
+	 * @param datasource data source
+	 * @param monitor monitor
+	 * @return the query string 
+	 * @throws DatabaseTypeNotSupportedException
+	 */
 	public String getUpdateQueryString(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) throws DatabaseTypeNotSupportedException {
 		String updateQuery;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
@@ -138,8 +148,12 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		String result = columnType;
 		DatabaseTypeEnum dbType = datasource.getDatabaseType();
 		//nvarchar
-		if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){
+		if (dbType.equals(DatabaseTypeEnum.PostgreSQL)){  //TODO use PostgeSQL82 Dialect infos
 			result = result.replace("nvarchar", "varchar");
+			result = result.replace("double", "float8");
+			result = result.replace("bit", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.BIT));
+			result = result.replace("datetime", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TIMESTAMP));
+			result = result.replace("tinyint", DatabaseTypeEnum.PostgreSQL.getHibernateDialect().getTypeName(Types.TINYINT));
 		}
 		//CLOB
 		if (columnType.equalsIgnoreCase("clob")){

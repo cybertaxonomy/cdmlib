@@ -16,13 +16,9 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
 public interface IVocabularyService extends IIdentifiableEntityService<TermVocabulary> {
-
-    //TODO candidate for harmonization: rename to load(VocabularyEnum vocabularyType)
-	public TermVocabulary getVocabulary(VocabularyEnum vocabularyType);
 
     /**
      * Returns term vocabularies that contain terms of a certain class e.g. Feature, Modifier, State.
