@@ -167,7 +167,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         pathToRoot.add(thisNode);
 
         TaxonNode parentNode = thisNode.getParent();
-        while(parentNode != null){
+        while(!parentNode.isTopmostNode()){
             TaxonNode parent = parentNode;
             Rank parentNodeRank = parent.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank

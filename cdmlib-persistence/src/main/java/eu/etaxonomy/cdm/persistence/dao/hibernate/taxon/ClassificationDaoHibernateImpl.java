@@ -11,9 +11,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -94,14 +92,14 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         if(rank == null){
             String hql = "SELECT " + selectWhat + " FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
-                " WHERE tn.parent = null " +
+                " WHERE tn.parent.parent = null " +
                 whereClassification;
             query = getSession().createQuery(hql);
         } else {
             String hql = "SELECT " + selectWhat + " FROM TaxonNode tn LEFT JOIN tn.childNodes as tnc" +
                 " WHERE " +
                 " (tn.taxon.name.rank = :rank" +
-                "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent = null)" +
+                "   OR (tn.taxon.name.rank.orderIndex > :rankOrderIndex AND tn.parent.parent = null)" +
                 "   OR (tn.taxon.name.rank.orderIndex < :rankOrderIndex AND tnc.taxon.name.rank.orderIndex > :rankOrderIndex)" +
                 " )" +
                 whereClassification;
@@ -123,16 +121,16 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         List<TaxonNode> nodes = persistentObject.getChildNodes();
         List<TaxonNode> nodesTmp = new ArrayList<TaxonNode>(nodes);
 //        Iterator<TaxonNode> nodesIterator = nodes.iterator();
-        
-        
+
+
         for(TaxonNode node : nodesTmp){
-       
-        	persistentObject.deleteChildNode(node, true);
+
+            persistentObject.deleteChildNode(node, true);
             taxonNodeDao.delete(node, true);
-            
-           
+
+
         }
-        
+
         TaxonNode rootNode = persistentObject.getRootNode();
         persistentObject.removeRootNode();
         taxonNodeDao.delete(rootNode);
