@@ -168,13 +168,26 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         pathToRoot.add(thisNode);
 
         while(!thisNode.isTopmostNode()){
-            thisNode = thisNode.getParent();
-            Rank parentNodeRank = thisNode.getTaxon().getName().getRank();
+            TaxonNode parentNode = thisNode.getParent();
+
+            if(parentNode == null){
+                throw new NullPointerException("taxonNode " + thisNode + " must have a parent since it is not top most");
+            }
+            if(parentNode.getTaxon() == null){
+                throw new NullPointerException("The taxon associated with taxonNode " + parentNode + " is NULL");
+            }
+            if(parentNode.getTaxon().getName() == null){
+                throw new NullPointerException("The name of the taxon associated with taxonNode " + parentNode + " is NULL");
+            }
+
+            Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
-            pathToRoot.add(thisNode);
+
+            pathToRoot.add(parentNode);
+            thisNode = parentNode;
         }
 
         // initialize and invert order of nodes in list
