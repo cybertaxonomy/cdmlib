@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.common;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -16,6 +17,7 @@ import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -50,6 +52,9 @@ public interface ICdmGenericDao {
 	 * @return
 	 */
 	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase);
+	
+	public PersistentCollection initializeCollection(PersistentCollection col);
+		
 	
 	/**
 	 * Returns ...

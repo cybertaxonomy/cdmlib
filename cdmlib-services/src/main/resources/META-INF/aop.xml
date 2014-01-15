@@ -3,13 +3,14 @@
 <aspectj>
   	<weaver options="-verbose -showWeaveInfo">
     	<include within="org.hibernate.proxy.*" />
-    	<!--include within="org.hibernate.proxy.pojo.javassist.JavassistLazyInitializer.*"/-->
-    	<!--<include within="eu.etaxonomy.cdm.model.taxon.*" />-->
+    	<include within="org.hibernate.collection.internal.*" />
     	<include within="eu.etaxonomy.cdm.api.lazyloading.*" />
   	</weaver>
     <aspects>
         <!-- use only this aspect for weaving -->
         <aspect name="eu.etaxonomy.cdm.api.lazyloading.CdmLazyLoader" />
+
     </aspects>
+    
 </aspectj>
              

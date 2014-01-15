@@ -16,6 +16,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.hibernate.Session;
+import org.hibernate.collection.spi.PersistentCollection;
 
 import eu.etaxonomy.cdm.database.DatabaseSchemaMismatchException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -118,5 +119,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	public CdmBase find(Class<? extends CdmBase> clazz, int id);
 
 	public List getHqlResult(String hqlQuery);
+	
+	public PersistentCollection initializeCollection(PersistentCollection col);
 
 }

@@ -2188,6 +2188,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImp
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTTT.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/LTWLazyLoadingTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceTest.java -text
@@ -2217,7 +2218,6 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestAgentService.ja
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestC3P0Configuration.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestConversationEnabled.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestDatabase.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLTWLazyLoading.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestLocationServiceImpl.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
@@ -2246,6 +2246,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImp
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest-indexing.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testUpdateTitleCache-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/LTWLazyLoadingTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/NameServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/OregonScientificDS6639-DSC_0307-small.jpg -text
@@ -2274,7 +2275,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-securityT
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContext-test.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/applicationContextSecurity.unused.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/ConcurrentSessionTest.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/test/function/LTWLazyLoadingTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/validation/ValidationTest.xml -text
 cdmlib-services/src/test/resources/log4j.properties -text
 cdmlib-services/src/test/resources/override.properties -text
