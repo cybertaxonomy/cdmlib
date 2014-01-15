@@ -59,8 +59,11 @@ public abstract class SchemaUpdaterStepBase<T extends SchemaUpdaterStepBase<T>> 
 	}
 	
 	protected String getBoolean(boolean value, ICdmDataSource datasource) {
+		
 		String result;
 		DatabaseTypeEnum type = datasource.getDatabaseType();
+		//TODO use
+//		type.getHibernateDialect().toBooleanValueString(bool);
 		int intValue = value == true? 1 : 0;
 		if (type.equals(DatabaseTypeEnum.MySQL)){
 			result = "b'"+intValue+"'";
