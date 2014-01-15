@@ -155,6 +155,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     /**
      * (non-Javadoc)
+     * @implements {@link IClassificationService#loadTreeBranch(TaxonNode, Rank, List)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
      * FIXME Candidate for harmonization
      * move to classification service
@@ -164,18 +165,16 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
         List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
-        pathToRoot.add(thisNode);
 
-        TaxonNode parentNode = thisNode.getParent();
-        while(!parentNode.isTopmostNode()){
-            TaxonNode parent = parentNode;
-            Rank parentNodeRank = parent.getTaxon().getName().getRank();
+        while(!thisNode.isTopmostNode()){
+            TaxonNode parentNode = thisNode.getParent();
+            Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
             pathToRoot.add(parentNode);
-            parentNode = parentNode.getParent();
+            thisNode = thisNode.getParent();
         }
 
         // initialize and invert order of nodes in list
