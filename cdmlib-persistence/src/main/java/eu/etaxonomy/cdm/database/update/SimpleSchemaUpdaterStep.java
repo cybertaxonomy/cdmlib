@@ -117,7 +117,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		query = caseType.replaceTableNames(query);
 		query = query.replaceAll("@FALSE@", getBoolean(false, datasource));
 		query = query.replaceAll("@TRUE@", getBoolean(true, datasource));
-		return null;
+		return query;
 	}
 
 	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery) {
