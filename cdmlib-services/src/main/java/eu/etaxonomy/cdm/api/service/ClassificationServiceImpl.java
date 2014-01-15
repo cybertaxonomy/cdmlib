@@ -168,14 +168,13 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         pathToRoot.add(thisNode);
 
         while(!thisNode.isTopmostNode()){
-            TaxonNode parentNode = thisNode.getParent();
-            Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
+            thisNode = thisNode.getParent();
+            Rank parentNodeRank = thisNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
-            pathToRoot.add(parentNode);
-            thisNode = thisNode.getParent();
+            pathToRoot.add(thisNode);
         }
 
         // initialize and invert order of nodes in list
