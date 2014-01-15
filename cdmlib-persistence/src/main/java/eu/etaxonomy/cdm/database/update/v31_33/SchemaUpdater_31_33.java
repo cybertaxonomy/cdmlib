@@ -164,7 +164,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				INCLUDE_AUDIT, false, null);
 		stepList.add(step);
 
-		// TODO implement sorted behaviour in model first !!
 		// update sortindex
 		stepName = "Update sort index on TaxonNode children";
 		tableName = "TaxonNode";
@@ -268,8 +267,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary,
 		// Reference, Rights, MediaRepresentationPart )
-		// #3345, TODO adapt type to <65k
-		// TODO sequence.sequence has been changed #3360
+		// #3345, TODO2 adapt type to <65k -> see #3954
+		// sequence.sequence has been changed #3360
 		changeUriType(stepList);
 
 		// Annotation.linkbackUri change name #3374
@@ -466,7 +465,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 
 		// change column type for reference type
-		// TODO test with non-Mysql
 		stepName = "Change column type for Reference.type";
 		tableName = "Reference";
 		columnName = "refType";
@@ -490,10 +488,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				!INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
 		stepList.add(stepPref);
-		// FIXME length of key >= 1000
-
-		// TODO fill CdmPreferences with default values
-
+		
 		// update RightsTerm to RightsType #1306
 		stepName = "Update RightsTerm -> RightsType";
 		String updateSql = "UPDATE @@DefinedTermBase@@ SET DTYPE = 'RightsType'  WHERE DTYPE = 'RightsTerm'";
@@ -631,7 +626,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 
 		stepName = "Remove preservation column from SpecimenOrObservationBase";
-		// to fully remove all foreign keys, maybe there is a better way todo so
+		// to fully remove all foreign keys, maybe there is a better way to do so
 		// we don't expect any preservation information to exist in any CDM
 		// database
 		tableName = "SpecimenOrObservationBase";
@@ -1376,7 +1371,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 	private void updateDescriptionSpecimenRelation(
 			List<ISchemaUpdaterStep> stepList) {
-		// TODO warn if multiple entries for 1 description exists
+		// TODO warn if multiple entries for 1 description exists -> won't do, as this is currently not expected
 		String sqlCount = " SELECT count(*) as n "
 				+ " FROM DescriptionBase_SpecimenOrObservationBase MN "
 				+ " GROUP BY MN.descriptions_id "
@@ -2400,7 +2395,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 
-		// TODO are uri and termsourceuri needed ???
+		// are uri and termsourceuri needed -> see #3955
 		stepName = "Update termsourceuri to clob for TermVocabulary";
 		tableName = "TermVocabulary";
 		columnName = "termsourceuri";
@@ -2429,7 +2424,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 
-		// TODO still needed??
+		// still needed??
 		stepName = "Update uri to clob for FeatureTree";
 		tableName = "FeatureTree";
 		columnName = "uri";
