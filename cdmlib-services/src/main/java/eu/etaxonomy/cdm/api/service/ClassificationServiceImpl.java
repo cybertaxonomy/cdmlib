@@ -165,6 +165,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
         TaxonNode thisNode = taxonNodeDao.load(taxonNode.getUuid(), propertyPaths);
         List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
+        pathToRoot.add(thisNode);
 
         while(!thisNode.isTopmostNode()){
             TaxonNode parentNode = thisNode.getParent();
