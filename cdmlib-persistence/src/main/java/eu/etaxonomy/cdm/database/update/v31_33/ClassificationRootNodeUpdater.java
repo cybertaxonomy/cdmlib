@@ -58,7 +58,8 @@ public class ClassificationRootNodeUpdater extends SchemaUpdaterStepBase<Classif
 				
 				//getMaxId in TaxonNode
 				sql = " SELECT max(id) FROM " + caseType.transformTo("TaxonNode");
-				Number maxId = ((Integer)datasource.getSingleValue(sql)) + 1;
+				Number maxId = ((Number)datasource.getSingleValue(sql));
+				maxId = maxId == null ? 1 : ((Integer)maxId + 1);
 				
 				//count children
 				sql = " SELECT count(*) as n " +
