@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -168,7 +169,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         pathToRoot.add(thisNode);
 
         while(!thisNode.isTopmostNode()){
-            TaxonNode parentNode = thisNode.getParent();
+            //TODO why do we need to deproxy here?
+            TaxonNode parentNode = CdmBase.deproxy(thisNode, TaxonNode.class).getParent();
 
             if(parentNode == null){
                 throw new NullPointerException("taxonNode " + thisNode + " must have a parent since it is not top most");
