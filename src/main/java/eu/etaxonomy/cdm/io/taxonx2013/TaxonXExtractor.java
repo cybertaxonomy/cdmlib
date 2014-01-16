@@ -768,9 +768,15 @@ public class TaxonXExtractor {
      * @param refMods
      * @return
      */
-    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference<?> refMods) {
+    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference<?> refMods, double similarityScore) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
+
+        if (similarityScore<0.58) {
+            return false;
+        }
+
+        boolean sameSource=false;
 
         String sec = refMods.getTitleCache();
         String secBest = "";
@@ -781,11 +787,19 @@ public class TaxonXExtractor {
             logger.warn("no sec - ignore");
         }
 
+        if (secBest.isEmpty()) {
+            sameSource=true;
+        }
+
         Object defaultOption=options[0];
         if(sec.equalsIgnoreCase(secBest) ||
-                taxonnamebase2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())
-                ) {
-            defaultOption=options[0];
+                taxonnamebase2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())) {
+            sameSource=true;
+            if (similarityScore>0.65) {
+                defaultOption=options[0];
+            } else {
+                defaultOption=options[1];
+            }
         } else {
             defaultOption=options[1];
         }
@@ -798,13 +812,28 @@ public class TaxonXExtractor {
                 String srcSec=src.getCitation().getTitleCache();
                 if(!srcSec.isEmpty()){
                     sourcesStr+="\n "+srcSec;
-                    if (srcSec.equalsIgnoreCase(sec)) {
-                        defaultOption=options[0];
+                    if (srcSec.equalsIgnoreCase(sec)){
+                        sameSource=true;
+                        if (similarityScore>0.64) {
+                            defaultOption=options[0];
+                        } else {
+                            defaultOption=options[1];
+                        }
                     }
                 }
             }catch(Exception e){
                 logger.warn("the source reference is maybe null, just ignore it.");
             }
+        }
+
+        if(sameSource) {
+            System.out.println("Similarity : "+similarityScore);
+        }
+        if (sameSource && similarityScore>0.9999) {
+            return true;
+        }
+        if(similarityScore<0.6) {
+            defaultOption=options[1];
         }
 
         JTextArea textArea =null;

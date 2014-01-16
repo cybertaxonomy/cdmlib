@@ -321,8 +321,17 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             proibiospheretree.setUuid(proIbioTreeUUID);
         }
         //        FeatureNode root = proibiospheretree.getRoot();
-        FeatureNode root2 = FeatureNode.NewInstance();
-        proibiospheretree.setRoot(root2);
+        FeatureNode root2 = proibiospheretree.getRoot();
+        if (root2 != null){
+            int nbChildren = root2.getChildCount()-1;
+            while (nbChildren>-1){
+                try{
+                    root2.removeChild(nbChildren);
+                }catch(Exception e){logger.warn("Can't remove child from FeatureTree "+e);}
+                nbChildren --;
+            }
+
+        }
 
         for (Feature feature:featuresMap.values()) {
             root2.addChild(FeatureNode.NewInstance(feature));
@@ -3294,46 +3303,47 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             boolean exist = false;
             for (TaxonNode p : classification.getAllNodes()){
                 try{
-                if(p.getTaxon().getTitleCache().equalsIgnoreCase(tmptaxon.getTitleCache())) {
-                    if(compareStatus(p.getTaxon(), statusType)){
-                        tmptaxon=CdmBase.deproxy(p.getTaxon(), Taxon.class);
-                        exist =true;
+                    if(p.getTaxon().getTitleCache().equalsIgnoreCase(tmptaxon.getTitleCache())) {
+                        if(compareStatus(p.getTaxon(), statusType)){
+                            tmptaxon=CdmBase.deproxy(p.getTaxon(), Taxon.class);
+                            exist =true;
+                        }
                     }
-                }
                 }catch(NullPointerException n){logger.warn(" A taxon is either null or its titlecache is null - ignore it?");}
             }
             if (!exist){
 
-                    boolean insertAsExisting =false;
-                    List<Taxon> existingTaxons = getMatchingTaxon(taxonnamebase);
-
-                    for (Taxon bestMatchingTaxon:existingTaxons){
-                        if (!existingTaxons.isEmpty() && configState.getConfig().isInteractWithUser() && !insertAsExisting) {
-                            insertAsExisting=askIfReuseBestMatchingTaxon(taxonnamebase, bestMatchingTaxon, refMods);
-                        }
-                        if(insertAsExisting) {
-                            tmptaxon=bestMatchingTaxon;
-                        }
+                boolean insertAsExisting =false;
+                List<Taxon> existingTaxons = getMatchingTaxon(taxonnamebase);
+                double similarityScore=0.0;
+                for (Taxon bestMatchingTaxon:existingTaxons){
+                    similarityScore=similarity(taxonnamebase.getTitleCache().split("sec.")[0].toLowerCase().trim(), bestMatchingTaxon.getTitleCache().split("sec.")[0].toLowerCase().trim());
+                    insertAsExisting = compareAndCheckTaxon(taxonnamebase, refMods, similarityScore, bestMatchingTaxon);
+                    if(insertAsExisting) {
+                        tmptaxon=bestMatchingTaxon;
+                        break;
                     }
-                    if (!insertAsExisting){
-                        tmptaxon.setSec(refMods);
-                        if (taxonnamebase.getRank().equals(configState.getConfig().getMaxRank())) {
-                            classification.addChildTaxon(tmptaxon, refMods, null);
-                        } else{
-                            hierarchy = new HashMap<Rank, Taxon>();
-                            System.out.println("LOOK FOR PARENT "+taxonnamebase.toString()+", "+tmptaxon.toString());
-                            lookForParentNode(taxonnamebase,tmptaxon, refMods,this);
-                            System.out.println("HIERARCHY "+hierarchy);
-                            Taxon parent = buildHierarchy();
-                            if(!taxonExistsInClassification(parent,tmptaxon)){
-                                classification.addParentChild(parent, tmptaxon, refMods, null);
-                                importer.getClassificationService().saveOrUpdate(classification);
-                            }
-                            //                        Set<TaxonNode> nodeList = classification.getAllNodes();
-                            //                        for(TaxonNode tn:nodeList) {
-                            //                            System.out.println(tn.getTaxon());
-                            //                        }
+                }
+                if (!insertAsExisting){
+                    tmptaxon.setSec(refMods);
+                    if (taxonnamebase.getRank().equals(configState.getConfig().getMaxRank())) {
+                        System.out.println("****************************"+tmptaxon);
+                        classification.addChildTaxon(tmptaxon, refMods, null);
+                    } else{
+                        hierarchy = new HashMap<Rank, Taxon>();
+                        System.out.println("LOOK FOR PARENT "+taxonnamebase.toString()+", "+tmptaxon.toString());
+                        lookForParentNode(taxonnamebase,tmptaxon, refMods,this);
+                        System.out.println("HIERARCHY "+hierarchy);
+                        Taxon parent = buildHierarchy();
+                        if(!taxonExistsInClassification(parent,tmptaxon)){
+                            classification.addParentChild(parent, tmptaxon, refMods, null);
+                            importer.getClassificationService().saveOrUpdate(classification);
                         }
+                        //                        Set<TaxonNode> nodeList = classification.getAllNodes();
+                        //                        for(TaxonNode tn:nodeList) {
+                        //                            System.out.println(tn.getTaxon());
+                        //                        }
+                    }
                 }
                 importer.getClassificationService().saveOrUpdate(classification);
                 //            refreshTransaction();
@@ -3350,6 +3360,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             Taxon higherTaxon = null;
             if(hierarchy.containsKey(configState.getConfig().getMaxRank())){
                 if(!taxonExistsInClassification(higherTaxon, hierarchy.get(configState.getConfig().getMaxRank()))) {
+                    System.out.println("@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"+hierarchy.get(configState.getConfig().getMaxRank()));
                     classification.addChildTaxon(hierarchy.get(configState.getConfig().getMaxRank()), refMods, null);
                 }
                 higherTaxon = hierarchy.get(configState.getConfig().getMaxRank());
@@ -3607,11 +3618,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     }
 
                     if (rank.equals(Rank.VARIETY())) {
-                        tmp = buildVariety(fullname, tnb);
+                        tmp = buildVariety(fullname, partialname, tnb);
                     }
 
                     if (rank.equals(Rank.FORM())) {
-                        tmp = buildForm(fullname, tnb);
+                        tmp = buildForm(fullname, partialname, tnb);
                     }
 
                     importer.getClassificationService().saveOrUpdate(classification);
@@ -3649,6 +3660,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     higherRank=Rank.FAMILY();
                     higherTaxa=family;
                 } else {
+                    System.out.println("ADDCHILDTAXON SUBFAMILY "+tmp);
                     classification.addChildTaxon(tmp, null, null);
                 }
             }
@@ -3666,6 +3678,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 tmp = Taxon.NewInstance(tnb, sourceUrlRef);
                 tmp.setSec(refMods);
                 sourceHandler.addSource(refMods, tmp);
+                System.out.println("ADDCHILDTAXON FAMILY "+tmp);
                 classification.addChildTaxon(tmp, null, null);
             }
             return tmp;
@@ -3675,7 +3688,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildForm(String fullname, NonViralName<?> tnb) {
+        private Taxon buildForm(String fullname, String partialname, NonViralName<?> tnb) {
             Taxon tmp;
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
@@ -3688,6 +3701,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if(subspeciesName != null) {
                 tnb.setInfraSpecificEpithet(subspeciesName.getInfraSpecificEpithet());
+            }
+            if(partialname!= null) {
+                tnb.setInfraSpecificEpithet(partialname);
             }
             tnb.generateTitle();
             //TODO how to save form??
@@ -3708,6 +3724,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         higherTaxa=species;
                     }
                     else{
+                        System.out.println("ADDCHILDTAXON FORM "+tmp);
                         classification.addChildTaxon(tmp, null, null);
                     }
                 }
@@ -3719,7 +3736,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
          * @param tnb
          * @return
          */
-        private Taxon buildVariety(String fullname, NonViralName<?> tnb) {
+        private Taxon buildVariety(String fullname, String partialname, NonViralName<?> tnb) {
             Taxon tmp;
             if (genusName !=null) {
                 tnb.setGenusOrUninomial(genusName.getGenusOrUninomial());
@@ -3732,6 +3749,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             }
             if(subspeciesName != null) {
                 tnb.setInfraSpecificEpithet(subspeciesName.getSpecificEpithet());
+            }
+            if(partialname != null) {
+                tnb.setInfraSpecificEpithet(partialname);
             }
             //TODO how to save variety?
             tnb.setTitleCache(fullname, true);
@@ -3751,6 +3771,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         higherTaxa=species;
                     }
                     else{
+                        System.out.println("ADDCHILDTAXON VARIETY "+tmp);
                         classification.addChildTaxon(tmp, null, null);
                     }
                 }
@@ -3789,6 +3810,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     higherTaxa=species;
                 }
                 else{
+                    System.out.println("ADDCHILDTAXON SUBSPECIES "+tmp);
                     classification.addChildTaxon(tmp, null, null);
                 }
             }
@@ -3825,6 +3847,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         higherTaxa=genus;
                     }
                     else{
+                        System.out.println("ADDCHILDTAXON SPECIES "+tmp);
                         classification.addChildTaxon(tmp, null, null);
                     }
                 }
@@ -3853,6 +3876,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     higherRank=Rank.GENUS();
                     higherTaxa=genus;
                 } else{
+                    System.out.println("ADDCHILDTAXON SUBGENUS "+tmp);
                     classification.addChildTaxon(tmp, null, null);
                 }
             }
@@ -3895,6 +3919,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                                 higherTaxa=family;
                             }
                             else{
+                                System.out.println("ADDCHILDTAXON GENUS "+tmp);
                                 classification.addChildTaxon(tmp, null, null);
                             }
                     }
@@ -3920,6 +3945,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     higherRank=Rank.TRIBE();
                     higherTaxa=tribe;
                 } else{
+                    System.out.println("ADDCHILDTAXON SUBTRIBE "+tmp);
                     classification.addChildTaxon(tmp, null, null);
                 }
             }
@@ -3948,6 +3974,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                         higherTaxa=family;
                     }
                     else{
+                        System.out.println("ADDCHILDTAXON TRIBE "+tmp);
                         classification.addChildTaxon(tmp, null, null);
                     }
                 }
@@ -4297,10 +4324,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
         boolean insertAsExisting =false;
         List<Taxon> existingTaxons = getMatchingTaxon(tnb);
-
+        double similarityScore=0.0;
         for (Taxon bestMatchingTaxon:existingTaxons){
             if (!existingTaxons.isEmpty() && configState.getConfig().isInteractWithUser() && !insertAsExisting) {
-                insertAsExisting=askIfReuseBestMatchingTaxon(tnb, bestMatchingTaxon, refMods);
+                similarityScore=similarity(tnb.getTitleCache().split("sec.")[0].toLowerCase().trim(), bestMatchingTaxon.getTitleCache().split("sec.")[0].toLowerCase().trim());
+                insertAsExisting = compareAndCheckTaxon(tnb, refMods, similarityScore, bestMatchingTaxon);
             }
             if(insertAsExisting) {
                 System.out.println("KEEP "+bestMatchingTaxon.toString());
@@ -4313,8 +4341,32 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
     /**
+     * @param tnb
+     * @param refMods
+     * @param similarityScore
+     * @param bestMatchingTaxon
      * @return
      */
+    private boolean compareAndCheckTaxon(NonViralName<?> tnb, Reference refMods, double similarityScore,
+            Taxon bestMatchingTaxon) {
+        boolean insertAsExisting;
+        if (tnb.getTitleCache().split("sec.")[0].equalsIgnoreCase("Chenopodium") && bestMatchingTaxon.getTitleCache().split("sec.")[0].indexOf("Chenopodium album")>-1) {
+            insertAsExisting=false;
+        } else{
+            if (tnb.getTitleCache().split("sec.")[0].equalsIgnoreCase("Chenopodium") &&
+                    bestMatchingTaxon.getTitleCache().split("sec.")[0].indexOf("Chenopodium L.")>-1) {
+                insertAsExisting=true;
+            } else {
+                insertAsExisting=askIfReuseBestMatchingTaxon(tnb, bestMatchingTaxon, refMods, similarityScore);
+            }
+        }
+        return insertAsExisting;
+    }
+
+    /**
+     * @return
+     */
+    @SuppressWarnings("rawtypes")
     private List<Taxon> getMatchingTaxon(TaxonNameBase tnb) {
         Pager<TaxonBase> pager=importer.getTaxonService().findByTitle(TaxonBase.class, tnb.getTitleCache().split("sec.")[0], MatchMode.BEGINNING, null, null, null, null, null);
         List<TaxonBase>records = pager.getRecords();
@@ -4356,8 +4408,44 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 lengthOk=true;
             }
         }
+
         //        System.out.println(lengthOk+": compare "+f+" ("+f.length()+") and "+o+" ("+o.length()+")");
         return lengthOk;
+    }
+
+    private double similarity(String s1, String s2) {
+        if (s1.length() < s2.length()) { // s1 should always be bigger
+            String swap = s1; s1 = s2; s2 = swap;
+        }
+        int bigLen = s1.length();
+        if (bigLen == 0) { return 1.0; /* both strings are zero length */ }
+        return (bigLen - computeEditDistance(s1, s2)) / (double) bigLen;
+    }
+
+    private int computeEditDistance(String s1, String s2) {
+        int[] costs = new int[s2.length() + 1];
+        for (int i = 0; i <= s1.length(); i++) {
+            int lastValue = i;
+            for (int j = 0; j <= s2.length(); j++) {
+                if (i == 0) {
+                    costs[j] = j;
+                } else {
+                    if (j > 0) {
+                        int newValue = costs[j - 1];
+                        if (s1.charAt(i - 1) != s2.charAt(j - 1)) {
+                            newValue = Math.min(Math.min(newValue, lastValue),
+                                    costs[j]) + 1;
+                        }
+                        costs[j - 1] = lastValue;
+                        lastValue = newValue;
+                    }
+                }
+            }
+            if (i > 0) {
+                costs[s2.length()] = lastValue;
+            }
+        }
+        return costs[s2.length()];
     }
 
     Map<Rank, Taxon> hierarchy = new HashMap<Rank, Taxon>();
@@ -4368,303 +4456,518 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     public void lookForParentNode(NonViralName<?> taxonnamebase, Taxon tax, Reference<?> ref, MyName myName) {
         System.out.println("LOOK FOR PARENT NODE "+taxonnamebase.toString()+"; "+tax.toString()+"; "+taxonnamebase.getRank());
         INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
+        if (taxonnamebase.getRank().equals(Rank.FORM())){
+            handleFormHierarchy(ref, myName, parser);
+        }
+        if (taxonnamebase.getRank().equals(Rank.VARIETY())){
+            handleVarietyHierarchy(ref, myName, parser);
+        }
+        if (taxonnamebase.getRank().equals(Rank.SUBSPECIES())){
+            handleSubSpeciesHierarchy(ref, myName, parser);
+        }
         if (taxonnamebase.getRank().equals(Rank.SPECIES())){
-            String parentStr = myName.getSubgenusStr();
-            Rank r = Rank.SUBGENUS();
-
-            if(parentStr==null){
-                parentStr = myName.getGenusStr();
-                r = Rank.GENUS();
-            }
-
-            if(parentStr==null){
-                parentStr = myName.getSubtribeStr();
-                r = Rank.SUBTRIBE();
-            }
-            if (parentStr == null){
-                parentStr = myName.getTribeStr();
-                r = Rank.TRIBE();
-            }
-            if (parentStr == null){
-                parentStr = myName.getSubfamilyStr();
-                r = Rank.SUBFAMILY();
-            }
-            if (parentStr == null){
-                parentStr = myName.getFamilyStr();
-                r = Rank.FAMILY();
-            }
-            if(parentStr!=null){
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
-                Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-
-                boolean parentDoesNotExists = true;
-                for (TaxonNode p : classification.getAllNodes()){
-                    if(p.getTaxon().getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(parent.getTitleCache().split("sec.")[0].trim())) {
-                        //                        System.out.println(p.getTaxon().getUuid());
-                        //                        System.out.println(parent.getUuid());
-                        parentDoesNotExists = false;
-                        parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
-                        break;
-                    }
-                }
-                if(parentDoesNotExists) {
-                    Taxon tmp = findMatchingTaxon(parentNameName,ref);
-//                    System.out.println("FOUND PARENT "+tmp.toString()+" for "+parentNameName.toString());
-                    if(tmp ==null)
-                    {
-                        parent=Taxon.NewInstance(parentNameName, ref);
-                        importer.getTaxonService().save(parent);
-                        parent = CdmBase.deproxy(parent, Taxon.class);
-                    } else {
-                        parent=tmp;
-                    }
-                    lookForParentNode(parentNameName, parent, ref,myName);
-
-                }
-                System.out.println("PUT IN HIERARCHY "+r+", "+parent);
-                hierarchy.put(r,parent);
-            }
+            handleSpeciesHierarchy(ref, myName, parser);
         }
         if (taxonnamebase.getRank().equals(Rank.SUBGENUS())){
-            String parentStr = myName.getGenusStr();
-            Rank r = Rank.GENUS();
-
-            if(parentStr==null){
-                parentStr = myName.getSubtribeStr();
-                r = Rank.SUBTRIBE();
-            }
-            if (parentStr == null){
-                parentStr = myName.getTribeStr();
-                r = Rank.TRIBE();
-            }
-            if (parentStr == null){
-                parentStr = myName.getSubfamilyStr();
-                r = Rank.SUBFAMILY();
-            }
-            if (parentStr == null){
-                parentStr = myName.getFamilyStr();
-                r = Rank.FAMILY();
-            }
-            if(parentStr!=null){
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
-                Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-
-                boolean parentDoesNotExists = true;
-                for (TaxonNode p : classification.getAllNodes()){
-                    if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
-                        //                        System.out.println(p.getTaxon().getUuid());
-                        //                        System.out.println(parent.getUuid());
-                        parentDoesNotExists = false;
-                        parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
-                        break;
-                    }
-                }
-                //                if(parentDoesNotExists) {
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-                //                    lookForParentNode(parentNameName, parent, ref,myName);
-                //                }
-                if(parentDoesNotExists) {
-                    Taxon tmp = findMatchingTaxon(parentNameName,ref);
-                    if(tmp ==null)
-                    {
-                        parent=Taxon.NewInstance(parentNameName, ref);
-                        importer.getTaxonService().save(parent);
-                        parent = CdmBase.deproxy(parent, Taxon.class);
-                    } else {
-                        parent=tmp;
-                    }
-                    lookForParentNode(parentNameName, parent, ref,myName);
-
-                }
-                hierarchy.put(r,parent);
-            }
+            handleSubgenusHierarchy(ref, myName, parser);
         }
 
         if (taxonnamebase.getRank().equals(Rank.GENUS())){
-            String parentStr = myName.getSubtribeStr();
-            Rank r = Rank.SUBTRIBE();
-            if (parentStr == null){
-                parentStr = myName.getTribeStr();
-                r = Rank.TRIBE();
-            }
-            if (parentStr == null){
-                parentStr = myName.getSubfamilyStr();
-                r = Rank.SUBFAMILY();
-            }
-            if (parentStr == null){
-                parentStr = myName.getFamilyStr();
-                r = Rank.FAMILY();
-            }
-            if(parentStr!=null){
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
-                Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-
-                boolean parentDoesNotExists = true;
-                for (TaxonNode p : classification.getAllNodes()){
-                    if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
-                        //                        System.out.println(p.getTaxon().getUuid());
-                        //                        System.out.println(parent.getUuid());
-                        parentDoesNotExists = false;
-                        parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
-                        break;
-                    }
-                }
-                //                if(parentDoesNotExists) {
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-                //                    lookForParentNode(parentNameName, parent, ref,myName);
-                //                }
-                if(parentDoesNotExists) {
-                    Taxon tmp = findMatchingTaxon(parentNameName,ref);
-                    if(tmp ==null)
-                    {
-                        parent=Taxon.NewInstance(parentNameName, ref);
-                        importer.getTaxonService().save(parent);
-                        parent = CdmBase.deproxy(parent, Taxon.class);
-                    } else {
-                        parent=tmp;
-                    }
-                    lookForParentNode(parentNameName, parent, ref,myName);
-
-                }
-                hierarchy.put(r,parent);
-            }
+            handleGenusHierarchy(ref, myName, parser);
         }
         if (taxonnamebase.getRank().equals(Rank.SUBTRIBE())){
-            String parentStr = myName.getTribeStr();
-            Rank r = Rank.TRIBE();
-            if (parentStr == null){
-                parentStr = myName.getSubfamilyStr();
-                r = Rank.SUBFAMILY();
-            }
-            if (parentStr == null){
-                parentStr = myName.getFamilyStr();
-                r = Rank.FAMILY();
-            }
-            if(parentStr!=null){
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
-                Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-
-                boolean parentDoesNotExists = true;
-                for (TaxonNode p : classification.getAllNodes()){
-                    if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
-                        parentDoesNotExists = false;
-                        parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
-
-                        break;
-                    }
-                }
-                //                if(parentDoesNotExists) {
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-                //                    lookForParentNode(parentNameName, parent, ref,myName);
-                //                }
-                if(parentDoesNotExists) {
-                    Taxon tmp = findMatchingTaxon(parentNameName,ref);
-                    if(tmp ==null)
-                    {
-                        parent=Taxon.NewInstance(parentNameName, ref);
-                        importer.getTaxonService().save(parent);
-                        parent = CdmBase.deproxy(parent, Taxon.class);
-                    } else {
-                        parent=tmp;
-                    }
-                    lookForParentNode(parentNameName, parent, ref,myName);
-
-                }
-                hierarchy.put(r,parent);
-            }
+            handleSubtribeHierarchy(ref, myName, parser);
         }
         if (taxonnamebase.getRank().equals(Rank.TRIBE())){
-            String parentStr = myName.getSubfamilyStr();
-            Rank r = Rank.SUBFAMILY();
-            if (parentStr == null){
-                parentStr = myName.getFamilyStr();
-                r = Rank.FAMILY();
-            }
-            if(parentStr!=null){
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
-                Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-
-                boolean parentDoesNotExists = true;
-                for (TaxonNode p : classification.getAllNodes()){
-                    if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
-                        parentDoesNotExists = false;
-                        parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
-                        break;
-                    }
-                }
-                //                if(parentDoesNotExists) {
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-                //                    lookForParentNode(parentNameName, parent, ref,myName);
-                //                }
-                if(parentDoesNotExists) {
-                    Taxon tmp = findMatchingTaxon(parentNameName,ref);
-                    if(tmp ==null)
-                    {
-                        parent=Taxon.NewInstance(parentNameName, ref);
-                        importer.getTaxonService().save(parent);
-                        parent = CdmBase.deproxy(parent, Taxon.class);
-                    } else {
-                        parent=tmp;
-                    }
-                    lookForParentNode(parentNameName, parent, ref,myName);
-
-                }
-                hierarchy.put(r,parent);
-            }
+            handleTribeHierarchy(ref, myName, parser);
         }
 
         if (taxonnamebase.getRank().equals(Rank.SUBFAMILY())){
-            String parentStr = myName.getFamilyStr();
-            Rank r = Rank.FAMILY();
-            if(parentStr!=null){
-                NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
-                Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
+            handleSubfamilyHierarchy(ref, myName, parser);
+        }
+    }
 
-                boolean parentDoesNotExists = true;
-                for (TaxonNode p : classification.getAllNodes()){
-                    if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
-                        parentDoesNotExists = false;
-                        parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
-                        break;
-                    }
-                }
-                //                if(parentDoesNotExists) {
-                //                    importer.getTaxonService().save(parent);
-                //                    parent = CdmBase.deproxy(parent, Taxon.class);
-                //                    lookForParentNode(parentNameName, parent, ref,myName);
-                //                }
-                if(parentDoesNotExists) {
-                    Taxon tmp = findMatchingTaxon(parentNameName,ref);
-                    if(tmp ==null)
-                    {
-                        parent=Taxon.NewInstance(parentNameName, ref);
-                        importer.getTaxonService().save(parent);
-                        parent = CdmBase.deproxy(parent, Taxon.class);
-                    } else {
-                        parent=tmp;
-                    }
-                    lookForParentNode(parentNameName, parent, ref,myName);
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleSubfamilyHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getFamilyStr();
+        Rank r = Rank.FAMILY();
+        if(parentStr!=null){
+            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
 
+            boolean parentDoesNotExists = true;
+            for (TaxonNode p : classification.getAllNodes()){
+                if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
+                    parentDoesNotExists = false;
+                    parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
+                    break;
                 }
-                hierarchy.put(r,parent);
+            }
+            //                if(parentDoesNotExists) {
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+            //                    lookForParentNode(parentNameName, parent, ref,myName);
+            //                }
+            if(parentDoesNotExists) {
+                Taxon tmp = findMatchingTaxon(parentNameName,ref);
+                if(tmp ==null)
+                {
+                    parent=Taxon.NewInstance(parentNameName, ref);
+                    importer.getTaxonService().save(parent);
+                    parent = CdmBase.deproxy(parent, Taxon.class);
+                } else {
+                    parent=tmp;
+                }
+                lookForParentNode(parentNameName, parent, ref,myName);
+
+            }
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleTribeHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getSubfamilyStr();
+        Rank r = Rank.SUBFAMILY();
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+
+            boolean parentDoesNotExists = true;
+            for (TaxonNode p : classification.getAllNodes()){
+                if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
+                    parentDoesNotExists = false;
+                    parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
+                    break;
+                }
+            }
+            //                if(parentDoesNotExists) {
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+            //                    lookForParentNode(parentNameName, parent, ref,myName);
+            //                }
+            if(parentDoesNotExists) {
+                Taxon tmp = findMatchingTaxon(parentNameName,ref);
+                if(tmp ==null)
+                {
+                    parent=Taxon.NewInstance(parentNameName, ref);
+                    importer.getTaxonService().save(parent);
+                    parent = CdmBase.deproxy(parent, Taxon.class);
+                } else {
+                    parent=tmp;
+                }
+                lookForParentNode(parentNameName, parent, ref,myName);
+
+            }
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleSubtribeHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getTribeStr();
+        Rank r = Rank.TRIBE();
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+
+            boolean parentDoesNotExists = true;
+            for (TaxonNode p : classification.getAllNodes()){
+                if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
+                    parentDoesNotExists = false;
+                    parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
+
+                    break;
+                }
+            }
+            //                if(parentDoesNotExists) {
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+            //                    lookForParentNode(parentNameName, parent, ref,myName);
+            //                }
+            if(parentDoesNotExists) {
+                Taxon tmp = findMatchingTaxon(parentNameName,ref);
+                if(tmp ==null)
+                {
+                    parent=Taxon.NewInstance(parentNameName, ref);
+                    importer.getTaxonService().save(parent);
+                    parent = CdmBase.deproxy(parent, Taxon.class);
+                } else {
+                    parent=tmp;
+                }
+                lookForParentNode(parentNameName, parent, ref,myName);
+
+            }
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleGenusHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getSubtribeStr();
+        Rank r = Rank.SUBTRIBE();
+        if (parentStr == null){
+            parentStr = myName.getTribeStr();
+            r = Rank.TRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+
+            boolean parentDoesNotExists = true;
+            for (TaxonNode p : classification.getAllNodes()){
+                if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
+                    //                        System.out.println(p.getTaxon().getUuid());
+                    //                        System.out.println(parent.getUuid());
+                    parentDoesNotExists = false;
+                    parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
+                    break;
+                }
+            }
+            //                if(parentDoesNotExists) {
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+            //                    lookForParentNode(parentNameName, parent, ref,myName);
+            //                }
+            if(parentDoesNotExists) {
+                Taxon tmp = findMatchingTaxon(parentNameName,ref);
+                if(tmp ==null)
+                {
+                    parent=Taxon.NewInstance(parentNameName, ref);
+                    importer.getTaxonService().save(parent);
+                    parent = CdmBase.deproxy(parent, Taxon.class);
+                } else {
+                    parent=tmp;
+                }
+                lookForParentNode(parentNameName, parent, ref,myName);
+
+            }
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleSubgenusHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getGenusStr();
+        Rank r = Rank.GENUS();
+
+        if(parentStr==null){
+            parentStr = myName.getSubtribeStr();
+            r = Rank.SUBTRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getTribeStr();
+            r = Rank.TRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+            Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+
+            boolean parentDoesNotExists = true;
+            for (TaxonNode p : classification.getAllNodes()){
+                if(p.getTaxon().getTitleCache().equalsIgnoreCase(parent.getTitleCache())) {
+                    //                        System.out.println(p.getTaxon().getUuid());
+                    //                        System.out.println(parent.getUuid());
+                    parentDoesNotExists = false;
+                    parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
+                    break;
+                }
+            }
+            //                if(parentDoesNotExists) {
+            //                    importer.getTaxonService().save(parent);
+            //                    parent = CdmBase.deproxy(parent, Taxon.class);
+            //                    lookForParentNode(parentNameName, parent, ref,myName);
+            //                }
+            if(parentDoesNotExists) {
+                Taxon tmp = findMatchingTaxon(parentNameName,ref);
+                if(tmp ==null)
+                {
+                    parent=Taxon.NewInstance(parentNameName, ref);
+                    importer.getTaxonService().save(parent);
+                    parent = CdmBase.deproxy(parent, Taxon.class);
+                } else {
+                    parent=tmp;
+                }
+                lookForParentNode(parentNameName, parent, ref,myName);
+
+            }
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleSpeciesHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getSubgenusStr();
+        Rank r = Rank.SUBGENUS();
+
+        if(parentStr==null){
+            parentStr = myName.getGenusStr();
+            r = Rank.GENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getSubtribeStr();
+            r = Rank.SUBTRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getTribeStr();
+            r = Rank.TRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            Taxon parent = handleParentName(ref, myName, parser, parentStr, r);
+            System.out.println("PUT IN HIERARCHY "+r+", "+parent);
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleSubSpeciesHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getSpeciesStr();
+        Rank r = Rank.SPECIES();
+
+
+        if(parentStr==null){
+            parentStr = myName.getSubgenusStr();
+            r = Rank.SUBGENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getGenusStr();
+            r = Rank.GENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getSubtribeStr();
+            r = Rank.SUBTRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getTribeStr();
+            r = Rank.TRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            Taxon parent = handleParentName(ref, myName, parser, parentStr, r);
+            System.out.println("PUT IN HIERARCHY "+r+", "+parent);
+            hierarchy.put(r,parent);
+        }
+    }
+
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleFormHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getSubspeciesStr();
+        Rank r = Rank.SUBSPECIES();
+
+
+        if(parentStr==null){
+            parentStr = myName.getSpeciesStr();
+            r = Rank.SPECIES();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getSubgenusStr();
+            r = Rank.SUBGENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getGenusStr();
+            r = Rank.GENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getSubtribeStr();
+            r = Rank.SUBTRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getTribeStr();
+            r = Rank.TRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            Taxon parent = handleParentName(ref, myName, parser, parentStr, r);
+            System.out.println("PUT IN HIERARCHY "+r+", "+parent);
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     */
+    private void handleVarietyHierarchy(Reference<?> ref, MyName myName, INonViralNameParser parser) {
+        String parentStr = myName.getSubspeciesStr();
+        Rank r = Rank.SUBSPECIES();
+
+        if(parentStr==null){
+            parentStr = myName.getSpeciesStr();
+            r = Rank.SPECIES();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getSubgenusStr();
+            r = Rank.SUBGENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getGenusStr();
+            r = Rank.GENUS();
+        }
+
+        if(parentStr==null){
+            parentStr = myName.getSubtribeStr();
+            r = Rank.SUBTRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getTribeStr();
+            r = Rank.TRIBE();
+        }
+        if (parentStr == null){
+            parentStr = myName.getSubfamilyStr();
+            r = Rank.SUBFAMILY();
+        }
+        if (parentStr == null){
+            parentStr = myName.getFamilyStr();
+            r = Rank.FAMILY();
+        }
+        if(parentStr!=null){
+            Taxon parent = handleParentName(ref, myName, parser, parentStr, r);
+            System.out.println("PUT IN HIERARCHY "+r+", "+parent);
+            hierarchy.put(r,parent);
+        }
+    }
+
+    /**
+     * @param ref
+     * @param myName
+     * @param parser
+     * @param parentStr
+     * @param r
+     * @return
+     */
+    private Taxon handleParentName(Reference<?> ref, MyName myName, INonViralNameParser parser, String parentStr, Rank r) {
+        NonViralName<?> parentNameName =  (NonViralName<?>) parser.parseFullName(parentStr, nomenclaturalCode, r);
+        Taxon parent = Taxon.NewInstance(parentNameName, ref); //sec set null
+        //                    importer.getTaxonService().save(parent);
+        //                    parent = CdmBase.deproxy(parent, Taxon.class);
+
+        boolean parentDoesNotExists = true;
+        for (TaxonNode p : classification.getAllNodes()){
+            if(p.getTaxon().getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(parent.getTitleCache().split("sec.")[0].trim())) {
+                //                        System.out.println(p.getTaxon().getUuid());
+                //                        System.out.println(parent.getUuid());
+                parentDoesNotExists = false;
+                parent=CdmBase.deproxy(p.getTaxon(),    Taxon.class);
+                break;
             }
         }
+        if(parentDoesNotExists) {
+            Taxon tmp = findMatchingTaxon(parentNameName,ref);
+            //                    System.out.println("FOUND PARENT "+tmp.toString()+" for "+parentNameName.toString());
+            if(tmp ==null)
+            {
+                parent=Taxon.NewInstance(parentNameName, ref);
+                importer.getTaxonService().save(parent);
+                parent = CdmBase.deproxy(parent, Taxon.class);
+            } else {
+                parent=tmp;
+            }
+            lookForParentNode(parentNameName, parent, ref,myName);
+
+        }
+        return parent;
     }
 
     /**
