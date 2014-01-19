@@ -170,6 +170,8 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
         while(!thisNode.isTopmostNode()){
             //TODO why do we need to deproxy here?
+            //     without this thisNode.getParent() will return NULL in
+            //     some cases (environment dependend?) even if the parent exits
             TaxonNode parentNode = CdmBase.deproxy(thisNode, TaxonNode.class).getParent();
 
             if(parentNode == null){
