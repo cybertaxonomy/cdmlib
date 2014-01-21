@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_31_33;
+import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
 
 /**
@@ -179,7 +180,7 @@ public class CdmUpdater {
      * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_31_33.NewInstance();
+        return SchemaUpdater_33_331.NewInstance();
     }
 
     /**
@@ -192,20 +193,20 @@ public class CdmUpdater {
 //        }
         //TODO better implementation
         CdmUpdater myUpdater = new CdmUpdater();
-//        String server = args[0];
-//        String database  = args[1];
-//        String username = args.length > 2 ? args[2] : null;
-//        String password  = args.length > 3 ? args[3] : null;
-//        int port  = 3306;
-//        if( args.length > 4){
-//            try {
-//                port = Integer.parseInt(args[4]);
-//            } catch (Exception e) {
-//                // ignore
-//            }
-//        }
+        String server = args[0];
+        String database  = args[1];
+        String username = args.length > 2 ? args[2] : null;
+        String password  = args.length > 3 ? args[3] : null;
+        int port  = 3306;
+        if( args.length > 4){
+            try {
+                port = Integer.parseInt(args[4]);
+            } catch (Exception e) {
+                // ignore
+            }
+        }
 
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "lowercase", 3306, "root", "root", null);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, 3306, username, password, null);
         boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
         System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
     }

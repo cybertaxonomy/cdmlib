@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,9 +30,9 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * A primer is a (short) DNA Sequence used for replication and extraction
- * of DNA parts during e.g. {@link Amplification amplification} or 
+ * of DNA parts during e.g. {@link Amplification amplification} or
  * {@link SingleRead sequence reading}.
- * 
+ *
  * @author a.mueller
  * @created 2013-07-08
  *
@@ -50,12 +50,12 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class Primer extends AnnotatableEntity {
 	private static final long serialVersionUID = 6179007910988646989L;
 	private static final Logger logger = Logger.getLogger(Primer.class);
-	
+
 	/** @see #getLabel() */
 	@XmlElement(name = "Label")
 	@Size(max=255)
 	private String label;
-	
+
 	/** @see #getSequence() */
 	@XmlElement(name = "Sequence")
     @XmlIDREF
@@ -63,7 +63,7 @@ public class Primer extends AnnotatableEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Sequence sequence;
-    
+
 	/** @see #getPublishedIn() */
 	@XmlElement(name = "PublishedIn")
     @XmlIDREF
@@ -72,20 +72,23 @@ public class Primer extends AnnotatableEntity {
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Reference<?> publishedIn;
 
-	// ******************** FACTORY METHOD ******************/	
-	
+	// ******************** FACTORY METHOD ******************/
+
 	public static Primer NewInstance(String label){
 		Primer result = new Primer();
 		result.setLabel(label);
 		return result;
 	}
-	
+
 	// ********************* CONSTRUCTOR ********************/
-		
-	private Primer(){};
-	
+
+	//FIXME
+	//made public to fix a java.lang.InstantiationException which occurred while loading an Amplification
+	//and its primer. see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
+	public Primer(){};
+
 // ********************* GETTER / SETTER ********************/
-	
+
 
 	/**
 	 * The name of this primer, usually given by the producers.
@@ -103,7 +106,7 @@ public class Primer extends AnnotatableEntity {
 	}
 
 	/**
-	 * The DNA {@link Sequence} of this primer. A primer is usually a 
+	 * The DNA {@link Sequence} of this primer. A primer is usually a
 	 * small piece of DNA and therefore can be expressed as a sequence.
 	 */
 	public Sequence getSequence() {
@@ -116,10 +119,10 @@ public class Primer extends AnnotatableEntity {
 	public void setSequence(Sequence sequence) {
 		this.sequence = sequence;
 	}
-	
+
 	/**
-	 * The reference in which this primer was published and described 
-	 * for the first time. It is not a reference or citation for the 
+	 * The reference in which this primer was published and described
+	 * for the first time. It is not a reference or citation for the
 	 * sequence of this primer.<BR>
 	 * Links to this reference are stored with the reference itself.
 	 * @return the describing publication of this primer
@@ -136,12 +139,12 @@ public class Primer extends AnnotatableEntity {
 	}
 
 	// ********************* CLONE ********************/
-	/** 
+	/**
 	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> sequencing by
 	 * modifying only some of the attributes.<BR><BR>
-	 * 
-	 *  
+	 *
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -151,7 +154,7 @@ public class Primer extends AnnotatableEntity {
 		Sequence result = (Sequence)super.clone();
 
 //		don't change label, sequence
-		
+
 		return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

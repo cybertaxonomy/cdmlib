@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.PagerUtils;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -155,6 +156,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
     /**
      * (non-Javadoc)
+     * @implements {@link IClassificationService#loadTreeBranch(TaxonNode, Rank, List)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
      * FIXME Candidate for harmonization
      * move to classification service
@@ -166,16 +168,30 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         List<TaxonNode> pathToRoot = new ArrayList<TaxonNode>();
         pathToRoot.add(thisNode);
 
-        TaxonNode parentNode = thisNode.getParent();
-        while(parentNode != null){
-            TaxonNode parent = parentNode;
-            Rank parentNodeRank = parent.getTaxon().getName().getRank();
+        while(!thisNode.isTopmostNode()){
+            //TODO why do we need to deproxy here?
+            //     without this thisNode.getParent() will return NULL in
+            //     some cases (environment dependend?) even if the parent exits
+            TaxonNode parentNode = CdmBase.deproxy(thisNode, TaxonNode.class).getParent();
+
+            if(parentNode == null){
+                throw new NullPointerException("taxonNode " + thisNode + " must have a parent since it is not top most");
+            }
+            if(parentNode.getTaxon() == null){
+                throw new NullPointerException("The taxon associated with taxonNode " + parentNode + " is NULL");
+            }
+            if(parentNode.getTaxon().getName() == null){
+                throw new NullPointerException("The name of the taxon associated with taxonNode " + parentNode + " is NULL");
+            }
+
+            Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
+
             pathToRoot.add(parentNode);
-            parentNode = parentNode.getParent();
+            thisNode = parentNode;
         }
 
         // initialize and invert order of nodes in list

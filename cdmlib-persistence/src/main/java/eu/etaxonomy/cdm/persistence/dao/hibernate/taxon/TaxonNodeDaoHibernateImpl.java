@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
@@ -49,16 +50,22 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		Taxon taxon = persistentObject.getTaxon();
 		taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
 		
-		Session session = this.getSession();
+		/*Session session = this.getSession();
 		Query query = session.createQuery("from TaxonNode t where t.taxon = :taxon");
 		query.setParameter("taxon", taxon);
-		List result = query.list();
-		if (result.size()==1){
-			TaxonNode node = (TaxonNode)result.get(0);
-			taxon.removeTaxonNode(node, deleteChildren);
-			taxonDao.delete(taxon);
+		List result = query.list();*/
+		if (taxon != null){
+			Set<TaxonNode> nodes = taxon.getTaxonNodes();
+		
+			if (nodes.size()==1){
+				
+				TaxonNode node = nodes.iterator().next();
+				node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
+				
+				taxon.removeTaxonNode(node, deleteChildren);
+				taxonDao.delete(taxon);
+			}
 		}
-
 		//persistentObject.delete();
 		
 		super.delete(persistentObject);

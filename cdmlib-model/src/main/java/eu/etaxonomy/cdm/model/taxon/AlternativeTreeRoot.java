@@ -30,7 +30,7 @@ public class AlternativeTreeRoot extends TaxonNode {
 	
 	protected AlternativeTreeRoot(TaxonNode oldRoot, TaxonNode replacedTaxonNodeFromParentView, Reference reference, String microReference) {
 		super(oldRoot.getTaxon(), oldRoot.getClassification());
-		this.setParent(replacedTaxonNodeFromParentView.getParentTreeNode());
+		this.setParent(replacedTaxonNodeFromParentView.getParent());
 		this.setReplacedTaxonNode(replacedTaxonNodeFromParentView);
 	//	this.childNodes = oldRoot.getChildNodes());
 	}

@@ -47,6 +47,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
             "reference.authorTeam"
+
     });
 
     private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{

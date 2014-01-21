@@ -49,6 +49,7 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
 import eu.etaxonomy.cdm.model.common.IRelated;
@@ -81,7 +82,8 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     "synonymRelations",
     "relationsFromThisTaxon",
     "relationsToThisTaxon",
-    "descriptions"
+    "descriptions",
+    "publish"
 })
 @XmlRootElement(name = "Taxon")
 @Entity
@@ -165,6 +167,10 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @XmlElement(name = "TaxonomicChildrenCount")
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
     private int taxonomicChildrenCount;
+    
+
+    @XmlAttribute(name = "publish")
+    private boolean publish = true;
 
 // ************************* FACTORY METHODS ********************************/
 
@@ -334,7 +340,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
     	TaxonNode parent = taxonNode.getParent();
     	boolean success = true;
-
+    	
 		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
 
 			taxonNode.delete();
@@ -1647,6 +1653,22 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
 
     public void setExcluded(boolean excluded) {
         this.excluded = excluded;
+    }
+    
+
+    /**
+     * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not
+     * (<code>publish=true</code>) during any publication process to the general public.
+     * This publish flag implementation is preliminary and may be replaced by a more general
+     * implementation of READ rights in future.<BR>
+     * The default value is <code>true</code>.
+     */
+    public boolean isPublish() {
+        return publish;
+    }
+
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     /**

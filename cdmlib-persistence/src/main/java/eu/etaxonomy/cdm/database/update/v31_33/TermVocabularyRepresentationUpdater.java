@@ -86,8 +86,13 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 				String repUuid = (String)datasource.getSingleValue(sql);
 				
 				//update with correct label and representation
-				sql = " UPDATE %s r SET label = '%s', text = '%s' WHERE r.uuid = '%s'";
+				sql = " UPDATE %s SET label = '%s', text = '%s' WHERE uuid = '%s'";
 				sql = String.format(sql, caseType.transformTo("Representation"), label, description, repUuid);
+				
+				//update vocabulary titleCache
+				sql = " UPDATE %s SET titleCache = '%s' WHERE uuid = '%s'";
+				sql = String.format(sql, caseType.transformTo("TermVocabulary"), label, uuid);
+				
 				datasource.executeUpdate(sql);
 			}	
 			

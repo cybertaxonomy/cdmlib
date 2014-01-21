@@ -164,7 +164,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				INCLUDE_AUDIT, false, null);
 		stepList.add(step);
 
-		// TODO implement sorted behaviour in model first !!
 		// update sortindex
 		stepName = "Update sort index on TaxonNode children";
 		tableName = "TaxonNode";
@@ -268,8 +267,8 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 		// update datatype->CLOB for URIs. (DefinedTerms, TermVocabulary,
 		// Reference, Rights, MediaRepresentationPart )
-		// #3345, TODO adapt type to <65k
-		// TODO sequence.sequence has been changed #3360
+		// #3345, TODO2 adapt type to <65k -> see #3954
+		// sequence.sequence has been changed #3360
 		changeUriType(stepList);
 
 		// Annotation.linkbackUri change name #3374
@@ -466,7 +465,6 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 
 		// change column type for reference type
-		// TODO test with non-Mysql
 		stepName = "Change column type for Reference.type";
 		tableName = "Reference";
 		columnName = "refType";
@@ -490,10 +488,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				!INCLUDE_AUDIT, false);
 		stepPref.setPrimaryKeyParams("key_subject, key_predicate", null);
 		stepList.add(stepPref);
-		// FIXME length of key >= 1000
-
-		// TODO fill CdmPreferences with default values
-
+		
 		// update RightsTerm to RightsType #1306
 		stepName = "Update RightsTerm -> RightsType";
 		String updateSql = "UPDATE @@DefinedTermBase@@ SET DTYPE = 'RightsType'  WHERE DTYPE = 'RightsTerm'";
@@ -631,7 +626,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepList.add(step);
 
 		stepName = "Remove preservation column from SpecimenOrObservationBase";
-		// to fully remove all foreign keys, maybe there is a better way todo so
+		// to fully remove all foreign keys, maybe there is a better way to do so
 		// we don't expect any preservation information to exist in any CDM
 		// database
 		tableName = "SpecimenOrObservationBase";
@@ -822,12 +817,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update publish with existing publish false markers
 		stepName = "update TaxonBase publish if publish false markers exist";
 		query = " UPDATE @@TaxonBase@@ "
-				+ " SET publish = 0 "
+				+ " SET publish = @FALSE@ "
 				+ " WHERE id IN ( "
 				 + " SELECT DISTINCT MN.TaxonBase_id "
 				 + " FROM @@Marker@@ m INNER JOIN @@TaxonBase_Marker@@ MN ON MN.markers_id = m.id "
 				 + " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
-				 + " WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
+				 + " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "TaxonBase", 99);
 		stepList.add(step);
@@ -870,12 +865,12 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		// update publish with existing publish false markers
 		stepName = "update SpecimenOrObservationBase publish if publish false markers exist";
 		query = " UPDATE @@SpecimenOrObservationBase@@ "
-				+ " SET publish = 0 "
+				+ " SET publish = @FALSE@ "
 				+ " WHERE id IN ( "
 				+ " SELECT DISTINCT MN.SpecimenOrObservationBase_id "
 				+ " FROM @@Marker@@ m INNER JOIN @@SpecimenOrObservationBase_Marker@@ MN ON MN.markers_id = m.id "
 				+ " INNER JOIN @@DefinedTermBase@@ markerType ON m.markertype_id = markerType.id "
-				+ " WHERE m.flag = 0 AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
+				+ " WHERE m.flag = @FALSE@ AND markerType.uuid = '0522c2b3-b21c-400c-80fc-a251c3501dbc' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, query, "SpecimenOrObservationBase", 99);
 		stepList.add(step);
@@ -1376,7 +1371,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 	private void updateDescriptionSpecimenRelation(
 			List<ISchemaUpdaterStep> stepList) {
-		// TODO warn if multiple entries for 1 description exists
+		// TODO warn if multiple entries for 1 description exists -> won't do, as this is currently not expected
 		String sqlCount = " SELECT count(*) as n "
 				+ " FROM DescriptionBase_SpecimenOrObservationBase MN "
 				+ " GROUP BY MN.descriptions_id "
@@ -1440,7 +1435,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update reference title, set null where abbrev title very likely";
 		query = " UPDATE @@Reference@@ "
 				+ " SET title = NULL "
-				+ " WHERE title IS NOT NULL AND protectedTitleCache = 0 AND "
+				+ " WHERE title IS NOT NULL AND protectedTitleCache = @FALSE@ AND "
 				+ " ( LENGTH(title) <= 15 AND title like '%.%.%' OR LENGTH(title) < 30 AND title like '%.%.%.%' OR LENGTH(title) < 45 AND title like '%.%.%.%.%' OR LENGTH(title) < 60 AND title like '%.%.%.%.%.%' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
@@ -1450,7 +1445,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 		stepName = "Update reference abbrevTitle, set null where abbrev title very unlikely";
 		query = " UPDATE @@Reference@@ "
 				+ " SET abbrevTitle = NULL "
-				+ " WHERE title IS NOT NULL AND protectedTitleCache = 0 AND "
+				+ " WHERE title IS NOT NULL AND protectedTitleCache = @FALSE@ AND "
 				+ " ( title NOT like '%.%' OR LENGTH(title) > 30 AND title NOT like '%.%.%' "
 				+ ")";
 		step = SimpleSchemaUpdaterStep.NewNonAuditedInstance(stepName, query, 99)
@@ -2400,7 +2395,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 
-		// TODO are uri and termsourceuri needed ???
+		// are uri and termsourceuri needed -> see #3955
 		stepName = "Update termsourceuri to clob for TermVocabulary";
 		tableName = "TermVocabulary";
 		columnName = "termsourceuri";
@@ -2429,7 +2424,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 				columnName, INCLUDE_AUDIT);
 		stepList.add(step);
 
-		// TODO still needed??
+		// still needed??
 		stepName = "Update uri to clob for FeatureTree";
 		tableName = "FeatureTree";
 		columnName = "uri";
@@ -2620,7 +2615,7 @@ public class SchemaUpdater_31_33 extends SchemaUpdaterBase {
 
 	@Override
 	public ISchemaUpdater getNextUpdater() {
-		return null;
+		return SchemaUpdater_33_331.NewInstance();
 	}
 
 	@Override
