@@ -36,13 +36,13 @@ public class CdmListenerIntegrator implements Integrator {
         // prepend to register before or append to register after
         // this example will register a persist event listener
         eventRegistry.prependListeners(EventType.SAVE, new CacheStrategyGenerator(), new SaveEntityListener());
-        eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator(), new SaveOrUpdateEntityListener());
+        eventRegistry.prependListeners(EventType.SAVE_UPDATE, new CacheStrategyGenerator(), new SaveOrUpdateEntityListener(), new Level2ValidationSaveOrUpdateEventListener());
         eventRegistry.prependListeners(EventType.UPDATE, new CacheStrategyGenerator(), new UpdateEntityListener());
         eventRegistry.appendListeners(EventType.DELETE, new CdmDeleteListener());
-        eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener());
+        eventRegistry.appendListeners(EventType.POST_INSERT, new CdmPostDataChangeObservableListener(), new Level3ValidationSaveOrUpdateEventListener());
         eventRegistry.appendListeners(EventType.POST_LOAD, new CdmPostDataChangeObservableListener());
-        eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener());
-        eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener());
+        eventRegistry.appendListeners(EventType.POST_UPDATE, new CdmPostDataChangeObservableListener(), new Level3ValidationSaveOrUpdateEventListener());
+        eventRegistry.appendListeners(EventType.POST_DELETE, new CdmPostDataChangeObservableListener(), new Level3ValidationSaveOrUpdateEventListener());
     }
 
 
