@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.remote.webapp.vaaditor;
 
+import org.apache.log4j.Logger;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -28,6 +29,7 @@ import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.ErrorView;
 @PreserveOnRefresh
 public class VaaditorUI extends UI {
 
+	Logger logger = Logger.getLogger(VaaditorUI.class);
 	/**
 	 * Automatically generated serial version ID
 	 */
@@ -36,9 +38,13 @@ public class VaaditorUI extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 		setSizeFull();
-		
+		logger.info(request.getService().getDeploymentConfiguration().getApplicationOrSystemProperty("datasource", null));
 		DiscoveryNavigator navigator = new DiscoveryNavigator(this, this);
 		navigator.setErrorView(new ErrorView());
+	}
+	
+	public VaaditorUI(){
+		super();
 	}
 	
 

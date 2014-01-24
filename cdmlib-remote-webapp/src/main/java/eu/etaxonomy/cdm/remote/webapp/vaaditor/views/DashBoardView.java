@@ -8,10 +8,13 @@ import java.util.Set;
 import java.util.UUID;
 
 import javax.annotation.PostConstruct;
+import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
+import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
+import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 
 import ru.xpoft.vaadin.VaadinView;
@@ -47,6 +50,7 @@ import com.vaadin.ui.VerticalSplitPanel;
 import com.vaadin.ui.Window;
 import com.vaadin.ui.themes.Runo;
 
+import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
 import eu.etaxonomy.cdm.api.service.INameService;
@@ -66,7 +70,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.components.TaxonTableDTO;
-import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationController;
+import eu.etaxonomy.cdm.remote.webapp.vaaditor.service.AuthenticationService;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.util.RedlistDTO;
 
 /**
@@ -100,7 +104,7 @@ public class DashBoardView extends CustomComponent implements View{
 	public static final String NAME = "dash";
 	Logger logger = Logger.getLogger(DashBoardView.class);
 	@Autowired
-	private AuthenticationController authenticationController;
+	private AuthenticationService authenticationController;
 	
 	@Autowired
 	private HorizontalToolbar toolbar;
@@ -133,6 +137,8 @@ public class DashBoardView extends CustomComponent implements View{
 
 	private VerticalLayout layout;
 
+	private VerticalLayout detailViewLayout;
+
 	/*
 	 * Method will be called initially, but executed after dependency injection
 	 * further it constructs the whole UI based widgets.
@@ -141,7 +147,6 @@ public class DashBoardView extends CustomComponent implements View{
 	@PostConstruct
 	public void PostConstruct(){
 		if(authenticationController.isAuthenticated()){
-
 			layout = new VerticalLayout();
 			layout.setSizeFull();
 			layout.setHeight("100%");
@@ -150,7 +155,7 @@ public class DashBoardView extends CustomComponent implements View{
 			horizontalSplit.setStyleName(Runo.SPLITPANEL_SMALL);
 			horizontalSplit.setHeight("100%");
 			
-			final VerticalLayout detailViewLayout = new VerticalLayout();
+			detailViewLayout = new VerticalLayout();
 			
 			final VerticalLayout descriptionViewLayout = new VerticalLayout();
 			
@@ -248,14 +253,18 @@ public class DashBoardView extends CustomComponent implements View{
 		final FormLayout form = new FormLayout();
 		form.setMargin(true);
 		
-		final Field<?> taxonField = binder.buildAndBind("Taxon Name: ", "fullTitleCache");
-		taxonField.setSizeFull();
+		final Field<?> fullTitleCacheField = binder.buildAndBind("Taxon Full Title Cache: ", "fullTitleCache");
+		final Field<?> taxonNameCacheField = binder.buildAndBind("Taxon Name Cache: ", "taxonNameCache");
+		fullTitleCacheField.setSizeFull();
+		taxonNameCacheField.setSizeFull();
 		
-		form.addComponent(taxonField);
+		form.addComponent(fullTitleCacheField);
+		form.addComponent(taxonNameCacheField);
 		form.addComponent(constructSaveButton(window, binder));
 		form.setImmediate(true);
 		form.setSizeFull();
-		taxonField.commit();
+		fullTitleCacheField.commit();
+		taxonNameCacheField.commit();
 		
 		return form;
 	}
@@ -278,6 +287,7 @@ public class DashBoardView extends CustomComponent implements View{
 		binder.bind(box, "distributionStatus");
 		
 		nameCacheField.setSizeFull();
+		nameCacheField.setReadOnly(true);
 		nameCacheField.commit();
 		nomenCodeField.setSizeFull();
 		rankField.setSizeFull();
@@ -305,8 +315,10 @@ public class DashBoardView extends CustomComponent implements View{
 			private static final long serialVersionUID = 1L;
 			@Override
 			public void valueChange(ValueChangeEvent event) {
-				logger.info(box.getValue());
+				ConversationHolder conversationHolder = authenticationController.getConversationHolder();
+				conversationHolder.startTransaction();
 				red.setDistributionStatus((PresenceAbsenceTermBase<?>) box.getValue());
+				conversationHolder.commit();
 				updateTables();
 			}
 		});
@@ -414,7 +426,10 @@ public class DashBoardView extends CustomComponent implements View{
 
 	private void updateTables() {
 		taxonTable.markAsDirtyRecursive();
-//		taxonTable.refreshRowCache();
+		detailViewLayout.markAsDirtyRecursive();
+		//TODO: not a clean way to do a save, there is a more elegant way to do so!!!!
+//		ConversationHolder conversationHolder = taxonTable.getConversationHolder();
+//		conversationHolder.commit();
 	}
 	
 	private void openDetailWindow(Taxon taxon){
@@ -448,7 +463,7 @@ public class DashBoardView extends CustomComponent implements View{
 	  //---------------------------------------------------------------------------------------------------//
 	 //------------------------------------Example Data Creation------------------------------------------//
 	//---------------------------------------------------------------------------------------------------//
-	public void createExampleData(){
+	private void createExampleData(){
 		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
 		for(TaxonBase taxonBase : listTaxa){
 			Taxon taxon = (Taxon) taxonBase;
@@ -464,7 +479,7 @@ public class DashBoardView extends CustomComponent implements View{
 		
 	}
 	
-	public void deleteExampleData(){
+	private void deleteExampleData(){
 		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 		Iterator<TaxonBase> taxonIterator = listTaxa.iterator();
 		while(taxonIterator.hasNext()){
@@ -489,6 +504,8 @@ public class DashBoardView extends CustomComponent implements View{
 		layout.markAsDirtyRecursive();
 		taxonTable.markAsDirtyRecursive();
 		taxonTable.refreshRowCache();
+		ConversationHolder conversationHolder = taxonTable.getConversationHolder();
+		conversationHolder.commit();
 	}
 	
 	

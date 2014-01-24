@@ -73,6 +73,7 @@ public class TaxonTableDTO extends Table{
 
 	private ConversationHolder conversationHolder;
 
+
 	Logger logger = Logger.getLogger(TaxonTableDTO.class);
 	
 	private static final long serialVersionUID = -8449485694571526437L;
@@ -82,8 +83,8 @@ public class TaxonTableDTO extends Table{
 	void PostConstruct(){
 		setSizeFull();
 		
-		conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
-		conversationHolder.bind();
+//		conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
+//		conversationHolder.bind();
 		final BeanItemContainer<RedlistDTO> redListContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
 		//TODO: Make use of paging
 		Collection<TaxonBase> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
@@ -112,6 +113,9 @@ public class TaxonTableDTO extends Table{
 		setPageLength(10);
 	}
 	
+	public ConversationHolder getConversationHolder() {
+		return conversationHolder;
+	}
 	
 	
 	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
@@ -132,7 +136,7 @@ public class TaxonTableDTO extends Table{
     		"taxon.name.*",
     		"taxon.synonymRelations",
     		"terms",
-            "name.$",
+            "name.*",
             "name.rank.representations",
             "name.status.type.representations",
             "sources.$",

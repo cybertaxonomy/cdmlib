@@ -1,16 +1,20 @@
 package eu.etaxonomy.cdm.remote.webapp.vaaditor.util;
 
+import java.beans.Transient;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionElementDaoImpl;
 
 /**
  * This class acts like a data transfer object. It is intended to ease the communication
@@ -148,6 +152,8 @@ public class RedlistDTO{
     	Distribution db = getDistribution();
     	if(db != null){
     		db.setStatus(status);
+//    		DescriptionServiceImpl desc = new DescriptionServiceImpl();
+//    		desc.saveDescriptionElement(db);
 //    		descriptionService.saveDescriptionElement(db);
     	}
     }
@@ -174,6 +180,10 @@ public class RedlistDTO{
     public String getTaxonNameCache(){
 		return taxon.getName().getTitleCache();
 	}
+    
+    public void setTaxonNameCache(String titlecache){
+    	taxon.getName().setTitleCache(titlecache, true);
+    }
 	/**
 	 * 
 	 * @return

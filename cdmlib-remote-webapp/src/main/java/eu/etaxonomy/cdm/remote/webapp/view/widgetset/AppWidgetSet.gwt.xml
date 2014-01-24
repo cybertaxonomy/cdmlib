@@ -1,8 +1,0 @@
-<!-- <module>
-    <inherits name="com.vaadin.DefaultWidgetSet" />
-  	<add-linker name="xsiframe"/>
-	<set-configuration-property name="devModeRedirectEnabled" value="true" />
-
-    <inherits name="eu.etaxonomy.cdm.remote.webapp.vaaditor.widgetset.AppWidgetSet" />
-</module>
- -->

@@ -24,7 +24,7 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
-import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationController;
+import eu.etaxonomy.cdm.remote.webapp.vaaditor.service.AuthenticationService;
 import eu.etaxonomy.cdm.remote.webapp.vaaditor.views.DashBoardView;
 
 /**
@@ -50,7 +50,7 @@ public class LoginForm extends FormLayout{
 	private static final String COMMON_FIELD_WIDTH = "12em";
     
 	@Autowired
-	private AuthenticationController authenticationController;
+	private AuthenticationService authenticationController;
 
 	private TextField userName;
 	private PasswordField passwordField;

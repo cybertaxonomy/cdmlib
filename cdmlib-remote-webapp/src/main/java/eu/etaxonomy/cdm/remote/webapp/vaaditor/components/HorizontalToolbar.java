@@ -20,7 +20,7 @@ import com.vaadin.ui.Image;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Button.ClickEvent;
 
-import eu.etaxonomy.cdm.remote.webapp.vaaditor.controller.AuthenticationController;
+import eu.etaxonomy.cdm.remote.webapp.vaaditor.service.AuthenticationService;
 
 /**
  * 
@@ -41,7 +41,7 @@ public class HorizontalToolbar extends HorizontalLayout{
 	private static final long serialVersionUID = 5344340511582993289L;
 	
 	@Autowired
-	private AuthenticationController authenticationController;
+	private AuthenticationService authenticationController;
 	
 	private final Button editButton = new Button("Edit");
 

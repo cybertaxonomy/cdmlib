@@ -172,6 +172,15 @@
           <artifactId>maven-war-plugin</artifactId>
           <version>2.1-beta-1</version>
         </plugin>
+        <plugin>
+	      <groupId>com.vaadin</groupId>
+	      <artifactId>vaadin-maven-plugin</artifactId>
+	      <configuration>
+	      <strict>true</strict>
+	      <force>true</force>
+		  <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+	      </configuration>
+	  </plugin>
       </plugins>
     </build>
 </project>
