@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.strategy.cache;
 
+import javax.persistence.Transient;
+
 import org.apache.commons.lang.StringUtils;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -57,33 +59,43 @@ public class TaggedText {
 
 // *************************** DELEGATES ************************************/
 
+	@Transient
 	public boolean isName() {
 		return type.isName();
 	}
+	@Transient
 	public boolean isRank() {
 		return type.isRank();
 	}
+	@Transient
 	public boolean isAuthors() {
 		return type.isAuthors();
 	}
+	@Transient
 	public boolean isAppendedPhrase() {
 		return type.isAppendedPhrase();
 	}
+	@Transient
 	public boolean isReference() {
 		return type.isReference();
 	}
+	@Transient
 	public boolean isYear() {
 		return type.isYear();
 	}
+	@Transient
 	public boolean isFullName() {
 		return type.isFullName();
 	}
+	@Transient
 	public boolean isNomStatus() {
 		return type.isNomStatus();
 	}
+	@Transient
 	public boolean isSeparator() {
 		return type.isSeparator();
 	}
+	@Transient
 	public boolean isHybridSign() {
 		return type.isHybridSign();
 	}
