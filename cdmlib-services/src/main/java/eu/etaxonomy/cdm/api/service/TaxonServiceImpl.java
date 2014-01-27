@@ -62,7 +62,6 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -551,6 +550,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             taxa.add(taxon);
         }
 
+        if(includeRelationships.isEmpty()){
+            return taxa;
+        }
+
         if(maxDepth != null) {
             maxDepth--;
         }
@@ -626,22 +629,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
      */
     @Override
     public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths){
-    	 List<List<Synonym>> result = new ArrayList<List<Synonym>>();
-    	Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
-        
-    	//homotypic
-    	result.add(t.getHomotypicSynonymsByHomotypicGroup());
-    	
-    	//heterotypic
+         List<List<Synonym>> result = new ArrayList<List<Synonym>>();
+        Taxon t = (Taxon)dao.load(taxon.getUuid(), propertyPaths);
+
+        //homotypic
+        result.add(t.getHomotypicSynonymsByHomotypicGroup());
+
+        //heterotypic
         List<HomotypicalGroup> homotypicalGroups = t.getHeterotypicSynonymyGroups();
         for(HomotypicalGroup homotypicalGroup : homotypicalGroups){
             result.add(t.getSynonymsInGroup(homotypicalGroup));
         }
-    	
-    	return result;
-    	
+
+        return result;
+
     }
-    
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getHomotypicSynonymsByHomotypicGroup(eu.etaxonomy.cdm.model.taxon.Taxon, java.util.List)
      */
@@ -819,6 +822,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             Boolean limitToGalleries, Boolean includeTaxonDescriptions, Boolean includeOccurrences,
             Boolean includeTaxonNameDescriptions, List<String> propertyPath) {
 
+        logger.trace("listMedia() - START");
+
         Set<Taxon> taxa = new HashSet<Taxon>();
         List<Media> taxonMedia = new ArrayList<Media>();
 
@@ -827,13 +832,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         // --- resolve related taxa
-        if (includeRelationships != null) {
+        if (includeRelationships != null && ! includeRelationships.isEmpty()) {
+            logger.trace("listMedia() - resolve related taxa");
             taxa = listRelatedTaxa(taxon, includeRelationships, null, null, null, null);
         }
 
         taxa.add((Taxon) dao.load(taxon.getUuid()));
 
         if(includeTaxonDescriptions != null && includeTaxonDescriptions){
+            logger.trace("listMedia() - includeTaxonDescriptions");
             List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
             // --- TaxonDescriptions
             for (Taxon t : taxa) {
@@ -850,7 +857,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
         }
 
+
         if(includeOccurrences != null && includeOccurrences) {
+            logger.trace("listMedia() - includeOccurrences");
             Set<SpecimenOrObservationBase> specimensOrObservations = new HashSet<SpecimenOrObservationBase>();
             // --- Specimens
             for (Taxon t : taxa) {
@@ -904,6 +913,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         if(includeTaxonNameDescriptions != null && includeTaxonNameDescriptions) {
+            logger.trace("listMedia() - includeTaxonNameDescriptions");
             // --- TaxonNameDescription
             Set<TaxonNameDescription> nameDescriptions = new HashSet<TaxonNameDescription>();
             for (Taxon t : taxa) {
@@ -921,7 +931,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             }
         }
 
+
+        logger.trace("listMedia() - initialize");
         beanInitializer.initializeAll(taxonMedia, propertyPath);
+
+        logger.trace("listMedia() - END");
+
         return taxonMedia;
     }
 
@@ -1047,10 +1062,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                     removeDescriptions.add(desc);
                     descriptionService.delete(desc);
-                   
+
                 }
                 for (TaxonDescription desc: removeDescriptions){
-                	taxon.removeDescription(desc);
+                    taxon.removeDescription(desc);
                 }
             }
 
@@ -1134,11 +1149,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     }
                 }
             }
-         
-         
-         	//PolytomousKey TODO
-         	
-         	boolean usedInPolytomousKey = checkForPolytomousKeys(taxon);
+
+
+             //PolytomousKey TODO
+
+             boolean usedInPolytomousKey = checkForPolytomousKeys(taxon);
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
                 try {
@@ -1181,7 +1196,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 dao.delete(taxon);
                 return taxon.getUuid();
             } else if (usedInPolytomousKey){
-            	return null;
+                return null;
             }else{
                 message = "Taxon can't be deleted as it is used in another Taxonnode";
                 if (!config.isDeleteInAllClassifications() && classification != null) {
@@ -1215,26 +1230,26 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 String message = "Taxon can't be deleted as it is used in taxonInteraction#taxon2";
                 return message;
             }
-            
+
           //TaxonInteraction
             if (referencingObject.isInstanceOf(DeterminationEvent.class)){
                 String message = "Taxon can't be deleted as it is used in a determination event";
                 return message;
             }
-            
+
         }
-        
+
         referencingObjects = null;
         return null;
     }
-    
+
     private boolean checkForPolytomousKeys(Taxon taxon){
-    	boolean result = false;
-    	List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon);
-    	if (!list.isEmpty()) {
-    		result = true;
-    	}
-    	return result;
+        boolean result = false;
+        List<CdmBase> list = genericDao.getCdmBasesByFieldAndClass(PolytomousKeyNode.class, "taxon", taxon);
+        if (!list.isEmpty()) {
+            result = true;
+        }
+        return result;
     }
 
     @Transactional(readOnly = false)
