@@ -98,12 +98,19 @@ public class DescriptionListController extends IdentifiableListController<Descri
 
 
     /**
-     * Runs the {@link TransmissionEngineDistribution} in a separate Thread and responds with a
-     * redirect to a progress monitor REST service end point.
+     * Runs the {@link TransmissionEngineDistribution} in a separate Thread and
+     * responds with a redirect to a progress monitor REST service end point.
      *
-     * @param mode  one of <code>byAreas</code>, <code>byRanks</code>, <code>byAreasAndRanks</code>
+     * @param mode
+     *            one of <code>byAreas</code>, <code>byRanks</code>,
+     *            <code>byAreasAndRanks</code>
      * @param frontendBaseUrl
-     * @param priority the priority for the Thread to spawn, see {@link Thread#setPriority(int)}, defaults to 3
+     *            the cdm server instance base URL, this is needed for the a
+     *            proper redirect URL when the service is running behind a
+     *            reverse HTTP proxy
+     * @param priority
+     *            the priority for the Thread to spawn, see
+     *            {@link Thread#setPriority(int)}, defaults to 3
      * @param request
      * @param response
      * @return
