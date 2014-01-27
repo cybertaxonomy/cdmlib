@@ -97,6 +97,18 @@ public class DescriptionListController extends IdentifiableListController<Descri
     }
 
 
+    /**
+     * Runs the {@link TransmissionEngineDistribution} in a separate Thread and responds with a
+     * redirect to a progress monitor REST service end point.
+     *
+     * @param mode  one of <code>byAreas</code>, <code>byRanks</code>, <code>byAreasAndRanks</code>
+     * @param frontendBaseUrl
+     * @param priority the priority for the Thread to spawn, see {@link Thread#setPriority(int)}, defaults to 3
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
             @RequestParam(value= "mode", required = true) final AggregationMode mode,
