@@ -53,8 +53,8 @@ public class TaxonXImportLauncher {
     //    private static final Logger log = Logger.getLogger(CdmEntityDaoBase.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_chenopodium_local();
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+    static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
 
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
@@ -71,13 +71,13 @@ public class TaxonXImportLauncher {
     }
 
     public static void main(String[] args) {
-        String[] taxonList = new String[] {"Chenopodium"};
+        String[] taxonList = new String[] {"Polybothrus","Eupolybothrus"};
 //       /*ants*/ String[] modsList = new String[] {"3924", "3743", "4375","6757","6752","3481","21401_fisher_smith_plos_2008","2592","4096","6877","6192","8071"};
 //        String[] modsList = new String[] {"FloNuttDuWin1838"};
 //        modsList = new String[] {"Zapparoli-1986-Eupolybothrus-fasciatus"};
-        String tnomenclature = "ICNAFP";
+        String tnomenclature = "ICZN";
 
-        String defaultClassif="Goosefoots";
+        String defaultClassif="Eupolybothrus and Polybothrus";
 
         Map<String,List<String>> documents = new HashMap<String,List<String>>();
         HashMap<String,List<URI>>documentMap = new HashMap<String, List<URI>>();
