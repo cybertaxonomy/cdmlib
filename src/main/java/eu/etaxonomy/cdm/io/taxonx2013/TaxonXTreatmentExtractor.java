@@ -2915,7 +2915,11 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             if(n.split(" ").length>2)
             {
                 String n2=n.split(" ")[0]+" "+n.split(" ")[1];
-                String a= n.split(n2)[1].trim();
+                String a= "";
+                try{
+                    a=n.split(n2)[1].trim();
+                }catch(Exception e){logger.info("no author in "+n+"?");}
+
                 myname.setAuthor(a);
                 System.out.println("FINDCREATESPECIES --"+n2+"--"+n+"**"+a+"##");
                 n=n2;
@@ -2997,7 +3001,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 if(n.split(" ").length>2)
                 {
                     String n2=n.split(" ")[0]+" "+n.split(" ")[1];
-                    String a= n.split(n2)[1].trim();
+                    String a="";
+                    try{
+                    a= n.split(n2)[1].trim();
+                    }catch(Exception e){logger.info("no author?");}
                     myname.setAuthor(a);
                     System.out.println("FINDCREATESPECIES --"+n2+"--"+n+"**"+a+"##");
                     n=n2;
