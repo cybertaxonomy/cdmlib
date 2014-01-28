@@ -29,9 +29,9 @@ import eu.etaxonomy.cdm.remote.vaadin.redlist.views.ErrorView;
 @Scope("prototype")//maybe session?
 @Theme("mytheme")
 @PreserveOnRefresh
-public class VaaditorUI extends UI {
+public class VaadinUI extends UI {
 
-	Logger logger = Logger.getLogger(VaaditorUI.class);
+	Logger logger = Logger.getLogger(VaadinUI.class);
 	/**
 	 * Automatically generated serial version ID
 	 */
@@ -50,7 +50,7 @@ public class VaaditorUI extends UI {
 		navigator.setErrorView(new ErrorView());
 	}
 	
-	public VaaditorUI(){
+	public VaadinUI(){
 		super();
 	}
 	
