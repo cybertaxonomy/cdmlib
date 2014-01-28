@@ -19,16 +19,13 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.validation.BerlinModelWebMarkerImportValidator;
-import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IOValidator;
-import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
@@ -49,10 +46,6 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		super(dbTableName, pluralString);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
-	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = " SELECT markerId FROM " + getTableName();
@@ -62,9 +55,6 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 		String strQuery = 
@@ -72,16 +62,13 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
             " FROM webMarker INNER JOIN webTableName ON webMarker.TableNameFk = webTableName.TableNameId " +
             " WHERE (markerId IN ("+ ID_LIST_TOKEN + ") )";
 		return strQuery;
-
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState state) {
 		boolean success = true ;
 	
-		MapWrapper<Taxon> taxonMap = (MapWrapper<Taxon>)state.getStore(ICdmIO.TAXON_STORE);
+		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
 		Set<TaxonBase> taxaToBeSaved = new HashSet<TaxonBase>(); 
 		
 		Map<String, DefinedTermBase> definedTermMap = state.getDbCdmDefinedTermMap();
@@ -132,13 +119,10 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		return success;
 	}
 		
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
@@ -151,7 +135,7 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 					logger.warn("A marker is not related to table PTaxon. This case is not handled yet!");
 				}else{
 					handleForeignKey(rs, taxonIdSet, "RIdentifierFk");
-	}
+				}
 			}
 	
 			//taxon map
@@ -167,7 +151,6 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 		return result;
 	}
 
-	
 	private boolean addMarker(AnnotatableEntity annotatableEntity, boolean activeFlag, int markerCategoryFk, Map<String, DefinedTermBase> map ){
 		MarkerType markerType = (MarkerType)map.get("webMarkerCategory_" + markerCategoryFk);
 		if (markerType == null){
@@ -179,23 +162,14 @@ public class BerlinModelWebMarkerImport extends BerlinModelImportBase {
 
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new BerlinModelWebMarkerImportValidator();
 		return validator.validate(state);
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! state.getConfig().isDoMarker();
 	}
-
-
 }

@@ -72,7 +72,9 @@ public class BerlinModelTaxonNameRelationImportValidator implements IOValidator<
 				i++;
 				if (firstRow){
 					System.out.println("==================================================================================================");
-					logger.warn("There are names that have a homotypic relationship as taxa but no 'is basionym' or 'is replaced synonym' relationship or a status not requiring a basionym/repl.syn.");
+					String message = "There are names that have a homotypic relationship as taxa but no 'is basionym' or 'is replaced synonym' relationship or a status not requiring a basionym/repl.syn.";
+					logger.warn(message);
+					System.out.println(message);
 					System.out.println("===================================================================================================");
 				}
 				

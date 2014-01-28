@@ -234,7 +234,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 					
 					int factId = rs.getInt("factId");
 					Object taxonIdObj = rs.getObject("taxonId");
-					long taxonId = rs.getLong("taxonId");
+					Number taxonId = (Number)rs.getObject("taxonId");
 					Object factRefFkObj = rs.getObject("factRefFk");
 					Object categoryFkObj = rs.getObject("factCategoryFk");
 					Integer categoryFk = rs.getInt("factCategoryFk");
@@ -251,7 +251,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 						success = false;
 					}else{
 						TaxonDescription taxonDescription;
-						if ( (taxonDescription = getMyTaxonDescripion(taxonBase, state, categoryFk, taxonIdObj, taxonId, factId, fact, sourceRef)) == null){
+						if ( (taxonDescription = getMyTaxonDescripion(taxonBase, state, categoryFk, taxonIdObj, factId, fact, sourceRef)) == null){
 							success = false;
 							continue;
 						}
@@ -382,7 +382,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		return success;
 	}
 
-	private TaxonDescription getMyTaxonDescripion(TaxonBase taxonBase, BerlinModelImportState state, Integer categoryFk, Object taxonIdObj, long taxonId, int factId, String fact, Reference<?> sourceRef) {
+	private TaxonDescription getMyTaxonDescripion(TaxonBase taxonBase, BerlinModelImportState state, Integer categoryFk, Object taxonIdObj, int factId, String fact, Reference<?> sourceRef) {
 		Taxon taxon = null;
 		if ( taxonBase instanceof Taxon ) {
 			taxon = (Taxon) taxonBase;
@@ -522,7 +522,7 @@ public class BerlinModelFactsImport  extends BerlinModelImportBase {
 		return taxonDescription;
 	}
 
-	private TaxonBase getTaxon(Map<String, TaxonBase> taxonMap, Object taxonIdObj, Long taxonId){
+	private TaxonBase getTaxon(Map<String, TaxonBase> taxonMap, Object taxonIdObj, Number taxonId){
 		if (taxonIdObj != null){
 			return taxonMap.get(String.valueOf(taxonId));
 		}else{

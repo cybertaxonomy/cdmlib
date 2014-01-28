@@ -201,12 +201,12 @@ public class BerlinModelTaxonRelationImportValidator implements IOValidator<Berl
 			
 			Source source = config.getSource();
 			String strQuery = 
-				"SELECT RelPTaxon.RelPTaxonId, RelPTQualifier, PTaxon.RIdentifier, Name.FullNameCache fromName, PTaxon.PTRefFk, Name.NameId as fromNameId, AcceptedName.FullNameCache acceptedName" +
+				"SELECT RelPTaxon.RelPTaxonId, RelPTQualifier, PTaxon.RIdentifier,PTaxon.StatusFk as fromStatus, Name.FullNameCache fromName, PTaxon.PTRefFk, Name.NameId as fromNameId, AcceptedName.FullNameCache acceptedName" +
 				" FROM RelPTaxon INNER JOIN PTaxon ON RelPTaxon.PTNameFk1 = PTaxon.PTNameFk AND RelPTaxon.PTRefFk1 = PTaxon.PTRefFk " +
 					" INNER JOIN RelPTQualifier ON RelPTaxon.RelQualifierFk = RelPTQualifier.RelPTQualifierId " +
 					" LEFT OUTER JOIN Name ON PTaxon.PTNameFk = Name.NameId " +
 					" LEFT OUTER JOIN Name AS AcceptedName ON RelPTaxon.PTNameFk2 = AcceptedName.NameId " +
-				" WHERE (PTaxon.StatusFk = 1) AND (RelPTaxon.RelQualifierFk NOT IN (2, 4, 5, 6, 7)) ";
+				" WHERE (PTaxon.StatusFk IN (2,3,4)) AND (RelPTaxon.RelQualifierFk NOT IN (2, 4, 5, 6, 7)) ";
 			
 			if (StringUtils.isNotBlank(config.getRelTaxaIdQuery())){
 				strQuery += String.format(" AND (RelPTaxon.RelPTaxonId IN " +

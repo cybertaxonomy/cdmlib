@@ -9,7 +9,7 @@
   
   <groupId>eu.etaxonomy.cdm</groupId>
   <artifactId>cdm-eflora</artifactId>
-  <version>3.3.0-SNAPSHOT</version>
+  <version>3.3.1-SNAPSHOT</version>
   
   <name>CDM e-Flora</name>
   <description>The e-Flora package for e-FLora imports to the EDIT CDM Platform</description>
