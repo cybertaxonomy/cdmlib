@@ -450,6 +450,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportState.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXModsImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXNomenclatureImport.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx/TaxonXTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXAddSources.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXDataHolder.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXExtractor.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXImport.java -text
