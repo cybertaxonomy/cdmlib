@@ -175,10 +175,24 @@
         <plugin>
 	      <groupId>com.vaadin</groupId>
 	      <artifactId>vaadin-maven-plugin</artifactId>
+	       <executions>
+                <execution>
+                    <configuration>
+                        <!-- if you don't specify any modules, the plugin will find them -->
+                        <modules>
+                            <module>${cdm-remote}.vaadin.redlist.widgetset</module>
+                        </modules>
+                    </configuration>
+                    <goals>
+                        <goal>update-widgetset</goal>
+                    </goals>
+                </execution>
+            </executions>
 	      <configuration>
-	      <strict>true</strict>
-	      <force>true</force>
-		  <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+		      <strict>true</strict>
+		      <force>true</force>
+			  <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
+			  <module>eu.etaxonomy.cdm.remote.vaadin.redlist.wigetset.AppWidgetSet</module>
 	      </configuration>
 	  </plugin>
       </plugins>

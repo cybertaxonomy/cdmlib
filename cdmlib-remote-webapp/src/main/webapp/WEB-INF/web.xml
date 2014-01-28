@@ -65,7 +65,7 @@
       <init-param> 
         <description>Application widgetset</description>
         <param-name>widgetset</param-name>
-        <param-value>eu.etaxonomy.cdm.remote.webapp.vaaditor.widgetset.AppWidgetSet</param-value>
+        <param-value>eu.etaxonomy.cdm.remote.vaadin.widgetset.AppWidgetSet</param-value>
       </init-param>
    </servlet>
     <servlet-mapping>
@@ -74,7 +74,7 @@
     </servlet-mapping>
     <servlet-mapping>
       <servlet-name>Vaadin Application Servlet</servlet-name>
-      <url-pattern>/redlist/*</url-pattern>
+      <url-pattern>/edit/*</url-pattern>
     </servlet-mapping>
  
 
