@@ -291,7 +291,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			facade.addSource(source);
 		}
 		for (SpecimenTypeDesignation designation : row.getTypeDesignations()){
-			//FIXME
+			logger.warn("FIXME"); //FIXME
 //			facade.innerDerivedUnit().addSpecimenTypeDesignation(designation);
 		}
 		handleDeterminations(state, row, facade);
@@ -705,7 +705,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}
 		TeamOrPersonBase<?> actor = getOrMakeAgent(state, authors);
 		TeamOrPersonBase<?> secAuthor = taxon.getSec() == null ? null : taxon.getSec().getAuthorTeam();
-		if (actor != null && secAuthor != null & secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitle().equals(actor.getNomenclaturalTitle())) {
+		if (actor != null && secAuthor != null && secAuthor.getTitleCache().equals(actor.getTitleCache()) && secAuthor.getNomenclaturalTitle().equals(actor.getNomenclaturalTitle())) {
 			actor = secAuthor;
 		}
 		
