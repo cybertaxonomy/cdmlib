@@ -115,7 +115,7 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
 
         /*
          * Sub area preference rule: If there is an area with a direct sub area
-         * and both areas have the same computed status only the information on
+         * and both areas have the same status only the information on
          * the sub area should be reported, whereas the super area should be
          * ignored.
          */
@@ -128,22 +128,17 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
-        /*
-         * NOTE: this rule only applies only to non computed areas, since the
-         * second rule is applied first!.
-         */
-
         // 1. Mixed situation
         distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals("TODO even if distGermany is computed it will not be preferred, is this correct?", berlin, filteredDistributions.iterator().next().getArea());
+        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
 
         // all computed => subAreaPreference should have no effect?
         distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
         Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
+        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
     }
 
     @Test
