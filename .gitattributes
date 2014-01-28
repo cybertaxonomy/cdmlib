@@ -252,6 +252,16 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IdMapper.java -te
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/IndexCounter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/MethodMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/out/ObjectChangeMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoExport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoExportConfigurator.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoExportState.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoExportTransformer.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoId.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoMetaDataRecord.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoRecord.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/CsvDemoRecordBase.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/demo/ICsvAreaRecord.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvExportBaseRedlist.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvId.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/csv/redlist/out/CsvMetaDataRecordRedlist.java -text
