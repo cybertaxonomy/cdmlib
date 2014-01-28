@@ -410,16 +410,6 @@
           <tagBase>http://dev.e-taxonomy.eu/svn/tags/cdmlib</tagBase>
         </configuration>
       </plugin>
-	  <plugin>
-            <groupId>com.vaadin</groupId>
-            <artifactId>vaadin-maven-plugin</artifactId>
-	    <version>${vaadin.version}</version>
-        <configuration>
-        <strict>true</strict>
-        <force>true</force>
-	     <webappDirectory>src/main/webapp/VAADIN/widgetsets</webappDirectory>
-        </configuration>
-	  </plugin>
         </plugins>
         <!--  -->
         <extensions>
@@ -1459,7 +1449,7 @@
           <dependency>
             <groupId>ru.xpoft.vaadin</groupId>
             <artifactId>spring-vaadin-integration</artifactId>
-	    <version>2.0.1</version>
+	    <version>2.0.2</version>
           </dependency>
               <!-- AptView -->
 		    <dependency>
