@@ -95,6 +95,7 @@ public class SchemaUpdater_33_331 extends SchemaUpdaterBase {
 		stepList.add(step);
 			
 		//set default value to false where adaquate
+		stepName = "Set unknownData to default value (false)";
 		String query = " UPDATE @@DescriptionElementBase@@ " +
 					" SET unknownData = @FALSE@ " + 
 					" WHERE DTYPE IN ('CategoricalData', 'QuantitativeData') ";
