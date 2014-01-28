@@ -1,0 +1,175 @@
+/**
+* Copyright (C) 2014 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
+package eu.etaxonomy.cdm.api.utility;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Set;
+
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.unitils.spring.annotation.SpringBeanByType;
+
+import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+
+/**
+ * @author a.kohlbecker
+ * @date Jan 27, 2014
+ *
+ */
+public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
+
+
+    @SpringBeanByType
+    private ITermService termService;
+
+    Collection<Distribution> distributions = null;
+    Collection<Distribution> filteredDistributions = null;
+    boolean subAreaPreference = false;
+    boolean statusOrderPreference = false;
+    Set<MarkerType> hideMarkedAreas = null;
+    NamedArea berlin = null;
+
+    @Before
+    public void setup(){
+        distributions = new ArrayList<Distribution>();
+
+        berlin = NamedArea.NewInstance("Berlin", "Berlin", "BER");
+        berlin.setPartOf(Country.GERMANY());
+        termService.saveOrUpdate(berlin);
+    }
+
+    @Test
+    public void testFilterDistributions_computed(){
+
+        /* 1.
+         * Computed elements are preferred over entered or imported elements.
+         * (Computed description elements are identified by the
+         * MarkerType.COMPUTED()). This means if a entered or imported status
+         * information exist for the same area for which computed data is
+         * available, the computed data has to be given preference over other
+         * data.
+         */
+        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE()));
+
+        Distribution computedDistribution = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.INTRODUCED());
+        computedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        distributions.add(computedDistribution);
+
+        statusOrderPreference= true;
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
+
+       /* In computed distributions, distributions in parent areas are
+        * preferred over those for direct sub areas if they have the same
+        * status
+        */
+
+        Distribution parentComputedDistribution = Distribution.NewInstance(berlin, PresenceTerm.INTRODUCED());
+        parentComputedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        distributions.add(parentComputedDistribution);
+
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals("expecting to see the computed status from the parent area INTRODUCED", PresenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
+
+    }
+
+    @Test
+    public void testFilterDistributions_statusOrderPreference(){
+        statusOrderPreference = true;
+
+        /*
+         * Status order preference rule: In case of multiple distribution status
+         * (PresenceAbsenceTermBase) for the same area the status with the
+         * highest order is preferred, see
+         * OrderedTermBase.compareTo(OrderedTermBase)
+         */
+        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE()));
+        distributions.add(Distribution.NewInstance(Country.GERMANY(), PresenceTerm.INTRODUCED()));
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(PresenceTerm.NATIVE(), filteredDistributions.iterator().next().getStatus());
+    }
+
+
+    @Test
+    public void testFilterDistributions_subAreaPreference(){
+        subAreaPreference = true;
+
+        /*
+         * Sub area preference rule: If there is an area with a direct sub area
+         * and both areas have the same computed status only the information on
+         * the sub area should be reported, whereas the super area should be
+         * ignored.
+         */
+        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE());
+        Distribution distBerlin = Distribution.NewInstance(berlin, PresenceTerm.NATIVE());
+
+        distributions.add(distGermany);
+        distributions.add(distBerlin);
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(berlin, filteredDistributions.iterator().next().getArea());
+
+        /*
+         * NOTE: this rule only applies only to non computed areas, since the
+         * second rule is applied first!.
+         */
+
+        // 1. Mixed situation
+        distGermany.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals("TODO even if distGermany is computed it will not be preferred, is this correct?", berlin, filteredDistributions.iterator().next().getArea());
+
+        // all computed => subAreaPreference should have no effect?
+        distBerlin.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
+    }
+
+    @Test
+    public void testFilterDistributions_markedAreaFilter(){
+        /*
+         * Marked area filter: Skip distributions where the area has a Marker
+         * with one of the specified MarkerTypes
+         */
+        Distribution distGermany = Distribution.NewInstance(Country.GERMANY(), PresenceTerm.NATIVE());
+        Distribution distFrance = Distribution.NewInstance(Country.FRANCEFRENCHREPUBLIC(), PresenceTerm.NATIVE());
+        Distribution distBelgium = Distribution.NewInstance(Country.BELGIUMKINGDOMOF(), PresenceTerm.NATIVE());
+        distributions.add(distGermany);
+        distributions.add(distFrance);
+        distributions.add(distBelgium);
+
+        Country.BELGIUMKINGDOMOF().addMarker(Marker.NewInstance(MarkerType.TO_BE_CHECKED(), true));
+        Country.FRANCEFRENCHREPUBLIC().addMarker(Marker.NewInstance(MarkerType.IMPORTED(), true));
+
+        hideMarkedAreas = new HashSet<MarkerType>();
+        hideMarkedAreas.add(MarkerType.TO_BE_CHECKED());
+        hideMarkedAreas.add(MarkerType.IMPORTED());
+
+        filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+        Assert.assertEquals(1, filteredDistributions.size());
+        Assert.assertEquals(Country.GERMANY(), filteredDistributions.iterator().next().getArea());
+
+    }
+
+}

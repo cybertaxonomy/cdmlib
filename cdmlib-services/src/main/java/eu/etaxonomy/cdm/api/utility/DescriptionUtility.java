@@ -58,7 +58,7 @@ public class DescriptionUtility {
      * sub area</i> and both areas have the same computed status only the
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
-     * <code>subAreaPreference</code></li>
+     * <code>subAreaPreference</code>. NOTE: this rule only applies only to non computed areas, since the second rule is applied first!.</li>
      * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s
      * </ol>
      *
@@ -87,8 +87,8 @@ public class DescriptionUtility {
 
 
         // 1) sort by computed / not computed
+        boolean doSkip = false;
         for(Distribution distribution : distributions){
-
 
             // 1.1) skip distributions having an area with markers matching hideMarkedAreas
             NamedArea area = distribution.getArea();
@@ -99,14 +99,19 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with marked area, area previously recognized and cached");
                 continue;
             }else {
+                doSkip = false;
                 if(hideMarkedAreas != null){
                     for(MarkerType markerType : hideMarkedAreas){
                         if(area.hasMarker(markerType, true)){
                             areasHiddenByMarker.add(area);
                             logger.debug("skipping distribution with marked area");
+                            doSkip = true;
                             continue;
                         }
                     }
+                }
+                if(doSkip){
+                    continue;
                 }
 
             }
