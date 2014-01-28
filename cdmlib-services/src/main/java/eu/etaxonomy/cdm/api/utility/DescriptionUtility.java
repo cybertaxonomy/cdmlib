@@ -58,7 +58,7 @@ public class DescriptionUtility {
      * sub area</i> and both areas have the same computed status only the
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
-     * <code>subAreaPreference</code>. NOTE: this rule only applies only to non computed areas, since the second rule is applied first!.</li>
+     * <code>subAreaPreference</code>. (NOTE: this rule only applies only to non computed areas, since the second rule is applied first!.TODO this is no longer valid since the second rule has been removed)</li>
      * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s
      * </ol>
      *

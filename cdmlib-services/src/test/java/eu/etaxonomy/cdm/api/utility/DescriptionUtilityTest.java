@@ -76,18 +76,15 @@ public class DescriptionUtilityTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals(1, filteredDistributions.size());
         Assert.assertEquals("expecting to see computed status INTRODUCED even it has lower preference than NATIVE", PresenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
 
-       /* In computed distributions, distributions in parent areas are
-        * preferred over those for direct sub areas if they have the same
-        * status
+       /* distributions for parent areas are only
+        * removed if direct sub areas have the same status and if subAreaPreference=TRUE which is not the case here
         */
-
         Distribution parentComputedDistribution = Distribution.NewInstance(berlin, PresenceTerm.INTRODUCED());
         parentComputedDistribution.addMarker(Marker.NewInstance(MarkerType.COMPUTED(), true));
         distributions.add(parentComputedDistribution);
 
         filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
-        Assert.assertEquals(1, filteredDistributions.size());
-        Assert.assertEquals("expecting to see the computed status from the parent area INTRODUCED", PresenceTerm.INTRODUCED(), filteredDistributions.iterator().next().getStatus());
+        Assert.assertEquals(2, filteredDistributions.size());
 
     }
 
