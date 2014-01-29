@@ -48,7 +48,7 @@ public class DefaultView extends CustomComponent implements View{
 		panel.setSizeUndefined();
 		VerticalLayout innerLayout = new VerticalLayout();
 		innerLayout.setMargin(true);
-		Label n = new Label("<h1>Error: Vaadin is not running<h1><p><center><h3> We are sorry for the inconvenience!<h3></center>", ContentMode.HTML);
+		Label n = new Label("<h1>Vaadin Service is not available for this instance<h1><br><center><h3>We are sorry for the inconvenience!<h3></center>", ContentMode.HTML);
 		innerLayout.addComponent(n);
 		panel.setContent(innerLayout);
 		panel.setStyleName("login");
