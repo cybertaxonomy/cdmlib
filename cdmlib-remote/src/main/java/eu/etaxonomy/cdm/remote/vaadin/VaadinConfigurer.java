@@ -3,8 +3,6 @@ package eu.etaxonomy.cdm.remote.vaadin;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-import com.vaadin.ui.UI;
-
 import eu.etaxonomy.cdm.remote.config.AbstractWebApplicationConfigurer;
 
 @Configuration

@@ -2,31 +2,24 @@ package eu.etaxonomy.cdm.remote.vaadin.components;
 
 import javax.annotation.PostConstruct;
 
-import org.apache.commons.io.filefilter.NotFileFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.stereotype.Component;
 
-import com.vaadin.server.Page;
-import com.vaadin.shared.ui.MarginInfo;
 import com.vaadin.data.validator.StringLengthValidator;
 import com.vaadin.event.ShortcutAction.KeyCode;
-import com.vaadin.ui.Alignment;
+import com.vaadin.server.Page;
 import com.vaadin.ui.Button;
 import com.vaadin.ui.Button.ClickEvent;
-import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Notification;
-import com.vaadin.ui.Panel;
 import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
-import com.vaadin.ui.VerticalLayout;
 
 import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
 import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.BfnView;
-import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.DashBoardView;
 
 /**
  * 

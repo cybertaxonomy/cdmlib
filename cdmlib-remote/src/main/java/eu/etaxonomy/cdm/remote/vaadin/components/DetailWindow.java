@@ -2,10 +2,7 @@ package eu.etaxonomy.cdm.remote.vaadin.components;
 
 import java.util.Collection;
 
-import javax.annotation.PostConstruct;
-
 import org.springframework.context.annotation.Scope;
-import org.springframework.stereotype.Component;
 
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.Tree;
