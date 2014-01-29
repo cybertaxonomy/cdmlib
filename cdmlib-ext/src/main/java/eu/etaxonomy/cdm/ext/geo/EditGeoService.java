@@ -94,8 +94,8 @@ public class EditGeoService implements IEditGeoService {
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height,
-            String bbox, String backLayer, List<Language> langs) {
+            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
@@ -115,7 +115,7 @@ public class EditGeoService implements IEditGeoService {
                 statusOrderPreference,
                 hideMarkedAreas,
                 presenceAbsenceTermColors,
-                width, height, bbox, backLayer, langs);
+                langs);
 
         return uriParams;
     }
@@ -131,10 +131,7 @@ public class EditGeoService implements IEditGeoService {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String backLayer, List<Language> langs) {
+            List<Language> langs) {
 
 //        if (backLayer == null) {
 //            backLayer = DEFAULT_BACK_LAYER;
@@ -143,7 +140,7 @@ public class EditGeoService implements IEditGeoService {
                 subAreaPreference,
                 statusOrderPreference,
                 hideMarkedAreas,
-                areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
+                areaMapping, presenceAbsenceTermColors, null, langs);
         return uriParams;
     }
 
@@ -161,8 +158,8 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
-            String backLayer, List<Language> langs) {
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
 
         List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
         taxonDescriptions.add(taxonDescription);
@@ -171,7 +168,7 @@ public class EditGeoService implements IEditGeoService {
                 subAreaPreference,
                 statusOrderPreference,
                 hideMarkedAreas, presenceAbsenceTermColors,
-                width, height, bbox, backLayer, langs);
+                langs);
     }
 
     /*
@@ -184,8 +181,7 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     public String getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
-            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
-            Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
         List<Point> fieldUnitPoints = new ArrayList<Point>();
         List<Point> derivedUnitPoints = new ArrayList<Point>();
@@ -207,7 +203,7 @@ public class EditGeoService implements IEditGeoService {
         }
 
         return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
-                derivedUnitPoints, specimenOrObservationTypeColors, doReturnImage, width, height, bbox, backLayer);
+                derivedUnitPoints, specimenOrObservationTypeColors);
 
     }
 

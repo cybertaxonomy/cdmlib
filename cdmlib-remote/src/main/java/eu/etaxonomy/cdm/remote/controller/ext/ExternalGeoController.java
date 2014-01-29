@@ -144,12 +144,6 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             HttpServletResponse response)
             throws IOException {
 
-
-        int width = 0;
-        int height = 0;
-        String bbox = null;
-        String backLayer = null;
-
         logger.info("doGetDistributionMapUriParams() " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
 
@@ -175,7 +169,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference,
-                hideMarkedAreas, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+                hideMarkedAreas, presenceAbsenceTermColors, langs);
         mv.addObject(uriParams);
 
         return mv;
@@ -205,26 +199,24 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             HttpServletResponse response)
             throws IOException {
 
-        Integer width = null;
-        Integer height = null;
-        String bbox = null;
-        String backLayer = null;
-        Boolean doReturnImage = null;
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
 
-        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
+                relationshipUuids, relationshipInversUuids, termService);
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
+        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
+                null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
 
-        String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
+        String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations,
+                specimenOrObservationTypeColors );
         mv.addObject(uriParams);
         return mv;
     }

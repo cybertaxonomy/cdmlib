@@ -60,12 +60,7 @@ public interface IEditGeoService {
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
-     * @param width
-     * 			The width of the map image
-     * @param height
-     * 			The height of the map image
-     * @param bbox
-     * @param backLayer
+     * @param langs
      * @return
      *
      */
@@ -75,10 +70,7 @@ public interface IEditGeoService {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String backLayer, List<Language> langs);
+            List<Language> langs);
 
 
     /**
@@ -95,18 +87,14 @@ public interface IEditGeoService {
      *            the specified {@link MarkerType}s will be skipped, see
      *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param presenceAbsenceTermColors
-     * @param width
-     * @param height
-     * @param bbox
-     * @param backLayer
      * @param langs
      * @return
      */
     public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
             boolean subAreaPreference, boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
-            String backLayer, List<Language> langs);
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs);
 
     /**
      * Retrieve a parameter string to pass to an EditGeoService endpoint
@@ -128,13 +116,6 @@ public interface IEditGeoService {
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
-     * @param width
-     * 			The width of the map image
-     * @param height
-     * 			The height of the map image
-     * @param bbox
-     *
-     * @param backLayer
      * @return
      *
      * @deprecated use {@link #getDistributionServiceRequestParameterString(List, Map, int, int, String, String, List)} instead
@@ -145,21 +126,13 @@ public interface IEditGeoService {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String backLayer,
             List<Language> langs);
 
 
     public String getOccurrenceServiceRequestParameterString(
             List<SpecimenOrObservationBase> specimensOrObersvations,
-            Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors,
-            Boolean doReturnImage,
-            Integer width,
-            Integer height,
-            String bbox,
-            String backLayer);
+            Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors
+            );
 
     /**
      * Adds an area mapping (CDM area -> geo service area). It is recommended to set the mapping
