@@ -179,21 +179,21 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor)  {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
 		try {
 			boolean result = true;
 			//CREATE
 			String updateQuery = "CREATE TABLE @tableName (";
 			//AUDIT
 			if (isAuditing){
-				updateQuery += " REV integer not null, revtype tinyint, ";
+				updateQuery += " REV integer not null, revtype " + ColumnAdder.getDatabaseColumnType(datasource, "tinyint") + ", ";
 			}
 			//CdmBase
 			if (includeCdmBaseAttributes){
-					updateQuery += " id integer not null,"
-						+ " created datetime, "
+					updateQuery += " id integer NOT NULL,"
+						+ " created " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
 						+ " uuid varchar(36),"
-						+ " updated datetime, "
+						+ " updated " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
 						+ " createdby_id integer,"
 						+ " updatedby_id integer, ";
 			}
@@ -227,7 +227,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			datasource.executeUpdate(updateQuery);
 			
 			//Foreign Keys
-			result &= createForeignKeys(tableName, isAuditing, datasource, monitor);
+			result &= createForeignKeys(tableName, isAuditing, datasource, monitor, caseType);
 			
 			return result;
 		} catch (Exception e) {
@@ -254,38 +254,40 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 	}
 
 	
-	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
 		if (includeCdmBaseAttributes){
 			String attribute = "updatedby";
 			String referencedTable = "UserAccount";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable);
+			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 			
 			attribute = "createdby";
 			referencedTable = "UserAccount";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable);			
+			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);			
 		
 		}
 		if (isAudit){
 			String attribute = "REV";
 			String referencedTable = "AuditEvent";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable);
+			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 		}
 		if (this.includeEventBase){
 			String attribute = "actor_id";
 			String referencedTable = "AgentBase";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable);
+			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
 		}
 		for (ColumnAdder adder : this.columnAdders){
 			if (adder.getReferencedTable() != null){
-				result &= makeForeignKey(tableName, datasource, monitor, adder.getNewColumnName(), adder.getReferencedTable()); 
+				result &= makeForeignKey(tableName, datasource, monitor, adder.getNewColumnName(), adder.getReferencedTable(), caseType); 
 			}
 		}
 		return result;
 	}
 
-	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, String attribute, String referencedTable) throws SQLException {
+	public static boolean makeForeignKey(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, String attribute, String referencedTable, CaseType caseType) throws SQLException {
 		boolean result = true;
+		
+		referencedTable = caseType.transformTo(referencedTable);
 		
 		if (supportsForeignKeys(datasource, monitor, tableName, referencedTable)){
 			String index = "FK@tableName_@attribute";

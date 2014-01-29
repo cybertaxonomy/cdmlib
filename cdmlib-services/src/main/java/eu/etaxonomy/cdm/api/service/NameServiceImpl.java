@@ -284,15 +284,15 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @param name
      * @param config
      */
-    private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name, NameDeletionConfigurator config) {
+    private void removeNameRelationshipsByDeleteConfig(TaxonNameBase<?,?> name, NameDeletionConfigurator config) {
         if (config.isRemoveAllNameRelationships()){
-            Set<NameRelationship> rels = name.getNameRelations();
+            Set<NameRelationship> rels = getModifiableSet(name.getNameRelations());
             for (NameRelationship rel : rels){
                 name.removeNameRelationship(rel);
             }
         }else{
             //relations to this name
-            Set<NameRelationship> rels = name.getRelationsToThisName();
+            Set<NameRelationship> rels = getModifiableSet(name.getRelationsToThisName());
             for (NameRelationship rel : rels){
                 if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
                         name.removeNameRelationship(rel);
@@ -301,7 +301,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 }
             }
             //relations from this name
-            rels = name.getRelationsFromThisName();
+            rels = getModifiableSet(name.getRelationsFromThisName());
             for (NameRelationship rel : rels){
                 if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
                     name.removeNameRelationship(rel);
@@ -312,6 +312,18 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
         }
     }
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	private Set<NameRelationship> getModifiableSet(Set<NameRelationship> relations) {
+		Set<NameRelationship> rels = new HashSet<NameRelationship>();
+		for (NameRelationship rel : relations){
+			rels.add(rel);  	
+		}
+		return rels;
+	}
 
 //********************* METHODS ****************************************************************//
 

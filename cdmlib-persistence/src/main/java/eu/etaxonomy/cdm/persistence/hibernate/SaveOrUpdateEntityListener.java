@@ -81,7 +81,7 @@ public class SaveOrUpdateEntityListener implements SaveOrUpdateEventListener {
 				//The current approach may run out of memory for large descendant sets.
 				List<T> childNodes = (List<T>)node.getChildNodes();
 				for (T child : childNodes){
-					if (! child.equals(node)){  //node should not be it's own child, however just in case
+					if (child != null && ! child.equals(node)){  //node should not be it's own child, however just in case
 						reindex(event, child);
 					}
 				}

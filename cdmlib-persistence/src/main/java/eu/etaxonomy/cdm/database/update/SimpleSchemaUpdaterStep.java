@@ -43,20 +43,20 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 	 * or {@link #NewExplicitAuditedInstance(String, String, String)} instead
 	 */
 	@Deprecated
-	public static SimpleSchemaUpdaterStep NewInstance(String stepName, String defaultQuery){
+	public static SimpleSchemaUpdaterStep NewInstance(String stepName, String defaultQuery, int adapt){
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 	
-	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(String stepName, String defaultQuery){
+	public static SimpleSchemaUpdaterStep NewNonAuditedInstance(String stepName, String defaultQuery, int adapt){
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, false, null, null);
 	}
 
-	public static SimpleSchemaUpdaterStep NewAuditedInstance(String stepName, String defaultQuery, String nonAuditedTableName){
+	public static SimpleSchemaUpdaterStep NewAuditedInstance(String stepName, String defaultQuery, String nonAuditedTableName, int adapt){
 		boolean audit = StringUtils.isNotBlank(nonAuditedTableName);
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, nonAuditedTableName, null);
 	}
 
-	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(String stepName, String defaultQuery, String defaultQueryForAuditedTables){
+	public static SimpleSchemaUpdaterStep NewExplicitAuditedInstance(String stepName, String defaultQuery, String defaultQueryForAuditedTables, int adapt){
 		boolean audit = StringUtils.isNotBlank(defaultQueryForAuditedTables);
 		return new SimpleSchemaUpdaterStep(stepName, defaultQuery, audit, null, defaultQueryForAuditedTables);
 	}
@@ -82,14 +82,14 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 
 	
 	@Override
-	public Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor){
+	public Integer invoke (ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType){
 		boolean result = true;
 		
 		//non audit
-		result &= invokeQueryMap(datasource, queryMap); ;
+		result &= invokeQueryMap(datasource, queryMap, caseType); ;
 		//audit
 		if (this.includeAudit){
-			result &= invokeQueryMap(datasource, auditQueryMap);
+			result &= invokeQueryMap(datasource, auditQueryMap, caseType);
 		}else{
 			logger.info("SimpleSchemaUpdaterStep non Audited");
 		}
@@ -97,13 +97,14 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return (result == true )? 0 : null;
 	}
 
-	private boolean invokeQueryMap(ICdmDataSource datasource, Map<DatabaseTypeEnum, String> queryMap) {
+	private boolean invokeQueryMap(ICdmDataSource datasource, Map<DatabaseTypeEnum, String> queryMap, CaseType caseType) {
 		boolean result = true;
 		String query = queryMap.get(datasource.getDatabaseType());
 		if (query == null){
 			query = queryMap.get(null);
 		}
 		if (query != null){
+			query = doReplacements(query, caseType, datasource);
 			result = executeQuery(datasource, query);
 		}else{
 			//TODO exception ?
@@ -112,9 +113,16 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		return result;
 	}
 
-	private boolean executeQuery(ICdmDataSource datasource,  String query) {
+	private String doReplacements(String query, CaseType caseType, ICdmDataSource datasource) {
+		query = caseType.replaceTableNames(query);
+		query = query.replaceAll("@FALSE@", getBoolean(false, datasource));
+		query = query.replaceAll("@TRUE@", getBoolean(true, datasource));
+		return query;
+	}
+
+	private boolean executeQuery(ICdmDataSource datasource,  String replacedQuery) {
 		try {
-			datasource.executeUpdate(query);
+			datasource.executeUpdate(replacedQuery);
 		} catch (SQLException e) {
 			logger.error(e);
 			return false;
@@ -127,11 +135,7 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 		if (StringUtils.isBlank(nonAuditQuery)){
 			throw new IllegalArgumentException("Non-audit query must not be blank");
 		}
-		String auditQuery = nonAuditQuery.replace(" " + tableName + " ", " " + tableName + "_AUD ");
-		if (auditQuery.contains(" " + tableName + ".")){
-			logger.debug("audit query contains ' TableName.' in query. Will be replaced by ' TableName_AUD.' ");  
-			auditQuery = auditQuery.replace(" " + tableName + ".", " " + tableName + "_AUD.");
-		}
+		String auditQuery = nonAuditQuery.replace("@@" + tableName + "@@", "@@" + tableName + "_AUD@@");
 		//TODO warning if nothing changed
 		this.auditQueryMap.put(dbType, auditQuery);
 	}
@@ -139,7 +143,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 //********************************* DELEGATES *********************************/
 	
 	/**
-	 * For certain database types one may define special queries
+	 * For certain database types one may define special queries.<BR>
+	 * Don't forget to put case-mask (@@) for table names
 	 * @param dbType database type
 	 * @param query query to use for the given database type.
 	 * @return this schema updater step 
@@ -151,8 +156,8 @@ public class SimpleSchemaUpdaterStep extends SchemaUpdaterStepBase<SimpleSchemaU
 
 	/**
 	 * Defines the non audited table name for computing the audited query.
-	 * @param nonAuditedTableName
-	 * @return
+	 * @param nonAuditedTableName uncased table name that is to be audited
+	 * @return the step
 	 */
 	public SimpleSchemaUpdaterStep setDefaultAuditing(String nonAuditedTableName){
 		if (StringUtils.isBlank(nonAuditedTableName)){

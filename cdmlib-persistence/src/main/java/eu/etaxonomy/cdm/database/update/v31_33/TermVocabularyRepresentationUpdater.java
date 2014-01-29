@@ -20,6 +20,7 @@ import au.com.bytecode.opencsv.CSVReader;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -48,12 +49,16 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		
 		try {
-			String sql = String.format(" SELECT id FROM DefinedTermBase dtb WHERE dtb.uuid = '%s'", Language.uuidEnglish);
+			String sql = String.format(
+					" SELECT id " +
+					" FROM %s dtb " +
+					" WHERE dtb.uuid = '%s'",
+					 caseType.transformTo("DefinedTermBase"),
+					 Language.uuidEnglish);
 			String languageId = String.valueOf((Number)datasource.getSingleValue(sql));
-			
 			
 			//for each vocabulary
 			for(VocabularyEnum vocabularyEnum : VocabularyEnum.values()) {
@@ -71,20 +76,25 @@ public class TermVocabularyRepresentationUpdater extends SchemaUpdaterStepBase<T
 				String description = repEN.getText();
 				
 				//find representation in database
-				sql = " SELECT rep.uuid " +
-						" FROM TermVocabulary voc INNER JOIN TermVocabulary_Representation MN ON MN.TermVocabulary_id = voc.id " +
-						" INNER JOIN Representation rep ON rep.id = MN.representations_id " +
-						" WHERE voc.uuid = '%s' AND rep.language_id = %s";
+				sql = caseType.replaceTableNames(
+						" SELECT rep.uuid " +
+						" FROM @@TermVocabulary@@ voc " +
+							" INNER JOIN @@TermVocabulary_Representation@@ MN ON MN.TermVocabulary_id = voc.id " +
+							" INNER JOIN @@Representation@@ rep ON rep.id = MN.representations_id " +
+						" WHERE voc.uuid = '%s' AND rep.language_id = %s");
 				sql = String.format(sql, uuid.toString(), languageId);
 				String repUuid = (String)datasource.getSingleValue(sql);
 				
 				//update with correct label and representation
-				sql = " UPDATE Representation r SET label = '%s', text = '%s' WHERE r.uuid = '%s'";
-				sql = String.format(sql, label, description, repUuid);
-				datasource.executeUpdate(sql);
+				sql = " UPDATE %s SET label = '%s', text = '%s' WHERE uuid = '%s'";
+				sql = String.format(sql, caseType.transformTo("Representation"), label, description, repUuid);
 				
+				//update vocabulary titleCache
+				sql = " UPDATE %s SET titleCache = '%s' WHERE uuid = '%s'";
+				sql = String.format(sql, caseType.transformTo("TermVocabulary"), label, uuid);
+				
+				datasource.executeUpdate(sql);
 			}	
-			
 			
 			return 0;
 		} catch (Exception e) {

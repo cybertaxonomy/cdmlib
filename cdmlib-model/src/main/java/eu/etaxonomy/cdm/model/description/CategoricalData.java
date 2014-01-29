@@ -57,7 +57,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "CategoricalData", propOrder = {
     "orderRelevant",
-    "stateData"
+    "stateData",
+    "unknownData"
 })
 @XmlRootElement(name = "CategoricalData")
 @Entity
@@ -79,6 +80,9 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<StateData>();
+    
+	@XmlElement(name = "UnknownData")
+	private Boolean unknownData = false;
 
 //****************************** FACTORY METHOD *******************************/
 

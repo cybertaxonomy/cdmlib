@@ -28,7 +28,7 @@ public interface ITermUpdater extends IUpdater<ITermUpdater>{
 	 * @return
 	 * @throws Exception 
 	 */
-	boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;	
+	boolean invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;	
 
 	/**
 	 * Invokes this CDM term updater and updates the terms up to the given
@@ -40,7 +40,7 @@ public interface ITermUpdater extends IUpdater<ITermUpdater>{
 	 * @return
 	 * @throws Exception 
 	 */
-	boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor) throws Exception;	
+	boolean invoke(String targetVersion, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws Exception;	
 
 
 	public String getTargetVersion();

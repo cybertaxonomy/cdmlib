@@ -21,6 +21,7 @@ import com.mysql.jdbc.exceptions.MySQLSyntaxErrorException;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
 /**
@@ -59,11 +60,11 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor){
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType){
 		boolean result = true;
 		try {
-			result &= createSequenceTable(datasource, monitor);
-			result &= makeEntriesForEntityTables(datasource, monitor);
+			result &= createSequenceTable(datasource, monitor, caseType);
+			result &= makeEntriesForEntityTables(datasource, monitor, caseType);
 		} catch (Exception e) {
 			monitor.warning(e.getMessage(), e);
 			result = false;
@@ -75,10 +76,11 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	/**
 	 * @param monitor 
 	 * @param datasource 
+	 * @param caseType 
 	 * @return
 	 * @throws SQLException 
 	 */
-	private boolean createSequenceTable(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private boolean createSequenceTable(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
 		String createTableQuery = null;
 		// TODO add create table statements for other supported databases
@@ -100,10 +102,11 @@ public class SequenceTableCreator extends SchemaUpdaterStepBase {
 	/**
 	 * @param monitor 
 	 * @param datasource 
+	 * @param caseType 
 	 * @return
 	 * @throws SQLException 
 	 */
-	private boolean makeEntriesForEntityTables(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	private boolean makeEntriesForEntityTables(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		
 		DatabaseMetaData metaData = datasource.getMetaData();
 		ResultSet resultSet = metaData.getTables(datasource.getDatabase(), null, null, null);

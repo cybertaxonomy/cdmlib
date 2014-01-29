@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 
 import java.util.Collection;
-import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,14 +19,11 @@ import java.util.UUID;
 
 import org.hibernate.LockMode;
 import org.hibernate.Session;
-import org.springframework.security.core.Authentication;
 
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
-import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 
@@ -83,7 +79,7 @@ public interface IService<T extends ICdmBase>{
      *
      * @param persistentObject the object to be deleted
      * @return the unique identifier of the deleted entity
-     * @throws ReferencedObjectUndeletableException 
+     * @throws ReferencedObjectUndeletableException
      */
     public UUID delete(T persistentObject) throws ReferencedObjectUndeletableException;
 
@@ -166,6 +162,7 @@ public interface IService<T extends ICdmBase>{
      * @param propertyPaths properties to be initialized
      * @return
      */
+    //TODO refactor to public <S extends T> List<T> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
     public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**

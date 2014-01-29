@@ -64,7 +64,8 @@ import eu.etaxonomy.cdm.validation.Level2;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "QuantitativeData", propOrder = {
     "unit",
-    "statisticalValues"
+    "statisticalValues",
+    "unknownData"
 })
 @XmlRootElement(name = "QuantitativeData")
 @Entity
@@ -88,6 +89,10 @@ public class QuantitativeData extends DescriptionElementBase implements Cloneabl
 	@NotEmpty(groups = Level2.class)
 	private Set<StatisticalMeasurementValue> statisticalValues = new HashSet<StatisticalMeasurementValue>();
 
+	@XmlElement(name = "UnknownData")
+	private Boolean unknownData = false;
+	
+	
 // ******************************** FACTORY METHOD *******************************/
 	
 	/** 

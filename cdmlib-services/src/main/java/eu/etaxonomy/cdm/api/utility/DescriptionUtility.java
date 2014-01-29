@@ -46,8 +46,8 @@ public class DescriptionUtility {
      * MarkerType.COMPUTED()}). This means if a entered or imported status
      * information exist for the same area for which computed data is available,
      * the computed data has to be given preference over other data.</li>
-     * <li>In computed distributions, distributions in parent areas are
-     * preferred over those for <i>direct sub areas</i> if they have the same
+     * <li>NOTE: This rule is now replaced by the <i>Sub area preference rule</i>: In computed distributions, distributions in sub areas are
+     * preferred over those for <i>parent areas</i> if they have the same
      * status</li>
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
@@ -58,7 +58,7 @@ public class DescriptionUtility {
      * sub area</i> and both areas have the same computed status only the
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
-     * <code>subAreaPreference</code></li>
+     * <code>subAreaPreference</code>. (NOTE: this rule only applies only to non computed areas, since the second rule is applied first!.TODO this is no longer valid since the second rule has been removed)</li>
      * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s
      * </ol>
      *
@@ -87,8 +87,8 @@ public class DescriptionUtility {
 
 
         // 1) sort by computed / not computed
+        boolean doSkip = false;
         for(Distribution distribution : distributions){
-
 
             // 1.1) skip distributions having an area with markers matching hideMarkedAreas
             NamedArea area = distribution.getArea();
@@ -99,14 +99,19 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with marked area, area previously recognized and cached");
                 continue;
             }else {
+                doSkip = false;
                 if(hideMarkedAreas != null){
                     for(MarkerType markerType : hideMarkedAreas){
                         if(area.hasMarker(markerType, true)){
                             areasHiddenByMarker.add(area);
                             logger.debug("skipping distribution with marked area");
+                            doSkip = true;
                             continue;
                         }
                     }
+                }
+                if(doSkip){
+                    continue;
                 }
 
             }
@@ -133,25 +138,29 @@ public class DescriptionUtility {
                 otherDistributions.remove(keyComputed);
             }
 
-            // 2.b) in computed distributions prefer parent areas over sub areas if they have the same status
-            for(Distribution distribution : valuesOfAllInnerSets(computedDistributions.values())){
-                if(distribution.getArea() != null){
-                    NamedArea parentArea = distribution.getArea().getPartOf();
-                    while(parentArea != null){
-                        // get all distributions for the parent area
-                        Set<Distribution> parentAreaDistributions = computedDistributions.get(parentArea);
-                        if(parentAreaDistributions != null){
-                            // check all computed distributions of the parent area
-                            for(Distribution parentDistribution : parentAreaDistributions) {
-                                if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
-                                    removeCandidatesDistribution.add(parentDistribution);
-                                }
-                            }
-                        }
-                        parentArea = parentArea.getPartOf();
-                    }
-                }
-            }
+/* TODO remove the lines below
+ * this filtering rule has now be implemented as subAreaPreference rule and does not need to be implemented twice
+ * TODO also remove second rule from method documentation
+ */
+//            // 2.b) in computed distributions prefer parent areas over sub areas if they have the same status
+//            for(Distribution distribution : valuesOfAllInnerSets(computedDistributions.values())){
+//                if(distribution.getArea() != null){
+//                    NamedArea parentArea = distribution.getArea().getPartOf();
+//                    while(parentArea != null){
+//                        // get all distributions for the parent area
+//                        Set<Distribution> parentAreaDistributions = computedDistributions.get(parentArea);
+//                        if(parentAreaDistributions != null){
+//                            // check all computed distributions of the parent area
+//                            for(Distribution parentDistribution : parentAreaDistributions) {
+//                                if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
+//                                    removeCandidatesDistribution.add(parentDistribution);
+//                                }
+//                            }
+//                        }
+//                        parentArea = parentArea.getPartOf();
+//                    }
+//                }
+//            }
         }
 
         filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(otherDistributions.size() + computedDistributions.size());

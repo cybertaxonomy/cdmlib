@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_31_33;
+import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
 
 /**
@@ -42,13 +43,14 @@ public class CdmUpdater {
         if (monitor == null){
             monitor = DefaultProgressMonitor.NewInstance();
         }
+        CaseType caseType = CaseType.caseTypeOfDatasource(datasource);
 
         ISchemaUpdater currentSchemaUpdater = getCurrentSchemaUpdater();
         // TODO do we really always update the terms??
         ITermUpdater currentTermUpdater = getCurrentTermUpdater();
 
-        int steps = currentSchemaUpdater.countSteps(datasource, monitor);
-        steps += currentTermUpdater.countSteps(datasource, monitor);
+        int steps = currentSchemaUpdater.countSteps(datasource, monitor, caseType);
+        steps += currentTermUpdater.countSteps(datasource, monitor, caseType);
         steps++;  //for hibernate_sequences update
 
         String taskName = "Update to schema version " + currentSchemaUpdater.getTargetVersion() + " and to term version " + currentTermUpdater.getTargetVersion(); //+ currentSchemaUpdater.getVersion();
@@ -56,10 +58,10 @@ public class CdmUpdater {
 
         try {
             datasource.startTransaction();
-            result &= currentSchemaUpdater.invoke(datasource, monitor);
+            result &= currentSchemaUpdater.invoke(datasource, monitor, caseType);
             if (result == true){
-                result &= currentTermUpdater.invoke(datasource, monitor);
-                updateHibernateSequence(datasource, monitor);
+                result &= currentTermUpdater.invoke(datasource, monitor, caseType);
+                updateHibernateSequence(datasource, monitor, caseType);
             }
             if (result == false){
                 datasource.rollback();
@@ -86,13 +88,15 @@ public class CdmUpdater {
     }
 
 
-    /**
+
+	/**
      * Updating terms often inserts new terms, vocabularies and representations.
      * Therefore the counter in hibernate_sequences must be increased.
      * We do this once at the end of term updating.
+	 * @param caseType
      * @return true if update was successful, false otherwise
      */
-    private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor) {
+    private boolean updateHibernateSequence(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
         boolean result = true;
         monitor.subTask("Update hibernate sequences");
         try {
@@ -101,7 +105,7 @@ public class CdmUpdater {
             while (rs.next()){
                 String table = rs.getString("sequence_name");
                 Integer val = rs.getInt("next_val");
-                result &= updateSingleValue(datasource,monitor, table, val);
+                result &= updateSingleValue(datasource,monitor, table, val, caseType);
             }
         } catch (Exception e) {
             String message = "Exception occurred when trying to update hibernate_sequences table: " + e.getMessage();
@@ -120,9 +124,10 @@ public class CdmUpdater {
      * @param monitor
      * @param table
      * @param oldVal
+     * @param caseType
      * @return
      */
-    private boolean updateSingleValue(ICdmDataSource datasource, IProgressMonitor monitor, String table, Integer oldVal){
+    private boolean updateSingleValue(ICdmDataSource datasource, IProgressMonitor monitor, String table, Integer oldVal, CaseType caseType){
         if (table.equals("default")){  //found in flora central africa test database
             return true;
         }
@@ -130,7 +135,7 @@ public class CdmUpdater {
             Integer newVal;
             try {
                 String sql = " SELECT max(id) FROM %s ";
-                newVal = (Integer)datasource.getSingleValue(String.format(sql, table));
+                newVal = (Integer)datasource.getSingleValue(String.format(sql, caseType.transformTo(table)));
             } catch (Exception e) {
                 String message = "Could not retrieve max value for table '%s'. Will not update hibernate_sequence for this table. " +
                         "Usually this will not cause problems, however, if new data has been added to " +
@@ -175,17 +180,17 @@ public class CdmUpdater {
      * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_31_33.NewInstance();
+        return SchemaUpdater_33_331.NewInstance();
     }
 
     /**
      * @param args
      */
     public static void main(String[] args) {
-        logger.warn("main method not yet fully implemented (only works with mysql!!!)");
-        if(args.length < 2){
-            logger.error("Arguments missing: server database [username [password]]");
-        }
+//        logger.warn("main method not yet fully implemented (only works with mysql!!!)");
+//        if(args.length < 2){
+//            logger.error("Arguments missing: server database [username [password]]");
+//        }
         //TODO better implementation
         CdmUpdater myUpdater = new CdmUpdater();
         String server = args[0];
@@ -201,7 +206,7 @@ public class CdmUpdater {
             }
         }
 
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, port, username, password, null);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, 3306, username, password, null);
         boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
         System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
     }

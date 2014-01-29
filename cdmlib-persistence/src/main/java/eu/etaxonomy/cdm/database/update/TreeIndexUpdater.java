@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.database.update;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 
@@ -45,7 +46,7 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		try{
 			boolean result = true;			
 			
@@ -62,9 +63,9 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			//start
 			String separator = ITreeNode.separator;
 			String treePrefix = ITreeNode.treePrefix;
-			sql = String.format(" UPDATE %s tn " +
-					" SET tn.%s = CONCAT('%s%s', tn.%s, '%s', tn.id, '%s') " +
-					" WHERE tn.%s IS NULL AND tn.%s IS NOT NULL ", 
+			sql = String.format(" UPDATE %s " +
+					" SET %s = CONCAT('%s%s', %s, '%s', id, '%s') " +
+					" WHERE %s IS NULL AND %s IS NOT NULL ", 
 						tableName, 
 						indexColumnName, separator, treePrefix, treeIdColumnName, separator, separator, 
 						parentIdColumnName, treeIdColumnName);
@@ -80,39 +81,41 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			do {
 			
 				//MySQL
-				sql = String.format(" UPDATE %s child " +
-						" INNER JOIN %s parent ON child.%s = parent.id " +
-						" SET child.%s = CONCAT( parent.%s, child.id, '%s') " +
-						" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ", 
-							tableName, 
-							tableName, parentIdColumnName, 
-							indexColumnName, indexColumnName, separator,
-							indexColumnName, indexColumnName);
-				
-//				ANSI
-				//http://stackoverflow.com/questions/1293330/how-can-i-do-an-update-statement-with-join-in-sql
-				sql = String.format(" UPDATE %s " +
-						" SET %s = ( " +
-							" ( SELECT CONCAT ( parent.%s, %s.id, '%s') " + 
-								" FROM %s parent " +
-								" WHERE parent.id = %s.%s ) " +
-							" ) " +
-						" WHERE EXISTS ( " +
-								" SELECT * " +
-								" FROM %s parent " +
-								" WHERE parent.id = %s.%s AND parent.%s IS NOT NULL AND %s.%s IS NULL " +
-							") " +
-							" ",
-						tableName,
-						indexColumnName,
-							indexColumnName, tableName, separator,
+				if (datasource.getDatabaseType().equals(DatabaseTypeEnum.MySQL)){
+					sql = String.format(" UPDATE %s child " +
+							" INNER JOIN %s parent ON child.%s = parent.id " +
+							" SET child.%s = CONCAT( parent.%s, child.id, '%s') " +
+							" WHERE parent.%s IS NOT NULL AND child.%s IS NULL ", 
+								tableName, 
+								tableName, parentIdColumnName, 
+								indexColumnName, indexColumnName, separator,
+								indexColumnName, indexColumnName);
+				}else{
+					//ANSI
+					//http://stackoverflow.com/questions/1293330/how-can-i-do-an-update-statement-with-join-in-sql
+					//does not work with MySQL as MySQL does not allow to use the same table in Subselect and Update (error 1093: http://dev.mysql.com/doc/refman/5.1/de/subquery-errors.html) 
+					sql = String.format(" UPDATE %s " +
+							" SET %s = ( " +
+								" ( SELECT CONCAT ( parent.%s, %s.id, '%s') " + 
+									" FROM %s parent " +
+									" WHERE parent.id = %s.%s ) " +
+								" ) " +
+							" WHERE EXISTS ( " +
+									" SELECT * " +
+									" FROM %s parent " +
+									" WHERE parent.id = %s.%s AND parent.%s IS NOT NULL AND %s.%s IS NULL " +
+								") " +
+								" ",
 							tableName,
-							tableName, parentIdColumnName,
-							
-							tableName,
-							tableName, parentIdColumnName, indexColumnName, tableName, indexColumnName
-						);
-				
+							indexColumnName,
+								indexColumnName, tableName, separator,
+								tableName,
+								tableName, parentIdColumnName,
+								
+								tableName,
+								tableName, parentIdColumnName, indexColumnName, tableName, indexColumnName
+							);
+				}
 				
 				datasource.executeUpdate(sql);
 				
@@ -135,6 +138,5 @@ public class TreeIndexUpdater extends AuditedSchemaUpdaterStepBase<TreeIndexUpda
 			return false;
 		}
 	}
-
 
 }

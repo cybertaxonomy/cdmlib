@@ -355,7 +355,7 @@ public class TransmissionEngineDistributionTest extends CdmTransactionalIntegrat
         writeDbUnitDataSetFile(new String[] {
                 "TAXONBASE", "TAXONNAMEBASE",
                 "REFERENCE", "DESCRIPTIONELEMENTBASE", "DESCRIPTIONBASE",
-                "AGENTBASE", "CLASSIFICATION", "CLASSIFICATION_TAXONNODE", "TAXONNODE",
+                "AGENTBASE", "CLASSIFICATION",  "TAXONNODE",
                 "HOMOTYPICALGROUP", "LANGUAGESTRING",
          });
 

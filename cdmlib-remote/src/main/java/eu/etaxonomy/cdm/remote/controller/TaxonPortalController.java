@@ -167,7 +167,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.status.type.representations",
             "name.nomenclaturalReference.authorTeam",
             "name.nomenclaturalReference.inReference",
-            "taxonNodes.classification"
+            "taxonNodes.classification.childNodes",
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -1082,14 +1082,20 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      */
     private List<Media> getMediaForTaxon(Taxon taxon, Set<TaxonRelationshipEdge> includeRelationships,
             Boolean includeTaxonDescriptions, Boolean includeOccurrences, Boolean includeTaxonNameDescriptions,
-            Class<? extends MediaRepresentationPart> type, String[] mimeTypes, Integer widthOrDuration, Integer height,
-            Integer size) {
+            Class<? extends MediaRepresentationPart> type, String[] mimeTypes, Integer widthOrDuration,
+            Integer height, Integer size) {
 
-        List<Media> taxonGalleryMedia = service.listMedia(taxon, includeRelationships, false, includeTaxonDescriptions,
-                includeOccurrences, includeTaxonNameDescriptions, TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
+        // list the media
+        logger.trace("getMediaForTaxon() - list the media");
+        List<Media> taxonGalleryMedia = service.listMedia(taxon, includeRelationships,
+                false, includeTaxonDescriptions, includeOccurrences, includeTaxonNameDescriptions,
+                TAXONDESCRIPTION_MEDIA_INIT_STRATEGY);
 
-        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(taxonGalleryMedia, type,
-                mimeTypes, null, widthOrDuration, height, size);
+        // filter by preferred size and type
+
+        logger.trace("getMediaForTaxon() - filter the media");
+        Map<Media, MediaRepresentation> mediaRepresentationMap = MediaUtils.findPreferredMedia(
+                taxonGalleryMedia, type, mimeTypes, null, widthOrDuration, height, size);
 
         List<Media> filteredMedia = new ArrayList<Media>(mediaRepresentationMap.size());
         for (Media media : mediaRepresentationMap.keySet()) {
@@ -1097,6 +1103,8 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             media.addRepresentation(mediaRepresentationMap.get(media));
             filteredMedia.add(media);
         }
+
+        logger.trace("getMediaForTaxon() - END ");
 
         return filteredMedia;
     }

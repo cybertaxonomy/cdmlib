@@ -3,12 +3,15 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -26,7 +29,8 @@ public class TaxonXXMLFieldGetter {
     TaxonXModsExtractor modsextractor;
     TaxonXTreatmentExtractor treatmentextractor ;
 
-    public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document, TaxonXImport taxonXImport, TaxonXImportState taxonXstate, Classification classif){
+    public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document, TaxonXImport taxonXImport,
+            TaxonXImportState taxonXstate, Classification classif, Map<String,Feature> featuresMap){
         this.doc = document;
         this.importer = taxonXImport;
         this.nomenclaturalCode = taxonXstate.getConfig().getNomenclaturalCode();
@@ -34,7 +38,8 @@ public class TaxonXXMLFieldGetter {
         logger.info("CLASSIFICATION "+classification);
         this.taxonXstate=taxonXstate;
         modsextractor = new TaxonXModsExtractor(importer);
-        treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, taxonXstate);
+        Reference<?> originalSourceUrl =taxonXstate.getConfig().getOriginalSourceURL();
+        treatmentextractor = new TaxonXTreatmentExtractor(nomenclaturalCode,classification,importer, taxonXstate,featuresMap,originalSourceUrl );
     }
 
 
@@ -62,6 +67,7 @@ public class TaxonXXMLFieldGetter {
                         ref = modsextractor.extractMods(nodes2.item(j));
                         //                        System.out.println("reference: "+ref.getTitleCache());
                         importer.getReferenceService().saveOrUpdate(ref);
+                        ref=CdmBase.deproxy(ref, Reference.class);
                     }
                 }
             }
@@ -71,6 +77,7 @@ public class TaxonXXMLFieldGetter {
         } else {
             taxonXstate.getConfig().setClassificationName( "no reference title");
         }
+        ref=CdmBase.deproxy(ref, Reference.class);
         return ref;
     }
 
@@ -114,6 +121,14 @@ public class TaxonXXMLFieldGetter {
             treatmentextractor.updateClassification(classification);
         }
 
+    }
+
+
+    /**
+     * @return
+     */
+    public Map<String,Feature> getFeaturesUsed() {
+       return treatmentextractor.getFeaturesUsed();
     }
 
 

@@ -59,7 +59,7 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 	}
 
 	@Override
-	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor) {
+	protected boolean invokeOnTable(String tableName, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) {
 		boolean result = true;
 		try {
 			
@@ -79,7 +79,7 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 				datasource.executeUpdate(updateQuery);
 			}
 			if (referencedTable != null){
-				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, columnName, referencedTable);
+				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, columnName, referencedTable, caseType);
 			}
 				
 			return result;
@@ -123,7 +123,11 @@ public class ColumnTypeChanger extends AuditedSchemaUpdaterStepBase<ColumnTypeCh
 			throw new DatabaseTypeNotSupportedException(warning);
 		}
 		if (isNotNull){
-			updateQuery += " NOT NULL";
+			if (datasource.getDatabaseType().equals(DatabaseTypeEnum.PostgreSQL)){
+				logger.warn("NOT NULL not implementd for POSTGRES");
+			}else{
+				updateQuery += " NOT NULL";
+			}
 		}
 		updateQuery = updateQuery.replace("@tableName", tableName);
 		updateQuery = updateQuery.replace("@columnName", columnName);

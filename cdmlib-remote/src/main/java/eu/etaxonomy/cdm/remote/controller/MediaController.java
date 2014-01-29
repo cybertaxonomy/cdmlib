@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.IMediaService;
 import eu.etaxonomy.cdm.common.media.ImageInfo;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.remote.exception.NoRecordsMatchException;
 
 /**
  * TODO write controller documentation
@@ -63,27 +64,38 @@ public class MediaController extends BaseController<Media, IMediaService>
     public ModelAndView doGetMediaMetaData(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         Map<String, String> result;
-        Media media = getCdmBaseInstance(uuid, response, MEDIA_INIT_STRATEGY);
 
-        Set<MediaRepresentation> representations = media.getRepresentations();
-        //get first representation and retrieve the according metadata
-
-        Object[] repArray = representations.toArray();
-        Object mediaRep = repArray[0];
         ModelAndView mv = new ModelAndView();
-        URI uri = null;
-        try {
-            if (mediaRep instanceof MediaRepresentation){
-                MediaRepresentation medRep = (MediaRepresentation) mediaRep;
-                uri = medRep.getParts().get(0).getUri();
-                ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(uri, 3000);
-                result = imageInfo.getMetaData();
-                if(result != null) {
-                    mv.addObject(result);
+        try{
+            Media media = getCdmBaseInstance(uuid, response, MEDIA_INIT_STRATEGY);
+
+            Set<MediaRepresentation> representations = media.getRepresentations();
+            //get first representation and retrieve the according metadata
+
+            Object[] repArray = representations.toArray();
+            Object mediaRep = repArray[0];
+            URI uri = null;
+            try {
+                if (mediaRep instanceof MediaRepresentation){
+                    MediaRepresentation medRep = (MediaRepresentation) mediaRep;
+                    uri = medRep.getParts().get(0).getUri();
+                    ImageInfo imageInfo = ImageInfo.NewInstanceWithMetaData(uri, 3000);
+                    result = imageInfo.getMetaData();
+                    if(result != null) {
+                        mv.addObject(result);
+                    }
                 }
+            } catch (HttpException e) {
+                HttpStatusMessage.fromString("Reading media file from " + uri.toString() + " failed").setStatusCode(400).send(response);
             }
-        } catch (HttpException e) {
-            HttpStatusMessage.fromString("Reading media file from " + uri.toString() + " failed").setStatusCode(400).send(response);
+        } catch (NoRecordsMatchException e){
+           /* IGNORE */
+           /* java.lang.IllegalStateException: STREAM is thrown by the servlet container
+            * if the model and view is returned after the http error has been send
+            * so we return null here
+            */
+            return null;
+
         }
         return mv;
 

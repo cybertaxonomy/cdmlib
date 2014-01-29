@@ -28,6 +28,8 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -62,6 +64,13 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	
 	@SpringBeanByType
 	private ITaxonService taxonService;
+	
+	@SpringBeanByType
+	private IPolytomousKeyService polKeyService;
+	
+	@SpringBeanByType
+	private IPolytomousKeyNodeService polKeyNodeService;
+	
 
 	private static final UUID t1Uuid = UUID.fromString("55c3e41a-c629-40e6-aa6a-ff274ac6ddb1");
 	private static final UUID t2Uuid = UUID.fromString("2659a7e0-ff35-4ee4-8493-b453756ab955");
@@ -113,6 +122,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 		// descriptions
 		t1 = node1.getTaxon();
+		PolytomousKey polKey = PolytomousKey.NewInstance();
+		PolytomousKeyNode keyNode = PolytomousKeyNode.NewInstance("", "", t1, null);
+		keyNode.setKey(polKey);
+		polKeyNodeService.save(keyNode);
+		polKeyService.save(polKey);
+		
 		TaxonNameBase nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
@@ -126,6 +141,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 			syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
 			synUUID = syn.getUuid();
 		} catch (DataChangeNoRollbackException e) {
+			logger.debug(e.getMessage());
 			Assert.fail();
 		}
 		termService.saveOrUpdate(synonymRelationshipType);
@@ -134,7 +150,8 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(2, t2.getDescriptions().size());
 	
 		
-		assertNull(taxonService.find(t1Uuid));
+		assertNotNull(taxonService.find(t1Uuid));
+		assertNull(taxonNodeService.find(node1Uuid));
 		syn = (Synonym)taxonService.find(synUUID);
 		assertNotNull(syn);
 		Taxon tax = syn.getAcceptedTaxa().iterator().next();
@@ -179,9 +196,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		taxonNodeService.saveOrUpdate(node1);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node1 = taxonNodeService.load(node1Uuid);
-		Assert.assertEquals("Node1 treeindex is not correct", "#t2#2#", node1.treeIndex());
+		Assert.assertEquals("Node1 treeindex is not correct", "#t2#8#2#", node1.treeIndex());
 		node6 = taxonNodeService.load(node6Uuid);
-		Assert.assertEquals("Node6 treeindex is not correct", "#t2#2#4#6#", node6.treeIndex());
+		Assert.assertEquals("Node6 treeindex is not correct", "#t2#8#2#4#6#", node6.treeIndex());
 
 		//into new classification
 		node2 = taxonNodeService.load(node2Uuid);
@@ -190,7 +207,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		taxonNodeService.saveOrUpdate(node5);
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node2 = taxonNodeService.load(node2Uuid);
-		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node2.treeIndex());
+		Assert.assertEquals("Node3 treeindex is not correct", "#t2#8#2#5#3#", node2.treeIndex());
 
 }
 
@@ -245,7 +262,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		node2 = taxonNodeService.load(rootNodeUuid);
 		node1 = (TaxonNode)HibernateProxyHelper.deproxy(node1);
-		
+		node2 = (TaxonNode)HibernateProxyHelper.deproxy(node2);
 		TaxonNode newNode = node1.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), null, null);
 		UUID uuidNewNode = taxonNodeService.save(newNode);
 		Set<ITaxonTreeNode> treeNodes = new HashSet<ITaxonTreeNode>();
@@ -260,7 +277,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(newNode);
 		assertNull(node1);
-		
+		taxonService.getSession().flush();
 		t1 = (Taxon) taxonService.load(t1Uuid);
 		assertNull(t1);
 		t2 = (Taxon) taxonService.load(t2Uuid);

@@ -9,12 +9,11 @@
 */
 package eu.etaxonomy.cdm.database.update.v30_31;
 
-import java.sql.SQLException;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ITermUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -39,35 +38,35 @@ public class LanguageLabelUpdater extends SchemaUpdaterStepBase<LanguageLabelUpd
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor)  {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType)  {
 		
 		try {
 			//update representation label
 			String sql;
-			sql = " UPDATE Representation " + 
+			sql = " UPDATE @@Representation@@ " + 
 				" SET label = text " +
 				" WHERE id IN ( SELECT MN.representations_id " +
-					" FROM DefinedTermBase lang " +
-					" INNER JOIN DefinedTermBase_Representation MN ON lang.id = MN.DefinedTermBase_id " +
+					" FROM @@DefinedTermBase@@ lang " +
+					" INNER JOIN @@DefinedTermBase_Representation@@ MN ON lang.id = MN.DefinedTermBase_id " +
 					" WHERE lang.DTYPE = 'Language' " +
 					" )";
-			datasource.executeUpdate(sql);
+			datasource.executeUpdate(caseType.replaceTableNames(sql));
 			
 			//update term titleCache
-			sql = " UPDATE DefinedTermBase dtb " + 
+			sql = " UPDATE @@DefinedTermBase@@ dtb " + 
 				  " SET titleCache = " +  
 						" ( " +
 						" SELECT rep.label  " +
-						" FROM DefinedTermBase_Representation MN " + 
-						" INNER JOIN Representation rep ON MN.representations_id = rep.id " +
+						" FROM @@DefinedTermBase_Representation@@ MN " + 
+						" INNER JOIN @@Representation@@ rep ON MN.representations_id = rep.id " +
 						" WHERE dtb.id = MN.DefinedTermBase_id AND rep.language_id = @langId) " + 
 					" WHERE dtb.DTYPE = 'Language'";
-			String englishId = String.valueOf(getEnglishLanguageId(datasource, monitor));
+			String englishId = String.valueOf(getEnglishLanguageId(datasource, monitor, caseType));
 			if (englishId == null){
 				throw new NullPointerException("English id could not be found");
 			}
 			sql = sql.replace("@langId", englishId);
-			datasource.executeUpdate(sql);
+			datasource.executeUpdate(caseType.replaceTableNames(sql));
 			
 			return 0;
 		} catch (Exception e) {

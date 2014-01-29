@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.database.update.CaseType;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 
@@ -25,7 +26,6 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
  *
  */
 public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureNodeTreeColumnUpdater> implements ISchemaUpdaterStep {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(FeatureNodeTreeColumnUpdater.class);
 	
 	private String treeTableName;
@@ -44,12 +44,12 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 	}
 
 	@Override
-	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor) throws SQLException {
+	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
-		result &= updateTree(treeTableName, nodeTableName, datasource, monitor);
+		result &= updateTree(caseType.replaceTableNames(treeTableName), caseType.replaceTableNames(nodeTableName), datasource, monitor);
 		if (includeAudTable){
 			String aud = "_AUD";
-			result &= updateTree(treeTableName + aud, nodeTableName + aud, datasource, monitor);
+			result &= updateTree(caseType.replaceTableNames(treeTableName + aud), caseType.replaceTableNames(nodeTableName + aud), datasource, monitor);
 		}
 		return (result == true )? 0 : null;
 	}
@@ -74,6 +74,7 @@ public class FeatureNodeTreeColumnUpdater extends SchemaUpdaterStepBase<FeatureN
 			countQuery = countQuery.replace("@nodeTableName", nodeTableName);
 			Long countMissingTrees = (Long)datasource.getSingleValue(countQuery);
 			while (countMissingTrees > 0){
+				//FIXME this is not ANSI-SQL and will run only in MySQL
 				String updateQuery = "UPDATE @nodeTableName AS child INNER JOIN @nodeTableName AS parent ON child.parent_fk = parent.id " +
 						"SET child.featuretree_id = parent.featuretree_id WHERE child.featuretree_id IS NULL";
 				updateQuery = updateQuery.replace("@nodeTableName", nodeTableName);
