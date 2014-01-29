@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.io.common.mapping;
 
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -21,6 +22,7 @@ import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -37,93 +39,85 @@ public class InputTransformerBase implements IInputTransformer {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(InputTransformerBase.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getFeatureByKey(java.lang.String)
-	 */
+	@Override
 	public Feature getFeatureByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getFeatureByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getFeatureUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getFeatureUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getFeatureByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 
 	}
+	
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getLanguageByKey(java.lang.String)
-	 */
+	@Override
+	public State getStateByKey(String key) throws UndefinedTransformerMethodException {
+		String warning = "getStateByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+	}
+
+	@Override
+	public UUID getStateUuid(String key) throws UndefinedTransformerMethodException {
+		String warning = "getStateByKey is not implemented in implementing transformer class";
+		throw new UndefinedTransformerMethodException(warning);
+
+	}
+
+	@Override
 	public Language getLanguageByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getLanguageByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getLanguageUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getLanguageByUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getExtensionTypeByKey(java.lang.String)
-	 */
+	@Override
 	public ExtensionType getExtensionTypeByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getExtensionTypeByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getExtensionTypeUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getExtensionTypeUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getExtensionTypeUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getMarkerTypeByKey(java.lang.String)
-	 */
+	@Override
 	public MarkerType getMarkerTypeByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getMarkerTypeByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getMarkerTypeUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getMarkerTypeUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getMarkerTypeUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNameTypeDesignationStatusByKey(java.lang.String)
-	 */
+	@Override
 	public NameTypeDesignationStatus getNameTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNameTypeDesignationStatusByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNameTypeDesignationStatusUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getNameTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNameTypeDesignationStatusUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getSpecimenTypeDesignationStatusByKey(java.lang.String)
-	 */
+	@Override
 	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
-		if (CdmUtils.isEmpty(key)){return null;
+		if (StringUtils.isBlank(key)){return null;
 		}else if (key.matches("(?i)(T|Type)")){return SpecimenTypeDesignationStatus.TYPE();
 		}else if (key.matches("(?i)(HT|Holotype)")){return SpecimenTypeDesignationStatus.HOLOTYPE();
 		}else if (key.matches("(?i)(LT|Lectotype)")){return SpecimenTypeDesignationStatus.LECTOTYPE();
@@ -149,34 +143,25 @@ public class InputTransformerBase implements IInputTransformer {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getSpecimenTypeDesignationStatusUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getSpecimenTypeDesignationStatusUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getSpecimenTypeDesignationStatusUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermByKey(java.lang.String)
-	 */
+	@Override
 	public PresenceAbsenceTermBase getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getPresenceTermUuid(java.lang.String)
-	 */
+	@Override
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getPresenceTermUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaByKey(java.lang.String)
-	 */
 	@Override
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaByKey is not implemented in implementing transformer class";
@@ -184,28 +169,18 @@ public class InputTransformerBase implements IInputTransformer {
 
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaUuid(java.lang.String)
-	 */
 	@Override
 	public UUID getNamedAreaUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaUuid is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaLevelByKey(java.lang.String)
-	 */
 	@Override
 	public NamedAreaLevel getNamedAreaLevelByKey(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaLevelByKey is not implemented in implementing transformer class";
 		throw new UndefinedTransformerMethodException(warning);
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.IInputTransformer#getNamedAreaLevelUuid(java.lang.String)
-	 */
 	@Override
 	public UUID getNamedAreaLevelUuid(String key) throws UndefinedTransformerMethodException {
 		String warning = "getNamedAreaLevelUuid is not implemented in implementing transformer class";

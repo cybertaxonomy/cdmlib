@@ -17,7 +17,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
@@ -91,5 +91,10 @@ public interface IInputTransformer {
 	public Rank getRankByKey(String key) throws UndefinedTransformerMethodException;
 	
 	public UUID getRankUuid(String key) throws UndefinedTransformerMethodException;
+
+	//state
+	public State getStateByKey(String key) throws UndefinedTransformerMethodException;
+
+	public UUID getStateUuid(String key) throws UndefinedTransformerMethodException;
 
 }
