@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.model.reference;
 
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.List;
 
@@ -1277,6 +1279,44 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.cacheStrategy = (S)cacheStrategy;
 
 	}
+	
+	
+	
+//    @Override
+//    protected void initListener(){
+//        PropertyChangeListener listener = new PropertyChangeListener() {
+//            @Override
+//            public void propertyChange(PropertyChangeEvent e) {
+//                boolean protectedByLowerCache = false;
+//                //authorship cache
+//                if (fieldHasCacheUpdateProperty(e.getPropertyName(), "authorshipCache")){
+//                    if (protectedAuthorshipCache){
+//                        protectedByLowerCache = true;
+//                    }else{
+//                        authorshipCache = null;
+//                    }
+//                }
+//
+//                //title cache
+//                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "titleCache")){
+//                    if (isProtectedTitleCache()|| protectedByLowerCache == true ){
+//                        protectedByLowerCache = true;
+//                    }else{
+//                        titleCache = null;
+//                    }
+//                }
+//                //full title cache
+//                if (! fieldHasNoUpdateProperty(e.getPropertyName(), "fullTitleCache")){
+//                    if (isProtectedFullTitleCache()|| protectedByLowerCache == true ){
+//                        protectedByLowerCache = true;
+//                    }else{
+//                        fullTitleCache = null;
+//                    }
+//                }
+//            }
+//        };
+//        addPropertyChangeListener(listener);  //didn't use this.addXXX to make lsid.AssemblerTest run in cdmlib-remote
+//    }
 
 
 //*********************** CLONE ********************************************************/
