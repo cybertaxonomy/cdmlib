@@ -32,7 +32,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
      * @see #setTitleCache(String, boolean)
      * @see #getTitleCache()
      * @param titleCache
-     * @deprecated this method only exists to be in line with the Java Beans Specification (JSR 220).
+     * @deprecated this method only exists to be in line with the Java Beans Specification (JSR 220 or JSR 273) .
      * As it will set the {@link #isProtectedTitleCache() protected} flag to false the title cache value
      * may be automatically recomputed later. There are only very rare use cases were a programmer may 
      * want to use this method directly.
