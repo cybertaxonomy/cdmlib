@@ -186,6 +186,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
+//        conf.setDeleteNameIfPossible(false);
         taxonService.deleteTaxon(oldTaxon, conf, null);
 
         //oldTaxonNode.delete();
