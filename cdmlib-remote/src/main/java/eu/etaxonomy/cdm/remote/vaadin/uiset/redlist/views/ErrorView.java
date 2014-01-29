@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.vaadin.redlist.views;
+package eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views;
 
 import javax.annotation.PostConstruct;
 

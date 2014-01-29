@@ -13,7 +13,7 @@ import com.vaadin.annotations.Theme;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.ui.UI;
 
-import eu.etaxonomy.cdm.remote.vaadin.redlist.views.ErrorView;
+import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ErrorView;
 
 /**
  * 
@@ -43,7 +43,7 @@ public class VaadinUI extends UI {
 	@Override
 	protected void init(VaadinRequest request) {
 		setSizeFull();
-		String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin." + vaadinConfigurer.vaadinUiSet();
+		String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin.uiset." + vaadinConfigurer.vaadinUiSet();
 		
 //		DiscoveryNavigator navigator = new DiscoveryNavigator(this, this);
 		CdmDiscoveryNavigator navigator = new CdmDiscoveryNavigator(this, this, packageNameScope);

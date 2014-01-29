@@ -1,77 +1,56 @@
-package eu.etaxonomy.cdm.remote.vaadin.redlist.views;
+package eu.etaxonomy.cdm.remote.vaadin.uiset.disabled;
 
 import javax.annotation.PostConstruct;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import ru.xpoft.vaadin.VaadinView;
 
+import com.google.gwt.safehtml.shared.SafeHtml;
+import com.google.gwt.safehtml.shared.SafeHtmlUtils;
+import com.google.gwt.user.client.ui.HorizontalPanel;
 import com.vaadin.annotations.Theme;
 import com.vaadin.navigator.View;
 import com.vaadin.navigator.ViewChangeListener.ViewChangeEvent;
 import com.vaadin.server.Page;
-import com.vaadin.server.Sizeable;
-import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinSession;
-import com.vaadin.shared.ui.MarginInfo;
-import com.vaadin.ui.AbsoluteLayout;
-import com.vaadin.ui.AbstractOrderedLayout;
+import com.vaadin.shared.ui.label.ContentMode;
 import com.vaadin.ui.Alignment;
 import com.vaadin.ui.CustomComponent;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.HorizontalLayout;
 import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
-import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
-import com.vaadin.ui.themes.Reindeer;
 
-import eu.etaxonomy.cdm.remote.vaadin.components.LoginForm;
-
-/**
- * 
- * This view displays the login screen and makes use of the LoginForm component.
- * It will be displayed as the first view, because it has an empty NAME string.
- * 
- * @author a.oppermann
- *
- */
+import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.LoginView;
 
 @Component
 @Scope("prototype")
-@Theme("mytheme")
 @VaadinView(LoginView.NAME)
-public class LoginView extends CustomComponent implements View{
+public class DefaultView extends CustomComponent implements View{
 
-	/**
-	 * Automatically generated serial version ID
-	 */
-	private static final long serialVersionUID = 4683904341319655627L;
-
-	public static final String NAME = "";
-	
-	@Autowired
-	private LoginForm loginForm;
-	
+	private static final long serialVersionUID = 1L;
+	public static final String NAME ="";
 	
 	@PostConstruct
-	public void PostConstruct(){
+	void postConstruct(){
 		VerticalLayout layout = new VerticalLayout();
 		layout.setWidth("100%");
 		layout.setHeight("100%");
 		Page page = Page.getCurrent();
-
 		HorizontalLayout hLayout = new HorizontalLayout();
 		//TODO: Quick'n'dirty hack, better solutions are possible
 		int hh = page.getBrowserWindowHeight()-300;
 		setHeight(hh +"px");
 		
-		
 		Panel panel = new Panel();
 		panel.setSizeUndefined();
-		panel.setContent(loginForm);
+		VerticalLayout innerLayout = new VerticalLayout();
+		innerLayout.setMargin(true);
+		Label n = new Label("<h1>Error: Vaadin is not running<h1><p><center><h3> We are sorry for the inconvenience!<h3></center>", ContentMode.HTML);
+		innerLayout.addComponent(n);
+		panel.setContent(innerLayout);
 		panel.setStyleName("login");
 		
 		layout.addComponent(hLayout);
@@ -79,10 +58,11 @@ public class LoginView extends CustomComponent implements View{
 		
 		layout.setSizeFull();
 		layout.setComponentAlignment(panel,  Alignment.MIDDLE_CENTER);
-
+		
+		
 		setCompositionRoot(layout);
 	}
-	
+
 	@Override
 	public void enter(ViewChangeEvent event) {
 		

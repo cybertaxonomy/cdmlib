@@ -2164,11 +2164,12 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/DetailWind
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/HorizontalToolbar.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/LoginForm.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/TaxonTableDTO.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/views/BfnView.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/views/DashBoardView.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/views/ErrorView.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/views/LoginView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/service/AuthenticationService.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/disabled/DefaultView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/BfnView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/DashBoardView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/ErrorView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/LoginView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/widgetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/BaseView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/HtmlView.java -text

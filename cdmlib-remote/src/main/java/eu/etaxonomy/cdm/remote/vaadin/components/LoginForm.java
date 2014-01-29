@@ -25,8 +25,8 @@ import com.vaadin.ui.TextField;
 import com.vaadin.ui.VerticalLayout;
 
 import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
-import eu.etaxonomy.cdm.remote.vaadin.redlist.views.BfnView;
-import eu.etaxonomy.cdm.remote.vaadin.redlist.views.DashBoardView;
+import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.BfnView;
+import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.DashBoardView;
 
 /**
  * 

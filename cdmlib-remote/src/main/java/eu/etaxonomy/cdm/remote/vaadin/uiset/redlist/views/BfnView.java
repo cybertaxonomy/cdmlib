@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.vaadin.redlist.views;
+package eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views;
 
 import java.util.Arrays;
 import java.util.List;
@@ -179,6 +179,7 @@ public class BfnView extends CustomComponent implements View{
 				toolbar.getSaveButton().setCaption("Save Data");
 			}
 		});
+		
 		Button editButton = toolbar.getEditButton();
 		editButton.setClickShortcut(KeyCode.E, ModifierKey.CTRL);
 		editButton.setDescription("Shortcut: CTRL+e");
