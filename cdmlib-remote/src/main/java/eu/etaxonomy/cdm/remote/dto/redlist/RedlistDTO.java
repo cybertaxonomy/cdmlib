@@ -1,20 +1,16 @@
 package eu.etaxonomy.cdm.remote.dto.redlist;
 
-import java.beans.Transient;
 import java.util.Collection;
 import java.util.List;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.service.DescriptionServiceImpl;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionDaoImpl;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.description.DescriptionElementDaoImpl;
 
 /**
  * This class acts like a data transfer object. It is intended to ease the communication
