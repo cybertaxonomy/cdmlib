@@ -9,9 +9,9 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
 @SuppressWarnings("serial")
-public class Level3ValidationSaveOrUpdateEventListener implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
+public class Level3ValidationCRUDEventListener implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
 
-	private static final Logger logger = Logger.getLogger(Level3ValidationSaveOrUpdateEventListener.class);
+	private static final Logger logger = Logger.getLogger(Level3ValidationCRUDEventListener.class);
 
 
 	@Override

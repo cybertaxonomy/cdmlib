@@ -1406,7 +1406,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmPostD
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmSecurityHibernateInterceptor.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/ICdmPostDataChangeObserver.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/Level2ValidationSaveOrUpdateEventListener.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/Level3ValidationSaveOrUpdateEventListener.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/Level3ValidationCRUDEventListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/SaveOrUpdateEntityListener.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/TableGenerator.java -text
