@@ -21,10 +21,38 @@ import eu.etaxonomy.cdm.model.description.Distribution;
  */
 public class DistributionInfoDTO {
 
-    private final String condensedStatusString = null;
-    private final DistributionTree tree = null;
-    private final String mapUriParams = null;
-    private final Set<Distribution> elements = null;
+
+    private String condensedStatusString = null;
+    private DistributionTree tree = null;
+    private String mapUriParams = null;
+    private Set<Distribution> elements = null;
+
+
+    /**
+     * @param condensedStatusString the condensedStatusString to set
+     */
+    public void setCondensedStatusString(String condensedStatusString) {
+        this.condensedStatusString = condensedStatusString;
+    }
+    /**
+     * @param tree the tree to set
+     */
+    public void setTree(DistributionTree tree) {
+        this.tree = tree;
+    }
+    /**
+     * @param mapUriParams the mapUriParams to set
+     */
+    public void setMapUriParams(String mapUriParams) {
+        this.mapUriParams = mapUriParams;
+    }
+    /**
+     * @param elements the elements to set
+     */
+    public void setElements(Set<Distribution> elements) {
+        this.elements = elements;
+    }
+
     /**
      * @return the condensedStatusString
      */

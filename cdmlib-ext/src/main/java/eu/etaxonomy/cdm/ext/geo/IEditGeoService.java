@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
@@ -182,4 +185,21 @@ public interface IEditGeoService {
             List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
             Set<UUID> namedAreaUuids)
             throws IOException;
+
+    /**
+    *
+    * @param parts
+    * @param taxonUUID
+    * @param subAreaPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param hideMarkedAreas see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
+    * @param languages
+    * @return
+    */
+    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels,
+            List<Language> languages);
+
 }

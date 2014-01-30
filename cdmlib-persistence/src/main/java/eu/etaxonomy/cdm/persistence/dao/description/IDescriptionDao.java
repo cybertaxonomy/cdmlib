@@ -260,7 +260,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param propertyPaths
      * @return the list of matching DescriptionElementBase instances
      */
-    <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(Taxon taxon,
+    <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(UUID taxonUuid,
             Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
@@ -273,7 +273,7 @@ public interface IDescriptionDao extends IIdentifiableDao<DescriptionBase> {
      * @param type A filter for DescriptionElements of a specific class
      * @return the count of matching TaxonDescription instances
      */
-    <T extends DescriptionElementBase> long countDescriptionElementForTaxon(Taxon taxon,
+    <T extends DescriptionElementBase> long countDescriptionElementForTaxon(UUID taxonUuid,
             Set<Feature> features, Class<T> type);
 
     /**

@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -35,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -61,11 +67,13 @@ public class EditGeoService implements IEditGeoService {
     @Autowired
     private IGeoServiceAreaMapping areaMapping;
 
-    private IDefinedTermDao termDao;
+    @Autowired
+    private IDescriptionService descriptionService;
 
     @Autowired
     private ITermVocabularyDao vocabDao;
 
+    private IDefinedTermDao termDao;
     @Autowired
     public void setTermDao(IDefinedTermDao termDao) {
         this.termDao = termDao;
@@ -276,5 +284,44 @@ public class EditGeoService implements IEditGeoService {
         termDao.saveOrUpdateAll((Collection)areas);
         return resultMap;
     }
+
+
+    @Override
+    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels,
+            List<Language> languages){
+
+        DistributionInfoDTO dto = new DistributionInfoDTO();
+
+        List<String> propertyPaths= null;
+
+        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, propertyPaths);
+        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+
+        if(parts.contains(InfoPart.elements)) {
+            dto.setElements(filteredDistributions);
+        }
+
+        if(parts.contains(InfoPart.tree)) {
+            dto.setTree(DescriptionUtility.orderDistributions(omitLevels, filteredDistributions));
+        }
+
+        if (parts.contains(InfoPart.mapUriParams)) {
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+            dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
+                    subAreaPreference,
+                    statusOrderPreference,
+                    hideMarkedAreas,
+                    areaMapping, presenceAbsenceTermColors, null, languages));
+        }
+
+        if(parts.contains(InfoPart.condensedStatusString)) {
+            logger.error("condensedStatusString not yet supported:  #3907 (EuroMed: implement condensed status string of distribution information)");
+        }
+
+        return dto;
+    }
+
 
 }

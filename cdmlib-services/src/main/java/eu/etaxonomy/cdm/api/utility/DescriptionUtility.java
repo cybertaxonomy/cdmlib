@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author a.kohlbecker
@@ -72,7 +73,7 @@ public class DescriptionUtility {
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
      * @return the filtered collection of distribution elements.
      */
-    public static Collection<Distribution> filterDistributions(Collection<Distribution> distributions,
+    public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas) {
 
         Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
@@ -200,6 +201,25 @@ public class DescriptionUtility {
     }
 
     /**
+     * Orders the given Distribution elements in a hierarchical structure.
+     * This method will not filter out any of the Distribution elements.
+     * @param omitLevels
+     * @param distList
+     * @return
+     */
+    public static DistributionTree orderDistributions(Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions) {
+
+        DistributionTree tree = new DistributionTree();
+
+        if (logger.isDebugEnabled()){logger.debug("order tree ...");}
+        //order by areas
+        tree.orderAsTree(distributions, omitLevels);
+        tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
+        if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
+        return tree;
+    }
+
+    /**
      * Implements the Status order preference filter for a given set to Distributions.
      * The distributions should all be for the same area
      *
@@ -236,8 +256,8 @@ public class DescriptionUtility {
         return preferred;
     }
 
-    private static <T extends CdmBase> Collection<T> valuesOfAllInnerSets(Collection<Set<T>> collectionOfSets){
-        Collection<T> allValues = new ArrayList<T>();
+    private static <T extends CdmBase> Set<T> valuesOfAllInnerSets(Collection<Set<T>> collectionOfSets){
+        Set<T> allValues = new HashSet<T>();
         for(Set<T> set : collectionOfSets){
             allValues.addAll(set);
         }

@@ -355,7 +355,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         // 1.
 
         List<DescriptionElementBase> elements1 = descriptionDao.getDescriptionElementForTaxon(
-                taxonSphingidae , null, null, null, 0, null);
+                taxonSphingidae.getUuid() , null, null, null, 0, null);
 
         assertNotNull("getDescriptionElementForTaxon should return a List", elements1);
         assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements1.size());
@@ -363,7 +363,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         // 2.
 
         List<DescriptionElementBase> elements2 = descriptionDao.getDescriptionElementForTaxon(
-                taxonSphingidae , null, DescriptionElementBase.class, null, 0, null);
+                taxonSphingidae.getUuid() , null, DescriptionElementBase.class, null, 0, null);
 
         assertNotNull("getDescriptionElementForTaxon should return a List", elements2);
         assertTrue("getDescriptionElementForTaxon should be empty",elements2.isEmpty());
@@ -371,7 +371,7 @@ public class DescriptionDaoHibernateImplTest extends CdmTransactionalIntegration
         // 3.
 
         List<Distribution> elements3 = descriptionDao.getDescriptionElementForTaxon(
-                taxonSphingidae , null, Distribution.class, null, 0, null);
+                taxonSphingidae.getUuid() , null, Distribution.class, null, 0, null);
 
         assertNotNull("getDescriptionElementForTaxon should return a List", elements3);
         assertEquals("getDescriptionElementForTaxon should return 1 elements",1,elements3.size());

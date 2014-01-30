@@ -12,7 +12,9 @@ package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
 import java.util.Arrays;
+import java.util.EnumSet;
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,13 +27,18 @@ import org.springframework.web.bind.annotation.InitBinder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -41,6 +48,7 @@ import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -60,10 +68,8 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     @Autowired
     private IFeatureTreeService featureTreeService;
 
-
-    public DescriptionController(){
-        super();
-    }
+    @Autowired
+    private IEditGeoService geoService;
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
@@ -228,6 +234,49 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         textData.putText(Language.DEFAULT(), naturalLanguageDescription);
         mv.addObject(textData);
         return mv;
+    }
+
+    /**
+     * @param taxonUuid
+     * @param parts
+     *            possible values: condensedStatusString, tree, mapUriParams,
+     *            elements,
+     * @param subAreaPreference
+     * @param statusOrderPreference
+     * @param hideMarkedAreasList
+     * @param omitLevels
+     * @param request
+     * @param response
+     * @return
+     */
+    @RequestMapping(value = "/description/distributionInfoFor/{uuid}", method = RequestMethod.GET)
+    public ModelAndView doGetDistributionInfo(
+            @PathVariable("uuid") UUID taxonUuid,
+            @RequestParam("part") Set<InfoPart> partSet,
+            @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
+            @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
+            @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
+            @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            HttpServletRequest request,
+            HttpServletResponse response) {
+
+            logger.debug("doGetDistributionInfo() - " + requestPathAndQuery(request));
+
+            ModelAndView mv = new ModelAndView();
+
+            Set<MarkerType> hideMarkedAreas = null;
+            if(hideMarkedAreasList != null){
+                hideMarkedAreas = hideMarkedAreasList.asSet();
+            }
+
+            EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
+
+            DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
+                    hideMarkedAreas, omitLevels, LocaleContext.getLanguages());
+
+            mv.addObject(dto);
+
+            return mv;
     }
 
 }

@@ -288,6 +288,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
      * @see eu.etaxonomy.cdm.api.service.IDescriptionService#getOrderedDistributions(java.util.Set, boolean, boolean, java.util.Set, java.util.List)
      */
     @Override
+    @Deprecated
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
@@ -295,9 +296,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Set<MarkerType> hideMarkedAreas,
             Set<NamedAreaLevel> omitLevels, List<String> propertyPaths){
 
-        DistributionTree tree = new DistributionTree();
         List<Distribution> distList = new ArrayList<Distribution>();
-        if (logger.isDebugEnabled()){logger.debug("create tree ...");}
 
         List<UUID> uuids = new ArrayList<UUID>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
@@ -344,14 +343,9 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         distList.clear();
         distList.addAll(filteredDistributions);
 
-        if (logger.isDebugEnabled()){logger.debug("order tree ...");}
-
-        //order by areas
-        tree.orderAsTree(distList, omitLevels);
-        tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
-        if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
-        return tree;
+        return DescriptionUtility.orderDistributions(omitLevels, distList);
     }
+
 
     @Override
     public Pager<TaxonNameDescription> getTaxonNameDescriptions(TaxonNameBase name, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
@@ -476,7 +470,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Taxon taxon, Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
-        return dao.getDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, propertyPaths);
+        return dao.getDescriptionElementForTaxon(taxon.getUuid(), features, type, pageSize, pageNumber, propertyPaths);
     }
 
     @Override
@@ -485,7 +479,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
         if (logger.isDebugEnabled()){logger.debug(" get count ...");}
-        Long count = dao.countDescriptionElementForTaxon(taxon, features, type);
+        Long count = dao.countDescriptionElementForTaxon(taxon.getUuid(), features, type);
         List<T> descriptionElements;
         if(AbstractPagerImpl.hasResultsInRange(count, pageNumber, pageSize)){ // no point checking again
             if (logger.isDebugEnabled()){logger.debug(" get list ...");}
@@ -657,6 +651,5 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
         List<NamedArea> results = dao.listNamedAreasInUse(pageSize, pageNumber, propertyPaths);
         return new DefaultPagerImpl<NamedArea>(pageNumber, results.size(), pageSize, results);
     }
-
 
 }

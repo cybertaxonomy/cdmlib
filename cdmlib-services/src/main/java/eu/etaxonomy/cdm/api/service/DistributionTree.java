@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -72,7 +73,7 @@ public class DistributionTree extends Tree<Set<Distribution>, NamedArea>{
      * @param distList
      * @param omitLevels
      */
-    public void orderAsTree(List<Distribution> distList, Set<NamedAreaLevel> omitLevels){
+    public void orderAsTree(Collection<Distribution> distList, Set<NamedAreaLevel> omitLevels){
 
         for (Distribution distribution : distList) {
             // get path through area hierarchy
