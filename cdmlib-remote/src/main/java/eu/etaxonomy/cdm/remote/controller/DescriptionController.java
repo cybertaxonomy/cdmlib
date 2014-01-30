@@ -32,6 +32,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.IFeatureTreeService;
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
 import eu.etaxonomy.cdm.remote.editor.NamedAreaLevelPropertyEditor;
+import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
@@ -69,6 +71,10 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     private IFeatureTreeService featureTreeService;
 
     @Autowired
+    private ITermService termService;
+
+
+    @Autowired
     private IEditGeoService geoService;
 
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
@@ -86,6 +92,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         super.initBinder(binder);
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
         binder.registerCustomEditor(NamedAreaLevel.class, new NamedAreaLevelPropertyEditor());
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
     }
 
     /* (non-Javadoc)
