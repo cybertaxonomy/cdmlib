@@ -279,7 +279,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
             EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, LocaleContext.getLanguages());
+                    hideMarkedAreas, omitLevels, LocaleContext.getLanguages(), getInitializationStrategy());
 
             mv.addObject(dto);
 
