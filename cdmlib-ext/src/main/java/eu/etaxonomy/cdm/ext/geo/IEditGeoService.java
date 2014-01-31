@@ -13,6 +13,7 @@ import java.awt.Color;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -22,6 +23,7 @@ import javax.xml.stream.XMLStreamException;
 
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
@@ -30,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
@@ -60,12 +63,7 @@ public interface IEditGeoService {
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
-     * @param width
-     * 			The width of the map image
-     * @param height
-     * 			The height of the map image
-     * @param bbox
-     * @param backLayer
+     * @param langs
      * @return
      *
      */
@@ -75,10 +73,7 @@ public interface IEditGeoService {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String backLayer, List<Language> langs);
+            List<Language> langs);
 
 
     /**
@@ -95,18 +90,14 @@ public interface IEditGeoService {
      *            the specified {@link MarkerType}s will be skipped, see
      *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
      * @param presenceAbsenceTermColors
-     * @param width
-     * @param height
-     * @param bbox
-     * @param backLayer
      * @param langs
      * @return
      */
     public String getDistributionServiceRequestParameterString(Set<Distribution> distributions,
             boolean subAreaPreference, boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
-            String backLayer, List<Language> langs);
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs);
 
     /**
      * Retrieve a parameter string to pass to an EditGeoService endpoint
@@ -128,13 +119,6 @@ public interface IEditGeoService {
      * @param presenceAbsenceTermColors
      * 			A map that classifies which <code>PresenceAbsenceTermBase</code> should
      * 			be assigned which <code>Color</code>
-     * @param width
-     * 			The width of the map image
-     * @param height
-     * 			The height of the map image
-     * @param bbox
-     *
-     * @param backLayer
      * @return
      *
      * @deprecated use {@link #getDistributionServiceRequestParameterString(List, Map, int, int, String, String, List)} instead
@@ -145,21 +129,13 @@ public interface IEditGeoService {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String backLayer,
             List<Language> langs);
 
 
     public String getOccurrenceServiceRequestParameterString(
             List<SpecimenOrObservationBase> specimensOrObersvations,
-            Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors,
-            Boolean doReturnImage,
-            Integer width,
-            Integer height,
-            String bbox,
-            String backLayer);
+            Map<SpecimenOrObservationType,Color> specimenOrObservationTypeColors
+            );
 
     /**
      * Adds an area mapping (CDM area -> geo service area). It is recommended to set the mapping
@@ -209,4 +185,21 @@ public interface IEditGeoService {
             List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
             Set<UUID> namedAreaUuids)
             throws IOException;
+
+    /**
+    *
+    * @param parts
+    * @param taxonUUID
+    * @param subAreaPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param hideMarkedAreas see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
+    * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
+    * @param languages
+    * @return
+    */
+    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels,
+            List<Language> languages);
+
 }

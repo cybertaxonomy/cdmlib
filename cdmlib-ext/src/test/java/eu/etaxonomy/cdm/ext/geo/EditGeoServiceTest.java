@@ -126,12 +126,10 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 subAreaPreference ,
                 statusOrderPreference,
-                null, mapping, presenceAbsenceColorMap, 600, 300,bbox, backLayer, null, languages );
+                null, mapping, presenceAbsenceColorMap, null, languages );
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
-        System.out.println(result);
-//        assertTrue(result.matches(".*l=earth.*"));
-        assertTrue(result.matches(".*ms=600,300.*"));
+        logger.debug(result);
         assertTrue(result.matches(".*ad=tdwg[1-4].*"));
         assertTrue(result.matches(".*tdwg2:[a-d]:14[\\|&].*") );
         assertTrue(result.matches(".*[a-d]:FRA,BGM[\\|&].*") || result.matches(".*[a-d]:BGM,FRA[\\|&].*") );
@@ -172,11 +170,9 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 subAreaPreference ,
                 statusOrderPreference,
-                null, mapping, presenceAbsenceColorMap, 600, 300,bbox, backLayer, null, languages );
+                null, mapping, presenceAbsenceColorMap, null, languages );
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
-//        assertTrue(result.matches(".*l=earth.*"));
-        assertTrue(result.matches(".*ms=600,300.*"));
         assertTrue(result.matches(".*ad=cyprusdivs%3Abdcode:.*"));
         assertTrue(result.matches(".*[a-d]:5,4[\\|&].*") || result.matches(".*[a-d]:4,5[\\|&].*") );
         assertTrue(result.matches(".*[a-d]:1,6[\\|&].*") || result.matches(".*[a-d]:6,1[\\|&].*") );
@@ -187,9 +183,9 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         subTestWithEditMapService(result);
     }
 
-    private void subTestWithEditMapService(String result)throws MalformedURLException, IOException {
+    private void subTestWithEditMapService(String queryString)throws MalformedURLException, IOException {
         if(UriUtils.isServiceAvailable(editMapServiceUri)){
-            URL requestUrl = new URL(editMapServiceUri.toString() + "?img=false&" + result);
+            URL requestUrl = new URL(editMapServiceUri.toString() + "?img=false&bbox=-180,-90,180,90&ms=1000&" + queryString);
             logger.debug("editMapServiceUri: " + requestUrl);
             HttpURLConnection connection = (HttpURLConnection) requestUrl.openConnection();
             connection.connect();
@@ -320,9 +316,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
         presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
 
-        String backLayer ="";
         presenceAbsenceColorMap = null;
-        String bbox="90,-8,130,8";
         List<Language> languages = new ArrayList<Language>();
 
         boolean subAreaPreference = false;
@@ -330,14 +324,11 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
                 subAreaPreference ,
                 statusOrderPreference,
-                null, mapping, presenceAbsenceColorMap, 600, 300,bbox, backLayer, null, languages );
+                null, mapping, presenceAbsenceColorMap, null, languages );
         //TODO Set semantics is not determined
         //String expected = "http://www.test.de/webservice?l=tdwg3&ad=tdwg3:a:GER|b:OKL|c:BGM|b:SPA|d:FRA&as=a:005500|b:00FF00|c:FFFFFF|d:001100&bbox=-20,40,40,40&ms=400x300";
 
-        System.out.println(result);
-
-//        assertTrue(result.matches(".*l=earth.*"));
-        assertTrue(result.matches(".*ms=600,300.*"));
+        logger.debug(result);
         assertTrue(result.matches(".*ad=vmap0_as_bnd_political_boundary_a%3Anam:.*"));
         assertTrue(result.matches(".*(PULAU\\+BANGKA%23SUMATERA\\+SELATAN).*") );
         assertTrue(result.matches(".*(BALI).*") );

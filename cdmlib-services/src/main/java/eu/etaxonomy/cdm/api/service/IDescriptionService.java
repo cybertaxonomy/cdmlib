@@ -497,7 +497,9 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      *            the initialization strategy
      *
      * @return
+     * @deprecated use {@link IEditGeoService#composeDistributionInfoFor()} instead
      */
+    @Deprecated
     public DistributionTree getOrderedDistributions(
             Set<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
@@ -556,4 +558,5 @@ public interface IDescriptionService extends IIdentifiableEntityService<Descript
      */
     public Pager<NamedArea> pageNamedAreasInUse(Integer pageSize,
             Integer pageNumber, List<String> propertyPaths);
+
 }

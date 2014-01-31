@@ -25,17 +25,37 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public String getTitleCache();
 
     /**
-     * Sets the title cache without changing the <code>protectCache</code> flag.
-     * If this flag is <code>false</code> the titleCache may be recomputed with the
-     * next call of {@link #getTitleCache()}
+     * Sets the title cache without changing the <code>protectCache</code> flag.<BR><BR>
+     * NOTE: Use with care. If this flag is <code>false</code> the <code>titleCache</code> may be 
+     * recomputed with the next call of {@link #getTitleCache()}, which is automatically the case when
+     * the object is persisted.
      * @see #setTitleCache(String, boolean)
      * @see #getTitleCache()
      * @param titleCache
+     * @deprecated this method only exists to be in line with the Java Beans Specification (JSR 220 or JSR 273) .
+     * As it will set the {@link #isProtectedTitleCache() protected} flag to false the title cache value
+     * may be automatically recomputed later. There are only very rare use cases were a programmer may 
+     * want to use this method directly.
+     * Better use {@link #setTitleCache(String, boolean)} with second parameter <code>protectCache</code>
+     * set to <code>true</code>.
      */
+    @Deprecated
     public void setTitleCache(String titleCache);
 
+    /**
+     * Sets the title cache.<BR>
+     * NOTE: In most cases the <code>protectCache</code> argument should be set to <code>true</code>.
+     * See comments at {@link #setTitleCache(String)}
+     * 
+     * @param titleCache the new title cache
+     * @param protectCache the protect flag, <b>should in most cases be set to <code>true</code></b>
+     */
     public void setTitleCache(String titleCache, boolean protectCache);
 
+    public boolean isProtectedTitleCache();
+
+    public void setProtectedTitleCache(boolean protectedTitleCache);
+    
     public Set<Rights> getRights();
 
     public void addRights(Rights right);
@@ -59,10 +79,6 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public void addExtension(Extension extension);
 
     public void removeExtension(Extension extension);
-
-    public boolean isProtectedTitleCache();
-
-    public void setProtectedTitleCache(boolean protectedTitleCache);
 
     /**
      * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.

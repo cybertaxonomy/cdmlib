@@ -36,9 +36,9 @@ public class HttpStatusMessage {
 
     private int statusCode;
 
-    private String message;
+    private final String message;
 
-    private  String statusMessage;
+    private final  String statusMessage;
 
     private static Hashtable<String , HttpStatusMessage> cache;
 
@@ -65,6 +65,7 @@ public class HttpStatusMessage {
         return message;
     }
 
+    @Override
     public String toString() {
         return statusMessage;
     }

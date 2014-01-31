@@ -216,18 +216,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
         return protectedTitleCache;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String)
-     */
+
+    @Deprecated
     @Override
     public void setTitleCache(String titleCache){
     	//TODO shouldn't we call setTitleCache(String, boolean),but is this conformant with Java Bean Specification?  
     	this.titleCache = getTruncatedCache(titleCache);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setTitleCache(java.lang.String, boolean)
-     */
     @Override
     public void setTitleCache(String titleCache, boolean protectCache){
         titleCache = getTruncatedCache(titleCache);

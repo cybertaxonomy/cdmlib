@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +26,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -35,6 +40,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -61,11 +67,13 @@ public class EditGeoService implements IEditGeoService {
     @Autowired
     private IGeoServiceAreaMapping areaMapping;
 
-    private IDefinedTermDao termDao;
+    @Autowired
+    private IDescriptionService descriptionService;
 
     @Autowired
     private ITermVocabularyDao vocabDao;
 
+    private IDefinedTermDao termDao;
     @Autowired
     public void setTermDao(IDefinedTermDao termDao) {
         this.termDao = termDao;
@@ -94,8 +102,8 @@ public class EditGeoService implements IEditGeoService {
     public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
             boolean subAreaPreference,
             boolean statusOrderPreference,
-            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height,
-            String bbox, String backLayer, List<Language> langs) {
+            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
 
         Set<Distribution> distributions = new HashSet<Distribution>();
         for (TaxonDescription taxonDescription : taxonDescriptions) {
@@ -115,7 +123,7 @@ public class EditGeoService implements IEditGeoService {
                 statusOrderPreference,
                 hideMarkedAreas,
                 presenceAbsenceTermColors,
-                width, height, bbox, backLayer, langs);
+                langs);
 
         return uriParams;
     }
@@ -131,10 +139,7 @@ public class EditGeoService implements IEditGeoService {
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
             Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String backLayer, List<Language> langs) {
+            List<Language> langs) {
 
 //        if (backLayer == null) {
 //            backLayer = DEFAULT_BACK_LAYER;
@@ -143,7 +148,7 @@ public class EditGeoService implements IEditGeoService {
                 subAreaPreference,
                 statusOrderPreference,
                 hideMarkedAreas,
-                areaMapping, presenceAbsenceTermColors, width, height, bbox, backLayer, null, langs);
+                areaMapping, presenceAbsenceTermColors, null, langs);
         return uriParams;
     }
 
@@ -161,8 +166,8 @@ public class EditGeoService implements IEditGeoService {
             boolean subAreaPreference,
             boolean statusOrderPreference,
             Set<MarkerType> hideMarkedAreas,
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors, int width, int height, String bbox,
-            String backLayer, List<Language> langs) {
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
 
         List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
         taxonDescriptions.add(taxonDescription);
@@ -171,7 +176,7 @@ public class EditGeoService implements IEditGeoService {
                 subAreaPreference,
                 statusOrderPreference,
                 hideMarkedAreas, presenceAbsenceTermColors,
-                width, height, bbox, backLayer, langs);
+                langs);
     }
 
     /*
@@ -184,8 +189,7 @@ public class EditGeoService implements IEditGeoService {
      */
     @Override
     public String getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
-            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
-            Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
         List<Point> fieldUnitPoints = new ArrayList<Point>();
         List<Point> derivedUnitPoints = new ArrayList<Point>();
@@ -207,7 +211,7 @@ public class EditGeoService implements IEditGeoService {
         }
 
         return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
-                derivedUnitPoints, specimenOrObservationTypeColors, doReturnImage, width, height, bbox, backLayer);
+                derivedUnitPoints, specimenOrObservationTypeColors);
 
     }
 
@@ -280,5 +284,44 @@ public class EditGeoService implements IEditGeoService {
         termDao.saveOrUpdateAll((Collection)areas);
         return resultMap;
     }
+
+
+    @Override
+    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels,
+            List<Language> languages){
+
+        DistributionInfoDTO dto = new DistributionInfoDTO();
+
+        List<String> propertyPaths= null;
+
+        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, propertyPaths);
+        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+
+        if(parts.contains(InfoPart.elements)) {
+            dto.setElements(filteredDistributions);
+        }
+
+        if(parts.contains(InfoPart.tree)) {
+            dto.setTree(DescriptionUtility.orderDistributions(omitLevels, filteredDistributions));
+        }
+
+        if (parts.contains(InfoPart.mapUriParams)) {
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+            dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
+                    subAreaPreference,
+                    statusOrderPreference,
+                    hideMarkedAreas,
+                    areaMapping, presenceAbsenceTermColors, null, languages));
+        }
+
+        if(parts.contains(InfoPart.condensedStatusString)) {
+            logger.error("condensedStatusString not yet supported:  #3907 (EuroMed: implement condensed status string of distribution information)");
+        }
+
+        return dto;
+    }
+
 
 }

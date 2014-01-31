@@ -9,7 +9,6 @@
 */
 package eu.etaxonomy.cdm.api.utility;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -18,6 +17,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
  * @author a.kohlbecker
@@ -46,8 +47,8 @@ public class DescriptionUtility {
      * MarkerType.COMPUTED()}). This means if a entered or imported status
      * information exist for the same area for which computed data is available,
      * the computed data has to be given preference over other data.</li>
-     * <li>In computed distributions, distributions in parent areas are
-     * preferred over those for <i>direct sub areas</i> if they have the same
+     * <li>NOTE: This rule is now replaced by the <i>Sub area preference rule</i>: In computed distributions, distributions in sub areas are
+     * preferred over those for <i>parent areas</i> if they have the same
      * status</li>
      * <li><b>Status order preference rule</b>: In case of multiple distribution
      * status ({@link PresenceAbsenceTermBase}) for the same area the status
@@ -58,7 +59,7 @@ public class DescriptionUtility {
      * sub area</i> and both areas have the same computed status only the
      * information on the sub area should be reported, whereas the super area
      * should be ignored. This rule is optional, see parameter
-     * <code>subAreaPreference</code></li>
+     * <code>subAreaPreference</code>. (NOTE: this rule only applies only to non computed areas, since the second rule is applied first!.TODO this is no longer valid since the second rule has been removed)</li>
      * <li><b>Marked area filter</b>: Skip distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s
      * </ol>
      *
@@ -72,7 +73,7 @@ public class DescriptionUtility {
      *            distributions where the area has a {@link Marker} with one of the specified {@link MarkerType}s will be skipped
      * @return the filtered collection of distribution elements.
      */
-    public static Collection<Distribution> filterDistributions(Collection<Distribution> distributions,
+    public static Set<Distribution> filterDistributions(Collection<Distribution> distributions,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas) {
 
         Map<NamedArea, Set<Distribution>> computedDistributions = new HashMap<NamedArea, Set<Distribution>>(distributions.size());
@@ -87,8 +88,8 @@ public class DescriptionUtility {
 
 
         // 1) sort by computed / not computed
+        boolean doSkip = false;
         for(Distribution distribution : distributions){
-
 
             // 1.1) skip distributions having an area with markers matching hideMarkedAreas
             NamedArea area = distribution.getArea();
@@ -99,14 +100,19 @@ public class DescriptionUtility {
                 logger.debug("skipping distribution with marked area, area previously recognized and cached");
                 continue;
             }else {
+                doSkip = false;
                 if(hideMarkedAreas != null){
                     for(MarkerType markerType : hideMarkedAreas){
                         if(area.hasMarker(markerType, true)){
                             areasHiddenByMarker.add(area);
                             logger.debug("skipping distribution with marked area");
+                            doSkip = true;
                             continue;
                         }
                     }
+                }
+                if(doSkip){
+                    continue;
                 }
 
             }
@@ -133,25 +139,29 @@ public class DescriptionUtility {
                 otherDistributions.remove(keyComputed);
             }
 
-            // 2.b) in computed distributions prefer parent areas over sub areas if they have the same status
-            for(Distribution distribution : valuesOfAllInnerSets(computedDistributions.values())){
-                if(distribution.getArea() != null){
-                    NamedArea parentArea = distribution.getArea().getPartOf();
-                    while(parentArea != null){
-                        // get all distributions for the parent area
-                        Set<Distribution> parentAreaDistributions = computedDistributions.get(parentArea);
-                        if(parentAreaDistributions != null){
-                            // check all computed distributions of the parent area
-                            for(Distribution parentDistribution : parentAreaDistributions) {
-                                if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
-                                    removeCandidatesDistribution.add(parentDistribution);
-                                }
-                            }
-                        }
-                        parentArea = parentArea.getPartOf();
-                    }
-                }
-            }
+/* TODO remove the lines below
+ * this filtering rule has now be implemented as subAreaPreference rule and does not need to be implemented twice
+ * TODO also remove second rule from method documentation
+ */
+//            // 2.b) in computed distributions prefer parent areas over sub areas if they have the same status
+//            for(Distribution distribution : valuesOfAllInnerSets(computedDistributions.values())){
+//                if(distribution.getArea() != null){
+//                    NamedArea parentArea = distribution.getArea().getPartOf();
+//                    while(parentArea != null){
+//                        // get all distributions for the parent area
+//                        Set<Distribution> parentAreaDistributions = computedDistributions.get(parentArea);
+//                        if(parentAreaDistributions != null){
+//                            // check all computed distributions of the parent area
+//                            for(Distribution parentDistribution : parentAreaDistributions) {
+//                                if(parentDistribution != null && parentDistribution.getStatus().equals(distribution.getStatus())){
+//                                    removeCandidatesDistribution.add(parentDistribution);
+//                                }
+//                            }
+//                        }
+//                        parentArea = parentArea.getPartOf();
+//                    }
+//                }
+//            }
         }
 
         filteredDistributions = new HashMap<NamedArea, Set<Distribution>>(otherDistributions.size() + computedDistributions.size());
@@ -191,6 +201,25 @@ public class DescriptionUtility {
     }
 
     /**
+     * Orders the given Distribution elements in a hierarchical structure.
+     * This method will not filter out any of the Distribution elements.
+     * @param omitLevels
+     * @param distList
+     * @return
+     */
+    public static DistributionTree orderDistributions(Set<NamedAreaLevel> omitLevels, Collection<Distribution> distributions) {
+
+        DistributionTree tree = new DistributionTree();
+
+        if (logger.isDebugEnabled()){logger.debug("order tree ...");}
+        //order by areas
+        tree.orderAsTree(distributions, omitLevels);
+        tree.recursiveSortChildrenByLabel(); // FIXME respect current locale for sorting
+        if (logger.isDebugEnabled()){logger.debug("create tree - DONE");}
+        return tree;
+    }
+
+    /**
      * Implements the Status order preference filter for a given set to Distributions.
      * The distributions should all be for the same area
      *
@@ -227,8 +256,8 @@ public class DescriptionUtility {
         return preferred;
     }
 
-    private static <T extends CdmBase> Collection<T> valuesOfAllInnerSets(Collection<Set<T>> collectionOfSets){
-        Collection<T> allValues = new ArrayList<T>();
+    private static <T extends CdmBase> Set<T> valuesOfAllInnerSets(Collection<Set<T>> collectionOfSets){
+        Set<T> allValues = new HashSet<T>();
         for(Set<T> set : collectionOfSets){
             allValues.addAll(set);
         }

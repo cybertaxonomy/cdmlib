@@ -92,10 +92,17 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 			datasource.executeUpdate(updateQuery);
 			
 			if (defaultValue instanceof Boolean){
-				updateQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "null" : getBoolean((Boolean) defaultValue, datasource));
-				updateQuery = updateQuery.replace("@tableName", tableName);
-				updateQuery = updateQuery.replace("@columnName", newColumnName);
+				String defaultValueQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "NULL" : getBoolean((Boolean) defaultValue, datasource));
+				defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);
+				defaultValueQuery = defaultValueQuery.replace("@columnName", newColumnName);
 				datasource.executeUpdate(updateQuery);
+			}else if (defaultValue instanceof Integer){
+				String defaultValueQuery = "UPDATE @tableName SET @columnName = " + (defaultValue == null ? "NULL" : defaultValue);
+				defaultValueQuery = defaultValueQuery.replace("@tableName", tableName);
+				defaultValueQuery = defaultValueQuery.replace("@columnName", newColumnName);
+				datasource.executeUpdate(defaultValueQuery);
+			}else if (defaultValue != null){
+				logger.warn("Default Value not implemented for type " + defaultValue.getClass().getName());
 			}
 			if (referencedTable != null){
 				result &= TableCreator.makeForeignKey(tableName, datasource, monitor, newColumnName, referencedTable, caseType);

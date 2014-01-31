@@ -52,7 +52,7 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 @Qualifier("descriptionDaoImpl")
 public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> implements IDescriptionDao{
 
-	private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
+    private static final Logger logger = Logger.getLogger(DescriptionDaoImpl.class);
 
     public DescriptionDaoImpl() {
         super(DescriptionBase.class);
@@ -61,7 +61,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         indexedClasses[1] = TaxonNameDescription.class;
         indexedClasses[2] = SpecimenDescription.class;
     }
-    
+
 //    @Override  //Override for testing
 //    public DescriptionBase load(UUID uuid, List<String> propertyPaths){
 //    	DescriptionBase bean = findByUuid(uuid);
@@ -688,11 +688,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     @Override
     public <T extends DescriptionElementBase> List<T> getDescriptionElementForTaxon(
-            Taxon taxon, Set<Feature> features,
+            UUID taxonUuid, Set<Feature> features,
             Class<T> type, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
 
-        Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, pageSize, pageNumber, false);
+        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, pageSize, pageNumber, false);
 
         if (logger.isDebugEnabled()){logger.debug(" dao: get list ...");}
         List<T> results = query.list();
@@ -704,9 +704,9 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
     @Override
     public <T extends DescriptionElementBase> long countDescriptionElementForTaxon(
-            Taxon taxon, Set<Feature> features, Class<T> type) {
+            UUID taxonUuid, Set<Feature> features, Class<T> type) {
 
-        Query query = prepareGetDescriptionElementForTaxon(taxon, features, type, null, null, true);
+        Query query = prepareGetDescriptionElementForTaxon(taxonUuid, features, type, null, null, true);
 
         return (Long)query.uniqueResult();
     }
@@ -719,7 +719,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
      * @param pageNumber
      * @return
      */
-    private <T extends DescriptionElementBase> Query prepareGetDescriptionElementForTaxon(Taxon taxon,
+    private <T extends DescriptionElementBase> Query prepareGetDescriptionElementForTaxon(UUID taxonUuid,
             Set<Feature> features, Class<T> type, Integer pageSize, Integer pageNumber, boolean asCountQuery) {
 
         String listOrCount;
@@ -731,7 +731,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         String queryString = "select " + listOrCount +
             " from TaxonDescription as td" +
             " left join td.descriptionElements as de" +
-            " where td.taxon = :taxon ";
+            " where td.taxon.uuid = :taxon_uuid ";
 
         if(type != null){
             queryString += " and de.class = :type";
@@ -742,7 +742,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 //		System.out.println(queryString);
         Query query = getSession().createQuery(queryString);
 
-        query.setParameter("taxon", taxon);
+        query.setParameter("taxon_uuid", taxonUuid);
         if(type != null){
             query.setParameter("type", type.getSimpleName());
         }

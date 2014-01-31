@@ -97,6 +97,29 @@ public class DescriptionListController extends IdentifiableListController<Descri
     }
 
 
+    /**
+     * Runs the {@link TransmissionEngineDistribution} in a separate Thread and
+     * responds with a redirect to a progress monitor REST service end point.
+     * <p>
+     * <b>NOTE</b> this is still a special implementation for the Euro+Med project.
+     * The parameters for the <i>superAreas</i>, the areas to which the subordinate areas should be projected,
+     * <i>lowerRank</i>, <i>upperRank</i> are hardcoded to: <code>TDWG_LEVEL3 areas, SUBSPECIES, GENUS</code>
+     *
+     * @param mode
+     *            one of <code>byAreas</code>, <code>byRanks</code>,
+     *            <code>byAreasAndRanks</code>
+     * @param frontendBaseUrl
+     *            the cdm server instance base URL, this is needed for the a
+     *            proper redirect URL when the service is running behind a
+     *            reverse HTTP proxy
+     * @param priority
+     *            the priority for the Thread to spawn, see
+     *            {@link Thread#setPriority(int)}, defaults to 3
+     * @param request
+     * @param response
+     * @return
+     * @throws IOException
+     */
     @RequestMapping(value = { "accumulateDistributions" }, method = RequestMethod.GET)
     public ModelAndView doAccumulateDistributions(
             @RequestParam(value= "mode", required = true) final AggregationMode mode,

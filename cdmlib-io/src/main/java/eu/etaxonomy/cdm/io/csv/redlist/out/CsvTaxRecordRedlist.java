@@ -132,7 +132,7 @@ public class CsvTaxRecordRedlist extends CsvRecordBaseRedlist{
 	//FIXME: hard coded header lines
 	private ArrayList<String> setHeadlines(){
 		headlines = new ArrayList<String>(); 
-		Collections.addAll(headlines, "Classification","Taxon","Taxon ID","Taxon Status","Synonym","Distribution");
+		Collections.addAll(headlines, "Classification","Wissenschaftlicher Name","Taxon ID","Taxon Status","Synonym","Distribution");
 
 		if(features != null || !features.isEmpty()){
 			for(Feature f : features) {

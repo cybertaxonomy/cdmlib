@@ -75,10 +75,8 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @XmlElement(name = "rootNode")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
-       @OneToOne(fetch=FetchType.LAZY)
+    @OneToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE})
-    //TODO
-//	@NotNull // avoids creating a UNIQUE key for this field
     private TaxonNode rootNode;
 
     @XmlElement(name = "reference")
@@ -218,7 +216,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
         }
 
-        result = rootNode.getChildNodes().remove(node);
+        result = rootNode.removeChildNode(node);
 
         node.setParent(null);
         node.setClassification(null);

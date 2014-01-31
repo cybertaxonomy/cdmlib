@@ -58,6 +58,8 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 import eu.etaxonomy.cdm.remote.controller.BaseController;
 import eu.etaxonomy.cdm.remote.controller.util.ControllerUtils;
+import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
+import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
 import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
@@ -98,6 +100,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     public void initBinder(WebDataBinder binder) {
         super.initBinder(binder);
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
+        binder.registerCustomEditor(DefinedTermBaseList.class, new TermBaseListPropertyEditor<MarkerType>(termService));
     }
 
     @Autowired
@@ -109,7 +112,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
      * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
-     * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all
+     * an valid URI parameter String. Higher level distribution areas are expanded in order to include all
      * nested sub-areas.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
@@ -122,6 +125,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
      *            enables the <b>Status order preference rule</b> if set to true,
      *            see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean}
      * @param hideMarkedAreas
+     *            comma separated list of {@link MarkerType} uuids,
      *            distributions where the area has a {@link Marker} with one of
      *            the specified {@link MarkerType}s will be skipped, see
      *            {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
@@ -135,16 +139,10 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
-            @RequestParam(value = "hideMarkedAreas", required = false) Set<MarkerType> hideMarkedAreas,
+            @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
             HttpServletRequest request,
             HttpServletResponse response)
             throws IOException {
-
-
-        int width = 0;
-        int height = 0;
-        String bbox = null;
-        String backLayer = null;
 
         logger.info("doGetDistributionMapUriParams() " + request.getRequestURI());
         ModelAndView mv = new ModelAndView();
@@ -156,6 +154,11 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         //languages
         List<Language> langs = LocaleContext.getLanguages();
 
+        Set<MarkerType> hideMarkedAreas = null;
+        if(hideMarkedAreasList != null){
+            hideMarkedAreas = hideMarkedAreasList.asSet();
+        }
+
         Set<DefinedTerm> scopes = null;
         Set<NamedArea> geographicalScope = null;
         Integer pageSize = null;
@@ -166,7 +169,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
         List<TaxonDescription> taxonDescriptions = page.getRecords();
         String uriParams = geoservice.getDistributionServiceRequestParameterString(taxonDescriptions,
                 subAreaPreference, statusOrderPreference,
-                hideMarkedAreas, presenceAbsenceTermColors, width, height, bbox, backLayer, langs);
+                hideMarkedAreas, presenceAbsenceTermColors, langs);
         mv.addObject(uriParams);
 
         return mv;
@@ -176,7 +179,7 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
     /**
      * Assembles and returns URI parameter Strings for the EDIT Map Service. The distribution areas for the
      * {@link Taxon} instance identified by the <code>{taxon-uuid}</code> are found and are translated into
-     * an valid URI parameter String. Higher level distribiution areas are expanded in order to include all
+     * an valid URI parameter String. Higher level distribution areas are expanded in order to include all
      * nested sub-areas.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;geo&#x002F;map&#x002F;distribution&#x002F;{taxon-uuid}</b>
@@ -196,26 +199,24 @@ public class ExternalGeoController extends BaseController<TaxonBase, ITaxonServi
             HttpServletResponse response)
             throws IOException {
 
-        Integer width = null;
-        Integer height = null;
-        String bbox = null;
-        String backLayer = null;
-        Boolean doReturnImage = null;
         Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors = null;
 
         logger.info("doGetOccurrenceMapUriParams() " + requestPathAndQuery(request));
         ModelAndView mv = new ModelAndView();
 
-        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(relationshipUuids, relationshipInversUuids, termService);
+        Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(
+                relationshipUuids, relationshipInversUuids, termService);
 
         Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, (List<String>)null);
 
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
-        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
+        List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(
+                null, includeRelationships, taxon, maxDepth, null, null, orderHints, null);
 
-        String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations, specimenOrObservationTypeColors, doReturnImage, width , height , bbox , backLayer );
+        String uriParams = geoservice.getOccurrenceServiceRequestParameterString(specimensOrObersvations,
+                specimenOrObservationTypeColors );
         mv.addObject(uriParams);
         return mv;
     }

@@ -217,10 +217,6 @@ public class EditGeoServiceUtilities {
             Set<MarkerType> hideMarkedAreas,
             IGeoServiceAreaMapping mapping,
             Map<PresenceAbsenceTermBase<?>,Color> presenceAbsenceTermColors,
-            int width,
-            int height,
-            String bbox,
-            String baseLayerName,
             String projectToLayer, List<Language> languages){
 
 
@@ -262,19 +258,6 @@ public class EditGeoServiceUtilities {
         presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
         Map<String, String> parameters = new HashMap<String, String>();
-
-        //bbox
-        if (bbox != null){
-            parameters.put("bbox", bbox);
-        }
-        // map size
-        String ms = compileMapSizeParameterValue(width, height);
-        if(ms != null){
-            parameters.put("ms", ms);
-        }
-        if (!StringUtils.isBlank(baseLayerName)){
-            parameters.put("l", baseLayerName);
-        }
 
         //style
         int styleCounter = 0;
@@ -648,7 +631,6 @@ public class EditGeoServiceUtilities {
      * @param fieldUnitPoints
      * @param derivedUnitPoints
      * @param specimenOrObservationTypeColors
-     * @param doReturnImage TODO
      * @param width
      * @param height
      * @param bbox
@@ -667,21 +649,12 @@ public class EditGeoServiceUtilities {
     public static String getOccurrenceServiceRequestParameterString(
                 List<Point> fieldUnitPoints,
                 List<Point> derivedUnitPoints,
-                Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors,
-                Boolean doReturnImage, Integer width, Integer height, String bbox, String backLayer) {
+                Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
 
             specimenOrObservationTypeColors = mergeMaps(getDefaultSpecimenOrObservationTypeColors(), specimenOrObservationTypeColors);
 
             Map<String, String> parameters = new HashMap<String, String>();
             parameters.put("legend", "0");
-            parameters.put("image", doReturnImage != null && doReturnImage ? "true" : "false");
-            parameters.put("recalculate", "false"); // TODO add parameter to method
-            if(bbox != null){
-                parameters.put("bbox", bbox);
-            }
-            if(width != null || height != null){
-                parameters.put("ms", compileMapSizeParameterValue(width, height));
-            }
 
             Map<String, String> styleAndData = new HashMap<String, String>();
 

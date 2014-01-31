@@ -12,18 +12,19 @@ package eu.etaxonomy.cdm.io.csv.redlist.out;
 import java.io.ByteArrayOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -31,6 +32,7 @@ import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -63,7 +65,9 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	
 
 	/** Retrieves data from a CDM DB and serializes them CDM to CSV.
-	 * Starts with root taxa and traverses the classification to retrieve children taxa, synonyms, relationships, descriptive data, red list status (features).
+	 * Starts with root taxa and traverses the classification to retrieve 
+	 * children taxa, synonyms, relationships, descriptive data, red list 
+	 * status (features). 
 	 * Taxa that are not part of the classification are not found.
 	 * 
 	 * @param exImpConfig
@@ -85,6 +89,21 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 			//geographical Filter
 			List<TaxonNode> filteredNodes = handleGeographicalFilter(selectedAreas, classificationSet);
 			
+			//sorting List
+			Collections.sort(filteredNodes, new Comparator<TaxonNode>() {
+
+				@Override
+				public int compare(TaxonNode tn1, TaxonNode tn2) {
+					Taxon taxon1 = tn1.getTaxon();
+					Taxon taxon2 = tn2.getTaxon();
+					if(taxon1 != null && taxon2 != null){
+						return taxon1.getTitleCache().compareTo(taxon2.getTitleCache());
+					}
+					else{
+						return 0;
+					}
+				}
+			});
 			for (TaxonNode node : filteredNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				CsvTaxRecordRedlist record = assembleRecord(state);
@@ -119,18 +138,24 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * @param config
 	 * @return
 	 */
-	private Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
+	protected Set<Classification> assembleClassificationSet(CsvTaxExportConfiguratorRedlist config){
 		if(config != null){
 			Set<UUID> classificationUuidSet = config.getClassificationUuids();
 			List<Classification> classificationList = getClassificationService().find(classificationUuidSet);
 			Set<Classification> classificationSet = new HashSet<Classification>();
 			classificationSet.addAll(classificationList);
-			
 			return classificationSet;
 		}
 		return null;
 	}
-	
+
+//	
+//	private Collections sort(List<Classification> classificationList, new Comparator<TaxonNode>() {
+//		public int compare(TaxonNode tn1, TaxonNode tn2){
+//			int i = 0;
+//			return i;
+//		}
+//	});
 	//TODO: Exception handling
 	/**
 	 * 
@@ -152,11 +177,16 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 	 * Takes positive List of areas and iterates over a given classification 
 	 * and their {@link Taxon} to return all {@link Taxon} with the desired 
 	 * geographical attribute.
-	 * @param selectedAreas
+	 * 
+	 * <p><p>
+	 *
+	 * If selectedAreas is null all {@link TaxonNode}s of the given {@link Classification} will be returned.
+	 * 
+	 * @param selectedAreas 
 	 * @param classificationSet
 	 * @return
 	 */
-	private List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
+	protected List<TaxonNode> handleGeographicalFilter(List<NamedArea> selectedAreas,
 			Set<Classification> classificationSet) {
 		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
 		List<TaxonNode> allNodes =  getAllNodes(classificationSet);
@@ -359,6 +389,20 @@ public class CsvTaxExportRedlist extends CsvExportBaseRedlist {
 								List<String> cell = featureCells.get(i);
 								cell.add(state.toString());
 							}
+						}
+					}
+				}else if(el.isInstanceOf(TextData.class)){
+					TextData textData = CdmBase.deproxy(el, TextData.class);
+					Feature textFeature = textData.getFeature();
+					// find matching feature and put data into according cell
+					for(int i = 0; i < features.size(); i++) {
+						if(features.get(i).equals(textFeature)){
+							List<String> cell = featureCells.get(i);
+							String text = textData.getText(Language.GERMAN());
+							text = text.replaceAll(System.getProperty("line.separator"), "");
+							text = text.replaceAll("                            ", " ");
+							cell.add(text);
+							
 						}
 					}
 				}

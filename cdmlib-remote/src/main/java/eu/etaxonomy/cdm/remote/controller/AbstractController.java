@@ -90,6 +90,7 @@ public abstract class AbstractController<T extends CdmBase, SERVICE extends ISer
         if(query != null) {
             b.append("?").append(query);
         }
+
         return b.toString();
     }
 
