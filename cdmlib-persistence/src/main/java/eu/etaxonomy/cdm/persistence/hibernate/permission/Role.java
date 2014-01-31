@@ -29,14 +29,15 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 
     public final static Role ROLE_ADMIN = new Role(UUID.fromString("56eac992-67ba-40be-896c-4e992ca2afc0"), "ROLE_ADMIN");
     public final static Role ROLE_USER_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_USER_MANAGER");
+    public final static Role ROLE_PUBLISH = new Role(UUID.fromString("9ffa7879-cc67-4592-a14a-b251cccde1a7"), "ROLE_PUBLISH");
 
-    private UUID uuid;
+    private final UUID uuid;
 
     public UUID getUuid() {
         return uuid;
     }
 
-    private String authority;
+    private final String authority;
 
     public Role(UUID uuid, String authority) {
         this.uuid = uuid;

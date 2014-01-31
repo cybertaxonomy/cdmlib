@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author k.luther
+ * @author a.kohlbecker
  * @date 06.07.2011
  */
 @Component
@@ -51,6 +52,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     /* (non-Javadoc)
      * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.io.Serializable, java.lang.String, java.lang.Object)
      */
+    @Override
     public boolean hasPermission(Authentication authentication,
             Serializable targetId, String targetType, Object permission) {
         logger.info("UNINMPLEMENTED: hasPermission always returns false");
@@ -62,6 +64,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     /* (non-Javadoc)
      * @see org.springframework.security.access.PermissionEvaluator#hasPermission(org.springframework.security.core.Authentication, java.lang.Object, java.lang.Object)
      */
+    @Override
     public boolean hasPermission(Authentication authentication, Object targetDomainObject, Object permission) {
 
 
@@ -143,12 +146,9 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     private boolean evalPermission(Authentication authentication, CdmAuthority evalPermission, CdmBase targetDomainObject){
 
         //if user has administrator rights return true;
-         for (GrantedAuthority authority: authentication.getAuthorities()){
-             if (authority.getAuthority().equals(Role.ROLE_ADMIN.getAuthority())){
-                 logger.debug("ROLE_ADMIN found => true");
-                 return true;
-             }
-         }
+        if( hasOneOfRoles(authentication, Role.ROLE_ADMIN)){
+            return true;
+        }
 
         // === run voters
         Collection<ConfigAttribute> attributes = new HashSet<ConfigAttribute>();
@@ -166,6 +166,23 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
         }
 
         return true;
+    }
+
+    /**
+     * @param authentication
+     */
+    public boolean hasOneOfRoles(Authentication authentication, Role ... roles) {
+        for (GrantedAuthority authority: authentication.getAuthorities()){
+            for(Role role : roles){
+                 if (authority.getAuthority().equals(role.getAuthority())){
+                     if(logger.isDebugEnabled()){
+                         logger.debug(role.getAuthority() + " found => true");
+                     }
+                     return true;
+                 }
+            }
+         }
+        return false;
     }
 
 }

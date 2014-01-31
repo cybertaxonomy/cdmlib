@@ -10,45 +10,58 @@ import org.springframework.security.core.Authentication;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
 
 /**
- * FIXME Rename to PermissionDeniedException ???
  *
  * @author andreas
  * @date Sep 4, 2012
  *
  */
-public class EvaluationFailedException extends HibernateException {
+public class PermissionDeniedException extends HibernateException {
+
+    private static final long serialVersionUID = 1L;
+
     private static final Logger logger = Logger
-            .getLogger(EvaluationFailedException.class);
+            .getLogger(PermissionDeniedException.class);
 
     /**
      * @param message
      */
-    public EvaluationFailedException(String message) {
+    public PermissionDeniedException(String message) {
         super(message);
     }
 
-    public EvaluationFailedException(Authentication authentication, CdmBase entity, Operation requiredOperation) {
+    public PermissionDeniedException(Authentication authentication, CdmBase entity, Operation requiredOperation) {
         super(requiredOperation + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
-    public EvaluationFailedException(Authentication authentication, CdmBase entity, EnumSet<CRUD> requiredOperation) {
+    public PermissionDeniedException(Authentication authentication, CdmBase entity, EnumSet<CRUD> requiredOperation) {
         super(requiredOperation + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
     }
 
-    public EvaluationFailedException(Authentication authentication, CdmBase entity, String requiredOperation) {
+    public PermissionDeniedException(Authentication authentication, CdmBase entity, String requiredOperation) {
         super(requiredOperation + " not permitted for '" + authentication.getName()
                 + "' on " + entity.getClass().getSimpleName() + "[uuid:" + entity.getUuid() + "', toString:'" + entity.toString() + "']");
+    }
+
+    /**
+     * @param authentication
+     * @param roles
+     */
+    public PermissionDeniedException(Authentication authentication, Role[] roles) {
+
+        super("Permission denied for '" + authentication.getName()
+                + "' none of the roles '" + roles + "' found in authentication.");
     }
 
     /**
      * @param cause
      */
-    public EvaluationFailedException(Throwable cause) {
+    public PermissionDeniedException(Throwable cause) {
         super(cause);
     }
 
@@ -56,7 +69,8 @@ public class EvaluationFailedException extends HibernateException {
      * @param message
      * @param cause
      */
-    public EvaluationFailedException(String message, Throwable cause) {
+    public PermissionDeniedException(String message, Throwable cause) {
         super(message, cause);
     }
+
 }

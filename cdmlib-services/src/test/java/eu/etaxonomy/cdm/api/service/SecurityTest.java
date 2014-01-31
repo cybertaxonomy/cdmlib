@@ -42,7 +42,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.config.Configuration;
-import eu.etaxonomy.cdm.database.EvaluationFailedException;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -248,7 +248,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             logger.debug("Expected failure of evaluation.", e);
             exception = e;
         } catch (RuntimeException e){
-            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.debug("Expected failure of evaluation.", exception);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
@@ -276,7 +276,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             logger.error("Unexpected failure of evaluation.", e);
             exception = e;
         } catch (RuntimeException e){
-            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.error("unexpected failure of evaluation.", exception);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
@@ -365,7 +365,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             logger.error("Unexpected failure of evaluation.", e);
             exception = e;
         } catch (RuntimeException e){
-            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.error("Unexpected failure of evaluation.", exception);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
@@ -405,7 +405,7 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             logger.debug("Expected failure of evaluation.", e);
             exception = e;
         } catch (RuntimeException e){
-            exception = findThrowableOfTypeIn(EvaluationFailedException.class, e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
             logger.debug("Expected failure of evaluation.", exception);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
@@ -540,6 +540,107 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         Assert.assertFalse("The change must not be persited", taxon.isDoubtful());
     }
 
+    @Test
+    public final void testTaxonPublishAllow_ROLE_ADMIN() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        authentication = authenticationManager.authenticate(tokenForAdmin);
+        context.setAuthentication(authentication);
+        RuntimeException securityException= null;
+
+        Taxon taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
+
+        boolean lastIsPublish = taxon.isPublish();
+        taxon.setPublish(!lastIsPublish);
+        try{
+            taxonService.saveOrUpdate(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException  = findSecurityRuntimeException(e);
+            logger.error("Unexpected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("evaluation must not fail since the user has ROLE_ADMIN, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        // reload taxon
+        taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
+        Assert.assertTrue("The change must be persisted", taxon.isPublish() != lastIsPublish);
+    }
+
+
+    /**
+     * test with Taxonomist account which has the ROLE_PUBLISH
+     */
+    @Test
+    public final void testTaxonPublishAllow_ROLE_PUBLISH() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        authentication = authenticationManager.authenticate(tokenForTaxonomist);
+        context.setAuthentication(authentication);
+        RuntimeException securityException= null;
+
+        Taxon taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
+
+        boolean lastIsPublish = taxon.isPublish();
+        taxon.setPublish(!lastIsPublish);
+        try{
+            taxonService.saveOrUpdate(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException  = findSecurityRuntimeException(e);
+            logger.error("Unexpected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("evaluation must not fail since the user has ROLE_ADMIN, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
+        // reload taxon
+        taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
+        Assert.assertTrue("The change must be persisted", taxon.isPublish() != lastIsPublish);
+    }
+
+    /**
+     * test with TaxonEditor account which has not the ROLE_PUBLISH
+     */
+    @Test
+    public final void testTaxonPublishDeny() {
+
+        SecurityContext context = SecurityContextHolder.getContext();
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        context.setAuthentication(authentication);
+        RuntimeException securityException= null;
+
+        Taxon taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
+
+        boolean lastIsPublish = taxon.isPublish();
+        taxon.setPublish(!lastIsPublish);
+        try {
+            taxonService.saveOrUpdate(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (RuntimeException e){
+            securityException = findSecurityRuntimeException(e);
+            logger.debug("Expected failure of evaluation.", securityException);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+
+        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        // reload taxon
+        taxon = (Taxon) taxonService.find(UUID_ACHERONTIA_STYX);
+        Assert.assertTrue("The taxon must be unchanged", taxon.isPublish() == lastIsPublish);
+    }
+
     /**
      * test with admin account - should succeed
      */
@@ -559,9 +660,9 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
             logger.error("Unexpected failure of evaluation.", e);
-        }catch(ReferencedObjectUndeletableException e){ 
-        	Assert.fail();
-    	}finally {
+        }catch(ReferencedObjectUndeletableException e){
+            Assert.fail();
+        }finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
@@ -631,8 +732,8 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
             securityException = findSecurityRuntimeException(e);
             logger.debug("Expected failure of evaluation.", securityException);
         }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-    	}	finally {
+            Assert.fail();
+        }	finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();

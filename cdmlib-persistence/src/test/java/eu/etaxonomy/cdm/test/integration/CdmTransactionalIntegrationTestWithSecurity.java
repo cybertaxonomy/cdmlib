@@ -7,7 +7,7 @@ import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.unitils.spring.annotation.SpringApplicationContext;
 
-import eu.etaxonomy.cdm.database.EvaluationFailedException;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 
 @SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-securityTest.xml")
 public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTransactionalIntegrationTest {
@@ -15,14 +15,14 @@ public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTr
     public static final Logger logger = Logger.getLogger(CdmTransactionalIntegrationTestWithSecurity.class);
 
     /**
-     * Finds a nested RuntimeExceptions of the types {@link EvaluationFailedException}, {@link AccessDeniedException}
+     * Finds a nested RuntimeExceptions of the types {@link PermissionDeniedException}, {@link AccessDeniedException}
      * or returns null.
      * @param exception
      * @return
      */
     public static RuntimeException findSecurityRuntimeException(Throwable exception) {
 
-        if( EvaluationFailedException.class.isInstance(exception) || AccessDeniedException.class.isInstance(exception) ){
+        if( PermissionDeniedException.class.isInstance(exception) || AccessDeniedException.class.isInstance(exception) ){
             return (RuntimeException) exception;
         } else if(exception != null ){
             return findSecurityRuntimeException(exception.getCause());
@@ -41,7 +41,7 @@ public abstract class CdmTransactionalIntegrationTestWithSecurity extends  CdmTr
      * @return
      */
     public <T extends Throwable> T  findThrowableOfTypeIn(Class<T> clazz, Throwable exception) {
-        if( EvaluationFailedException.class.isInstance(exception) ){
+        if( PermissionDeniedException.class.isInstance(exception) ){
             return (T)exception;
         } else if(exception != null ){
             return findThrowableOfTypeIn(clazz, exception.getCause());
