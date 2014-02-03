@@ -10,7 +10,6 @@
 
 package eu.etaxonomy.cdm.api.application;
 
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.TransactionStatus;
@@ -43,6 +42,7 @@ import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
 /**
  * @author a.mueller
@@ -216,9 +216,9 @@ public interface ICdmApplicationConfiguration {
     /**
      * @return the configured PermissionEvaluator, usually the {@link CdmPermissionEvaluator}
      */
-    public PermissionEvaluator getPermissionEvaluator();
+    public ICdmPermissionEvaluator getPermissionEvaluator();
 
-	void authenticate(String username, String password);
+    void authenticate(String username, String password);
 
 
 

@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,6 +57,7 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
 /**
  * @author a.mueller
@@ -137,7 +137,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Autowired
     private IPolytomousKeyNodeService polytomousKeyNodeService;
     @Autowired
-    private PermissionEvaluator permissionEvaluator;
+    private ICdmPermissionEvaluator permissionEvaluator;
 
 
 //	@Autowired
@@ -408,7 +408,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPermissionEvaluator()
      */
     @Override
-    public PermissionEvaluator getPermissionEvaluator() {
+    public ICdmPermissionEvaluator getPermissionEvaluator() {
         return permissionEvaluator;
     }
 
@@ -462,12 +462,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java.lang.String, java.lang.String)
      */
     @Override
-	public void authenticate(String username, String password){
-		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
-		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+    public void authenticate(String username, String password){
+        UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-	}
+    }
 
 
 

@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
 import java.util.UUID;
 
+import org.springframework.security.access.vote.RoleVoter;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.util.Assert;
 
@@ -23,7 +24,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
 
     /**
      * The role prefix 'ROLE_' is defined in the spring security
-     * <code>RoleVoter</code>
+     * {@link RoleVoter}
      */
     private static final String ROLE_PREFIX = "ROLE_";
 

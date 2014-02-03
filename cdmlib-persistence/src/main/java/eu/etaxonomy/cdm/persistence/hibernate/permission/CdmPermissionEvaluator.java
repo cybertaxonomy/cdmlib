@@ -17,7 +17,6 @@ import org.apache.log4j.Logger;
 import org.springframework.security.access.AccessDecisionManager;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.access.ConfigAttribute;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.InsufficientAuthenticationException;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -31,7 +30,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * @date 06.07.2011
  */
 @Component
-public class CdmPermissionEvaluator implements PermissionEvaluator {
+public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
 
     protected static final Logger logger = Logger.getLogger(CdmPermissionEvaluator.class);
 
@@ -171,6 +170,7 @@ public class CdmPermissionEvaluator implements PermissionEvaluator {
     /**
      * @param authentication
      */
+    @Override
     public boolean hasOneOfRoles(Authentication authentication, Role ... roles) {
         for (GrantedAuthority authority: authentication.getAuthorities()){
             for(Role role : roles){

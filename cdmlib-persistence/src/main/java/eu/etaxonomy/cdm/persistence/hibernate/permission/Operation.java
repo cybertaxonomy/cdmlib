@@ -13,6 +13,7 @@ import java.util.StringTokenizer;
 
 
 /**
+ *
  * @author k.luther
  * @author a.kohlbecker
  *
@@ -47,16 +48,16 @@ public class Operation {
         if(string.equals("NONE")){
             return NONE;
         }
-		StringTokenizer st = new StringTokenizer(string,",");
-		EnumSet<CRUD> op = EnumSet.noneOf(CRUD.class);
+        StringTokenizer st = new StringTokenizer(string,",");
+        EnumSet<CRUD> op = EnumSet.noneOf(CRUD.class);
 
-		while (st.hasMoreElements()) {
+        while (st.hasMoreElements()) {
 
-			String opStr = (String) st.nextElement();
-			op.add(CRUD.valueOf(opStr.trim()));
-		}
+            String opStr = (String) st.nextElement();
+            op.add(CRUD.valueOf(opStr.trim()));
+        }
 
-		return op;
+        return op;
     }
 
     public static boolean isOperation(Object o){

@@ -24,7 +24,6 @@ import org.springframework.context.ApplicationListener;
 import org.springframework.context.support.AbstractApplicationContext;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -69,6 +68,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
 
 /**
@@ -487,7 +487,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     }
 
 
-    public PermissionEvaluator getPermissionEvaluator() {
+    public ICdmPermissionEvaluator getPermissionEvaluator() {
         return configuration.getPermissionEvaluator();
     }
 
