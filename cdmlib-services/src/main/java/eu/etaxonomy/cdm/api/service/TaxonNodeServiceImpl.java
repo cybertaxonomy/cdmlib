@@ -163,13 +163,17 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
 
             }else if(toTaxon == oldTaxon){
-                taxonRelationship.getFromTaxon().addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(),
+               fromTaxon.addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-
+               taxonService.saveOrUpdate(fromTaxon);
+                
             }else{
                 logger.warn("Taxon is not part of its own Taxonrelationship");
             }
             // Remove old relationships
+            
+            fromTaxon.removeTaxonRelation(taxonRelationship);
+            toTaxon.removeTaxonRelation(taxonRelationship);
             taxonRelationship.setToTaxon(null);
             taxonRelationship.setFromTaxon(null);
         }

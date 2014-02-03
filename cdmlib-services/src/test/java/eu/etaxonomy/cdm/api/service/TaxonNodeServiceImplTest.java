@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -40,6 +41,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -127,6 +129,13 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		keyNode.setKey(polKey);
 		polKeyNodeService.save(keyNode);
 		polKeyService.save(polKey);
+		
+		//nameRelations
+		
+		t1.getName().addRelationshipFromName(BotanicalName.NewInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
+		
+		//taxonRelations
+		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		
 		TaxonNameBase nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
