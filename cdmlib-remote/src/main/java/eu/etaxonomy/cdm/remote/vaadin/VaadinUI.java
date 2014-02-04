@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.remote.vaadin;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -29,18 +30,23 @@ import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ErrorView;
 @Theme("mytheme")
 @PreserveOnRefresh
 public class VaadinUI extends UI {
+	
+	public VaadinUI(){
+		super();
+	}
 
 	Logger logger = Logger.getLogger(VaadinUI.class);
 	/**
 	 * Automatically generated serial version ID
 	 */
 	private static final long serialVersionUID = 7106403278711066859L;
-	
+
 	@Autowired	
 	private VaadinConfigurer vaadinConfigurer;
 
 	@Override
 	protected void init(VaadinRequest request) {
+		
 		setSizeFull();
 		String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin.uiset." + vaadinConfigurer.vaadinUiSet();
 		
@@ -48,10 +54,4 @@ public class VaadinUI extends UI {
 		CdmDiscoveryNavigator navigator = new CdmDiscoveryNavigator(this, this, packageNameScope);
 		navigator.setErrorView(new ErrorView());
 	}
-	
-	public VaadinUI(){
-		super();
-	}
-	
-
 }
