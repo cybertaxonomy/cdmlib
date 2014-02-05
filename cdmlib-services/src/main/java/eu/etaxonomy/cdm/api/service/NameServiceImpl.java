@@ -284,34 +284,50 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @param name
      * @param config
      */
-    private void removeNameRelationshipsByDeleteConfig(TaxonNameBase name, NameDeletionConfigurator config) {
-        if (config.isRemoveAllNameRelationships()){
-            Set<NameRelationship> rels = name.getNameRelations();
-            for (NameRelationship rel : rels){
-                name.removeNameRelationship(rel);
-            }
-        }else{
-            //relations to this name
-            Set<NameRelationship> rels = name.getRelationsToThisName();
-            for (NameRelationship rel : rels){
-                if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
-                        name.removeNameRelationship(rel);
-                }else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
-                    name.removeNameRelationship(rel);
-                }
-            }
-            //relations from this name
-            rels = name.getRelationsFromThisName();
-            for (NameRelationship rel : rels){
-                if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
-                    name.removeNameRelationship(rel);
-                }else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
-                    name.removeNameRelationship(rel);
-                }
-            }
+    private void removeNameRelationshipsByDeleteConfig(TaxonNameBase<?,?> name, NameDeletionConfigurator config) {
+        try {
+			if (config.isRemoveAllNameRelationships()){
+			    Set<NameRelationship> rels = getModifiableSet(name.getNameRelations());
+			    for (NameRelationship rel : rels){
+			        name.removeNameRelationship(rel);
+			    }
+			}else{
+			    //relations to this name
+			    Set<NameRelationship> rels = getModifiableSet(name.getRelationsToThisName());
+			    for (NameRelationship rel : rels){
+			        if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
+			                name.removeNameRelationship(rel);
+			        }else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+			            name.removeNameRelationship(rel);
+			        }
+			    }
+			    //relations from this name
+			    rels = getModifiableSet(name.getRelationsFromThisName());
+			    for (NameRelationship rel : rels){
+			        if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
+			            name.removeNameRelationship(rel);
+			        }else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+			            name.removeNameRelationship(rel);
+			        }
+			    }
 
-        }
+			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
     }
+
+	/**
+	 * @param name
+	 * @return
+	 */
+	private Set<NameRelationship> getModifiableSet(Set<NameRelationship> relations) {
+		Set<NameRelationship> rels = new HashSet<NameRelationship>();
+		for (NameRelationship rel : relations){
+			rels.add(rel);  	
+		}
+		return rels;
+	}
 
 //********************* METHODS ****************************************************************//
 

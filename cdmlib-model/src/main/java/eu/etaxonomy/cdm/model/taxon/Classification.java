@@ -218,7 +218,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             throw new IllegalArgumentException("TaxonNode is a not a root node of this classification");
         }
 
-        result = rootNode.getChildNodes().remove(node);
+        result = rootNode.removeChildNode(node);
 
         node.setParent(null);
         node.setClassification(null);
