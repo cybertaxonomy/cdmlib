@@ -184,10 +184,17 @@ public class DerivedUnitFacadeFieldUnitCacheStrategyTest extends CdmIntegrationT
 		collection.setCode("B");
 		Assert.assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
 		
+		//freetext without unit
 		String altitudeText = "approx. 40";
 		specimenFacade.setAbsoluteElevationText(altitudeText);
-		correctCache = correctCache.replace("alt. 40 m", "alt. "+ altitudeText + " m");
-		Assert.assertEquals(correctCache, specimenFacade.innerFieldUnit().getTitleCache());
+		String expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeText);
+		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
+		
+		//freetext with unit
+		String altitudeTextM = "approx. 40 m";
+		specimenFacade.setAbsoluteElevationText(altitudeTextM);
+		expected = correctCache.replace("alt. 40 m", "alt. "+ altitudeTextM);
+		Assert.assertEquals(expected, specimenFacade.innerFieldUnit().getTitleCache());
 		
 	}
 

@@ -71,6 +71,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 14.05.2010
  */
 public class DerivedUnitFacade {
+	private static final String METER = "m";
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
 
@@ -952,6 +954,8 @@ public class DerivedUnitFacade {
 		}
 	}
 
+	static final String ALTITUDE_POSTFIX = " m";
+	
 	/**
 	 * Returns the correctly formatted <code>absolute elevation</code> information.
 	 * If absoluteElevationText is set, this will be returned,
@@ -971,7 +975,7 @@ public class DerivedUnitFacade {
 				String text = ev.getAbsoluteElevationText();
 				Integer min = getAbsoluteElevation();
 				Integer max = getAbsoluteElevationMaximum();
-				return distanceString(min, max, text);
+				return distanceString(min, max, text, METER);
 			}
 		}
 	}
@@ -1082,7 +1086,7 @@ public class DerivedUnitFacade {
 			String text = ev.getDistanceToGroundText();
 			Double min = getDistanceToGround();
 			Double max = getDistanceToGroundMax();
-			return distanceString(min, max, text);
+			return distanceString(min, max, text, METER);
 		}
 	}
 
@@ -1158,7 +1162,7 @@ public class DerivedUnitFacade {
 			String text = ev.getDistanceToWaterSurfaceText();
 			Double min = getDistanceToWaterSurface();
 			Double max = getDistanceToWaterSurfaceMax();
-			return distanceString(min, max, text);
+			return distanceString(min, max, text, METER);
 		}
 	}
 	
@@ -2401,13 +2405,16 @@ public class DerivedUnitFacade {
 	 * @param text text representation of distance
 	 * @return the formatted distance string
 	 */
-	private String distanceString(Number min, Number max, String text) {
+	private String distanceString(Number min, Number max, String text, String unit) {
 		if (StringUtils.isNotBlank(text)){
 			return text;
 		}else{
 			String minStr = min == null? null : String.valueOf(min);
 			String maxStr = max == null? null : String.valueOf(max);
 			String result = CdmUtils.concat(UTF8.EN_DASH_SPATIUM.toString(), minStr, maxStr);
+			if (StringUtils.isNotBlank(result) && StringUtils.isNotBlank(unit)){
+				result = result + " " + unit;
+			}
 			return result;
 		}
 	}

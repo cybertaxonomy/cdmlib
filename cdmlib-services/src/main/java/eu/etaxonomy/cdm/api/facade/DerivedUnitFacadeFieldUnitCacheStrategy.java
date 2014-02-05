@@ -72,7 +72,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 
 	protected String getFieldData(DerivedUnitFacade facade) {
 		String ALTITUDE_PREFIX = "alt. ";
-		String ALTITUDE_POSTFIX = " m";
+//		String ALTITUDE_POSTFIX = " m";
 		
 		String result = "";
 		
@@ -92,7 +92,7 @@ public class DerivedUnitFacadeFieldUnitCacheStrategy extends StrategyBase implem
 		//elevation
 		if (StringUtils.isNotBlank(facade.absoluteElevationToString())){
 			result = CdmUtils.concat(", " , result, ALTITUDE_PREFIX);
-			result += facade.absoluteElevationToString() + ALTITUDE_POSTFIX;
+			result += facade.absoluteElevationToString();
 		}
 		
 		//exact locality

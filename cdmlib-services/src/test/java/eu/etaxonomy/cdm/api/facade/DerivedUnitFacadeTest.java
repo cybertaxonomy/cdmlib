@@ -525,18 +525,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.setAbsoluteElevationRange(30, 36);
         Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36 m",specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        Assert.assertEquals("Odd range should not throw an exception anymore", String.format("30%s35", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("Odd range should not throw an exception anymore", 
+        		String.format("30%s35 m", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
         
         specimenFacade.setAbsoluteElevationRange(41, null);
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
         Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
-        Assert.assertEquals("", "41",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", "41 m",specimenFacade.absoluteElevationToString());
 
         specimenFacade.setAbsoluteElevationRange(null, null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevation());
@@ -571,7 +572,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         specimenFacade.setAbsoluteElevationText(null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
-        Assert.assertEquals("ToString should change by setting text to null", "41",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("ToString should change by setting text to null", "41 m",specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
     }
@@ -661,7 +662,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         
         specimenFacade.setDistanceToWaterSurfaceText(null);
         Assert.assertNull("", specimenFacade.getDistanceToWaterSurfaceText());
-        Assert.assertEquals("ToString should change by setting text to null", "41.2",specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("ToString should change by setting text to null", "41.2 m",specimenFacade.distanceToWaterSurfaceToString());
         Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
         Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
     }
