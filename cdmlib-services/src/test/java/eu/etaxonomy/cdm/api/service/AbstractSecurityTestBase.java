@@ -28,6 +28,8 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
 
     protected static final UUID TAXON_EDITOR_UUID = UUID.fromString("56eac992-67ba-40be-896c-4e992ca2afc0");
 
+    protected static final UUID GROUP_SPECIAL_EDITOR_UUID = UUID.fromString("8a423129-6d88-41cc-a1da-96bca45f5838");
+
     protected static final String PASSWORD_TAXON_EDITOR = "test2";
 
     protected static final String PASSWORD_ADMIN = "sPePhAz6";
@@ -68,6 +70,7 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
         /* User 'taxonEditor':
             - TAXONBASE.[CREATE]
             - TAXONBASE.[UPDATE]
+
         */
         tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
 
@@ -76,6 +79,8 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
             - DESCRIPTIONBASE.[UPDATE]
             - DESCRIPTIONELEMENT(Ecology).[CREATE]
             - DESCRIPTIONELEMENT(Ecology).[UPDATE]
+            - Groups :
+               - "SpecialEditors"
          */
         tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
 
@@ -94,6 +99,8 @@ public abstract class AbstractSecurityTestBase extends CdmTransactionalIntegrati
             - TAXONBASE.[UPDATE]
             - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
             - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
+            - ROLE_PUBLISH
+
          */
         tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
     }

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
@@ -27,6 +28,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
 
@@ -49,6 +51,9 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
     @SpringBeanByType
     private IGroupService groupService;
+
+    @SpringBeanByType
+    private IGrantedAuthorityService grantedAuthorityService;
 
     @SpringBeanByType
     private ITaxonService taxonService;
@@ -188,6 +193,117 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
         List<GrantedAuthority> groupAuthorities = groupService.findGroupAuthorities(publishersGroupName);
 
         Assert.assertEquals(Role.ROLE_PUBLISH.toString(), groupAuthorities.get(0).getAuthority());
+
+    }
+
+    @Test
+    public void testRefreshUser(){
+
+        String newGroupName = "new_publishers";
+
+        // authenticate as TaxonEditor to load the user for the first time and to let cache it in the session
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        User user = (User) authentication.getPrincipal();
+
+        // check that everything is clean
+        for(GrantedAuthority authority : user.getAuthorities()){
+            if(authority.equals(Role.ROLE_PUBLISH)){
+                Assert.fail("an authority '" + Role.ROLE_PUBLISH + "' must not yet exists");
+            }
+        }
+        for(Group group : user.getGroups()){
+            if(group.getName().equals(newGroupName)){
+                Assert.fail("the group '" + newGroupName + "' must not yet exists");
+            }
+        }
+
+        // authenticate as UserManager to be able to add the role ROLE_PUBLISH in various ways
+        authentication = authenticationManager.authenticate(tokenForUserManager);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        // create an entity of ROLE_PUBLISH and sva it to the database
+        grantedAuthorityService.save(Role.ROLE_PUBLISH.asNewGrantedAuthority());
+        commitAndStartNewTransaction(null);
+        GrantedAuthorityImpl rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
+
+        user = userService.load(TAXON_EDITOR_UUID);
+
+        // 1. add to the users GrantedAuthorities
+        // TODO is there any other way to do this?
+        Set<GrantedAuthority> grantedAuthorities = user.getGrantedAuthorities();
+        grantedAuthorities.add(rolePublish);
+        user.setGrantedAuthorities(grantedAuthorities);
+        userService.saveOrUpdate(user);
+
+        commitAndStartNewTransaction(null);
+
+        // 2. add to existing group
+        Group group_special_editor = groupService.load(GROUP_SPECIAL_EDITOR_UUID);
+        rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
+        group_special_editor.addGrantedAuthority(rolePublish);
+        groupService.saveOrUpdate(group_special_editor);
+
+        commitAndStartNewTransaction(null);
+
+        // 3. add in new group
+        Group groupNewPublishers = Group.NewInstance(newGroupName);
+        rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
+        groupNewPublishers.addGrantedAuthority(rolePublish);
+        groupService.saveOrUpdate(groupNewPublishers);
+        groupService.addUserToGroup(user.getUsername(), newGroupName);
+
+        commitAndStartNewTransaction(null);
+
+        // again authenticate as TaxonEditor
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        // and check if everything is updated
+        user = (User) authentication.getPrincipal();
+
+        // 1. check users authorities for the role
+        boolean newAuthorityFound = false;
+        for(GrantedAuthority authority : user.getAuthorities()){
+            if(authority.equals(Role.ROLE_PUBLISH)){
+                newAuthorityFound = true;
+                break;
+            }
+        }
+        Assert.assertTrue("the new authority '" + Role.ROLE_PUBLISH + "' is missing", newAuthorityFound);
+
+        // 2. check for role in existing group
+        boolean newAuthorityFoundInExistingGroup = false;
+        for(Group group : user.getGroups()){
+            if(group.getUuid().equals(GROUP_SPECIAL_EDITOR_UUID)){
+                for(GrantedAuthority authority : group.getGrantedAuthorities()){
+                    if(authority.equals(Role.ROLE_PUBLISH)){
+                        newAuthorityFoundInExistingGroup = true;
+                        break;
+                    }
+                }
+                if(newAuthorityFoundInExistingGroup){
+                    break;
+                }
+            }
+        }
+        Assert.assertTrue("the new authority '" + Role.ROLE_PUBLISH + "' is missing in existing group", newAuthorityFoundInExistingGroup);
+
+        // 3. check new group
+        boolean newGroupFound = false;
+        for(Group group : user.getGroups()){
+            if(group.getName().equals(newGroupName)){
+                newGroupFound = true;
+                break;
+            }
+        }
+        Assert.assertTrue("the new group '" + newGroupName + "' is missing", newGroupFound);
+
+
 
     }
 

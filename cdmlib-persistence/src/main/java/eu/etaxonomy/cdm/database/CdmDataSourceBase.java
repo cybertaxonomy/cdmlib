@@ -10,6 +10,8 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.PrintWriter;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -19,6 +21,7 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 
 /**
@@ -82,11 +85,34 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
         String classString = dbType.getClassString();
         Class.forName(classString);
         String mUrl = dbType.getConnectionString(this);
-        Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
-        if (connection != null){
-            return true;
+        if(logger.isDebugEnabled()){
+            logger.debug("testConnection() : " + mUrl);
         }
-
+        URI plainUrl;
+        try {
+            // strip off the jdbc: prefix
+            plainUrl = new URI(mUrl.substring(5));
+        } catch (URISyntaxException e) {
+            logger.error("testConnection() - invalid url:  " + mUrl);
+            throw new SQLException("testConnection() - invalid url:  " + mUrl, e);
+        }
+        // 1. do a plain socket test to check if the service is available
+        if(UriUtils.checkServiceAvailable(plainUrl.getHost(), plainUrl.getPort())){
+            if(logger.isDebugEnabled()){
+                logger.debug("testConnection() : " + mUrl + " : service is available");
+            }
+            // 2. tr y to connect to the database server
+            Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
+            if (connection != null){
+                if(logger.isDebugEnabled()){
+                    logger.debug("testConnection() : " + mUrl + " : jdbc connect successful");
+                }
+                return true;
+            }
+        }
+        if(logger.isDebugEnabled()){
+            logger.debug("testConnection() : " + mUrl + " : FAIL");
+        }
         return false;
     }
 
@@ -302,6 +328,7 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     // java 1.6
     //---------------------------------------------------------------------
 
+    @Override
     public java.util.logging.Logger getParentLogger() {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
         return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
