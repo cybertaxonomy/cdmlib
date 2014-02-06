@@ -69,6 +69,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	private boolean redlistFeatures;
 	private boolean acceptedName;
 	private boolean parentID;
+	private boolean externalID;
 	private boolean lastChange;
 	
 
@@ -483,4 +484,11 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 		this.lastChange = lastChange;
 	}
 
+	public boolean isExternalID() {
+		return externalID;
+	}
+
+	public void setExternalID(boolean externalID) {
+		this.externalID = externalID;
+	}
 }

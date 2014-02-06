@@ -37,6 +37,7 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 	private String scientificName;
 	private String taxonomicStatus;
 	private CsvDemoId datasetId;
+	private String taxonConceptID;
 	private String datasetName;
 	private ArrayList<String> synonyms;
 	private String threadStatus;
@@ -54,6 +55,8 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 	private String parentUuid;
 
 	private String lastUpdated;
+
+	private String externalID;
 
 	/**
 	 * 
@@ -111,6 +114,9 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 		if(config.isRank()){
 			print(rank, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_RANK);
 		}
+		if(config.isTaxonConceptID()){
+			print(taxonConceptID, writer, IS_NOT_FIRST, TermUri.DWC_TAXON_CONCEPT_ID);
+		}
 		if(config.isTaxonStatus()){
 			print(taxonomicStatus, writer, IS_NOT_FIRST, TermUri.DWC_TAXONOMIC_STATUS);
 		}
@@ -132,6 +138,9 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 					print((ArrayList<String>)featureList, TermUri.DWC_LIFESTAGE, writer);
 				}
 			}
+		}
+		if(config.isExternalID()){
+			print(externalID, writer, IS_NOT_FIRST,TermUri.DWC_ORIGINAL_NAME_USAGE_ID);
 		}
 		if(config.isLastChange()){
 			print(lastUpdated, writer, IS_NOT_FIRST,TermUri.DC_MODIFIED);
@@ -270,13 +279,12 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 		
 	}
 
-	public void setRank(Rank rank) {
-		this.rank = rank.toString();
-		
+	public void setRank(String rank) {
+		this.rank = rank;
 	}
 
-	public void setParentUUID(UUID parentUuid) {
-		this.parentUuid = parentUuid.toString();
+	public void setParentUUID(String parentUuid) {
+		this.parentUuid = parentUuid;
 		
 	}
 
@@ -284,4 +292,11 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 		this.lastUpdated = lastUpdated;
 	}
 
+	public void setTaxonConceptID(String taxonConceptID) {
+		this.taxonConceptID = taxonConceptID;
+	}
+
+	public void setExternalID(String externalID) {
+		this.externalID = externalID;
+	}
 }
