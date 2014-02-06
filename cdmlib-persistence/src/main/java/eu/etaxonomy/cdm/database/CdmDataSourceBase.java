@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.database;
 
 import java.io.PrintWriter;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.DriverManager;
@@ -21,7 +19,6 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 
 /**
@@ -88,28 +85,19 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
         if(logger.isDebugEnabled()){
             logger.debug("testConnection() : " + mUrl);
         }
-        URI plainUrl;
-        try {
-            // strip off the jdbc: prefix
-            plainUrl = new URI(mUrl.substring(5));
-        } catch (URISyntaxException e) {
-            logger.error("testConnection() - invalid url:  " + mUrl);
-            throw new SQLException("testConnection() - invalid url:  " + mUrl, e);
+
+        if(logger.isDebugEnabled()){
+            logger.debug("testConnection() : " + mUrl + " : service is available");
         }
-        // 1. do a plain socket test to check if the service is available
-        if(UriUtils.checkServiceAvailable(plainUrl.getHost(), plainUrl.getPort())){
+        // try to connect to the database server
+        Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
+        if (connection != null){
             if(logger.isDebugEnabled()){
-                logger.debug("testConnection() : " + mUrl + " : service is available");
+                logger.debug("testConnection() : " + mUrl + " : jdbc connect successful");
             }
-            // 2. tr y to connect to the database server
-            Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
-            if (connection != null){
-                if(logger.isDebugEnabled()){
-                    logger.debug("testConnection() : " + mUrl + " : jdbc connect successful");
-                }
-                return true;
-            }
+            return true;
         }
+
         if(logger.isDebugEnabled()){
             logger.debug("testConnection() : " + mUrl + " : FAIL");
         }
