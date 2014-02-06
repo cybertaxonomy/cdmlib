@@ -201,6 +201,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         String newGroupName = "new_publishers";
 
+        // -----------------------------------------------------------------
         // authenticate as TaxonEditor to load the user for the first time and to let cache it in the session
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         SecurityContext context = SecurityContextHolder.getContext();
@@ -220,12 +221,13 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
             }
         }
 
+        // -----------------------------------------------------------------
         // authenticate as UserManager to be able to add the role ROLE_PUBLISH in various ways
         authentication = authenticationManager.authenticate(tokenForUserManager);
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 
-        // create an entity of ROLE_PUBLISH and sva it to the database
+        // create an entity of ROLE_PUBLISH and save it to the database
         grantedAuthorityService.save(Role.ROLE_PUBLISH.asNewGrantedAuthority());
         commitAndStartNewTransaction(null);
         GrantedAuthorityImpl rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
@@ -243,6 +245,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         // 2. add to existing group
         Group group_special_editor = groupService.load(GROUP_SPECIAL_EDITOR_UUID);
+        String groupSpecialEditor_Name = group_special_editor.getName();
         rolePublish = grantedAuthorityService.load(Role.ROLE_PUBLISH.getUuid());
         group_special_editor.addGrantedAuthority(rolePublish);
         groupService.saveOrUpdate(group_special_editor);
@@ -258,6 +261,7 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         commitAndStartNewTransaction(null);
 
+        // -----------------------------------------------------------------
         // again authenticate as TaxonEditor
         authentication = authenticationManager.authenticate(tokenForTaxonEditor);
         context = SecurityContextHolder.getContext();
@@ -302,6 +306,32 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
             }
         }
         Assert.assertTrue("the new group '" + newGroupName + "' is missing", newGroupFound);
+
+        // ==================================================================
+        // again authenticate as UserManager to be able to add the role ROLE_PUBLISH in various ways
+        authentication = authenticationManager.authenticate(tokenForUserManager);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        groupService.removeUserFromGroup(user.getUsername(), groupSpecialEditor_Name);
+
+        commitAndStartNewTransaction(null);
+
+        // -----------------------------------------------------------------
+        // again authenticate as TaxonEditor
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        // and check if the group has been removed from the user
+        user = (User) authentication.getPrincipal();
+
+        for(Group group: user.getGroups()){
+            if(group.getName().equals(groupSpecialEditor_Name)){
+                Assert.fail("The user TaxonEditor should no longer be member of this group");
+            }
+
+        }
 
 
 
