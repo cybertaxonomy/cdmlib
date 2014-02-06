@@ -12,9 +12,9 @@ package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertNull;
 import static org.junit.Assert.fail;
 
 import java.io.FileNotFoundException;
@@ -25,12 +25,12 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import org.junit.Assert;
 import org.apache.log4j.Level;
 import org.hibernate.Hibernate;
 import org.hibernate.envers.query.AuditEntity;
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -80,7 +80,6 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author ben.clark
  *
  */
-//@Ignore //FIXME running out of time, so I hope someone else can fix the testdata for this class (Andreas Kohlbecker)
 public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
@@ -241,16 +240,16 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
         logger.setLevel(Level.DEBUG); //FIXME #######################
         if (logger.isDebugEnabled()) {
-        	for (int i = 0; i < results.size(); i++) {
-        		String nameCache = "";
-        		TaxonNameBase<?,?> taxonNameBase= ((TaxonBase)results.get(i)).getName();
-        		nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
-        		logger.debug(results.get(i).getClass() + "(" + i +")" +
-        				": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
-        	}
+            for (int i = 0; i < results.size(); i++) {
+                String nameCache = "";
+                TaxonNameBase<?,?> taxonNameBase= results.get(i).getName();
+                nameCache = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class).getNameCache();
+                logger.debug(results.get(i).getClass() + "(" + i +")" +
+                        ": Name Cache = " + nameCache + ", Title Cache = " + results.get(i).getTitleCache());
+            }
         }
 
-		assertEquals(numberOfTaxaByName_A, results.size());
+        assertEquals(numberOfTaxaByName_A, results.size());
 
 
         //System.err.println("Species group: " + Rank.SPECIESGROUP().getId() + "Species: " + Rank.SPECIES().getId() + "Section Botany: "+ Rank.SECTION_BOTANY());
@@ -484,7 +483,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         Synonym syn = (Synonym)taxonDao.findByUuid(this.atroposLeach);
         Taxon tax = (Taxon) taxonDao.findByUuid(rethera);
         tax.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF());
-     
+
         taxonDao.save(tax);
         results = taxonDao.findByNameTitleCache(true, true, "A", null, MatchMode.BEGINNING, namedAreas,
             null, null, null);
@@ -741,7 +740,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
             e.printStackTrace();
         }
     }
-    
+
     @Test
     @DataSet
    // @ExpectedDataSet("TaxonDaoHibernateImplTest.testDelete-result.xml")
@@ -750,7 +749,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         taxon.addMarker(Marker.NewInstance(MarkerType.IS_DOUBTFUL(), true));
         taxonDao.save(taxon);
         assert taxon != null : "taxon must exist";
-        
+
         taxonDao.delete(taxon);
         commitAndStartNewTransaction(null);
         taxon = (Taxon)taxonDao.findByUuid(acherontia);
@@ -1087,7 +1086,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 //    @Test
 //    public void testDeploy(){
 //    	TaxonBase taxonBase = taxonDao.findByUuid(UUID.fromString("6bfedf25-6dbc-4d5c-9d56-84f9052f3b2a"));
-//    	
+//
 //    	Synonym synonym = taxonBase.deproxy(taxonBase, Synonym.class);
 //    }
 
