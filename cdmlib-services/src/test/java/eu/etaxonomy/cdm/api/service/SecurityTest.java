@@ -21,7 +21,6 @@ import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
 import org.junit.Assert;
-import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.security.access.AccessDeniedException;
@@ -41,7 +40,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
-import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -59,11 +57,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
-import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTestWithSecurity;
 
 
 @DataSet
-public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
+public class SecurityTest extends AbstractSecurityTestBase{
 
     private static final UUID UUID_ACHERONTINII = UUID.fromString("928a0167-98cd-4555-bf72-52116d067625");
 
@@ -71,11 +68,6 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
 
     private static final UUID UUID_LACTUCA = UUID.fromString("b2b007a4-9c8c-43a1-8da4-20ed85464cf2");
 
-    private static final UUID PART_EDITOR_UUID = UUID.fromString("38a251bd-0ba4-426f-8fcb-5c09560749a7");
-
-    private static final String PASSWORD_TAXON_EDITOR = "test2";
-
-    private static final String PASSWORD_ADMIN = "sPePhAz6";
 
     private static final UUID ACHERONTIA_NODE_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
 
@@ -123,72 +115,6 @@ public class SecurityTest extends CdmTransactionalIntegrationTestWithSecurity{
     @SpringBean("cdmPermissionEvaluator")
     private CdmPermissionEvaluator permissionEvaluator;
 
-    private UsernamePasswordAuthenticationToken tokenForAdmin;
-
-    private UsernamePasswordAuthenticationToken tokenForTaxonEditor;
-
-    private UsernamePasswordAuthenticationToken tokenForDescriptionEditor;
-
-    private UsernamePasswordAuthenticationToken tokenForPartEditor;
-
-    private UsernamePasswordAuthenticationToken tokenForTaxonomist;
-
-    private UsernamePasswordAuthenticationToken tokenForUserManager;
-
-
-
-    @Before
-    public void setUp(){
-        /* User 'admin':
-            - ROLE_ADMIN
-            - TAXONBASE.[READ]
-            - TAXONBASE.[CREATE]
-            - TAXONBASE.[DELETE]
-            - TAXONBASE.[UPDATE]
-        */
-        tokenForAdmin = new UsernamePasswordAuthenticationToken(Configuration.adminLogin, PASSWORD_ADMIN);
-
-        /* User 'userManager':
-            - ROLE_ADMIN
-            - TAXONBASE.[READ]
-            - TAXONBASE.[CREATE]
-            - TAXONBASE.[DELETE]
-            - TAXONBASE.[UPDATE]
-        */
-        tokenForUserManager = new UsernamePasswordAuthenticationToken("userManager", PASSWORD_ADMIN);
-
-        /* User 'taxonEditor':
-            - TAXONBASE.[CREATE]
-            - TAXONBASE.[UPDATE]
-        */
-        tokenForTaxonEditor = new UsernamePasswordAuthenticationToken("taxonEditor", PASSWORD_TAXON_EDITOR);
-
-        /*  User 'descriptionEditor':
-            - DESCRIPTIONBASE.[CREATE]
-            - DESCRIPTIONBASE.[UPDATE]
-            - DESCRIPTIONELEMENT(Ecology).[CREATE]
-            - DESCRIPTIONELEMENT(Ecology).[UPDATE]
-         */
-        tokenForDescriptionEditor = new UsernamePasswordAuthenticationToken("descriptionEditor", "test");
-
-        /* User 'partEditor':
-            - TAXONBASE.[ADMIN]
-            - TAXONNODE.[UPDATE,CREATE,DELETE,READ,UPDATE]{20c8f083-5870-4cbd-bf56-c5b2b98ab6a7}
-            - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
-            - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
-         */
-        tokenForPartEditor = new UsernamePasswordAuthenticationToken("partEditor", "test4");
-
-        /* User 'taxonomist':
-            - TAXONBASE.[READ]
-            - TAXONBASE.[CREATE]
-            - TAXONBASE.[DELETE]
-            - TAXONBASE.[UPDATE]
-            - DESCRIPTIONELEMENTBASE.[CREATE,DELETE,READ,UPDATE]
-            - DESCRIPTIONBASE.[CREATE,DELETE,READ,UPDATE]
-         */
-        tokenForTaxonomist = new UsernamePasswordAuthenticationToken("taxonomist", "test4");
-    }
 
 
     /**

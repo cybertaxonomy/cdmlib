@@ -2262,6 +2262,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/application/FirstDataInserter
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeFieldUnitCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/AbstractSecurityTestBase.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
@@ -2283,7 +2284,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceImplTest.
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TermServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/TransmissionEngineDistributionTest.java -text
-cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/UserAndGroupServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.java -text
@@ -2343,7 +2344,6 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceImpl
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TaxonServiceSearchTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TermServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/TransmissionEngineDistributionTest.xml -text
-cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/UserServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAuthorityWSDL-result.wsdl -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServices.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthorityServiceTest.testGetAvailableServicesWithKnownLSID-result.wsdl -text
