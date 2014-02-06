@@ -316,7 +316,6 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
     // java 1.6
     //---------------------------------------------------------------------
 
-    @Override
     public java.util.logging.Logger getParentLogger() {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
         return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
