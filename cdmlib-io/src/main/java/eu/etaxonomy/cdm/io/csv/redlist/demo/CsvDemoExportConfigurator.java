@@ -121,13 +121,12 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 			setRedlistFeatures(true);
 		}else if(doTaxonConceptExport){
 			setDoTaxonConceptExport(true);
-			setTaxonNameID(true);
 			setTaxonName(true);
 			setAuthor(true);
 			setRank(true);
-			setAcceptedName(true);
 			setTaxonConceptID(true);
 			setParentID(true);
+			setExternalID(true);
 			setLastChange(true);
 		}
 	}

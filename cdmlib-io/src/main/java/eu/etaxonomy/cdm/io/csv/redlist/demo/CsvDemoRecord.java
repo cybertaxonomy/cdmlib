@@ -84,17 +84,6 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 	}
 
 	public void write(PrintWriter writer) {
-		if(config.isDoDemoExport()){
-			writeDemoRecord(writer);
-		}else if(config.isDoTaxonConceptExport()){
-			writeTaxonConeptRecord(writer);
-		}
-		writer.println();
-	}
-
-
-
-	private void writeDemoRecord(PrintWriter writer) {
 		if(isHeadLinePrinted()){
 			printHeadline(writer, setHeadlines(), TermUri.DWC_DATASET_NAME);
 			isHeadLinePrinted=false;
@@ -102,8 +91,14 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 		if(config.isClassification()){
 			print(datasetName, writer, IS_FIRST, TermUri.DWC_DATASET_NAME);
 		}
-		if(config.isTaxonName()){
-			print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
+		if(config.isDoTaxonConceptExport()){
+			if(config.isTaxonName()){
+				print(scientificName, writer, IS_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
+			}
+		}else{
+			if(config.isTaxonName()){
+				print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
+			}
 		}
 		if(config.isTaxonNameID()){
 			print(scientificNameId, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_ID);
@@ -145,18 +140,11 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 		if(config.isLastChange()){
 			print(lastUpdated, writer, IS_NOT_FIRST,TermUri.DC_MODIFIED);
 		}
+		writer.println();
 	}
+
 	
-	private void writeTaxonConeptRecord(PrintWriter writer) {
-		if(isHeadLinePrinted()){
-			printHeadline(writer, setHeadlines(), TermUri.DWC_DATASET_NAME);
-			isHeadLinePrinted=false;
-		}
-		print(scientificNameId, writer, IS_NOT_FIRST, TermUri.DWC_DATASET_ID);
-		print(scientificName, writer, IS_NOT_FIRST, TermUri.DWC_SCIENTIFIC_NAME);
-		//TODO all the other Fields
-		
-	}
+	//--------------Getter-Setter-Methods------------------//
 
 	public String getDatasetName() {
 		return datasetName;
@@ -237,10 +225,15 @@ public class CsvDemoRecord extends CsvDemoRecordBase{
 			if(config.isDistributions()){
 				headlines.add("Distribution");
 			}
-			if(features != null || !features.isEmpty()){
-				for(Feature f : features) {
-					headlines.add(f.getLabel());
+			if(features != null){
+				if(!features.isEmpty()){
+					for(Feature f : features) {
+						headlines.add(f.getLabel());
+					}
 				}
+			}
+			if(config.isExternalID()){
+				headlines.add("External ID");
 			}
 			if(config.isLastChange()){
 				headlines.add("Letztes Update");

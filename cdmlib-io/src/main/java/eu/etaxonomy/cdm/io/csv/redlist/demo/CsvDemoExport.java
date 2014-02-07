@@ -204,9 +204,9 @@ public class CsvDemoExport extends CsvDemoBase {
 						}
 					}
 				}
+			}else{
+				filteredNodes = allNodes;
 			}
-		}else{
-			filteredNodes = allNodes;
 		}
 		return filteredNodes;
 	}
@@ -304,7 +304,7 @@ public class CsvDemoExport extends CsvDemoBase {
 		}
 		if(config.isParentID()){
 			String parentUUID;
-			if(node.getParent().getTaxon().getUuid() == null){
+			if(node.getParent().getTaxon() == null){
 				parentUUID = "";
 			}else{
 				parentUUID = node.getParent().getTaxon().getUuid().toString();
