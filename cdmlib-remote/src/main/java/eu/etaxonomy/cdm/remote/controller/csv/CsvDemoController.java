@@ -105,6 +105,7 @@ public class CsvDemoController extends AbstractController{
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
 			HttpServletRequest request) {
+		
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		CsvDemoExportConfigurator config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
@@ -177,7 +178,7 @@ public class CsvDemoController extends AbstractController{
 		config.setFieldsTerminatedBy("\t");
 		config.setClassificationUuids(classificationUUIDS);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
-		config.createPreSelectedExport(true, false);
+		config.createPreSelectedExport(false, true);
 		if(features != null)config.setFeatures(features);
         config.setNamedAreas(selectedAreas);
 		return config;
