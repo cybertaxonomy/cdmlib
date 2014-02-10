@@ -211,6 +211,25 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Taxon changeSynonymToRelatedTaxon(Synonym synonym, Taxon toTaxon, TaxonRelationshipType taxonRelationshipType, Reference reference, String microReference);
 
     /**
+     * TODO still needed and correct?
+     * Change a synonym into a related concept
+     *
+     * @param synonym
+     * 				the synonym to change into the concept taxon
+     * @param toTaxon
+     * 				the taxon the newly created concept should be related to
+     * @param taxonRelationshipType
+     * 				the type of relationship
+     * @param reference
+     * @param microReference
+     * @return
+     * 				the newly created concept
+     * @throws DataChangeNoRollbackException 
+     */
+    public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
+			 TaxonRelationshipType oldRelationshipType,
+			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
+    /**
      * Deletes all synonym relationships of a given synonym. If taxon is given
      * only those relationships to the taxon are deleted.
      *
@@ -916,6 +935,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     void deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
+
+	
+
+
 
 
 

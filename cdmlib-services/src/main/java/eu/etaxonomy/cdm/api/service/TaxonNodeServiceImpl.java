@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -117,6 +118,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
         TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
+        HomotypicalGroup group = synonymName.getHomotypicalGroup();
         if (synonymRelationshipType == null){
             if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
                 synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -129,16 +131,21 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
        
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
+        synonymName.setHomotypicalGroup(group);
 
         // Move Synonym Relations to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
+        boolean homotypicToOldTaxon = false;
+        HomotypicalGroup group2 = null;
         for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
             SynonymRelationshipType srt;
             if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null
                     && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
                 srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-                srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+                srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+                homotypicToOldTaxon = true;
+                group2 = synRelation.getSynonym().getHomotypicGroup();
             } else {
                 srt = synRelation.getType();
 
@@ -147,6 +154,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                     srt,
                     synRelation.getCitation(),
                     synRelation.getCitationMicroReference());
+            
+            
         }
 
         // CHILD NODES

@@ -244,7 +244,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setIgnoreIsBasionymFor(true);
         try {
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1, config);
+            nameService.delete(name1,  config);
             commitAndStartNewTransaction(tableNames);
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
             Assert.assertNull("Name should not be in database anymore",name1);

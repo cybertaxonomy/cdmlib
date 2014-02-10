@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
@@ -171,6 +172,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		HomotypicalGroup homotypicalGroup = synonym.getName().getHomotypicalGroup();
 		assertEquals(syn.getName().getHomotypicalGroup(), homotypicalGroup);
 		Taxon tax = syn.getAcceptedTaxa().iterator().next();
+		assertFalse(tax.getName().getHomotypicalGroup().equals(homotypicalGroup));
 		assertEquals(tax, t2);
 		TaxonNameBase name = syn.getName();
 		assertEquals(name, nameT1);
