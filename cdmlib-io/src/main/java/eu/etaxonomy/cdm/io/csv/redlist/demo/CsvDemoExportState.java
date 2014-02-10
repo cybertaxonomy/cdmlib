@@ -20,7 +20,6 @@ import java.util.zip.ZipOutputStream;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.XmlExportState;
-import eu.etaxonomy.cdm.io.dwca.out.DwcaMetaDataRecord;
 
 /**
  * @author a.mueller

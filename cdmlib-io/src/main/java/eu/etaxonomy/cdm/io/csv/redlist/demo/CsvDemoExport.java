@@ -23,7 +23,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportStateRedlist;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -37,7 +36,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;

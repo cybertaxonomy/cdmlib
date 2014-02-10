@@ -22,7 +22,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.swing.border.EmptyBorder;
 import javax.xml.stream.XMLOutputFactory;
 import javax.xml.stream.XMLStreamException;
 import javax.xml.stream.XMLStreamWriter;
@@ -39,8 +38,8 @@ import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportStateRedlist;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IOriginalSource;
 import eu.etaxonomy.cdm.model.common.ISourceable;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;

@@ -12,15 +12,12 @@ package eu.etaxonomy.cdm.io.csv.redlist.demo;
 import java.io.PrintWriter;
 import java.net.URISyntaxException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.dwca.TermUri;
 import eu.etaxonomy.cdm.model.description.Feature;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
