@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
 import eu.etaxonomy.cdm.model.description.PolytomousKeyNode;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -136,14 +137,16 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		
 		//taxonRelations
 		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
-		
+		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		UUID uuidSynonym = taxonService.save(synonym);
+		t1.addHomotypicSynonym(synonym, null, null);
 		TaxonNameBase nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
 		assertEquals(2, t1.getDescriptions().size());
 		Assert.assertTrue(t2.getSynonyms().isEmpty());
 		Assert.assertTrue(t2.getDescriptions().size() == 0);
-		assertEquals(1,t1.getSynonyms().size());
+		assertEquals(2,t1.getSynonyms().size());
 		UUID synUUID = null;
 		Synonym syn;
 		try {
@@ -155,14 +158,18 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		}
 		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		assertEquals(2,t2.getSynonyms().size());
+		assertEquals(3,t2.getSynonyms().size());
 		assertEquals(2, t2.getDescriptions().size());
 	
 		
 		assertNotNull(taxonService.find(t1Uuid));
 		assertNull(taxonNodeService.find(node1Uuid));
 		syn = (Synonym)taxonService.find(synUUID);
+		synonym = (Synonym)taxonService.find(uuidSynonym);
 		assertNotNull(syn);
+		assertNotNull(synonym);
+		HomotypicalGroup homotypicalGroup = synonym.getName().getHomotypicalGroup();
+		assertEquals(syn.getName().getHomotypicalGroup(), homotypicalGroup);
 		Taxon tax = syn.getAcceptedTaxa().iterator().next();
 		assertEquals(tax, t2);
 		TaxonNameBase name = syn.getName();

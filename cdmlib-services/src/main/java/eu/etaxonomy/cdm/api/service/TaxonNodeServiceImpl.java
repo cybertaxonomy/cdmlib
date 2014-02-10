@@ -124,6 +124,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
             }
         }
+        
+        //get homotypic group
+       
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
 
@@ -135,7 +138,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                     && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
                 srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-                srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+                srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else {
                 srt = synRelation.getType();
 

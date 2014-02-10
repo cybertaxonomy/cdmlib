@@ -214,14 +214,16 @@ public class TaxonServiceImplBusinessTest extends CdmIntegrationTest {
 		service.save(newInstances);
 		TaxonNameBase synonymName = s1.getName();
 		UUID synNameUUID = synonymName.getUuid();
+				
 		Taxon newTaxon = service.changeSynonymToRelatedTaxon(s1, t2, TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), reference, referenceDetail);
 		//check removeTaxonBase()
-		service.update(s1);
+		//UUID s1UUID = service.update(s1);
 		UUID newTaxonUUID = service.save(newTaxon);
-		service.update(t2);
+		UUID t2UUId = service.update(t2);
+		
 		s1 =(Synonym)service.find(s1.getUuid());
 		newTaxon = (Taxon)service.find(newTaxonUUID);
-		assertNull(s1.getName());
+		assertNull(s1);
 		synonymName = nameService.find(synNameUUID);
 		assertFalse(synonymName.getTaxonBases().contains(s1));
 		assertTrue(synonymName.getTaxonBases().contains(newTaxon));
