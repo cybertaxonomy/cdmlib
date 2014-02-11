@@ -14,6 +14,7 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -169,14 +170,91 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		synonym = (Synonym)taxonService.find(uuidSynonym);
 		assertNotNull(syn);
 		assertNotNull(synonym);
-		HomotypicalGroup homotypicalGroup = synonym.getName().getHomotypicalGroup();
-		assertEquals(syn.getName().getHomotypicalGroup(), homotypicalGroup);
+		
 		Taxon tax = syn.getAcceptedTaxa().iterator().next();
-		assertFalse(tax.getName().getHomotypicalGroup().equals(homotypicalGroup));
+		assertEquals(syn.getName().getHomotypicalGroup(), synonym.getName().getHomotypicalGroup());
+		assertTrue(tax.getHomotypicGroup().equals( syn.getName().getHomotypicalGroup()));
+				
 		assertEquals(tax, t2);
 		TaxonNameBase name = syn.getName();
 		assertEquals(name, nameT1);
 	}	
+	
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
+	 */
+	@Test
+	@DataSet
+	public final void testMakeTaxonNodeAHeterotypicSynonymOfAnotherTaxonNode() {
+		classification = classificationService.load(classificationUuid);
+		node1 = taxonNodeService.load(node1Uuid);
+		node2 = taxonNodeService.load(node2Uuid);
+		reference = referenceService.load(referenceUuid);
+//		synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+		synonymRelationshipType = CdmBase.deproxy(termService.load(SynonymRelationshipType.uuidHeterotypicSynonymOf), SynonymRelationshipType.class) ;
+		referenceDetail = "test";
+
+		//
+		//TODO
+
+//		printDataSet(System.err, new String [] {"TaxonNode"});
+
+		// descriptions
+		t1 = node1.getTaxon();
+		PolytomousKey polKey = PolytomousKey.NewInstance();
+		PolytomousKeyNode keyNode = PolytomousKeyNode.NewInstance("", "", t1, null);
+		keyNode.setKey(polKey);
+		polKeyNodeService.save(keyNode);
+		polKeyService.save(polKey);
+		
+		//nameRelations
+		
+		t1.getName().addRelationshipFromName(BotanicalName.NewInstance(Rank.SPECIES()), NameRelationshipType.ALTERNATIVE_NAME(), null );
+		
+		//taxonRelations
+		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
+		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+		UUID uuidSynonym = taxonService.save(synonym);
+		t1.addHomotypicSynonym(synonym, null, null);
+		TaxonNameBase nameT1 = t1.getName();
+		UUID t1UUID = t1.getUuid();
+		t2 = node2.getTaxon();
+		assertEquals(2, t1.getDescriptions().size());
+		Assert.assertTrue(t2.getSynonyms().isEmpty());
+		Assert.assertTrue(t2.getDescriptions().size() == 0);
+		assertEquals(2,t1.getSynonyms().size());
+		UUID synUUID = null;
+		Synonym syn;
+		try {
+			syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+			synUUID = syn.getUuid();
+		} catch (DataChangeNoRollbackException e) {
+			logger.debug(e.getMessage());
+			Assert.fail();
+		}
+		termService.saveOrUpdate(synonymRelationshipType);
+		Assert.assertFalse(t2.getSynonyms().isEmpty());
+		assertEquals(3,t2.getSynonyms().size());
+		assertEquals(2, t2.getDescriptions().size());
+	
+		
+		assertNotNull(taxonService.find(t1Uuid));
+		assertNull(taxonNodeService.find(node1Uuid));
+		syn = (Synonym)taxonService.find(synUUID);
+		synonym = (Synonym)taxonService.find(uuidSynonym);
+		assertNotNull(syn);
+		assertNotNull(synonym);
+		
+		Taxon tax = syn.getAcceptedTaxa().iterator().next();
+		
+		assertEquals(syn.getName().getHomotypicalGroup(), synonym.getName().getHomotypicalGroup());
+		assertFalse(tax.getHomotypicGroup().equals( syn.getName().getHomotypicalGroup()));
+		
+		assertEquals(tax, t2);
+		TaxonNameBase name = syn.getName();
+		assertEquals(name, nameT1);
+	}	
+	
 		
 	@Test
 	@DataSet(value="TaxonNodeServiceImplTest-indexing.xml")

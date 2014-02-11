@@ -127,36 +127,50 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             }
         }
         
-        //get homotypic group
+        //set homotypic group
        
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
-        synonymName.setHomotypicalGroup(group);
-
+         HomotypicalGroup homotypicalGroupAcceptedTaxon = synonmyRelationship.getSynonym().getHomotypicGroup();
         // Move Synonym Relations to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
-        boolean homotypicToOldTaxon = false;
-        HomotypicalGroup group2 = null;
+        List<Synonym> synonymsInHomotypicalGroup = null;
+        
+        //the synonyms of the homotypical group of the old taxon
+        if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+        	synonymsInHomotypicalGroup = oldTaxon.getSynonymsInGroup(group);
+        }
+        
         for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
             SynonymRelationshipType srt;
             if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null
                     && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
                 srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-                srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
-                homotypicToOldTaxon = true;
-                group2 = synRelation.getSynonym().getHomotypicGroup();
+            	if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+            		srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+            	} else{
+            		srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+            	}
             } else {
                 srt = synRelation.getType();
 
             }
+           
             newAcceptedTaxon.addSynonym(synRelation.getSynonym(),
                     srt,
                     synRelation.getCitation(),
                     synRelation.getCitationMicroReference());
             
-            
+            /*if (synonymsInHomotypicalGroup.contains(synRelation.getSynonym()) && srt.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
+            	homotypicalGroupAcceptedTaxon.addTypifiedName(synRelation.getSynonym().getName());
+            }*/
+         
         }
+        
+        
+       
+        
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
