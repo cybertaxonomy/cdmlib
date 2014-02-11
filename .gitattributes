@@ -1521,6 +1521,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmAuthorityTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/Level2ValidationSaveOrUpdateEventListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/profiler/ProfilerController.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
