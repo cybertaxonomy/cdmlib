@@ -1452,6 +1452,12 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/MatchMode.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/NativeSqlOrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/OrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/RandomOrder.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/AbstractValidationTask.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/Level2ValidationTask.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/Level3ValidationTask.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/ValidationThread.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/ValidationThreadFactory.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/ValidationThreadPoolExecutor.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/view/IAuditEventDao.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/H2CorrectedDialect.java -text
 cdmlib-persistence/src/main/java/org/hibernate/dialect/HSQLCorrectedDialect.java -text
