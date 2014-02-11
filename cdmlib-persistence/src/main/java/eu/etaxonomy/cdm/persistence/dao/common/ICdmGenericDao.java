@@ -16,6 +16,7 @@ import java.util.UUID;
 
 import org.hibernate.Query;
 import org.hibernate.Session;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.dao.DataAccessException;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -138,4 +139,6 @@ public interface ICdmGenericDao {
 	 */
 	@Deprecated
 	public Query getHqlQuery(String hqlQuery);
+	
+	public PersistentCollection initializeCollection(PersistentCollection col);
 }
