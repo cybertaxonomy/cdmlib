@@ -226,9 +226,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * 				the newly created concept
      * @throws DataChangeNoRollbackException 
      */
-  /*  public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
+  public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
 			 TaxonRelationshipType oldRelationshipType,
-			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;*/
+			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
     /**
      * Deletes all synonym relationships of a given synonym. If taxon is given
      * only those relationships to the taxon are deleted.

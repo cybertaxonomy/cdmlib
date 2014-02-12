@@ -2971,7 +2971,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return list;
     }
 
-/*	@Override
+	@Override
 	public Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon, TaxonRelationshipType oldRelationshipType,
 			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException {
 		// Create new synonym using concept name
@@ -2998,7 +2998,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 				this.deleteTaxon(fromTaxon, null, null);
 				return synonymRelationship.getSynonym();
 		
-	}*/
+	}
 
 
 
