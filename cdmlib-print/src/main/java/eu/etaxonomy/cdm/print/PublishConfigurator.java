@@ -22,7 +22,7 @@ import org.apache.log4j.Logger;
 import org.jdom.Element;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
@@ -42,7 +42,7 @@ public class PublishConfigurator implements Serializable {
 
 	private static final long serialVersionUID = 4896190792717383839L;
 
-	private ICdmApplicationConfiguration applicationConfiguration;
+	private ICdmApplicationDefaultConfiguration applicationConfiguration;
 
 	private URL webserviceUrl;
 
@@ -81,7 +81,7 @@ public class PublishConfigurator implements Serializable {
 	 * @return
 	 */
 	public static PublishConfigurator NewLocalInstance(
-			ICdmApplicationConfiguration applicationConfiguration) {
+			ICdmApplicationDefaultConfiguration applicationConfiguration) {
 		PublishConfigurator configurator = new PublishConfigurator();
 		configurator.setLocal();
 		configurator.setApplicationConfiguration(applicationConfiguration);
@@ -361,7 +361,7 @@ public class PublishConfigurator implements Serializable {
 	 * @return the {@link CdmApplicationDefaultController} or null if <code>this</code>
 	 *         is a {@linkplain #isRemote() remote} instance
 	 */
-	public ICdmApplicationConfiguration getApplicationConfiguration() {
+	public ICdmApplicationDefaultConfiguration getApplicationConfiguration() {
 		return applicationConfiguration;
 	}
 
@@ -370,7 +370,7 @@ public class PublishConfigurator implements Serializable {
 	 * @param applicationConfiguration
 	 */
 	private void setApplicationConfiguration(
-			ICdmApplicationConfiguration applicationConfiguration) {
+			ICdmApplicationDefaultConfiguration applicationConfiguration) {
 		this.applicationConfiguration = applicationConfiguration;
 	}
 

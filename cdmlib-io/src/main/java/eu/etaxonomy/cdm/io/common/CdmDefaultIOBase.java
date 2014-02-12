@@ -10,7 +10,8 @@ import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
@@ -28,7 +29,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	public static final String DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultIoApplicationContext.xml";
 
 
-	protected ICdmApplicationConfiguration cdmApp = null;
+	protected ICdmApplicationDefaultConfiguration cdmApp = null;
 
 	/**
 	 * Creates a new {@link CdmApplicationDefaultController} if it does not exist yet
@@ -74,7 +75,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	 *
 	 * @return the cdmApp
 	 */
-	public ICdmApplicationConfiguration getCdmAppController() {
+	public ICdmApplicationDefaultConfiguration getCdmAppController() {
 		return this.cdmApp;
 	}
 
@@ -82,7 +83,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	 * @param cdmApp
 	 *            the cdmApp to set
 	 */
-	public void setCdmAppController(ICdmApplicationConfiguration cdmApp) {
+	public void setCdmAppController(ICdmApplicationDefaultConfiguration cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 

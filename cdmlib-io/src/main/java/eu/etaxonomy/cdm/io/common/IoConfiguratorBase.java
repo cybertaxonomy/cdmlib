@@ -12,7 +12,8 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
@@ -34,7 +35,7 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 //	protected Class<ICdmIO>[] ioClassList;
 	private DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 	
-	protected ICdmApplicationConfiguration cdmApp = null;
+	protected ICdmApplicationDefaultConfiguration cdmApp = null;
 	
 	//authentification token
 	UsernamePasswordAuthenticationToken authenticationToken;
@@ -61,14 +62,14 @@ public abstract class IoConfiguratorBase extends ObservableBase implements IIoCo
 		this.dbSchemaValidation = dbSchemaValidation;
 	}
 	
-	public ICdmApplicationConfiguration getCdmAppController(){
+	public ICdmApplicationDefaultConfiguration getCdmAppController(){
 		return this.cdmApp;
 	}
 
 	/**
 	 * @param cdmApp the cdmApp to set
 	 */
-	public void setCdmAppController(ICdmApplicationConfiguration cdmApp) {
+	public void setCdmAppController(ICdmApplicationDefaultConfiguration cdmApp) {
 		this.cdmApp = cdmApp;
 	}
 		
