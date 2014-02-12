@@ -12,7 +12,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -52,17 +52,17 @@ public class TestTaxonServices {
 
 	private static final ICdmDataSource db = TestTaxonServices.CDM_DB(dbName);
 
-	private static CdmApplicationController 
+	private static CdmApplicationDefaultController 
     getCdmApplicationController(
     		ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
     	
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
+		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(db, dbSchemaValidation, omitTermLoading);
 		
 		return appCtr;
     }
 
     
-	private void testMakeTaxonSynonym(CdmApplicationController appCtr) {
+	private void testMakeTaxonSynonym(CdmApplicationDefaultController appCtr) {
 
 //		logger.info("Testing makeTaxonSynonym()");
 //		TransactionStatus txStatus = appCtr.startTransaction();
@@ -86,7 +86,7 @@ public class TestTaxonServices {
 	}
 
 	
-	private void testRemoveNameRelationship(CdmApplicationController appCtr) {
+	private void testRemoveNameRelationship(CdmApplicationDefaultController appCtr) {
 
 		logger.info("Testing testRemoveNameRelationship()");
 		TransactionStatus txStatus = appCtr.startTransaction();
@@ -143,7 +143,7 @@ public class TestTaxonServices {
 		appCtr.commitTransaction(txStatus);
 	}
 
-	private void createNamedArea(CdmApplicationController appCtr) {
+	private void createNamedArea(CdmApplicationDefaultController appCtr) {
 		
 		logger.info("Start testing createNamedArea()");
 		TransactionStatus txStatus = appCtr.startTransaction();
@@ -172,7 +172,7 @@ public class TestTaxonServices {
     public static void main(String[] args) {
 
 		TestTaxonServices testClass = new TestTaxonServices();
-        CdmApplicationController cdmApp = 
+        CdmApplicationDefaultController cdmApp = 
         	getCdmApplicationController(db, DbSchemaValidation.VALIDATE, false);
         
         testClass.createNamedArea(cdmApp);

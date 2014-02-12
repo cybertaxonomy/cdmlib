@@ -13,7 +13,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -56,18 +56,18 @@ public class TestDatabase {
 		return datasource;
 	}
 
-    public static CdmApplicationController
+    public static CdmApplicationDefaultController
     		initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
 
 		logger.info("Initializing database '" + db.getName() + "'");
 
-		CdmApplicationController appCtrInit =
-			CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
+		CdmApplicationDefaultController appCtrInit =
+			CdmApplicationDefaultController.NewInstance(db, dbSchemaValidation, omitTermLoading);
 
 		return appCtrInit;
     }
 
-	public static void loadTestData(String dbname, CdmApplicationController appCtr) {
+	public static void loadTestData(String dbname, CdmApplicationDefaultController appCtr) {
 
 		logger.info("Loading test data into " + dbname);
 

@@ -10,7 +10,7 @@ import java.util.Set;
 
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;

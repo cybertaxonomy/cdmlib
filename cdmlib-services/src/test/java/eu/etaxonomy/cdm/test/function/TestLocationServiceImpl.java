@@ -16,7 +16,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.ILocationService;
 import eu.etaxonomy.cdm.api.service.ILocationService.NamedAreaVocabularyType;
@@ -76,7 +76,7 @@ public class TestLocationServiceImpl  extends CdmIntegrationTest{
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 		ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test", "sa", "", null);
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
+		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation);
 
 		ConversationHolder conversation = appCtr.NewConversation();
 		conversation.bind();

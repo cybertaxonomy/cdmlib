@@ -8,7 +8,7 @@
 */
 package eu.etaxonomy.cdm.test.example;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -19,7 +19,7 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * This is an example class to show how to connect to a CDM Database via a
- * {@link CdmApplicationController}. Please don't change this file. Rather
+ * {@link CdmApplicationDefaultController}. Please don't change this file. Rather
  * copy&paste it to use it for your own purposes.
  * 
  * @author a.mueller
@@ -37,7 +37,7 @@ public class ApplicationExample {
 		String username = "sa";
 		ICdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
+		ICdmApplicationConfiguration app = CdmApplicationDefaultController.NewInstance(dataSource, schemaValidation);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		app.getTaxonService().save(taxon);
 	}
@@ -51,7 +51,7 @@ public class ApplicationExample {
 		//password will be asked for in console and stored in your home directory
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 		
-		ICdmApplicationConfiguration app = CdmApplicationController.NewInstance(dataSource, schemaValidation);
+		ICdmApplicationConfiguration app = CdmApplicationDefaultController.NewInstance(dataSource, schemaValidation);
 		Taxon taxon = Taxon.NewInstance(null, null);
 		app.getTaxonService().save(taxon);
 	}

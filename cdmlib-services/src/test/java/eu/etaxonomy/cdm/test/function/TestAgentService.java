@@ -18,7 +18,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.model.agent.Person;
@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 @Ignore /* IGNORE in Suite */
 public class TestAgentService {
 
-	static CdmApplicationController appController;
+	static CdmApplicationDefaultController appController;
 
 	/**
 	 * @throws java.lang.Exception
@@ -47,7 +47,7 @@ public class TestAgentService {
 	public static void setUpBeforeClass() throws Exception {
 //		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "", "", NomenclaturalCode.ICBN);
 		CdmDataSource dataSource = CdmDataSource.NewH2EmbeddedInstance("TestAgentService", "sa", "");
-		appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
+		appController = CdmApplicationDefaultController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
 	}
 
 	@AfterClass

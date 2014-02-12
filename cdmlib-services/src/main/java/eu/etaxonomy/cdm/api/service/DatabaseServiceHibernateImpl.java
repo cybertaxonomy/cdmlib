@@ -21,7 +21,7 @@ import org.springframework.orm.hibernate4.SessionFactoryUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -50,8 +50,8 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	@Autowired
 	protected ApplicationContext appContext;
 	
-	private CdmApplicationController application;
-	public void setApplicationController(CdmApplicationController cdmApplicationController){
+	private CdmApplicationDefaultController application;
+	public void setApplicationController(CdmApplicationDefaultController cdmApplicationController){
 		this.application = cdmApplicationController;
 	}
 	

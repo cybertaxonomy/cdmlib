@@ -19,7 +19,7 @@ import org.apache.log4j.Logger;
 import org.junit.Ignore;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -59,7 +59,7 @@ public class TestService {
 	static Logger logger = Logger.getLogger(TestService.class);
 
 	private static final UUID TEST_TAXON_UUID = UUID.fromString("b3084573-343d-4279-ba92-4ab01bb47db5");
-	private static CdmApplicationController appCtr;
+	private static CdmApplicationDefaultController appCtr;
 	
 	public void testAppController() {
 		logger.info("Create name objects...");
@@ -261,7 +261,7 @@ public class TestService {
 		try {
 			DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 			//appCtr = CdmApplicationController.NewInstance(CdmPersistentDataSource.NewInstance("defaultMySql") , dbSchemaValidation);
-			appCtr = CdmApplicationController.NewInstance(dbSchemaValidation);
+			appCtr = CdmApplicationDefaultController.NewInstance(dbSchemaValidation);
 
 
 			TaxonNameBase<?,?> name = NonViralName.NewInstance(null);

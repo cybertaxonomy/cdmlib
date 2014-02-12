@@ -21,7 +21,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
@@ -355,10 +355,10 @@ public class PublishConfigurator implements Serializable {
 	}
 
 	/**
-	 * The {@linkplain CdmApplicationController application controller}
+	 * The {@linkplain CdmApplicationDefaultController application controller}
 	 * associated with this instance
 	 * 
-	 * @return the {@link CdmApplicationController} or null if <code>this</code>
+	 * @return the {@link CdmApplicationDefaultController} or null if <code>this</code>
 	 *         is a {@linkplain #isRemote() remote} instance
 	 */
 	public ICdmApplicationConfiguration getApplicationConfiguration() {

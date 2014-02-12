@@ -4,13 +4,13 @@ import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
-public class CdmIoApplicationController extends CdmApplicationController {
+public class CdmIoApplicationController extends CdmApplicationDefaultController {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmIoApplicationController.class);
 

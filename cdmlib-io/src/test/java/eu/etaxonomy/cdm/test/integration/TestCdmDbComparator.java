@@ -16,7 +16,7 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -243,14 +243,14 @@ public class TestCdmDbComparator {
 		
 		logger.info("Loading data from DB " + dbname);
 
-		CdmApplicationController appCtr = null;
+		CdmApplicationDefaultController appCtr = null;
 
 
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
 		
 		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
+		appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation, true);
 
     	
     	TransactionStatus txStatus = appCtr.startTransaction(true);
@@ -278,14 +278,14 @@ public class TestCdmDbComparator {
 		
 		logger.info("Loading data from DB " + dbname);
 
-		CdmApplicationController appCtr = null;
+		CdmApplicationDefaultController appCtr = null;
 
 
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
 		
 		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
 		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password);
-		appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation, true);
+		appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation, true);
 
     	
     	TransactionStatus txStatus = appCtr.startTransaction(true);
@@ -325,7 +325,7 @@ public class TestCdmDbComparator {
     	
     }
 	
-    private Map<String, List<CdmBase>> retrieveAllTables_(CdmApplicationController appCtr) {
+    private Map<String, List<CdmBase>> retrieveAllTables_(CdmApplicationDefaultController appCtr) {
     	
 		Map<String, List<CdmBase>> tables_ = new HashMap<String, List<CdmBase>>(table_list.length);
 		
@@ -423,7 +423,7 @@ public class TestCdmDbComparator {
 		return tables;
     }
     
-    private Map<String, List<String>> retrieveAllTables(CdmApplicationController appCtr) {
+    private Map<String, List<String>> retrieveAllTables(CdmApplicationDefaultController appCtr) {
 		
 		Map<String, List<String>> tables = new HashMap<String, List<String>>(table_list.length);
 		
@@ -569,13 +569,13 @@ public class TestCdmDbComparator {
 	
 	private void test(){
 		
-		CdmApplicationController appCtrOne = null;
-		CdmApplicationController appCtrTwo = null;
+		CdmApplicationDefaultController appCtrOne = null;
+		CdmApplicationDefaultController appCtrTwo = null;
 		logger.info("Comparing '" + sourceDbOne + "' and '" + sourceDbTwo + "'");
 
 		try {
-			appCtrOne = CdmApplicationController.NewInstance(sourceOne, DbSchemaValidation.VALIDATE, true);
-			appCtrTwo = CdmApplicationController.NewInstance(sourceTwo, DbSchemaValidation.VALIDATE, true);
+			appCtrOne = CdmApplicationDefaultController.NewInstance(sourceOne, DbSchemaValidation.VALIDATE, true);
+			appCtrTwo = CdmApplicationDefaultController.NewInstance(sourceTwo, DbSchemaValidation.VALIDATE, true);
 
 		} catch (Exception e) {
 			logger.error("Error creating application controller");

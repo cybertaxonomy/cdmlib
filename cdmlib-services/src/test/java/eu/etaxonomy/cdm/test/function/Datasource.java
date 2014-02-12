@@ -22,7 +22,7 @@ import org.hibernate.Query;
 import org.hibernate.Session;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -109,8 +109,8 @@ public class Datasource {
 		}
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
-		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance(dataSource,schema);
+		CdmApplicationDefaultController appCtr;
+		appCtr = CdmApplicationDefaultController.NewInstance(dataSource,schema);
 		
 //		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode 		
@@ -119,7 +119,7 @@ public class Datasource {
 	}
 
 
-	private void deleteHighLevelNode(CdmApplicationController appCtr) {
+	private void deleteHighLevelNode(CdmApplicationDefaultController appCtr) {
 		TransactionStatus tx = appCtr.startTransaction();
 		ITaxonNodeService service = appCtr.getTaxonNodeService();
 		TaxonNode node = service.find(60554);
@@ -143,7 +143,7 @@ public class Datasource {
 		
 	}
 
-	private void insertSomeData(CdmApplicationController appCtr) {
+	private void insertSomeData(CdmApplicationDefaultController appCtr) {
 		Classification cl = Classification.NewInstance("myClass");
 		TaxonNode node1 = cl.addChildTaxon(Taxon.NewInstance(BotanicalName.NewInstance(null), null), null, null);
 		appCtr.getClassificationService().save(cl);
@@ -181,8 +181,8 @@ public class Datasource {
 	}
 	
 	private void testDatabaseChange() throws DataSourceNotFoundException{
-		CdmApplicationController appCtr;
-		appCtr = CdmApplicationController.NewInstance();
+		CdmApplicationDefaultController appCtr;
+		appCtr = CdmApplicationDefaultController.NewInstance();
 	
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 //		String server = "192.168.2.10";
@@ -220,7 +220,7 @@ public class Datasource {
 		
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("testSqlServer", dataSource);
 
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
+		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
 		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
@@ -240,7 +240,7 @@ public class Datasource {
 		
 		CdmPersistentDataSource ds = CdmPersistentDataSource.save("PostgreTest", dataSource);
 
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds);
+		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(ds);
 		Person agent = Person.NewInstance();
 		appCtr.getAgentService().save(agent);
 		TaxonNameBase<?,?> tn = BotanicalName.NewInstance(null);
@@ -250,10 +250,10 @@ public class Datasource {
 	}
 	
 	private void testLocalHsql() throws DataSourceNotFoundException{
-		CdmApplicationController appCtr = null;
+		CdmApplicationDefaultController appCtr = null;
 		try {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
-			appCtr = CdmApplicationController.NewInstance(ds);
+			appCtr = CdmApplicationDefaultController.NewInstance(ds);
 			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
 			System.out.println(l);
 			//Agent agent = new Agent();
@@ -277,7 +277,7 @@ public class Datasource {
 			CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "", null);
 //			ds =
 //				 CdmPersistentDataSource.NewInstance("localH2");
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
+		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(ds, validation);
 		
 		boolean exists = appCtr.getUserService().userExists("admin");
 		try {
@@ -355,7 +355,7 @@ public class Datasource {
 			//CdmDataSource.NewH2EmbeddedInstance("cdm", "sa", "");
 //		ds =
 //			 CdmPersistentDataSource.NewInstance("localH2");
-		CdmApplicationController appCtr = CdmApplicationController.NewInstance(ds, validation);
+		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(ds, validation);
 		try {
 			BotanicalName botName1 = BotanicalName.NewInstance(Rank.SPECIES());
 			BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());

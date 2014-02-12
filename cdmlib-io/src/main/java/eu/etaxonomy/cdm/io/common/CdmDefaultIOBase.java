@@ -9,7 +9,7 @@ package eu.etaxonomy.cdm.io.common;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -31,7 +31,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	protected ICdmApplicationConfiguration cdmApp = null;
 
 	/**
-	 * Creates a new {@link CdmApplicationController} if it does not exist yet
+	 * Creates a new {@link CdmApplicationDefaultController} if it does not exist yet
 	 * or if createNew is <ocde>true</code>
 	 *
 	 * @param config
@@ -56,7 +56,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 
 		if (createNew == true || cdmApp == null) {
 			ClassPathResource applicationContextResource = new ClassPathResource(DEFAULT_IO_APPLICATION_CONTEXT_RESOURCE);
-			cdmApp = CdmApplicationController.NewInstance(applicationContextResource, cdmSource,schemaValidation, omitTermLoading);
+			cdmApp = CdmApplicationDefaultController.NewInstance(applicationContextResource, cdmSource,schemaValidation, omitTermLoading);
 			if (cdmApp != null) {
 				return true;
 			} else {
@@ -68,7 +68,7 @@ public class CdmDefaultIOBase<T extends IIoConfigurator> {
 	}
 
 	/**
-	 * Returns the {@link CdmApplicationController}. This is null if invoke()
+	 * Returns the {@link CdmApplicationDefaultController}. This is null if invoke()
 	 * has not been called yet and if the controller has not been set manually
 	 * by setCdmApp() yet.
 	 *

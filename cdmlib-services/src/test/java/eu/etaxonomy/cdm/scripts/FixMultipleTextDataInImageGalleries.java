@@ -16,7 +16,7 @@ import java.util.Set;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.common.AccountStore;
@@ -75,7 +75,7 @@ public class FixMultipleTextDataInImageGalleries {
 	 */
 	public static void main(String[] args) throws DataSourceNotFoundException, TermNotFoundException {
 		
-		CdmApplicationController applicationController = CdmApplicationController.NewInstance(dataSource());
+		CdmApplicationDefaultController applicationController = CdmApplicationDefaultController.NewInstance(dataSource());
 		
 		ConversationHolder conversation = applicationController.NewConversation();
 		conversation.startTransaction();

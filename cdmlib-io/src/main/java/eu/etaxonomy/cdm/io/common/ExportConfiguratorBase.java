@@ -8,7 +8,7 @@ package eu.etaxonomy.cdm.io.common;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.mapping.out.IExportTransformer;
@@ -160,7 +160,7 @@ public abstract class ExportConfiguratorBase<DESTINATION extends Object, STATE e
 	 */
 	public ICdmApplicationConfiguration getCdmAppController(boolean createNew, boolean omitTermLoading){
 		if (cdmApp == null || createNew == true){
-			cdmApp = CdmApplicationController.NewInstance(this.getSource(), this.getDbSchemaValidation(), omitTermLoading);
+			cdmApp = CdmApplicationDefaultController.NewInstance(this.getSource(), this.getDbSchemaValidation(), omitTermLoading);
 		}
 		return cdmApp;
 	}
