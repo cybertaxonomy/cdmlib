@@ -2092,6 +2092,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationCo
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolderMock.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacade.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategy.java -text
@@ -2247,6 +2248,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/utility/ImagesUtility.java -t
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicateNamesValidator.java -text
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpInvokerServices.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services_security.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
