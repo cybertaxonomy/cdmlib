@@ -449,16 +449,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IUserService#saveGroup(eu.etaxonomy.cdm.model.common.Group)
-     */
-    @Override
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID saveGroup(Group group) {
-        return groupDao.save(group);
-    }
+    
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IUserService#listByUsername(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)

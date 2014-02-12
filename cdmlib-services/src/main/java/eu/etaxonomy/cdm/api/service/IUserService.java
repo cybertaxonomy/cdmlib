@@ -31,7 +31,7 @@ public interface IUserService extends IService<User>, UserDetailsManager, GroupM
 
     public UUID saveGrantedAuthority(GrantedAuthority grantedAuthority);
 
-    public UUID saveGroup(Group group);
+    
 
     /**
      * Return a List of users matching the given query string, optionally filtered by class, optionally with a particular MatchMode
