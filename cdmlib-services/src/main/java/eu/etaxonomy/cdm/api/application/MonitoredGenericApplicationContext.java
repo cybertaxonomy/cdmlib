@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
  */
 public class MonitoredGenericApplicationContext extends GenericApplicationContext{
     @SuppressWarnings("unused")
-    private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
+    private static final Logger logger = Logger.getLogger(CdmApplicationDefaultController.class);
 
     final int countInvokeBeanFactoryPostProcessors = 10;
     final int countFinishBeanFactoryInitialization = 90;

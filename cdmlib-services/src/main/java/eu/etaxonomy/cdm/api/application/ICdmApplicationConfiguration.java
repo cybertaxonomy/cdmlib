@@ -11,8 +11,6 @@
 package eu.etaxonomy.cdm.api.application;
 
 import org.springframework.security.authentication.ProviderManager;
-import org.springframework.transaction.PlatformTransactionManager;
-import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
@@ -50,11 +48,7 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  */
 public interface ICdmApplicationConfiguration {
 
-    public TransactionStatus startTransaction();
 
-    public TransactionStatus startTransaction(Boolean readOnly);
-
-    public void commitTransaction(TransactionStatus tx);
 
     public Object getBean(String string);
 
@@ -106,10 +100,7 @@ public interface ICdmApplicationConfiguration {
      */
     public IMediaService getMediaService();
 
-    /**
-     * @return
-     */
-    public IDatabaseService getDatabaseService();
+
 
     /**
      * @return
@@ -157,22 +148,12 @@ public interface ICdmApplicationConfiguration {
      */
     public IWorkingSetService getWorkingSetService();
 
-    /**
-     * @return
-     */
-    public PlatformTransactionManager getTransactionManager();
-
 
     /**
      *
      * @return
      */
     public ProviderManager getAuthenticationManager();
-
-    /**
-     * @return
-     */
-    public ConversationHolder NewConversation();
 
     /**
      *
@@ -218,8 +199,9 @@ public interface ICdmApplicationConfiguration {
      */
     public ICdmPermissionEvaluator getPermissionEvaluator();
 
-    void authenticate(String username, String password);
+	void authenticate(String username, String password);
 
 
+	public ConversationHolder NewConversation();
 
 }
