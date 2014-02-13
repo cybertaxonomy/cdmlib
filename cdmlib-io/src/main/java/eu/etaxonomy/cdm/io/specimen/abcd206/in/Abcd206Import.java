@@ -30,7 +30,7 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.io.specimen.SpecimenImportBase;
@@ -597,7 +597,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     private void save(CdmBase cdmBase, Abcd206ImportState state) {
-        ICdmApplicationDefaultConfiguration cdmRepository = state.getConfig().getCdmAppController();
+        ICdmApplicationConfiguration cdmRepository = state.getConfig().getCdmAppController();
         if (cdmRepository == null){
             cdmRepository = this;
         }

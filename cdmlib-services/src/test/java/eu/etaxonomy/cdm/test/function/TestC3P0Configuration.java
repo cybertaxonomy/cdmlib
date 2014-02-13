@@ -15,7 +15,7 @@ import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -39,12 +39,12 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 public class TestC3P0Configuration{
 	private static final Logger logger = Logger.getLogger(TestC3P0Configuration.class);
 
-	CdmApplicationDefaultController appController;
+	CdmApplicationController appController;
 
 	@Before
 	public void setup() throws DataSourceNotFoundException, TermNotFoundException{
 		CdmDataSource dataSource = CdmDataSource.NewMySqlInstance("localhost", "test", -1, "edit", "wp5", NomenclaturalCode.ICNAFP);
-		appController = CdmApplicationDefaultController.NewInstance(dataSource, DbSchemaValidation.CREATE);
+		appController = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.CREATE);
 	}
 
 	@Test

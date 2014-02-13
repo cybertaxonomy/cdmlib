@@ -15,7 +15,7 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.junit.Ignore;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
@@ -42,11 +42,11 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 public class TestTaxonFunction {
 	private static final Logger logger = Logger.getLogger(TestTaxonFunction.class);
 
-	private CdmApplicationDefaultController getCdmApplicationController(String strDataSource, DbSchemaValidation hbm2dll){
-		CdmApplicationDefaultController cdmApp= null;
+	private CdmApplicationController getCdmApplicationController(String strDataSource, DbSchemaValidation hbm2dll){
+		CdmApplicationController cdmApp= null;
 		try {
 			CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewInstance(strDataSource);
-			cdmApp = CdmApplicationDefaultController.NewInstance(dataSource, hbm2dll);
+			cdmApp = CdmApplicationController.NewInstance(dataSource, hbm2dll);
 		} catch (DataSourceNotFoundException e) {
 			e.printStackTrace();
 		}
@@ -61,7 +61,7 @@ public class TestTaxonFunction {
 	private void initDatabase(){
 		logger.info("init Database start ...");
 		DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-		CdmApplicationDefaultController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
+		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", hbm2dll);
 
 		INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
 		Reference<?> sec = ReferenceFactory.newBook();
@@ -109,7 +109,7 @@ public class TestTaxonFunction {
 		if (false){
 			initDatabase();
 		}
-		CdmApplicationDefaultController cdmApp = getCdmApplicationController("defaultMySql", DbSchemaValidation.VALIDATE);
+		CdmApplicationController cdmApp = getCdmApplicationController("defaultMySql", DbSchemaValidation.VALIDATE);
 		Reference<?> sec = cdmApp.getReferenceService().find(getRefUuid());
 		List<Taxon> rootList = cdmApp.getTaxonService().getRootTaxa(sec, CdmFetch.NO_FETCH(), false);
 		for (Taxon taxon:rootList){

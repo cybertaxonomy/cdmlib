@@ -18,7 +18,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 public class CreateDataTestNoUnit {
 	private static Logger logger = Logger.getLogger(CreateDataTestNoUnit.class);
 	
-	private CdmApplicationDefaultController app;
+	private CdmApplicationController app;
 	
 	
 	public void test(){
@@ -49,7 +49,7 @@ public class CreateDataTestNoUnit {
 			 dbSchemaValidation = DbSchemaValidation.CREATE;
 		}
 		ICdmDataSource dataSource = CreateDataTest.cdm_test();
-		app  = CdmApplicationDefaultController.NewInstance(dataSource, dbSchemaValidation);
+		app  = CdmApplicationController.NewInstance(dataSource, dbSchemaValidation);
 
 		TaxonNameBase<?,?> genusName2 = (TaxonNameBase<?,?>)app.getNameService().find(UUID.fromString(CreateDataTest.genusNameUuid));
 		Set<TaxonBase> set = (Set<TaxonBase>)genusName2.getTaxonBases();

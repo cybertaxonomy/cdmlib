@@ -26,7 +26,7 @@ import org.junit.BeforeClass;
 import org.junit.Ignore;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -47,7 +47,7 @@ public class CreateDataTest {
 	private static Logger logger = Logger.getLogger(CreateDataTest.class);
 
 	private static boolean isCreated;
-	private CdmApplicationDefaultController app;
+	private CdmApplicationController app;
 	public static final String genusUuid = "c399e245-3def-427d-8502-afa0ae87e875";
 	public static final String genusNameUuid = "d399e245-3def-427d-8502-afa0ae87e875";
 	
@@ -75,7 +75,7 @@ public class CreateDataTest {
 			 dbSchemaValidation = DbSchemaValidation.CREATE;
 		}
 		ICdmDataSource dataSource = cdm_test();
-		app  = CdmApplicationDefaultController.NewInstance(dataSource, dbSchemaValidation);
+		app  = CdmApplicationController.NewInstance(dataSource, dbSchemaValidation);
 	}
 
 	@After

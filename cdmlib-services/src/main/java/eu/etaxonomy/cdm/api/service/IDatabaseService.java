@@ -10,7 +10,7 @@
 
 package eu.etaxonomy.cdm.api.service;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -104,5 +104,5 @@ public interface IDatabaseService {
 	 */
 	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource) throws DataSourceNotFoundException;
 
-	public void setApplicationController(CdmApplicationDefaultController cdmApplicationController);
+	public void setApplicationController(CdmApplicationController cdmApplicationController);
 }

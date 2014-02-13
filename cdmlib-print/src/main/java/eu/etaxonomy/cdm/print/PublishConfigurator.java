@@ -21,8 +21,8 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
-import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.print.out.IPublishOutputModule;
@@ -42,7 +42,7 @@ public class PublishConfigurator implements Serializable {
 
 	private static final long serialVersionUID = 4896190792717383839L;
 
-	private ICdmApplicationDefaultConfiguration applicationConfiguration;
+	private ICdmApplicationConfiguration applicationConfiguration;
 
 	private URL webserviceUrl;
 
@@ -81,7 +81,7 @@ public class PublishConfigurator implements Serializable {
 	 * @return
 	 */
 	public static PublishConfigurator NewLocalInstance(
-			ICdmApplicationDefaultConfiguration applicationConfiguration) {
+			ICdmApplicationConfiguration applicationConfiguration) {
 		PublishConfigurator configurator = new PublishConfigurator();
 		configurator.setLocal();
 		configurator.setApplicationConfiguration(applicationConfiguration);
@@ -355,13 +355,13 @@ public class PublishConfigurator implements Serializable {
 	}
 
 	/**
-	 * The {@linkplain CdmApplicationDefaultController application controller}
+	 * The {@linkplain CdmApplicationController application controller}
 	 * associated with this instance
 	 * 
-	 * @return the {@link CdmApplicationDefaultController} or null if <code>this</code>
+	 * @return the {@link CdmApplicationController} or null if <code>this</code>
 	 *         is a {@linkplain #isRemote() remote} instance
 	 */
-	public ICdmApplicationDefaultConfiguration getApplicationConfiguration() {
+	public ICdmApplicationConfiguration getApplicationConfiguration() {
 		return applicationConfiguration;
 	}
 
@@ -370,7 +370,7 @@ public class PublishConfigurator implements Serializable {
 	 * @param applicationConfiguration
 	 */
 	private void setApplicationConfiguration(
-			ICdmApplicationDefaultConfiguration applicationConfiguration) {
+			ICdmApplicationConfiguration applicationConfiguration) {
 		this.applicationConfiguration = applicationConfiguration;
 	}
 

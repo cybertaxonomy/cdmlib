@@ -13,7 +13,7 @@ package eu.etaxonomy.cdm.io.specimen.abcd206.in;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.ICdmApplicationDefaultConfiguration;
+import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 
@@ -28,7 +28,7 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 
 	private TransactionStatus tx;
 	
-	private ICdmApplicationDefaultConfiguration cdmRepository; 
+	private ICdmApplicationConfiguration cdmRepository; 
 	
 //****************** CONSTRUCTOR ***************************************************/	
 	
@@ -46,11 +46,11 @@ public class Abcd206ImportState extends ImportStateBase<Abcd206ImportConfigurato
 		this.tx = tx;
 	}
 
-	public ICdmApplicationDefaultConfiguration getCdmRepository() {
+	public ICdmApplicationConfiguration getCdmRepository() {
 		return cdmRepository;
 	}
 
-	public void setCdmRepository(ICdmApplicationDefaultConfiguration cdmRepository) {
+	public void setCdmRepository(ICdmApplicationConfiguration cdmRepository) {
 		this.cdmRepository = cdmRepository;
 	}
 

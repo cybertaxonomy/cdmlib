@@ -75,13 +75,13 @@ import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator
  * @author a.mueller
  *
  */
-public class CdmApplicationDefaultController implements ICdmApplicationDefaultConfiguration {
-    private static final Logger logger = Logger.getLogger(CdmApplicationDefaultController.class);
+public class CdmApplicationController implements ICdmApplicationConfiguration{
+    private static final Logger logger = Logger.getLogger(CdmApplicationController.class);
 
     public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 
     public AbstractApplicationContext applicationContext;
-    private ICdmApplicationDefaultConfiguration configuration;
+    private ICdmApplicationConfiguration configuration;
     private Resource applicationContextResource;
 
     private IProgressMonitor progressMonitor;
@@ -94,11 +94,11 @@ public class CdmApplicationDefaultController implements ICdmApplicationDefaultCo
      * Constructor, opens a spring ApplicationContext by using the default data source
      * @throws DataSourceNotFoundException
      */
-    public static CdmApplicationDefaultController NewInstance() throws DataSourceNotFoundException {
+    public static CdmApplicationController NewInstance() throws DataSourceNotFoundException {
         logger.info("Start CdmApplicationController with default data source");
         CdmPersistentDataSource dataSource = getDefaultDatasource();
         DbSchemaValidation dbSchemaValidation = defaultDbSchemaValidation;
-        return CdmApplicationDefaultController.NewInstance(null, dataSource, dbSchemaValidation, false);
+        return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
     }
 
     /**
@@ -106,10 +106,10 @@ public class CdmApplicationDefaultController implements ICdmApplicationDefaultCo
      * @param dbSchemaValidation validation type for database schema
      * @throws DataSourceNotFoundException
      */
-    public static CdmApplicationDefaultController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException {
+    public static CdmApplicationController NewInstance(DbSchemaValidation dbSchemaValidation) throws DataSourceNotFoundException {
         logger.info("Start CdmApplicationController with default data source");
         CdmPersistentDataSource dataSource = getDefaultDatasource();
-        return CdmApplicationDefaultController.NewInstance(null, dataSource, dbSchemaValidation, false);
+        return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
     }
 
 
@@ -118,24 +118,24 @@ public class CdmApplicationDefaultController implements ICdmApplicationDefaultCo
      * default database schema validation type
      * @param dataSource
      */
-    public static CdmApplicationDefaultController NewInstance(ICdmDataSource dataSource) {
-        return CdmApplicationDefaultController.NewInstance(null, dataSource, defaultDbSchemaValidation, false);
+    public static CdmApplicationController NewInstance(ICdmDataSource dataSource) {
+        return CdmApplicationController.NewInstance(null, dataSource, defaultDbSchemaValidation, false);
     }
 
-    public static CdmApplicationDefaultController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
-        return CdmApplicationDefaultController.NewInstance(null, dataSource, dbSchemaValidation, false);
+    public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation) {
+        return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, false);
     }
 
-    public static CdmApplicationDefaultController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
-        return CdmApplicationDefaultController.NewInstance(null, dataSource, dbSchemaValidation, omitTermLoading);
+    public static CdmApplicationController NewInstance(ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
+        return CdmApplicationController.NewInstance(null, dataSource, dbSchemaValidation, omitTermLoading);
     }
 
-    public static CdmApplicationDefaultController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
-        return CdmApplicationDefaultController.NewInstance(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, null);
+    public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
+        return CdmApplicationController.NewInstance(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, null);
     }
 
-    public static CdmApplicationDefaultController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor) {
-        return new CdmApplicationDefaultController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor, null);
+    public static CdmApplicationController NewInstance(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor) {
+        return new CdmApplicationController(applicationContextResource, dataSource, dbSchemaValidation, omitTermLoading, progressMonitor, null);
     }
 
     //TODO discuss need for listeners before commit to trunk
@@ -167,7 +167,7 @@ public class CdmApplicationDefaultController implements ICdmApplicationDefaultCo
      * @param dbSchemaValidation
      * @param omitTermLoading
      */
-    protected CdmApplicationDefaultController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
+    protected CdmApplicationController(Resource applicationContextResource, ICdmDataSource dataSource, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading, IProgressMonitor progressMonitor, List<ApplicationListener> listeners){
         logger.info("Start CdmApplicationController with datasource: " + dataSource.getName());
 
         if (dbSchemaValidation == null){
@@ -351,7 +351,7 @@ public class CdmApplicationDefaultController implements ICdmApplicationDefaultCo
                 logger.info(beanName);
             }
         }
-        configuration = (ICdmApplicationDefaultConfiguration) applicationContext.getBean("cdmApplicationDefaultConfiguration");
+        configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
         getDatabaseService().setApplicationController(this);
     }
 

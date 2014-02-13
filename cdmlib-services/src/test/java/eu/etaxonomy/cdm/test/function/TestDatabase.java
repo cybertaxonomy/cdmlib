@@ -25,7 +25,7 @@ import org.junit.Ignore;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -81,9 +81,9 @@ public class TestDatabase {
 
 		Column coL;
 		boolean omitTermLoading = false;
-		Resource applicationContextResource = new ClassPathResource(CdmApplicationDefaultController.DEFAULT_APPLICATION_CONTEXT_RESOURCE);
+		Resource applicationContextResource = new ClassPathResource(CdmApplicationController.DEFAULT_APPLICATION_CONTEXT_RESOURCE);
 		CdmPersistentDataSource dataSource = CdmPersistentDataSource.NewDefaultInstance();
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(applicationContextResource, dataSource, DbSchemaValidation.CREATE, omitTermLoading);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(applicationContextResource, dataSource, DbSchemaValidation.CREATE, omitTermLoading);
 		appCtr.NewConversation();
 		appCtr.NewConversation();
 
@@ -100,7 +100,7 @@ public class TestDatabase {
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 		ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "", null);
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 
 		Rank genus = Rank.GENUS();
 		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
@@ -147,7 +147,7 @@ public class TestDatabase {
 		String password = CdmUtils.readInputLine("Password: ");
 		DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
 		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 
 		Rank genus = Rank.GENUS();
 		BotanicalName parentName = BotanicalName.NewInstance(genus);
@@ -171,7 +171,7 @@ public class TestDatabase {
 		String password = CdmUtils.readInputLine("Password: ");
 		DbSchemaValidation validation = DbSchemaValidation.VALIDATE;
 		ICdmDataSource datasource = CdmDataSource.NewSqlServer2005Instance(server, database, -1, username, password, null);
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(datasource, validation);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, validation);
 
 		Rank genus = Rank.GENUS();
 		BotanicalName botanicalName = BotanicalName.NewInstance(genus);
@@ -203,7 +203,7 @@ public class TestDatabase {
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 		//ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "");
 		ICdmDataSource datasource = cdm_test_anahit2();
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 		Person person = Person.NewTitledInstance("TestPerson");
 		Contact contact1 = new Contact();
 		Set<String> set = new HashSet<String>();
@@ -223,7 +223,7 @@ public class TestDatabase {
 
 //			ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, database, username, password);
 		ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("CDM", "sa", "", null);
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(datasource, dbSchemaValidation);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 		BotanicalName botName = BotanicalName.NewInstance(Rank.SPECIES());
 		botName.setGenusOrUninomial("Genus");
 		botName.setSpecificEpithet("species");
@@ -272,7 +272,7 @@ public class TestDatabase {
 		String password = CdmUtils.readInputLine("Password: ");
 		ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("192.168.2.10", "cdm_test_niels2", 3306, "edit", password, NomenclaturalCode.ICNAFP);
 
-		CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
+		CdmApplicationController appCtr = CdmApplicationController.NewInstance(dataSource, DbSchemaValidation.UPDATE);
 
 		ConversationHolder conversation = appCtr.NewConversation();
 

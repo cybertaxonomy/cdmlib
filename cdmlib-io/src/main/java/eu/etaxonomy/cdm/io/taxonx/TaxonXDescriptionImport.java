@@ -22,7 +22,7 @@ import org.jdom.Namespace;
 import org.jdom.Text;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
@@ -62,7 +62,7 @@ public class TaxonXDescriptionImport extends CdmIoBase<TaxonXImportState> implem
 		return result;
 	}
 
-	public Map<Integer, Feature> fillFactCategories(IImportConfigurator config, CdmApplicationDefaultController cdmApp){
+	public Map<Integer, Feature> fillFactCategories(IImportConfigurator config, CdmApplicationController cdmApp){
 		logger.warn("not yet implemented");
 		Map<Integer, Feature> featureMap = new HashMap<Integer, Feature>();
 //		IDescriptionService descriptionService = cdmApp.getDescriptionService();

@@ -21,7 +21,7 @@ import javax.servlet.http.HttpServletResponseWrapper;
 import org.apache.log4j.Logger;
 import org.springframework.core.io.ClassPathResource;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.service.DistributionTree;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
@@ -69,7 +69,7 @@ public class GenericRemoteTester {
 
         String resourceStr = "/eu/etaxonomy/cdm/remote.xml";
         ClassPathResource applicationContextResource = new ClassPathResource(resourceStr);
-        CdmApplicationDefaultController appCtr = CdmApplicationDefaultController.NewInstance(applicationContextResource, dataSource, schema, false);
+        CdmApplicationController appCtr = CdmApplicationController.NewInstance(applicationContextResource, dataSource, schema, false);
 
 //		insertSomeData(appCtr);
 //		deleteHighLevelNode(appCtr);   //->problem with Duplicate Key in Classification_TaxonNode
@@ -78,7 +78,7 @@ public class GenericRemoteTester {
         appCtr.close();
     }
 
-    private void testDistributionTree(CdmApplicationDefaultController appCtr) {
+    private void testDistributionTree(CdmApplicationController appCtr) {
         DescriptionPortalController ctl = (DescriptionPortalController)appCtr.getBean("descriptionPortalController");
         HttpServletRequest request = null;
         HttpServletResponse response = new HttpServletResponseWrapper(null);

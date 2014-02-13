@@ -17,7 +17,7 @@ import java.util.HashMap;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationDefaultController;
+import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ExcelUtils;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -37,7 +37,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	
 	ArrayList<HashMap<String, String>> recordList = null;
 	
-	private CdmApplicationDefaultController appCtr = null;
+	private CdmApplicationController appCtr = null;
 	private ExcelImportConfiguratorBase configurator = null;
 
 	
@@ -155,7 +155,7 @@ public abstract class ExcelImporterBase<STATE extends ExcelImportState<? extends
 	}
 	
 	
-	public CdmApplicationDefaultController getApplicationController() {
+	public CdmApplicationController getApplicationController() {
 		return appCtr;
 	}
 	
