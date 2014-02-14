@@ -156,7 +156,8 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
 
 
     protected void setTaxon(Taxon taxon) {
-        this.taxon = taxon;
+    	//TODO needs correct bidirectional handling before making it public
+    	this.taxon = taxon;
     }
 
     /**
