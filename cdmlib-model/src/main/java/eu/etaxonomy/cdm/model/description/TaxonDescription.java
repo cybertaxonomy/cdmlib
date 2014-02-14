@@ -155,7 +155,7 @@ public class TaxonDescription extends DescriptionBase<IIdentifiableEntityCacheSt
     }
 
 
-    public void setTaxon(Taxon taxon) {
+    protected void setTaxon(Taxon taxon) {
         this.taxon = taxon;
     }
 

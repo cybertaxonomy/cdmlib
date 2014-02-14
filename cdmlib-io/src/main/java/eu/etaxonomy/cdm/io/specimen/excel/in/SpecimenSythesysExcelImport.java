@@ -427,7 +427,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
                     }
                     else{
                         c = getTaxonService().searchTaxaByName(scientificName, ref);
-                        for (TaxonBase b : c) {
+                        for (TaxonBase<?> b : c) {
                             taxon = (Taxon) b;
                         }
                     }
@@ -736,7 +736,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
     }
 
 
-    private Feature makeFeature(SpecimenOrObservationBase unit) {
+    private Feature makeFeature(SpecimenOrObservationBase<?> unit) {
         if (unit == null){
             return null;
         }
@@ -792,7 +792,6 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         indAssociation.addSource(OriginalSourceType.Import, null,null,config.getDataReference(),null);
 
         taxonDescription.addElement(indAssociation);
-        taxonDescription.setTaxon(taxon);
 
         getDescriptionService().saveOrUpdate(taxonDescription);
         getTaxonService().saveOrUpdate(taxon);
@@ -846,13 +845,13 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         ArrayList<HashMap<String,String>> unitsList = null;
         try{
             unitsList = ExcelUtils.parseXLS(source);
+            logger.info("unitslist : "+unitsList.size());
         } catch(FileNotFoundException e){
             String message = "File not found: " + source;
             warnProgress(state, message, e);
             logger.error(message);
         }
 
-        logger.info("unitslist : "+unitsList.size());
         if (unitsList != null){
             //load collectors in the database
             prepareCollectors(unitsList,state);
@@ -943,7 +942,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         }
         if (!uuids.isEmpty()){
             List<AgentBase> existingTeams = getAgentService().find(uuids);
-            for (AgentBase existingP:existingTeams){
+            for (AgentBase<?> existingP:existingTeams){
                 titleCacheTeam.put(existingP.getTitleCache(),(Team) existingP);
             }
         }
@@ -964,7 +963,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
         if (!uuids.isEmpty()){
             List<AgentBase> existingPersons = getAgentService().find(uuids);
-            for (AgentBase existingP:existingPersons){
+            for (AgentBase<?> existingP:existingPersons){
                 titleCachePerson.put(existingP.getTitleCache(),CdmBase.deproxy(existingP, Person.class));
             }
         }
@@ -974,24 +973,24 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             personMap.put(person.getTitleCache(), person.getUuid());
         }
 
-        java.util.Collection<AgentBase> personToadd = new ArrayList<AgentBase>();
-        java.util.Collection<AgentBase> teamToAdd = new ArrayList<AgentBase>();
+        java.util.Collection<AgentBase> personsToAdd = new ArrayList<AgentBase>();
+        java.util.Collection<AgentBase> teamsToAdd = new ArrayList<AgentBase>();
 
         for (String collector:collectorsU){
             Person p = Person.NewInstance();
             p.setTitleCache(collector,true);
             if (!personMap.containsKey(p.getTitleCache())){
-                personToadd.add(p);
+                personsToAdd.add(p);
             }
         }
         for (String team:teamsU){
             Team p = Team.NewInstance();
             p.setTitleCache(team,true);
             if (!teamMap.containsKey(p.getTitleCache())){
-                teamToAdd.add(p);
+                teamsToAdd.add(p);
             }
         }
-        Map<UUID, AgentBase> uuuidPerson = getAgentService().save(personToadd);
+        Map<UUID, AgentBase> uuuidPerson = getAgentService().save(personsToAdd);
         for (UUID u:uuuidPerson.keySet()){
             titleCachePerson.put(uuuidPerson.get(u).getTitleCache(),CdmBase.deproxy(uuuidPerson.get(u), Person.class) );
         }
@@ -1011,14 +1010,14 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
                     em=false;
                 }
                 if (!em) {
-                    teamToAdd.add(team);
+                    teamsToAdd.add(team);
                 }
                 teamdone.put(StringUtils.join(collteam.toArray(),"-"),0);
             }
         }
 
 
-        Map<UUID, AgentBase> uuuidTeam =  getAgentService().save(teamToAdd);
+        Map<UUID, AgentBase> uuuidTeam =  getAgentService().save(teamsToAdd);
 
         for (UUID u:uuuidTeam.keySet()){
             titleCacheTeam.put(uuuidTeam.get(u).getTitleCache(), (Team) uuuidTeam.get(u) );
