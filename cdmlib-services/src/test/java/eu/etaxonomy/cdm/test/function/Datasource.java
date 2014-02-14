@@ -70,18 +70,37 @@ public class Datasource {
 		dataSource = lsDataSources.get(1);
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
-//		String server = "localhost";
-//		String database = "cdm_test";
-////		String database = "test";
-//		String username = "edit";
-//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
-
-		String server = "test.e-taxonomy.eu";
-//		String database = "cdm_test";
-		String database = "cdm_edit_flora_central_africa";
+		String server = "localhost";
+		String database = "cdm_test";
+//		String database = "test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
 
+//		String server = "160.45.63.171";
+//		String database = "cdm_production_algaterra";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+		
+//		String server = "test.e-taxonomy.eu";
+////		String database = "cdm_test";
+//		String database = "cdm_edit_flora_malesiana";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		String server = "160.45.63.201";
+////	String database = "cdm_test";
+//		String database = "cdm_integration_palmae";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+//		String server = "localhost";
+//		String database = "EDITimport";
+//		String username = "edit";
+//		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
+
+
+		
 //		String server = "localhost";
 //		String database = "testCDM";
 //		String username = "postgres";
@@ -94,10 +113,10 @@ public class Datasource {
 //		username = "pesiexport";
 ////		dataSource = CdmDataSource.NewSqlServer2005Instance(server, database, port, username, AccountStore.readOrStorePassword(server, database, username, null));
 //		
-		//H2
-//		String username = "edit";
+////		H2
+//		String username = "sa";
 //    	dataSource = CdmDataSource.NewH2EmbeddedInstance("cdm", username, "", "C:\\Users\\pesiimport\\.cdmLibrary\\writableResources\\h2\\LocalH2",   NomenclaturalCode.ICNAFP);
-//    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
+////    	dataSource = CdmDataSource. EmbeddedInstance(database, username, "sa", NomenclaturalCode.ICNAFP);
 		
     	
 		
