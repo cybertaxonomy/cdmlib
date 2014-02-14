@@ -276,7 +276,7 @@
  	<bean id="httpGrantedAuthorityService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service">
-			<ref bean="grantedAuthorityService" />
+			<ref bean="grantedAuthorityServiceImpl" />
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IGrantedAuthorityService</value>
@@ -286,7 +286,7 @@
  	<bean id="httpDatabaseService"
 		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
 		<property name="service">
-			<ref bean="databaseService" />
+			<ref bean="databaseServiceHibernateImpl" />
 		</property>
 		<property name="serviceInterface">
 			<value>eu.etaxonomy.cdm.api.service.IDatabaseService</value>

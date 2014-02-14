@@ -64,7 +64,7 @@
 	======= Remoting =======
 	-->
 	
-	<!-- <import resource="classpath:/eu/etaxonomy/cdm/remoting-services.xml"/>-->
+	<import resource="classpath:/eu/etaxonomy/cdm/remoting-services.xml"/>
 	
 	
   <!--

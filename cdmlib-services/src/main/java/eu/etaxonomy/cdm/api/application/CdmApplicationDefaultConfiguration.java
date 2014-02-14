@@ -92,7 +92,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Autowired
     //@Qualifier("termService")
     private ITermService termService;
-    @Autowired
+    //@Autowired
     private HibernateTransactionManager transactionManager;
     @Autowired
     //@Qualifier("descriptionService")
@@ -108,7 +108,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     private ICommonService commonService;
     @Autowired
     private ILocationService locationService;
-    @Autowired
+    //@Autowired
     private SessionFactory sessionFactory;
     @Autowired
     private DataSource dataSource;
@@ -205,6 +205,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public IReferenceService getReferenceService() {
         return this.referenceService;
+    }
+    
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+    	this.sessionFactory = sessionFactory;
     }
 
     /* (non-Javadoc)
@@ -309,6 +314,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public PlatformTransactionManager getTransactionManager() {
         return this.transactionManager;
+    }
+    
+    @Autowired
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = (HibernateTransactionManager) transactionManager;
     }
 
     /*

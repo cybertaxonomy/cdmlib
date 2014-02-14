@@ -352,7 +352,12 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
             }
         }
         configuration = (ICdmApplicationConfiguration)applicationContext.getBean("cdmApplicationDefaultConfiguration");
-        getDatabaseService().setApplicationController(this);
+        try {
+        	//FIXME:Remoting catching exection to allow for remoting
+        	getDatabaseService().setApplicationController(this);
+        } catch(UnsupportedOperationException uoe) {
+        	logger.warn("getDatabaseService() is not implmented for current application context");
+        }
     }
 
 
