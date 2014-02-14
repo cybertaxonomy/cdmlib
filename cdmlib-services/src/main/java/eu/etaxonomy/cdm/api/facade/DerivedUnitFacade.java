@@ -85,9 +85,6 @@ public class DerivedUnitFacade {
 	
 	private Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
 
-	// private GatheringEvent gatheringEvent;
-	private SpecimenOrObservationType type; // needed?
-
 	private FieldUnit fieldUnit;
 
 	private final DerivedUnit derivedUnit;
@@ -162,7 +159,6 @@ public class DerivedUnitFacade {
 			config = DerivedUnitFacadeConfigurator.NewInstance();
 		}
 		this.config = config;
-		this.type = type;
 		// derivedUnit
 		derivedUnit = getNewDerivedUnitInstance(type);
 		setFieldUnit(fieldUnit);
@@ -195,7 +191,6 @@ public class DerivedUnitFacade {
 
 		// derived unit
 		this.derivedUnit = derivedUnit;
-		this.type = derivedUnit.getRecordBasis();
 		
 		// derivation event
 		if (this.derivedUnit.getDerivedFrom() != null) {
@@ -2135,7 +2130,7 @@ public class DerivedUnitFacade {
 	}
 
 	private DerivationEvent getDerivationEvent() {
-		return getDerivationEvent(false);
+		return getDerivationEvent(CREATE_NOT);
 	}
 
 	/**
@@ -2377,11 +2372,14 @@ public class DerivedUnitFacade {
 	}
 
 	public void setType(SpecimenOrObservationType type) {
-		this.type = type;
+		if (type == SpecimenOrObservationType.FieldUnit){
+			throw new IllegalArgumentException("Type FieldUnit is not a legal record basis for a DerivedUnit");
+		}
+		this.innerDerivedUnit().setRecordBasis(type);
 	}
 
 	public SpecimenOrObservationType getType() {
-		return type;
+		return this.innerDerivedUnit().getRecordBasis();
 	}
 
 	
