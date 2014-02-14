@@ -2249,6 +2249,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/validation/constraint/NoDuplicate
 cdmlib-services/src/main/java/org/apache/lucene/search/MultiCollector.java -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/defaultApplicationContext.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/httpInvokerServices.xml -text
+cdmlib-services/src/main/resources/eu/etaxonomy/cdm/remoting-services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/services_security.xml -text
 cdmlib-services/src/main/resources/eu/etaxonomy/cdm/validation/name/TaxonNameBase-Constraints.xml -text
