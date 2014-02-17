@@ -17,7 +17,7 @@ import java.util.concurrent.TimeUnit;
  * 
  */
 @SuppressWarnings("serial")
-public class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
+class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 
 	public EntityValidationTaskQueue(int capacity)
 	{

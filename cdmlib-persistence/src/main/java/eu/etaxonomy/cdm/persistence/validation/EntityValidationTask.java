@@ -1,5 +1,8 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
@@ -55,8 +58,14 @@ public abstract class EntityValidationTask implements Runnable {
 	@Override
 	public void run()
 	{
+		validate();
+	}
+
+
+	protected Set<ConstraintViolation<CdmBase>> validate()
+	{
 		assert (validator != null);
-		validator.validate(entity, validationGroups);
+		return validator.validate(entity, validationGroups);
 	}
 
 
@@ -64,4 +73,5 @@ public abstract class EntityValidationTask implements Runnable {
 	{
 		this.validator = validator;
 	}
+
 }
