@@ -266,7 +266,7 @@ public class CsvDemoExport extends CsvDemoBase {
 			record.setDatasetName(classification.getTitleCache());
 		}
 		if(config.isTaxonName()){
-			record.setScientificName(name.getTitleCache());				
+			record.setScientificName(name.getNameCache());				
 		}
 		if(config.isTaxonNameID()){
 			record.setScientificNameId(name.getUuid().toString());
