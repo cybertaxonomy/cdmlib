@@ -1,14 +1,19 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
-import javax.validation.Validator;
-
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
 
-public class Level2ValidationTask extends AbstractValidationTask {
+/**
+ * A {@link Runnable} performing Level-2 validation of a JPA entity
+ * 
+ * @author ayco holleman
+ * 
+ */
+public class Level2ValidationTask extends EntityValidationTask {
 
-	public Level2ValidationTask(Validator validator, Object entity)
+	public Level2ValidationTask(CdmBase entity)
 	{
-		super(validator, entity, Level2.class);
+		super(entity, Level2.class);
 	}
 
 }
