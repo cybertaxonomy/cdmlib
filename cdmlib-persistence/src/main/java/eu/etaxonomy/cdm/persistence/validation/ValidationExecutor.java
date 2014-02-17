@@ -142,6 +142,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 			ValidationThread t = (ValidationThread) thread;
 			threads.add(new WeakReference<ValidationThread>(t));
 		}
+		threads.trimToSize();
 	}
 
 }
