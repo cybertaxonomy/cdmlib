@@ -44,17 +44,6 @@ public abstract class EntityValidationTask implements Runnable {
 	}
 
 
-	/**
-	 * Get the JPA entity to be validated in this task
-	 * 
-	 * @return The JPA entity to be validated in this task
-	 */
-	public CdmBase getEntity()
-	{
-		return entity;
-	}
-
-
 	@Override
 	public void run()
 	{
@@ -66,6 +55,15 @@ public abstract class EntityValidationTask implements Runnable {
 	{
 		assert (validator != null);
 		return validator.validate(entity, validationGroups);
+	}
+
+
+	/**
+	 * Get the JPA entity validated in this task
+	 */
+	CdmBase getEntity()
+	{
+		return entity;
 	}
 
 

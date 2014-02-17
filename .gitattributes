@@ -1631,6 +1631,7 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/Cac
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.testOnDelete-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/Level2ValidationSaveOrUpdateEventListenerTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.testReplaceToManyProperty-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.testReplaceToOneProperty-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.xml -text
