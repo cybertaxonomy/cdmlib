@@ -1,7 +1,7 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
 import java.lang.ref.WeakReference;
-import java.util.HashSet;
+import java.util.ArrayList;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -79,7 +79,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	private static final int TASK_QUEUE_SIZE = 1000;
 
 	// Our basis for tracking the threads in the thread pool
-	private final HashSet<WeakReference<ValidationThread>> threads = new HashSet<WeakReference<ValidationThread>>(MAX_POOL_SIZE);
+	private final ArrayList<WeakReference<ValidationThread>> threads = new ArrayList<WeakReference<ValidationThread>>(MAX_POOL_SIZE);
 
 
 	public ValidationExecutor()
@@ -134,11 +134,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	{
 		boolean found = false;
 		for (WeakReference<ValidationThread> ref : threads) {
-			Thread pooledThread = ref.get();
-			if (pooledThread == null) {
-				threads.remove(ref);
-			}
-			else if (pooledThread == thread) {
+			if (ref.get() == thread) {
 				found = true;
 			}
 		}

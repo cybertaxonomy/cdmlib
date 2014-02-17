@@ -25,6 +25,15 @@ public abstract class EntityValidationTask implements Runnable {
 	private Validator validator;
 
 
+	/**
+	 * Create an entity validation task for the specified entity, to be validated according to
+	 * the constraints in the specified validation groups.
+	 * 
+	 * @param entity
+	 *            The entity to be validated
+	 * @param validationGroups
+	 *            The groups of constraints to apply
+	 */
 	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups)
 	{
 		this.entity = entity;
@@ -33,9 +42,9 @@ public abstract class EntityValidationTask implements Runnable {
 
 
 	/**
-	 * Get the entity to be validated in this task
+	 * Get the JPA entity to be validated in this task
 	 * 
-	 * @return The object to be validated in this task
+	 * @return The JPA entity to be validated in this task
 	 */
 	public CdmBase getEntity()
 	{
