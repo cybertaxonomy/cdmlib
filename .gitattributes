@@ -1530,6 +1530,11 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStr
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/Level2ValidationSaveOrUpdateEventListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/CaseMode.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/CheckCase.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/CheckCaseValidator.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTaskTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/TestEntity01.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/profiler/ProfilerController.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
