@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
  * it does not logically or functionally <i>depend</i> on the thread pool containing at most
  * one thread. Thus, should performance become an issue, and concurrency the solution,
  * increasing the pool size is still an option. For example, Level-2 validation tasks might be
- * quite suitable for being executed concurrently.
+ * quite amenable to being executed concurrently.
  * 
  * <p>
  * The reason we extend {@code ThreadPoolExecutor} rather than simply use
@@ -34,14 +34,13 @@ import org.apache.log4j.Logger;
  * thread pool for the reason indicated above: if an entity annotated with Level-2 or Level-3
  * validation constraints is updated, it will be validated on the validation thread. However,
  * if it is quickly thereafter updated again, you really would like to terminate the first
- * validation if it's still running. After all, it doesn't make sense to validate the entity in
+ * validation if it's still running. After all, it doesn't make sense to validate an entity in
  * a state that it no longer has. For Level-2 validations this may not be so important, because
- * they are not likely to run fast. But for Level-3 validations you would like to prevent
- * needless queueing and execution of long-running tasks. Thus, you really would like to know
- * which entity is being validated on the validation thread. The {@code ThreadPoolExecutor}
- * provides a {@link #beforeExecute(Thread, Runnable)} method, passing us the thread and the
- * task that it is about to run. This allows us to track the threads in the thread pool.
- * 
+ * they are likely to run fast. But for Level-3 validations you want to prevent needless
+ * queueing and execution of long-running tasks. Thus, you really would like to know which
+ * entity is being validated on the validation thread. The {@code ThreadPoolExecutor} provides
+ * a {@link #beforeExecute(Thread, Runnable)} method, passing us the thread and the task that
+ * it is about to run. This allows us to track the threads in the thread pool.
  * <p>
  * If the {@code ValidationExecutor} detects that a validation task enters the task queue that
  * will validate the same entity (in a different state) as the entity currently being validated
