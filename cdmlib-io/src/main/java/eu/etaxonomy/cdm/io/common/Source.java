@@ -241,12 +241,9 @@ public class Source {
     		}
 			return this.mConn;
 		} catch (SourceConnectionException e) {
-			//TODO error weitergabe des Fehlers nach oben?
-			logger.error("Error when establishing Connection");
-			return null;
+			throw new RuntimeException("Error when establishing Connection.", e);
 		} catch (SQLException e) {
-			logger.error("SQLException in getConnection.");
-			return null;
+			throw new RuntimeException("SQLException in getConnection.", e);
 		}
     }
     
