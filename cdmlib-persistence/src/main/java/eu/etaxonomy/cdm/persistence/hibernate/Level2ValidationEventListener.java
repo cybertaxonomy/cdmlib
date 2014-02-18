@@ -1,29 +1,37 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import org.apache.log4j.Logger;
-import org.hibernate.event.spi.PostDeleteEvent;
-import org.hibernate.event.spi.PostDeleteEventListener;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
 import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.validation.Level3ValidationTask;
+import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 
 @SuppressWarnings("serial")
-public class Level3ValidationCRUDEventListener implements PostInsertEventListener, PostUpdateEventListener, PostDeleteEventListener {
+public class Level2ValidationEventListener implements PostInsertEventListener, PostUpdateEventListener {
 
-	private static final Logger logger = Logger.getLogger(Level3ValidationCRUDEventListener.class);
+	private static final Logger logger = Logger.getLogger(Level2ValidationEventListener.class);
 
-	static final ValidationExecutor validationExecutor = Level2ValidationSaveOrUpdateEventListener.validationExecutor;
+	private ValidationExecutor validationExecutor;
 
 
-	@Override
-	public void onPostInsert(PostInsertEvent event)
+	public Level2ValidationEventListener()
 	{
-		validate(event.getEntity());
+	}
+
+
+	public ValidationExecutor getValidationExecutor()
+	{
+		return validationExecutor;
+	}
+
+
+	public void setValidationExecutor(ValidationExecutor validationExecutor)
+	{
+		this.validationExecutor = validationExecutor;
 	}
 
 
@@ -35,7 +43,7 @@ public class Level3ValidationCRUDEventListener implements PostInsertEventListene
 
 
 	@Override
-	public void onPostDelete(PostDeleteEvent event)
+	public void onPostInsert(PostInsertEvent event)
 	{
 		validate(event.getEntity());
 	}
@@ -49,18 +57,16 @@ public class Level3ValidationCRUDEventListener implements PostInsertEventListene
 				return;
 			}
 			if (!(object instanceof CdmBase)) {
-				//logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName()
-				//		+ " (Level-3 validation only applied to instances of CdmBase)");
+				logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName());
 				return;
 			}
 			CdmBase entity = (CdmBase) object;
-			Level3ValidationTask task = new Level3ValidationTask(entity);
+			Level2ValidationTask task = new Level2ValidationTask(entity);
 			validationExecutor.execute(task);
 		}
 		catch (Throwable t) {
 			logger.error("Failed applying Level-2 validation to " + object.toString(), t);
 		}
-
 	}
 
 }
