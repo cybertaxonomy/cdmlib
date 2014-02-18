@@ -195,11 +195,12 @@ public interface IEditGeoService {
     * @param hideMarkedAreas see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
     * @param languages
+     * @param propertyPaths
     * @return
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
             Set<NamedAreaLevel> omitLevels,
-            List<Language> languages);
+            List<Language> languages, List<String> propertyPaths);
 
 }

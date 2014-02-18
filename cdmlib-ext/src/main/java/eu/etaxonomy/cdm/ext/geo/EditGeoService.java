@@ -290,11 +290,10 @@ public class EditGeoService implements IEditGeoService {
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
             Set<NamedAreaLevel> omitLevels,
-            List<Language> languages){
+            List<Language> languages,  List<String> propertyPaths){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
 
-        List<String> propertyPaths= null;
 
         List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, propertyPaths);
         Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);

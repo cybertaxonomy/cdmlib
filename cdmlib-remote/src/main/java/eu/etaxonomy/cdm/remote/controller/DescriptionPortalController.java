@@ -97,6 +97,11 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.area.level",
     });
 
+    protected static final List<String> DISTRIBUTION_INFO_INIT_STRATEGY = Arrays.asList(new String []{
+            "sources.citation.authorTeam.$",
+            "sources.nameUsedInSource"
+    });
+
     @Autowired
     private ITermService termService;
 
@@ -226,7 +231,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, LocaleContext.getLanguages());
+                    hideMarkedAreas, omitLevels, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY);
 
             mv.addObject(dto);
 
