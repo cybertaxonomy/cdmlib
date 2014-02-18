@@ -122,6 +122,12 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	@Override
 	protected void beforeExecute(Thread thread, Runnable runnable)
 	{
+		ValidationThread validationThread = (ValidationThread) thread;
+		EntityValidationTask task = (EntityValidationTask) runnable;
+		
+		validationThread.setTerminationRequested(false);
+		task.setValidator(validationThread.getValidator());
+		
 		checkPool(thread);
 	}
 

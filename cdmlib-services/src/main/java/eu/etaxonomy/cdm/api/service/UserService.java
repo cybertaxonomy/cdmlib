@@ -34,7 +34,6 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.core.userdetails.cache.NullUserCache;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -131,9 +130,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
             Object salt = this.saltSource.getSalt(user);
 
             String password = passwordEncoder.encodePassword(newPassword, salt);
-            ((User)user).setPassword(password);
+            user.setPassword(password);
 
-            dao.update((User)user);
+            dao.update(user);
             SecurityContextHolder.getContext().setAuthentication(createNewAuthentication(authentication, newPassword));
             userCache.removeUserFromCache(user.getUsername());
         } else {
@@ -160,9 +159,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
             Object salt = this.saltSource.getSalt(user);
 
             String password = passwordEncoder.encodePassword(newPassword, salt);
-            ((User)user).setPassword(password);
+            user.setPassword(password);
 
-            dao.update((User)user);
+            dao.update(user);
             userCache.removeUserFromCache(user.getUsername());
         } catch(NonUniqueResultException nure) {
             throw new IncorrectResultSizeDataAccessException("More than one user found with name '" + username + "'", 1);
@@ -198,7 +197,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
         User user = dao.findUserByUsername(username);
         if(user != null) {
-            dao.delete((User)user);
+            dao.delete(user);
         }
 
         userCache.removeUserFromCache(username);
@@ -236,6 +235,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
      */
     // NOTE: this method must not be secured since it is being used during the
     //       authentication process
+    @Override
     public UserDetails loadUserByUsername(String username)
             throws UsernameNotFoundException, DataAccessException {
         Assert.hasText(username);
@@ -250,6 +250,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#addGroupAuthority(java.lang.String, org.springframework.security.core.GrantedAuthority)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -263,6 +267,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#addUserToGroup(java.lang.String, java.lang.String)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -279,6 +287,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#createGroup(java.lang.String, java.util.List)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -295,6 +307,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         groupDao.save(group);
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#deleteGroup(java.lang.String)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -305,12 +321,20 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         groupDao.delete(group);
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#findAllGroups()
+     */
+    @Override
     @Deprecated // use GroupService instead
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public List<String> findAllGroups() {
         return groupDao.listNames(null,null);
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#findGroupAuthorities(java.lang.String)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public List<GrantedAuthority> findGroupAuthorities(String groupName) {
@@ -320,6 +344,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return new ArrayList<GrantedAuthority>(group.getGrantedAuthorities());
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#findUsersInGroup(java.lang.String)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public List<String> findUsersInGroup(String groupName) {
@@ -331,6 +359,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return users;
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#removeGroupAuthority(java.lang.String, org.springframework.security.core.GrantedAuthority)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -345,6 +377,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#removeUserFromGroup(java.lang.String, java.lang.String)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -361,6 +397,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         }
     }
 
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#renameGroup(java.lang.String, java.lang.String)
+     */
+    @Override
     @Deprecated // use GroupService instead
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -374,6 +414,10 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         groupDao.update(group);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ServiceBase#save(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID save(User user) {
@@ -385,6 +429,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return user.getUuid();
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ServiceBase#update(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID update(User user) {
@@ -392,6 +439,9 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return user.getUuid();
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IUserService#saveGrantedAuthority(org.springframework.security.core.GrantedAuthority)
+     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
@@ -399,12 +449,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
     }
 
-    @Deprecated // use GroupService instead
-    @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID saveGroup(Group group) {
-        return groupDao.save(group);
-    }
+    
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IUserService#listByUsername(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)

@@ -11,8 +11,10 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
+import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.provisioning.GroupManager;
 
 import eu.etaxonomy.cdm.model.common.Group;
@@ -46,6 +48,7 @@ public interface IGroupService extends IService<Group>, GroupManager{
 	 * @see {@link IIdentifiableEntityService#listByTitle(Class, String, MatchMode, List, Integer, Integer, List, List)}
 	 */
     public List<Group> listByName(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
+  
+    public UUID saveGroup(Group group);
 
 }

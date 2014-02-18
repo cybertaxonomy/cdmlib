@@ -43,115 +43,116 @@ import org.springframework.security.core.GrantedAuthority;
 @Indexed(index = "eu.etaxonomy.cdm.model.common.Group")
 @Table(name = "PermissionGroup")
 public class Group extends CdmBase {
-	private static final long serialVersionUID = 7216686200093054648L;
-	private static final Logger logger = Logger.getLogger(Group.class);
+    private static final long serialVersionUID = 7216686200093054648L;
+    private static final Logger logger = Logger.getLogger(Group.class);
 
-	@XmlElement(name = "Name")
-	@NaturalId
-	@Field
-	protected String name;
+    @XmlElement(name = "Name")
+    @NaturalId
+    @Field
+    protected String name;
 
-	@XmlElementWrapper(name = "Members")
-	@XmlElement(name = "Member")
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
-	protected Set<User> members = new HashSet<User>();
+    @XmlElementWrapper(name = "Members")
+    @XmlElement(name = "Member")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "groups")
+    @Cascade(CascadeType.REFRESH) // see #2414 (Group updating doesn't work)
+    protected Set<User> members = new HashSet<User>();
 
-	@XmlElementWrapper(name = "GrantedAuthorities")
-	@XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-	@Cascade({CascadeType.SAVE_UPDATE})
-	protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+    @XmlElementWrapper(name = "GrantedAuthorities")
+    @XmlElement(name = "GrantedAuthority", type = GrantedAuthorityImpl.class)
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
+    @Cascade({CascadeType.SAVE_UPDATE})
+    protected Set <GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
 
-	protected Group(){
-		super();
-	}
+    protected Group(){
+        super();
+    }
 
-	public static Group NewInstance(){
-		return new Group();
-	}
+    public static Group NewInstance(){
+        return new Group();
+    }
 
-	public static Group NewInstance(String name){
-		Group group = Group.NewInstance();
-		group.setName(name);
-		return group;
-	}
+    public static Group NewInstance(String name){
+        Group group = Group.NewInstance();
+        group.setName(name);
+        return group;
+    }
 
-	public Set<GrantedAuthority> getGrantedAuthorities() {
-		return grantedAuthorities;
-	}
+    public Set<GrantedAuthority> getGrantedAuthorities() {
+        return grantedAuthorities;
+    }
 
-	public boolean addGrantedAuthority(GrantedAuthority grantedAuthority){
-		return grantedAuthorities.add(grantedAuthority);
-	}
+    public boolean addGrantedAuthority(GrantedAuthority grantedAuthority){
+        return grantedAuthorities.add(grantedAuthority);
+    }
 
-	public boolean removeGrantedAuthority(GrantedAuthority grantedAuthority){
-		return grantedAuthorities.remove(grantedAuthority);
-	}
+    public boolean removeGrantedAuthority(GrantedAuthority grantedAuthority){
+        return grantedAuthorities.remove(grantedAuthority);
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public Set<User> getMembers() {
-		return members;
-	}
+    public Set<User> getMembers() {
+        return members;
+    }
 
-	public boolean addMember(User user) {
-		user.getGroups().add(this);
-		return this.members.add(user);
-	}
+    public boolean addMember(User user) {
+        user.getGroups().add(this);
+        return this.members.add(user);
+    }
 
-	public boolean removeMember(User user) {
-		if(members.contains(user)) {
-			user.getGroups().remove(this);
-		    return this.members.remove(user);
-		} else {
-			return false;
-		}
-	}
+    public boolean removeMember(User user) {
+        if(members.contains(user)) {
+            user.getGroups().remove(this);
+            return this.members.remove(user);
+        } else {
+            return false;
+        }
+    }
 //*********************** CLONE ********************************************************/
 
-	/**
-	 * Clones <i>this</i> Group. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> group by
-	 * modifying only some of the attributes.
-	 *
-	 * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
-	 * @see java.lang.Object#clone()
-	 */
-	@Override
-	public Object clone() {
-		Group result;
-		try{
-			result = (Group)super.clone();
-			result.grantedAuthorities = new HashSet<GrantedAuthority>();
-			for (GrantedAuthority grantedauthority: this.grantedAuthorities){
-				result.addGrantedAuthority(grantedauthority);
-			}
+    /**
+     * Clones <i>this</i> Group. This is a shortcut that enables to create
+     * a new instance that differs only slightly from <i>this</i> group by
+     * modifying only some of the attributes.
+     *
+     * @see eu.etaxonomy.cdm.model.common.TermBase#clone()
+     * @see java.lang.Object#clone()
+     */
+    @Override
+    public Object clone() {
+        Group result;
+        try{
+            result = (Group)super.clone();
+            result.grantedAuthorities = new HashSet<GrantedAuthority>();
+            for (GrantedAuthority grantedauthority: this.grantedAuthorities){
+                result.addGrantedAuthority(grantedauthority);
+            }
 
-			result.members = new HashSet<User>();
-			for (User member: this.members){
-				result.addMember(member);
-			}
+            result.members = new HashSet<User>();
+            for (User member: this.members){
+                result.addMember(member);
+            }
 
-			//no changes to name
-			return result;
-		} catch (CloneNotSupportedException e) {
-			logger.warn("Object does not implement cloneable");
-			e.printStackTrace();
-			return null;
+            //no changes to name
+            return result;
+        } catch (CloneNotSupportedException e) {
+            logger.warn("Object does not implement cloneable");
+            e.printStackTrace();
+            return null;
 
-		}
+        }
 
 
-	}
+    }
 
 }

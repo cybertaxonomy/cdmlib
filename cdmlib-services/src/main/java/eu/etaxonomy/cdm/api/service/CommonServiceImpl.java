@@ -18,6 +18,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 //import org.springframework.transaction.annotation.Propagation;
@@ -259,5 +260,11 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
 		}
 		return result;
 	}
+
+    @Override
+    public PersistentCollection initializeCollection(PersistentCollection col) {
+            return genericDao.initializeCollection(col);
+
+    }
 
 }

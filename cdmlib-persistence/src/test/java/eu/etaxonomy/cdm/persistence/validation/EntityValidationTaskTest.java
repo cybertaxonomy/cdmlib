@@ -34,7 +34,7 @@ public class EntityValidationTaskTest {
 
 	
 	@Test
-	public void testValidate() {
+	public void testValidateForLevel2() {
 		TestEntity01 one = new TestEntity01();
 		one.setFirstName("john");
 		one.setLastName("smith");
@@ -46,5 +46,20 @@ public class EntityValidationTaskTest {
 		Assert.assertEquals(violations.size(), 1);
 		Assert.assertEquals(violations.iterator().next().getInvalidValue(), "john");
 	}
+
+	@Test
+	public void testValidateForLevel3() {
+		TestEntity01 one = new TestEntity01();
+		one.setFirstName("john");
+		one.setLastName("smith");
+		one.setAge(40);
+		one.setSalary(30000);
+		Level3ValidationTask task = new Level3ValidationTask(one);
+		task.setValidator(factory.getValidator());
+		Set<ConstraintViolation<CdmBase>> violations = task.validate();
+		Assert.assertEquals(violations.size(), 1);
+		Assert.assertEquals(violations.iterator().next().getInvalidValue(), "smith");
+	}
+
 
 }

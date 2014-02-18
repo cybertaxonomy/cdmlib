@@ -12,6 +12,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
  * @author k.luther
+ * @author a.kohlbecker
  * @date 06.07.2011
  */
 public enum CdmPermissionClass {

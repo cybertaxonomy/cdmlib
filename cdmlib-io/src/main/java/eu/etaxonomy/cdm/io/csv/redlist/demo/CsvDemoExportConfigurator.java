@@ -69,6 +69,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	private boolean redlistFeatures;
 	private boolean acceptedName;
 	private boolean parentID;
+	private boolean externalID;
 	private boolean lastChange;
 	
 
@@ -120,13 +121,12 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 			setRedlistFeatures(true);
 		}else if(doTaxonConceptExport){
 			setDoTaxonConceptExport(true);
-			setTaxonNameID(true);
 			setTaxonName(true);
 			setAuthor(true);
 			setRank(true);
-			setAcceptedName(true);
 			setTaxonConceptID(true);
 			setParentID(true);
+			setExternalID(true);
 			setLastChange(true);
 		}
 	}
@@ -483,4 +483,11 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 		this.lastChange = lastChange;
 	}
 
+	public boolean isExternalID() {
+		return externalID;
+	}
+
+	public void setExternalID(boolean externalID) {
+		this.externalID = externalID;
+	}
 }

@@ -29,7 +29,7 @@ public class Level2ValidationSaveOrUpdateEventListener implements SaveOrUpdateEv
 				return;
 			}
 			if (!(object instanceof CdmBase)) {
-				logger.warn("Level-2 validation bypassed for entities of type " + object.getClass().getName());
+				//logger.warn("Level-2 validation bypassed for entities of type " + object.getClass().getName());
 				return;
 			}
 			CdmBase entity = (CdmBase) object;

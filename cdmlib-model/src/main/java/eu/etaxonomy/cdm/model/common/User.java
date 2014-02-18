@@ -118,7 +118,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY, targetEntity = GrantedAuthorityImpl.class)
-    @Cascade(CascadeType.SAVE_UPDATE)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.REFRESH}) // see #2414 (Group updating doesn't work)
     @NotAudited
     protected Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();  //authorities of this user only
 
@@ -127,6 +127,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToMany(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.REFRESH) // see #2414 (Group updating doesn't work)
     @IndexedEmbedded(depth = 1)
     @NotAudited
     protected Set<Group> groups = new HashSet<Group>();
@@ -155,7 +156,12 @@ public class User extends CdmBase implements UserDetails {
     @Transient
     private Set<GrantedAuthority> authorities;  //authorities of this user and of all groups the user belongs to
 
-    private void initAuthorities() {
+    /**
+     * Initializes or refreshes the collection of authorities, See
+     * {@link #getAuthorities()}
+     */
+    //FIXME made public as preliminary solution to #4053 (Transient field User.authorities not refreshed on reloading entity)
+    public void initAuthorities() {
         authorities = new HashSet<GrantedAuthority>();
         authorities.addAll(grantedAuthorities);
         for(Group group : groups) {
@@ -164,9 +170,13 @@ public class User extends CdmBase implements UserDetails {
     }
 
     /**
+     * Implementation of {@link UserDetails#getAuthorities()}
+     *
      * {@inheritDoc}
      *
-     * @return returns a {@code Set<GrantedAuthority>} as Collection
+     * @return returns all {@code Set<GrantedAuthority>} instances contained in
+     *         the sets {@link #getGrantedAuthorities()} and
+     *         {@link #getGroups()}
      */
     @Override
     @Transient

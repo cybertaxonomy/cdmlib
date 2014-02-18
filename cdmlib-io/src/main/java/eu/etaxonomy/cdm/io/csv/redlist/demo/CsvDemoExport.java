@@ -23,8 +23,8 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportStateRedlist;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
@@ -36,6 +36,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationship;
@@ -201,9 +202,9 @@ public class CsvDemoExport extends CsvDemoBase {
 						}
 					}
 				}
+			}else{
+				filteredNodes = allNodes;
 			}
-		}else{
-			filteredNodes = allNodes;
 		}
 		return filteredNodes;
 	}
@@ -265,16 +266,26 @@ public class CsvDemoExport extends CsvDemoBase {
 			record.setDatasetName(classification.getTitleCache());
 		}
 		if(config.isTaxonName()){
-			record.setScientificName(name.getTitleCache());
+			record.setScientificName(name.getNameCache());				
 		}
 		if(config.isTaxonNameID()){
 			record.setScientificNameId(name.getUuid().toString());
 		}
 		if(config.isAuthor()){
-			record.setAuthorName(name.getAuthorshipCache());
+			String authorshipCache = name.getAuthorshipCache();
+			if(authorshipCache == null){
+				authorshipCache = "";
+			}
+			record.setAuthorName(authorshipCache);
 		}
 		if(config.isRank()){
-			record.setRank(taxon.getName().getRank());
+			String rank;
+			if(taxon.getName().getRank() == null){
+				rank = "";
+			}else{
+				rank = taxon.getName().getRank().toString();
+			}
+			record.setRank(rank);
 		}
 		if(config.isTaxonStatus()){
 			handleTaxonomicStatus(record, name, relType, isProParte, isPartial);
@@ -283,13 +294,29 @@ public class CsvDemoExport extends CsvDemoBase {
 			//TODO write routine for accepted Name
 		}
 		if(config.isTaxonConceptID()){
-			//TODO write routine for concept ID
+			UUID taxonUuid = taxonBase.getUuid();
+			if(taxonUuid == null){
+				taxonUuid = UUID.fromString("");
+			}
+			record.setTaxonConceptID(taxonUuid.toString());
 		}
 		if(config.isParentID()){
-			record.setParentUUID(node.getParent().getTaxon().getUuid());
+			String parentUUID;
+			if(node.getParent().getTaxon() == null){
+				parentUUID = "";
+			}else{
+				parentUUID = node.getParent().getTaxon().getUuid().toString();
+			}
+			record.setParentUUID(parentUUID);
 		}
 		if(config.isLastChange()){
-			record.setLastChange(taxon.getUpdated().toString());
+			String lastChange;
+			if(taxon.getUpdated() == null){
+				lastChange = "";
+			}else{
+				lastChange = taxon.getUpdated().toString();
+			}
+			record.setLastChange(lastChange);
 		}
 		if(config.isSynonyms()){
 			handleSynonyms(record,taxon);
@@ -307,6 +334,26 @@ public class CsvDemoExport extends CsvDemoBase {
 				handleRelatedRedlistStatus(record, taxon, false, featureCells, features);
 				handleRelatedRedlistStatus(record, taxon, true, featureCells, features);
 				
+			}
+		}
+		
+		if(config.isExternalID()){
+			Set<IdentifiableSource> sources = taxonBase.getSources();
+			for(IdentifiableSource source:sources){
+				Reference<?> citation = source.getCitation();
+				/*
+				 * TODO: handle this more generic.
+				 * see ticket #4040
+				 *  
+				 */
+				if(citation.getId() == 22){
+					String idInSource = source.getIdInSource();
+					if(idInSource == null){
+						idInSource = "";
+					}
+					record.setExternalID(idInSource);
+					
+				}
 			}
 		}
 	}

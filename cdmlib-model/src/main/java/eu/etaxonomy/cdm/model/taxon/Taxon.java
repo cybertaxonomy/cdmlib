@@ -49,9 +49,9 @@ import org.hibernate.search.annotations.IndexedEmbedded;
 import org.springframework.beans.factory.annotation.Configurable;
 import org.springframework.util.ReflectionUtils;
 
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.TaxonRelationshipClassBridge;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IRelated;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.description.IDescribable;
@@ -95,7 +95,7 @@ import eu.etaxonomy.cdm.strategy.cache.taxon.TaxonBaseDefaultCacheStrategy;
     @ClassBridge(impl = TaxonRelationshipClassBridge.class)
 })
 public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
-			implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, Cloneable{
+            implements IRelated<RelationshipBase>, IDescribable<TaxonDescription>, IPublishable, Cloneable{
     private static final long serialVersionUID = -584946869762749006L;
     private static final Logger logger = Logger.getLogger(Taxon.class);
 
@@ -167,7 +167,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     @XmlElement(name = "TaxonomicChildrenCount")
     @Deprecated //will be removed in future versions. Use Classification/TaxonNode instead
     private int taxonomicChildrenCount;
-    
+
 
     @XmlAttribute(name = "publish")
     private boolean publish = true;
@@ -325,12 +325,12 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     }
 
     public boolean removeTaxonNode(TaxonNode taxonNode){
-    	if (!taxonNodes.contains(taxonNode)){
-    		return false;
-    	}
+        if (!taxonNodes.contains(taxonNode)){
+            return false;
+        }
         TaxonNode parent = taxonNode.getParent();
         if (parent != null){
-        	parent.removeChildNode(taxonNode);
+            parent.removeChildNode(taxonNode);
         }
         taxonNode.setTaxon(null);
         return taxonNodes.remove(taxonNode);
@@ -338,68 +338,68 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     }
 
     public boolean removeTaxonNode(TaxonNode taxonNode, boolean deleteChildren){
-    	TaxonNode parent = taxonNode.getParent();
-    	boolean success = true;
-    	
-		if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
+        TaxonNode parent = taxonNode.getParent();
+        boolean success = true;
 
-			taxonNode.delete();
+        if ((!taxonNode.getChildNodes().isEmpty() && deleteChildren) || (taxonNode.getChildNodes().isEmpty()) ){
 
-		} else if (!taxonNode.isTopmostNode()){
-			List<TaxonNode> children =  taxonNode.getChildNodes();
+            taxonNode.delete();
 
-			for (TaxonNode childNode: children){
+        } else if (!taxonNode.isTopmostNode()){
+            List<TaxonNode> children =  taxonNode.getChildNodes();
 
-				children.remove(childNode);
-				parent.addChildNode(childNode, null, null);
+            for (TaxonNode childNode: children){
 
-			}
+                children.remove(childNode);
+                parent.addChildNode(childNode, null, null);
 
-			taxonNode.delete();
+            }
 
-		} else if (taxonNode.isTopmostNode()){
-			success = false;
-		}
-		return success;
+            taxonNode.delete();
+
+        } else if (taxonNode.isTopmostNode()){
+            success = false;
+        }
+        return success;
     }
 
     public boolean removeTaxonNodes(boolean deleteChildren){
-    	Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
-    	TaxonNode node;
-    	TaxonNode parent;
-    	boolean success = false;
-    	List<TaxonNode> removeNodes = new ArrayList<TaxonNode>();
-    	while (nodesIterator.hasNext()){
-    		node = nodesIterator.next();
-    		if (!deleteChildren){
-    			List<TaxonNode> children = node.getChildNodes();
-    			Iterator<TaxonNode> childrenIterator = children.iterator();
-    			parent = node.getParent();
-    			while (childrenIterator.hasNext()){
-    				TaxonNode childNode = childrenIterator.next();
-    				if (parent != null){
-    					parent.addChildNode(childNode, null, null);
-    				}else{
-    					childNode.setParent(null);
-    				}
-    			}
+        Iterator<TaxonNode> nodesIterator = taxonNodes.iterator();
+        TaxonNode node;
+        TaxonNode parent;
+        boolean success = false;
+        List<TaxonNode> removeNodes = new ArrayList<TaxonNode>();
+        while (nodesIterator.hasNext()){
+            node = nodesIterator.next();
+            if (!deleteChildren){
+                List<TaxonNode> children = node.getChildNodes();
+                Iterator<TaxonNode> childrenIterator = children.iterator();
+                parent = node.getParent();
+                while (childrenIterator.hasNext()){
+                    TaxonNode childNode = childrenIterator.next();
+                    if (parent != null){
+                        parent.addChildNode(childNode, null, null);
+                    }else{
+                        childNode.setParent(null);
+                    }
+                }
 
-    			for (int i = 0; i<node.getChildNodes().size(); i++){
-    				node.removeChild(i);
-    			}
+                for (int i = 0; i<node.getChildNodes().size(); i++){
+                    node.removeChild(i);
+                }
 
 
-    		}
+            }
 
-    		removeNodes.add(node);
-	 	}
-    	for (int i = 0; i<removeNodes.size(); i++){
-    		TaxonNode removeNode = removeNodes.get(i);
-    		success = removeNode.delete(deleteChildren);
-    		removeNode.setTaxon(null);
-    		removeTaxonNode(removeNode);
-    	}
-    	return success;
+            removeNodes.add(node);
+         }
+        for (int i = 0; i<removeNodes.size(); i++){
+            TaxonNode removeNode = removeNodes.get(i);
+            success = removeNode.delete(deleteChildren);
+            removeNode.setTaxon(null);
+            removeTaxonNode(removeNode);
+        }
+        return success;
 
     }
 
@@ -515,22 +515,22 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         return relationsToThisTaxon;
     }
     /**
-	 * Returns the set of all {@link TaxonRelationship taxon relationships}
-	 * between two taxa in which <i>this</i> taxon is involved either as a source or
-	 * as a target.
-	 *
-	 * @see    #getRelationsFromThisTaxon()
-	 * @see    #getRelationsToThisTaxon()
-	 */
-	@Transient
-	public Set<TaxonRelationship> getTaxonRelations() {
-	    Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
-	    rels.addAll(getRelationsToThisTaxon());
-	    rels.addAll(getRelationsFromThisTaxon());
-	    return rels;
-	}
+     * Returns the set of all {@link TaxonRelationship taxon relationships}
+     * between two taxa in which <i>this</i> taxon is involved either as a source or
+     * as a target.
+     *
+     * @see    #getRelationsFromThisTaxon()
+     * @see    #getRelationsToThisTaxon()
+     */
+    @Transient
+    public Set<TaxonRelationship> getTaxonRelations() {
+        Set<TaxonRelationship> rels = new HashSet<TaxonRelationship>();
+        rels.addAll(getRelationsToThisTaxon());
+        rels.addAll(getRelationsFromThisTaxon());
+        return rels;
+    }
 
-	/**
+    /**
      * @see    #getRelationsToThisTaxon()
      */
     protected void setRelationsToThisTaxon(Set<TaxonRelationship> relationsToThisTaxon) {
@@ -606,17 +606,17 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
         if (fromTaxon != this){
             rel.setToTaxon(null);  //remove this Taxon from relationship
             if (fromTaxon != null){
-            	if (fromTaxon.getTaxonRelations().contains(rel)){
-            		fromTaxon.removeTaxonRelation(rel);
-            	}
+                if (fromTaxon.getTaxonRelations().contains(rel)){
+                    fromTaxon.removeTaxonRelation(rel);
+                }
             }
         }
         if (toTaxon != this ){
             rel.setFromTaxon(null); //remove this Taxon from relationship
            if (toTaxon != null){
-	           if (toTaxon.getTaxonRelations().contains(rel)) {
-	        	   toTaxon.removeTaxonRelation(rel);
-	           }
+               if (toTaxon.getTaxonRelations().contains(rel)) {
+                   toTaxon.removeTaxonRelation(rel);
+               }
            }
         }
     }
@@ -1654,7 +1654,7 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
     public void setExcluded(boolean excluded) {
         this.excluded = excluded;
     }
-    
+
 
     /**
      * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not
@@ -1663,10 +1663,12 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
      * implementation of READ rights in future.<BR>
      * The default value is <code>true</code>.
      */
+    @Override
     public boolean isPublish() {
         return publish;
     }
 
+    @Override
     public void setPublish(boolean publish) {
         this.publish = publish;
     }

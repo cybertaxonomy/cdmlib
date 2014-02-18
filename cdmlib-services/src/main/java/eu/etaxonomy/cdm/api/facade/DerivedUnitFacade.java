@@ -71,6 +71,8 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @date 14.05.2010
  */
 public class DerivedUnitFacade {
+	private static final String METER = "m";
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DerivedUnitFacade.class);
 
@@ -82,9 +84,6 @@ public class DerivedUnitFacade {
 	private final DerivedUnitFacadeConfigurator config;
 	
 	private Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
-
-	// private GatheringEvent gatheringEvent;
-	private SpecimenOrObservationType type; // needed?
 
 	private FieldUnit fieldUnit;
 
@@ -160,7 +159,6 @@ public class DerivedUnitFacade {
 			config = DerivedUnitFacadeConfigurator.NewInstance();
 		}
 		this.config = config;
-		this.type = type;
 		// derivedUnit
 		derivedUnit = getNewDerivedUnitInstance(type);
 		setFieldUnit(fieldUnit);
@@ -193,7 +191,6 @@ public class DerivedUnitFacade {
 
 		// derived unit
 		this.derivedUnit = derivedUnit;
-		this.type = derivedUnit.getRecordBasis();
 		
 		// derivation event
 		if (this.derivedUnit.getDerivedFrom() != null) {
@@ -952,6 +949,8 @@ public class DerivedUnitFacade {
 		}
 	}
 
+	static final String ALTITUDE_POSTFIX = " m";
+	
 	/**
 	 * Returns the correctly formatted <code>absolute elevation</code> information.
 	 * If absoluteElevationText is set, this will be returned,
@@ -971,7 +970,7 @@ public class DerivedUnitFacade {
 				String text = ev.getAbsoluteElevationText();
 				Integer min = getAbsoluteElevation();
 				Integer max = getAbsoluteElevationMaximum();
-				return distanceString(min, max, text);
+				return distanceString(min, max, text, METER);
 			}
 		}
 	}
@@ -1082,7 +1081,7 @@ public class DerivedUnitFacade {
 			String text = ev.getDistanceToGroundText();
 			Double min = getDistanceToGround();
 			Double max = getDistanceToGroundMax();
-			return distanceString(min, max, text);
+			return distanceString(min, max, text, METER);
 		}
 	}
 
@@ -1158,7 +1157,7 @@ public class DerivedUnitFacade {
 			String text = ev.getDistanceToWaterSurfaceText();
 			Double min = getDistanceToWaterSurface();
 			Double max = getDistanceToWaterSurfaceMax();
-			return distanceString(min, max, text);
+			return distanceString(min, max, text, METER);
 		}
 	}
 	
@@ -2131,7 +2130,7 @@ public class DerivedUnitFacade {
 	}
 
 	private DerivationEvent getDerivationEvent() {
-		return getDerivationEvent(false);
+		return getDerivationEvent(CREATE_NOT);
 	}
 
 	/**
@@ -2373,11 +2372,14 @@ public class DerivedUnitFacade {
 	}
 
 	public void setType(SpecimenOrObservationType type) {
-		this.type = type;
+		if (type == SpecimenOrObservationType.FieldUnit){
+			throw new IllegalArgumentException("Type FieldUnit is not a legal record basis for a DerivedUnit");
+		}
+		this.innerDerivedUnit().setRecordBasis(type);
 	}
 
 	public SpecimenOrObservationType getType() {
-		return type;
+		return this.innerDerivedUnit().getRecordBasis();
 	}
 
 	
@@ -2401,13 +2403,16 @@ public class DerivedUnitFacade {
 	 * @param text text representation of distance
 	 * @return the formatted distance string
 	 */
-	private String distanceString(Number min, Number max, String text) {
+	private String distanceString(Number min, Number max, String text, String unit) {
 		if (StringUtils.isNotBlank(text)){
 			return text;
 		}else{
 			String minStr = min == null? null : String.valueOf(min);
 			String maxStr = max == null? null : String.valueOf(max);
 			String result = CdmUtils.concat(UTF8.EN_DASH_SPATIUM.toString(), minStr, maxStr);
+			if (StringUtils.isNotBlank(result) && StringUtils.isNotBlank(unit)){
+				result = result + " " + unit;
+			}
 			return result;
 		}
 	}

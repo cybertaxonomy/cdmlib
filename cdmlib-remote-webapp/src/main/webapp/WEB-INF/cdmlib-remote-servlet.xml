@@ -60,6 +60,13 @@
     class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
 
 
+	<!-- 
+	======= Remoting =======
+	-->
+	
+<!--	<import resource="classpath:/eu/etaxonomy/cdm/remoting-services.xml"/> -->
+	
+	
   <!--
   ======= HandlerInterceptors =======
   -->

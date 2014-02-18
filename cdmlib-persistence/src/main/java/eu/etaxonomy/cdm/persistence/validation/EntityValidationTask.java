@@ -47,7 +47,14 @@ public abstract class EntityValidationTask implements Runnable {
 	@Override
 	public void run()
 	{
-		validate();
+		try {
+			Set<ConstraintViolation<CdmBase>> violations = validate();
+			// TODO: SAVE VIOLATIONS TO DATABASE
+		}
+		catch (Throwable t) {
+			// TODO: SAVE VALIADATION ERROR TO DATABASE (?)
+			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
+		}
 	}
 
 

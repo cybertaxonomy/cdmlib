@@ -101,14 +101,19 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
 
         String[] tokens = parse(authority);
         // className must never be null
-        permissionClass = CdmPermissionClass.valueOf(tokens[0]);
+
+        try {
+            permissionClass = CdmPermissionClass.valueOf(tokens[0]);
+        } catch (IllegalArgumentException e) {
+            throw new ParsingException(authority);
+        }
         property = tokens[1];
         if(tokens[2] != null){
             try {
                 operation = Operation.fromString(tokens[2]);
             } catch (IllegalArgumentException e) {
                 logger.warn("cannot parse Operation " + tokens[2]);
-                throw e;
+                throw new ParsingException(authority);
             }
         }
         if(tokens[3] != null){

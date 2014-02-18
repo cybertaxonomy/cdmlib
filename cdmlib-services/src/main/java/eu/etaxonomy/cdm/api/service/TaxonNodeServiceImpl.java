@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
@@ -117,6 +118,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
         TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
+        HomotypicalGroup group = synonymName.getHomotypicalGroup();
         if (synonymRelationshipType == null){
             if (synonymName.isHomotypic(newAcceptedTaxon.getName())){
                 synonymRelationshipType = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
@@ -124,27 +126,51 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                 synonymRelationshipType = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
             }
         }
+        
+        //set homotypic group
+       
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
-
+         HomotypicalGroup homotypicalGroupAcceptedTaxon = synonmyRelationship.getSynonym().getHomotypicGroup();
         // Move Synonym Relations to new Taxon
         // From ticket 3163 we can move taxon with accepted name having homotypic synonyms
+        List<Synonym> synonymsInHomotypicalGroup = null;
+        
+        //the synonyms of the homotypical group of the old taxon
+        if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+        	synonymsInHomotypicalGroup = oldTaxon.getSynonymsInGroup(group);
+        }
+        
         for(SynonymRelationship synRelation : oldTaxon.getSynonymRelations()){
             SynonymRelationshipType srt;
             if(synRelation.getSynonym().getName().getHomotypicalGroup()!= null
                     && synRelation.getSynonym().getName().getHomotypicalGroup().equals(newAcceptedTaxon.getName().getHomotypicalGroup())) {
                 srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
             } else if(synRelation.getType() != null && synRelation.getType().equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())) {
-                srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+            	if (synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+            		srt = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
+            	} else{
+            		srt = SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF();
+            	}
             } else {
                 srt = synRelation.getType();
 
             }
+           
             newAcceptedTaxon.addSynonym(synRelation.getSynonym(),
                     srt,
                     synRelation.getCitation(),
                     synRelation.getCitationMicroReference());
+            
+            /*if (synonymsInHomotypicalGroup.contains(synRelation.getSynonym()) && srt.equals(SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF())){
+            	homotypicalGroupAcceptedTaxon.addTypifiedName(synRelation.getSynonym().getName());
+            }*/
+         
         }
+        
+        
+       
+        
 
         // CHILD NODES
         if(oldTaxonNode.getChildNodes() != null && oldTaxonNode.getChildNodes().size() != 0){
@@ -163,13 +189,17 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
 
             }else if(toTaxon == oldTaxon){
-                taxonRelationship.getFromTaxon().addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(),
+               fromTaxon.addTaxonRelation(newAcceptedTaxon, taxonRelationship.getType(),
                         taxonRelationship.getCitation(), taxonRelationship.getCitationMicroReference());
-
+               taxonService.saveOrUpdate(fromTaxon);
+                
             }else{
                 logger.warn("Taxon is not part of its own Taxonrelationship");
             }
             // Remove old relationships
+            
+            fromTaxon.removeTaxonRelation(taxonRelationship);
+            toTaxon.removeTaxonRelation(taxonRelationship);
             taxonRelationship.setToTaxon(null);
             taxonRelationship.setFromTaxon(null);
         }

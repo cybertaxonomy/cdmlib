@@ -19,8 +19,8 @@
 <title>CDM DWCA Export</title>
 </head>
 <body>
-	<h1>Export TSV Page</h1>
-	<form name="exportForm" method="post" action="exportRedlist" onsubmit="return validateForm()">
+	<h1>Export TSV Page</h1><!--exportRedlist  -->
+	<form name="exportForm" method="post" action="export" onsubmit="return validateForm()">
 	<!--  method="post" action="exportRedlist" onsubmit="return validateForm()" -->
 		<div class="ui-widget" id="comboboxWidget" name="comboboxWidget">
 			<label for="combobox">Classification</label> 

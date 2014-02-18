@@ -329,9 +329,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         // Get name from synonym
         TaxonNameBase<?, ?> synonymName = synonym.getName();
 
-        // remove synonym from taxon
+      /*  // remove synonym from taxon
         toTaxon.removeSynonym(synonym);
-
+*/
         // Create a taxon with synonym name
         Taxon fromTaxon = Taxon.NewInstance(synonymName, null);
 
@@ -340,7 +340,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         // since we are swapping names, we have to detach the name from the synonym completely.
         // Otherwise the synonym will still be in the list of typified names.
-        synonym.getName().removeTaxonBase(synonym);
+       // synonym.getName().removeTaxonBase(synonym);
+        this.deleteSynonym(synonym, null);
 
         return fromTaxon;
     }
@@ -2970,6 +2971,37 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return list;
     }
 
+	@Override
+	public Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon, TaxonRelationshipType oldRelationshipType,
+			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException {
+		// Create new synonym using concept name
+				TaxonNameBase<?, ?> synonymName = fromTaxon.getName();
+				Synonym synonym = Synonym.NewInstance(synonymName, fromTaxon.getSec());
+				
+				// Remove concept relation from taxon
+				toTaxon.removeTaxon(fromTaxon, oldRelationshipType);
+				
+				
+
+				
+		        // Create a new synonym for the taxon
+				SynonymRelationship synonymRelationship;
+				if (synonymRelationshipType != null
+						&& synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+					synonymRelationship = toTaxon.addHomotypicSynonym(synonym, null, null);
+				} else{
+					synonymRelationship = toTaxon.addHeterotypicSynonymName(synonymName);
+				}
+			
+				this.saveOrUpdate(toTaxon);
+				//TODO: configurator and classification
+				this.deleteTaxon(fromTaxon, null, null);
+				return synonymRelationship.getSynonym();
+		
+	}
 
 
-}
+
+
+
+	}

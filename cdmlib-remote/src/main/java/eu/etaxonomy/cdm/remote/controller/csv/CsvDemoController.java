@@ -20,7 +20,6 @@ import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -39,16 +38,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultExport;
-import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExport;
 import eu.etaxonomy.cdm.io.csv.redlist.demo.CsvDemoExportConfigurator;
-import eu.etaxonomy.cdm.io.csv.redlist.out.CsvTaxExportConfiguratorRedlist;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.remote.controller.AbstractController;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
-import eu.etaxonomy.cdm.remote.editor.NamedAreaPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.TermBaseListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UUIDListPropertyEditor;
 import eu.etaxonomy.cdm.remote.editor.UuidList;
@@ -105,6 +101,7 @@ public class CsvDemoController extends AbstractController{
 			@RequestParam(value = "downloadTokenValueId", required = false) String downloadTokenValueId,
 			HttpServletResponse response,
 			HttpServletRequest request) {
+		
 		ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
 		CsvDemoExportConfigurator config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
 		CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
@@ -177,7 +174,7 @@ public class CsvDemoController extends AbstractController{
 		config.setFieldsTerminatedBy("\t");
 		config.setClassificationUuids(classificationUUIDS);
 		config.setByteArrayOutputStream(byteArrayOutputStream);
-		config.createPreSelectedExport(true, false);
+		config.createPreSelectedExport(false, true);
 		if(features != null)config.setFeatures(features);
         config.setNamedAreas(selectedAreas);
 		return config;

@@ -18,9 +18,9 @@ public final class ValidationThread extends Thread {
 	private boolean terminationRequested;
 
 
-	ValidationThread(ThreadGroup group, EntityValidationTask task, String name, Validator validator)
+	ValidationThread(ThreadGroup group, Runnable runnable, String name, Validator validator)
 	{
-		super(group, task, name);
+		super(group, runnable, name);
 		this.validator = validator;
 		setPriority(MIN_PRIORITY);
 	}

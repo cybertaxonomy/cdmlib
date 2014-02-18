@@ -2,12 +2,14 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
 
 @SuppressWarnings("serial")
 public class TestEntity01 extends CdmBase {
 
 	@CheckCase(value = CaseMode.UPPER, groups = { Level2.class })
 	private String firstName;
+	@CheckCase(value = CaseMode.UPPER, groups = { Level3.class })
 	private String lastName;
 	private int age;
 	private double salary;

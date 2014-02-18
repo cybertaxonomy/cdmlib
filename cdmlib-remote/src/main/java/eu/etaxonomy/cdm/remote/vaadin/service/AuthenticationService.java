@@ -15,6 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
+import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinService;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
@@ -93,16 +94,14 @@ public class AuthenticationService{
 		if(isAuth != null){
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("isAuthenticated", false);
 		}
-		//conversationHolder.commit();
 		conversationHolder.clear();
 		conversationHolder.close();
+		SecurityContextHolder.clearContext();
+		UI ui = UI.getCurrent();
+		ui.close();
+		Navigator navigator = ui.getNavigator();
+		navigator.navigateTo("");
 		VaadinSession.getCurrent().close();
-		UI.getCurrent().getPage().setLocation(VaadinServlet.getCurrent().getServletContext().getContextPath());
-//		Page.getCurrent().setLocation("/");
-//		SecurityContext context = (SecurityContext)VaadinService.getCurrentRequest().getWrappedSession().getAttribute("context"); 
-//				//SecurityContextHolder.getContext();
-//		logger.info("VaadinSession: "+ VaadinSession.getCurrent().getSession().getAttribute("context"));
-//		context.setAuthentication(null);
 	}
 	
 	public boolean isAuthenticated(){

@@ -82,11 +82,25 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
         String classString = dbType.getClassString();
         Class.forName(classString);
         String mUrl = dbType.getConnectionString(this);
+        if(logger.isDebugEnabled()){
+            logger.debug("testConnection() : " + mUrl);
+        }
+
+        if(logger.isDebugEnabled()){
+            logger.debug("testConnection() : " + mUrl + " : service is available");
+        }
+        // try to connect to the database server
         Connection connection = DriverManager.getConnection(mUrl, getUsername(), getPassword());
         if (connection != null){
+            if(logger.isDebugEnabled()){
+                logger.debug("testConnection() : " + mUrl + " : jdbc connect successful");
+            }
             return true;
         }
 
+        if(logger.isDebugEnabled()){
+            logger.debug("testConnection() : " + mUrl + " : FAIL");
+        }
         return false;
     }
 

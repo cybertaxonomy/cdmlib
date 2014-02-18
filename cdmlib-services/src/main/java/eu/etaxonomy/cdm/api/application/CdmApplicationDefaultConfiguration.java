@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 import org.springframework.orm.hibernate4.HibernateTransactionManager;
-import org.springframework.security.access.PermissionEvaluator;
 import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -58,6 +57,7 @@ import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
 /**
  * @author a.mueller
@@ -92,7 +92,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Autowired
     //@Qualifier("termService")
     private ITermService termService;
-    @Autowired
+    //@Autowired
     private HibernateTransactionManager transactionManager;
     @Autowired
     //@Qualifier("descriptionService")
@@ -108,7 +108,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     private ICommonService commonService;
     @Autowired
     private ILocationService locationService;
-    @Autowired
+    //@Autowired
     private SessionFactory sessionFactory;
     @Autowired
     private DataSource dataSource;
@@ -137,7 +137,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Autowired
     private IPolytomousKeyNodeService polytomousKeyNodeService;
     @Autowired
-    private PermissionEvaluator permissionEvaluator;
+    private ICdmPermissionEvaluator permissionEvaluator;
 
 
 //	@Autowired
@@ -205,6 +205,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public IReferenceService getReferenceService() {
         return this.referenceService;
+    }
+    
+    @Autowired
+    public void setSessionFactory(SessionFactory sessionFactory) {
+    	this.sessionFactory = sessionFactory;
     }
 
     /* (non-Javadoc)
@@ -310,6 +315,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     public PlatformTransactionManager getTransactionManager() {
         return this.transactionManager;
     }
+    
+    @Autowired
+    public void setTransactionManager(PlatformTransactionManager transactionManager) {
+        this.transactionManager = (HibernateTransactionManager) transactionManager;
+    }
 
     /*
      * (non-Javadoc)
@@ -408,7 +418,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getPermissionEvaluator()
      */
     @Override
-    public PermissionEvaluator getPermissionEvaluator() {
+    public ICdmPermissionEvaluator getPermissionEvaluator() {
         return permissionEvaluator;
     }
 
@@ -462,12 +472,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java.lang.String, java.lang.String)
      */
     @Override
-	public void authenticate(String username, String password){
-		UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
-		Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
+    public void authenticate(String username, String password){
+        UsernamePasswordAuthenticationToken tokenForUser = new UsernamePasswordAuthenticationToken(username, password);
+        Authentication authentication = this.getAuthenticationManager().authenticate(tokenForUser);
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
-	}
+    }
 
 
 

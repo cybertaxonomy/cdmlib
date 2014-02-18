@@ -49,8 +49,8 @@ public class Level3ValidationCRUDEventListener implements PostInsertEventListene
 				return;
 			}
 			if (!(object instanceof CdmBase)) {
-				logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName()
-						+ " (Level-3 validation only applied to instances of CdmBase)");
+				//logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName()
+				//		+ " (Level-3 validation only applied to instances of CdmBase)");
 				return;
 			}
 			CdmBase entity = (CdmBase) object;

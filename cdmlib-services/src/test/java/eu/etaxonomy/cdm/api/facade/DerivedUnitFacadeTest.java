@@ -64,16 +64,15 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-
-
 /**
+ * Test class for {@link DerivedUnitFacade}
  * @author a.mueller
  * @date 17.05.2010
- *
  */
 
 public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
-    private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(DerivedUnitFacadeTest.class);
 
     @SpringBeanByType
     private IOccurrenceService service;
@@ -182,9 +181,10 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         firstFieldObject = FieldUnit.NewInstance();
 
 		//TODO maybe we should define concrete event types here
-        DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance();
-        DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance();
-        firstDerivationEvent = DerivationEvent.NewInstance();
+        DerivationEventType eventType = DerivationEventType.ACCESSIONING();
+        DerivationEvent lastDerivationEvent = DerivationEvent.NewInstance(eventType);
+        DerivationEvent middleDerivationEvent = DerivationEvent.NewInstance(eventType);
+        firstDerivationEvent = DerivationEvent.NewInstance(eventType);
 
         collectionSpecimen.setDerivedFrom(lastDerivationEvent);
 
@@ -428,10 +428,22 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
             Assert.fail("An error should not occur in NewInstance()");
         }
     }
+    
+    @Test
+    public void testGetSetType() {
+        Assert.assertEquals("Type must be same", SpecimenOrObservationType.PreservedSpecimen, specimenFacade.getType());
+        SpecimenOrObservationType newType = SpecimenOrObservationType.Fossil;
+        specimenFacade.setType(newType);
+        Assert.assertEquals("New type must be Fossil", newType, specimenFacade.getType());
+        Assert.assertEquals("DerivedUnit recordBasis must be set to Fossil", newType, specimenFacade.innerDerivedUnit().getRecordBasis());
+        
+    }
 
     @Test
     public void testGetSetCountry() {
-        logger.warn("Not yet implemented");
+        Assert.assertEquals("Country must be same", country, specimenFacade.getCountry());
+        specimenFacade.setCountry(Country.FRANCEFRENCHREPUBLIC());
+        Assert.assertEquals("New country must be France", Country.FRANCEFRENCHREPUBLIC(), specimenFacade.getCountry());
     }
 
     /**
@@ -525,18 +537,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.setAbsoluteElevationRange(30, 36);
         Assert.assertEquals("", Integer.valueOf(36),specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(30),specimenFacade.getAbsoluteElevation());
-        Assert.assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", "30" + UTF8.EN_DASH_SPATIUM + "36 m",specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        Assert.assertEquals("Odd range should not throw an exception anymore", String.format("30%s35", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("Odd range should not throw an exception anymore", 
+        		String.format("30%s35 m", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
         
         specimenFacade.setAbsoluteElevationRange(41, null);
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
         Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
-        Assert.assertEquals("", "41",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("", "41 m",specimenFacade.absoluteElevationToString());
 
         specimenFacade.setAbsoluteElevationRange(null, null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevation());
@@ -571,7 +584,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 
         specimenFacade.setAbsoluteElevationText(null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
-        Assert.assertEquals("ToString should change by setting text to null", "41",specimenFacade.absoluteElevationToString());
+        Assert.assertEquals("ToString should change by setting text to null", "41 m",specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
     }
@@ -661,7 +674,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         
         specimenFacade.setDistanceToWaterSurfaceText(null);
         Assert.assertNull("", specimenFacade.getDistanceToWaterSurfaceText());
-        Assert.assertEquals("ToString should change by setting text to null", "41.2",specimenFacade.distanceToWaterSurfaceToString());
+        Assert.assertEquals("ToString should change by setting text to null", "41.2 m",specimenFacade.distanceToWaterSurfaceToString());
         Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
         Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
     }
@@ -1518,7 +1531,6 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Collection newCollection = Collection.NewInstance();
         String catalogNumber = "1234890";
         String accessionNumber = "345345";
-        String collectorsNumber = "lkjewe";
         TaxonNameBase<?,?> storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
         PreservationMethod method = PreservationMethod.NewInstance();
         DerivedUnit duplicateSpecimen = specimenFacade.addDuplicate(newCollection,

@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,24 +63,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return users;
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.provisioning.GroupManager#createGroup(java.lang.String, java.util.List)
-     */
-    @Override
-    @Transactional(readOnly=false)
-    public void createGroup(String groupName, List<GrantedAuthority> authorities) {
-        Assert.hasText(groupName);
-        Assert.notNull(authorities);
-
-        Group group = Group.NewInstance(groupName);
-
-        for(GrantedAuthority authority : authorities) {
-            group.getGrantedAuthorities().add(authority);
-        }
-
-        dao.save(group);
-    }
-
+   
     /* (non-Javadoc)
      * @see org.springframework.security.provisioning.GroupManager#deleteGroup(java.lang.String)
      */
@@ -89,6 +73,9 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         Assert.hasText(groupName);
 
         Group group = dao.findGroupByName(groupName);
+        for (User user : group.getMembers()){
+        	group.removeMember(user);
+        }
         if(group != null){
             dao.delete(group);
         }
@@ -222,6 +209,32 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
                 results = dao.findByName(queryString, matchmode, criteria, pageSize, pageNumber, orderHints, propertyPaths);
          }
          return results;
+    }
+
+    /* (non-Javadoc)
+     * @see org.springframework.security.provisioning.GroupManager#createGroup(java.lang.String, java.util.List)
+     */
+    @Override
+    @Transactional(readOnly=false)
+	public void createGroup(String groupName, List<GrantedAuthority> authorities) {
+		Assert.hasText(groupName);
+        Assert.notNull(authorities);
+		
+		Group newGroup = Group.NewInstance(groupName);
+		for (GrantedAuthority grantedAuthority: authorities){
+			newGroup.addGrantedAuthority(grantedAuthority);
+		}
+		saveGroup(newGroup);
+	}
+	
+	/* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IUserService#saveGroup(eu.etaxonomy.cdm.model.common.Group)
+     */
+    @Override
+    @Transactional(readOnly=false)
+    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+    public UUID saveGroup(Group group) {
+        return dao.save(group);
     }
 
 }

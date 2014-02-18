@@ -120,7 +120,7 @@ public class ConversationHolder {
 	/**
 	 * Simple constructor used by Spring only
 	 */
-	private ConversationHolder(){
+	protected ConversationHolder(){
 		closed = false;
 	}
 

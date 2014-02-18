@@ -32,10 +32,12 @@ import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
+import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.SessionFactoryImpl;
 import org.hibernate.internal.SessionImpl;
 import org.hibernate.metadata.ClassMetadata;
@@ -1163,6 +1165,21 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		List<CdmMetaData> results = crit.list();
 		return results;
 	}
+	
+    @Override
+    public PersistentCollection initializeCollection(PersistentCollection col) {
+            Session session = getSession();
+            col.setCurrentSession((SessionImplementor) session);
+            //session.update(col.getOwner());
+            if(!((SessionImplementor)session).getPersistenceContext().getCollectionEntries().containsKey(col)) {
+                    ((SessionImplementor)session).getPersistenceContext().addUninitializedDetachedCollection(
+                                    ((SessionImplementor)session).getFactory().getCollectionPersister( col.getRole() ),col);
+            }
+            col.forceInitialization();
+            System.out.println();
+            return col;
+    }
+
 }
 
 

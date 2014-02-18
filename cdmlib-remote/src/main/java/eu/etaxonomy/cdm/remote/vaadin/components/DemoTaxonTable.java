@@ -5,19 +5,17 @@ import java.util.Collection;
 import java.util.List;
 
 import javax.annotation.PostConstruct;
-import javax.sql.DataSource;
 
 import org.apache.log4j.Logger;
-import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Scope;
-import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.data.util.BeanItemContainer;
 import com.vaadin.ui.Table;
+import com.vaadin.ui.UI;
 
-import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -26,6 +24,7 @@ import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.redlist.RedlistDTO;
+import eu.etaxonomy.cdm.remote.vaadin.VaadinUI;
 
 /**
  * 
@@ -55,18 +54,6 @@ public class DemoTaxonTable extends Table{
 	IDescriptionService descriptionService;
 	@Autowired
 	ITermService termService;
-	
-    @Autowired
-    private HibernateTransactionManager transactionManager;
-    
-    @Autowired
-    private DataSource dataSource;
-	
-    @Autowired
-    private SessionFactory sessionFactory;
-
-	private ConversationHolder conversationHolder;
-
 
 	Logger logger = Logger.getLogger(DemoTaxonTable.class);
 	
@@ -75,6 +62,7 @@ public class DemoTaxonTable extends Table{
 	@PostConstruct
 	@SuppressWarnings("rawtypes")
 	void PostConstruct(){
+		
 		final BeanItemContainer<RedlistDTO> redListContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
 		//TODO: Make use of paging
 		Collection<TaxonBase> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);

@@ -81,7 +81,7 @@ public class CsvExportController extends AbstractController{
     @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(UuidList.class, new UUIDListPropertyEditor());
-        binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
+//        binder.registerCustomEditor(NamedArea.class, new NamedAreaPropertyEditor());
         binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
 
