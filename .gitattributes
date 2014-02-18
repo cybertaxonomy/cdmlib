@@ -1405,6 +1405,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/statistics/ISt
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/IClassificationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonNodeDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/validation/IConstrainViolationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeEvent.java -text
