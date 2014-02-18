@@ -1539,6 +1539,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/CheckCa
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/CheckCaseValidator.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTaskTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/TestEntity01.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/validation/TestEntity02.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/profiler/ProfilerController.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
