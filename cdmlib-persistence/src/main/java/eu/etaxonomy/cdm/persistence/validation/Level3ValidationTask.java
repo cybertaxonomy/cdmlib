@@ -11,9 +11,15 @@ import eu.etaxonomy.cdm.validation.Level3;
  */
 public class Level3ValidationTask extends EntityValidationTask {
 
-	public Level3ValidationTask(CdmBase validatable)
+	public Level3ValidationTask(CdmBase entity)
 	{
-		super(validatable, Level3.class);
+		super(entity, Level3.class);
+	}
+
+
+	public Level3ValidationTask(CdmBase entity, EntityValidationTrigger trigger)
+	{
+		super(entity, trigger, Level3.class);
 	}
 
 }

@@ -19,10 +19,10 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  */
 public abstract class EntityValidationTask implements Runnable {
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EntityValidationTask.class);
 
 	private final CdmBase entity;
+	private final EntityValidationTrigger trigger;
 	private final Class<?>[] validationGroups;
 
 	private Validator validator;
@@ -35,11 +35,29 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param entity
 	 *            The entity to be validated
 	 * @param validationGroups
-	 *            The groups of constraints to apply
+	 *            The validation groups to apply
 	 */
 	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups)
 	{
+		this(entity, EntityValidationTrigger.NONE, validationGroups);
+	}
+
+
+	/**
+	 * Create an entity validation task for the specified entity, indicating the CRUD event
+	 * that triggered it and the validation groups to be applied.
+	 * 
+	 * @param entity
+	 *            The entity to be validated
+	 * @param trigger
+	 *            The CRUD event that triggered the validation
+	 * @param validationGroups
+	 *            The validation groups to apply
+	 */
+	public EntityValidationTask(CdmBase entity, EntityValidationTrigger trigger, Class<?>... validationGroups)
+	{
 		this.entity = entity;
+		this.trigger = trigger;
 		this.validationGroups = validationGroups;
 	}
 

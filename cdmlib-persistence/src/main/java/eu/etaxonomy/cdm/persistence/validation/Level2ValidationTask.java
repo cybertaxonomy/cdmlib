@@ -16,4 +16,10 @@ public class Level2ValidationTask extends EntityValidationTask {
 		super(entity, Level2.class);
 	}
 
+
+	public Level2ValidationTask(CdmBase entity, EntityValidationTrigger trigger)
+	{
+		super(entity, trigger, Level2.class);
+	}
+
 }

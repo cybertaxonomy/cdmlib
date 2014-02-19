@@ -7,6 +7,7 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.persistence.validation.EntityValidationTrigger;
 import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 
@@ -38,18 +39,18 @@ public class Level2ValidationEventListener implements PostInsertEventListener, P
 	@Override
 	public void onPostUpdate(PostUpdateEvent event)
 	{
-		validate(event.getEntity());
+		validate(event.getEntity(), EntityValidationTrigger.UPDATE);
 	}
 
 
 	@Override
 	public void onPostInsert(PostInsertEvent event)
 	{
-		validate(event.getEntity());
+		validate(event.getEntity(), EntityValidationTrigger.INSERT);
 	}
 
 
-	private void validate(Object object)
+	private void validate(Object object, EntityValidationTrigger trigger)
 	{
 		try {
 			if (object == null) {
@@ -61,7 +62,7 @@ public class Level2ValidationEventListener implements PostInsertEventListener, P
 				return;
 			}
 			CdmBase entity = (CdmBase) object;
-			Level2ValidationTask task = new Level2ValidationTask(entity);
+			Level2ValidationTask task = new Level2ValidationTask(entity, trigger);
 			validationExecutor.execute(task);
 		}
 		catch (Throwable t) {
