@@ -174,7 +174,7 @@ public class CdmPermissionEvaluator implements ICdmPermissionEvaluator {
     public boolean hasOneOfRoles(Authentication authentication, Role ... roles) {
         for (GrantedAuthority authority: authentication.getAuthorities()){
             for(Role role : roles){
-                 if (authority.getAuthority().equals(role.getAuthority())){
+                 if (role != null && authority.getAuthority().equals(role.getAuthority())){
                      if(logger.isDebugEnabled()){
                          logger.debug(role.getAuthority() + " found => true");
                      }
