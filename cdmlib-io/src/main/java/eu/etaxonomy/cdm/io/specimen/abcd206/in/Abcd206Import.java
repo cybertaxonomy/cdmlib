@@ -45,12 +45,9 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-//=======
 import eu.etaxonomy.cdm.model.common.LanguageString;
-//<<<<<<< .courant
 import eu.etaxonomy.cdm.model.common.OriginalSourceBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-//>>>>>>> .fusion-droit.r19057
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
@@ -413,7 +410,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     logger.warn("oups");
                 }
                 reference.addSource(sour);
-                getReferenceService().saveOrUpdate(reference);
+                save(reference, state);
             }
 
 
@@ -482,9 +479,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
             }
 
-            getOccurrenceService().saveOrUpdate(derivedUnitBase);
-
-            //=======
             save(derivedUnitBase, state);
 
             // handle identifications
@@ -1431,7 +1425,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
     }
 
-    private Feature getFeature(String featureName){
+    private Feature getFeature(String featureName, Abcd206ImportState state){
         List<DefinedTermBase> features = getTermService().list(Feature.class, null,null,null,null);
         Feature currentFeature=null;
         for (DefinedTermBase feature: features){
@@ -1442,7 +1436,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
         if (currentFeature == null) {
             currentFeature=Feature.NewInstance(featureName, featureName, featureName);
-            getTermService().saveOrUpdate(currentFeature);
+            save(currentFeature, state);
         }
         return currentFeature;
     }
