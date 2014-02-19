@@ -11,6 +11,8 @@ package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.util.Set;
 
+import org.apache.log4j.Logger;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
@@ -19,6 +21,7 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
@@ -34,6 +37,7 @@ public class TaxonXAddSources {
     private Reference<?> sourceUrlRef;
     private TaxonXImport importer;
     private TaxonXImportState configState;
+    private static final Logger logger = Logger.getLogger(TaxonXAddSources.class);
 
     /**
      * @param importer
@@ -66,34 +70,46 @@ public class TaxonXAddSources {
     }
 
 
-    private IdentifiableSource getIdentifiableSource(Reference<?> reference, Set<IdentifiableSource> sources){
+    protected IdentifiableSource getIdentifiableSource(Reference<?> reference, Set<IdentifiableSource> sources, boolean original){
+//        logger.info("getIdentifiableSource");
         boolean sourceExists=false;
         IdentifiableSource source=null;
         for (IdentifiableSource src : sources){
             String micro = src.getCitationMicroReference();
             Reference<?> r = src.getCitation();
-            if (r.getTitleCache().equals(reference.getTitleCache()) && micro == null) {
+            if (r.getTitleCache().equals(reference.getTitleCache())) {
                 sourceExists=true;
+                break;
             }
         }
         if(!sourceExists) {
-            source = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null,reference,null);
+            if(original) {
+                source = IdentifiableSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource,null,null,reference,null);
+            } else {
+                source = IdentifiableSource.NewInstance(OriginalSourceType.Import,null,null,reference,null);
+            }
         }
         return source;
     }
 
-    private DescriptionElementSource getDescriptionElementSource(Reference<?> reference, Set<DescriptionElementSource> sources){
+    protected DescriptionElementSource getDescriptionElementSource(Reference<?> reference, Set<DescriptionElementSource> sources, boolean original){
+        //logger.info("getDescriptionElementSource");
         boolean sourceExists=false;
         DescriptionElementSource source=null;
         for (DescriptionElementSource src : sources){
             String micro = src.getCitationMicroReference();
             Reference<?> r = src.getCitation();
-            if (r.getTitleCache().equals(reference.getTitleCache()) && micro == null) {
+            if (r.getTitleCache().equals(reference.getTitleCache())) {
                 sourceExists=true;
+                break;
             }
         }
         if(!sourceExists) {
-            source = DescriptionElementSource.NewInstance(OriginalSourceType.Import,null,null,reference,null);
+            if(original) {
+                source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource,null,null,reference,null);
+            } else {
+                source = DescriptionElementSource.NewInstance(OriginalSourceType.Import,null,null,reference,null);
+            }
         }
         return source;
 
@@ -104,11 +120,12 @@ public class TaxonXAddSources {
      * @param synonym
      */
     protected void addSource(Reference<?> refMods, Synonym synonym) {
+        //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        IdentifiableSource id = getIdentifiableSource(sourceUrlRef,synonym.getSources());
-        IdentifiableSource id2 = getIdentifiableSource(refMods,synonym.getSources());
-        IdentifiableSource id3 = getIdentifiableSource(sec,synonym.getSources());
+        IdentifiableSource id = getIdentifiableSource(sourceUrlRef,synonym.getSources(), false);
+        IdentifiableSource id2 = getIdentifiableSource(refMods,synonym.getSources(), true);
+        IdentifiableSource id3 = getIdentifiableSource(sec,synonym.getSources(), false);
         if( id!=null) {
             synonym.addSource(id);
         }
@@ -126,11 +143,12 @@ public class TaxonXAddSources {
      * @param indAssociation
      */
     protected IndividualsAssociation addSource(Reference<?> refMods, IndividualsAssociation indAssociation) {
+        //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        DescriptionElementSource id = getDescriptionElementSource(sourceUrlRef, indAssociation.getSources());
-        DescriptionElementSource id2 = getDescriptionElementSource(refMods, indAssociation.getSources());
-        DescriptionElementSource id3 = getDescriptionElementSource(sec, indAssociation.getSources());
+        DescriptionElementSource id = getDescriptionElementSource(sourceUrlRef, indAssociation.getSources(), false);
+        DescriptionElementSource id2 = getDescriptionElementSource(refMods, indAssociation.getSources(), true);
+        DescriptionElementSource id3 = getDescriptionElementSource(sec, indAssociation.getSources(), false);
 
         if(id!=null) {
             indAssociation.addSource(id);
@@ -149,11 +167,12 @@ public class TaxonXAddSources {
      * @param acceptedTaxon
      */
     protected void addSource(Reference<?> refMods, Taxon acceptedTaxon) {
+        //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, acceptedTaxon.getSources());
-        IdentifiableSource id2 = getIdentifiableSource(refMods, acceptedTaxon.getSources());
-        IdentifiableSource id3 = getIdentifiableSource(sec, acceptedTaxon.getSources());
+        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, acceptedTaxon.getSources(), false);
+        IdentifiableSource id2 = getIdentifiableSource(refMods, acceptedTaxon.getSources(), true);
+        IdentifiableSource id3 = getIdentifiableSource(sec, acceptedTaxon.getSources(), false);
         if( id!=null) {
             acceptedTaxon.addSource(id);
         }
@@ -170,11 +189,12 @@ public class TaxonXAddSources {
      * @param nameToBeFilled
      */
     protected void addSource(Reference<?> refMods, NonViralName<?> nameToBeFilled) {
+        //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, nameToBeFilled.getSources());
-        IdentifiableSource id2 = getIdentifiableSource(refMods, nameToBeFilled.getSources());
-        IdentifiableSource id3 = getIdentifiableSource(sec, nameToBeFilled.getSources());
+        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, nameToBeFilled.getSources(), false);
+        IdentifiableSource id2 = getIdentifiableSource(refMods, nameToBeFilled.getSources(), true);
+        IdentifiableSource id3 = getIdentifiableSource(sec, nameToBeFilled.getSources(), false);
 
         if( id!=null) {
             nameToBeFilled.addSource(id);
@@ -193,11 +213,12 @@ public class TaxonXAddSources {
      * @param textData
      */
     protected void addSource(Reference<?> refMods, TextData textData) {
+        //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        DescriptionElementSource id = getDescriptionElementSource(sourceUrlRef, textData.getSources());
-        DescriptionElementSource id2 = getDescriptionElementSource(refMods, textData.getSources());
-        DescriptionElementSource id3 = getDescriptionElementSource(sec, textData.getSources());
+        DescriptionElementSource id = getDescriptionElementSource(sourceUrlRef, textData.getSources(), false);
+        DescriptionElementSource id2 = getDescriptionElementSource(refMods, textData.getSources(), true);
+        DescriptionElementSource id3 = getDescriptionElementSource(sec, textData.getSources(), false);
 
         if( id!=null) {
             textData.addSource(id);
@@ -217,11 +238,12 @@ public class TaxonXAddSources {
      * @param currentRef
      */
     protected void addAndSaveSource(Reference<?> refMods, TaxonDescription taxonDescription, Reference<?> currentRef) {
+        //logger.info("addAndSaveSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, taxonDescription.getSources());
-        IdentifiableSource id2 = getIdentifiableSource(refMods, taxonDescription.getSources());
-        IdentifiableSource id3 = getIdentifiableSource(sec, taxonDescription.getSources());
+        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, taxonDescription.getSources(), false);
+        IdentifiableSource id2 = getIdentifiableSource(refMods, taxonDescription.getSources(), true);
+        IdentifiableSource id3 = getIdentifiableSource(sec, taxonDescription.getSources(), false);
 
         if( id!=null) {
             taxonDescription.addSource(id);
@@ -241,11 +263,12 @@ public class TaxonXAddSources {
      * @param derivedUnitBase
      */
     protected void addAndSaveSource(Reference<?> refMods, DerivedUnit derivedUnitBase) {
+        //logger.info("addAndSaveSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
         Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
-        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, derivedUnitBase.getSources());
-        IdentifiableSource id2 = getIdentifiableSource(refMods, derivedUnitBase.getSources());
-        IdentifiableSource id3 = getIdentifiableSource(sec, derivedUnitBase.getSources());
+        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, derivedUnitBase.getSources(), false);
+        IdentifiableSource id2 = getIdentifiableSource(refMods, derivedUnitBase.getSources(), true);
+        IdentifiableSource id3 = getIdentifiableSource(sec, derivedUnitBase.getSources(), false);
 
         if( id!=null) {
             derivedUnitBase.addSource(id);
@@ -260,6 +283,87 @@ public class TaxonXAddSources {
         derivedUnitBase= CdmBase.deproxy(derivedUnitBase, DerivedUnit.class);
     }
 
+
+    /**
+     * @param refMods
+     * @param taxonDescription
+     */
+    public void addSource(Reference<?> refMods, TaxonDescription taxonDescription) {
+        //logger.info("addSource");
+        sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
+        Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
+        IdentifiableSource id = getIdentifiableSource(sourceUrlRef, taxonDescription.getSources(), false);
+        IdentifiableSource id2 = getIdentifiableSource(refMods, taxonDescription.getSources(), true);
+        IdentifiableSource id3 = getIdentifiableSource(sec, taxonDescription.getSources(), false);
+
+        if( id!=null) {
+            taxonDescription.addSource(id);
+        }
+        if( id2!=null) {
+            taxonDescription.addSource(id2);
+        }
+        if(!configState.getConfig().doKeepOriginalSecundum() &&  id3!=null) {
+            taxonDescription.addSource(id3);
+        }
+        importer.getDescriptionService().saveOrUpdate(taxonDescription);
+
+    }
+
+
+    /**
+     * @param reference
+     * @param textData
+     * @param name
+     * @param ref
+     */
+    public void addSource(Reference<?> reference, TextData textData, TaxonNameBase name, Reference<?> refMods) {
+        //logger.info("addSource");
+        sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
+        Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
+        DescriptionElementSource id1 = getDescriptionElementSource(refMods, textData.getSources(),name, true);
+        DescriptionElementSource id2 = getDescriptionElementSource(reference, textData.getSources(),name, false);
+        if( id1!=null) {
+            textData.addSource(id1);
+        }
+
+        if( id2!=null) {
+            textData.addSource(id2);
+        }
+
+    }
+
+
+    @SuppressWarnings({ "unused", "rawtypes" })
+    private DescriptionElementSource getDescriptionElementSource(Reference<?> reference, Set<DescriptionElementSource> sources,
+            TaxonNameBase originalname, boolean original){
+        //logger.info("getDescriptionElementSource");
+        boolean sourceExists=false;
+        DescriptionElementSource source=null;
+        for (DescriptionElementSource src : sources){
+            String micro = src.getCitationMicroReference();
+            Reference<?> r = src.getCitation();
+            TaxonNameBase oname = src.getNameUsedInSource();
+            try {
+                if (r.getTitleCache().equals(reference.getTitleCache())) {
+                    if (oname.getTitleCache().equalsIgnoreCase(originalname.getTitleCache())) {
+                            sourceExists=true;
+                            break;
+                    }
+                }
+            } catch (Exception e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
+            }
+        }
+        if(!sourceExists) {
+            if(original) {
+                source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource, null,null, reference, null, originalname, null);
+            } else {
+                source = DescriptionElementSource.NewInstance(OriginalSourceType.Import, null,null, reference, null, originalname, null);
+            }
+        }
+        return source;
+    }
 
 
 

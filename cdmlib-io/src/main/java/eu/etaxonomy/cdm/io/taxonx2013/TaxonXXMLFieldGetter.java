@@ -115,7 +115,7 @@ public class TaxonXXMLFieldGetter {
      * @param classification2
      */
     public void updateClassification(Classification classification2) {
-        System.out.println("UPDATECLASSIFICATIONS "+classification2);
+        //System.out.println("UPDATECLASSIFICATIONS "+classification2);
         classification=classification2;
         if (treatmentextractor != null) {
             treatmentextractor.updateClassification(classification);
