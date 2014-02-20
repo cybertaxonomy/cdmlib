@@ -78,7 +78,8 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         }
         if(group != null){
             dao.delete(group);
-        }
+        } 
+        
     }
 
     /* (non-Javadoc)
@@ -237,4 +238,11 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return dao.save(group);
     }
 
+    @Override
+    public UUID delete(Group group){
+    	UUID groupUUID = group.getUuid();
+    	this.deleteGroup(group.getName());
+    	return groupUUID;
+    }
+    
 }

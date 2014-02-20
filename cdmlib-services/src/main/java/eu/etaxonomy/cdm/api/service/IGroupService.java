@@ -50,5 +50,9 @@ public interface IGroupService extends IService<Group>, GroupManager{
     public List<Group> listByName(String queryString, MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
   
     public UUID saveGroup(Group group);
+    
+
+    
+    
 
 }
