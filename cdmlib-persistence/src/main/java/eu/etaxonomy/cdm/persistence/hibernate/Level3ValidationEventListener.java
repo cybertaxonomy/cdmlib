@@ -67,12 +67,11 @@ public class Level3ValidationEventListener implements PostInsertEventListener, P
 				return;
 			}
 			if (!(object instanceof CdmBase)) {
-				//logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName()
-				//		+ " (Level-3 validation only applied to instances of CdmBase)");
+				logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName());
 				return;
 			}
 			CdmBase entity = (CdmBase) object;
-			Level3ValidationTask task = new Level3ValidationTask(entity,trigger);
+			Level3ValidationTask task = new Level3ValidationTask(entity, trigger);
 			validationExecutor.execute(task);
 		}
 		catch (Throwable t) {

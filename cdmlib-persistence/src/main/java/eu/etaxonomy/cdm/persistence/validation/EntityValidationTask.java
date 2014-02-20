@@ -70,7 +70,6 @@ public abstract class EntityValidationTask implements Runnable {
 			// TODO: SAVE VIOLATIONS TO DATABASE
 		}
 		catch (Throwable t) {
-			// TODO: SAVE VALIADATION ERROR TO DATABASE (?)
 			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
 		}
 	}
