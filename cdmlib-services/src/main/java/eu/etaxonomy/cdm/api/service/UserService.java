@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -175,7 +176,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void createUser(UserDetails user) {
-        Assert.isInstanceOf(User.class, user);
+    	Assert.isInstanceOf(User.class, user);
 
         String rawPassword = user.getPassword();
         Object salt = this.saltSource.getSalt(user);
@@ -183,8 +184,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         String password = passwordEncoder.encodePassword(rawPassword, salt);
         ((User)user).setPassword(password);
 
-        dao.save((User)user);
+        UUID userUUID = dao.save((User)user);
+        
+        
     }
+    
+    
 
     /* (non-Javadoc)
      * @see org.springframework.security.provisioning.UserDetailsManager#deleteUser(java.lang.String)
@@ -419,7 +424,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
      */
     @Override
     @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+   // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID save(User user) {
         if(user.getId() == 0 || dao.load(user.getUuid()) == null){
             createUser(user);
@@ -480,7 +485,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> save(Collection<User> newInstances) {
-        return super.save(newInstances);
+        Map<UUID, User> users = new HashMap<UUID, User>();
+    	for (User user: newInstances){
+        	createUser(user);
+        	users.put(user.getUuid(), user);
+        }
+    	return users;
     }
 
     @Override
