@@ -110,7 +110,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     private ILocationService locationService;
     //@Autowired
     private SessionFactory sessionFactory;
-    @Autowired
+    //@Autowired
     private DataSource dataSource;
     @Autowired
     private ProviderManager authenticationManager;
@@ -189,6 +189,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public IDatabaseService getDatabaseService() {
         return this.databaseService;
+    }
+    
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+    	this.dataSource = dataSource;
     }
 
     /* (non-Javadoc)
