@@ -936,6 +936,8 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityConstraintViolation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityValidationResult.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecord.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecordImpl.java -text
