@@ -18,6 +18,7 @@ public class Level3ValidationEventListener implements PostInsertEventListener, P
 
 	private static final Logger logger = Logger.getLogger(Level3ValidationEventListener.class);
 
+	// We really would like to have a singleton instance injected here
 	private ValidationExecutor validationExecutor;
 
 
