@@ -76,7 +76,9 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
             return true;
         }
         CdmBase cdmEntity = (CdmBase) entity;
-
+        if (previousState == null){
+        	return onSave(cdmEntity, id, currentState, propertyNames, null);
+        }
         if (isModified(currentState, previousState)) {
             // evaluate throws EvaluationFailedException
             checkPermissions(cdmEntity, Operation.UPDATE);
