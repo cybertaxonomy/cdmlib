@@ -29,6 +29,7 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     private static final String ROLE_PREFIX = "ROLE_";
 
     public final static Role ROLE_ADMIN = new Role(UUID.fromString("56eac992-67ba-40be-896c-4e992ca2afc0"), "ROLE_ADMIN");
+    public final static Role ROLE_PROJECT_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_PROJECT_MANAGER");
     public final static Role ROLE_USER_MANAGER = new Role(UUID.fromString("9eabd2c6-0590-4a1e-95f5-99cc58b63aa7"), "ROLE_USER_MANAGER");
     public final static Role ROLE_PUBLISH = new Role(UUID.fromString("9ffa7879-cc67-4592-a14a-b251cccde1a7"), "ROLE_PUBLISH");
 
@@ -80,8 +81,28 @@ public class Role implements GrantedAuthority, IGrantedAuthorityConverter {
     }
 
     public static Role fromGrantedAuthority(GrantedAuthorityImpl grantedAuthority){
-        Assert.isTrue(grantedAuthority.getAuthority().matches("^" + ROLE_PREFIX +"\\w*$"), "invalid role prefix of authority " + grantedAuthority.getAuthority() + "[" + grantedAuthority.getUuid() + "]");
-        return new Role(grantedAuthority.getUuid(), grantedAuthority.getAuthority());
+        String authorityString = grantedAuthority.getAuthority();
+		Assert.isTrue(authorityString.matches("^" + ROLE_PREFIX +"\\w*$"), "invalid role prefix of authority " + authorityString + "[" + grantedAuthority.getUuid() + "]");
+        return new Role(grantedAuthority.getUuid(), authorityString);
+    }
+    
+    public static Role fromString(String authorityString){
+		Assert.isTrue(authorityString.matches("^" + ROLE_PREFIX +"\\w*$"), "invalid role prefix of authority " + authorityString);
+		Role role = null;
+		if(authorityString.equals(ROLE_ADMIN.authority)){
+			return ROLE_ADMIN;
+		} else
+		if(authorityString.equals(ROLE_PROJECT_MANAGER.authority)){
+			return ROLE_PROJECT_MANAGER;
+		} else
+		if(authorityString.equals(ROLE_PUBLISH.authority)){
+			return ROLE_PUBLISH;
+		} else
+		if(authorityString.equals(ROLE_USER_MANAGER.authority)){
+			return ROLE_USER_MANAGER;
+		}
+		Assert.notNull(role, "The given auhtority #" + authorityString + "' does not match any known role");
+		return role;
     }
 
     @Override

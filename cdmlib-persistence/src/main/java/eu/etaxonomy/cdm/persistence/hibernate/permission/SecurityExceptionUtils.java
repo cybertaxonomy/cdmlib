@@ -14,7 +14,7 @@ import org.springframework.security.access.AccessDeniedException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
 
 /**
- * This utils class helps finding security related exceptions in Throwables
+ * This utility class helps finding security related exceptions in Throwables
  *
  * @author a.kohlbecker
  * @date Feb 11, 2014
