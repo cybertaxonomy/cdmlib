@@ -17,7 +17,7 @@ public class Level3ValidationTask extends EntityValidationTask {
 	}
 
 
-	public Level3ValidationTask(CdmBase entity, EntityValidationTrigger trigger)
+	public Level3ValidationTask(CdmBase entity, CRUDEvent trigger)
 	{
 		super(entity, trigger, Level3.class);
 	}

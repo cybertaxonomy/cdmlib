@@ -1461,10 +1461,10 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/MatchMode.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/NativeSqlOrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/OrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/RandomOrder.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/CRUDEvent.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTask.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTaskQueue.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationThread.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTrigger.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/Level2ValidationTask.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/Level3ValidationTask.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/ValidationExecutor.java -text

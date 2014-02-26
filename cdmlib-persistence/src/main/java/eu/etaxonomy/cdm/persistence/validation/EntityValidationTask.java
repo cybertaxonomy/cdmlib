@@ -24,7 +24,7 @@ public abstract class EntityValidationTask implements Runnable {
 	private static final Logger logger = Logger.getLogger(EntityValidationTask.class);
 
 	private final CdmBase entity;
-	private final EntityValidationTrigger trigger;
+	private final CRUDEvent trigger;
 	private final Class<?>[] validationGroups;
 
 	private Validator validator;
@@ -42,7 +42,7 @@ public abstract class EntityValidationTask implements Runnable {
 	 */
 	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups)
 	{
-		this(entity, EntityValidationTrigger.NONE, validationGroups);
+		this(entity, CRUDEvent.NONE, validationGroups);
 	}
 
 
@@ -57,7 +57,7 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTask(CdmBase entity, EntityValidationTrigger trigger, Class<?>... validationGroups)
+	public EntityValidationTask(CdmBase entity, CRUDEvent trigger, Class<?>... validationGroups)
 	{
 		this.entity = entity;
 		this.trigger = trigger;

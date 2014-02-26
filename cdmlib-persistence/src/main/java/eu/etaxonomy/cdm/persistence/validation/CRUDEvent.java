@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.persistence.validation;
  * @author ayco holleman
  * 
  */
-public enum EntityValidationTrigger
+public enum CRUDEvent
 {
 	NONE, INSERT, UPDATE, DELETE
 }
