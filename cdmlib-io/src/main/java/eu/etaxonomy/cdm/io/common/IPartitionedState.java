@@ -13,8 +13,6 @@ package eu.etaxonomy.cdm.io.common;
 import java.sql.ResultSet;
 import java.util.Map;
 
-import org.springframework.transaction.TransactionStatus;
-
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -34,7 +32,7 @@ public interface IPartitionedState {
 	 * but is called by the {@link ResultSetPartitioner result set partitioner}
 	 * @param relatedObjects
 	 */
-	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects);
+	public void setRelatedObjects(Map<Object, Map<String, ? extends CdmBase>> relatedObjects);
 	
 	/**
 	 * Returns a related object defined by the namespace and the id.
