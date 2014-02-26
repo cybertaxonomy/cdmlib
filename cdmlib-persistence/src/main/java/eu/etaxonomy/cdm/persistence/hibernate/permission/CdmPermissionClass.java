@@ -8,9 +8,12 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission;
 
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * see also {@link CdmBaseType}
+ *
  * @author k.luther
  * @author a.kohlbecker
  * @date 06.07.2011
@@ -22,35 +25,35 @@ public enum CdmPermissionClass {
     TAXONBASE,
     ALL,
     TAXONNODE,
-    CLASSIFICATION;
+    CLASSIFICATION,
+    REFERENCE,
+    TAXONNAMEBASE;
+
+    /**
+     * return the appropriate CdmPermissionClass for the given Object
+     *
+     * @param o
+     * @return the CdmPermissionClass or null
+     */
+    public static CdmPermissionClass getValueOf(CdmBase o){
+        return CdmPermissionClass.getValueOf(o.getClass());
+    }
+
 
 
     /**
-     * return the appropriate CdmPermissionClass for the given Object. May return null if no matching CdmPermissionClass was found.
-     * @param s
+     * return the appropriate CdmPermissionClass for the given Object
+     *
+     * @param o
      * @return the CdmPermissionClass or null
      */
-    public static CdmPermissionClass getValueOf(Object s){
-
-        String permissionClassString ;
-        if (s instanceof String){
-            permissionClassString = (String)s;
-        }else if (s instanceof CdmBase){
-            permissionClassString = s.getClass().getSimpleName().toUpperCase();
-        } else if(s instanceof Class){
-            permissionClassString = ((Class) s).getSimpleName().toUpperCase();
-        }else{
-
-            return null;
-        }
+    public static CdmPermissionClass getValueOf(Class o){
 
         try{
-            return CdmPermissionClass.valueOf(permissionClassString);
-        }catch(IllegalArgumentException e){
-            if (s instanceof CdmBase){
-                s = s.getClass().getSuperclass();
-
-                return getValueOf(s);
+            return CdmPermissionClass.valueOf(o.getSimpleName().toUpperCase());
+        } catch(IllegalArgumentException e){
+            if (CdmBase.class.isAssignableFrom(o)){
+                return getValueOf(o.getSuperclass());
             }
 
         }

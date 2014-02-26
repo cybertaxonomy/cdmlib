@@ -176,7 +176,8 @@ public abstract class CdmPermissionVoter implements AccessDecisionVoter <CdmBase
 
     /**
      * The AccessDecisionVoter implementing this method can indicate via this method that
-     * an entity has become orphan in order to allow deleting it.
+     * an entity has become orphan in order to allow deleting it. In case the implementing method
+     * returns <code>false</code> deleting of the entity will be denied.
      * <p>
      * This is important
      * in the context of hierarchic permission propagation like for example in

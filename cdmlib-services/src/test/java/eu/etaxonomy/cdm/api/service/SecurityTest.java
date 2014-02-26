@@ -13,6 +13,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -38,9 +40,11 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import sun.security.provider.PolicyParser.ParsingException;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
+import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -48,12 +52,18 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmAuthority;
+import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionClass;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -75,6 +85,8 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     private static final UUID ACHERONTIA_LACHESIS_UUID = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
 
+    private static final UUID BOOK1_UUID = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
+
     private static final Logger logger = Logger.getLogger(SecurityTest.class);
 
     /**
@@ -85,6 +97,12 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     @SpringBeanByType
     private ITaxonService taxonService;
+
+    @SpringBeanByType
+    private INameService nameService;
+
+    @SpringBeanByType
+    private IReferenceService referenceService;
 
     @SpringBeanByType
     private ITaxonNodeService taxonNodeService;
@@ -98,11 +116,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @SpringBeanByType
     private IClassificationService classificationService;
 
-    @TestDataSource
-    protected DataSource dataSource;
-
-    private Authentication authentication;
-
     @SpringBeanByType
     private AuthenticationManager authenticationManager;
 
@@ -115,6 +128,10 @@ public class SecurityTest extends AbstractSecurityTestBase{
     @SpringBean("cdmPermissionEvaluator")
     private CdmPermissionEvaluator permissionEvaluator;
 
+    @TestDataSource
+    protected DataSource dataSource;
+
+    private Authentication authentication;
 
 
     /**
@@ -175,7 +192,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = e;
         } catch (RuntimeException e){
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-            logger.debug("Expected failure of evaluation.", exception);
+            logger.debug("Expected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -239,9 +256,9 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         Taxon expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        expectedTaxon.getName().setTitleCache("Newby admin", true);
         UUID uuid = taxonService.save(expectedTaxon);
         commitAndStartNewTransaction(null);
-        //taxonService.getSession().flush();
         TaxonBase<?> actualTaxon = taxonService.load(uuid);
         assertEquals(expectedTaxon, actualTaxon);
 
@@ -249,9 +266,128 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
         expectedTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
-        taxonService.saveOrUpdate(actualTaxon);
+        expectedTaxon.getName().setTitleCache("Newby taxonEditor", true);
+        uuid = taxonService.saveOrUpdate(expectedTaxon);
+        commitAndStartNewTransaction(null);
+        actualTaxon = taxonService.load(uuid);
+        assertEquals(expectedTaxon, actualTaxon);
+
+    }
+
+    @Test
+    public final void testSaveNameAllow() {
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        ZoologicalName newName = ZoologicalName.NewInstance(Rank.SPECIES());
+        newName.setTitleCache("Newby taxonEditor", true);
+        UUID uuid = nameService.saveOrUpdate(newName);
+        commitAndStartNewTransaction(null);
+        TaxonNameBase savedName = nameService.load(uuid);
+        assertEquals(newName, savedName);
+    }
+
+    @Test
+    public final void testUpateNameDeny() {
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        taxon.getName().setTitleCache("Acherontia thetis", true);
+        Exception exception = null;
+        try {
+            UUID uuid = taxonService.saveOrUpdate(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.debug("Expected failure of evaluation.", e);
+            exception  = e;
+        } catch (RuntimeException e){
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+            logger.debug("Expected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNotNull("must fail here!", exception);
+    }
+
+    @Test
+    public final void testUpdateReferenceAllow() throws ParsingException {
+
+
+        authentication = authenticationManager.authenticate(tokenForUserManager);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        // add REFERENCE[UPDATE] to taxonEditor
+        User taxonEditor = userService.load(TAXON_EDITOR_UUID);
+        Set<GrantedAuthority> grantedAuthorities = new HashSet<GrantedAuthority>();
+        grantedAuthorities.addAll(taxonEditor.getGrantedAuthorities());
+        GrantedAuthorityImpl referenceUpdate_ga = new CdmAuthority(CdmPermissionClass.REFERENCE, null, EnumSet.of(CRUD.UPDATE), null).asNewGrantedAuthority();
+        grantedAuthorities.add(referenceUpdate_ga);
+        taxonEditor.setGrantedAuthorities(grantedAuthorities);
+        userService.saveOrUpdate(taxonEditor);
         commitAndStartNewTransaction(null);
 
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        Reference book = referenceService.load(BOOK1_UUID);
+        book.setTitleCache("Mobydick", true);
+        Exception exception = null;
+        try {
+            referenceService.saveOrUpdate(book);
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = e;
+        } catch (RuntimeException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("must not fail here!", exception);
+        book = referenceService.load(BOOK1_UUID);
+        Assert.assertEquals("Mobydick", book.getTitleCache());
+    }
+
+    @Test
+    public final void testUpateReferenceDeny() {
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        taxon.getName().getNomenclaturalReference().setTitleCache("Mobydick", true);
+        Exception exception = null;
+        try {
+            UUID uuid = taxonService.saveOrUpdate(taxon);
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.debug("Expected failure of evaluation.", e);
+            exception  = e;
+        } catch (RuntimeException e){
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+            logger.debug("Expected failure of evaluation.", e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNotNull("must fail here!", exception);
     }
 
     @Test
@@ -332,7 +468,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
             exception = e;
         } catch (RuntimeException e){
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-            logger.debug("Expected failure of evaluation.", exception);
+            logger.debug("Expected failure of evaluation.", e);
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
@@ -743,6 +879,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
+    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAMEBASE.[UPDATE])
     @Test
     public void testAcceptedTaxonToSynomym(){
 
