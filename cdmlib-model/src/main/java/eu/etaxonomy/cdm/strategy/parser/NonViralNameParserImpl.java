@@ -983,10 +983,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param authorString
 	 * @throws StringNotParsableException
 	 */
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseAuthors(eu.etaxonomy.cdm.model.name.NonViralName, java.lang.String)
-	 */
-//	@Override
+	@Override
 	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException{
 		TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];
