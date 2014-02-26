@@ -4,22 +4,26 @@ import javax.validation.ConstraintValidator;
 import javax.validation.Validator;
 
 /**
- * A subclass of {@code Thread} specialised in running validation tasks. This class is not
- * specifically targeted at <i>entity validation</a> tasks. Each {@code ValidationThread} has
- * its own {@link Validator} instance. In addition it allows a flag to be set (by the main
- * thread) that the currently running {@link ConstraintValidator} may query to see if there is
- * a termination request. See {@link ValidationExecutor} for the rationale behind this.
+ * A subclass of {@code Thread} specialised in running validation tasks. Each
+ * {@code ValidationThread} has its own {@link Validator} instance. In addition it allows a
+ * flag to be set (by the main thread) that the currently running {@link ConstraintValidator}
+ * may query to see if there is a termination request. See {@link ValidationExecutor} for the
+ * rationale behind this.
+ * 
+ * @see {@link #isTerminationRequested()}.
  * 
  * @author ayco holleman
  * 
  */
-public final class ValidationThread extends Thread {
+public final class EntityValidationThread extends Thread {
 
 	private final Validator validator;
+
 	private boolean terminationRequested;
+	private EntityValidationTask currentTask;
 
 
-	ValidationThread(ThreadGroup group, Runnable runnable, String name, Validator validator)
+	EntityValidationThread(ThreadGroup group, Runnable runnable, String name, Validator validator)
 	{
 		super(group, runnable, name);
 		this.validator = validator;
@@ -58,6 +62,18 @@ public final class ValidationThread extends Thread {
 	Validator getValidator()
 	{
 		return validator;
+	}
+
+
+	EntityValidationTask getCurrentTask()
+	{
+		return currentTask;
+	}
+
+
+	void setCurrentTask(EntityValidationTask currentTask)
+	{
+		this.currentTask = currentTask;
 	}
 
 }

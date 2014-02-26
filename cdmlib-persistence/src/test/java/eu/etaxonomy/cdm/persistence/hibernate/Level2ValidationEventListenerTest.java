@@ -18,9 +18,9 @@ import eu.etaxonomy.cdm.persistence.dao.common.IUserDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
-public class Level2ValidationSaveOrUpdateEventListenerTest extends CdmTransactionalIntegrationTest {
+public class Level2ValidationEventListenerTest extends CdmTransactionalIntegrationTest {
 
-	protected static final Logger logger = Logger.getLogger(Level2ValidationSaveOrUpdateEventListenerTest.class);
+	protected static final Logger logger = Logger.getLogger(Level2ValidationEventListenerTest.class);
 
 	private UUID uuid;
 	private TaxonBase<?> cdmBase;

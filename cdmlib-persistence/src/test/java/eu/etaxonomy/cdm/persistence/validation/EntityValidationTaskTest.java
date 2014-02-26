@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * Basically tests that the JSR-303 validation is working in the first place,
  * and that it is working as expected.
+ * 
  * @author ayco holleman
  *
  */

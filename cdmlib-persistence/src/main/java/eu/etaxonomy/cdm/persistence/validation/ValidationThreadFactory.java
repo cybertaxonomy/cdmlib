@@ -37,7 +37,7 @@ class ValidationThreadFactory implements ThreadFactory {
 	@Override
 	public Thread newThread(Runnable runnable)
 	{
-		return new ValidationThread(threadGroup, runnable, DEFAULT_THREAD_NAME, factory.getValidator());
+		return new EntityValidationThread(threadGroup, runnable, DEFAULT_THREAD_NAME, factory.getValidator());
 	}
 
 }

@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
+import java.lang.ref.WeakReference;
+import java.util.Arrays;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -26,6 +28,7 @@ public abstract class EntityValidationTask implements Runnable {
 	private final Class<?>[] validationGroups;
 
 	private Validator validator;
+	private WeakReference<EntityValidationThread> waitForThread;
 
 
 	/**
@@ -66,12 +69,55 @@ public abstract class EntityValidationTask implements Runnable {
 	public void run()
 	{
 		try {
+			if (waitForThread != null && waitForThread.get() != null) {
+				waitForThread.get().join();
+			}
 			Set<ConstraintViolation<CdmBase>> violations = validate();
 			// TODO: SAVE VIOLATIONS TO DATABASE
 		}
 		catch (Throwable t) {
+			System.out.println("e");
 			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
 		}
+	}
+
+
+	/**
+	 * Two entity validation tasks are considered equal if (1) they validate the same entity
+	 * and (2) they apply the same constraints - i.e. constraints belonging to the same
+	 * validation group(s).
+	 */
+	@Override
+	public boolean equals(Object obj)
+	{
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || !(obj instanceof EntityValidationTask)) {
+			return false;
+		}
+		EntityValidationTask other = (EntityValidationTask) obj;
+		if (!Arrays.deepEquals(validationGroups, other.validationGroups)) {
+			return false;
+		}
+		return entity.equals(other.entity);
+	}
+
+
+	@Override
+	public int hashCode()
+	{
+		int hash = 17;
+		hash = (hash * 31) + entity.hashCode();
+		hash = (hash * 31) + Arrays.deepHashCode(validationGroups);
+		return hash;
+	}
+
+
+	@Override
+	public String toString()
+	{
+		return EntityValidationTask.class.getName() + ':' + entity.toString() + Arrays.deepToString(validationGroups);
 	}
 
 
@@ -94,6 +140,17 @@ public abstract class EntityValidationTask implements Runnable {
 	void setValidator(Validator validator)
 	{
 		this.validator = validator;
+	}
+
+
+	/**
+	 * Make this task wait for the specified thread to complete. Will be called by
+	 * {@link ValidationExecutor#beforeExecute(Thread, Runnable)} when it detects that the
+	 * specified thread is validating the same entity as the one validated by this task.
+	 */
+	void waitFor(EntityValidationThread thread)
+	{
+		this.waitForThread = new WeakReference<EntityValidationThread>(thread);
 	}
 
 }

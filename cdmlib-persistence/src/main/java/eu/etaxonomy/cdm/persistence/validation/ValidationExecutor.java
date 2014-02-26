@@ -2,6 +2,7 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.concurrent.Executors;
 import java.util.concurrent.RejectedExecutionHandler;
 import java.util.concurrent.ThreadPoolExecutor;
@@ -12,7 +13,7 @@ import javax.validation.ConstraintValidator;
 import org.apache.log4j.Logger;
 
 /**
- * A {@code ThreadPoolExecutor} specialised in dealing with {@link ValidationThread}s and
+ * A {@code ThreadPoolExecutor} specialised in dealing with {@link EntityValidationThread}s and
  * validation tasks (see {@link EntityValidationTask}). This implementation creates a thread
  * pool containing just one thread, meaning all validation tasks are run one after another on
  * that one thread. Especially for Level-3 validation tasks this is probably exactly what you
@@ -43,10 +44,10 @@ import org.apache.log4j.Logger;
  * it is about to run. This allows us to track the threads in the thread pool.
  * <p>
  * If the {@code ValidationExecutor} detects that a validation task enters the task queue that
- * will validate the same entity (in a different state) as the entity currently being validated
- * on the validation thread, it will call
- * {@link ValidationThread#setTerminationRequested(boolean)}. This gives the
- * {@link ConstraintValidator} running in the validation thread a chance to terminate itself:<br>
+ * will validate the same entity as the entity currently being validated on the validation
+ * thread, it will call {@link EntityValidationThread#setTerminationRequested(boolean)}. This
+ * gives the {@link ConstraintValidator} running in the validation thread a chance to terminate
+ * itself:<br>
  * <code>
  * if(Thread.currentThread() instanceof ValidationThread) {
  * 	ValidationThread vt = (ValidationThread) Thread.currentThread();
@@ -58,8 +59,8 @@ import org.apache.log4j.Logger;
  * Constraint validators are free to include this logic or not. If they know themselves to be
  * short-lived it may not be worth it. But if they potentially take a lot of time to complete,
  * they can and and probably should include this logic to prevent needless queueing and queue
- * overruns. This would make them dependent on at least the {@code ValidationThread} class, so
- * there are some architectural issues here.
+ * overruns. This would make them dependent, though, on at least the {@code ValidationThread}
+ * class, so there are some architectural issues here.
  * 
  * @author a. holleman
  * 
@@ -77,8 +78,10 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	// Maximum number of tasks allowed to wait to be executed by the validation thread
 	private static final int TASK_QUEUE_SIZE = 1000;
 
-	// Our basis for tracking the threads in the thread pool
-	private final ArrayList<WeakReference<ValidationThread>> threads = new ArrayList<WeakReference<ValidationThread>>(MAX_POOL_SIZE);
+	// Our basis for tracking the threads in the thread pool. We maintain
+	// a list of weak references to the thread in the real thread pool,
+	// maintained but totally hidden by the super class (ThreadPoolExecutor).
+	private final ArrayList<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(MAX_POOL_SIZE);
 
 
 	public ValidationExecutor()
@@ -96,7 +99,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * method only writes an error message to the log4j log file. Thus, task queue overruns may
 	 * cause Level-2 and/or Level-3 constraint violations to creep into the database. And thus,
 	 * some other, batch-like process needs to crawl the entire database in search of Level-2
-	 * and Level-3 validations every once in a while.
+	 * and Level-3 constraint violations every once in a while.
 	 */
 	@Override
 	public void rejectedExecution(Runnable r, ThreadPoolExecutor executor)
@@ -122,30 +125,53 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	@Override
 	protected void beforeExecute(Thread thread, Runnable runnable)
 	{
-		ValidationThread validationThread = (ValidationThread) thread;
+		EntityValidationThread validationThread = (EntityValidationThread) thread;
 		EntityValidationTask task = (EntityValidationTask) runnable;
-		
 		validationThread.setTerminationRequested(false);
 		task.setValidator(validationThread.getValidator());
-		
-		checkPool(thread);
+		checkPool(validationThread, task);
+		validationThread.setCurrentTask(task);
+	}
+
+
+	@Override
+	protected void afterExecute(Runnable runnable, Throwable throwable)
+	{
+		super.afterExecute(runnable, throwable);
 	}
 
 
 	/*
-	 * Keep track of the threads in the thread pool.
+	 * Keep track of the threads in the thread pool. If there already is another thread
+	 * validating the same entity, to terminate itself. Whether or not this request is honored,
+	 * we wait for the thread to complete. Otherwise the two threads might conflict with
+	 * eachother when reading/writing from the error tables (i.e. the tables in which the
+	 * outcome of a validation is stored).
 	 */
-	private void checkPool(Thread thread)
+	private void checkPool(EntityValidationThread pendingThread, EntityValidationTask pendingTask)
 	{
 		boolean found = false;
-		for (WeakReference<ValidationThread> ref : threads) {
-			if (ref.get() == thread) {
+		Iterator<WeakReference<EntityValidationThread>> iterator = threads.iterator();
+		while (iterator.hasNext()) {
+			EntityValidationThread pooledThread = iterator.next().get();
+			if (pooledThread == null) {
+				// Thread has been removed from the real thread pool
+				// and got garbage collected. Remove our weak reference
+				// to the thread
+				iterator.remove();
+			}
+			else if (pooledThread == pendingThread) {
 				found = true;
+			}
+			else if (pooledThread.isAlive()) {
+				if (pooledThread.getCurrentTask().equals(pendingTask)) {
+					pooledThread.setTerminationRequested(true);
+					pendingTask.waitFor(pooledThread);
+				}
 			}
 		}
 		if (!found) {
-			ValidationThread t = (ValidationThread) thread;
-			threads.add(new WeakReference<ValidationThread>(t));
+			threads.add(new WeakReference<EntityValidationThread>(pendingThread));
 		}
 		threads.trimToSize();
 	}
