@@ -78,6 +78,7 @@
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.DescriptionElementVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TaxonNameBaseVoter" />
                 <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.ReferenceVoter" />
+                <bean class="eu.etaxonomy.cdm.persistence.hibernate.permission.voter.TeamOrPersonBaseVoter" />
             </list>
         </property>
     </bean>
