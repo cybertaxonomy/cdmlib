@@ -82,8 +82,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	// a list of weak references to the thread in the real thread pool,
 	// maintained but totally hidden by the super class (ThreadPoolExecutor).
 	private final ArrayList<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(MAX_POOL_SIZE);
-
-
+	
 	public ValidationExecutor()
 	{
 		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS, new EntityValidationTaskQueue(TASK_QUEUE_SIZE));
@@ -119,6 +118,13 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	public void setMaximumPoolSize(int maximumPoolSize)
 	{
 		throw new RuntimeException("Altering maximum pool size for ValidationExecutor instances not allowed");
+	}
+	
+	
+	@Override
+	public void execute(Runnable command)
+	{
+		super.execute(command);
 	}
 
 
@@ -175,5 +181,6 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 		}
 		threads.trimToSize();
 	}
+
 
 }

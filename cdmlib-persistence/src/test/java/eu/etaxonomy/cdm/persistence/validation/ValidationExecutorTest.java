@@ -2,9 +2,6 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import static org.junit.Assert.fail;
 
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
-
 import javax.validation.Validation;
 import javax.validation.ValidatorFactory;
 
