@@ -76,7 +76,6 @@ public abstract class EntityValidationTask implements Runnable {
 			// TODO: SAVE VIOLATIONS TO DATABASE
 		}
 		catch (Throwable t) {
-			System.out.println("e");
 			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
 		}
 	}
@@ -84,7 +83,7 @@ public abstract class EntityValidationTask implements Runnable {
 
 	/**
 	 * Two entity validation tasks are considered equal if (1) they validate the same entity
-	 * and (2) they apply the same constraints - i.e. constraints belonging to the same
+	 * and (2) they apply the same constraints, i.e. constraints belonging to the same
 	 * validation group(s).
 	 */
 	@Override
@@ -146,7 +145,11 @@ public abstract class EntityValidationTask implements Runnable {
 	/**
 	 * Make this task wait for the specified thread to complete. Will be called by
 	 * {@link ValidationExecutor#beforeExecute(Thread, Runnable)} when it detects that the
-	 * specified thread is validating the same entity as the one validated by this task.
+	 * specified thread is validating the same entity as the one about to be validated by this
+	 * task. Note that this is currently a completely theoretical exercise, since we only allow
+	 * one thread in the thread pool. Thus concurrent validation of one and the same entity can
+	 * never happen. However, to be future proof we already implemented a mechanism to prevent
+	 * the concurrent validation of one and the same entity.
 	 */
 	void waitFor(EntityValidationThread thread)
 	{
