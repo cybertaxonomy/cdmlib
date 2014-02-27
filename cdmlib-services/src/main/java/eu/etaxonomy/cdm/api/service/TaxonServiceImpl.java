@@ -91,6 +91,7 @@ import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
@@ -296,10 +297,12 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         SynonymRelationshipType relTypeForGroup = SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF();
         List<Synonym> heteroSynonyms = acceptedTaxon.getSynonymsInGroup(synonymHomotypicGroup);
+        Set<NameRelationship> basionymsAndReplacedSynonyms = synonymHomotypicGroup.getBasionymAndReplacedSynonymRelations();
 
         for (Synonym heteroSynonym : heteroSynonyms){
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
+                
             }else{
                 //move synonyms in same homotypic group to new accepted taxon
                 heteroSynonym.replaceAcceptedTaxon(newAcceptedTaxon, relTypeForGroup, copyCitationInfo, citation, microCitation);
@@ -312,7 +315,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 //			deleteSynonym(synonym, taxon, false);
             try {
                 this.dao.flush();
-                this.deleteSynonym(synonym, acceptedTaxon, new SynonymDeletionConfigurator());
+                SynonymDeletionConfigurator config = new SynonymDeletionConfigurator();
+                config.setDeleteNameIfPossible(false);
+                this.deleteSynonym(synonym, acceptedTaxon, config);
 
             } catch (Exception e) {
                 logger.info("Can't delete old synonym from database");
