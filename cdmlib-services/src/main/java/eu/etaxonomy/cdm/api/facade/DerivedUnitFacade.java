@@ -1737,7 +1737,7 @@ public class DerivedUnitFacade {
 
 	// field unit
 	public boolean hasFieldUnit() {
-		return (getFieldUnit(false) != null);
+		return (getFieldUnit(CREATE_NOT) != null);
 	}
 
 	/**
@@ -1746,7 +1746,7 @@ public class DerivedUnitFacade {
 	 * @return
 	 */
 	public FieldUnit innerFieldUnit() {
-		return getFieldUnit(false);
+		return getFieldUnit(CREATE_NOT);
 	}
 
 	/**
@@ -2380,13 +2380,11 @@ public class DerivedUnitFacade {
 
 	public SpecimenOrObservationType getType() {
 	    if(derivedUnit==null && hasFieldUnit()){
-	        return getFieldUnit(CREATE_NOT).getRecordBasis();
-	    }
-	    else if(derivedUnit!=null){
-	        return this.innerDerivedUnit().getRecordBasis();
-	    }
-	    else{
-	        return SpecimenOrObservationType.Unknown;
+	        return getFieldUnit(CREATE).getRecordBasis();
+	    } else if(derivedUnit!=null){
+	        return this.derivedUnit.getRecordBasis();
+	    }else{
+	        throw new IllegalStateException("A DerivedUnitFacade must always have either a field unit or a derived unit");
 	    }
 	}
 
