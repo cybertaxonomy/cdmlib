@@ -9,6 +9,8 @@
 */
 package eu.etaxonomy.cdm.persistence.hibernate.permission.voter;
 
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
@@ -32,8 +34,14 @@ public class TeamOrPersonBaseVoter extends CdmPermissionVoter {
      */
     @Override
     public boolean isOrpahn(CdmBase object) {
-        // we always return true here regardless of whether the team has members or not, is this correct?
-        return true;
+        if(object instanceof Person){
+            return ((Person)object).getInstitutionalMemberships().size() > 0;
+        }
+        if(object instanceof Team){
+            return ((Team)object).getTeamMembers().size() >  0;
+        }
+
+        return true; // should never be reached
     }
 
 }

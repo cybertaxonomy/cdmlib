@@ -10,6 +10,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -45,6 +46,9 @@ import org.springframework.security.core.GrantedAuthority;
 public class Group extends CdmBase {
     private static final long serialVersionUID = 7216686200093054648L;
     private static final Logger logger = Logger.getLogger(Group.class);
+
+    public final static UUID groupEditorUuid = UUID.fromString("22e5e8af-b99c-4884-a92f-71978efd3770");
+    public final static UUID groupProjectManagerUuid = UUID.fromString("645191ae-32a4-4d4e-9b86-c90e0d41944a");
 
     @XmlElement(name = "Name")
     @NaturalId

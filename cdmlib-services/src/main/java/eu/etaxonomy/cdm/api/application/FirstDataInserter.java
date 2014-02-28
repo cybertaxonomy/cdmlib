@@ -15,6 +15,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,11 +37,13 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.IGrantedAuthorityService;
+import eu.etaxonomy.cdm.api.service.IGroupService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.model.common.GrantedAuthorityImpl;
+import eu.etaxonomy.cdm.model.common.Group;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Role;
@@ -83,11 +86,31 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
      */
     private static final String RUN_AS_KEY = "TtlCx3pgKC4l";
 
+    public static final String[] editorGroupAuthorities = new String[]{
+            "REFERENCE.[CREATE,READ]",
+            "TAXONNAMEBASE.[CREATE,READ]",
+            "TEAMORPERSONBASE.[CREATE,READ]",
+            "TAXONBASE.[CREATE,UPDATE,DELETE,READ]",
+            "DESCRIPTIONBASE.[CREATE,UPDATE,DELETE,READ]",
+            "DESCRIPTIONELEMENTBASE.[CREATE,UPDATE,DELETE,READ]",
+    };
+
+    public static final String[] projectManagerGroupAuthorities = new String[]{
+            "REFERENCE.[UPDATE,DELETE]",
+            "TAXONNAMEBASE.[UPDATE,DELETE]",
+            "TEAMORPERSONBASE.[UPDATE,DELETE]",
+            Role.ROLE_PROJECT_MANAGER.toString(),
+    };
+
     @Autowired
     private ICommonService commonService;
 
     @Autowired
     private IUserService userService;
+
+    @Autowired
+    private IGroupService groupService;
+
 
     @Autowired
     private IGrantedAuthorityService grantedAuthorityService;
@@ -148,6 +171,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
             logger.info("inserting first data");
             checkAdminUser();
+            checkDefaultGroups();
             checkMetadata();
             firstDataInserted = true;
 
@@ -224,6 +248,49 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
         checkAdminRole(admin);
         progressMonitor.worked(1);
+    }
+
+    private void checkDefaultGroups(){
+
+        progressMonitor.subTask("Checking default groups");
+        checkGroup(Group.groupEditorUuid, "Editor", editorGroupAuthorities);
+        checkGroup(Group.groupProjectManagerUuid, "ProjectManager", projectManagerGroupAuthorities);
+        progressMonitor.worked(1);
+    }
+
+    /**
+     * @param newGroups
+     * @param groupName
+     * @param requiredAuthorities
+     */
+    private void checkGroup(UUID groupUuid, String groupName, String[] requiredAuthorities) {
+        Group group = groupService.load(groupUuid);
+        if(group == null){
+            group = Group.NewInstance();
+            group.setUuid(groupUuid);
+            logger.info("New Group '" + groupName + "' created");
+        }
+        group.setName(groupName); // force name
+
+        Set<GrantedAuthority> grantedAuthorities = group.getGrantedAuthorities();
+
+        for(String a : requiredAuthorities){
+            boolean isMissing = true;
+            for(GrantedAuthority ga : grantedAuthorities){
+                if(a.equals(ga.getAuthority())){
+                    isMissing = false;
+                    break;
+                }
+            }
+            if(isMissing){
+                GrantedAuthorityImpl newGa = GrantedAuthorityImpl.NewInstance();
+                newGa.setAuthority(a);
+                group.addGrantedAuthority(newGa);
+                logger.info("New GrantedAuthority '" + a + "' added  to '" + groupName + "'");
+            }
+        }
+        groupService.saveOrUpdate(group);
+        logger.info("Check of group  '" + groupName + "' done");
     }
 
     /**
