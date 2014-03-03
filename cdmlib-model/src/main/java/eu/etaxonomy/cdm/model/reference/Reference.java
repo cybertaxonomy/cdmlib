@@ -9,9 +9,6 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
-
-import java.beans.PropertyChangeEvent;
-import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.List;
 
@@ -50,7 +47,6 @@ import org.hibernate.validator.constraints.Length;
 
 import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.hibernate.search.DoiBridge;
-import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -141,7 +137,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Match(MatchMode.EQUAL_REQUIRED)
     //TODO Val #3379
 //	@NullOrNotEmpty
-	@Length(max = 4096)  //TODO is the length attribute really requried twice (see @Column)??
+	@Length(max = 4096)  //TODO is the length attribute really required twice (see @Column)??
 	private String title;
 	
 	//Title of the reference
@@ -1332,7 +1328,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Override
 	public Object clone() {
 		try {
-			Reference result = (Reference)super.clone();
+			Reference<?> result = (Reference<?>)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
 			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
 			return result;
@@ -1342,6 +1338,23 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return null;
 		}
 	}
+	
+//******************************* toString *****************************/	
+
+	@Override
+	public String toString() {
+		if (type != null){
+			String result = "Reference [type=" + type + ", id= " + this.getId() + ", uuid=" + this.uuid ;
+			result += title == null ? "" : ", title=" + title;
+			result += abbrevTitle == null ? "" : ", abbrevTitle=" + abbrevTitle;
+			result += "]";
+			return result;
+		}else{
+			return super.toString();
+		}
+	}
+	
+	
 
 
 }

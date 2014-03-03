@@ -18,7 +18,6 @@ public class EntityValidationResult extends CdmBase {
 	
 	private int entityId;
 	private int entityUuid;
-	private int entityValidationTrigger;
 
 
 	public int getEntityId()
@@ -45,15 +44,5 @@ public class EntityValidationResult extends CdmBase {
 	}
 
 
-	public int getEntityValidationTrigger()
-	{
-		return entityValidationTrigger;
-	}
-
-
-	public void setEntityValidationTrigger(int entityValidationTrigger)
-	{
-		this.entityValidationTrigger = entityValidationTrigger;
-	}
 
 }

@@ -110,6 +110,7 @@ public class Amplification extends EventBase implements Cloneable{
     @XmlElement(name = "DnaMarker")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
+    //TODO why is this eager?
     @ManyToOne(fetch=FetchType.EAGER)
     private DefinedTerm dnaMarker;
 	
