@@ -2372,6 +2372,26 @@ public class DerivedUnitFacade {
 	}
 
 	public void setType(SpecimenOrObservationType type) {
+		if (type == null){
+			throw new IllegalArgumentException("The type of a specimen or observation may not be null");
+		}
+		if(derivedUnit==null && hasFieldUnit()){
+			if (type == SpecimenOrObservationType.FieldUnit){
+				getFieldUnit(CREATE).setRecordBasis(type);
+			}else{
+				throw new IllegalArgumentException("A FieldUnit may only be of type FieldUnit") ;
+			}
+	    } else if(derivedUnit!=null){
+	    	if (type != SpecimenOrObservationType.FieldUnit){
+				this.derivedUnit.setRecordBasis(type);
+			}else{
+				throw new IllegalArgumentException("A derived unit may not be of type FieldUnit") ;
+			}
+	    }else{
+	        throw new IllegalStateException("A DerivedUnitFacade must always have either a field unit or a derived unit");
+	    }
+		
+		
 		if (type == SpecimenOrObservationType.FieldUnit){
 			throw new IllegalArgumentException("Type FieldUnit is not a legal record basis for a DerivedUnit");
 		}
