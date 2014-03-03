@@ -12,7 +12,7 @@ package eu.etaxonomy.cdm.persistence.validation;
  * @author ayco holleman
  * 
  */
-public enum CRUDEvent
+public enum CRUDEventType
 {
 	NONE, INSERT, UPDATE, DELETE
 }

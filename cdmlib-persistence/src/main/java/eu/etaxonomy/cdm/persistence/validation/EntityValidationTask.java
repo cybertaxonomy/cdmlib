@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.persistence.validation;
 import java.lang.ref.WeakReference;
 import java.util.Arrays;
 import java.util.Set;
+import java.util.concurrent.ThreadPoolExecutor;
 
 import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
@@ -24,7 +25,7 @@ public abstract class EntityValidationTask implements Runnable {
 	private static final Logger logger = Logger.getLogger(EntityValidationTask.class);
 
 	private final CdmBase entity;
-	private final CRUDEvent trigger;
+	private final CRUDEventType crudEventType;
 	private final Class<?>[] validationGroups;
 
 	private Validator validator;
@@ -42,7 +43,7 @@ public abstract class EntityValidationTask implements Runnable {
 	 */
 	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups)
 	{
-		this(entity, CRUDEvent.NONE, validationGroups);
+		this(entity, CRUDEventType.NONE, validationGroups);
 	}
 
 
@@ -57,10 +58,10 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTask(CdmBase entity, CRUDEvent trigger, Class<?>... validationGroups)
+	public EntityValidationTask(CdmBase entity, CRUDEventType crudEventType, Class<?>... validationGroups)
 	{
 		this.entity = entity;
-		this.trigger = trigger;
+		this.crudEventType = crudEventType;
 		this.validationGroups = validationGroups;
 	}
 
@@ -148,8 +149,11 @@ public abstract class EntityValidationTask implements Runnable {
 	 * specified thread is validating the same entity as the one about to be validated by this
 	 * task. Note that this is currently a completely theoretical exercise, since we only allow
 	 * one thread in the thread pool. Thus concurrent validation of one and the same entity can
-	 * never happen. However, to be future proof we already implemented a mechanism to prevent
-	 * the concurrent validation of one and the same entity.
+	 * never happen (in fact, concurrent validation cannot happen). However, to be future proof
+	 * we already implemented a mechanism to prevent the concurrent validation of one and the
+	 * same entity. Note that this method, in fact, only stores a {@link WeakReference} to the
+	 * thread to interfere as little as possible with the thread pool maintenance by the
+	 * {@link ThreadPoolExecutor}.
 	 */
 	void waitFor(EntityValidationThread thread)
 	{

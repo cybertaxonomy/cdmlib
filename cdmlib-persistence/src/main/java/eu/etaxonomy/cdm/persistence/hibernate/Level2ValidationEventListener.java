@@ -7,7 +7,7 @@ import org.hibernate.event.spi.PostUpdateEvent;
 import org.hibernate.event.spi.PostUpdateEventListener;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.persistence.validation.CRUDEvent;
+import eu.etaxonomy.cdm.persistence.validation.CRUDEventType;
 import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 import eu.etaxonomy.cdm.persistence.validation.ValidationExecutor;
 
@@ -40,18 +40,18 @@ public class Level2ValidationEventListener implements PostInsertEventListener, P
 	@Override
 	public void onPostUpdate(PostUpdateEvent event)
 	{
-		validate(event.getEntity(), CRUDEvent.UPDATE);
+		validate(event.getEntity(), CRUDEventType.UPDATE);
 	}
 
 
 	@Override
 	public void onPostInsert(PostInsertEvent event)
 	{
-		validate(event.getEntity(), CRUDEvent.INSERT);
+		validate(event.getEntity(), CRUDEventType.INSERT);
 	}
 
 
-	private void validate(Object object, CRUDEvent trigger)
+	private void validate(Object object, CRUDEventType trigger)
 	{
 		try {
 			if (object == null) {

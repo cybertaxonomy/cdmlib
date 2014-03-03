@@ -49,9 +49,9 @@ import org.apache.log4j.Logger;
  * gives the {@link ConstraintValidator} running in the validation thread a chance to terminate
  * itself:<br>
  * <code>
- * if(Thread.currentThread() instanceof ValidationThread) {
- * 	ValidationThread vt = (ValidationThread) Thread.currentThread();
- * 	if(vt.isTerminationRequested()) {
+ * if(Thread.currentThread() instanceof EntityValidationThread) {
+ * 	EntityValidationThread evt = (EntityValidationThread) Thread.currentThread();
+ * 	if(evt.isTerminationRequested()) {
  * 		// Stop with what I am doing
  * 	}
  * }
@@ -59,8 +59,8 @@ import org.apache.log4j.Logger;
  * Constraint validators are free to include this logic or not. If they know themselves to be
  * short-lived it may not be worth it. But if they potentially take a lot of time to complete,
  * they can and and probably should include this logic to prevent needless queueing and queue
- * overruns. This would make them dependent, though, on at least the {@code ValidationThread}
- * class, so there are some architectural issues here.
+ * overruns. This would make them dependent, though, on at least the
+ * {@link EntityValidationThread} class, so there are some architectural issues here.
  * 
  * @author a. holleman
  * 
@@ -82,7 +82,8 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	// a list of weak references to the thread in the real thread pool,
 	// maintained but totally hidden by the super class (ThreadPoolExecutor).
 	private final ArrayList<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(MAX_POOL_SIZE);
-	
+
+
 	public ValidationExecutor()
 	{
 		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS, new EntityValidationTaskQueue(TASK_QUEUE_SIZE));
@@ -117,10 +118,10 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	@Override
 	public void setMaximumPoolSize(int maximumPoolSize)
 	{
-		throw new RuntimeException("Altering maximum pool size for ValidationExecutor instances not allowed");
+		throw new RuntimeException("Altering maximum pool size for ValidationExecutor instances currently not allowed");
 	}
-	
-	
+
+
 	@Override
 	public void execute(Runnable command)
 	{
@@ -149,10 +150,12 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 
 	/*
 	 * Keep track of the threads in the thread pool. If there already is another thread
-	 * validating the same entity, to terminate itself. Whether or not this request is honored,
-	 * we wait for the thread to complete. Otherwise the two threads might conflict with
-	 * eachother when reading/writing from the error tables (i.e. the tables in which the
-	 * outcome of a validation is stored).
+	 * validating the same entity, we ask it to terminate itself. Whether or not this request
+	 * is honored, we wait for the thread to complete. Otherwise the two threads might conflict
+	 * with eachother when reading/writing from the error tables (i.e. the tables in which the
+	 * outcome of a validation is stored). Note that, currently, this is all a bit theoretical
+	 * because we only allow one thread in the thread pool. However, we want to be prepared for
+	 * a future with true concurrent validation.
 	 */
 	private void checkPool(EntityValidationThread pendingThread, EntityValidationTask pendingTask)
 	{
@@ -181,6 +184,5 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 		}
 		threads.trimToSize();
 	}
-
 
 }
