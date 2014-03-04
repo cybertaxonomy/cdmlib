@@ -85,8 +85,8 @@ public class DerivedUnitFacade {
 
 	private final Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
 
+	// Either fieldUnit or derivedUnit must not be null.
 	private FieldUnit fieldUnit;
-
 	private final DerivedUnit derivedUnit;
 
 	// media - the text data holding the media
@@ -161,6 +161,10 @@ public class DerivedUnitFacade {
 		this.config = config;
 		// derivedUnit
 		derivedUnit = getNewDerivedUnitInstance(type);
+		//TODO parameter checking should be solved in a more generic way if we start using other entity facades
+		if(derivedUnit==null && fieldUnit==null && type.isFieldUnit()){
+		    this.fieldUnit = getFieldUnit(CREATE);
+		}
 		setFieldUnit(fieldUnit);
 		if (derivedUnit != null){
 			setCacheStrategy();
@@ -183,6 +187,10 @@ public class DerivedUnitFacade {
 
 	private DerivedUnitFacade(DerivedUnit derivedUnit, DerivedUnitFacadeConfigurator config)
 			throws DerivedUnitFacadeNotSupportedException {
+
+	    if(derivedUnit==null){
+	        throw new IllegalArgumentException("DerivedUnit must not be null");
+	    }
 
 		if (config == null) {
 			config = DerivedUnitFacadeConfigurator.NewInstance();
@@ -889,7 +897,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Returns the one media list of a specimen which is part of the only image
 	 * gallery that this specimen is part of.<BR>
-	 * If these conditions are not hold an exception is thrwon.
+	 * If these conditions are not hold an exception is thrown.
 	 *
 	 * @param specimen
 	 * @return
@@ -1808,16 +1816,14 @@ public class DerivedUnitFacade {
 
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
-		testDerivedUnit();
 		//TODO implement correct bidirectional mapping in model classes
-		determination.setIdentifiedUnit(derivedUnit);
-		derivedUnit.addDetermination(determination);
+		determination.setIdentifiedUnit(getBaseUnit());
+		getBaseUnit().addDetermination(determination);
 	}
 
 	@Transient
 	public DeterminationEvent getPreferredDetermination() {
-		testDerivedUnit();
-		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> events = getBaseUnit().getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
 				return event;
@@ -1834,8 +1840,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public void setPreferredDetermination(DeterminationEvent newEvent) {
-		testDerivedUnit();
-		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> events = getBaseUnit().getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
 				event.setPreferredFlag(false);
@@ -1853,8 +1858,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getOtherDeterminations() {
-		testDerivedUnit();
-		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> events = getBaseUnit().getDeterminations();
 		Set<DeterminationEvent> result = new HashSet<DeterminationEvent>();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() != true){
@@ -1871,13 +1875,11 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getDeterminations() {
-		testDerivedUnit();
-		return derivedUnit.getDeterminations();
+		return getBaseUnit().getDeterminations();
 	}
 
 	public void removeDetermination(DeterminationEvent determination) {
-		testDerivedUnit();
-		derivedUnit.removeDetermination(determination);
+		getBaseUnit().removeDetermination(determination);
 	}
 
 	// Media
@@ -2024,8 +2026,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public PreservationMethod getPreservationMethod() throws MethodNotSupportedByDerivedUnitTypeException {
-		testDerivedUnit();
-		if (derivedUnit.getRecordBasis().isPreservedSpecimen()) {
+		if (derivedUnit!=null && derivedUnit.getRecordBasis().isPreservedSpecimen()) {
 			return CdmBase.deproxy(derivedUnit, DerivedUnit.class).getPreservation();
 		} else {
 			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
@@ -2045,12 +2046,10 @@ public class DerivedUnitFacade {
 	 */
 	public void setPreservationMethod(PreservationMethod preservation)
 			throws MethodNotSupportedByDerivedUnitTypeException {
-		testDerivedUnit();
-		if (derivedUnit.getRecordBasis().isPreservedSpecimen()) {
+		if (derivedUnit!=null && derivedUnit.getRecordBasis().isPreservedSpecimen()) {
 			CdmBase.deproxy(derivedUnit, DerivedUnit.class).setPreservation(preservation);
 		} else {
-			if (this.config
-					.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
+			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
 				throw new MethodNotSupportedByDerivedUnitTypeException(
 						"A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
 			} else {
@@ -2073,7 +2072,7 @@ public class DerivedUnitFacade {
 
 	// title cache
 	public String getTitleCache() {
-		SpecimenOrObservationBase<?> titledUnit = getTitledUnit();
+		SpecimenOrObservationBase<?> titledUnit = getBaseUnit();
 
 		if (!titledUnit.isProtectedTitleCache()) {
 			// always compute title cache anew as long as there are no property
@@ -2084,16 +2083,12 @@ public class DerivedUnitFacade {
 		return titledUnit.getTitleCache();
 	}
 
-	private SpecimenOrObservationBase<?> getTitledUnit(){
-		return (derivedUnit != null )? derivedUnit : fieldUnit;
-	}
-
 	public boolean isProtectedTitleCache() {
-		return getTitledUnit().isProtectedTitleCache();
+		return getBaseUnit().isProtectedTitleCache();
 	}
 
 	public void setTitleCache(String titleCache, boolean isProtected) {
-		this.getTitledUnit().setTitleCache(titleCache, isProtected);
+		this.getBaseUnit().setTitleCache(titleCache, isProtected);
 	}
 
 	/**
@@ -2203,8 +2198,7 @@ public class DerivedUnitFacade {
 
 	// **** sources **/
 	public void addSource(IdentifiableSource source) {
-		testDerivedUnit();
-		this.derivedUnit.addSource(source);
+		this.getBaseUnit().addSource(source);
 	}
 
 	/**
@@ -2225,13 +2219,11 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public Set<IdentifiableSource> getSources() {
-		testDerivedUnit();
-		return derivedUnit.getSources();
+		return getBaseUnit().getSources();
 	}
 
 	public void removeSource(IdentifiableSource source) {
-		testDerivedUnit();
-		this.derivedUnit.removeSource(source);
+		this.getBaseUnit().removeSource(source);
 	}
 
 	/**
@@ -2254,19 +2246,16 @@ public class DerivedUnitFacade {
 
 	// annotation
 	public void addAnnotation(Annotation annotation) {
-		testDerivedUnit();
-		this.derivedUnit.addAnnotation(annotation);
+		this.getBaseUnit().addAnnotation(annotation);
 	}
 
 	@Transient
 	public void getAnnotations() {
-		testDerivedUnit();
-		this.derivedUnit.getAnnotations();
+		this.getBaseUnit().getAnnotations();
 	}
 
 	public void removeAnnotation(Annotation annotation) {
-		testDerivedUnit();
-		this.derivedUnit.removeAnnotation(annotation);
+		this.getBaseUnit().removeAnnotation(annotation);
 	}
 
 	// ******************************* Events ***************************
@@ -2363,6 +2352,18 @@ public class DerivedUnitFacade {
 		}
 	}
 
+	private SpecimenOrObservationBase<?> getBaseUnit(){
+	    if(derivedUnit!=null){
+	        return derivedUnit;
+	    }
+	    else if(fieldUnit!=null){
+	        return fieldUnit;
+	    }
+	    else{
+	        throw new IllegalStateException("A DerivedUnitFacade must always have either a field unit or a derived unit");
+	    }
+	}
+
 
 
 	private void testDerivedUnit() {
@@ -2375,39 +2376,19 @@ public class DerivedUnitFacade {
 		if (type == null){
 			throw new IllegalArgumentException("The type of a specimen or observation may not be null");
 		}
-		if(derivedUnit==null && hasFieldUnit()){
-			if (type == SpecimenOrObservationType.FieldUnit){
-				getFieldUnit(CREATE).setRecordBasis(type);
-			}else{
-				throw new IllegalArgumentException("A FieldUnit may only be of type FieldUnit") ;
-			}
-	    } else if(derivedUnit!=null){
-	    	if (type != SpecimenOrObservationType.FieldUnit){
-				this.derivedUnit.setRecordBasis(type);
-			}else{
-				throw new IllegalArgumentException("A derived unit may not be of type FieldUnit") ;
-			}
-	    }else{
-	        throw new IllegalStateException("A DerivedUnitFacade must always have either a field unit or a derived unit");
-	    }
-		
-		
-		if (type == SpecimenOrObservationType.FieldUnit){
-			throw new IllegalArgumentException("Type FieldUnit is not a legal record basis for a DerivedUnit");
+		SpecimenOrObservationBase<?> baseUnit = getBaseUnit();
+		if(baseUnit.isInstanceOf(FieldUnit.class) && !type.isFieldUnit()){
+		    throw new IllegalArgumentException("A FieldUnit may only be of type FieldUnit") ;
 		}
-		this.innerDerivedUnit().setRecordBasis(type);
+		else if(baseUnit.isInstanceOf(DerivedUnit.class) && type.isFieldUnit()){
+		    throw new IllegalArgumentException("A derived unit may not be of type FieldUnit") ;
+		}
+		baseUnit.setRecordBasis(type);
 	}
 
 	public SpecimenOrObservationType getType() {
-	    if(derivedUnit==null && hasFieldUnit()){
-	        return getFieldUnit(CREATE).getRecordBasis();
-	    } else if(derivedUnit!=null){
-	        return this.derivedUnit.getRecordBasis();
-	    }else{
-	        throw new IllegalStateException("A DerivedUnitFacade must always have either a field unit or a derived unit");
-	    }
+	    return getBaseUnit().getRecordBasis();
 	}
-
 
 	/**
 	 * Closes this facade. As a minimum this method removes all listeners created by this facade from their
