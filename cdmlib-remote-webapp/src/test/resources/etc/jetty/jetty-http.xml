@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
 <!DOCTYPE Configure PUBLIC "-//Jetty//Configure//EN" "http://www.eclipse.org/jetty/configure_9_0.dtd">
- 
+
 <!-- ============================================================= -->
 <!-- Configure the Jetty Server instance with an ID "Server"       -->
 <!-- by adding a HTTP connector.                                   -->
 <!-- This configuration must be used in conjunction with jetty.xml -->
 <!-- ============================================================= -->
 <Configure id="Server" class="org.eclipse.jetty.server.Server">
- 
+
   <!-- =========================================================== -->
   <!-- Add a HTTP Connector.                                       -->
   <!-- Configure an o.e.j.server.ServerConnector with a single     -->
@@ -32,10 +32,10 @@
           </Array>
         </Arg>
         <Set name="host"><Property name="jetty.host" /></Set>
-        <Set name="port"><Property name="jetty.port" default="9080" /></Set>
+        <Set name="port"><Property name="jetty.port" default="9180" /></Set>
         <Set name="idleTimeout"><Property name="http.timeout" default="30000"/></Set>
       </New>
     </Arg>
   </Call>
- 
+
 </Configure>
