@@ -1792,7 +1792,14 @@ cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/statistics.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/taxon.xsl -text
-cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
+cdmlib-remote-webapp/src/test/java/eu/etaxonomy/cdm/remote/ClassificationIT.java -text
+cdmlib-remote-webapp/src/test/resources/datasources.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty-http.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty-https.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty-ssl.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty.xml -text
+cdmlib-remote-webapp/src/test/resources/h2/cdmTest.h2.db -text svneol=unset#unset
+cdmlib-remote-webapp/src/test/resources/log4j.properties -text
 cdmlib-remote/.springBeans -text
 cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
@@ -2414,3 +2421,4 @@ src/site/resources/images/cdm-server-oai-pmh.png -text
 src/site/resources/images/cdmlib-arch4.png -text
 src/site/resources/images/cdmlib_overview.png -text
 src/site/site.xml -text
+src/test/resources/h2/cdmTest.h2.db -text svneol=unset#unset
