@@ -17,9 +17,10 @@
    <!-- <context:component-scan base-package="eu/etaxonomy/cdm/remote/webapp/view" /> -->
    <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin/" />
 
-  
-<!--    <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
- -->
+
+   <!--
+    <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
+   -->
    <import resource="classpath:/eu/etaxonomy/cdm/remote-security.xml"/>
     <context:component-scan base-package="eu/etaxonomy/cdm/io">
         <context:exclude-filter type="regex" expression="eu\.etaxonomy\.cdm\.io\.pesi.*" />
@@ -30,13 +31,13 @@
     </context:component-scan>
 
     <bean class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
-    <property name="properties">
-      <props>
-          <prop key="eu.etaxonomy.cdm.base.path">${user.home}/.cdmLibrary/</prop>
-          <prop key="eu.etaxonomy.cdm.search.index.path">${user.home}/.cdmLibrary/index/</prop>
-      </props>
-        </property>
-  </bean>
+      <property name="properties">
+        <props>
+            <prop key="eu.etaxonomy.cdm.base.path">${user.home}/.cdmLibrary/</prop>
+            <prop key="eu.etaxonomy.cdm.search.index.path">${user.home}/.cdmLibrary/index/</prop>
+        </props>
+          </property>
+    </bean>
 
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
