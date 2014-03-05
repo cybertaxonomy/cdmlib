@@ -25,8 +25,8 @@ public class ClassificationIT extends Assert {
 
     public static final Logger logger = Logger.getLogger(ClassificationIT.class);
 
-    int port = 9080;
-    String baseUri = "http://localhost:9080/";
+    int port = 9180;
+    String baseUri = "";
     RestTemplate template = new RestTemplate();
 
     @Before
