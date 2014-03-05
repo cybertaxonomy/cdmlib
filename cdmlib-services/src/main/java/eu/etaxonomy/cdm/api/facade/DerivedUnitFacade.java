@@ -2352,7 +2352,7 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	private SpecimenOrObservationBase<?> getBaseUnit(){
+	public SpecimenOrObservationBase<?> getBaseUnit(){
 	    if(derivedUnit!=null){
 	        return derivedUnit;
 	    }
