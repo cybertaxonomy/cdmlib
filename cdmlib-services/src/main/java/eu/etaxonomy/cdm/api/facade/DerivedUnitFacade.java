@@ -1817,13 +1817,13 @@ public class DerivedUnitFacade {
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
 		//TODO implement correct bidirectional mapping in model classes
-		determination.setIdentifiedUnit(getBaseUnit());
-		getBaseUnit().addDetermination(determination);
+		determination.setIdentifiedUnit(baseUnit());
+		baseUnit().addDetermination(determination);
 	}
 
 	@Transient
 	public DeterminationEvent getPreferredDetermination() {
-		Set<DeterminationEvent> events = getBaseUnit().getDeterminations();
+		Set<DeterminationEvent> events = baseUnit().getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
 				return event;
@@ -1840,7 +1840,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public void setPreferredDetermination(DeterminationEvent newEvent) {
-		Set<DeterminationEvent> events = getBaseUnit().getDeterminations();
+		Set<DeterminationEvent> events = baseUnit().getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
 				event.setPreferredFlag(false);
@@ -1858,7 +1858,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getOtherDeterminations() {
-		Set<DeterminationEvent> events = getBaseUnit().getDeterminations();
+		Set<DeterminationEvent> events = baseUnit().getDeterminations();
 		Set<DeterminationEvent> result = new HashSet<DeterminationEvent>();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() != true){
@@ -1875,11 +1875,11 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getDeterminations() {
-		return getBaseUnit().getDeterminations();
+		return baseUnit().getDeterminations();
 	}
 
 	public void removeDetermination(DeterminationEvent determination) {
-		getBaseUnit().removeDetermination(determination);
+		baseUnit().removeDetermination(determination);
 	}
 
 	// Media
@@ -2072,7 +2072,7 @@ public class DerivedUnitFacade {
 
 	// title cache
 	public String getTitleCache() {
-		SpecimenOrObservationBase<?> titledUnit = getBaseUnit();
+		SpecimenOrObservationBase<?> titledUnit = baseUnit();
 
 		if (!titledUnit.isProtectedTitleCache()) {
 			// always compute title cache anew as long as there are no property
@@ -2084,11 +2084,11 @@ public class DerivedUnitFacade {
 	}
 
 	public boolean isProtectedTitleCache() {
-		return getBaseUnit().isProtectedTitleCache();
+		return baseUnit().isProtectedTitleCache();
 	}
 
 	public void setTitleCache(String titleCache, boolean isProtected) {
-		this.getBaseUnit().setTitleCache(titleCache, isProtected);
+		this.baseUnit().setTitleCache(titleCache, isProtected);
 	}
 
 	/**
@@ -2198,7 +2198,7 @@ public class DerivedUnitFacade {
 
 	// **** sources **/
 	public void addSource(IdentifiableSource source) {
-		this.getBaseUnit().addSource(source);
+		this.baseUnit().addSource(source);
 	}
 
 	/**
@@ -2219,11 +2219,11 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public Set<IdentifiableSource> getSources() {
-		return getBaseUnit().getSources();
+		return baseUnit().getSources();
 	}
 
 	public void removeSource(IdentifiableSource source) {
-		this.getBaseUnit().removeSource(source);
+		this.baseUnit().removeSource(source);
 	}
 
 	/**
@@ -2246,16 +2246,16 @@ public class DerivedUnitFacade {
 
 	// annotation
 	public void addAnnotation(Annotation annotation) {
-		this.getBaseUnit().addAnnotation(annotation);
+		this.baseUnit().addAnnotation(annotation);
 	}
 
 	@Transient
 	public void getAnnotations() {
-		this.getBaseUnit().getAnnotations();
+		this.baseUnit().getAnnotations();
 	}
 
 	public void removeAnnotation(Annotation annotation) {
-		this.getBaseUnit().removeAnnotation(annotation);
+		this.baseUnit().removeAnnotation(annotation);
 	}
 
 	// ******************************* Events ***************************
@@ -2352,7 +2352,7 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	public SpecimenOrObservationBase<?> getBaseUnit(){
+	public SpecimenOrObservationBase<?> baseUnit(){
 	    if(derivedUnit!=null){
 	        return derivedUnit;
 	    }
@@ -2376,7 +2376,7 @@ public class DerivedUnitFacade {
 		if (type == null){
 			throw new IllegalArgumentException("The type of a specimen or observation may not be null");
 		}
-		SpecimenOrObservationBase<?> baseUnit = getBaseUnit();
+		SpecimenOrObservationBase<?> baseUnit = baseUnit();
 		if(baseUnit.isInstanceOf(FieldUnit.class) && !type.isFieldUnit()){
 		    throw new IllegalArgumentException("A FieldUnit may only be of type FieldUnit") ;
 		}
@@ -2387,7 +2387,7 @@ public class DerivedUnitFacade {
 	}
 
 	public SpecimenOrObservationType getType() {
-	    return getBaseUnit().getRecordBasis();
+	    return baseUnit().getRecordBasis();
 	}
 
 	/**
