@@ -82,6 +82,7 @@ public class SingleRead extends EventBase implements Cloneable{
 	/** @see #getSequence()*/
 	/**{@link #getSequence()}*/
 	@XmlElement(name = "Sequence")
+	@Cascade({CascadeType.SAVE_UPDATE})
     private SequenceString sequence = SequenceString.NewInstance();
 
 	@XmlElement(name = "Pherogram")
