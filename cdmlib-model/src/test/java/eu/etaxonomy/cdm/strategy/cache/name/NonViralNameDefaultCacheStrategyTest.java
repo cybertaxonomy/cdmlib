@@ -41,7 +41,7 @@ import eu.etaxonomy.cdm.strategy.cache.TaggedText;
  * @author a.mueller
  * @created 26.11.2008
  */
-public class NonViralNameDefaultCacheStrategyTest {
+public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestBase{
     @SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NonViralNameDefaultCacheStrategyTest.class);
 

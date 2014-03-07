@@ -10,12 +10,9 @@
 package eu.etaxonomy.cdm.strategy.cache.name;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -28,13 +25,13 @@ import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
  *
  */
-public class ZooNameNoMarkerCacheStrategyTest {
+public class ZooNameNoMarkerCacheStrategyTest extends NameCacheStrategyTestBase {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ZooNameNoMarkerCacheStrategyTest.class);
 	
 	private ZooNameDefaultCacheStrategy strategy;
@@ -191,7 +188,7 @@ public class ZooNameNoMarkerCacheStrategyTest {
 		String methodName = "getInfraGenusTaggedNameCache";
 		Method method = getMethod(NonViralNameDefaultCacheStrategy.class, methodName, NonViralName.class);
 		
-		this.getValue(method, strategy, subGenusName);
+		this.getStringValue(method, strategy, subGenusName);
 		assertEquals("Genus (InfraGenericPart)", strategy.getNameCache(subGenusName));
 	}
 
@@ -225,40 +222,5 @@ public class ZooNameNoMarkerCacheStrategyTest {
 		assertEquals("Abies alba alba L.", strategy.getTitleCache(subSpeciesName));
 	}
 	
-	
-	
-	
-	
-	
-	protected Method getMethod(Class clazz, String methodName, Class paramClazzes){
-		Method method;
-		try {
-			method = clazz.getDeclaredMethod(methodName, paramClazzes);
-		} catch (SecurityException e) {
-			logger.error("SecurityException " + e.getMessage());
-			return null;
-		} catch (NoSuchMethodException e) {
-			logger.error("NoSuchMethodException " + e.getMessage());
-			return null;
-		}
-		return method;
-	}
-	
-	protected String getValue(Method method, Object object,Object parameter){
-		try {
-			List<TaggedText> list = (List<TaggedText>)method.invoke(object, parameter);
-			return NonViralNameDefaultCacheStrategy.createString(list);
-		} catch (IllegalArgumentException e) {
-			logger.error("IllegalArgumentException " + e.getMessage());
-			return null;
-		} catch (IllegalAccessException e) {
-			logger.error("IllegalAccessException " + e.getMessage());
-			return null;
-		} catch (InvocationTargetException e) {
-			logger.error("InvocationTargetException " + e.getMessage());
-			return null;
-		}
-	}
-
 
 }
