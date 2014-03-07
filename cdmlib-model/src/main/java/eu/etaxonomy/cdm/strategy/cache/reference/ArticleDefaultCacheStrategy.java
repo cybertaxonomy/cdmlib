@@ -19,6 +19,8 @@ import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+	private static final long serialVersionUID = -1639068590864589314L;
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ArticleDefaultCacheStrategy.class);
 	
