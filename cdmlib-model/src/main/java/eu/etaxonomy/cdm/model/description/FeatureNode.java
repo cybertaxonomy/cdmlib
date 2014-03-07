@@ -37,6 +37,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 
 import eu.etaxonomy.cdm.model.common.ITreeNode;
@@ -69,6 +71,7 @@ import eu.etaxonomy.cdm.model.common.VersionableEntity;
 @XmlRootElement(name = "FeatureNode")
 @Entity
 @Audited
+@Table(appliesTo="FeatureNode", indexes = { @Index(name = "featureNodeTreeIndex", columnNames = { "treeIndex" }) })
 public class FeatureNode extends VersionableEntity implements ITreeNode<FeatureNode>, Cloneable {
 	private static final Logger logger = Logger.getLogger(FeatureNode.class);
 	

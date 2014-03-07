@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
@@ -67,6 +69,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
+@Table(appliesTo="TaxonNode", indexes = { @Index(name = "taxonNodeTreeIndex", columnNames = { "treeIndex" }) })
 public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
