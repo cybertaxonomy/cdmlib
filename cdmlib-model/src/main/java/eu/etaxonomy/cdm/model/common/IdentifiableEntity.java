@@ -248,23 +248,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //**************************************************************************************
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
-     */
     @Override
     public LSID getLsid(){
         return this.lsid;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setLsid(java.lang.String)
-     */
     @Override
     public void setLsid(LSID lsid){
         this.lsid = lsid;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
-     */
     @Override
     public Set<Rights> getRights() {
         if(rights == null) {
@@ -273,16 +264,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.rights;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addRights(eu.etaxonomy.cdm.model.media.Rights)
-     */
     @Override
     public void addRights(Rights right){
         getRights().add(right);
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeRights(eu.etaxonomy.cdm.model.media.Rights)
-     */
     @Override
     public void removeRights(Rights right){
         getRights().remove(right);
@@ -297,51 +282,32 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.credits;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits(int)
-     */
     @Override
     public Credit getCredits(Integer index){
         return getCredits().get(index);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit)
-     */
     @Override
     public void addCredit(Credit credit){
         getCredits().add(credit);
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit, int)
-     */
     @Override
     public void addCredit(Credit credit, int index){
         getCredits().add(index, credit);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(eu.etaxonomy.cdm.model.common.Credit)
-     */
     @Override
     public void removeCredit(Credit credit){
         getCredits().remove(credit);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(int)
-     */
     @Override
     public void removeCredit(int index){
         getCredits().remove(index);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
-     */
     @Override
     public Set<Extension> getExtensions(){
         if(extensions == null) {
@@ -374,9 +340,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         Extension.NewInstance(this, value, extensionType);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addExtension(eu.etaxonomy.cdm.model.common.Extension)
-     */
     @Override
     public void addExtension(Extension extension){
         if (extension != null){
@@ -384,9 +347,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             getExtensions().add(extension);
         }
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeExtension(eu.etaxonomy.cdm.model.common.Extension)
-     */
     @Override
     public void removeExtension(Extension extension){
         if (extension != null){
@@ -395,26 +355,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#isProtectedTitleCache()
-     */
     @Override
     public boolean isProtectedTitleCache() {
         return protectedTitleCache;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setProtectedTitleCache(boolean)
-     */
     @Override
     public void setProtectedTitleCache(boolean protectedTitleCache) {
         this.protectedTitleCache = protectedTitleCache;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
-     */
     @Override
     public Set<IdentifiableSource> getSources() {
         if(sources == null) {
@@ -423,13 +373,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.sources;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceBase)
-     */
     @Override
     public void addSource(IdentifiableSource source) {
         if (source != null){
-            IdentifiableEntity oldSourcedObj = source.getSourcedObj();
+            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
             if (oldSourcedObj != null && oldSourcedObj != this){
                 oldSourcedObj.getSources().remove(source);
             }
@@ -438,9 +385,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -452,9 +396,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
     
     
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -465,9 +406,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return source;
     }
 
-     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
+
     @Override
     public void removeSource(IdentifiableSource source) {
         getSources().remove(source);
