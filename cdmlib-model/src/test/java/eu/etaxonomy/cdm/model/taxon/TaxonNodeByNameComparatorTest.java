@@ -20,10 +20,6 @@ import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.TaxonNodeByNameComparator;
 
 /**
  * @author a.kohlbecker
@@ -105,6 +101,40 @@ public class TaxonNodeByNameComparatorTest {
         Assert.assertEquals(nameCache_1, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
         logger.debug(((BotanicalName)taxonNodes.get(i).getTaxon().getName()).getNameCache());
         Assert.assertEquals(nameCache_2, ((BotanicalName)taxonNodes.get(i++).getTaxon().getName()).getNameCache());
+
+    }
+
+    @Test
+    public void testNullSave() {
+        Classification classification = Classification.NewInstance("Greuther, 1993");
+
+        Reference sec = ReferenceFactory.newBook();
+
+        BotanicalName botname_1 = BotanicalName.NewInstance(Rank.SPECIES());
+        String nameCache_1 = "Epilobium \u00D7aschersonianum Hausskn.";
+        botname_1.setNameCache(nameCache_1, true);
+        Taxon taxon_1 = Taxon.NewInstance(botname_1, sec);
+
+        BotanicalName botname_2 = BotanicalName.NewInstance(Rank.SPECIES());
+        String nameCache_2 = "\u00D7Epilobium \u00D7angustifolium";
+        botname_2.setNameCache(nameCache_2, true);
+        Taxon taxon_2 = Taxon.NewInstance(botname_2, sec);
+
+        TaxonNode node1 = classification.addChildTaxon(taxon_1, sec, null);
+        TaxonNode node2 = classification.addChildTaxon(taxon_2, sec, null);
+
+        TaxonNodeByNameComparator taxonNodeByNameComparator = new TaxonNodeByNameComparator();
+
+        Assert.assertEquals(0, taxonNodeByNameComparator.compare(null, null));
+        Assert.assertEquals(-1, taxonNodeByNameComparator.compare(node1, null));
+        Assert.assertEquals(1, taxonNodeByNameComparator.compare(null, node1));
+
+
+        node2.getTaxon().setName(null);
+        Assert.assertTrue(taxonNodeByNameComparator.compare(node1, node2) > 0);
+
+        node2.setTaxon(null);
+        Assert.assertTrue(taxonNodeByNameComparator.compare(node1, node2) > 0);
 
     }
 
