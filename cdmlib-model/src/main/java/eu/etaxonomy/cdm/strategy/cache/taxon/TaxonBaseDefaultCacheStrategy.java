@@ -16,6 +16,7 @@ import org.apache.commons.lang.StringUtils;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -36,11 +37,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 			String namePart = getNamePart(taxonBase);
 			
 			title = namePart + " sec. ";
-			if (taxonBase.getSec() != null){
-				title += taxonBase.getSec().getTitleCache();
-			}else{
-				title += "???";
-			}
+			title += getSecundumPart(taxonBase);
 		}else{
 			title = taxonBase.toString();
 		}
@@ -48,6 +45,30 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 			title = "?" + title;
 		}
 		return title;
+	}
+
+	/**
+	 * @param taxonBase
+	 * @param title
+	 * @return
+	 */
+	private String getSecundumPart(T taxonBase) {
+		String result;
+		Reference<?> sec = taxonBase.getSec();
+		if (sec != null){
+			if (sec.getCacheStrategy() != null && 
+					sec.getAuthorTeam() != null && 
+					isNotBlank(sec.getAuthorTeam().getTitleCache()) && 
+					isNotBlank(sec.getYear())){
+				result = sec.getCacheStrategy().getCitation(sec);
+//				 sec.getAuthorTeam().getTitleCache() + sec.getYear();
+			}else{
+				result = taxonBase.getSec().getTitleCache();
+			}
+		}else{
+			result = "???";
+		}
+		return result;
 	}
 
 	/**
