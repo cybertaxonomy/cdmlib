@@ -32,9 +32,6 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 	
 	final static UUID uuid = UUID.fromString("0d45343a-0c8a-4a64-97ca-e94974b65c96");
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid; 
@@ -56,8 +53,6 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 		super();
 	}
 
-	
-	
 	@Override
 	public String getTitleCache(T article) {
 		if (article.isProtectedTitleCache()){

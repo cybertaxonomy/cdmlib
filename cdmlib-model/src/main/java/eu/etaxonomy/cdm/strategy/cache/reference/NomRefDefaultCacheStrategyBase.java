@@ -66,7 +66,8 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		if (team != null){
 			String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
 			if (teamTitle.length() > 0 ){
-				result = team.getTitleCache() + afterAuthor + result;
+				String concat = isNotBlank(result) ? afterAuthor : "";
+				result = team.getTitleCache() + concat + result;
 			}
 			
 		}
@@ -111,8 +112,8 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		if (StringUtils.isBlank(year)){
 			result = string + afterYear;
 		}else{
-			result = string + beforeYear + year + afterYear;
-			//TODO remove double dots (..) if string ends with "."?  #3645
+			String concat = isBlank(string)  ? "" : string.endsWith(".")? " " : beforeYear;
+			result = string + concat + year + afterYear;
 		}
 		return result;
 	}

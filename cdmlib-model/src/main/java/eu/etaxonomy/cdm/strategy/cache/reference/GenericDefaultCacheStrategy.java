@@ -110,7 +110,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 		
 		//inSeries
 		String seriesPart = "";
-		if (!"".equals(series)){
+		if (isNotBlank(series)){
 			seriesPart = series;
 			if (isNumeric(series)){
 				seriesPart = prefixSeries + blank + seriesPart;
