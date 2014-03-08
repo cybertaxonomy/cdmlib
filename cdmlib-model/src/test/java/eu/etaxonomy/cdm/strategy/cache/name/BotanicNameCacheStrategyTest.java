@@ -13,10 +13,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -34,7 +32,6 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
@@ -64,7 +61,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
-	private Reference citationRef;
+	private Reference<?> citationRef;
 	ReferenceFactory refFactory;
 	
 	/**
