@@ -134,7 +134,7 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	 */
 	@Test
 	public final void testNewInstance() {
-		BotanicNameDefaultCacheStrategy cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
+		BotanicNameDefaultCacheStrategy<?> cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 		assertNotNull(cacheStrategy);
 	}
 
