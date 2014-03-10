@@ -339,7 +339,7 @@ public class UriUtils {
              result = true;
 
         } catch (UnknownHostException e1) {
-            logger.info("Unknwon Host: " +e1.getMessage());
+            logger.info("Unknown Host: " +e1.getMessage());
         } catch (ClientProtocolException e2) {
             logger.info("ClientProtocolException: " + e2.getMessage());
         } catch (IOException e3) {
