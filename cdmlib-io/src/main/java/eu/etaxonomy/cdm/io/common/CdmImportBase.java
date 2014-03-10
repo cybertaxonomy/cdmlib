@@ -833,8 +833,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param childTaxon
 	 */
 	protected void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
-		NonViralName parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
-		NonViralName childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
+		if (parentTaxon == null){
+			logger.warn("Parent taxon is null. Missing name parts can not be taken from parent");
+			return;
+		}
+		NonViralName<?> parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
+		NonViralName<?> childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
 		fillMissingEpithets(parentName, childName);
 	}
 	
