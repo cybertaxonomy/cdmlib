@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -1370,9 +1371,6 @@ public class MarkupTransformer extends InputTransformerBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getPresenceTermByKey(java.lang.String)
-	 */
 	@Override
 	public PresenceAbsenceTermBase getPresenceTermByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
@@ -1384,9 +1382,6 @@ public class MarkupTransformer extends InputTransformerBase {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getPresenceTermUuid(java.lang.String)
-	 */
 	@Override
 	public UUID getPresenceTermUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
@@ -1408,6 +1403,20 @@ public class MarkupTransformer extends InputTransformerBase {
 			return null;
 		}
 	}
+
+	@Override
+	public Language getLanguageByKey(String key) throws UndefinedTransformerMethodException {
+		if (CdmUtils.isBlank(key)){return null;
+//		}else if (key.equalsIgnoreCase("fang")){return uuidLanguageFang;
+//		}else if (key.equalsIgnoreCase("owimo")){return uuidLanguageOwimo;
+//		}else if (key.equalsIgnoreCase("batanga")){return uuidLanguageBatanga;
+		
+		}else{
+			return null;
+		}
+	}
+	
+	
 	
 	
 	
