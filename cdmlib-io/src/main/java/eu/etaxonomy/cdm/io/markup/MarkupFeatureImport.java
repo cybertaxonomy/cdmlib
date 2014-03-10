@@ -200,6 +200,7 @@ public class MarkupFeatureImport extends MarkupImportBase {
 	 * @param next
 	 * @return
 	 * @throws XMLStreamException
+	 * @throws  
 	 */
 	private DescriptionElementBase makeFeatureString(MarkupImportState state,XMLEventReader reader, Feature feature, 
 				TaxonDescription taxonDescription, DescriptionElementBase lastDescriptionElement, XMLEvent next, Boolean isFreetext) throws XMLStreamException {
@@ -215,7 +216,16 @@ public class MarkupFeatureImport extends MarkupImportBase {
 			state.setCurrentCollector(null);
 			
 			return lastDescriptionElement;
-		}else{
+		}else if (feature.equals(Feature.COMMON_NAME()) && (isFreetext == null || !isFreetext)){
+			List<DescriptionElementBase> commonNames = makeVernacularNames(state, reader, next);
+			//NODE: we do also have the old version makeVernacular, which was called from "others" below
+			for (DescriptionElementBase commonName : commonNames){
+				taxonDescription.addElement(commonName);
+				lastDescriptionElement = commonName;
+			}
+			return lastDescriptionElement;
+		}
+		else{
 		
 			//others
 			Map<String, String> subheadingMap = handleString(state, reader, next, feature);
@@ -225,11 +235,12 @@ public class MarkupFeatureImport extends MarkupImportBase {
 					subheadingFeature = makeFeature(subheading, state, next, null);
 				}
 				if (feature.equals(Feature.COMMON_NAME()) && (isFreetext == null || !isFreetext)){
-					List<DescriptionElementBase> commonNames = makeVernacular(state, subheading, subheadingMap.get(subheading));
-					for (DescriptionElementBase commonName : commonNames){
-						taxonDescription.addElement(commonName);
-						lastDescriptionElement = commonName;
-					}
+					//NOTE: see above 
+//					List<DescriptionElementBase> commonNames = makeVernacular(state, subheading, subheadingMap.get(subheading));
+//					for (DescriptionElementBase commonName : commonNames){
+//						taxonDescription.addElement(commonName);
+//						lastDescriptionElement = commonName;
+//					}
 				}else {
 					TextData textData = TextData.NewInstance(subheadingFeature);
 					textData.putText(getDefaultLanguage(state), subheadingMap.get(subheading));
@@ -542,6 +553,120 @@ public class MarkupFeatureImport extends MarkupImportBase {
 		}
 	}
 	
+
+	private List<DescriptionElementBase> makeVernacularNames(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
+		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();
+		checkNoAttributes(parentEvent);
+	
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return result;
+			} else if (isStartingElement(next, VERNACULAR_NAME)) {
+				CommonTaxonName name = makeSingleVernacularName(state, reader, next);
+				result.add(name);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("closing tag is missing");
+		
+	}
+	
+	private CommonTaxonName makeSingleVernacularName(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent) throws XMLStreamException{
+		checkNoAttributes(parentEvent);
+		CommonTaxonName result = CommonTaxonName.NewInstance(null, null);
+		
+		String name = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				if (isNotBlank(name)){
+					result.setName(name);
+				}else{
+					fireWarningEvent("No name string for common name", parentEvent, 4);
+				}
+				if (result.getLanguage() == null){
+					fireWarningEvent("Check if default language is used correctly for common names", parentEvent, 4);
+					result.setLanguage(state.getDefaultLanguage());
+				}
+				return result;
+			} else if (isStartingElement(next, NAME)) {
+				//TODO test
+				name += handleVernacularNameName(state, reader, next, result);
+			} else if (isStartingElement(next, LOCAL_LANGUAGE)) {
+				handleLocalLanguage(state, reader, next, result);
+			} else if (isStartingElement(next, TRANSLATION)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, LOCALITY)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, ANNOTATION)){
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else if (isStartingElement(next, FOOTNOTE_REF)) {
+				//TODO
+				handleNotYetImplementedElement(next);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		throw new IllegalStateException("closing tag is missing");
+	}
+	
+	private String handleVernacularNameName(MarkupImportState state, XMLEventReader reader, 
+				XMLEvent parentEvent, CommonTaxonName result) throws XMLStreamException {
+		//attributes
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		this.checkAndRemoveAttributeValue(attributes, CLASS, "vernacular");
+		this.checkNoAttributes(attributes, parentEvent);
+		
+		//
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				return text;
+			}else if (next.isCharacters()){
+				text += this.getTaggedCData(state, reader, next);
+			}
+		}
+		throw new IllegalStateException("closing tag is missing");
+	}
+
+	private void handleLocalLanguage(MarkupImportState state, XMLEventReader reader, XMLEvent parentEvent, CommonTaxonName commonName) throws XMLStreamException {
+		//attributes
+		Map<String, Attribute> attributes = getAttributes(parentEvent);
+		boolean doubtful = getAndRemoveBooleanAttributeValue(parentEvent, attributes, DOUBTFUL, false);
+		boolean unknown = getAndRemoveBooleanAttributeValue(parentEvent, attributes, UNKNOWN, false);
+		this.checkNoAttributes(attributes, parentEvent);
+		
+		if (doubtful == true){
+			fireWarningEvent("Doubtful not yet implemented for local language", parentEvent, 2);
+		}
+		if (unknown == true){
+			fireWarningEvent("Unknown not yet implemented for local language ", parentEvent, 2);
+		}
+		
+		//
+		String text = "";
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			if (isMyEndingElement(next, parentEvent)) {
+				Language lang;
+				try {
+					lang = state.getConfig().getTransformer().getLanguageByKey(text);
+				} catch (UndefinedTransformerMethodException e) {
+					throw new RuntimeException(e);
+				}
+				commonName.setLanguage(lang);
+				return;
+			}else if (next.isCharacters()){
+				text += this.getTaggedCData(state, reader, next);
+			}
+		}
+	}
 
 	private List<DescriptionElementBase> makeVernacular(MarkupImportState state, String subheading, String commonNameString) throws XMLStreamException {
 		List<DescriptionElementBase> result = new ArrayList<DescriptionElementBase>();

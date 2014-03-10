@@ -96,6 +96,7 @@ public abstract class MarkupImportBase  {
 	protected static final String ANNOTATION = "annotation";
 	protected static final String BOLD = "bold";
 	protected static final String BR = "br";
+	protected static final String DOUBTFUL = "doubtful";
 	protected static final String CITATION = "citation";
 	protected static final String CLASS = "class";
 	protected static final String COORDINATES = "coordinates";
@@ -114,6 +115,8 @@ public abstract class MarkupImportBase  {
 	protected static final String SUB_HEADING = "subHeading";
 	protected static final String TYPE = "type";
 	protected static final String TYPE_STATUS = "typeStatus";
+	protected static final String UNKNOWN = "unknown";
+	
 
 	protected static final boolean CREATE_NEW = true;
 	protected static final boolean NO_IMAGE_GALLERY = false;
@@ -214,7 +217,8 @@ public abstract class MarkupImportBase  {
 	//Feature
 	protected static final String VERNACULAR_NAMES = "vernacularNames";
 	protected static final String VERNACULAR_NAME = "vernacularName";
-	
+	protected static final String TRANSLATION = "translation";
+	protected static final String LOCAL_LANGUAGE = "localLanguage";
 	
 
 
