@@ -15,8 +15,15 @@ import javax.xml.stream.events.XMLEvent;
 
 import org.apache.log4j.Logger;
 
+import com.sun.org.apache.bcel.internal.generic.GETSTATIC;
+
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.GeneralParser;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 
@@ -38,6 +45,9 @@ public class MarkupModsImport extends MarkupImportBase {
 	protected static final String MODS_NAME = "name";
 	protected static final String MODS_ORIGININFO = "originInfo";
 	protected static final String MODS_IDENTIFIER = "identifier";
+	protected static final String MODS_DESCRIPTION = "description";
+	protected static final String MODS_NAME_PART = "namePart";
+	protected static final String MODS_AFFILIATION = "affiliation";
 
 	
 	public MarkupModsImport(MarkupDocumentImport docImport) {
@@ -66,7 +76,7 @@ public class MarkupModsImport extends MarkupImportBase {
 			} else if (isStartingElement(next, MODS_IDENTIFIER)) {
 				handleIdentifier(state, reader, next, modsRef);
 			} else if (isStartingElement(next, MODS_NAME)) {
-				handleNotYetImplementedElement(next);
+				handleName(state, reader, next, modsRef);
 			} else if (isStartingElement(next, MODS_ORIGININFO)) {
 				handleNotYetImplementedElement(next);
 			} else {
@@ -125,6 +135,66 @@ public class MarkupModsImport extends MarkupImportBase {
 				partName = this.getCData(state, reader, next);
 			}else if (isStartingElement(next, MODS_PARTNUMBER)) {
 				partNumber = this.getCData(state, reader, next);
+			} else {
+				handleUnexpectedElement(next);
+			}
+		}
+		return;
+		
+	}
+	
+	/**
+	 * Reads all titleInfo information.
+	 * ! Preliminary implementation !
+	 */
+	private void handleName(MarkupImportState state, XMLEventReader reader, XMLEvent parent, Reference<?> modsRef) 
+			throws XMLStreamException {
+		String type = getOnlyAttribute(parent, "type", true);
+		
+		String description = null;
+		String namePart = null;
+		String partNumber = null;
+		String affiliation = null;
+		
+		while (reader.hasNext()) {
+			XMLEvent next = readNoWhitespace(reader);
+			
+			if (isMyEndingElement(next, parent)) {
+				if (! type.equals("personal")){
+					fireUnexpectedAttributeValue(parent, "type", type);  //currently we handle only "personal"
+				}else{
+					Person person = Person.NewInstance();
+					TeamOrPersonBase<?> author = modsRef.getAuthorTeam();
+					if (author == null){
+						modsRef.setAuthorTeam(person);
+					}else if (author.isInstanceOf(Person.class)){
+						Team team = Team.NewInstance();
+						team.addTeamMember(person);
+						modsRef.setAuthorTeam(team);
+					}else {
+						CdmBase.deproxy(author, Team.class).addTeamMember(person);
+					}
+					if (isNotBlank(namePart)){
+						person.setTitleCache(namePart, true);
+					}
+					if (isNotBlank(description)){
+						fireWarningEvent("Mods:description needs to be handled manually",this.makeLocationStr(parent.getLocation()), 1);
+					}
+					if (isNotBlank(affiliation)){
+						Institution institution = Institution.NewInstance();
+						institution.setTitleCache(affiliation, true);
+						person.addInstitutionalMembership(institution, null, null, null);
+					}
+					
+				}
+				
+				return;
+			}else if (isStartingElement(next, MODS_DESCRIPTION)) {
+				description = this.getCData(state, reader, next);
+			}else if (isStartingElement(next, MODS_NAME_PART)) {
+				namePart = this.getCData(state, reader, next);
+			}else if (isStartingElement(next, MODS_AFFILIATION)) {
+				affiliation = this.getCData(state, reader, next);
 			} else {
 				handleUnexpectedElement(next);
 			}
