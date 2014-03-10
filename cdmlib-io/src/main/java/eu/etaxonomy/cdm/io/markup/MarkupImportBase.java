@@ -89,7 +89,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @created 04.08.2008
  */
 public abstract class MarkupImportBase  {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
 
 	//Base
@@ -162,8 +161,10 @@ public abstract class MarkupImportBase  {
 	protected static final String SERIALS_ABBREVIATIONS = "serialsAbbreviations";
 	protected static final String STRING = "string";
 	protected static final String URL = "url";
-	protected static final String VERNACULAR_NAMES = "vernacularNames";
 	protected static final String WRITER = "writer";
+	
+	protected static final String LOCALITY = "locality";
+	
 	
 	
 	//Nomenclature
@@ -208,6 +209,13 @@ public abstract class MarkupImportBase  {
 	protected static final String TO_COUPLET = "toCouplet";
 	protected static final String TO_KEY = "toKey";
 	protected static final String TO_TAXON = "toTaxon";
+	
+	
+	//Feature
+	protected static final String VERNACULAR_NAMES = "vernacularNames";
+	protected static final String VERNACULAR_NAME = "vernacularName";
+	
+	
 
 
 	protected MarkupDocumentImport docImport;

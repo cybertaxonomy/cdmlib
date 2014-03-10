@@ -68,7 +68,6 @@ public class MarkupSpecimenImport extends MarkupImportBase  {
 	private static final String FIELD_NUM = "fieldNum";
 	private static final String FULL_TYPE = "fullType";
 	private static final String FULL_DATE = "fullDate";
-	private static final String LOCALITY = "locality";
 	private static final String LOST = "lost";
 	private static final String MONTH = "month";
 	private static final String SUB_GATHERING = "subGathering";
