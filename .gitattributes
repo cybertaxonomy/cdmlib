@@ -1869,8 +1869,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermController.ja
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyListController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/csv/CsvDemoController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/csv/CsvExportController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/checklist/ChecklistDemoController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/checklist/CsvExportController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/NameCatalogueController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/PolytomousKeyNodeDtoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalBhleController.java -text

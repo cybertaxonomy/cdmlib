@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -64,14 +64,14 @@ public class CsvDemoExport extends CsvDemoBase {
 		super();
 		this.ioName = this.getClass().getSimpleName();
 	}
-	
+
 
 	/** Retrieves data from a CDM DB and serializes them CDM to CSV.
-	 * Starts with root taxa and traverses the classification to retrieve 
-	 * children taxa, synonyms, relationships, descriptive data, red list 
-	 * status (features). 
+	 * Starts with root taxa and traverses the classification to retrieve
+	 * children taxa, synonyms, relationships, descriptive data, red list
+	 * status (features).
 	 * Taxa that are not part of the classification are not found.
-	 * 
+	 *
 	 * @param exImpConfig
 	 * @param dbname
 	 * @param filename
@@ -82,51 +82,67 @@ public class CsvDemoExport extends CsvDemoBase {
 		TransactionStatus txStatus = startTransaction(true);
 		List<NamedArea> selectedAreas = config.getNamedAreas();
 		Set<Classification> classificationSet = assembleClassificationSet(config);
-		
+
 		PrintWriter writer = null;
 		ByteArrayOutputStream byteArrayOutputStream;
 		try {
-			byteArrayOutputStream = config.getByteArrayOutputStream();
-			writer = new PrintWriter(byteArrayOutputStream); 
-		
+		    if(config.getByteArrayOutputStream() != null){
+    			byteArrayOutputStream = config.getByteArrayOutputStream();
+    			writer = new PrintWriter(byteArrayOutputStream);
+		    }
 			//geographical Filter
 			List<TaxonNode> taxonNodes = handleGeographicalFilter(state, classificationSet);
-			
+
 			//sorting List
 			sortTaxonNodes(taxonNodes);
-			
+			List<CsvDemoRecord> recordList = null;
+			if(config.getRecordList() != null){
+			    recordList = config.getRecordList();
+			}
+
 			for (TaxonNode node : taxonNodes){
 				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
 				CsvDemoRecord record = assembleRecord(state);
 				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
 				Classification classification = node.getClassification();
-				config.setClassificationTitleCache(classification.getTitleCache());	
+				config.setClassificationTitleCache(classification.getTitleCache());
 				if (! this.recordExists(taxon)){
 					handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config, node);
-					record.write(writer);
+					if(config.getByteArrayOutputStream() != null){
+					    record.write(writer);
+					}
+					if(recordList != null){
+					    recordList.add(record);
+					}
+
 					this.addExistingRecord(taxon);
 				}
 				//misapplied names
 				handleMisapplication(taxon, writer, classification, record, config, node);
-				writer.flush();
+				if(writer != null){
+				    writer.flush();
+				}
 			}
 		} catch (ClassCastException e) {
 			e.printStackTrace();
 		}
 		finally{
-			writer.close();
-			this.clearExistingRecordIds();
+		    if(writer != null){
+		        writer.close();
+		    }
+		    this.clearExistingRecordIds();
 		}
 		commitTransaction(txStatus);
 		return;
 
 	}
 
-	
-	
+
+
+
 	//TODO: Exception handling
 	/**
-	 * 
+	 *
 	 * @param config
 	 * @return
 	 */
@@ -143,7 +159,7 @@ public class CsvDemoExport extends CsvDemoBase {
 
 	//TODO: Exception handling
 	/**
-	 * 
+	 *
 	 * @param state
 	 * @return
 	 */
@@ -159,15 +175,15 @@ public class CsvDemoExport extends CsvDemoBase {
 	}
 
 	/**
-	 * Takes positive List of areas and iterates over a given classification 
-	 * and their {@link Taxon} to return all {@link Taxon} with the desired 
+	 * Takes positive List of areas and iterates over a given classification
+	 * and their {@link Taxon} to return all {@link Taxon} with the desired
 	 * geographical attribute.
-	 * 
+	 *
 	 * <p><p>
 	 *
 	 * If selectedAreas is null all {@link TaxonNode}s of the given {@link Classification} will be returned.
-	 * 
-	 * @param selectedAreas 
+	 *
+	 * @param selectedAreas
 	 * @param classificationSet
 	 * @return
 	 */
@@ -223,50 +239,51 @@ public class CsvDemoExport extends CsvDemoBase {
 //			CsvTaxRecordRedlist record = new CsvTaxRecordRedlist(metaRecord, config);
 			TaxonRelationshipType relType = TaxonRelationshipType.MISAPPLIED_NAME_FOR();
 			NonViralName<?> name = CdmBase.deproxy(misappliedName.getName(), NonViralName.class);
-		
+
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
 				record.write(writer);
 				this.addExistingRecord(misappliedName);
 			}
-		}	
+		}
 	}
 
 	/**
 	 * handles the information record for the actual {@link Taxon} including {@link Classification classification}, Taxon Name, Taxon ID,
-	 * Taxon Status, Synonyms, {@link Feature features} data 
+	 * Taxon Status, Synonyms, {@link Feature features} data
 	 * @param record the concrete information record
 	 * @param taxonBase {@link Taxon}
 	 * @param name
 	 * @param acceptedTaxon
 	 * @param parent
 	 * @param basionym
-	 * @param isPartial 
-	 * @param isProParte 
-	 * @param config 
-	 * @param node 
+	 * @param isPartial
+	 * @param isProParte
+	 * @param config
+	 * @param node
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvDemoRecord record,TaxonBase<?> taxonBase,
-			NonViralName<?> name, Taxon acceptedTaxon, Classification classification, 
-			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial, 
+			NonViralName<?> name, Taxon acceptedTaxon, Classification classification,
+			RelationshipTermBase<?> relType, boolean isProParte, boolean isPartial,
 			CsvDemoExportConfigurator config, TaxonNode node) {
 
 		Taxon taxon = (Taxon) taxonBase;
 		List<Feature> features = config.getFeatures();
-		record.setHeadLinePrinted(config.isHasHeaderLines());
-		if(config.isRedlistFeatures()){
-			if(features != null){
-				record.setPrintFeatures(features);
-			}
+		if(config.getByteArrayOutputStream() != null){
+		    record.setHeadLinePrinted(config.isHasHeaderLines());
+		    if(config.isRedlistFeatures()){
+		        if(features != null){
+		            record.setPrintFeatures(features);
+		        }
+		    }
+		    config.setHasHeaderLines(false);
 		}
-		config.setHasHeaderLines(false);
-
 		if(config.isClassification()){
 			record.setDatasetName(classification.getTitleCache());
 		}
 		if(config.isTaxonName()){
-			record.setScientificName(name.getNameCache());				
+			record.setScientificName(name.getNameCache());
 		}
 		if(config.isTaxonNameID()){
 			record.setScientificNameId(name.getUuid().toString());
@@ -326,17 +343,17 @@ public class CsvDemoExport extends CsvDemoBase {
 		}
 		if(config.isRedlistFeatures()){
 			if(features!= null) {
-				
+
 				List<List<String>> featureCells = new ArrayList<List<String>>(features.size());
 				for(int i = 0; i < features.size(); i++) {
 					featureCells.add(new ArrayList<String>());
 				}
 				handleRelatedRedlistStatus(record, taxon, false, featureCells, features);
 				handleRelatedRedlistStatus(record, taxon, true, featureCells, features);
-				
+
 			}
 		}
-		
+
 		if(config.isExternalID()){
 			Set<IdentifiableSource> sources = taxonBase.getSources();
 			for(IdentifiableSource source:sources){
@@ -344,7 +361,7 @@ public class CsvDemoExport extends CsvDemoBase {
 				/*
 				 * TODO: handle this more generic.
 				 * see ticket #4040
-				 *  
+				 *
 				 */
 				if(citation.getId() == 22){
 					String idInSource = source.getIdInSource();
@@ -352,7 +369,7 @@ public class CsvDemoExport extends CsvDemoBase {
 						idInSource = "";
 					}
 					record.setExternalID(idInSource);
-					
+
 				}
 			}
 		}
@@ -362,12 +379,12 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param record
 	 * @param name
 	 * @param type
-	 * @param isPartial 
-	 * @param isProParte 
+	 * @param isPartial
+	 * @param isProParte
 	 */
 	private void handleTaxonomicStatus(
 			CsvDemoRecord record,
-			NonViralName<?> name, 
+			NonViralName<?> name,
 			RelationshipTermBase<?> type,
 			boolean isProParte,
 			boolean isPartial) {
@@ -389,22 +406,22 @@ public class CsvDemoExport extends CsvDemoBase {
 				logger.warn(message);
 				status = "partialSynonym";
 			}
-			
+
 			record.setTaxonomicStatus(status);
 		}
 	}
 
 	/**
-	 * 
+	 *
 	 * This method concatenates several synonyms in a list.
-	 * 
+	 *
 	 * @param record
 	 * @param taxon
 	 */
 	private void handleSynonyms(CsvDemoRecord record, Taxon taxon) {
-		
+
 		Set<SynonymRelationship> synRels = taxon.getSynonymRelations();
-		ArrayList<String> synonyms = new ArrayList<String>(); 
+		ArrayList<String> synonyms = new ArrayList<String>();
 		for (SynonymRelationship synRel :synRels ){
 			Synonym synonym = synRel.getSynonym();
 			SynonymRelationshipType type = synRel.getType();
@@ -418,12 +435,12 @@ public class CsvDemoExport extends CsvDemoBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param record
 	 * @param taxon
 	 */
 	private void handleDiscriptionData(CsvDemoRecord record, Taxon taxon) {
-		
+
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
 		ArrayList<String> distributions = new ArrayList<String>();
 		for (TaxonDescription description : descriptions){
@@ -439,11 +456,11 @@ public class CsvDemoExport extends CsvDemoBase {
 		record.setCountryCode(distributions);
 	}
 	/**
-	 * 
+	 *
 	 * @param record
 	 * @param taxon
 	 * @param featureCells
-	 * @param features 
+	 * @param features
 	 */
 	private void handleRedlistStatus(CsvDemoRecord record, Taxon taxon, List<List<String>> featureCells, List<Feature> features){
 		Set<TaxonDescription> descriptions = taxon.getDescriptions();
@@ -473,7 +490,7 @@ public class CsvDemoExport extends CsvDemoBase {
 							text = text.replaceAll(System.getProperty("line.separator"), "");
 							text = text.replaceAll("                            ", " ");
 							cell.add(text);
-							
+
 						}
 					}
 				}
@@ -483,18 +500,20 @@ public class CsvDemoExport extends CsvDemoBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param record
 	 * @param taxon
 	 * @param relationFrom
 	 * @param featureCells
-	 * @param features 
+	 * @param features
 	 */
 	private void handleRelatedRedlistStatus(CsvDemoRecord record, Taxon taxon, boolean relationFrom, List<List<String>> featureCells, List<Feature> features) {
 
-		if (relationFrom)handleRedlistStatus(record, taxon, featureCells, features);
-		
-		
+		if (relationFrom) {
+            handleRedlistStatus(record, taxon, featureCells, features);
+        }
+
+
 		Set<TaxonRelationship> taxRels;
 		if(relationFrom){
 			taxRels = taxon.getRelationsFromThisTaxon();
@@ -513,11 +532,11 @@ public class CsvDemoExport extends CsvDemoBase {
 			}
 		}
 	}
-	
+
 
 
 	/**
-	 * 
+	 *
 	 * @param taxonNodes
 	 */
 	private void sortTaxonNodes(List<TaxonNode> taxonNodes) {

@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -59,28 +59,28 @@ public abstract class CsvDemoRecordBase {
 	protected static final boolean IS_FIRST = false;
 	protected static final boolean IS_NOT_FIRST = true;
 //	protected static final String SEP = ",";
-	
+
 	protected Map<String, URI> knownFields = new HashMap<String, URI>();
 	protected Set<TermUri> knownTermFields = new HashSet<TermUri>();
-	
+
 	public abstract void write(PrintWriter writer);
 	protected abstract void registerKnownFields();
-	
+
 	protected int count;
-	private CsvDemoMetaDataRecord metaDataRecord;
+	private final CsvDemoMetaDataRecord metaDataRecord;
 	protected CsvDemoExportConfigurator config;
 
 	private Integer id;
 	private UUID uuid;
 
-	
+
 	protected CsvDemoRecordBase(CsvDemoMetaDataRecord metaDataRecord, CsvDemoExportConfigurator config){
 		this.metaDataRecord = metaDataRecord;
 		this.count = metaDataRecord.inc();
 		this.config = config;
 	}
-	
-	
+
+
 	public void setId(Integer id) {
 		this.id = id;
 	}
@@ -93,9 +93,9 @@ public abstract class CsvDemoRecordBase {
 		this.uuid = uuid;
 	}
 
-	public UUID getUuid() {
+/*	public UUID getUuid() {
 		return uuid;
-	}
+	}*/
 
 	protected void printNotes(Set<Annotation> notes, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		printNotes(notes, writer, addSeparator, fieldKey.getUriString());
@@ -105,7 +105,7 @@ public abstract class CsvDemoRecordBase {
 		String value = null;
 		print(value, writer, addSeparator, fieldKey);
 	}
-	
+
 //	protected void print(Object object, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 //		print(object == null ? null : object.toString(), writer, addSeparator, fieldKey);
 //	}
@@ -122,7 +122,7 @@ public abstract class CsvDemoRecordBase {
 		print(agent == null ? null : getAgent(agent), writer, addSeparator, fieldKey);
 	}
 
-	
+
 	protected void print(Language language, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(language, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -135,7 +135,7 @@ public abstract class CsvDemoRecordBase {
 	protected void print(LSID lsid, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(lsid == null ? null : String.valueOf(lsid.toString()), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void print(Set<Rights> rights, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(rights, writer, addSeparator, fieldKey.getUriString());
 	}
@@ -149,11 +149,11 @@ public abstract class CsvDemoRecordBase {
 	protected void print(URI uri, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(uri == null ? null : String.valueOf(uri), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void print(Point point, PrintWriter writer, boolean addSeparator, TermUri latitudeKey, TermUri longitudeKey) {
 		print(point, writer, addSeparator, latitudeKey.getUriString(), longitudeKey.getUriString());
 	}
-	
+
 	protected void print(Point point, PrintWriter writer, boolean addSeparator, String latitudeKey, String longitudeKey) {
 		if (point == null){
 			String toPrint = null;
@@ -168,7 +168,7 @@ public abstract class CsvDemoRecordBase {
 	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, TermUri fieldKey) {
 		print(boolValue, writer, addSeparator, fieldKey.getUriString());
-	}	
+	}
 	protected void print(Boolean boolValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(boolValue == null ? null : String.valueOf(boolValue), writer, addSeparator, fieldKey);
 	}
@@ -179,7 +179,7 @@ public abstract class CsvDemoRecordBase {
 	protected void print(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
-	
+
 	protected void printId(Integer intValue, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(intValue == null ? null : String.valueOf(intValue), writer, addSeparator, fieldKey);
 	}
@@ -194,11 +194,11 @@ public abstract class CsvDemoRecordBase {
 	protected void print(String value, PrintWriter writer, boolean addSeparator, TermUri fieldKey, String defaultValue) {
 		print(value, writer, addSeparator, fieldKey.getUriString(), defaultValue);
 	}
-	
+
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey) {
 		print(value, writer, addSeparator, fieldKey, null);
 	}
-	
+
 	protected void print(String value, PrintWriter writer, boolean addSeparator, String fieldKey, String defaultValue) {
 		if (count == 1 && addSeparator == IS_NOT_FIRST){
 			registerFieldKey(URI.create(fieldKey), defaultValue);
@@ -208,20 +208,20 @@ public abstract class CsvDemoRecordBase {
 			if (StringUtils.isNotBlank(value)){
 				//Replace quotes by double quotes
 				value = value.replace("\"", "\"\"");
-				
+
 				value = value.replace(config.getLinesTerminatedBy(), "\\r");
-				
+
 				//replace all line brakes according to best practices: http://code.google.com/p/gbif-ecat/wiki/BestPractices
 				value = value.replace("\r\n", "\\r");
 				value = value.replace("\r", "\\r");
 				value = value.replace("\n", "\\r");
-				
+
 				strToPrint += config.getFieldsEnclosedBy() + value + config.getFieldsEnclosedBy();
 			}
 			writer.print(strToPrint);
 		}
 	}
-	
+
 	/**
 	 * @param writer
 	 * @param list
@@ -243,7 +243,7 @@ public abstract class CsvDemoRecordBase {
 	 * @param list
 	 * @param termUri
 	 * @param writer
-	 * 
+	 *
 	 * Method for concatenating strings, especially for the red list use case
 	 */
 	protected void print(ArrayList<String> list, TermUri termUri, PrintWriter writer){
@@ -264,18 +264,18 @@ public abstract class CsvDemoRecordBase {
 					print(element, writer, IS_FIRST, termUri);
 					writer.write(",");
 					logger.info(element);
-					
+
 				}
 			}
 		}
 	}
-	
-	
+
+
 	private void registerFieldKey(URI key, String defaultValue) {
 		this.metaDataRecord.addFieldEntry(key, defaultValue);
 	}
 
-	
+
 	protected String getRights(Rights rights) {
 		if (rights == null){
 			return "";
@@ -337,7 +337,7 @@ public abstract class CsvDemoRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getSex(DefinedTerm sex) {
 		String result = CsvDemoExportTransformer.transformToGbifSex(sex);
 		if (result == null){
@@ -350,7 +350,7 @@ public abstract class CsvDemoRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getLifeStage(DefinedTerm stage) {
 		String result = CsvDemoExportTransformer.transformToGbifLifeStage(stage);
 		if (result == null){
@@ -376,7 +376,7 @@ public abstract class CsvDemoRecordBase {
 			return result;
 		}
 	}
-	
+
 	protected String getEstablishmentMeans(PresenceAbsenceTermBase<?> status) {
 		String result = CsvDemoExportTransformer.transformToGbifEstablishmentMeans(status);
 		if (result == null){
@@ -390,8 +390,8 @@ public abstract class CsvDemoRecordBase {
 		}
 	}
 
-	
-	
+
+
 	protected String getAgent(AgentBase<?> agent) {
 		if (agent == null){
 			return "";
@@ -400,7 +400,7 @@ public abstract class CsvDemoRecordBase {
 			return agent.getTitleCache();
 		}
 	}
-	
+
 
 	protected String getFeature(Feature feature) {
 		if (feature == null){
@@ -411,7 +411,7 @@ public abstract class CsvDemoRecordBase {
 		}
 	}
 
-	
+
 	protected String getTimePeriod(TimePeriod period) {
 		if (period == null){
 			return "";
@@ -420,7 +420,7 @@ public abstract class CsvDemoRecordBase {
 			return period.toString();
 		}
 	}
-	
+
 	protected String getTimePeriodPart(TimePeriod period, boolean useEnd) {
 		if (period == null){
 			return "";
@@ -449,7 +449,7 @@ public abstract class CsvDemoRecordBase {
 			return result;
 		}
 	}
-	
+
 
 	protected String getDesignationType(TypeDesignationStatusBase<?> status) {
 		if (status == null){
@@ -469,12 +469,12 @@ public abstract class CsvDemoRecordBase {
 			return result;
 		}
 	}
-	
-	
+
+
 	protected void addKnownField(String string, String uri) throws URISyntaxException {
 		this.knownFields.put(string, new URI(uri));
 	}
-	
+
 	protected void addKnownField(TermUri term) throws URISyntaxException {
 		this.knownTermFields.add(term);
 	}
