@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
@@ -21,8 +25,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
@@ -47,6 +53,16 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     public void setPermissionEvaluator(CdmPermissionEvaluator permissionEvaluator) {
         this.permissionEvaluator = permissionEvaluator;
+    }
+
+    public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
+    static {
+        exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
+        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
+        for(Class<? extends CdmBase> type : CdmBaseType.NONVIRALNAME.getSubClasses()){
+            exculdeMap.put(type, new HashSet<String>());
+            exculdeMap.get(type).add("taxonBases");
+        }
     }
 
 
@@ -77,9 +93,9 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         }
         CdmBase cdmEntity = (CdmBase) entity;
         if (previousState == null){
-        	return onSave(cdmEntity, id, currentState, propertyNames, null);
+            return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
-        if (isModified(currentState, previousState)) {
+        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(cdmEntity.getClass()))) {
             // evaluate throws EvaluationFailedException
             checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("Operation.UPDATE permission check suceeded - object update granted");
@@ -145,12 +161,27 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * @param previousState
      * @return true if the currentState and previousState differ.
      */
-    private boolean isModified(Object[] currentState, Object[] previousState) {
+    private boolean isModified(Object[] currentState, Object[] previousState, String[] propertyNames, Set<String> excludes) {
+
+        Set<Integer> excludeIds = null;
+
+        if(excludes != null && excludes.size() > 0) {
+            excludeIds = new HashSet<Integer>(excludes.size());
+            int i = 0;
+            for(String prop : propertyNames){
+                if(excludes.contains(prop)){
+                    excludeIds.add(i);
+                }
+                i++;
+            }
+        }
+
         for (int i = 0; i<currentState.length; i++){
-            if(propertyIsModified(currentState, previousState, i)){
+            if((excludeIds == null || !excludeIds.contains(i)) && propertyIsModified(currentState, previousState, i)){
                 return true;
             }
         }
+
         return false;
     }
 
