@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
-import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.Operation;
@@ -62,13 +61,20 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
     public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
 
     static{
-        exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
-        // default fields required for each type for which excludes are defined
-        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
-        exculdeMap.get(TaxonNameBase.class).add("created");
-        exculdeMap.get(TaxonNameBase.class).add("updated");
-        // the specific excludes
-        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
+//        disabled since no longer needed, see https://dev.e-taxonomy.eu/trac/ticket/4111#comment:8
+//        exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
+
+        /*
+         * default fields required for each type for which excludes are defined
+         */
+//        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
+//        exculdeMap.get(TaxonNameBase.class).add("created");
+//        exculdeMap.get(TaxonNameBase.class).add("updated");
+
+        /*
+         * the specific excludes
+         */
+//        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
     }
 
 
