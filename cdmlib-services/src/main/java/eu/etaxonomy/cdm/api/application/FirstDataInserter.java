@@ -88,7 +88,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
     public static final String[] editorGroupAuthorities = new String[]{
             "REFERENCE.[CREATE,READ]",
-            "TAXONNAMEBASE.[CREATE,READ]",
+            "TAXONNAMEBASE.[CREATE,READ,UPDATE]",
             "TEAMORPERSONBASE.[CREATE,READ]",
             "TAXONBASE.[CREATE,UPDATE,DELETE,READ]",
             "DESCRIPTIONBASE.[CREATE,UPDATE,DELETE,READ]",
@@ -97,7 +97,7 @@ public class FirstDataInserter implements ApplicationListener<ContextRefreshedEv
 
     public static final String[] projectManagerGroupAuthorities = new String[]{
             "REFERENCE.[UPDATE,DELETE]",
-            "TAXONNAMEBASE.[UPDATE,DELETE]",
+            "TAXONNAMEBASE.[DELETE]",
             "TEAMORPERSONBASE.[UPDATE,DELETE]",
             Role.ROLE_PROJECT_MANAGER.toString(),
     };
