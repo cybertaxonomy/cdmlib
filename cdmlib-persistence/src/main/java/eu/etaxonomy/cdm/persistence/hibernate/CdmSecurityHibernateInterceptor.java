@@ -45,6 +45,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     public static final Logger logger = Logger.getLogger(CdmSecurityHibernateInterceptor.class);
 
+
     private CdmPermissionEvaluator permissionEvaluator;
 
     public CdmPermissionEvaluator getPermissionEvaluator() {
@@ -55,14 +56,17 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         this.permissionEvaluator = permissionEvaluator;
     }
 
+    /**
+     * The exculdeMap must map every property to the CdmBase type !!!
+     */
     public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
-    static {
+
+    static{
         exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
         exculdeMap.get(TaxonNameBase.class).add("taxonBases");
-        for(Class<? extends CdmBase> type : CdmBaseType.NONVIRALNAME.getSubClasses()){
-            exculdeMap.put(type, new HashSet<String>());
-            exculdeMap.get(type).add("taxonBases");
-        }
+        exculdeMap.get(TaxonNameBase.class).add("created");
+        exculdeMap.get(TaxonNameBase.class).add("updated");
+        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
     }
 
 
@@ -95,7 +99,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         if (previousState == null){
             return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
-        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(cdmEntity.getClass()))) {
+        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(CdmBaseType.baseTypeFor(cdmEntity.getClass())))) {
             // evaluate throws EvaluationFailedException
             checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("Operation.UPDATE permission check suceeded - object update granted");
@@ -172,13 +176,22 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
                 if(excludes.contains(prop)){
                     excludeIds.add(i);
                 }
+                if(excludeIds.size() == excludes.size()){
+                    // all ids found
+                    break;
+                }
                 i++;
             }
         }
 
         for (int i = 0; i<currentState.length; i++){
-            if((excludeIds == null || !excludeIds.contains(i)) && propertyIsModified(currentState, previousState, i)){
-                return true;
+            if((excludeIds == null || !excludeIds.contains(i))){
+                if(propertyIsModified(currentState, previousState, i)){
+                    if(logger.isDebugEnabled()){
+                        logger.debug("modified property found: " + propertyNames[i] + ", previousState: " + previousState[i] + ", currentState: " + currentState[i] );
+                    }
+                    return true;
+                }
             }
         }
 

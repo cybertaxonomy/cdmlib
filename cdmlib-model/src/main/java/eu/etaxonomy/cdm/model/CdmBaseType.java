@@ -10,8 +10,10 @@
 package eu.etaxonomy.cdm.model;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -47,12 +49,24 @@ public enum CdmBaseType {
 
     private Set<Class<? extends CdmBase>> subClasses;
 
+    static Map<Class<? extends CdmBase>,  Class<? extends CdmBase>> subTypeToBaseTypeMap;
+
     CdmBaseType(Class<? extends CdmBase> baseClass){
         this.baseClass = baseClass;
         try {
             subClasses = subclassesFor(baseClass);
+            updateBaseTypeMap();
         } catch (ClassNotFoundException e) {
             throw new RuntimeException(e);
+        }
+    }
+
+    private void updateBaseTypeMap(){
+        if(CdmBaseType.subTypeToBaseTypeMap == null){
+            CdmBaseType.subTypeToBaseTypeMap = new HashMap<Class<? extends CdmBase>,  Class<? extends CdmBase>>();
+        }
+        for(Class<? extends CdmBase> subClass : subClasses){
+            CdmBaseType.subTypeToBaseTypeMap.put(subClass, baseClass);
         }
     }
 
@@ -69,6 +83,10 @@ public enum CdmBaseType {
             subClasses.add((Class<? extends CdmBase>) Class.forName(component.getBeanClassName()));
         }
         return subClasses;
+    }
+
+    public static Class<? extends CdmBase> baseTypeFor(Class<? extends CdmBase> cdmType){
+        return subTypeToBaseTypeMap.get(cdmType);
     }
 
     public Set<Class<? extends CdmBase>> getSubClasses() {

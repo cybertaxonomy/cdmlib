@@ -55,6 +55,7 @@ import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -315,6 +316,37 @@ public class SecurityTest extends AbstractSecurityTestBase{
             startNewTransaction();
         }
         Assert.assertNotNull("must fail here!", exception);
+    }
+
+
+    @Test
+    public final void testReuseNameAllow() {
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
+        TaxonNameBase n_acherontia_thetis = taxon.getName();
+
+        Taxon newTaxon = Taxon.NewInstance(n_acherontia_thetis, ReferenceFactory.newGeneric());
+        Exception exception = null;
+        try {
+            UUID uuid = taxonService.save(newTaxon);
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = e;
+        } catch (RuntimeException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("must not fail here!", exception);
     }
 
     @Test
