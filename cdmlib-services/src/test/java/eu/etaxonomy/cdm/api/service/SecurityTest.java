@@ -276,34 +276,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         assertEquals(newName, savedName);
     }
 
-    @Test
-    public final void testUpateNameDeny() {
-
-        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
-        SecurityContext context = SecurityContextHolder.getContext();
-        context.setAuthentication(authentication);
-
-        TaxonBase taxon = taxonService.find(UUID_ACHERONTIA_STYX);
-        taxon.getName().setTitleCache("Acherontia thetis", true);
-        Exception exception = null;
-        try {
-            UUID uuid = taxonService.saveOrUpdate(taxon);
-            commitAndStartNewTransaction(null);
-        } catch (AccessDeniedException e){
-            logger.debug("Expected failure of evaluation.", e);
-            exception  = e;
-        } catch (RuntimeException e){
-            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-            logger.debug("Expected failure of evaluation.", e);
-        } finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
-            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
-            endTransaction();
-            startNewTransaction();
-        }
-        Assert.assertNotNull("must fail here!", exception);
-    }
-
 
     @Test
     public final void testReuseNameAllow() {
@@ -965,7 +937,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     }
 
-    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAMEBASE.[UPDATE])
+//    @Ignore // FIXME http://dev.e-taxonomy.eu/trac/ticket/4081 : #4081 (TaxonNodeServiceImpl.makeTaxonNodeASynonymOfAnotherTaxonNode() requires TAXONNAMEBASE.[UPDATE])
     @Test
     public void testAcceptedTaxonToSynomym(){
 
