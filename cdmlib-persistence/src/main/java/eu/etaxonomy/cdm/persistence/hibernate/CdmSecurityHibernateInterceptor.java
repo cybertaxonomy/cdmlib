@@ -69,7 +69,6 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         exculdeMap.get(TaxonNameBase.class).add("updated");
         // the specific excludes
         exculdeMap.get(TaxonNameBase.class).add("taxonBases");
-        exculdeMap.get(TaxonNameBase.class).add("homotypicalGroup");
     }
 
 
