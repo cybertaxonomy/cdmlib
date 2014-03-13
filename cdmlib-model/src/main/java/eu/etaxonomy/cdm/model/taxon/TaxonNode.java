@@ -680,11 +680,41 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isTopmostNode(){
-        if (classification != null){
-        	return classification.getRootNode().getChildNodes().contains(this);
-        }else{
-        	return false;
-        }
+    	boolean parentCheck = false;
+    	boolean classificationCheck = false;
+
+    	if(getParent() != null) {
+    		if(getParent().getTaxon() == null) {
+    			parentCheck = true;
+    		}
+    	}
+
+    	// FIXME This should work but doesn't, due to missing sort indexes
+    	if (classification != null){          	
+    		classificationCheck = classification.getRootNode().getChildNodes().contains(this);
+    	}else{
+    		classificationCheck = false;
+    	}
+
+    	// The following is just for logging purposes for the missing sort indexes problem
+    	// ticket #4098
+    	if(parentCheck != classificationCheck) {        	
+    		logger.warn("isTopmost node check " + parentCheck + " not same as classificationCheck : " + classificationCheck + " for taxon node ");        	
+    		if(this.getParent() != null) {
+    			logger.warn("-- with parent uuid " + this.getParent().getUuid().toString());
+    			logger.warn("-- with parent id " + this.getParent().getId());
+    			for(TaxonNode node : this.getParent().getChildNodes()) {
+    				if(node == null) {
+    					logger.warn("-- child node is null");
+    				} else if (node.getTaxon() == null) {
+    					logger.warn("-- child node taxon is null");
+    				} 
+    			}
+    			logger.warn("-- parent child count" + this.getParent().getChildNodes().size());        		
+    		}       	
+    	}
+
+    	return parentCheck;
     }
 
     /**
