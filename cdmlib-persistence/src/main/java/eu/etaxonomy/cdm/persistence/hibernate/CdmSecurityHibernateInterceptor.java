@@ -63,10 +63,13 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     static{
         exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
-        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
+        // default fields required for each type for which excludes are defined
+        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
         exculdeMap.get(TaxonNameBase.class).add("created");
         exculdeMap.get(TaxonNameBase.class).add("updated");
-        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
+        // the specific excludes
+        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
+        exculdeMap.get(TaxonNameBase.class).add("homotypicalGroup");
     }
 
 

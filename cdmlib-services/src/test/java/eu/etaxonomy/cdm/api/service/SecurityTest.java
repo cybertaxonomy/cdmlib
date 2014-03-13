@@ -73,20 +73,6 @@ import eu.etaxonomy.cdm.persistence.query.MatchMode;
 @DataSet
 public class SecurityTest extends AbstractSecurityTestBase{
 
-    private static final UUID UUID_ACHERONTINII = UUID.fromString("928a0167-98cd-4555-bf72-52116d067625");
-
-    private static final UUID UUID_ACHERONTIA_STYX = UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331");
-
-    private static final UUID UUID_LACTUCA = UUID.fromString("b2b007a4-9c8c-43a1-8da4-20ed85464cf2");
-
-
-    private static final UUID ACHERONTIA_NODE_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
-
-    private static final UUID ACHERONTIINI_NODE_UUID = UUID.fromString("cecfa77f-f26a-4476-9d87-a8d993cb55d9");
-
-    private static final UUID ACHERONTIA_LACHESIS_UUID = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
-
-    private static final UUID BOOK1_UUID = UUID.fromString("596b1325-be50-4b0a-9aa2-3ecd610215f2");
 
     private static final Logger logger = Logger.getLogger(SecurityTest.class);
 
@@ -338,6 +324,74 @@ public class SecurityTest extends AbstractSecurityTestBase{
             logger.error("Unexpected failure of evaluation.", e);
             exception = e;
         } catch (RuntimeException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("must not fail here!", exception);
+    }
+
+    @Test
+    public final void testMakeTaxonNodeASynonymOfAnotherTaxonNodeAllow_1() {
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        Reference book = referenceService.load(BOOK1_UUID);
+
+        TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
+        TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
+
+        Exception exception = null;
+        try {
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_styx, n_acherontia_lachersis, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), book , "33");
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = e;
+        } catch (RuntimeException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+        } catch (DataChangeNoRollbackException e) {
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+        } finally {
+            // needed in case saveOrUpdate was interrupted by the RuntimeException
+            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
+            endTransaction();
+            startNewTransaction();
+        }
+        Assert.assertNull("must not fail here!", exception);
+    }
+
+    @Test
+    public final void testMakeTaxonNodeASynonymOfAnotherTaxonNodeAllow_2() {
+
+        authentication = authenticationManager.authenticate(tokenForTaxonEditor);
+        SecurityContext context = SecurityContextHolder.getContext();
+        context.setAuthentication(authentication);
+
+        Reference book = referenceService.load(BOOK1_UUID);
+
+        TaxonNode n_acherontia_styx = taxonNodeService.find(ACHERONTIA_STYX_NODE_UUID);
+        TaxonNode n_acherontia_lachersis = taxonNodeService.find(ACHERONTIA_LACHESIS_NODE_UUID);
+
+        Exception exception = null;
+        try {
+            taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(n_acherontia_lachersis, n_acherontia_styx, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), book , "33");
+            commitAndStartNewTransaction(null);
+        } catch (AccessDeniedException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = e;
+        } catch (RuntimeException e){
+            logger.error("Unexpected failure of evaluation.", e);
+            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
+        } catch (DataChangeNoRollbackException e) {
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
         } finally {
