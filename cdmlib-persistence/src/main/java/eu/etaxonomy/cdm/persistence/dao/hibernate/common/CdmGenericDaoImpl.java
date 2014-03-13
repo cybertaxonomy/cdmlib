@@ -32,10 +32,12 @@ import org.hibernate.MappingException;
 import org.hibernate.Query;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.hibernate.collection.internal.AbstractPersistentCollection;
 import org.hibernate.collection.spi.PersistentCollection;
 import org.hibernate.criterion.CriteriaSpecification;
 import org.hibernate.criterion.Criterion;
 import org.hibernate.criterion.Restrictions;
+import org.hibernate.engine.spi.CollectionEntry;
 import org.hibernate.engine.spi.SessionFactoryImplementor;
 import org.hibernate.engine.spi.SessionImplementor;
 import org.hibernate.internal.SessionFactoryImpl;
@@ -1170,15 +1172,86 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     public PersistentCollection initializeCollection(PersistentCollection col) {
             Session session = getSession();
             col.setCurrentSession((SessionImplementor) session);
-            //session.update(col.getOwner());
+            
             if(!((SessionImplementor)session).getPersistenceContext().getCollectionEntries().containsKey(col)) {
                     ((SessionImplementor)session).getPersistenceContext().addUninitializedDetachedCollection(
                                     ((SessionImplementor)session).getFactory().getCollectionPersister( col.getRole() ),col);
             }
-            col.forceInitialization();
-            System.out.println();
+            col.forceInitialization();    
+            logger.debug("initialising persistent collection with with role : " + col.getRole() + " and key : " + col.getKey());
             return col;
     }
+    
+    @Override
+    public boolean isEmpty(PersistentCollection col) {
+    	return initializeCollection(col).empty();
+    }
+    
+    @Override
+    public int size(PersistentCollection col) {
+    	logger.debug("remote size() - for role : " + col.getRole() + " and key : " + col.getKey());
+    	initializeCollection(col);   
+    	SessionImplementor session = (SessionImplementor)getSession();
+    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
+
+    	if ( entry != null ) {
+    		
+    		CollectionPersister persister = entry.getLoadedPersister();			
+    		return persister.getSize( entry.getLoadedKey(), session );
+    	}
+    	return -1;
+    }
+    
+    @Override
+    public Object get(PersistentCollection col, int index) {
+    	logger.debug("remote get() - for role : " + col.getRole() + " and key : " + col.getKey());
+    	initializeCollection(col);    
+    	SessionImplementor session = (SessionImplementor)getSession();
+    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
+    	
+    	if ( entry != null ) {
+    		
+    		CollectionPersister persister = entry.getLoadedPersister();		    		
+    		return persister.getElementByIndex(entry.getLoadedKey(), index, session, col);
+    		
+    	}
+    	//FIXME:Remoting Should we not be throwing an exception here ?
+    	return null;
+    }
+    
+    @Override
+    public boolean contains(PersistentCollection col, Object element) {
+    	logger.debug("remote contains() - for role : " + col.getRole() + " and key : " + col.getKey());
+    	initializeCollection(col);    
+    	SessionImplementor session = (SessionImplementor)getSession();
+    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
+    	
+    	if ( entry != null ) {
+    		
+    		CollectionPersister persister = entry.getLoadedPersister();		
+    		return persister.elementExists(entry.getLoadedKey(), element, session);    		    		
+    	}
+    	//FIXME:Remoting Should we not be throwing an exception here ?
+    	return false;
+    }
+
+    @Override
+    public boolean containsKey(PersistentCollection col, Object key) {
+    	logger.debug("remote containsKey() - for role : " + col.getRole() + " and key : " + col.getKey());
+    	initializeCollection(col);    
+    	SessionImplementor session = (SessionImplementor)getSession();
+    	CollectionEntry entry = session.getPersistenceContext().getCollectionEntry(col);
+    	
+    	if ( entry != null ) {
+    		
+    		CollectionPersister persister = entry.getLoadedPersister();		
+    		return persister.indexExists(entry.getLoadedKey(), key, session);    		    		
+    	}
+    	//FIXME:Remoting Should we not be throwing an exception here ?
+    	return false;
+    	
+    }
+    
 
 }
 
