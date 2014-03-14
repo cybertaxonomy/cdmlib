@@ -1450,7 +1450,7 @@ public class MarkupTransformer extends InputTransformerBase {
 		}else if (key.equalsIgnoreCase("bak\u00E8l\u00E8")){return uuidLanguageBakele;
 		}else if (key.equalsIgnoreCase("banzabi")){return uuidLanguageBanzabi;
 		}else if (key.equalsIgnoreCase("bapunu")){return uuidLanguageBapunu;
-		}else if (key.equalsIgnoreCase("batéké")){return uuidLanguageBateke;
+		}else if (key.equalsIgnoreCase("bat\u00E9k\u00E9")){return uuidLanguageBateke;
 		}else if (key.equalsIgnoreCase("bavangu")){return uuidLanguageBavangu;
 		}else if (key.equalsIgnoreCase("bavarama")){return uuidLanguageBavarama;
 		}else if (key.equalsIgnoreCase("bavili")){return uuidLanguageBavili;
