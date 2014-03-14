@@ -54,9 +54,53 @@ public class MarkupTransformer extends InputTransformerBase {
 	
 	
 	//languages
-	public static final UUID uuidLanguageFang = UUID.fromString("6f811da1-c821-48bb-8891-c30b4228430e");
-	public static final UUID uuidLanguageOwimo = UUID.fromString("1764092c-7826-4b79-bacc-435a9af1320e");
+	public static final UUID uuidLanguageApindji = UUID.fromString("203fe5b4-0ebb-459e-9252-521cdf0c9654");
+	public static final UUID uuidLanguageBaduma = UUID.fromString("3452dea0-8a68-4640-a786-bb786fd4fc27");
+	public static final UUID uuidLanguageBakele = UUID.fromString("8216e12a-8e44-490f-bb61-f63059468ba8");
+	public static final UUID uuidLanguageBakota = UUID.fromString("b43aff9a-88e5-4173-8c33-e122afeff80f");
+	public static final UUID uuidLanguageBalengi = UUID.fromString("14352978-94ac-4a7a-b990-dde926d12892");
+	public static final UUID uuidLanguageBalumbu = UUID.fromString("aee0952a-be89-4607-ac75-29f2c2f300bc");
+	public static final UUID uuidLanguageBanzabi = UUID.fromString("ff13d80c-ea0e-4ebe-bc81-7829bb1a7c94");
+	public static final UUID uuidLanguageBapunu = UUID.fromString("c6c33a49-fc8c-4599-80b7-3f9332c3e005");
 	public static final UUID uuidLanguageBatanga = UUID.fromString("ee277e78-1135-4823-b4ee-63c4b93f04a2");
+	public static final UUID uuidLanguageBateke = UUID.fromString("03a09cbc-37e0-46c7-9787-749c18b76edb");
+	public static final UUID uuidLanguageBavangu = UUID.fromString("de81dd63-ef37-49f4-9e1e-c6f810fa7d6b");
+	public static final UUID uuidLanguageBavarama = UUID.fromString("e9ec9ef0-14a1-46f0-a534-ab7afd4c1891");
+	public static final UUID uuidLanguageBavili = UUID.fromString("d1e64087-3c72-4442-bb62-a931d0ab150b");
+	public static final UUID uuidLanguageBavove = UUID.fromString("6a3e8938-3b48-410e-9b26-20894bfa7ae4");
+	public static final UUID uuidLanguageBavungu = UUID.fromString("c337bb7c-7acc-4d82-ba5b-8da9bc4c16b9");
+	public static final UUID uuidLanguageBekesi = UUID.fromString("add114f9-e81d-4f13-8b35-5008800e1e78");
+	public static final UUID uuidLanguageBenga = UUID.fromString("6901da32-5d39-412e-988f-667964c4bcca");
+	public static final UUID uuidLanguageBeseki = UUID.fromString("af24114e-0f95-465c-b62e-e4346468560c");
+	public static final UUID uuidLanguageEchira = UUID.fromString("4c3fafce-8095-4243-b961-ad325b310b4a");
+	public static final UUID uuidLanguageEschira = UUID.fromString("1dde7682-532b-4277-825d-611a6bd0d0a4");
+	public static final UUID uuidLanguageEshira = UUID.fromString("34ef2f91-afa5-47e4-8098-68a4d4861a4d");
+	public static final UUID uuidLanguageEshiraTandu = UUID.fromString("d3bbf124-75ad-42ff-b8f5-f74bf0243883");
+	public static final UUID uuidLanguageFangDuFernanVaz = UUID.fromString("6fe6c7a9-8c51-46e3-9dbc-8010f39417f3");
+	public static final UUID uuidLanguageFangDuRioMuni = UUID.fromString("6ca1f212-53fe-4314-9d75-6be89d945619");
+	public static final UUID uuidLanguageGaloa = UUID.fromString("38084e32-f68f-47ef-8bf0-6741116140b4");
+	public static final UUID uuidLanguageIvea = UUID.fromString("6b15c613-d10b-4c5f-aaca-cec4aed418db");
+	public static final UUID uuidLanguageLoango = UUID.fromString("2f563753-77fc-4a7d-9b6b-2f524999487e");
+	public static final UUID uuidLanguageMasangu = UUID.fromString("e9c6c5ab-9b27-4020-a2e6-8f257bca3c8e");
+	public static final UUID uuidLanguageMindumu = UUID.fromString("0c6171ad-bfa6-42fe-a664-d40905151b6d");
+	public static final UUID uuidLanguageMisogo = UUID.fromString("b6d7b47c-c020-4411-a6ae-3cc69ae43825");
+	public static final UUID uuidLanguageMitsogo = UUID.fromString("83fdf45d-9f75-472f-a30e-cfd0b1473284");
+	public static final UUID uuidLanguageMitsogho = UUID.fromString("5cf51081-a934-4a45-bd0a-875ad2f3a785");
+	public static final UUID uuidLanguageMpongwe = UUID.fromString("1d53b7f1-46f5-4286-8c79-da8b824adce6");
+	public static final UUID uuidLanguageMpongw\u00E8 = UUID.fromString("c97ba35c-6ea0-47d0-88a7-bec5df77f921");
+	public static final UUID uuidLanguageNgowe = UUID.fromString("ef9fbc40-26c8-4ab3-be3e-83caa14b32ee");
+	public static final UUID uuidLanguageNkomi = UUID.fromString("bbf8413a-9bb9-4acc-8be6-e22f9c305efb");
+	public static final UUID uuidLanguageOrungu = UUID.fromString("787e62e6-8d10-457d-82f8-e0a30a409f88");
+	public static final UUID uuidLanguageOwimo = UUID.fromString("1764092c-7826-4b79-bacc-435a9af1320e");
+	public static final UUID uuidLanguageSimba = UUID.fromString("ad9071e2-8ced-49e3-a76f-0d58f959a8b1");
+	
+	public static final UUID uuidLanguageNomPilot = UUID.fromString("6aeb1a09-cb06-479d-9688-4574f2b80238");
+	
+	
+
+	{
+//		Languag
+	}
 	
 	
 	
@@ -1395,9 +1439,53 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public UUID getLanguageUuid(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
-		}else if (key.equalsIgnoreCase("fang")){return uuidLanguageFang;
+		
+		//FdG languages
 		}else if (key.equalsIgnoreCase("owimo")){return uuidLanguageOwimo;
 		}else if (key.equalsIgnoreCase("batanga")){return uuidLanguageBatanga;
+		}else if (key.equalsIgnoreCase("galoa")){return uuidLanguageGaloa;
+		
+		}else if (key.equalsIgnoreCase("apindji")){return uuidLanguageApindji;
+		}else if (key.equalsIgnoreCase("baduma")){return uuidLanguageBaduma;
+		}else if (key.equalsIgnoreCase("bak\u00E8l\u00E8")){return uuidLanguageBakele;
+		}else if (key.equalsIgnoreCase("banzabi")){return uuidLanguageBanzabi;
+		}else if (key.equalsIgnoreCase("bapunu")){return uuidLanguageBapunu;
+		}else if (key.equalsIgnoreCase("batéké")){return uuidLanguageBateke;
+		}else if (key.equalsIgnoreCase("bavangu")){return uuidLanguageBavangu;
+		}else if (key.equalsIgnoreCase("bavarama")){return uuidLanguageBavarama;
+		}else if (key.equalsIgnoreCase("bavili")){return uuidLanguageBavili;
+		}else if (key.equalsIgnoreCase("bavov\u00E9")){return uuidLanguageBavove;
+		}else if (key.equalsIgnoreCase("bavungu")){return uuidLanguageBavungu;
+		}else if (key.equalsIgnoreCase("benga")){return uuidLanguageBenga;
+		}else if (key.equalsIgnoreCase("b\u00E9s\u00E9ki")){return uuidLanguageBeseki;
+		}else if (key.equalsIgnoreCase("eschira")){return uuidLanguageEschira;
+		}else if (key.equalsIgnoreCase("\u00E9chira")){return uuidLanguageEchira;
+		}else if (key.equalsIgnoreCase("\u00E9shira")){return uuidLanguageEshira;
+		}else if (key.equalsIgnoreCase("fang du Fernan-Vaz")){return uuidLanguageFangDuFernanVaz;
+		}else if (key.equalsIgnoreCase("fang du Rio-Muni")){return uuidLanguageFangDuRioMuni;
+		}else if (key.equalsIgnoreCase("iv\u00E9a")){return uuidLanguageIvea;
+		}else if (key.equalsIgnoreCase("loango")){return uuidLanguageLoango;
+		}else if (key.equalsIgnoreCase("masangu")){return uuidLanguageMasangu;
+		}else if (key.equalsIgnoreCase("mindumu")){return uuidLanguageMindumu;
+		}else if (key.equalsIgnoreCase("mitsogho")){return uuidLanguageMitsogho;
+		}else if (key.equalsIgnoreCase("mitsogo")){return uuidLanguageMitsogo;
+		}else if (key.equalsIgnoreCase("misogo")){return uuidLanguageMisogo;
+		}else if (key.equalsIgnoreCase("mpongw\u00E8")){return uuidLanguageMpongw\u00E8;
+		}else if (key.equalsIgnoreCase("mpongwe")){return uuidLanguageMpongwe;
+		}else if (key.equalsIgnoreCase("ngow\u00E9")){return uuidLanguageNgowe;
+		}else if (key.equalsIgnoreCase("nkomi")){return uuidLanguageNkomi;
+		}else if (key.equalsIgnoreCase("orungu")){return uuidLanguageOrungu;
+		}else if (key.equalsIgnoreCase("simba")){return uuidLanguageSimba;
+		
+		}else if (key.equalsIgnoreCase("balumbu")){return uuidLanguageBalumbu;
+		}else if (key.equalsIgnoreCase("bakota")){return uuidLanguageBakota;
+		}else if (key.equalsIgnoreCase("bal\u00E8ngi")){return uuidLanguageBalengi;
+		}else if (key.equalsIgnoreCase("\u00E9shira-Tandu")){return uuidLanguageEshiraTandu;
+		}else if (key.equalsIgnoreCase("b\u00E9k\u00E9si")){return uuidLanguageBekesi;
+		}else if (key.equalsIgnoreCase("balengi")){return uuidLanguageBalengi;
+		
+		}else if (key.equalsIgnoreCase("nom pilot")){return uuidLanguageNomPilot;
+		
 		
 		}else{
 			return null;
@@ -1407,9 +1495,9 @@ public class MarkupTransformer extends InputTransformerBase {
 	@Override
 	public Language getLanguageByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isBlank(key)){return null;
-//		}else if (key.equalsIgnoreCase("fang")){return uuidLanguageFang;
-//		}else if (key.equalsIgnoreCase("owimo")){return uuidLanguageOwimo;
-//		}else if (key.equalsIgnoreCase("batanga")){return uuidLanguageBatanga;
+		}else if (key.equalsIgnoreCase("angl.")){return Language.ENGLISH();
+		}else if (key.equalsIgnoreCase("fr.")){return Language.FRENCH();
+		}else if (key.equalsIgnoreCase("fang")){return Language.FANG();
 		
 		}else{
 			return null;
