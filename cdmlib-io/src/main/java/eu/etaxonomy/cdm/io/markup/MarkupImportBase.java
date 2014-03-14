@@ -1053,6 +1053,9 @@ public abstract class MarkupImportBase  {
 			if (rank.equals(Rank.UNKNOWN_RANK())) {
 				rank = null;
 			}
+			if (rank == null && "sous-genre".equalsIgnoreCase(value)){
+				rank = Rank.SUBGENUS();
+			}
 		} catch (UnknownCdmTypeException e) {
 			// doNothing
 		}
