@@ -32,8 +32,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
  */
 public class SpecimenTypeDesignationTest {
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger
-			.getLogger(SpecimenTypeDesignationTest.class);
+	private static final Logger logger = Logger.getLogger(SpecimenTypeDesignationTest.class);
 
 	private SpecimenTypeDesignation term1 = null;
 	private SpecimenTypeDesignation term2 = null;
@@ -47,9 +46,8 @@ public class SpecimenTypeDesignationTest {
 	@Before
 	public void setUp() {
 		term1 = new SpecimenTypeDesignation();
-		term2 = 
-			new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), SpecimenTypeDesignationStatus.ISOTYPE(), 
-					null, null, null, false);
+		term2 = new SpecimenTypeDesignation(DerivedUnit.NewPreservedSpecimenInstance(), 
+				SpecimenTypeDesignationStatus.ISOTYPE(), null, null, null, false);
 	}
 	
 	@Test
