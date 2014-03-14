@@ -78,5 +78,16 @@ public class CdmUtilsTest {
 		Assert.assertTrue(library.endsWith(endOfLibrary)); 
 		Assert.assertTrue(library.contains(libraryContains)); 
 	}
+	
+	/**
+	 * This is a default test for fast running any simple test. It can be overriden and ignored whenever needed. 
+	 */
+	@Test
+	public void testAny(){
+		String str = "Noms vernaculaires:";
+		if (! str.matches("Nom(s)? vernaculaire(s)?\\:")){
+			System.out.println("NO");
+		}
+	}
 
 }
