@@ -10,8 +10,6 @@
 package eu.etaxonomy.cdm.io.markup;
 
 import java.net.MalformedURLException;
-import java.util.LinkedList;
-import java.util.Queue;
 import java.util.UUID;
 
 import javax.xml.stream.FactoryConfigurationError;
@@ -28,7 +26,6 @@ import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.XmlImportBase;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
