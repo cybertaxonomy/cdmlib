@@ -91,7 +91,7 @@ public class CsvDemoExport extends CsvDemoBase {
     			writer = new PrintWriter(byteArrayOutputStream);
 		    }
 			//geographical Filter
-			List<TaxonNode> taxonNodes = handleGeographicalFilter(state, classificationSet);
+			List<TaxonNode> taxonNodes = handleGeographicalFilter(state, classificationSet, config);
 
 			//sorting List
 			sortTaxonNodes(taxonNodes);
@@ -188,9 +188,19 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @return
 	 */
 	protected List<TaxonNode> handleGeographicalFilter(CsvDemoExportState state,
-			Set<Classification> classificationSet) {
+			Set<Classification> classificationSet, CsvDemoExportConfigurator config ) {
 		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-		List<TaxonNode> allNodes =  getAllNodes(classificationSet);
+		List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
+		//Check if json/XML export
+		if(config.getRecordList() != null){
+		    allNodes = getTaxonNodeService().list(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null);
+		    config.setTaxonNodeListSize(getAllNodes(classificationSet).size());
+		    //getTaxonNodeService().page(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null).getRecords();
+		}else{
+		    //just for the csv export
+		    //will probably change in the future
+		    allNodes =  getAllNodes(classificationSet);
+		}
 		//Geographical filter
 		if(state.getConfig().isDoGeographicalFilter()){
 			List<NamedArea> selectedAreas = state.getConfig().getNamedAreas();
@@ -242,7 +252,9 @@ public class CsvDemoExport extends CsvDemoBase {
 
 			if (! this.recordExists(misappliedName)){
 				handleTaxonBase(record, misappliedName, name, taxon, classification, relType, false, false, config, node);
-				record.write(writer);
+				if(writer != null){
+				    record.write(writer);
+				}
 				this.addExistingRecord(misappliedName);
 			}
 		}

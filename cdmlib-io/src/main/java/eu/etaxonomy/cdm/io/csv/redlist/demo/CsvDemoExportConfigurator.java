@@ -81,6 +81,13 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	private String classificationTitleCache;
 	private List<NamedArea> areas;
 
+
+    private Integer pageSize;
+
+    private Integer pageNumber;
+
+    private int taxonNodeListSize;
+
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
@@ -498,5 +505,30 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
     }
     public void setRecordList(List<CsvDemoRecord> recordList) {
         this.recordList = recordList;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+
+    public int getTaxonNodeListSize() {
+        return taxonNodeListSize;
+    }
+
+    public void setTaxonNodeListSize(int size) {
+        this.taxonNodeListSize = size;
+
     }
 }
