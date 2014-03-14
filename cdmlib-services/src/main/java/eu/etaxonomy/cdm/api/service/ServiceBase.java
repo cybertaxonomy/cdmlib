@@ -42,86 +42,103 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     protected DAO dao;
 
+    @Override
     @Transactional(readOnly = true)
     public void lock(T t, LockMode lockMode) {
         dao.lock(t, lockMode);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
         dao.refresh(t, lockMode, propertyPaths);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public void clear() {
         dao.clear();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public int count(Class<? extends T> clazz) {
         return dao.count(clazz);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public UUID delete(T persistentObject) throws ReferencedObjectUndeletableException {
         return dao.delete(persistentObject);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public boolean exists(UUID uuid) {
         return dao.exists(uuid);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<T> find(Set<UUID> uuidSet) {
         return dao.list(uuidSet, null, null, null, null);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<T> findById(Set<Integer> idSet) {  //can't be called find(Set<Integer>) as this conflicts with find(Set<UUID)
         return dao.listByIds(idSet, null, null, null, null);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public T find(UUID uuid) {
         return dao.findByUuid(uuid);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public T find(int id) {
         return dao.findById(id);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public Session getSession() {
         return dao.getSession();
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<Object[]> group(Class<? extends T> clazz,Integer limit, Integer start, List<Grouping> groups, List<String> propertyPaths) {
         return dao.group(clazz, limit, start, groups, propertyPaths);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public  List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
         return dao.list(type,limit, start, orderHints,propertyPaths);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public T load(UUID uuid) {
         return dao.load(uuid);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public T load(UUID uuid, List<String> propertyPaths){
         return dao.load(uuid, propertyPaths);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public T merge(T newInstance) {
         return dao.merge(newInstance);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public  Pager<T> page(Class<? extends T> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Integer numberOfResults = dao.count(type);
@@ -134,6 +151,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
         return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public UUID refresh(T persistentObject) {
         return dao.refresh(persistentObject);
@@ -145,26 +163,31 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
      * it seems a bit incongruous that we use an ORM to hide the fact that there is a
      * database, then expose a method that talks about "rows" . . .
      */
+    @Override
     @Transactional(readOnly = true)
     public List<T> rows(String tableName, int limit, int start) {
         return dao.rows(tableName, limit, start);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public Map<UUID, T> save(Collection<T> newInstances) {
         return dao.saveAll(newInstances);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public UUID save(T newInstance) {
         return dao.save(newInstance);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public UUID saveOrUpdate(T transientObject) {
         return dao.saveOrUpdate(transientObject);
     }
 
+    @Override
     @Transactional(readOnly = false)
     public Map<UUID, T> saveOrUpdate(Collection<T> transientInstances) {
         return dao.saveOrUpdateAll(transientInstances);
@@ -178,11 +201,13 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     protected abstract void setDao(DAO dao);
 
+    @Override
     @Transactional(readOnly = false)
     public UUID update(T transientObject) {
         return dao.update(transientObject);
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
