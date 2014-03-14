@@ -412,7 +412,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			statusMatcher.find();
 			statusString = statusMatcher.group(0);
 			try {
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, nameToBeFilled);
 				if (! existingStatusTypeSet.contains(nomStatusType)){
 					NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
 					nameToBeFilled.addStatus(nomStatus);

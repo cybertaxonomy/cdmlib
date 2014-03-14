@@ -55,6 +55,7 @@ public enum VocabularyEnum {
 	Rank("ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b", Rank.class),
 	SpecimenTypeDesignationStatus("ab177bd7-d3c8-4e58-a388-226fff6ba3c2", SpecimenTypeDesignationStatus.class),
 	NomenclaturalStatusType("bb28cdca-2f8a-4f11-9c21-517e9ae87f1f", NomenclaturalStatusType.class),
+	NomenclaturalStatusTypeIczn("5e3c08e9-13a9-498e-861e-b9b5656ab6ac", NomenclaturalStatusType.class),
 	SynonymRelationshipType("48917fde-d083-4659-b07d-413db843bd50", SynonymRelationshipType.class),
 	HybridRelationshipType("fc4abe52-9c25-4cfa-a682-8615bf4bbf07", HybridRelationshipType.class),
 	NameRelationshipType("6878cb82-c1a4-4613-b012-7e73b413c8cd", NameRelationshipType.class),

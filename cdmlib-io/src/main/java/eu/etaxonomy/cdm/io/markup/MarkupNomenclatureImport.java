@@ -396,7 +396,7 @@ public class MarkupNomenclatureImport extends MarkupImportBase {
 			try {
 				// TODO handle trim earlier
 				statusStr = statusStr.trim();
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusStr, name);
 				name.addStatus(NomenclaturalStatus.NewInstance(nomStatusType));
 			} catch (UnknownCdmTypeException e) {
 				String message = "Status '%s' could not be recognized";

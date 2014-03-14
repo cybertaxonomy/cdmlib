@@ -32,6 +32,8 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 
 	private static final UUID uuidDoubtful = UUID.fromString("0ffeb39e-872e-4c0f-85ba-a4150d9f9e7d");
 	private static final UUID uuidCombNov = UUID.fromString("ed508710-deef-44b1-96f6-1ce6d2c9c884");
+	private static final UUID uuidNotAvailable = UUID.fromString("6d9ed462-b761-4da3-9304-4749e883d4eb");
+	
 
 	@BeforeClass
 	public static void setUp() {
@@ -41,12 +43,12 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	
 	@Test
 	public void testNomenclaturalStatusTypeStringString() {
-		NomenclaturalStatusType term = NomenclaturalStatusType.NewInstance   ("term", "label", null);
+		NomenclaturalStatusType term = NomenclaturalStatusType.NewInstance("term", "label", null);
 		assertEquals("label", term.getLabel());
 	}
 	
 	@Test
-	public void testDOUBTFUL() {
+	public void testDoubtful() {
 		assertEquals(uuidDoubtful,  NomenclaturalStatusType.DOUBTFUL().getUuid());	
 	}
 	
@@ -54,5 +56,10 @@ public class NomenclaturalStatusTypeTest extends EntityTestBase {
 	@Test
 	public void testCombNov() {
 		assertEquals(uuidCombNov,  NomenclaturalStatusType.COMB_NOV().getUuid());	
+	}
+	
+	@Test
+	public void testNotAvailable() {
+		assertEquals(uuidNotAvailable,  NomenclaturalStatusType.ZOO_NOT_AVAILABLE().getUuid());	
 	}
 }
