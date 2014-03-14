@@ -394,7 +394,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		Taxon commonTaxon = null;
 		TaxonNameBase<?,?> commonName = null;
 		
-		boolean hasCommonTaxonInfo = commonDetermination == null ? false : commonDetermination.hasTaxonInformation();
+		boolean hasCommonTaxonInfo = (commonDetermination == null) ? false : commonDetermination.hasTaxonInformation();
 		if (hasCommonTaxonInfo && commonDetermination != null){
 			TaxonBase<?> taxonBase = null;
 			if (StringUtils.isNotBlank(commonDetermination.taxonUuid)){
@@ -524,11 +524,11 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		Reference<?> sec = null;
 		if (StringUtils.isNotBlank(commonDetermination.determinedBy)){
 			sec = ReferenceFactory.newGeneric();
-			TeamOrPersonBase determinedBy;
+			TeamOrPersonBase<?> determinedBy;
 			BotanicalName dummyName = BotanicalName.NewInstance(Rank.SPECIES());
 			try {
 				parser.parseAuthors(dummyName, commonDetermination.determinedBy);
-				determinedBy = (TeamOrPersonBase)dummyName.getCombinationAuthorTeam();
+				determinedBy = (TeamOrPersonBase<?>)dummyName.getCombinationAuthorTeam();
 			} catch (StringNotParsableException e) {
 				determinedBy = Team.NewTitledInstance(commonDetermination.determinedBy, commonDetermination.determinedBy);
 			}
@@ -552,7 +552,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 
 
-	private void setAuthorship(NonViralName name, String author, INonViralNameParser<NonViralName> parser) {
+	private void setAuthorship(NonViralName<?> name, String author, INonViralNameParser<NonViralName> parser) {
 		if (name.isInstanceOf(BotanicalName.class) || name.isInstanceOf(ZoologicalName.class)){
 			try {
 				parser.parseAuthors(name, author);
@@ -615,7 +615,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @return
 	 */
 	private String makeSearchNameTitleCache(SpecimenCdmExcelImportState state, DeterminationLight determinationLight, 
-				NonViralName name) {
+				NonViralName<?> name) {
 		String titleCache = determinationLight.fullName;
 		if (! state.getConfig().isPreferNameCache() || StringUtils.isBlank(titleCache) ){
 			String computedTitleCache = name.getTitleCache();
@@ -632,9 +632,12 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	 * @param determinationLight
 	 * @return
 	 */
-	private NonViralName makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
-		//TODO correct type by config.nc
-		NonViralName name =NonViralName.NewInstance(null);
+	private NonViralName<?> makeTaxonName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
+		NonViralName<?> name = NonViralName.NewInstance(null);
+		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
+		if (nc != null){
+			name = (NonViralName<?>)nc.getNewTaxonNameInstance(null);
+		}
 		name.setGenusOrUninomial(determinationLight.genus);
 		name.setSpecificEpithet(determinationLight.speciesEpi);
 		name.setInfraSpecificEpithet(determinationLight.infraSpeciesEpi);
@@ -644,10 +647,9 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		if (StringUtils.isNotBlank(determinationLight.author)){
 			authors.add(determinationLight.author);
 		}
-		TeamOrPersonBase agent = (TeamOrPersonBase)getOrMakeAgent(state, authors);
+		TeamOrPersonBase<?> agent = (TeamOrPersonBase)getOrMakeAgent(state, authors);
 		name.setCombinationAuthorTeam(agent);
 		
-		NomenclaturalCode nc = state.getConfig().getNomenclaturalCode();
 		try {
 			if (StringUtils.isNotBlank(determinationLight.rank) ){
 				name.setRank(Rank.getRankByNameOrIdInVoc(determinationLight.rank, nc, true));
@@ -672,7 +674,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 
 	private TaxonNameBase findBestMatchingName(SpecimenCdmExcelImportState state, DeterminationLight determinationLight) {
 		
-		NonViralName name = makeTaxonName(state, determinationLight);
+		NonViralName<?> name = makeTaxonName(state, determinationLight);
 		String titleCache = makeSearchNameTitleCache(state, determinationLight, name);
 		
 		//TODO
