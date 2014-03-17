@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -30,7 +30,7 @@ import org.codehaus.plexus.util.StringUtils;
  * <BR>
  * The sequence has a length which is stored as such if no further information is given. If the sequence
  * string is given the length is computed automatically.
- *  
+ *
  * @author a.mueller
  * @created 2013-07-05
  */
@@ -49,28 +49,28 @@ public class SequenceString implements Cloneable, Serializable{
 	@XmlElement(name = "String")
     @Lob
 	private String string;
-	
+
 	@XmlElement(name = "Length")
 	private Integer length;
 
-	
-// ******************** FACTORY METHOD ******************/	
+
+// ******************** FACTORY METHOD ******************/
 
 	public static SequenceString NewInstance(){
 		SequenceString result = new SequenceString();
 		return result;
 	}
-	
+
 	public static SequenceString NewInstance(String sequence){
 		SequenceString result = new SequenceString();
 		result.setString(sequence);
 		return result;
 	}
-	
+
 // ********************* CONSTRUCTOR ********************/
-	
+
 	private SequenceString(){};
-	
+
 // ********************* GETTER / SETTER ********************/
 
 	/**
@@ -87,10 +87,10 @@ public class SequenceString implements Cloneable, Serializable{
 	 */
 	public void setString(String sequence){
 		this.string = sequence;
-		this.setLength(sequence == null ? 0 : sequence.length());
+		this.length = (sequence == null ? 0 : sequence.length());
 	}
-	
-	
+
+
 	/**
 	 * The length of the sequence. Will be calculated if the {@link #getString() sequence}  is set.
 	 * @return the length of the sequence.
@@ -101,7 +101,7 @@ public class SequenceString implements Cloneable, Serializable{
 
 	/**
 	 * Sets the {@link #getLength() length}, if the {@link #getString() sequence} is not set.
-	 * If {@link #getString() sequence}  is available, length has no effect. 
+	 * If {@link #getString() sequence}  is available, length has no effect.
 	 * @see #getLength()
 	 * @param length    length
 	 */
@@ -111,15 +111,15 @@ public class SequenceString implements Cloneable, Serializable{
 		}
 	}
 
-		
+
 	// ********************* CLONE ********************/
-	
-	/** 
+
+	/**
 	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> sequencing by
 	 * modifying only some of the attributes.<BR><BR>
-	 * 
-	 *  
+	 *
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -129,7 +129,7 @@ public class SequenceString implements Cloneable, Serializable{
 		SequenceString result = (SequenceString)super.clone();
 
 		//don't change sequence, length
-		
+
 		return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");
