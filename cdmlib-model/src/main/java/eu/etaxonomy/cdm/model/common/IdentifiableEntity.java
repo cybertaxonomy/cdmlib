@@ -483,7 +483,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
              NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
              thisNameCache = nonViralName.getNameCache();
              thisTitleCache = taxonNameBase.getTitleCache();
-             thisReferenceTitleCache = getTitleCache();
+             thisReferenceTitleCache = ((TaxonBase)this).getSec().getTitleCache();
              thisGenusString = nonViralName.getGenusOrUninomial();
          }
 

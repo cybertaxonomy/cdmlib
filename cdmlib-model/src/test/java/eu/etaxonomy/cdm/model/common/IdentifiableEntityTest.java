@@ -23,6 +23,10 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.babadshanjan
@@ -36,7 +40,9 @@ public class IdentifiableEntityTest {
 	private NonViralName<?> abiesAlba;
 	private NonViralName<?> abiesAlbaMichx;
 	private NonViralName<?> abiesAlbaMill;
-
+	
+	private Taxon abiesTaxon;
+	private Taxon abiesMillTaxon;
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -60,10 +66,15 @@ public class IdentifiableEntityTest {
 		abies = NonViralName.NewInstance(Rank.GENUS(), null);
 		abies.setNameCache("Abies");
 		abies.setTitleCache("Abies", true);
+		Reference sec = ReferenceFactory.newArticle();
+		sec.setTitle("Abies alba Ref");
+		
+		abiesTaxon = Taxon.NewInstance(abies, sec);
 		
 		abiesMill = NonViralName.NewInstance(Rank.GENUS(), null);
 		abiesMill.setNameCache("Abies");
 		abiesMill.setTitleCache("Abies Mill.", true);
+		abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
 		
 		abiesAlba = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlba.setNameCache("Abies alba");
@@ -95,6 +106,14 @@ public class IdentifiableEntityTest {
 		// "Abies" < "Abies Mill."
 		result = abies.compareTo(abiesMill);
 		assertTrue(result < 0);
+		
+		abiesTaxon = abies.getTaxa().iterator().next();
+		
+		assertTrue(abiesTaxon.compareTo(abiesTaxon) == 0);
+		
+		assertTrue(abiesMillTaxon.compareTo(abiesTaxon) > 0);
+		
+		assertTrue(abiesTaxon.compareTo(abiesMillTaxon) < 0);
 		
 		// "Abies Mill." > "Abies"
 		result = abiesMill.compareTo(abies);
