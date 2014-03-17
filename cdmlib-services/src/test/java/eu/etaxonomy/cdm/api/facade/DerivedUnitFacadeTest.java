@@ -9,6 +9,9 @@
  */
 package eu.etaxonomy.cdm.api.facade;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 import java.lang.reflect.Field;
 import java.net.URI;
 import java.text.ParseException;
@@ -59,6 +62,7 @@ import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -95,7 +99,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     Double distanceToGround = 22.0;
     Double distanceToSurface = 0.3;
     Double distanceToSurfaceMax = 0.7;
-    
+
     ReferenceSystem referenceSystem = ReferenceSystem.WGS84();
     Point exactLocation = Point.NewInstance(12.3, 10.567, referenceSystem, 22);
     String gatheringEventDescription = "A nice gathering description";
@@ -428,7 +432,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
             Assert.fail("An error should not occur in NewInstance()");
         }
     }
-    
+
     @Test
     public void testGetSetType() {
         Assert.assertEquals("Type must be same", SpecimenOrObservationType.PreservedSpecimen, specimenFacade.getType());
@@ -436,7 +440,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         specimenFacade.setType(newType);
         Assert.assertEquals("New type must be Fossil", newType, specimenFacade.getType());
         Assert.assertEquals("DerivedUnit recordBasis must be set to Fossil", newType, specimenFacade.innerDerivedUnit().getRecordBasis());
-        
+
     }
 
     @Test
@@ -541,9 +545,9 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationText());
 
         specimenFacade.setAbsoluteElevationRange(30, 35);
-        Assert.assertEquals("Odd range should not throw an exception anymore", 
+        Assert.assertEquals("Odd range should not throw an exception anymore",
         		String.format("30%s35 m", UTF8.EN_DASH_SPATIUM),specimenFacade.absoluteElevationToString());
-        
+
         specimenFacade.setAbsoluteElevationRange(41, null);
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", Integer.valueOf(41),specimenFacade.getAbsoluteElevation());
@@ -569,18 +573,18 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("", absoluteElevation, specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", absoluteElevationMaximum,specimenFacade.getAbsoluteElevationMaximum());
         Assert.assertEquals("", elevText,specimenFacade.absoluteElevationToString());
-        
+
         specimenFacade.setAbsoluteElevationRange(30, 35);
         Assert.assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", Integer.valueOf(30), specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", Integer.valueOf(35),specimenFacade.getAbsoluteElevationMaximum());
 
-        
+
         specimenFacade.setAbsoluteElevationRange(41, null);
         Assert.assertEquals("ToString should not change by setting range if text is set", elevText,specimenFacade.absoluteElevationToString());
         Assert.assertEquals("", Integer.valueOf(41), specimenFacade.getAbsoluteElevation());
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
-        
+
 
         specimenFacade.setAbsoluteElevationText(null);
         Assert.assertNull("", specimenFacade.getAbsoluteElevationText());
@@ -589,7 +593,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("", null,specimenFacade.getAbsoluteElevationMaximum());
     }
 
-    
+
     /**
      */
     @Test
@@ -649,7 +653,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertSame("Gathering event of facade and of specimen must be the same",
                 specimenFieldUnit.getGatheringEvent(), emptyFacade.getGatheringEvent(false));
     }
-    
+
     @Test
     public void testGetSetDistanceToWaterText() {
         Assert.assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
@@ -661,7 +665,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("", distanceToSurface, specimenFacade.getDistanceToWaterSurface());
         Assert.assertEquals("", distanceToSurfaceMax,specimenFacade.getDistanceToWaterSurfaceMax());
         Assert.assertEquals("", distText,specimenFacade.distanceToWaterSurfaceToString());
-        
+
         specimenFacade.setDistanceToWaterSurfaceRange(0.6, 1.4);
         Assert.assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
         Assert.assertEquals("", Double.valueOf(0.6), specimenFacade.getDistanceToWaterSurface());
@@ -671,7 +675,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
         Assert.assertEquals("ToString should not change by setting range if text is set", distText,specimenFacade.distanceToWaterSurfaceToString());
         Assert.assertEquals("", Double.valueOf(41.2), specimenFacade.getDistanceToWaterSurface());
         Assert.assertEquals("", null,specimenFacade.getDistanceToWaterSurfaceMax());
-        
+
         specimenFacade.setDistanceToWaterSurfaceText(null);
         Assert.assertNull("", specimenFacade.getDistanceToWaterSurfaceText());
         Assert.assertEquals("ToString should change by setting text to null", "41.2 m",specimenFacade.distanceToWaterSurfaceToString());
@@ -1480,7 +1484,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testAddGetRemoveSource() {
         Assert.assertEquals("No sources should exist yet", 0, specimenFacade.getSources().size());
-        
+
         Reference<?> reference = ReferenceFactory.newBook();
         IdentifiableSource source1 = specimenFacade.addSource(OriginalSourceType.PrimaryTaxonomicSource, reference, "54", "myName");
         Assert.assertEquals("One source should exist now", 1, specimenFacade.getSources().size());
@@ -1579,7 +1583,7 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
                 specimenFacade);
     }
 
-// 	not required anymore #3597   
+// 	not required anymore #3597
 //    @Test // #######DerivationEvent
 //    public void testOnlyImageGallerySupported() {
 //        specimenFacade = null;
@@ -1643,6 +1647,19 @@ public class DerivedUnitFacadeTest extends CdmTransactionalIntegrationTest {
 //		facade.innerGatheringEvent().firePropertyChange("createdBy", null, user);
         this.service.save(facade.innerDerivedUnit());
         commitAndStartNewTransaction(null);
+    }
+
+    @Test
+    public void testBaseUnit() throws DerivedUnitFacadeNotSupportedException{
+        DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(specimen);
+        assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
+
+        facade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.FieldUnit, fieldUnit);
+        assertEquals("baseUnit is incorrect", fieldUnit, facade.baseUnit());
+
+        facade = DerivedUnitFacade.NewInstance(specimen);
+        facade.getFieldUnit(true);
+        assertEquals("baseUnit is incorrect", specimen, facade.baseUnit());
     }
 
 }
