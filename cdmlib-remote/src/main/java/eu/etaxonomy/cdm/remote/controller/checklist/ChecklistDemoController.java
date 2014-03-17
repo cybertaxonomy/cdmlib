@@ -18,7 +18,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -232,7 +231,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 		        if(result < day){
 		            //do return cache file
 		            FileInputStream fis = new FileInputStream(cacheFile);
-		            InputStreamReader isr = new InputStreamReader(fis, StandardCharsets.UTF_8);
+		            InputStreamReader isr = new InputStreamReader(fis, "UTF8");
 		            Cookie progressCookie = new Cookie("fileDownloadToken", downloadTokenValueId);
 		            progressCookie.setPath("/");
 		            progressCookie.setMaxAge(60);
@@ -297,7 +296,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 		    PrintWriter printWriter = response.getWriter();
 
 		    FileOutputStream fos = new FileOutputStream(cacheFile);
-		    OutputStreamWriter outWriter = new OutputStreamWriter(fos, StandardCharsets.UTF_8);
+		    OutputStreamWriter outWriter = new OutputStreamWriter(fos, "UTF8");
 		    int i;
 		    while((i = isr.read())!= -1){
 		        printWriter.write(i);
