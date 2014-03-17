@@ -106,16 +106,15 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         this.grantedAuthorityDao = grantedAuthorityDao;
     }
 
-    @Transactional(readOnly=false)
-    protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
-        UserDetails user = loadUserByUsername(currentAuth.getName());
-
-        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-        newAuthentication.setDetails(currentAuth.getDetails());
-
-        return newAuthentication;
-    }
-
+    /**
+     * Changes the own password of in the database of the user which is
+     * currently authenticated. Requires to supply the old password for security
+     * reasons. Refreshes the authentication in the SecurityContext after the
+     * password change by re-authenticating the user with the new password.
+     *
+     * @see org.springframework.security.provisioning.UserDetailsManager#changePassword(java.lang.String,
+     *      java.lang.String)
+     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("isAuthenticated()")
@@ -124,18 +123,28 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         Assert.hasText(newPassword);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-            User user = (User)authentication.getPrincipal();
 
+            // get current authentication and load it from the persistence layer,
+            // to make sure we are modifying the instance which is
+            // attached to the hibernate session
+            User user = (User)authentication.getPrincipal();
+            user = dao.load(user.getUuid());
+
+            // check if old password is valid
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), oldPassword));
 
+            // make new password and set it
             Object salt = this.saltSource.getSalt(user);
-
             String password = passwordEncoder.encodePassword(newPassword, salt);
             user.setPassword(password);
-
             dao.update(user);
-            SecurityContextHolder.getContext().setAuthentication(createNewAuthentication(authentication, newPassword));
+
+            // authenticate the user again with the new password
+            UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+            newAuthentication.setDetails(authentication.getDetails());
+            SecurityContextHolder.getContext().setAuthentication(newAuthentication);
             userCache.removeUserFromCache(user.getUsername());
+
         } else {
             throw new AccessDeniedException("Can't change password as no Authentication object found in context for current user.");
         }
@@ -185,11 +194,11 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         ((User)user).setPassword(password);
 
         UUID userUUID = dao.save((User)user);
-        
-        
+
+
     }
-    
-    
+
+
 
     /* (non-Javadoc)
      * @see org.springframework.security.provisioning.UserDetailsManager#deleteUser(java.lang.String)
@@ -454,7 +463,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
     }
 
-    
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IUserService#listByUsername(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
