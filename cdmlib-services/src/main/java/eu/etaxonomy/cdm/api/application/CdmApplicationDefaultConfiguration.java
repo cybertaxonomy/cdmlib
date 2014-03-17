@@ -48,6 +48,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IPrimerService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -100,6 +101,9 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Autowired
     //@Qualifier("occurrenceService")
     private IOccurrenceService occurrenceService;
+    @Autowired
+    //@Qualifier("primerService")
+    private IPrimerService primerService;
     @Autowired
     //@Qualifier("mediaService")
     private IMediaService mediaService;
@@ -190,7 +194,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     public IDatabaseService getDatabaseService() {
         return this.databaseService;
     }
-    
+
     @Autowired
     public void setDataSource(DataSource dataSource) {
     	this.dataSource = dataSource;
@@ -211,7 +215,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     public IReferenceService getReferenceService() {
         return this.referenceService;
     }
-    
+
     @Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
     	this.sessionFactory = sessionFactory;
@@ -254,6 +258,15 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public IOccurrenceService getOccurrenceService(){
         return this.occurrenceService;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService()
+     */
+    @Override
+    public IPrimerService getPrimerService(){
+        return this.primerService;
     }
 
     /*
@@ -320,7 +333,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     public PlatformTransactionManager getTransactionManager() {
         return this.transactionManager;
     }
-    
+
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = (HibernateTransactionManager) transactionManager;

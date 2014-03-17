@@ -1369,6 +1369,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/desc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaRepresentationHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaRepresentationPartHibernateImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/molecular/PrimerDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/HomotypicalGroupDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/NomenclaturalStatusDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImpl.java -text
@@ -1397,6 +1398,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/Ty
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaRepresentationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaRepresentationPartDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/molecular/IPrimerDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/IHomotypicalGroupDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/INomenclaturalStatusDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITaxonNameDao.java -text
@@ -2164,6 +2166,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPreferenceService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPrimerService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IStatisticsService.java -text
@@ -2187,6 +2190,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PrimerServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text

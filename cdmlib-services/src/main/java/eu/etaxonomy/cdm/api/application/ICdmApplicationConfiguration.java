@@ -32,6 +32,7 @@ import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
+import eu.etaxonomy.cdm.api.service.IPrimerService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
@@ -100,6 +101,11 @@ public interface ICdmApplicationConfiguration {
      * @return
      */
     public IOccurrenceService getOccurrenceService();
+
+    /**
+     * @return
+     */
+    public IPrimerService getPrimerService();
 
     /**
      * @return
