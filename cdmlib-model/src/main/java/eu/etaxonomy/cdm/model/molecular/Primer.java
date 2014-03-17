@@ -63,7 +63,7 @@ public class Primer extends AnnotatableEntity {
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	//TODO the use of Sequence in this case is a bit of a overhead since you would expect
-	// just having a SequenceString. This may change in future
+	// just having a SequenceString. This may change in future (see #4139)
 	private Sequence sequence;
 
 	/** @see #getPublishedIn() */
