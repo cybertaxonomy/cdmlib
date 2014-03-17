@@ -34,7 +34,7 @@ public class PrimerServiceImpl extends AnnotatableServiceBase<Primer, IPrimerDao
      * @see eu.etaxonomy.cdm.api.service.IPrimerService#getPrimerUuidAndTitleCache()
      */
     @Override
-    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndLabel() {
+    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache() {
         return dao.getPrimerUuidAndTitleCache();
     }
 

@@ -27,6 +27,6 @@ public interface IPrimerService extends IAnnotatableService<Primer>{
      * {@link Primer}s found in the data base.
      * @return a list of {@link UuidAndTitleCache}
      */
-    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndLabel();
+    public List<UuidAndTitleCache<Primer>> getPrimerUuidAndTitleCache();
 
 }
