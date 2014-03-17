@@ -138,8 +138,18 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     @Override
     public Pager<SpecimenOrObservationBase> search(Class<? extends SpecimenOrObservationBase> clazz, String query, Integer pageSize,Integer pageNumber, List<OrderHint> orderHints,List<String> propertyPaths);
 
+    /**
+     * Retrieves the {@link UUID} and the string representation (title cache) of all
+     * {@link FieldUnit}s found in the data base.
+     * @return a list of {@link UuidAndTitleCache}
+     */
     public List<UuidAndTitleCache<FieldUnit>> getFieldUnitUuidAndTitleCache();
 
+    /**
+     * Retrieves the {@link UUID} and the string representation (title cache) of all
+     * {@link DerivedUnit}s found in the data base.
+     * @return a list of {@link UuidAndTitleCache}
+     */
     public List<UuidAndTitleCache<DerivedUnit>> getDerivedUnitUuidAndTitleCache();
 
     public DerivedUnitFacade getDerivedUnitFacade(DerivedUnit derivedUnit, List<String> propertyPaths) throws DerivedUnitFacadeNotSupportedException;
