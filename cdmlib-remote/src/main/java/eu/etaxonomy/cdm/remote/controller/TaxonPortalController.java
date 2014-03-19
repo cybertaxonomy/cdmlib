@@ -167,7 +167,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.status.type.representations",
             "name.nomenclaturalReference.authorTeam",
             "name.nomenclaturalReference.inReference",
-            "taxonNodes.classification.childNodes",
+            "taxonNodes.classification",
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
