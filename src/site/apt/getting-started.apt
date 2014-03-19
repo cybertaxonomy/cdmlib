@@ -93,7 +93,7 @@ applicationContext.xml
 
 	To use the entire CDM Library with {{{http://www.eclipse.org/} Eclipse}}, you must meet the following prerequisites:
 
-    * Maven 2.2.1 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}}} for installation instructions.
+    * Maven 3 commandline tools. Follow the instruction to install maven on your local machine. See {{{https://dev.e-taxonomy.eu/trac/wiki/GeneralDev#Maven}}} for installation instructions.
 
     * Subclipse 1.6.x (for convenient subversion access from Eclipse). {{{http://subclipse.tigris.org/}}}
 
@@ -110,9 +110,11 @@ $ svn co http://dev.e-taxonomy.eu/svn/trunk/cdmlib/ .
 ---
 
 	Change into the cdmlib directory, compile and install the cdmlib packages in your local repository. This will also download the dependencies into your local repository.
+	You will need to configure the MAVEN_OPTS environment variable to configure JVM memory (-Xmx600M -XX:MaxPermSize=140M ). The below example commands uses the 'export' command which is available in most default shells in Linux.
 
 ---
 $ cd cdmlib
+$ export MAVEN_OPTS=-Xmx600M -XX:MaxPermSize=140M 
 $ mvn install
 ---
 
