@@ -292,5 +292,10 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
     public boolean containsKey(PersistentCollection col, Object key) {
     	return genericDao.containsKey(col, key);
     }
+    
+    @Override
+    public boolean containsValue(PersistentCollection col, Object element) {
+    	return genericDao.containsValue(col, element);
+    }
 
 }

@@ -172,4 +172,14 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 */
 	public boolean containsKey(PersistentCollection col, Object key);
 	
+	/**
+	 * checks whether an value object exists within a persistent collection
+	 * (usually a map)
+	 * 
+	 * @param col the persistent collection 
+	 * @param key the value object to look for.
+	 * @return true if the value object exists in the collection, false o/w
+	 */
+	public boolean containsValue(PersistentCollection col, Object element);
+	
 }

@@ -1252,6 +1252,11 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
     	
     }
     
+    @Override
+    public boolean containsValue(PersistentCollection col, Object element) {    	
+    	return contains(col, element);
+    }
+    
 
 }
 
