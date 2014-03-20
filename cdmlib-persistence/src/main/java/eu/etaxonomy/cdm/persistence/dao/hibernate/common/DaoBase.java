@@ -44,6 +44,7 @@ public abstract class DaoBase {
 
     private class OrderHintComparator implements Comparator<OrderHint> {
 
+        @Override
         public int compare(OrderHint o1, OrderHint o2) {
             return o1.getPropertyName().compareTo(o2.getPropertyName());
         }
@@ -60,6 +61,31 @@ public abstract class DaoBase {
                 orderHint.add(criteria,criteriaMap);
             }
         }
+    }
+
+    /**
+     * Null save method which compiles a order by clause from the given list of OrderHints
+     *
+     * @param orderHints can be NULL
+     * @return a StringBuffer holding the hql orderby clause
+     */
+    protected StringBuffer orderByClause(List<OrderHint> orderHints, String aliasName) {
+
+        StringBuffer orderString = new StringBuffer();
+
+        StringBuffer aliasPrefix = new StringBuffer();
+        aliasPrefix.append(" ");
+        if(aliasName != null && !aliasName.isEmpty()){
+            aliasPrefix.append(aliasName).append(".");
+        }
+
+        if(orderHints != null && !orderHints.isEmpty()) {
+            orderString.append(" order by");
+            for(OrderHint orderHint : orderHints) {
+                orderString.append(aliasPrefix).append(orderHint.toHql());
+            }
+        }
+        return orderString;
     }
 
 }

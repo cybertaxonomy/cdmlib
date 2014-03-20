@@ -481,5 +481,8 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
 
     public List<String> taxaByNameNotInDB(List<String> taxonNames);
 
+    public abstract List<Taxon> listAcceptedTaxaFor(Synonym synonym, Classification classificationFilter, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
+
 
 }

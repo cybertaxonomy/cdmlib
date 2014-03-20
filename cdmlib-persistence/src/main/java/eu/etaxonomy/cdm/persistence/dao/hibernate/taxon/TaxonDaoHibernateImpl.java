@@ -94,7 +94,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     @Autowired
     private ITaxonNameDao taxonNameDao;
 
-//    spelling support currently disabled in appcontext, see spelling.xml ... " 
+//    spelling support currently disabled in appcontext, see spelling.xml ... "
 //    @Autowired(required = false)   //TODO switched of because it caused problems when starting CdmApplicationController
     public void setAlternativeSpellingSuggestionParser(AlternativeSpellingSuggestionParser<TaxonBase> alternativeSpellingSuggestionParser) {
         this.alternativeSpellingSuggestionParser = alternativeSpellingSuggestionParser;
@@ -104,6 +104,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference)
      */
+    @Override
     public List<Taxon> getRootTaxa(Reference sec) {
         return getRootTaxa(sec, CdmFetch.FETCH_CHILDTAXA(), true, false);
     }
@@ -111,6 +112,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.Reference, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
      */
+    @Override
     public List<Taxon> getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications, List<String> propertyPaths) {
         checkNotInPriorView("TaxonDaoHibernateImpl.getRootTaxa(Rank rank, Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications)");
         if (onlyWithChildren == null){
@@ -173,6 +175,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, eu.etaxonomy.cdm.persistence.fetch.CdmFetch, java.lang.Boolean, java.lang.Boolean)
      */
+    @Override
     public List<Taxon> getRootTaxa(Reference sec, CdmFetch cdmFetch, Boolean onlyWithChildren, Boolean withMisapplications) {
         return getRootTaxa(null, sec, cdmFetch, onlyWithChildren, withMisapplications, null);
     }
@@ -181,6 +184,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.model.reference.Reference)
      */
+    @Override
     public List<TaxonBase> getTaxaByName(String queryString, Reference sec) {
 
         return getTaxaByName(queryString, true, sec);
@@ -190,6 +194,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, java.lang.Boolean, eu.etaxonomy.cdm.model.reference.Reference)
      */
+    @Override
     public List<TaxonBase> getTaxaByName(String queryString, Boolean accepted, Reference sec) {
         checkNotInPriorView("TaxonDaoHibernateImpl.getTaxaByName(String name, Reference sec)");
 
@@ -211,7 +216,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             criteria.add(Restrictions.ilike("name.nameCache", queryString));
         }
 
-        return (List<TaxonBase>)criteria.list();
+        return criteria.list();
     }
 
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, String queryString, MatchMode matchMode,
@@ -224,6 +229,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.lang.Boolean, java.lang.Integer, java.lang.Integer)
      */
+    @Override
     public List<TaxonBase> getTaxaByName(String queryString, MatchMode matchMode,
             Boolean accepted, Integer pageSize, Integer pageNumber) {
 
@@ -242,6 +248,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
      */
+    @Override
     public List<TaxonBase> getTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames,String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
             Integer pageNumber, List<String> propertyPaths) {
@@ -269,6 +276,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByName(java.lang.Class, java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
      */
     //new search for the editor, for performance issues the return values are only uuid and titleCache, to avoid the initialisation of all objects
+    @Override
     @SuppressWarnings("unchecked")
     public List<UuidAndTitleCache<TaxonBase>> getTaxaByNameForEditor(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas) {
@@ -315,9 +323,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxaByCommonName(java.lang.String, eu.etaxonomy.cdm.model.taxon.Classification, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.Set, java.lang.Integer, java.lang.Integer, java.util.List)
      */
+    @Override
     public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
-           	MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
-           	Integer pageNumber, List<String> propertyPaths) {
+               MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
+               Integer pageNumber, List<String> propertyPaths) {
         boolean doCount = false;
         Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
         if (query != null){
@@ -655,86 +664,86 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
             //FIXME : the fourth element of the result should be a boolean, but in the case of a synonym
             // (which does require a check) a constant boolean (false) value needs to set. It seems that
-            // hql cannot parse a constant boolean value in the select list clause. This implies that the 
+            // hql cannot parse a constant boolean value in the select list clause. This implies that the
             // resulting object could be a Boolean or a String. The workaround for this is to convert the
-            // resutling object into a String (using toString) and then create a new Boolean object from 
+            // resutling object into a String (using toString) and then create a new Boolean object from
             // String.
             if (doTaxa && doSynonyms){
-                if(synonyms.size()>0 && taxa.size()>0){                                    
-                	hql = "select " + selectWhat;
-                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                	// also return the computed isOrphaned flag
-                	if (doNotReturnFullEntities &&  !doCount ){
-                		hql += ", case when t.id in (:taxa) then 'taxon' else 'synonym' end, " + 
-                				" case when t.id in (:taxa) and t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                	}
-                	hql +=  " from %s t " +
-                			" where (t.id in (:taxa) OR t.id in (:synonyms)) ";                    
-                }else if (synonyms.size()>0 ){                	
-                	hql = "select " + selectWhat;
-                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                	// also return the computed isOrphaned flag
-                	if (doNotReturnFullEntities &&  !doCount ){
-                		hql += ", 'synonym', 'false' ";
+                if(synonyms.size()>0 && taxa.size()>0){
+                    hql = "select " + selectWhat;
+                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                    // also return the computed isOrphaned flag
+                    if (doNotReturnFullEntities &&  !doCount ){
+                        hql += ", case when t.id in (:taxa) then 'taxon' else 'synonym' end, " +
+                                " case when t.id in (:taxa) and t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                    }
+                    hql +=  " from %s t " +
+                            " where (t.id in (:taxa) OR t.id in (:synonyms)) ";
+                }else if (synonyms.size()>0 ){
+                    hql = "select " + selectWhat;
+                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                    // also return the computed isOrphaned flag
+                    if (doNotReturnFullEntities &&  !doCount ){
+                        hql += ", 'synonym', 'false' ";
 
-                	}
-                	hql +=  " from %s t " +
-                			" where t.id in (:synonyms) ";       
-                	
+                    }
+                    hql +=  " from %s t " +
+                            " where t.id in (:synonyms) ";
+
                 } else if (taxa.size()>0 ){
-                	hql = "select " + selectWhat;
-                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                	// also return the computed isOrphaned flag
-                	if (doNotReturnFullEntities &&  !doCount ){
-                		hql += ", 'taxon', " + 
-                				" case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                	}
-                	hql +=  " from %s t " +
-                			" where t.id in (:taxa) ";  
-                	
+                    hql = "select " + selectWhat;
+                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                    // also return the computed isOrphaned flag
+                    if (doNotReturnFullEntities &&  !doCount ){
+                        hql += ", 'taxon', " +
+                                " case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                    }
+                    hql +=  " from %s t " +
+                            " where t.id in (:taxa) ";
+
                 } else{
                     hql = "select " + selectWhat + " from %s t";
                 }
             } else if(doTaxa){
-                if  (taxa.size()>0){                	
-                	hql = "select " + selectWhat;
-                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                	// also return the computed isOrphaned flag
-                	if (doNotReturnFullEntities){
-                		hql += ", 'taxon', " + 
-                				" case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-                	}
-                	hql +=  " from %s t " +
-                			" where t.id in (:taxa) ";  
-                	
+                if  (taxa.size()>0){
+                    hql = "select " + selectWhat;
+                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                    // also return the computed isOrphaned flag
+                    if (doNotReturnFullEntities){
+                        hql += ", 'taxon', " +
+                                " case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                    }
+                    hql +=  " from %s t " +
+                            " where t.id in (:taxa) ";
+
                 }else{
                     hql = "select " + selectWhat + " from %s t";
                 }
             } else if(doSynonyms){
                 if (synonyms.size()>0){
-                	
-                	hql = "select " + selectWhat;
-                	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-                	// also return the computed isOrphaned flag
-                	if (doNotReturnFullEntities){
-                		hql += ", 'synonym', 'false' ";                 			
-                	}
-                	hql +=  " from %s t " +
-                			" where t.id in (:synonyms) ";                    	
+
+                    hql = "select " + selectWhat;
+                    // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                    // also return the computed isOrphaned flag
+                    if (doNotReturnFullEntities){
+                        hql += ", 'synonym', 'false' ";
+                    }
+                    hql +=  " from %s t " +
+                            " where t.id in (:synonyms) ";
                 }else{
                     hql = "select " + selectWhat + " from %s t";
                 }
             } else if (doIncludeMisappliedNames){
-            	hql = "select " + selectWhat;
-            	// in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
-            	// also return the computed isOrphaned flag
-            	if (doNotReturnFullEntities){
-            		hql += ", 'taxon', " + 
-            				" case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
-            	}
-            	hql +=  " from %s t " +
-            			" where t.id in (:taxa) ";  
-            	
+                hql = "select " + selectWhat;
+                // in doNotReturnFullEntities mode it is nesscary to also return the type of the matching entities:
+                // also return the computed isOrphaned flag
+                if (doNotReturnFullEntities){
+                    hql += ", 'taxon', " +
+                            " case when t.taxonNodes is empty and t.relationsFromThisTaxon is empty and t.relationsToThisTaxon is empty then true else false end ";
+                }
+                hql +=  " from %s t " +
+                        " where t.id in (:taxa) ";
+
             }
 
             String classString;
@@ -751,7 +760,9 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             hql = String.format(hql, classString);
 
 
-            if (hql == "") return null;
+            if (hql == "") {
+                return null;
+            }
             if(!doCount){
                 hql += " order by t.name.genusOrUninomial, case when t.name.specificEpithet like '\"%\"' then 1 else 0 end, t.name.specificEpithet, t.name.rank desc, t.name.nameCache";
             }
@@ -855,6 +866,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, eu.etaxonomy.cdm.persistence.query.SelectMode, eu.etaxonomy.cdm.model.reference.Reference, java.util.Set)
      */
+    @Override
     public long countTaxaByName(boolean doTaxa, boolean doSynonyms, boolean doMisappliedNames, String queryString, Classification classification,
         MatchMode matchMode, Set<NamedArea> namedAreas) {
 
@@ -921,6 +933,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 //		return count.intValue();
 //	}
 
+    @Override
     public List<TaxonBase> getAllTaxonBases(Integer pagesize, Integer page) {
         return super.list(pagesize, page);
     }
@@ -929,6 +942,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllSynonyms(java.lang.Integer, java.lang.Integer)
      */
+    @Override
     public List<Synonym> getAllSynonyms(Integer limit, Integer start) {
         Criteria criteria = getSession().createCriteria(Synonym.class);
 
@@ -944,6 +958,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getAllTaxa(java.lang.Integer, java.lang.Integer)
      */
+    @Override
     public List<Taxon> getAllTaxa(Integer limit, Integer start) {
         Criteria criteria = getSession().createCriteria(Taxon.class);
 
@@ -996,7 +1011,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(clazz,auditEvent.getRevisionNumber());
-            return (List<RelationshipBase>)query.getResultList();
+            return query.getResultList();
         }
     }
 
@@ -1057,6 +1072,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, int, int, boolean)
      */
+    @Override
     public List<TaxonBase> findByNameTitleCache(boolean doTaxa, boolean doSynonyms, String queryString, Classification classification, MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageNumber, Integer pageSize, List<String> propertyPaths) {
 
         boolean doCount = false;
@@ -1073,6 +1089,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
 <    * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findByUuid(java.util.UUID, java.util.List<org.hibernate.criterion.Criterion>, java.util.List<java.lang.String>)
      */
+    @Override
     public TaxonBase findByUuid(UUID uuid, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
@@ -1104,6 +1121,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return null;
     }
 
+    @Override
     public List<? extends TaxonBase> findByUuids(List<UUID> uuids, List<Criterion> criteria, List<String> propertyPaths) {
 
         Criteria crit = getSession().createCriteria(type);
@@ -1131,6 +1149,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean)
      */
+    @Override
     public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted)");
         Criteria crit = getSession().createCriteria(type);
@@ -1144,6 +1163,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countMatchesByName(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, boolean, java.util.List)
      */
+    @Override
     public int countMatchesByName(String queryString, MatchMode matchMode, boolean onlyAcccepted, List<Criterion> criteria) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countMatchesByName(String queryString, ITitledDao.MATCH_MODE matchMode, boolean onlyAcccepted, List<Criterion> criteria)");
         Criteria crit = getSession().createCriteria(type);
@@ -1162,6 +1182,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
      */
+    @Override
     public int countTaxonRelationships(Taxon taxon, TaxonRelationshipType type, Direction direction) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1193,6 +1214,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
      */
+    @Override
     public int countSynonyms(Taxon taxon, SynonymRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1203,7 +1225,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 criteria.add(Restrictions.eq("type", type));
             }
             criteria.setProjection(Projections.rowCount());
-    		return ((Number)criteria.uniqueResult()).intValue();
+            return ((Number)criteria.uniqueResult()).intValue();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedTo").eq(taxon.getId()));
@@ -1221,6 +1243,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countSynonyms(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType)
      */
+    @Override
     public int countSynonyms(Synonym synonym, SynonymRelationshipType type) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1232,7 +1255,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
 
             criteria.setProjection(Projections.rowCount());
-    		return ((Number)criteria.uniqueResult()).intValue();
+            return ((Number)criteria.uniqueResult()).intValue();
         } else {
             AuditQuery query = getAuditReader().createQuery().forEntitiesAtRevision(SynonymRelationship.class,auditEvent.getRevisionNumber());
             query.add(AuditEntity.relatedId("relatedFrom").eq(synonym.getId()));
@@ -1250,6 +1273,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank)
      */
+    @Override
     public int countTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank) {
         checkNotInPriorView("TaxonDaoHibernateImpl.countTaxaByName(Boolean accepted, String genusOrUninomial,	String infraGenericEpithet, String specificEpithet,	String infraSpecificEpithet, Rank rank)");
         Criteria criteria = null;
@@ -1290,13 +1314,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         criteria.setProjection(Projections.projectionList().add(Projections.rowCount()));
 
-		return ((Number)criteria.uniqueResult()).intValue();
+        return ((Number)criteria.uniqueResult()).intValue();
     }
 
     /*
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#findTaxaByName(java.lang.Class, java.lang.String, java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.name.Rank, java.lang.Integer, java.lang.Integer)
      */
+    @Override
     public List<TaxonBase> findTaxaByName(Class<? extends TaxonBase> clazz, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber) {
         checkNotInPriorView("TaxonDaoHibernateImpl.findTaxaByName(Boolean accepted, String genusOrUninomial, String infraGenericEpithet, String specificEpithet, String infraSpecificEpithet, Rank rank, Integer pageSize,	Integer pageNumber)");
         Criteria criteria = null;
@@ -1346,13 +1371,14 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
             }
         }
 
-        return (List<TaxonBase>)criteria.list();
+        return criteria.list();
     }
 
     /*
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getTaxonRelationships(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction)
      */
+    @Override
     public List<TaxonRelationship> getTaxonRelationships(Taxon taxon, TaxonRelationshipType type,
             Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths, Direction direction) {
 
@@ -1385,7 +1411,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<TaxonRelationship> result = (List<TaxonRelationship>)criteria.list();
+            List<TaxonRelationship> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1406,7 +1432,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<TaxonRelationship> result = (List<TaxonRelationship>)query.getResultList();
+            List<TaxonRelationship> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             // Ugly, but for now, there is no way to sort on a related entity property in Envers,
@@ -1424,6 +1450,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     class TaxonRelationshipFromTaxonComparator implements Comparator<TaxonRelationship> {
 
+        @Override
         public int compare(TaxonRelationship o1, TaxonRelationship o2) {
             return o1.getFromTaxon().getTitleCache().compareTo(o2.getFromTaxon().getTitleCache());
         }
@@ -1432,6 +1459,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     class SynonymRelationshipFromTaxonComparator implements Comparator<SynonymRelationship> {
 
+        @Override
         public int compare(SynonymRelationship o1, SynonymRelationship o2) {
             return o1.getSynonym().getTitleCache().compareTo(o2.getSynonym().getTitleCache());
         }
@@ -1442,6 +1470,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getSynonyms(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
+    @Override
     public List<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1463,7 +1492,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = (List<SynonymRelationship>)criteria.list();
+            List<SynonymRelationship> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1484,7 +1513,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = (List<SynonymRelationship>)query.getResultList();
+            List<SynonymRelationship> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1495,6 +1524,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#getSynonyms(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
      */
+    @Override
     public List<SynonymRelationship> getSynonyms(Synonym synonym, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
         AuditEvent auditEvent = getAuditEventFromContext();
         if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
@@ -1516,7 +1546,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = (List<SynonymRelationship>)criteria.list();
+            List<SynonymRelationship> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1537,7 +1567,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = (List<SynonymRelationship>)query.getResultList();
+            List<SynonymRelationship> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1576,10 +1606,47 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return alternativeQueryString;
     }
 
+    @Override
+    public List<Taxon> listAcceptedTaxaFor(Synonym synonym, Classification classificationFilter, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths){
+
+        String hqlSelect = "from Taxon as taxon left join taxon.synonymRelations as synRel ";
+        String hqlWhere = " where synRel.relatedFrom = :synonym";
+
+        if(classificationFilter != null){
+            hqlSelect += " left join taxon.taxonNodes AS taxonNode";
+            hqlWhere += " and taxonNode.classification = :classificationFilter";
+        }
+
+        Query query = getSession().createQuery(hqlSelect + hqlWhere + orderByClause(orderHints, "taxon"));
+        query.setParameter("synonym", synonym);
+
+        if(classificationFilter != null){
+            query.setParameter("classificationFilter", classificationFilter);
+        }
+
+
+        if(pageSize != null) {
+            query.setMaxResults(pageSize);
+            if(pageNumber != null) {
+                query.setFirstResult(pageNumber * pageSize);
+            }
+        }
+
+        @SuppressWarnings("unchecked")
+        List<Taxon> result = query.list();
+
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+
+        return result;
+
+    }
+
     /*
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getUuidAndTitleCacheOfAcceptedTaxa(eu.etaxonomy.cdm.model.taxon.Classification)
      */
+    @Override
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification) {
 
         int classificationId = classification.getId();
@@ -1729,6 +1796,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
      * (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#countAllRelationships()
      */
+    @Override
     public int countAllRelationships() {
         return countAllRelationships(null);
     }
@@ -1755,6 +1823,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
 
+    @Override
     public List<String> taxaByNameNotInDB(List<String> taxonNames){
         List<TaxonBase> notInDB = new ArrayList<TaxonBase>();
         //get all taxa, already in db
@@ -1776,6 +1845,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     //TODO: mal nur mit UUID probieren (ohne fetch all properties), vielleicht geht das schneller?
+    @Override
     public List<UUID> findIdenticalTaxonNameIds(List<String> propertyPaths){
         Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
         List<UUID> zooNames = query.list();
@@ -1784,6 +1854,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
     }
 
+    @Override
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPaths) {
 
         Query query=getSession().createQuery("select tmb2 from ZoologicalName tmb, ZoologicalName tmb2 fetch all properties where tmb.id != tmb2.id and tmb.nameCache = tmb2.nameCache");
@@ -1800,6 +1871,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
         return zooNames;
     }
 
+    @Override
     public List<TaxonNameBase> findIdenticalNamesNew(List<String> propertyPaths){
 
         //Hole die beiden Source_ids von "Fauna Europaea" und "Erms" und in sources der names darf jeweils nur das entgegengesetzte auftreten (i member of tmb.taxonBases)
@@ -1849,6 +1921,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
 
 
+    @Override
     public String getPhylumName(TaxonNameBase name){
         List results = new ArrayList();
         try{
@@ -1863,6 +1936,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
 
+    @Override
     public long countTaxaByCommonName(String searchString,
             Classification classification, MatchMode matchMode,
             Set<NamedArea> namedAreas) {
@@ -1881,6 +1955,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao#deleteSynonymRelationships(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon)
      */
+    @Override
     public long deleteSynonymRelationships(Synonym synonym, Taxon taxon) {
 
         String hql = "delete SynonymRelationship sr where sr.relatedFrom = :syn ";
@@ -1960,7 +2035,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = (List<SynonymRelationship>)criteria.list();
+            List<SynonymRelationship> result = criteria.list();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             return result;
@@ -1986,7 +2061,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 }
             }
 
-            List<SynonymRelationship> result = (List<SynonymRelationship>)query.getResultList();
+            List<SynonymRelationship> result = query.getResultList();
             defaultBeanInitializer.initializeAll(result, propertyPaths);
 
             // Ugly, but for now, there is no way to sort on a related entity property in Envers,
