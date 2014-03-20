@@ -22,6 +22,8 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
 
     private boolean isDone;
 
+    private String origin;
+
     public RestServiceProgressMonitor(){
         super();
     }
@@ -75,7 +77,6 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
         }
         super.internalWorked(work);
     }
-
     @Override
     public boolean isDone() {
         return isDone;
@@ -90,6 +91,22 @@ public class RestServiceProgressMonitor extends DefaultProgressMonitor implement
     public void done() {
         this.isDone = true;
         super.done();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor#setDownloadPath(java.lang.String)
+     */
+    @Override
+    public void setOrigin(String origin) {
+        this.origin = origin;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor#getDownloadPath()
+     */
+    @Override
+    public String getOrigin() {
+        return this.origin;
     }
 
 }

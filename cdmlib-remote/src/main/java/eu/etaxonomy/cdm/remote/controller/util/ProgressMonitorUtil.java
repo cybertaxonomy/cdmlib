@@ -18,6 +18,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.view.RedirectView;
 
+import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.RestServiceProgressMonitor;
 import eu.etaxonomy.cdm.remote.controller.ProgressMonitorController;
 import eu.etaxonomy.cdm.remote.json.JsonpRedirect;
@@ -54,21 +55,73 @@ public class ProgressMonitorUtil {
         String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
         response.setHeader("Location", monitorPath);
         boolean isJSONP = request.getParameter("callback") != null;
-        if(isJSONP){
-            JsonpRedirect jsonpRedirect;
-            if(frontendBaseUrl != null){
-                jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
-            } else {
-                jsonpRedirect = new JsonpRedirect(request, monitorPath);
-            }
-            mv.addObject(jsonpRedirect);
 
-        } else {
-            RedirectView redirectView = new RedirectView(monitorPath);
-            mv.setView(redirectView);
+
+            if(isJSONP){
+                JsonpRedirect jsonpRedirect;
+                if(frontendBaseUrl != null){
+                    jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
+                } else {
+                    jsonpRedirect = new JsonpRedirect(request, monitorPath);
+                }
+                mv.addObject(jsonpRedirect);
+
+            } else {
+                RedirectView redirectView = new RedirectView(monitorPath);
+                mv.setView(redirectView);
+            }
+
+        return mv;
+    }
+
+
+    /**
+     * send redirect "see other"
+     *
+     * @param frontendBaseUrl
+     * @param request
+     * @param response
+     * @param processLabel
+     * @param monitorUuid
+     * @return
+     * @throws IOException
+     */
+    public ModelAndView respondWithMonitorOrDownload(String frontendBaseUrl, String downloadUrl, HttpServletRequest request, HttpServletResponse response, String processLabel,
+            final UUID monitorUuid) throws IOException {
+
+        //TODO: add reference to exportCSV...
+        ModelAndView mv = new ModelAndView();
+        String monitorPath = progressMonitorController.pathFor(request, monitorUuid);
+        IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(monitorUuid);
+
+        if(monitor.isDone() && !monitor.isCanceled() && !monitor.isFailed()){
+            if(downloadUrl != null){
+                response.setHeader("Loaction", downloadUrl);
+                RedirectView redirectView = new RedirectView(downloadUrl);
+                mv.setView(redirectView);
+                return mv;
+            }
+        }else{
+
+            response.setHeader("Location", monitorPath);
+            boolean isJSONP = request.getParameter("callback") != null;
+            if(isJSONP){
+                JsonpRedirect jsonpRedirect;
+                if(frontendBaseUrl != null){
+                    jsonpRedirect = new JsonpRedirect(frontendBaseUrl, monitorPath);
+                } else {
+                    jsonpRedirect = new JsonpRedirect(request, monitorPath);
+                }
+                mv.addObject(jsonpRedirect);
+
+            } else {
+                RedirectView redirectView = new RedirectView(monitorPath);
+                mv.setView(redirectView);
+            }
         }
         return mv;
     }
+
 
     /**
      * @return

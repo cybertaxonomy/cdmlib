@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.common.monitor;
 
+
 public interface IRestServiceProgressMonitor extends IProgressMonitor{
 
     public String getTaskName();
@@ -32,5 +33,14 @@ public interface IRestServiceProgressMonitor extends IProgressMonitor{
     public boolean isDone();
 
     public void setDone(boolean isDone);
+
+    /**
+     * Should be set if original request has to be specified
+     * @param downloadPath
+     * @return
+     */
+    public void setOrigin(String origin);
+
+    public String getOrigin();
 
 }
