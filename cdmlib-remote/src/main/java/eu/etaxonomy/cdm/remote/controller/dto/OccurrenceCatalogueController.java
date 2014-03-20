@@ -8,7 +8,6 @@
  */
 package eu.etaxonomy.cdm.remote.controller.dto;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -22,7 +21,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.formula.functions.T;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -41,7 +39,6 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
-import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -175,14 +172,15 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
                     throws IOException {
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
-        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/occurrence-catalogue-default.apt");
+//        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/occurrence-catalogue-default.apt");
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
-        InputStream aptInputStream = resource.getInputStream();
+//        InputStream aptInputStream = resource.getInputStream();
         // Build Html View
         Map<String, String> modelMap = new HashMap<String, String>();
         // Convert Apt to Html
-        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
+//        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
+        modelMap.put("html", "");
         mv.addAllObjects(modelMap);
 
         HtmlView hv = new HtmlView();
