@@ -51,11 +51,13 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -456,6 +458,20 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          if(identifiableEntity instanceof NonViralName) {
              specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
              specifiedTitleCache = identifiableEntity.getTitleCache();
+            if (identifiableEntity instanceof BotanicalName){
+            	 if (((BotanicalName)identifiableEntity).isAutonym()){
+            		 boolean isProtected = false;
+            		 String oldNameCache = ((BotanicalName) identifiableEntity).getNameCache();
+            		 if ( ((BotanicalName)identifiableEntity).isProtectedNameCache()){
+            			 isProtected = true;
+            		 }
+            		 ((BotanicalName)identifiableEntity).setProtectedNameCache(false);
+            		 ((BotanicalName)identifiableEntity).setNameCache(null, false);
+            		 specifiedNameCache = ((BotanicalName) identifiableEntity).getNameCache();
+            		 ((BotanicalName)identifiableEntity).setNameCache(oldNameCache, isProtected);
+            		 
+            	 }
+             }
 
          } else if(identifiableEntity instanceof TaxonBase) {
              TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
@@ -478,6 +494,20 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
+             
+             if (this instanceof BotanicalName){
+            	 if (((BotanicalName)this).isAutonym()){
+            		 boolean isProtected = false;
+            		 String oldNameCache = ((BotanicalName) this).getNameCache();
+            		 if ( ((BotanicalName)this).isProtectedNameCache()){
+            			 isProtected = true;
+            		 }
+            		 ((BotanicalName)this).setProtectedNameCache(false);
+            		 ((BotanicalName)this).setNameCache(null, false);
+            		 thisNameCache = ((BotanicalName) this).getNameCache();
+            		 ((BotanicalName)this).setNameCache(oldNameCache, isProtected);
+            	 }
+             }
          } else if(this.isInstanceOf(TaxonBase.class)) {
              TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
              NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
@@ -488,6 +518,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          }
 
          // Compare name cache of taxon names
+         
+        
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
              result = thisNameCache.compareTo(specifiedNameCache);

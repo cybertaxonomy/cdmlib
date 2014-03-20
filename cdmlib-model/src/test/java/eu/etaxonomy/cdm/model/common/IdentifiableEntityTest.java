@@ -43,13 +43,21 @@ public class IdentifiableEntityTest {
 	
 	private Taxon abiesTaxon;
 	private Taxon abiesMillTaxon;
+	
+	private NonViralName<?> abiesAutonym;
+	private Taxon abiesAutonymTaxon;
+	
+	private NonViralName<?> abiesBalsamea;
+	private Taxon abiesBalsameaTaxon;
 	/**
 	 * @throws java.lang.Exception
 	 */
+	
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -87,6 +95,22 @@ public class IdentifiableEntityTest {
 		abiesAlbaMill = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlbaMill.setNameCache("Abies alba");
 		abiesAlbaMill.setTitleCache("Abies alba Mill.", true);
+		
+		abiesAutonym  = NonViralName.NewInstance(Rank.SECTION_BOTANY());
+		abiesAutonym.setGenusOrUninomial("Abies");
+		abiesAutonym.setInfraGenericEpithet("Abies");
+		
+		abiesAutonym.setTitleCache("Abies Mill. sect. Abies", true);
+		abiesAutonym.getNameCache();
+		abiesAutonymTaxon = Taxon.NewInstance(abiesAutonym, sec);
+		
+		abiesBalsamea  = NonViralName.NewInstance(Rank.SECTION_BOTANY());
+		abiesBalsamea.setGenusOrUninomial("Abies");
+		abiesBalsamea.setInfraGenericEpithet("Balsamea");
+		abiesBalsamea.getNameCache();
+		abiesBalsamea.setTitleCache("Abies sect. Balsamea L.", true);
+		abiesBalsameaTaxon = Taxon.NewInstance(abiesBalsamea, sec);
+		
 	}
 
 	/**
@@ -134,7 +158,11 @@ public class IdentifiableEntityTest {
 		// "Abies alba Michx." > "Abies Mill."
 		result = abiesAlbaMichx.compareTo(abiesMill);
 		assertTrue(result > 0);
-
+		
+		//Autonym should sorted without the authorstring
+		
+		result = abiesAutonym.compareTo(abiesBalsamea);
+		assertTrue(result < 0);
 	    // Test consistency of compareTo() with equals(): 
 		// Is consistent if and only if for every e1 and e2 of class C
 		// e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2) 

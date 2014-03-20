@@ -590,32 +590,56 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
      * @return
      */
     private List<TaggedText> handleTaggedAutonym(T nonViralName) {
-
-        //species part
-        List<TaggedText> tags = getSpeciesTaggedNameCache(nonViralName);
-
-        //author
-        String authorCache = getAuthorshipCache(nonViralName);
-        if (StringUtils.isNotBlank(authorCache)){
-            tags.add(new TaggedText(TagEnum.authors, authorCache));
-        }
-
-
-        //infra species marker
-        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
-            //TODO handle exception
-            logger.warn("Rank for autonym does not exist or is not lower than species !!");
-        }else{
-            String infraSpeciesMarker = nonViralName.getRank().getAbbreviation();
-            if (StringUtils.isNotBlank(infraSpeciesMarker)){
-                tags.add(new TaggedText(TagEnum.rank, infraSpeciesMarker));
-            }
-        }
-
-        //infra species
-        String infraSpeciesPart = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim();
-        if (StringUtils.isNotBlank(infraSpeciesPart)){
-            tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
+    	List<TaggedText> tags = null;
+    	if (nonViralName.isInfraSpecific()){
+	        //species part
+	        tags = getSpeciesTaggedNameCache(nonViralName);
+	
+	        //author
+	        String authorCache = getAuthorshipCache(nonViralName);
+	        if (StringUtils.isNotBlank(authorCache)){
+	            tags.add(new TaggedText(TagEnum.authors, authorCache));
+	        }
+	
+	
+	        //infra species marker
+	        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraSpecific()){
+	            //TODO handle exception
+	            logger.warn("Rank for autonym does not exist or is not lower than species !!");
+	        }else{
+	            String infraSpeciesMarker = nonViralName.getRank().getAbbreviation();
+	            if (StringUtils.isNotBlank(infraSpeciesMarker)){
+	                tags.add(new TaggedText(TagEnum.rank, infraSpeciesMarker));
+	            }
+	        }
+	
+	        //infra species
+	        String infraSpeciesPart = CdmUtils.Nz(nonViralName.getInfraSpecificEpithet()).trim();
+	        if (StringUtils.isNotBlank(infraSpeciesPart)){
+	            tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
+	        }
+        } else if (nonViralName.isInfraGeneric()){
+        	//genus part
+	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
+	
+	       
+	        //infra species marker
+	        if (nonViralName.getRank() == null || !nonViralName.getRank().isInfraGeneric()){
+	            //TODO handle exception
+	            logger.warn("Rank for autonym does not exist or is not lower than species !!");
+	        }else{
+	            String infraGenericMarker = nonViralName.getRank().getAbbreviation();
+	            if (StringUtils.isNotBlank(infraGenericMarker)){
+	                tags.add(new TaggedText(TagEnum.rank, infraGenericMarker));
+	            }
+	        }
+	
+	        //infra species
+	        String infraGenericPart = CdmUtils.Nz(nonViralName.getInfraGenericEpithet()).trim();
+	        if (StringUtils.isNotBlank(infraGenericPart)){
+	            tags.add(new TaggedText(TagEnum.name, infraGenericPart));
+	        }
+        	
         }
 
         return tags;
