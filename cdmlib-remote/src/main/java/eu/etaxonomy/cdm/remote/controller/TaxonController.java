@@ -109,7 +109,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
      */
     @Deprecated
     @RequestMapping(value = "accepted/{classification_uuid}", method = RequestMethod.GET)
-    public ModelAndView getAcceptedForWithClassificationFilter(
+    public List<Taxon> getAcceptedForWithClassificationFilter(
                 @PathVariable("uuid") UUID uuid,
                 @PathVariable("classification_uuid") UUID classification_uuid,
                 @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -123,7 +123,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
     }
 
     @RequestMapping(value = "accepted", method = RequestMethod.GET)
-    public ModelAndView getAcceptedFor(
+    public List<Taxon> getAcceptedFor(
             @PathVariable("uuid") UUID uuid,
             @RequestParam(value = "classificationFilter", required = false) UUID classification_uuid,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -135,19 +135,17 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             logger.info("getAccepted() " + requestPathAndQuery(request));
         }
 
-        ModelAndView mv = new ModelAndView();
-
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
+        List<Taxon> resultset = new ArrayList<Taxon>();
         try {
-            List<Taxon> resultset = service.listAcceptedTaxaFor(uuid, classification_uuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, getInitializationStrategy());
-            mv.addObject(resultset);
+            resultset = service.listAcceptedTaxaFor(uuid, classification_uuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, getInitializationStrategy());
         } catch (EntityNotFoundException e){
             HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
 
-        return mv;
+        return resultset;
     }
 
     @RequestMapping(value = "classifications", method = RequestMethod.GET)
