@@ -22,7 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -112,7 +111,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 @Controller
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
-public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
+public class TaxonPortalController extends TaxonController
 {
 
     public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -588,47 +587,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return mv;
     }
 
-    /**
-     * Get the set of accepted {@link Taxon} entities for a given
-     * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>
-     *
-     * @param request
-     * @param response
-     * @return a Set of {@link Taxon} entities which are initialized
-     *         using the following initialization strategy:
-     *         {@link #SYNONYMY_INIT_STRATEGY}
-     * @throws IOException
-     */
-    @RequestMapping(value = "accepted/{classification_uuid}", method = RequestMethod.GET)
-    public ModelAndView getAccepted(
-                @PathVariable("uuid") UUID uuid,
-                @PathVariable("classification_uuid") UUID classification_uuid,
-                @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
-                @RequestParam(value = "pageSize", required = false) Integer pageSize,
-                HttpServletRequest request,
-                HttpServletResponse response)
-                throws IOException {
-
-        if(request != null){
-            logger.info("getAccepted() " + requestPathAndQuery(request));
-        }
-
-        ModelAndView mv = new ModelAndView();
-
-        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
-        pagerParams.normalizeAndValidate(response);
-
-        try {
-            List<Taxon> resultset = service.listAcceptedTaxaFor(uuid, classification_uuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, getInitializationStrategy());
-            mv.addObject(resultset);
-        } catch (EntityNotFoundException e){
-            HttpStatusMessage.UUID_NOT_FOUND.send(response);
-        }
-
-        return mv;
-    }
 
     /**
      * Get the list of {@link TaxonRelationship}s for the given
@@ -739,6 +697,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return p.getRecords();
     }
 
+    @Override
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
     public Set<TaxonNode>  doGetTaxonNodes(
             @PathVariable("uuid") UUID uuid,

@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.WebDataBinder;
 import org.springframework.web.bind.annotation.InitBinder;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -415,4 +416,16 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         }
     }
+
+    @RequestMapping(value = "bestMatchingTaxon/{taxonName}", method = RequestMethod.GET)
+    public TaxonBase doFindBestMatchingTaxon(
+             @PathVariable("taxonName") String taxonName,
+            HttpServletRequest request,
+            HttpServletResponse response)throws IOException {
+
+        Taxon bestMatchingTaxon =  service.findBestMatchingTaxon(taxonName);
+
+        return bestMatchingTaxon;
+    }
+
 }
