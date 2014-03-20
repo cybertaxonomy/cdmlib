@@ -295,12 +295,28 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 occurrenceIds.add(o.getId());
             }
         }
-
         occurrences = (List<T>) dao.listByIds(occurrenceIds, pageSize, pageNumber, orderHints, propertyPaths);
 
         return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
 
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageByAssociatedTaxon(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        UUID uuid = UUID.fromString(taxonUUID);
+        Taxon tax = (Taxon) taxonDao.load(uuid);
+       //TODO REMOVE NULL STATEMENT
+type=null;
+        return pageByAssociatedTaxon( type,includeRelationships,tax, maxDepth, pageSize, pageNumber, orderHints, propertyPaths );
+
+    }
+
 
     @Override
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(

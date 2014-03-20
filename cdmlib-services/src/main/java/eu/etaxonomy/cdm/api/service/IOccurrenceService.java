@@ -231,6 +231,21 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             String queryString, Rectangle boundingBox, List<Language> languages, boolean highlightFragments, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) throws CorruptIndexException,
             IOException, ParseException;
+    /**
+     * See {@link #listByAssociatedTaxon(Class, Set, String, Integer, Integer, Integer, List, List)}
+     *
+     * @param type
+     * @param includeRelationships
+     * @param associatedTaxon
+     * @param maxDepth
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return a Pager
+     */
+    public <T extends SpecimenOrObservationBase> Pager<T>  pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
 
 }
