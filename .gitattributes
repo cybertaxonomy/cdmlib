@@ -1875,6 +1875,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyListCon
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/checklist/ChecklistDemoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/checklist/CsvExportController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/NameCatalogueController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/OccurrenceCatalogueController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/PolytomousKeyNodeDtoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalBhleController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalGeoController.java -text
@@ -1937,6 +1938,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/SetSpec.java -tex
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Status.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Verb.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/package-info.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/occurrencecatalogue/OccurrenceSearch.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/AbstractLinkDto.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/LinkedPolytomousKeyNodeRowDto.java -text
