@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
@@ -114,6 +116,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IOrderedTermVocabularyDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.name.ITaxonNameDao;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.fetch.CdmFetch;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
@@ -148,7 +151,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Autowired
     private ITaxonNodeService nodeService;
 
-
     @Autowired
     private ICdmGenericDao genericDao;
 
@@ -160,6 +162,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     @Autowired
     private IOccurrenceDao occurrenceDao;
+
+    @Autowired
+    private IClassificationDao classificationDao;
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
@@ -302,7 +307,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         for (Synonym heteroSynonym : heteroSynonyms){
             if (synonym.equals(heteroSynonym)){
                 acceptedTaxon.removeSynonym(heteroSynonym, false);
-                
+
             }else{
                 //move synonyms in same homotypic group to new accepted taxon
                 heteroSynonym.replaceAcceptedTaxon(newAcceptedTaxon, relTypeForGroup, copyCitationInfo, citation, microCitation);
@@ -519,6 +524,50 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         return new DefaultPagerImpl<TaxonRelationship>(pageNumber, numberOfResults, pageSize, results);
     }
+
+    @Override
+    public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths){
+        return pageAcceptedTaxaFor(synonymUuid, classificationUuid, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+    }
+
+    @Override
+    public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths){
+
+        List<Taxon> list = new ArrayList<Taxon>();
+        Long count = 0l;
+
+        Synonym synonym = null;
+
+        try {
+            synonym = (Synonym) dao.load(synonymUuid);
+        } catch (ClassCastException e){
+            throw new EntityNotFoundException("The TaxonBase entity referenced by " + synonymUuid + " is not a Synonmy");
+        } catch (NullPointerException e){
+            throw new EntityNotFoundException("No TaxonBase entity found for " + synonymUuid);
+        }
+
+        Classification classificationFilter = null;
+        if(classificationUuid != null){
+            try {
+            classificationFilter = classificationDao.load(classificationUuid);
+            } catch (NullPointerException e){
+                throw new EntityNotFoundException("No Classification entity found for " + classificationUuid);
+            }
+            if(classificationFilter == null){
+
+            }
+        }
+
+        count = dao.countAcceptedTaxaFor(synonym, classificationFilter) ;
+        if(count > (pageSize * pageNumber)){
+            list = dao.listAcceptedTaxaFor(synonym, classificationFilter, pageSize, pageNumber, orderHints, propertyPaths);
+        }
+
+        return new DefaultPagerImpl<Taxon>(pageNumber, count.intValue(), pageSize, list);
+    }
+
 
     /**
      * @param taxon
@@ -2976,37 +3025,37 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return list;
     }
 
-	@Override
-	public Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon, TaxonRelationshipType oldRelationshipType,
-			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException {
-		// Create new synonym using concept name
-				TaxonNameBase<?, ?> synonymName = fromTaxon.getName();
-				Synonym synonym = Synonym.NewInstance(synonymName, fromTaxon.getSec());
-				
-				// Remove concept relation from taxon
-				toTaxon.removeTaxon(fromTaxon, oldRelationshipType);
-				
-				
+    @Override
+    public Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon, TaxonRelationshipType oldRelationshipType,
+            SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException {
+        // Create new synonym using concept name
+                TaxonNameBase<?, ?> synonymName = fromTaxon.getName();
+                Synonym synonym = Synonym.NewInstance(synonymName, fromTaxon.getSec());
 
-				
-		        // Create a new synonym for the taxon
-				SynonymRelationship synonymRelationship;
-				if (synonymRelationshipType != null
-						&& synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
-					synonymRelationship = toTaxon.addHomotypicSynonym(synonym, null, null);
-				} else{
-					synonymRelationship = toTaxon.addHeterotypicSynonymName(synonymName);
-				}
-			
-				this.saveOrUpdate(toTaxon);
-				//TODO: configurator and classification
-				this.deleteTaxon(fromTaxon, null, null);
-				return synonymRelationship.getSynonym();
-		
-	}
+                // Remove concept relation from taxon
+                toTaxon.removeTaxon(fromTaxon, oldRelationshipType);
 
 
 
 
+                // Create a new synonym for the taxon
+                SynonymRelationship synonymRelationship;
+                if (synonymRelationshipType != null
+                        && synonymRelationshipType.equals(SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF())){
+                    synonymRelationship = toTaxon.addHomotypicSynonym(synonym, null, null);
+                } else{
+                    synonymRelationship = toTaxon.addHeterotypicSynonymName(synonymName);
+                }
 
-	}
+                this.saveOrUpdate(toTaxon);
+                //TODO: configurator and classification
+                this.deleteTaxon(fromTaxon, null, null);
+                return synonymRelationship.getSynonym();
+
+    }
+
+
+
+
+
+    }

@@ -22,6 +22,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -601,9 +602,11 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
      * @throws IOException
      */
     @RequestMapping(value = "accepted/{classification_uuid}", method = RequestMethod.GET)
-    public Set<TaxonBase> getAccepted(
+    public ModelAndView getAccepted(
                 @PathVariable("uuid") UUID uuid,
                 @PathVariable("classification_uuid") UUID classification_uuid,
+                @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
+                @RequestParam(value = "pageSize", required = false) Integer pageSize,
                 HttpServletRequest request,
                 HttpServletResponse response)
                 throws IOException {
@@ -612,65 +615,19 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             logger.info("getAccepted() " + requestPathAndQuery(request));
         }
 
-        TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
-        if(tb == null){
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "A taxon with the uuid " + uuid + " does not exist");
-            return null;
+        ModelAndView mv = new ModelAndView();
+
+        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
+        pagerParams.normalizeAndValidate(response);
+
+        try {
+            List<Taxon> resultset = service.listAcceptedTaxaFor(uuid, classification_uuid, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, getInitializationStrategy());
+            mv.addObject(resultset);
+        } catch (EntityNotFoundException e){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
         }
 
-        HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
-
-        if (tb instanceof Taxon){
-            Taxon taxon = (Taxon) tb;
-            Set<TaxonNode> nodes = taxon.getTaxonNodes();
-            for (TaxonNode taxonNode : nodes) {
-                if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
-                    resultset.add(tb);
-                }
-            }
-            if (resultset.size() > 1){
-                //error!! A taxon is not allow to have more taxonnodes for a given classification
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "A taxon with the uuid " + uuid + " has more than one taxon node for the given classification" + classification_uuid);
-            }
-        }else{
-            Synonym syn = (Synonym) tb;
-            for(TaxonBase accepted : syn.getAcceptedTaxa()){
-                tb = service.load(accepted.getUuid(), SIMPLE_TAXON_WITH_NODES_INIT_STRATEGY);
-                if (tb instanceof Taxon){
-                    Taxon taxon = (Taxon) tb;
-                    Set<TaxonNode> nodes = taxon.getTaxonNodes();
-                    for (TaxonNode taxonNode : nodes) {
-                        if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
-                            resultset.add(tb);
-                        }
-                    }
-                    if (resultset.size() > 1){
-                        //error!! A taxon is not allow to have more taxonnodes for a given classification
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        "A taxon with the uuid " + uuid + " has more than one taxon node for the given classification" + classification_uuid);
-                    }
-                }else{
-                    //ERROR!! perhaps missapplied name????
-                    //syn.getRelationType((Taxon)accepted);
-                }
-            }
-        }
-/**
- * OLD CODE!!
-        if(tb instanceof Taxon){
-            //the taxon already is accepted
-            //FIXME take the current view into account once views are implemented!!!
-            resultset.add((Taxon)tb);
-        } else {
-            Synonym syn = (Synonym)tb;
-            for(TaxonBase accepted : syn.getAcceptedTaxa()){
-                accepted = service.load(accepted.getUuid(), SIMPLE_TAXON_INIT_STRATEGY);
-                resultset.add(accepted);
-            }
-        }
-*/
-        return resultset;
+        return mv;
     }
 
     /**

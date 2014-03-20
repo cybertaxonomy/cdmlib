@@ -1610,15 +1610,10 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     public List<Taxon> listAcceptedTaxaFor(Synonym synonym, Classification classificationFilter, Integer pageSize, Integer pageNumber,
             List<OrderHint> orderHints, List<String> propertyPaths){
 
-        String hqlSelect = "from Taxon as taxon left join taxon.synonymRelations as synRel ";
-        String hqlWhere = " where synRel.relatedFrom = :synonym";
+        String hql = prepareListAcceptedTaxaFor(classificationFilter, orderHints, false);
 
-        if(classificationFilter != null){
-            hqlSelect += " left join taxon.taxonNodes AS taxonNode";
-            hqlWhere += " and taxonNode.classification = :classificationFilter";
-        }
+        Query query = getSession().createQuery(hql);
 
-        Query query = getSession().createQuery(hqlSelect + hqlWhere + orderByClause(orderHints, "taxon"));
         query.setParameter("synonym", synonym);
 
         if(classificationFilter != null){
@@ -1640,6 +1635,45 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         return result;
 
+    }
+
+    @Override
+    public long countAcceptedTaxaFor(Synonym synonym, Classification classificationFilter){
+
+        String hql = prepareListAcceptedTaxaFor(classificationFilter, null, true);
+
+        Query query = getSession().createQuery(hql);
+
+        query.setParameter("synonym", synonym);
+
+        if(classificationFilter != null){
+            query.setParameter("classificationFilter", classificationFilter);
+        }
+
+        Long count = Long.parseLong(query.uniqueResult().toString());
+
+        return count;
+
+    }
+
+
+    /**
+     * @param classificationFilter
+     * @param orderHints
+     * @return
+     */
+    private String prepareListAcceptedTaxaFor(Classification classificationFilter, List<OrderHint> orderHints, boolean doCount) {
+
+        String hql;
+        String hqlSelect = "select " + (doCount? "count(taxon)" : "taxon") + " from Taxon as taxon left join taxon.synonymRelations as synRel ";
+        String hqlWhere = " where synRel.relatedFrom = :synonym";
+
+        if(classificationFilter != null){
+            hqlSelect += " left join taxon.taxonNodes AS taxonNode";
+            hqlWhere += " and taxonNode.classification = :classificationFilter";
+        }
+        hql = hqlSelect + hqlWhere + orderByClause(orderHints, "taxon");
+        return hql;
     }
 
     /*
