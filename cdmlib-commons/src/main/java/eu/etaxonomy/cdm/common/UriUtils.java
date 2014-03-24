@@ -43,6 +43,9 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpConnectionParams;
+import org.apache.http.params.HttpParams;
 import org.apache.log4j.Logger;
 
 /**
@@ -323,10 +326,25 @@ public class UriUtils {
      * @return true if service is available.
      */
     public static boolean isServiceAvailable(URI serviceUri){
+        return isServiceAvailable(serviceUri, null);
+    }
+
+    /**
+     * Performs HEAD request for the given URI.<BR>
+     * If any exception occurs <code>false</code> is returned. Otherwise true. <BR>
+     * @param serviceUri the URI to test.
+     * @param timeout the timeout of the request in milliseconds
+     * @return true if service is available.
+     */
+    public static boolean isServiceAvailable(URI serviceUri, Integer timeout){
         boolean result = false;
 
         //Http
-        HttpClient  client = new DefaultHttpClient();
+        final HttpParams httpParams = new BasicHttpParams();
+        if(timeout!=null){
+            HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+        }
+        HttpClient  client = new DefaultHttpClient(httpParams);
         HttpUriRequest request = new HttpHead(serviceUri);
 
         try {
