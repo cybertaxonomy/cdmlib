@@ -68,7 +68,6 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -534,7 +533,10 @@ public class TaxonPortalController extends TaxonController
             }
         }
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, features, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(
+                clazz, queryString, classification, features, languages, highlighting,
+                pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
         return pager;
     }
 
@@ -668,33 +670,6 @@ public class TaxonPortalController extends TaxonController
         List<NameRelationship> list = nameService.listNameRelationships(taxonbase.getName(), Direction.relatedFrom, null, null, 0, null, NAMERELATIONSHIP_INIT_STRATEGY);
         //List<NameRelationship> list = nameService.listFromNameRelationships(taxonbase.getName(), null, null, null, null, NAMERELATIONSHIP_INIT_STRATEGY);
         return list;
-    }
-
-    /**
-     * Get the list of {@link TypeDesignationBase}s of the
-     * {@link TaxonBase} instance identified by the <code>{taxon-uuid}</code>.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;nameTypeDesignations</b>
-     *
-     * @param request
-     * @param response
-     * @return a List of {@link TypeDesignationBase} entities which are initialized
-     *         using the following initialization strategy:
-     *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
-     * @throws IOException
-     * @Deprecated use &#x002F;name&#x002F;{uuid}&#x002F;typeDesignations & &#x002F;derivedunitfacade&#x002F;{uuid} instead
-     * also see http://dev.e-taxonomy.eu/trac/ticket/2280
-     */
-    @Deprecated
-    @RequestMapping(
-            value = {"nameTypeDesignations"},
-            method = RequestMethod.GET)
-    public List<TypeDesignationBase> doGetNameTypeDesignations(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameTypeDesignations()" + request.getRequestURI());
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
-        Pager<TypeDesignationBase> p = nameService.getTypeDesignations(taxon.getName(), null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return p.getRecords();
     }
 
     @Override
