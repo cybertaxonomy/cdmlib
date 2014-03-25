@@ -235,6 +235,13 @@ public class Amplification extends EventBase implements Cloneable{
 		singleRead.setAmplification(this);
 	}
 
+	public void removeSingleRead(SingleRead singleRead){
+	    if(this.singleReads.contains(singleRead)){
+	        this.singleReads.remove(singleRead);
+	        singleRead.setAmplification(null);
+	    }
+	}
+
 	/**
 	 * @see #getSingleReads()
 	 */
