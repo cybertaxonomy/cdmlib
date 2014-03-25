@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -22,9 +22,14 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
  * @version 1.0
  */
 public interface IFeatureTreeDao extends IIdentifiableDao<FeatureTree> {
-	public List<FeatureTree> list();
-	
-	public UUID DefaultFeatureTreeUuid = UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c");
+    public List<FeatureTree> list();
 
-	public void loadNodes(FeatureNode root, List<String> nodePaths);
+    public UUID DefaultFeatureTreeUuid = UUID.fromString("ac8d4e58-926d-4f81-ac77-cebdd295df7c");
+
+    /**
+     * Loads nodes and the nodes child nodes recursivly
+     * @param nodes
+     * @param nodePaths
+     */
+    public void deepLoadNodes(List<FeatureNode> nodes, List<String> nodePaths);
 }

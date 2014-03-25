@@ -111,7 +111,7 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         if(featureTree == null){
             throw new EntityNotFoundException("No FeatureTree entity found for " + uuid);
         }
-        dao.loadNodes(featureTree.getRoot(),nodePaths);
+        dao.deepLoadNodes(featureTree.getRoot().getChildNodes() ,nodePaths);
         return featureTree;
     }
 
