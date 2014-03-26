@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -247,5 +249,22 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public <T extends SpecimenOrObservationBase> Pager<T>  pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
             String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
+    /**
+     * Moves the given {@link Sequence} from one {@link DnaSample} to another
+     * @param from the DnaSample from which the sequence will be removed
+     * @param to the DnaSample which to which the sequence will be added
+     * @param sequence the Sequence to move
+     * @return <code>true</code> if successfully moved, <code>false</code> otherwise
+     */
+    public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence);
+
+    /**
+     * Moves the given {@link DerivedUnit} from one {@link SpecimenOrObservationBase} to another.
+     * @param from the SpecimenOrObservationBase from which the DerivedUnit will be removed
+     * @param to the SpecimenOrObservationBase to which the DerivedUnit will be added
+     * @param derivate the DerivedUnit to move
+     * @return <code>true</code> if successfully moved, <code>false</code> otherwise
+     */
+    public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
 }
