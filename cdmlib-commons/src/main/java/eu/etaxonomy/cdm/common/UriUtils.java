@@ -43,9 +43,7 @@ import org.apache.http.client.methods.HttpUriRequest;
 import org.apache.http.client.utils.URIBuilder;
 import org.apache.http.client.utils.URLEncodedUtils;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.params.BasicHttpParams;
 import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
 import org.apache.log4j.Logger;
 
 /**
@@ -340,11 +338,10 @@ public class UriUtils {
         boolean result = false;
 
         //Http
-        final HttpParams httpParams = new BasicHttpParams();
+        HttpClient  client = new DefaultHttpClient();
         if(timeout!=null){
-            HttpConnectionParams.setConnectionTimeout(httpParams, timeout);
+            HttpConnectionParams.setConnectionTimeout(client.getParams(), timeout);
         }
-        HttpClient  client = new DefaultHttpClient(httpParams);
         HttpUriRequest request = new HttpHead(serviceUri);
 
         try {
