@@ -145,14 +145,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         //remove references to this name
         removeNameRelationshipsByDeleteConfig(name, config);
 
-        
+
         //remove name from homotypical group
         HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
         if (homotypicalGroup != null){
-        	homotypicalGroup.removeTypifiedName(name);
+            homotypicalGroup.removeTypifiedName(name);
         }
-        
-        
+
+
         //check if this name is still used somewhere
 
         //name relationships
@@ -218,25 +218,25 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
 
         //TODO inline references
-             
-    	if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
-    		String message = "Name can't be deleted as it is a basionym.";
+
+        if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
+            String message = "Name can't be deleted as it is a basionym.";
             throw new ReferencedObjectUndeletableException(message);
-    	}
-    	if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-    		String message = "Name can't be deleted as it has a basionym.";
+        }
+        if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
+            String message = "Name can't be deleted as it has a basionym.";
             throw new ReferencedObjectUndeletableException(message);
-    	}
-    	if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
-    		String message = "Name can't be deleted as it is a replaced synonym.";
+        }
+        if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
+            String message = "Name can't be deleted as it is a replaced synonym.";
             throw new ReferencedObjectUndeletableException(message);
-    	}
-    	if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
-    		String message = "Name can't be deleted as it has a replaced synonym.";
+        }
+        if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
+            String message = "Name can't be deleted as it has a replaced synonym.";
             throw new ReferencedObjectUndeletableException(message);
-    	}
-    	
-    
+        }
+
+
 
         dao.delete(name);
         return name.getUuid();
@@ -286,48 +286,48 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      */
     private void removeNameRelationshipsByDeleteConfig(TaxonNameBase<?,?> name, NameDeletionConfigurator config) {
         try {
-			if (config.isRemoveAllNameRelationships()){
-			    Set<NameRelationship> rels = getModifiableSet(name.getNameRelations());
-			    for (NameRelationship rel : rels){
-			        name.removeNameRelationship(rel);
-			    }
-			}else{
-			    //relations to this name
-			    Set<NameRelationship> rels = getModifiableSet(name.getRelationsToThisName());
-			    for (NameRelationship rel : rels){
-			        if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
-			                name.removeNameRelationship(rel);
-			        }else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
-			            name.removeNameRelationship(rel);
-			        }
-			    }
-			    //relations from this name
-			    rels = getModifiableSet(name.getRelationsFromThisName());
-			    for (NameRelationship rel : rels){
-			        if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
-			            name.removeNameRelationship(rel);
-			        }else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
-			            name.removeNameRelationship(rel);
-			        }
-			    }
+            if (config.isRemoveAllNameRelationships()){
+                Set<NameRelationship> rels = getModifiableSet(name.getNameRelations());
+                for (NameRelationship rel : rels){
+                    name.removeNameRelationship(rel);
+                }
+            }else{
+                //relations to this name
+                Set<NameRelationship> rels = getModifiableSet(name.getRelationsToThisName());
+                for (NameRelationship rel : rels){
+                    if (config.isIgnoreHasBasionym() && NameRelationshipType.BASIONYM().equals(rel.getType() )){
+                            name.removeNameRelationship(rel);
+                    }else if (config.isIgnoreHasReplacedSynonym() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+                        name.removeNameRelationship(rel);
+                    }
+                }
+                //relations from this name
+                rels = getModifiableSet(name.getRelationsFromThisName());
+                for (NameRelationship rel : rels){
+                    if (config.isIgnoreIsBasionymFor() && NameRelationshipType.BASIONYM().equals(rel.getType())  ){
+                        name.removeNameRelationship(rel);
+                    }else if (config.isIgnoreIsReplacedSynonymFor() && NameRelationshipType.REPLACED_SYNONYM().equals(rel.getType())){
+                        name.removeNameRelationship(rel);
+                    }
+                }
 
-			}
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
+            }
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
     }
 
-	/**
-	 * @param name
-	 * @return
-	 */
-	private Set<NameRelationship> getModifiableSet(Set<NameRelationship> relations) {
-		Set<NameRelationship> rels = new HashSet<NameRelationship>();
-		for (NameRelationship rel : relations){
-			rels.add(rel);  	
-		}
-		return rels;
-	}
+    /**
+     * @param name
+     * @return
+     */
+    private Set<NameRelationship> getModifiableSet(Set<NameRelationship> relations) {
+        Set<NameRelationship> rels = new HashSet<NameRelationship>();
+        for (NameRelationship rel : relations){
+            rels.add(rel);
+        }
+        return rels;
+    }
 
 //********************* METHODS ****************************************************************//
 
@@ -899,8 +899,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         Integer numberOfResults = dao.countTypeDesignations(name, status);
 
         List<TypeDesignationBase> results = new ArrayList<TypeDesignationBase>();
-        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-            results = dao.getTypeDesignations(name, status, pageSize, pageNumber, propertyPaths);
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
+            results = dao.getTypeDesignations(name, null, status, pageSize, pageNumber, propertyPaths);
         }
 
         return new DefaultPagerImpl<TypeDesignationBase>(pageNumber, numberOfResults, pageSize, results);
