@@ -44,9 +44,17 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
     private Reference<?> dataReference;
+    private boolean debugInstitutionOnly = false;
 
 
-	//TODO
+	/**
+     * @return the debugInstitutionOnly
+     */
+    public boolean isDebugInstitutionOnly() {
+        return debugInstitutionOnly;
+    }
+
+    //TODO
 	private static IInputTransformer defaultTransformer = null;
 
 
@@ -239,6 +247,14 @@ public class SpecimenSynthesysExcelImportConfigurator extends ImportConfigurator
 
     public Reference<?> getDataReference() {
         return dataReference;
+    }
+
+    /**
+     * @param b
+     */
+    public void setDebugInstitutionOnly(boolean b) {
+       this.debugInstitutionOnly=b;
+
     }
 
 

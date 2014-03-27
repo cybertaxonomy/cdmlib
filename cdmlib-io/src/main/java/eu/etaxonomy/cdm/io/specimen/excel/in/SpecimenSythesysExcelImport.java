@@ -239,6 +239,15 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         }
     }
 
+    //    /**
+    //     * refresh the hibernate transaction :
+    //     * - commit the current queries
+    //     * - get the reference and the classification and the derivedUnitBase back from the hibernate session
+    //     * */
+    //    private void refreshTransac(){
+    //        commitTransaction(tx);
+    //        tx = startTransaction();
+    //    }
     /*
      * Store the unit's properties into variables
      * @param unit: the hashmap containing the splitted Excel line (Key=column name, value=value)
@@ -328,12 +337,13 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
             //create institution
             institution = Institution.NewInstance();
             institution.setCode(institutionCode);
+            getAgentService().saveOrUpdate(institution);
         }
         else{
             logger.debug("Institution (agent) already in the db");
             institution = institutions.get(0);
         }
-        return institution;
+        return CdmBase.deproxy(institution, Institution.class);
     }
 
     /*
@@ -344,7 +354,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
      * @return the Collection (existing or new)
      */
     private Collection getCollection(Institution institution, SpecimenSynthesysExcelImportConfigurator config){
-        Collection collection = Collection.NewInstance();
+        Collection collection =null;
         List<Collection> collections;
         try{
             collections = getCollectionService().searchByCode(collectionCode);
@@ -354,6 +364,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         if (collections.size() ==0 || !config.getReUseExistingMetadata()){
             logger.debug("Collection not found or do not reuse existing metadata  "+collectionCode);
             //create new collection
+            collection= Collection.NewInstance();
             collection.setCode(collectionCode);
             collection.setCodeStandard("GBIF");
             collection.setInstitute(institution);
@@ -370,6 +381,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
                 } catch (NullPointerException e) {}
             }
             if (!collectionFound){
+                collection= Collection.NewInstance();
                 collection.setCode(collectionCode);
                 collection.setCodeStandard("GBIF");
                 collection.setInstitute(institution);
@@ -735,6 +747,43 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         return result;
     }
 
+    /*
+     * Store the unit with it's Gathering informations in the CDM
+     */
+    public boolean resetCollectionInstitution(SpecimenSynthesysExcelImportConfigurator config,List<SpecimenOrObservationBase> specimenOrObs){
+        boolean result = true;
+
+
+        for (SpecimenOrObservationBase<?> specimen:specimenOrObs){
+            DerivedUnit derivedUnit=null;
+            if (specimen.isInstanceOf(GatheringEvent.class)){
+                System.out.println("gathering");
+                GatheringEvent gath = CdmBase.deproxy(specimen, GatheringEvent.class);
+            }
+            if (specimen.isInstanceOf(DerivedUnit.class)){
+                derivedUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
+                String unitIDDB = derivedUnit.getCatalogNumber();
+                if (unitIDDB !=null) {
+                    if(unitIDDB.equalsIgnoreCase(this.unitID)){
+                        System.out.println("unitID found");
+
+                        Institution institution = getInstitution(config);
+
+                        Collection col = getCollection(institution, config);
+                        getCollectionService().saveOrUpdate(col);
+                        derivedUnit.setCollection(col);
+                        getOccurrenceService().saveOrUpdate(derivedUnit);
+                        return result;
+                    }
+                }
+            }
+            if(specimen.isInstanceOf(IndividualsAssociation.class)) {
+                System.out.println("Indivi assoc");
+            }
+        }
+        return result;
+    }
+
 
     private Feature makeFeature(SpecimenOrObservationBase<?> unit) {
         if (unit == null){
@@ -854,11 +903,23 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
 
         if (unitsList != null){
             //load collectors in the database
-            prepareCollectors(unitsList,state);
+            if (!state.getConfig().isDebugInstitutionOnly()) {
+                prepareCollectors(unitsList,state);
+            }
+
+            List<SpecimenOrObservationBase> specimenOrObs = null;
+            if (state.getConfig().isDebugInstitutionOnly()){
+                //DEBUG CHENOPODIUM VULVARIA
+                UUID uuid = UUID.fromString("85234ff5-8e40-4813-8f06-44ab960a905a");
+                Taxon taxon = (Taxon)getTaxonService().find(uuid);
+
+                specimenOrObs = getOccurrenceService().listByAssociatedTaxon(null, null, taxon, null, null, null, null, null);
+            }
             HashMap<String,String> unit=null;
             MyHashMap<String,String> myunit;
             for (int i=0; i<unitsList.size();i++){
-                if (i%100==0) {
+                //            for (int i=0; i<10;i++){
+                if (i%20==0) {
                     logger.info("NbUnit prepared: "+i);
                     refreshTransaction();
                 }
@@ -867,9 +928,14 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
                 for (String key :unit.keySet()) {
                     myunit.put(key, unit.get(key));
                 }
+                System.out.println(myunit.toString());
                 //FIXME do this via state
                 setUnitPropertiesExcel(myunit, state.getConfig().getDefaultAuthor());//and then invoke
-                success &= start(state.getConfig());
+                if (state.getConfig().isDebugInstitutionOnly()){
+                    success &= resetCollectionInstitution(state.getConfig(),specimenOrObs);
+                } else {
+                    success &= start(state.getConfig());
+                }
             }
         }
         if (success == false){
