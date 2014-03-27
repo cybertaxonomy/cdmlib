@@ -251,7 +251,7 @@ public class TaxonPortalController extends TaxonController
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "$",
             "elements.$",
-            "elements.states.$",
+            "elements.stateData.$",
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",

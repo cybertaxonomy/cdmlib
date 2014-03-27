@@ -66,7 +66,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "elements.$",
             "elements.annotations",
             "elements.markers",
-            "elements.states.$",
+            "elements.stateData.$",
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
