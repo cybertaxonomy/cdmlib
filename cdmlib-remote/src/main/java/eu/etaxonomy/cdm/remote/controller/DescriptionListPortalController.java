@@ -71,6 +71,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
+            "elements.kindOfUnit"
     });
 
     protected static final List<String> DESCRIPTION_ELEMENT_INIT_STRATEGY = Arrays.asList(new String []{

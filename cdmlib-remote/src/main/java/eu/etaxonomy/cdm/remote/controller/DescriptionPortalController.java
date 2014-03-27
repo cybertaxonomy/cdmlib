@@ -88,6 +88,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.statisticalValues.*",
             "elements.unit",
             "elements.media",
+            "elements.kindOfUnit"
+
     });
 
     protected static final List<String> ORDERED_DISTRIBUTION_INIT_STRATEGY = Arrays.asList(new String []{

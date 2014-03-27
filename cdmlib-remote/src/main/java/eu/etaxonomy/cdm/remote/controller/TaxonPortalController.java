@@ -258,7 +258,7 @@ public class TaxonPortalController extends TaxonController
             "elements.media",
             "elements.modifyingText",
             "elements.modifiers",
-            "elements.stateData",
+            "elements.kindOfUnit",
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
