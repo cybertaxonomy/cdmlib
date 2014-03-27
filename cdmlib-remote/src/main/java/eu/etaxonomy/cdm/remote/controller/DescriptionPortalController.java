@@ -85,6 +85,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             "elements.area.level",
             "elements.modifyingText",
             "elements.stateData.*",
+            "elements.statisticalValues.*",
+            "elements.unit",
             "elements.media",
     });
 
