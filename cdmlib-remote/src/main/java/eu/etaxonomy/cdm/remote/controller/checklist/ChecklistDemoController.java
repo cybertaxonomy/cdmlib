@@ -158,7 +158,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = { "export" }, method = { RequestMethod.GET })
+//    @RequestMapping(value = { "export" }, method = { RequestMethod.GET })
     public ModelAndView doGeneralExport(
             @RequestParam(value = "classification", required = false) String classificationUUID,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -212,7 +212,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @param response HttpServletResponse which returns the ByteArrayOutputStream
      * @throws Exception
      */
-	@RequestMapping(value = { "exportCSV" }, method = { RequestMethod.GET })
+//	@RequestMapping(value = { "exportCSV" }, method = { RequestMethod.GET })
 	public synchronized ModelAndView doExportRedlist(
 			@RequestParam(value = "features", required = false) final UuidList featureUuids,
 			@RequestParam(value = "clearCache", required = false) final boolean clearCache,
