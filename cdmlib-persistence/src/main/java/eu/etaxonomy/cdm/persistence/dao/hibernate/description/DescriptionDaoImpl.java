@@ -728,10 +728,11 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
         } else {
             listOrCount = "de";
         }
-        String queryString = "select " + listOrCount +
-            " from TaxonDescription as td" +
-            " left join td.descriptionElements as de" +
-            " where td.taxon.uuid = :taxon_uuid ";
+
+        String queryString = "select " + listOrCount + " from DescriptionElementBase as de" +
+                " left join de.inDescription as d" +
+                " left join d.taxon as t" +
+                " where d.class = 'TaxonDescription' AND t.uuid = :taxon_uuid ";
 
         if(type != null){
             queryString += " and de.class = :type";
