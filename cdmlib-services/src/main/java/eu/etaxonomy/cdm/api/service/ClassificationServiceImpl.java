@@ -54,7 +54,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  */
 @Service
 @Transactional(readOnly = true)
-public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao> implements IClassificationService {
+public class ClassificationServiceImpl extends IdentifiableServiceBase<Classification, IClassificationDao>
+    implements IClassificationService {
     private static final Logger logger = Logger.getLogger(ClassificationServiceImpl.class);
 
     @Autowired
@@ -114,7 +115,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     @Deprecated
     public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths){
 
-        List<TaxonNode> rootNodes = dao.loadRankSpecificRootNodes(classification, rank, limit , start, propertyPaths);
+        List<TaxonNode> rootNodes = dao.listRankSpecificRootNodes(classification, rank, limit , start, propertyPaths);
 
         //sort nodes by TaxonName
         Collections.sort(rootNodes, taxonNodeComparator);
@@ -145,7 +146,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         List<TaxonNode> results = new ArrayList<TaxonNode>();
         if (numberOfResults > 0) { // no point checking again
 
-            results = dao.loadRankSpecificRootNodes(classification, rank, PagerUtils.limitFor(pageSize),
+            results = dao.listRankSpecificRootNodes(classification, rank, PagerUtils.limitFor(pageSize),
                     PagerUtils.startFor(pageSize, pageIndex), propertyPaths);
         }
 
@@ -236,16 +237,12 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
      * @see eu.etaxonomy.cdm.api.service.IClassificationService#loadChildNodesOfTaxon(eu.etaxonomy.cdm.model.taxon.Taxon, eu.etaxonomy.cdm.model.taxon.Classification, java.util.List)
      */
     @Override
-    public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, Classification classification, List<String> propertyPaths){
-        Classification tree = dao.load(classification.getUuid());
-        taxon = (Taxon) taxonDao.load(taxon.getUuid());
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize,
+            Integer pageIndex, List<String> propertyPaths){
+        Classification classification = dao.load(classificationUuid);
+        Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
-        TaxonNode node = tree.getNode(taxon);
-        if(node != null){
-            return loadChildNodesOfTaxonNode(node, propertyPaths);
-        } else {
-            return null;
-        }
+        return dao.listChildrenOf(taxon, classification, pageSize, pageIndex, propertyPaths);
     }
 
 

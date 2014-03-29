@@ -50,6 +50,9 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     private UUID uuid2;
     private UUID uuid3;
 
+    private static final UUID ACHERONTIA_UUID = UUID.fromString("3b2b3e17-5c4a-4d1b-aa39-349f63100d6b");
+    private static final UUID NODE_ACHERONTIA_UUID = UUID.fromString("20c8f083-5870-4cbd-bf56-c5b2b98ab6a7");
+
     private static final List<String> CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[]{
             "rootNode"
     });
@@ -122,6 +125,18 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         classificationDao.flush();
         classification = classificationDao.findByUuid(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
         assertEquals("The tree should be null", null, classification);
+
+    }
+
+    @Test
+    @DataSet
+    public void testlistChildren(){
+        Taxon t_acherontia = (Taxon) taxonDao.load(ACHERONTIA_UUID);
+
+        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"));
+        List<TaxonNode> children = classificationDao.listChildrenOf(t_acherontia, classification, null, null, null);
+        assertNotNull(children);
+        assertEquals(2, children.size());
 
     }
 }

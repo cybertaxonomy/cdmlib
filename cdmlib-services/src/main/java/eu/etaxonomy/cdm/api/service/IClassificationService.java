@@ -175,16 +175,12 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
 
 
     /**
-     * Although this method seems to be a redundant alternative to {@link #loadChildNodesOfTaxonNode(TaxonNode, List)} it is an important
-     * alternative from which web services benefit. Without this method the web service controller method, which operates outside of the
-     * transaction, would have to initialize the full taxon tree with all nodes of the taxon.
-     * This would be rather slow compared to using this method.
-     * @param taxon
-     * @param classification
+     * @param taxonUuid
+     * @param classificationUuid
      * @param propertyPaths
      * @return
      */
-    public List<TaxonNode> loadChildNodesOfTaxon(Taxon taxon, Classification classification, List<String> propertyPaths);
+    public List<TaxonNode> listChildNodesOfTaxon(UUID taxonUuid, UUID classificationUuid, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
 
     /**
      * @param taxonNode
@@ -211,7 +207,8 @@ public interface IClassificationService extends IIdentifiableEntityService<Class
      * @param widthOrDuration
      * @param mimeTypes
      * @return
-     *  @deprecated use getAllMediaForChildNodes(TaxonNode taxonNode, ...) instead
+     *
+     * @deprecated use getAllMediaForChildNodes(TaxonNode taxonNode, ...) instead
      * if you have a classification and a taxon that is in it, you should also have the according taxonNode
      */
     @Deprecated

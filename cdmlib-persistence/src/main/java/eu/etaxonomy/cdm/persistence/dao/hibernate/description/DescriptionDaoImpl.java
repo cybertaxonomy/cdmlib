@@ -785,12 +785,7 @@ public class DescriptionDaoImpl extends IdentifiableDaoBase<DescriptionBase> imp
 
 //	            addMarkerTypesCriterion(markerTypes, hql);
 
-                if(pageSize != null) {
-                    query.setMaxResults(pageSize);
-                    if(pageNumber != null) {
-                        query.setFirstResult(pageNumber * pageSize);
-                    }
-                }
+                setPagingParameter(query, pageSize, pageNumber);
 
                 List<Media> results = query.list();
 

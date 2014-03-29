@@ -184,9 +184,8 @@ public class ClassificationPortalListController extends IdentifiableListControll
             HttpServletResponse response) throws IOException {
         logger.info("getChildNodesOfTaxon() " + request.getRequestURI());
 
-        Classification tree = service.find(treeUuid);
-        Taxon taxon = (Taxon) taxonService.load(taxonUuid);
-        List<TaxonNode> childs = service.loadChildNodesOfTaxon(taxon, tree, NODE_INIT_STRATEGY);
+
+        List<TaxonNode> childs = service.listChildNodesOfTaxon(taxonUuid, treeUuid, null, null, NODE_INIT_STRATEGY);
         return childs;
 
     }
