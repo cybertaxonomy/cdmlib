@@ -34,6 +34,7 @@ import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -52,6 +53,7 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IPrimerService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ISequenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -413,6 +415,22 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     @Override
     public final IOccurrenceService getOccurrenceService(){
         return configuration.getOccurrenceService();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAmplificationService()
+     */
+    @Override
+    public IAmplificationService getAmplificationService() {
+        return configuration.getAmplificationService();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getSequenceService()
+     */
+    @Override
+    public ISequenceService getSequenceService() {
+        return configuration.getSequenceService();
     }
 
     @Override

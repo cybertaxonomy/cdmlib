@@ -49,7 +49,7 @@ public class PrimerDaoHibernateImpl extends AnnotatableDaoImpl<Primer> implement
         List<UuidAndTitleCache<Primer>> list = new ArrayList<UuidAndTitleCache<Primer>>();
         Session session = getSession();
 
-        Query query = session.createQuery("select uuid, label from Primer");// + type.getSimpleName() + " where NOT dtype = " + FieldUnit.class.getSimpleName());
+        Query query = session.createQuery("select uuid, label from Primer");
 
         List<Object[]> result = query.list();
 

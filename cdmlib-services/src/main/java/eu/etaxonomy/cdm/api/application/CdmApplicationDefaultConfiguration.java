@@ -32,6 +32,7 @@ import org.springframework.transaction.support.DefaultTransactionDefinition;
 
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.service.IAgentService;
+import eu.etaxonomy.cdm.api.service.IAmplificationService;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICollectionService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -50,6 +51,7 @@ import eu.etaxonomy.cdm.api.service.IPolytomousKeyNodeService;
 import eu.etaxonomy.cdm.api.service.IPolytomousKeyService;
 import eu.etaxonomy.cdm.api.service.IPrimerService;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
+import eu.etaxonomy.cdm.api.service.ISequenceService;
 import eu.etaxonomy.cdm.api.service.IService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
@@ -104,6 +106,12 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Autowired
     //@Qualifier("primerService")
     private IPrimerService primerService;
+    @Autowired
+    //@Qualifier("amplificationService")
+    private IAmplificationService amplificationService;
+    @Autowired
+    //@Qualifier("sequenceService")
+    private ISequenceService sequenceService;
     @Autowired
     //@Qualifier("mediaService")
     private IMediaService mediaService;
@@ -267,6 +275,22 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public IPrimerService getPrimerService(){
         return this.primerService;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAmplificationService()
+     */
+    @Override
+    public IAmplificationService getAmplificationService() {
+        return this.amplificationService;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getSequenceService()
+     */
+    @Override
+    public ISequenceService getSequenceService() {
+        return this.sequenceService;
     }
 
     /*
