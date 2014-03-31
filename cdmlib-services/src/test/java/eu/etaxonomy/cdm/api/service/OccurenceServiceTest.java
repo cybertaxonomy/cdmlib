@@ -19,7 +19,6 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -37,13 +36,10 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @Test
     public void testMoveDerivate(){
-        FieldUnit fieldUnit = FieldUnit.NewInstance();
         DerivedUnit specimenA = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         DerivedUnit specimenB = DerivedUnit.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
         DerivedUnit dnaSample = DerivedUnit.NewInstance(SpecimenOrObservationType.DnaSample);
 
-        DerivationEvent.NewSimpleInstance(fieldUnit, specimenA, DerivationEventType.PREPARATION());
-        DerivationEvent.NewSimpleInstance(fieldUnit, specimenB, DerivationEventType.PREPARATION());
         DerivationEvent.NewSimpleInstance(specimenA, dnaSample, DerivationEventType.DNA_EXTRACTION());
 
         occurrenceService.moveDerivate(specimenA, specimenB, dnaSample);

@@ -2129,7 +2129,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/facade/MethodNotSupportedByDe
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractCategoricalDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AbstractQuantitativeDescriptionBuilder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AgentServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AmplificationServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotatableServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AnnotationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/AuditEventService.java -text
@@ -2151,7 +2150,6 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/FeatureTreeServiceImp
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/GrantedAuthorityServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/GroupServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAgentService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAmplificationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAnnotatableService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAnnotationService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IAuditEventService.java -text
@@ -2177,9 +2175,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IOccurrenceService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPolytomousKeyService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPreferenceService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IPrimerService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IReferenceService.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ISequenceService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IStatisticsService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ITaxonNodeService.java -text
@@ -2202,9 +2198,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/OccurrenceServiceImpl
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/PrimerServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ReferenceServiceImpl.java -text
-cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/SequenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceBase.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/StatisticsServiceImpl.java -text
@@ -2250,6 +2244,12 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/LsidWsdlWra
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/LsidWsdlWrapperImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/Pattern.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/TaxonMetadataMapper.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/AmplificationServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/IAmplificationService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/IPrimerService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/ISequenceService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/PrimerServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/SequenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/Pager.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/PagerUtils.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPagerImpl.java -text
@@ -2327,6 +2327,9 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthoritySer
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/AmplificationServiceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/PrimerServiceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/SequenceServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/utility/DescriptionUtilityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/scripts/FixMultipleTextDataInImageGalleries.java -text
