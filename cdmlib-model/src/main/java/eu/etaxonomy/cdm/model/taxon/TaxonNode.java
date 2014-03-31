@@ -119,7 +119,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex = -1;
 
-    @XmlElement(name = "reference")
+    public Integer getSortIndex() {
+		return sortIndex;
+	}
+
+	
+
+	@XmlElement(name = "reference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -315,6 +321,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
             for(TaxonNode childNode : childNodes){
                 node.deleteChildNode(childNode, deleteChildren);
+            }
+        } else{
+        	ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+            for(TaxonNode childNode : childNodes){
+             this.addChildNode(childNode, null, null);
             }
         }
 

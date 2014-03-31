@@ -17,6 +17,7 @@ import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
@@ -84,10 +85,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	private static final UUID referenceUuid = UUID.fromString("de7d1205-291f-45d9-9059-ca83fc7ade14");
 	private static final UUID node1Uuid= UUID.fromString("484a1a77-689c-44be-8e65-347d835f47e8");
 	private static final UUID node2Uuid = UUID.fromString("2d41f0c2-b785-4f73-a436-cc2d5e93cc5b");
-//	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
+	
+	private static final UUID node4Uuid = UUID.fromString("fdaec4bd-c78e-44df-ae87-28f18110968c");
 	private static final UUID node5Uuid = UUID.fromString("c4d5170a-7967-4dac-ab76-ae2019eefde5");
 	private static final UUID node6Uuid = UUID.fromString("b419ba5e-9c8b-449c-ad86-7abfca9a7340");
 	private static final UUID rootNodeUuid = UUID.fromString("324a1a77-689c-44be-8e65-347d835f4111");
+	
 
 	private Taxon t1;
 	private Taxon t2;
@@ -307,18 +310,35 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 }
 
-	@Test  //here we may have a test for testing delete of a node and attaching the children
-	//to its parents, however this depends on the way delete is implemented and therefore needs
-	//to wait until this is finally done
+	@Test  
+	@DataSet(value="TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexDeleteNode() {
-//		node2 = taxonNodeService.load(node2Uuid);
-//		node2.getParent().deleteChildNode(node2);
-//		
-//		node5.addChildNode(node3, null, null);
-//		taxonNodeService.saveOrUpdate(node5);
-//		commitAndStartNewTransaction(new String[]{"TaxonNode"});
-//		node3 = taxonNodeService.load(node3Uuid);
-//		Assert.assertEquals("Node3 treeindex is not correct", "#t2#2#5#3#", node3.getTreeIndex());
+		node1 = taxonNodeService.load(node1Uuid);
+		TaxonNode node4 = taxonNodeService.load(node4Uuid);
+		String treeIndex = node1.treeIndex();
+		TaxonNode node6 = taxonNodeService.load(node6Uuid);
+		treeIndex= node6.treeIndex();
+	
+		HibernateProxyHelper.deproxy(node1, TaxonNode.class);
+		node1.deleteChildNode(node4, false);
+		TaxonNode node5 = taxonNodeService.load(node5Uuid);
+		treeIndex = node5.treeIndex();
+		
+		node6 = taxonNodeService.load(node6Uuid);
+		
+		treeIndex = node6.treeIndex();
+		Taxon newTaxon= Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+				
+		node5.addChildTaxon(newTaxon, null, null);
+		String node5TreeIndex =node5.treeIndex();
+		taxonNodeService.saveOrUpdate(node5);
+		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		node5 = taxonNodeService.load(node5Uuid);
+		List<TaxonNode> children =  node5.getChildNodes();
+		TaxonNode node = children.get(0);
+		int id = node.getId(); 
+		Assert.assertEquals("Node6 treeindex is not correct", "#t1#1#2#6#", treeIndex);
+		Assert.assertEquals("new node treeindex is not correct", node5TreeIndex + id +"#", node.treeIndex());
 	}
 	
 	
