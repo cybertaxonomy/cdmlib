@@ -9,9 +9,16 @@
 */
 package eu.etaxonomy.cdm.persistence.dao.hibernate.molecular;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.UUID;
+
 import org.apache.log4j.Logger;
+import org.hibernate.Query;
+import org.hibernate.Session;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.molecular.Amplification;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
 import eu.etaxonomy.cdm.persistence.dao.molecular.IAmplificationDao;
@@ -34,4 +41,22 @@ public class AmplificationDaoHibernateImpl extends AnnotatableDaoImpl<Amplificat
         super(Amplification.class);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.molecular.IPrimerDao#getDerivedUnitUuidAndTitleCache()
+     */
+    @Override
+    public List<UuidAndTitleCache<Amplification>> getAmplificationUuidAndDescription() {
+        List<UuidAndTitleCache<Amplification>> list = new ArrayList<UuidAndTitleCache<Amplification>>();
+        Session session = getSession();
+
+        Query query = session.createQuery("select uuid, description from Amplification");
+
+        List<Object[]> result = query.list();
+
+        for(Object[] object : result){
+            list.add(new UuidAndTitleCache<Amplification>(Amplification.class, (UUID) object[0], (String) object[1]));
+        }
+
+        return list;
+    }
 }

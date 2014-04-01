@@ -196,6 +196,16 @@ public class Amplification extends EventBase implements Cloneable{
 		return result;
 	}
 
+	public static Amplification NewInstance(SingleRead singleRead){
+	    Amplification result = new Amplification();
+	    result.addSingleRead(singleRead);
+	    return result;
+	}
+
+	public static Amplification NewInstance(){
+	    return new Amplification();
+	}
+
 
 // ******************* CONSTRUCTOR *******************************/
 
