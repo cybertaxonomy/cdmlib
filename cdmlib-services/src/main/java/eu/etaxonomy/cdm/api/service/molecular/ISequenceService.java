@@ -9,6 +9,9 @@
 */
 package eu.etaxonomy.cdm.api.service.molecular;
 
+import java.util.Collection;
+import java.util.Map;
+
 import eu.etaxonomy.cdm.api.service.IAnnotatableService;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.molecular.SingleRead;
@@ -28,5 +31,12 @@ public interface ISequenceService extends IAnnotatableService<Sequence>{
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
      */
     public boolean moveSingleRead(Sequence from, Sequence to, SingleRead singleRead);
+
+    /**
+     * Creates and returns a map with {@link SingleRead}s as keys.
+     * The value for each key is a list of those {@link Sequence}s that link to this SingleRead.
+     * @return a map of SingleReads as keys and the Sequences linking to them
+     */
+    public Map<SingleRead, Collection<Sequence>> getSingleReadSequencesMap();
 
 }
