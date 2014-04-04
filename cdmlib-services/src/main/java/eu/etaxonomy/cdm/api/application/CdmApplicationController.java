@@ -84,7 +84,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 
     public AbstractApplicationContext applicationContext;
-    private ICdmApplicationConfiguration configuration;
+    protected ICdmApplicationConfiguration configuration;
     private final Resource applicationContextResource;
 
     private final IProgressMonitor progressMonitor;
@@ -163,6 +163,15 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         return dataSource;
     }
 
+    /**
+     * 
+     * FIXME:Remoting this constructor is added only to allow extension of this cntroller class.
+     * and should be removed after refactoring
+     */
+    protected CdmApplicationController() {
+    	applicationContextResource = null;
+    	progressMonitor = null;
+    }
 
     /**
      * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
