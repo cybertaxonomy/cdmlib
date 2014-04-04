@@ -23,57 +23,101 @@ public abstract class CdmSource implements ICdmSource {
 	private NomenclaturalCode nomenclaturalCode;
 	
 	/**
+	 * Sets the CDM Source name
+	 * 
 	 * @param name
 	 */
 	protected void setName(String name) {
 		this.name = name;
 	}
 
+	/**
+	 * Sets the CDM Source server
+	 * 
+	 * @param server
+	 */
 	protected void setServer(String server) {
 		this.server = server;
 	}
 
+	/**
+	 * Sets the CDM Source port
+	 * 
+	 * @param port
+	 */
 	protected void setPort(int port) {
 		this.port = port;
 	}
 
+	/**
+	 * Sets the CDM Source {@link NomenclaturalCode}
+	 * 
+	 * @param nomenclaturalCode
+	 */
 	protected void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
 		this.nomenclaturalCode = nomenclaturalCode;
 	}
 
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#getName()
+	 */
 	@Override
 	public String getName() {
 		return this.name;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#getServer()
+	 */
 	@Override
 	public String getServer() {
 		return this.server;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#getPort()
+	 */
 	@Override
 	public int getPort() {
 		return this.port;
 	}
 
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#getNomenclaturalCode()
+	 */
 	@Override
 	public NomenclaturalCode getNomenclaturalCode() {
 		return this.nomenclaturalCode;
 	}
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#getDbSchemaVersion()
+	 */
 	@Override
 	public abstract String getDbSchemaVersion() throws CdmSourceException;
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#isDbEmpty()
+	 */
 	@Override
 	public abstract boolean isDbEmpty() throws CdmSourceException;
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#checkConnection()
+	 */
 	@Override
 	public abstract boolean checkConnection() throws CdmSourceException;
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#getConnectionMessage()
+	 */
 	@Override
 	public abstract String getConnectionMessage();
 	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.config.ICdmSource#closeOpenConnections()
+	 */
 	@Override
 	public void closeOpenConnections() {
 		
