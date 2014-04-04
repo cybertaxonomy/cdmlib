@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.config.CdmPersistentSourceUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
@@ -258,7 +259,7 @@ public class TestDatabase {
 			NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
 			Assert.assertEquals(code, loadedCode);
 
-			CdmPersistentDataSource.delete(loadedDataSource);
+			CdmPersistentSourceUtils.delete(loadedDataSource);
 
 		} catch (DataSourceNotFoundException e) {
 			// TODO Auto-generated catch block

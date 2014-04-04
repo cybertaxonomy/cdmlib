@@ -14,11 +14,6 @@ import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlBean;
 import static eu.etaxonomy.cdm.common.XmlHelp.insertXmlValueProperty;
 import static eu.etaxonomy.cdm.common.XmlHelp.saveToXml;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Enumeration;
 import java.util.Iterator;
@@ -31,9 +26,7 @@ import org.apache.log4j.Logger;
 import org.hibernate.cache.internal.NoCachingRegionFactory;
 import org.hibernate.cache.spi.RegionFactory;
 import org.jdom.Attribute;
-import org.jdom.Document;
 import org.jdom.Element;
-import org.jdom.output.Format;
 import org.springframework.beans.MutablePropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.beans.factory.config.PropertiesFactoryBean;
@@ -42,9 +35,12 @@ import org.springframework.beans.factory.support.RootBeanDefinition;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 
-import eu.etaxonomy.cdm.api.application.CdmApplicationUtils;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.config.CdmPersistentSourceUtils;
+import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
+import eu.etaxonomy.cdm.config.CdmPersistentXMLSource.CdmSourceProperties;
+import eu.etaxonomy.cdm.config.ICdmPersistentSource;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
@@ -52,65 +48,23 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  * class to access an CdmDataSource
  */
-public class CdmPersistentDataSource extends CdmDataSourceBase{
+public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPersistentSource {
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
-	public final static String DATASOURCE_FILE_NAME = "cdm.datasources.xml";
 	public final static String DATASOURCE_PATH = "/eu/etaxonomy/cdm/";
-	
-	private final static Format format = Format.getPrettyFormat(); 
+		
+	private String beanName;
+	private String dbUrl;
+	private Properties cdmSourceProperties;
+	private Properties dataSourceProperties;
+	private List<Attribute> cdmSourceAttributes;
 
-	public enum DbProperties{
-		DRIVER_CLASS,
-		URL,
-		SERVER, 
-		DATABASE,
-		PORT,
-		MODE,
-		FILEPATH,
-		USERNAME,
-		PASSWORD, 
-		NOMENCLATURAL_CODE;
-
-		@Override
-		public String toString(){
-			switch (this){
-				case DRIVER_CLASS:
-					return "driverClassName";
-				case URL:
-					return "url";
-				case SERVER:
-					return "server";
-				case DATABASE:
-					return "database";
-				case PORT:
-					return "port";
-				case MODE:
-					return "mode";
-				case FILEPATH:
-					return "filePath";
-				case USERNAME:
-					return "username";
-				case PASSWORD:
-					return "password";
-				case NOMENCLATURAL_CODE:
-					return "nomenclaturalCode";
-				default: 
-					throw new IllegalArgumentException( "Unknown enumeration type" );
-			}
-		}
-	}
 
 	/**
 	 * The Datasource class that Spring will use to set up the connection to the database
 	 */
-	private static String dataSourceClassName = ComboPooledDataSource.class.getName();
-	// we used dbcps BasicDataSource before
-//	private static String dataSourceClassName = BasicDataSource.class.getName();
-	
-	//name
-	protected String dataSourceName;
+	private static String dataSourceClassName = ComboPooledDataSource.class.getName();	
 
 	
 	/**
@@ -150,55 +104,88 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @param strDataSource
 	 */
 	private CdmPersistentDataSource(String strDataSource){
-		dataSourceName = strDataSource;
+		setName(strDataSource);
+		loadSource(strDataSource);		
 	}
 	
-	@Override
-	public String getName(){
-		return dataSourceName;
+	private void loadSource(String strDataSource) {
+		CdmPersistentXMLSource cdmPersistentXMLSource = CdmPersistentXMLSource.NewInstance(strDataSource, DATASOURCE_BEAN_POSTFIX);
+		if(cdmPersistentXMLSource.getElement() != null) {
+			beanName = cdmPersistentXMLSource.getBeanName();
+			// properties from the persistent xml file 
+			cdmSourceProperties = cdmPersistentXMLSource.getCdmSourceProperties();
+			cdmSourceAttributes = cdmPersistentXMLSource.getCdmSourceAttributes();
+			// properties we must have for a data source
+			dataSourceProperties = new Properties(cdmSourceProperties);
+			// added database specific properties if they are null
+			String url = getCdmSourceProperty(CdmSourceProperties.URL);
+			DatabaseTypeEnum dbTypeEnum = getDatabaseType();
+			if (dbTypeEnum != null && url != null){
+				IDatabaseType dbType = dbTypeEnum.getDatabaseType();				
+				if (getCdmSourceProperty(CdmSourceProperties.DATABASE) == null){
+					String database = dbType.getDatabaseNameByConnectionString(url);
+					if(database != null) {
+						dataSourceProperties.setProperty(CdmSourceProperties.DATABASE.toString(), database);
+					}
+				}
+				if(getCdmSourceProperty(CdmSourceProperties.SERVER) == null){
+					String server = dbType.getServerNameByConnectionString(url);
+					if(server != null) {
+						dataSourceProperties.setProperty(CdmSourceProperties.SERVER.toString(),server);
+					}
+				}
+				if(getCdmSourceProperty(CdmSourceProperties.PORT) == null){
+					int port = dbType.getPortByConnectionString(url); 
+					if(port > 0) {
+						dataSourceProperties.setProperty(CdmSourceProperties.PORT.toString(),String.valueOf(port));
+					}
+				}
+			}
+		}					
 	}
 	
-	
-	/**
-	 * Returns the name of the bean Element in the xml config file.
-	 * @return bean name
-	 */
-	private static String getBeanName(String name){
-		return name == null? null : name + DATASOURCE_BEAN_POSTFIX;
+	public String getBeanName() {
+		return beanName;
 	}
-
-
+	
 	
 	@Override
 	public String getDatabase() {
-		return getDatabaseProperty(DbProperties.DATABASE);
+		return getCdmSourceProperty(CdmSourceProperties.DATABASE);
 	}
 
 
 	@Override
-	public String getFilePath() {
-		//TODO null
-		return getDatabaseProperty(DbProperties.FILEPATH);
+	public String getFilePath() {		
+		return getCdmSourceProperty(CdmSourceProperties.FILEPATH);
 	}
 
 
 	@Override
-	public H2Mode getMode() {
-		//TODO null
-		return H2Mode.fromString(getDatabaseProperty(DbProperties.MODE));
+	public H2Mode getMode() {		
+		return H2Mode.fromString(getCdmSourceProperty(CdmSourceProperties.MODE));
 	}
 	
+	@Override
+	public String getUsername(){
+		return getCdmSourceProperty(CdmSourceProperties.USERNAME);
+	}
+	
+	@Override
+	public String getPassword(){
+		return getCdmSourceProperty(CdmSourceProperties.PASSWORD);
+	}
 
 	@Override
 	public NomenclaturalCode getNomenclaturalCode() {
 		// TODO null
-		return NomenclaturalCode.fromString(getDatabaseProperty(DbProperties.NOMENCLATURAL_CODE));
+		return NomenclaturalCode.fromString(getCdmSourceProperty(CdmSourceProperties.NOMENCLATURAL_CODE));
 	}
 
 	@Override
 	public int getPort() {
-		String port = CdmUtils.Nz(getDatabaseProperty(DbProperties.PORT));
-		if ("".equals(port)){
+		String port = CdmUtils.Nz(getCdmSourceProperty(CdmSourceProperties.PORT));
+		if (port == null || "".equals(port)){
 			return -1;
 		}else{
 			//TODO exception if non integer
@@ -209,131 +196,23 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 
 	@Override
 	public String getServer() {
-		return getDatabaseProperty(DbProperties.SERVER);
+		return getCdmSourceProperty(CdmSourceProperties.SERVER);
 	}
 
 
 	@Override
 	public DatabaseTypeEnum getDatabaseType(){
-		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		if (bean == null){
-			return null;
-		}else{
-			Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", "driverClassName");
-			if (driverProp == null){
-				logger.warn("Unknown property driverClass");
-		    	return null;
-			}else{
-				String strDriverClass = driverProp.getAttributeValue("value");
-				DatabaseTypeEnum dbType = DatabaseTypeEnum.getDatabaseEnumByDriverClass(strDriverClass);
-				return dbType;
-			}
-		}
+		String strDriverClass = getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS);
+		DatabaseTypeEnum dbType = DatabaseTypeEnum.getDatabaseEnumByDriverClass(strDriverClass);
+		return dbType;
 	}
 	
-	
-	/**
-	 * Returns the database type of the data source. 
-	 * @return the database type of the data source. Null if the bean or the driver class property does not exist or the driver class is unknown.
-	 */
-	protected String getDatabaseProperty(DbProperties property){
-		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		String url;
-		String result = null;
-		if (bean != null){
-			result = getPropertyValue(bean, property.toString());
-			if (result == null){  //test if property is database, server or port which are included in the url
-				url = getPropertyValue(bean, DbProperties.URL.toString());
-				DatabaseTypeEnum dbTypeEnum = getDatabaseType();
-				if (dbTypeEnum != null){
-					IDatabaseType dbType = dbTypeEnum.getDatabaseType();
-					if (property.equals(DbProperties.DATABASE)){
-						result = dbType.getDatabaseNameByConnectionString(url);
-					}else if(property.equals(DbProperties.SERVER)){
-						result = dbType.getServerNameByConnectionString(url);
-					}else if(property.equals(DbProperties.PORT)){
-						result = String.valueOf(dbType.getPortByConnectionString(url));
-					}else{
-						logger.debug("Unknown property: " + property);
-					}
-				}
-			}
-		}
-		return result;	
-	}
-	
-	private String getPropertyValue(Element bean, String property){
-		Element driverProp = XmlHelp.getFirstAttributedChild(bean, "property", "name", property);
-		if (driverProp == null){
-			logger.debug("Unknown property: " + property);
-	    	return null;
-		}else{
-			String strProperty = driverProp.getAttributeValue("value");
-			return strProperty;
-		}
-	}
 	
 
-
-	/**
-	 * Returns the list of properties that are defined in the datasource    
-	 * @return 
-	 */
-	@SuppressWarnings("unchecked")
-	public List<Attribute> getDatasourceAttributes(){
-		List<Attribute> result = new ArrayList<Attribute>();
-		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		if (bean == null){
-			return null;
-		}else{
-			result = bean.getAttributes();
-		}
-		return result;
-	}	
-
-	/**
-	 * Returns a defined property of the datasource
-	 * @return the property of the data source. NULL if the datasource bean or the property does not exist.
-	 */
-	public String getDatasourceProperty(DbProperties dbProp){
-		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		if (bean == null){
-			return null;
-		}else{
-			Element elProperty = XmlHelp.getFirstAttributedChild(bean, "property", "name", dbProp.toString());
-			if (elProperty == null){
-				logger.warn("Unknown property: " + dbProp.toString());
-		    	return null;
-			}else{
-				String strValue = elProperty.getAttributeValue("value");
-				return strValue;
-			}
-		}
-	}
-
 	
-	/**
-	 * Returns the list of properties that are defined in the datasource    
-	 * @return 
-	 */
-	public Properties getDatasourceProperties(){
-		Properties result = new Properties();
-		Element bean = getDatasourceBeanXml(this.dataSourceName);
-		if (bean == null){
-			return null;
-		}else{
-			List<Element> elProperties = XmlHelp.getAttributedChildList(bean, "property", "name");
-			Iterator<Element> iterator = elProperties.iterator();
-			while(iterator.hasNext()){
-				Element next = iterator.next();
-				String strName = next.getAttributeValue("name");
-				String strValue = next.getAttributeValue("value");
-				result.put(strName, strValue);
-			}
-		}
-		return result;
+	public String getCdmSourceProperty(CdmSourceProperties property){		
+		return dataSourceProperties.getProperty(property.toString(),null);
 	}
-	
 	/**
 	 * Returns a BeanDefinition object of type DataSource that contains
 	 * datsource properties (url, username, password, ...)
@@ -342,11 +221,12 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	@SuppressWarnings("unchecked")
 	@Override
 	public BeanDefinition getDatasourceBean(){
-		DatabaseTypeEnum dbtype = DatabaseTypeEnum.getDatabaseEnumByDriverClass(getDatasourceProperty(DbProperties.DRIVER_CLASS));
+		DatabaseTypeEnum dbtype = 
+				DatabaseTypeEnum.getDatabaseEnumByDriverClass(getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
 		
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbtype.getDataSourceClass());
 		//attributes
-		Iterator<Attribute> iterator = getDatasourceAttributes().iterator();
+		Iterator<Attribute> iterator = cdmSourceAttributes.iterator();
 		while(iterator.hasNext()){
 			Attribute attribute = iterator.next();
 			if (attribute.getName().equals("lazy-init")){
@@ -364,16 +244,16 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		
 		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
-		Properties persistentProperties = getDatasourceProperties();
-		Enumeration<String> keys = (Enumeration)persistentProperties.keys(); 
+		
+		Enumeration<String> keys = (Enumeration)cdmSourceProperties.keys(); 
 		while (keys.hasMoreElements()){
 			String key = (String)keys.nextElement();
 			
-			if (key.equals("nomenclaturalCode") && persistentProperties.getProperty(key).equals("ICBN")){
+			if (key.equals("nomenclaturalCode") && cdmSourceProperties.getProperty(key).equals("ICBN")){
 				//bugfix for old nomenclatural codes, remove if fixed elsewhere, see https://dev.e-taxonomy.eu/trac/ticket/3658
 				props.addPropertyValue(key, NomenclaturalCode.ICNAFP.name());
 			}else{
-				props.addPropertyValue(key, persistentProperties.getProperty(key));
+				props.addPropertyValue(key, cdmSourceProperties.getProperty(key));
 			}
 		}
 
@@ -443,7 +323,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 * @return true if a datasource with the given name exists in the according datasource config file.
 	 */
 	public static boolean exists(String strDataSourceName){
-		Element bean = getDatasourceBeanXml(strDataSourceName);
+		Element bean = CdmPersistentSourceUtils.getCdmSourceBeanXml(strDataSourceName, DATASOURCE_BEAN_POSTFIX);
 		return (bean != null);
 	}
 
@@ -488,16 +368,16 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		ICdmDataSource dataSource = new CdmDataSource(databaseTypeEnum, server, database, portNumber, username, password, filePath, mode, code);
 				
 		//root
-		Element root = getBeansRoot(getDataSourceInputStream());
+		Element root = getBeansRoot(CdmPersistentSourceUtils.getCdmSourceInputStream());
 		if (root == null){
 			return null;
 		}
 		//bean
-		Element bean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
+		Element bean = XmlHelp.getFirstAttributedChild(root, "bean", "id", CdmPersistentSourceUtils.getBeanName(strDataSourceName, DATASOURCE_BEAN_POSTFIX));
 		if (bean != null){
 			bean.detach();  //delete old version if necessary
 		}
-		bean = insertXmlBean(root, getBeanName(strDataSourceName), dataSourceClass.getName());
+		bean = insertXmlBean(root, CdmPersistentSourceUtils.getBeanName(strDataSourceName, DATASOURCE_BEAN_POSTFIX), dataSourceClass.getName());
 		//attributes
 		bean.setAttribute("lazy-init", "true");
 		if (initMethod != null) {bean.setAttribute("init-method", initMethod);}
@@ -516,7 +396,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		if (code != null) {insertXmlValueProperty(bean, "nomenclaturalCode", code.name());}
 		
 		//save
-		saveToXml(root.getDocument(), getResourceDirectory(), DATASOURCE_FILE_NAME, format );
+		saveToXml(root.getDocument(), 
+				CdmPersistentSourceUtils.getResourceDirectory(), 
+				CdmPersistentXMLSource.CDMSOURCE_FILE_NAME, 
+				XmlHelp.prettyFormat );
 		try {
 			return NewInstance(strDataSourceName) ;
 		} catch (DataSourceNotFoundException e) {
@@ -534,7 +417,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	 */
 	public static CdmPersistentDataSource update(String strDataSourceName,
 			ICdmDataSource dataSource) throws DataSourceNotFoundException, IllegalArgumentException{
-		delete(CdmPersistentDataSource.NewInstance(strDataSourceName));
+		CdmPersistentSourceUtils.delete(CdmPersistentSourceUtils.getBeanName(strDataSourceName,DATASOURCE_BEAN_POSTFIX));
 		return save(strDataSourceName, dataSource);
 	}
 
@@ -555,9 +438,9 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		
 		if(dataSource.getDatabaseType().equals(DatabaseTypeEnum.H2)){
 			Class<? extends DataSource> dataSourceClass =  LocalH2.class;
-			if(dataSource.getMode() == null){
+			if(dataSource.getMode() == null) {
 				new IllegalArgumentException("H2 mode not specified");
-			}
+			}			
 			return save(
 					strDataSourceName, 
 					dataSource.getDatabaseType(), 
@@ -600,24 +483,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	}
 
 	private static String getCheckedDataSourceParameter(String parameter) throws IllegalArgumentException{		
-		if(parameter != null){
+		if(parameter != null) {
 			return parameter;
-		}else{
-			new IllegalArgumentException("Non obsolete paramater was assigned a null value: " + parameter);
-			return null;
-		}
-	}
-
-	/**
-	 * Deletes a dataSource
-	 * @param dataSource
-	 */
-	public static void delete (CdmPersistentDataSource dataSource){
-		Element bean = getDatasourceBeanXml(dataSource.getName());
-		if (bean != null){
-			Document doc = bean.getDocument();
-			bean.detach();
-			saveToXml(doc, getDataSourceOutputStream(), format );
+		} else {
+			throw new IllegalArgumentException("Non obsolete paramater was assigned a null value: " + parameter);
 		}
 	}
 	
@@ -630,7 +499,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 	static public List<CdmPersistentDataSource> getAllDataSources(){
 		List<CdmPersistentDataSource> dataSources = new ArrayList<CdmPersistentDataSource>();
 		
-		Element root = getBeansRoot(getDataSourceInputStream());
+		Element root = getBeansRoot(CdmPersistentSourceUtils.getCdmSourceInputStream());
 		if (root == null){
 			return null;
 		}else{
@@ -647,89 +516,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 		return dataSources;
 	}
 	
-	@Override
-	public String getUsername(){
-		return getDatasourceProperty(DbProperties.USERNAME);
-	}
-	
-	@Override
-	public String getPassword(){
-		return getDatasourceProperty(DbProperties.PASSWORD);
-	}
-
-
-
-	
-	/**
-	 * Returns the datasource config file input stream.
-	 * @return data source config file input stream
-	 */
-	static protected FileInputStream getDataSourceInputStream(){
-		String dir = getResourceDirectory();
-		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
-		return fileInputStream(file);
-	}
-	
-	
-	/**
-	 * Returns the datasource config file outputStream.
-	 * @return data source config file outputStream
-	 */
-	static protected FileOutputStream getDataSourceOutputStream(){
-		String dir = getResourceDirectory();
-		File file = new File(dir + File.separator +  DATASOURCE_FILE_NAME);
-		return fileOutputStream(file);
-	}
-
-	/**
-	 * Returns the jdom Element representing the data source bean in the config file.
-	 * @return
-	 */
-	private static Element getDatasourceBeanXml(String strDataSourceName){
-		FileInputStream inStream = getDataSourceInputStream();
-		Element root = getBeansRoot(inStream);
-		if (root == null){
-			return null;
-		}else{
-	    	Element xmlBean = XmlHelp.getFirstAttributedChild(root, "bean", "id", getBeanName(strDataSourceName));
-			if (xmlBean == null){
-				//TODO warn or info
-				logger.debug("Unknown Element 'bean id=" +strDataSourceName + "' ");
-			}
-			return xmlBean;
-		}
-	}
-	
-	// returns the directory containing the resources 
-	private static String getResourceDirectory(){
-		try {
-			File f = CdmApplicationUtils.getWritableResourceDir();
-			return f.getPath();
-		} catch (IOException e) {
-			logger.error(e);
-			throw new RuntimeException(e);
-		}
-	}
-	
-	static private FileInputStream fileInputStream(File file){
-		try {
-			FileInputStream fis = new FileInputStream(file);
-			return fis;
-		} catch (FileNotFoundException e) {
-			logger.warn("File " + file == null?"null":file.getAbsolutePath() + " does not exist in the file system");
-			return null;
-		}
-	}
-	
-	static private FileOutputStream fileOutputStream(File file){
-		try {
-			FileOutputStream fos = new FileOutputStream(file);
-			return fos;
-		} catch (FileNotFoundException e) {
-			logger.warn("File " + (file == null?"null":file.getAbsolutePath()) + " does not exist in the file system");
-			return null;
-		}
-	}
 	
 	@Override
 	public boolean equals(Object obj){
@@ -739,18 +525,21 @@ public class CdmPersistentDataSource extends CdmDataSourceBase{
 			return false;
 		}else{
 			CdmPersistentDataSource dataSource = (CdmPersistentDataSource)obj;
-			return (this.dataSourceName == dataSource.dataSourceName);
+			return (getName() == dataSource.getName());
 		}
 
 	}
 	
 	@Override
 	public String toString(){
-		if (this.dataSourceName != null){
-			return dataSourceName;
+		if (getName() != null){
+			return getName();
 		}else{
 			return null;
 		}
 	}
+
+
+
 
 }
