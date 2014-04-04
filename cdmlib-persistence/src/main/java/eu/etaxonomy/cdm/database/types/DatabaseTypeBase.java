@@ -113,7 +113,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	
 	protected String getServerNameByConnectionString(String connectionString, String strUrl, String dbSeparator){
     	String result;
-    	if (connectionString == null){
+    	if (connectionString == null || !connectionString.startsWith(urlString)){
     		return null;
     	}
     	connectionString = connectionString.substring(strUrl.length());
@@ -137,7 +137,7 @@ abstract class DatabaseTypeBase implements IDatabaseType {
     }
 	
 	protected int getPortByConnectionString(String connectionString, String strUrl, String dbSeparator){
-		if (connectionString == null){
+		if (connectionString == null || !connectionString.startsWith(urlString)){
     		return -1;
     	}
 		int result;
@@ -166,9 +166,10 @@ abstract class DatabaseTypeBase implements IDatabaseType {
 	
 	protected String getDatabasePartOfConnectionString(String connectionString, String dbSeparator){
     	String result;
-    	if (connectionString == null){
+    	if (connectionString == null || !connectionString.startsWith(urlString)){
     		return null;
     	}
+    	
     	connectionString = connectionString.substring(urlString.length()); //delete prefix
     	int posDb = connectionString.indexOf(dbSeparator);
     	if (posDb != -1){
