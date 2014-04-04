@@ -37,7 +37,7 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
     @Override
     public void initialize(IdentifiableEntity<?> bean) {
 
-    	bean = HibernateProxyHelper.deproxy(bean, IdentifiableEntity.class);
+        bean = HibernateProxyHelper.deproxy(bean, IdentifiableEntity.class);
         // we will implement a bit of redundancy here in order
         // to avoid too much casting
         if(bean instanceof NonViralName){
@@ -88,21 +88,22 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         }
     }
 
-	@Override
-	public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
-		String result = "";
-		if (TaxonNameBase.class.isAssignableFrom(clazz)){
-			result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
-			result += String.format(" LEFT JOIN FETCH %s.relationsToThisName rel LEFT JOIN FETCH rel.relatedFrom ", beanAlias);
-			if (NonViralName.class.isAssignableFrom(clazz)){
-				result += String.format(" LEFT JOIN FETCH %s.combinationAuthorTeam ", beanAlias);
-				result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorTeam ", beanAlias);
-				result += String.format(" LEFT JOIN FETCH %s.basionymAuthorTeam ", beanAlias);
-				result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorTeam ", beanAlias);
-			}
-		}
-		return result;
-	}
-    
-    
+    @Override
+    public String hibernateFetchJoin(Class<?> clazz, String beanAlias){
+        String result = "";
+        if (TaxonNameBase.class.isAssignableFrom(clazz)){
+            result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.relationsToThisName relTo LEFT JOIN FETCH relTo.relatedFrom ", beanAlias);
+            result += String.format(" LEFT JOIN FETCH %s.relationsFromThisName relFrom LEFT JOIN FETCH relFrom.relatedTo ", beanAlias);
+            if (NonViralName.class.isAssignableFrom(clazz)){
+                result += String.format(" LEFT JOIN FETCH %s.combinationAuthorTeam ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorTeam ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.basionymAuthorTeam ", beanAlias);
+                result += String.format(" LEFT JOIN FETCH %s.exBasionymAuthorTeam ", beanAlias);
+            }
+        }
+        return result;
+    }
+
+
 }
