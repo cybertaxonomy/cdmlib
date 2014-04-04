@@ -32,6 +32,7 @@ import org.jdom.output.XMLOutputter;
 public class XmlHelp {
 	private static final Logger logger = Logger.getLogger(XmlHelp.class);
 
+	public final static Format prettyFormat = Format.getPrettyFormat(); 
 	/**
 	 * Writes the Document doc to the specified file
 	 * @param doc
