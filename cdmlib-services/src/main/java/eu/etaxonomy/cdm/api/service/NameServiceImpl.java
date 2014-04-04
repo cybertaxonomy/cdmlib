@@ -592,7 +592,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     public List<NameRelationship> listNameRelationships(TaxonNameBase name,	Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
 
-        Integer numberOfResults = dao.countNameRelationships(name, NameRelationship.Direction.relatedFrom, type);
+        Integer numberOfResults = dao.countNameRelationships(name, direction, type);
 
         List<NameRelationship> results = new ArrayList<NameRelationship>();
         if (AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) { // no point checking again
