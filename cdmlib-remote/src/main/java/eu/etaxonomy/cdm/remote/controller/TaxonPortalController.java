@@ -240,10 +240,12 @@ public class TaxonPortalController extends TaxonController
     private static final List<String> NAMERELATIONSHIP_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "type.inverseRepresentations",
-            "fromName",
             "toName.$",
             "toName.nomenclaturalReference.authorTeam",
             "toName.nomenclaturalReference.inReference",
+            "fromName.$",
+            "fromName.nomenclaturalReference.authorTeam",
+            "fromName.nomenclaturalReference.inReference",
 
     });
 
