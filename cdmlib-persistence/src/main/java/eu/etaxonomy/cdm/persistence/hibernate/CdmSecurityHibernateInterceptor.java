@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.io.Serializable;
 import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.commons.lang.ArrayUtils;
 import org.apache.log4j.Logger;
@@ -21,6 +25,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
+import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CRUD;
@@ -39,6 +44,7 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     public static final Logger logger = Logger.getLogger(CdmSecurityHibernateInterceptor.class);
 
+
     private CdmPermissionEvaluator permissionEvaluator;
 
     public CdmPermissionEvaluator getPermissionEvaluator() {
@@ -47,6 +53,28 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
 
     public void setPermissionEvaluator(CdmPermissionEvaluator permissionEvaluator) {
         this.permissionEvaluator = permissionEvaluator;
+    }
+
+    /**
+     * The exculdeMap must map every property to the CdmBase type !!!
+     */
+    public static final Map<Class<? extends CdmBase>, Set<String>> exculdeMap = new HashMap<Class<? extends CdmBase>, Set<String>>();
+
+    static{
+//        disabled since no longer needed, see https://dev.e-taxonomy.eu/trac/ticket/4111#comment:8
+//        exculdeMap.put(TaxonNameBase.class, new HashSet<String>());
+
+        /*
+         * default fields required for each type for which excludes are defined
+         */
+//        exculdeMap.get(TaxonNameBase.class).add("updatedBy");
+//        exculdeMap.get(TaxonNameBase.class).add("created");
+//        exculdeMap.get(TaxonNameBase.class).add("updated");
+
+        /*
+         * the specific excludes
+         */
+//        exculdeMap.get(TaxonNameBase.class).add("taxonBases");
     }
 
 
@@ -77,9 +105,9 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
         }
         CdmBase cdmEntity = (CdmBase) entity;
         if (previousState == null){
-        	return onSave(cdmEntity, id, currentState, propertyNames, null);
+            return onSave(cdmEntity, id, currentState, propertyNames, null);
         }
-        if (isModified(currentState, previousState)) {
+        if (isModified(currentState, previousState, propertyNames, exculdeMap.get(CdmBaseType.baseTypeFor(cdmEntity.getClass())))) {
             // evaluate throws EvaluationFailedException
             checkPermissions(cdmEntity, Operation.UPDATE);
             logger.debug("Operation.UPDATE permission check suceeded - object update granted");
@@ -145,12 +173,36 @@ public class CdmSecurityHibernateInterceptor extends EmptyInterceptor {
      * @param previousState
      * @return true if the currentState and previousState differ.
      */
-    private boolean isModified(Object[] currentState, Object[] previousState) {
-        for (int i = 0; i<currentState.length; i++){
-            if(propertyIsModified(currentState, previousState, i)){
-                return true;
+    private boolean isModified(Object[] currentState, Object[] previousState, String[] propertyNames, Set<String> excludes) {
+
+        Set<Integer> excludeIds = null;
+
+        if(excludes != null && excludes.size() > 0) {
+            excludeIds = new HashSet<Integer>(excludes.size());
+            int i = 0;
+            for(String prop : propertyNames){
+                if(excludes.contains(prop)){
+                    excludeIds.add(i);
+                }
+                if(excludeIds.size() == excludes.size()){
+                    // all ids found
+                    break;
+                }
+                i++;
             }
         }
+
+        for (int i = 0; i<currentState.length; i++){
+            if((excludeIds == null || !excludeIds.contains(i))){
+                if(propertyIsModified(currentState, previousState, i)){
+                    if(logger.isDebugEnabled()){
+                        logger.debug("modified property found: " + propertyNames[i] + ", previousState: " + previousState[i] + ", currentState: " + currentState[i] );
+                    }
+                    return true;
+                }
+            }
+        }
+
         return false;
     }
 

@@ -58,6 +58,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
+import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
+import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
+import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
@@ -81,10 +84,10 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     public static final String DEFAULT_APPLICATION_CONTEXT_RESOURCE = "/eu/etaxonomy/cdm/defaultApplicationContext.xml";
 
     public AbstractApplicationContext applicationContext;
-    private ICdmApplicationConfiguration configuration;
-    private Resource applicationContextResource;
+    protected ICdmApplicationConfiguration configuration;
+    private final Resource applicationContextResource;
 
-    private IProgressMonitor progressMonitor;
+    private final IProgressMonitor progressMonitor;
 
     final protected static DbSchemaValidation defaultDbSchemaValidation = DbSchemaValidation.VALIDATE;
 
@@ -160,6 +163,15 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         return dataSource;
     }
 
+    /**
+     * 
+     * FIXME:Remoting this constructor is added only to allow extension of this cntroller class.
+     * and should be removed after refactoring
+     */
+    protected CdmApplicationController() {
+    	applicationContextResource = null;
+    	progressMonitor = null;
+    }
 
     /**
      * Constructor, opens an spring 2.5 ApplicationContext by using the according data source
@@ -319,6 +331,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
     /* (non-Javadoc)
      * @see java.lang.Object#finalize()
      */
+    @Override
     public void finalize(){
         close();
     }
@@ -363,106 +376,153 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
 
     /* ******  Services *********/
+    @Override
     public final INameService getNameService(){
         return configuration.getNameService();
     }
 
+    @Override
     public final ITaxonService getTaxonService(){
         return configuration.getTaxonService();
     }
 
+    @Override
     public final IClassificationService getClassificationService(){
         return configuration.getClassificationService();
     }
 
+    @Override
     public final ITaxonNodeService getTaxonNodeService(){
         return configuration.getTaxonNodeService();
     }
 
+    @Override
     public final IReferenceService getReferenceService(){
         return configuration.getReferenceService();
     }
 
+    @Override
     public final IAgentService getAgentService(){
         return configuration.getAgentService();
     }
 
+    @Override
     public final IDatabaseService getDatabaseService(){
         return configuration.getDatabaseService();
     }
 
+    @Override
     public final ITermService getTermService(){
         return configuration.getTermService();
     }
 
+    @Override
     public final IDescriptionService getDescriptionService(){
         return configuration.getDescriptionService();
     }
 
+    @Override
     public final IOccurrenceService getOccurrenceService(){
         return configuration.getOccurrenceService();
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAmplificationService()
+     */
+    @Override
+    public IAmplificationService getAmplificationService() {
+        return configuration.getAmplificationService();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getSequenceService()
+     */
+    @Override
+    public ISequenceService getSequenceService() {
+        return configuration.getSequenceService();
+    }
+
+    @Override
+    public final IPrimerService getPrimerService(){
+        return configuration.getPrimerService();
+    }
+
+    @Override
     public final IMediaService getMediaService(){
         return configuration.getMediaService();
     }
 
+    @Override
     public final ICommonService getCommonService(){
         return configuration.getCommonService();
     }
 
+    @Override
     public final ILocationService getLocationService(){
         return configuration.getLocationService();
     }
 
+    @Override
     public final IUserService getUserService(){
         return configuration.getUserService();
     }
 
+    @Override
     public final IGrantedAuthorityService getGrantedAuthorityService(){
         return configuration.getGrantedAuthorityService();
     }
 
+    @Override
     public IGroupService getGroupService() {
         return configuration.getGroupService();
     }
 
+    @Override
     public final ICollectionService getCollectionService(){
         return configuration.getCollectionService();
     }
 
+    @Override
     public final IFeatureTreeService getFeatureTreeService(){
         return configuration.getFeatureTreeService();
     }
 
+    @Override
     public final IFeatureNodeService getFeatureNodeService(){
         return configuration.getFeatureNodeService();
     }
 
+    @Override
     public final IVocabularyService getVocabularyService(){
         return configuration.getVocabularyService();
     }
 
+    @Override
     public final IIdentificationKeyService getIdentificationKeyService(){
         return configuration.getIdentificationKeyService();
     }
 
+    @Override
     public final IPolytomousKeyService getPolytomousKeyService(){
         return configuration.getPolytomousKeyService();
     }
 
+    @Override
     public final IPolytomousKeyNodeService getPolytomousKeyNodeService(){
         return configuration.getPolytomousKeyNodeService();
     }
 
+    @Override
     public final IService<CdmBase> getMainService(){
         return configuration.getMainService();
     }
 
+    @Override
     public final IWorkingSetService getWorkingSetService(){
         return configuration.getWorkingSetService();
     }
 
+    @Override
     public final ConversationHolder NewConversation(){
         //return (ConversationHolder)applicationContext.getBean("conversationHolder");
         return configuration.NewConversation();
@@ -470,8 +530,8 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
 
 
     /* **** Security ***** */
-    
-	
+
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#authenticate(java.lang.String, java.lang.String)
      */
@@ -482,16 +542,18 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         SecurityContext context = SecurityContextHolder.getContext();
         context.setAuthentication(authentication);
 	}
-    
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAuthenticationManager()
      */
+    @Override
     public final ProviderManager getAuthenticationManager(){
         return configuration.getAuthenticationManager();
     }
 
 
+    @Override
     public ICdmPermissionEvaluator getPermissionEvaluator() {
         return configuration.getPermissionEvaluator();
     }
@@ -514,6 +576,7 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         return configuration.getTransactionManager();
     }
 
+    @Override
     public final Object getBean(String name){
         return this.applicationContext.getBean(name);
     }
@@ -532,14 +595,17 @@ public class CdmApplicationController implements ICdmApplicationConfiguration{
         return (SessionFactory)applicationContext.getBean("sessionFactory");
     }
 
+    @Override
     public TransactionStatus startTransaction() {
         return startTransaction(false);
     }
 
+    @Override
     public TransactionStatus startTransaction(Boolean readOnly) {
         return configuration.startTransaction(readOnly);
     }
 
+    @Override
     public void commitTransaction(TransactionStatus txStatus){
         PlatformTransactionManager txManager = configuration.getTransactionManager();
         txManager.commit(txStatus);

@@ -20,8 +20,8 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 
 
 @Component
@@ -36,10 +36,12 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 			logger.warn("Create class list from boolean values is not yet implemented for cache updater");
 			createClassListFromBoolean();
 		}
+		
+		//handle class list
 		handleClassList(config.getClassList());
+		
 		return;
 	}
-
 
 
 	private boolean handleClassList(List<Class<? extends IdentifiableEntity>> classList) {
@@ -55,30 +57,26 @@ public class CacheUpdater extends CdmIoBase<DefaultImportState<CacheUpdaterConfi
 		return result;
 	}
 
-
-
-private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> clazz) {
-	if (clazz.isAssignableFrom(IdentifiableEntity.class)){
-		List list = Arrays.asList(new Class[]{
-				DescriptionBase.class, IdentifiableMediaEntity.class, 
-				Media.class, Sequence.class,
-				TaxonBase.class, TaxonNameBase.class,
-				Classification.class, TermBase.class
-				});
-		handleClassList(list);
-	}else if (clazz.isAssignableFrom(IdentifiableMediaEntity.class)){
-		List list = Arrays.asList(new Class[]{AgentBase.class, Collection.class, Reference.class, SpecimenOrObservationBase.class});
-		handleClassList(list);
-	}else if (clazz.isAssignableFrom(TermBase.class)){
-		List list = Arrays.asList(new Class[]{DefinedTermBase.class, FeatureTree.class, TermVocabulary.class });
-		handleClassList(list);
-	}else{
-		return false;
+	private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> clazz) {
+		if (clazz.isAssignableFrom(IdentifiableEntity.class)){
+			List list = Arrays.asList(new Class[]{
+					DescriptionBase.class, IdentifiableMediaEntity.class, 
+					Media.class, Sequence.class,
+					TaxonBase.class, TaxonNameBase.class,
+					Classification.class, TermBase.class
+					});
+			handleClassList(list);
+		}else if (clazz.isAssignableFrom(IdentifiableMediaEntity.class)){
+			List list = Arrays.asList(new Class[]{AgentBase.class, Collection.class, Reference.class, SpecimenOrObservationBase.class});
+			handleClassList(list);
+		}else if (clazz.isAssignableFrom(TermBase.class)){
+			List list = Arrays.asList(new Class[]{DefinedTermBase.class, FeatureTree.class, TermVocabulary.class });
+			handleClassList(list);
+		}else{
+			return false;
+		}
+		return true;
 	}
-	return true;
-}
-
-
 
 	private boolean handleSingleTableClass(Class<? extends IdentifiableEntity> clazz) {
 		logger.warn("Updating class " + clazz.getSimpleName() + " ...");
@@ -142,12 +140,9 @@ private boolean handleMultiTableClasses(Class<? extends IdentifiableEntity> claz
 		}
 	}
 
-
-	
 	private void createClassListFromBoolean() {
 		logger.warn("Create class list from boolean not yet implemented. Can't run cache updater");
 	}
-
 
 
 // ************* inherited form CdmIoBase but not needed here ********************/

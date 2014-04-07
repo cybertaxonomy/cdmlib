@@ -35,6 +35,8 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Index;
+import org.hibernate.annotations.Table;
 import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.ContainedIn;
 import org.hibernate.search.annotations.Indexed;
@@ -67,6 +69,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 @Entity
 @Indexed(index = "eu.etaxonomy.cdm.model.taxon.TaxonNode")
 @Audited
+@Table(appliesTo="TaxonNode", indexes = { @Index(name = "taxonNodeTreeIndex", columnNames = { "treeIndex" }) })
 public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITreeNode<TaxonNode>, Cloneable{
     private static final long serialVersionUID = -4743289894926587693L;
     private static final Logger logger = Logger.getLogger(TaxonNode.class);
@@ -116,7 +119,13 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
     //see https://dev.e-taxonomy.eu/trac/ticket/3722
     private Integer sortIndex = -1;
 
-    @XmlElement(name = "reference")
+    public Integer getSortIndex() {
+		return sortIndex;
+	}
+
+	
+
+	@XmlElement(name = "reference")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
@@ -312,6 +321,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
             for(TaxonNode childNode : childNodes){
                 node.deleteChildNode(childNode, deleteChildren);
+            }
+        } else{
+        	ArrayList<TaxonNode> childNodes = new ArrayList<TaxonNode>(node.getChildNodes());
+            for(TaxonNode childNode : childNodes){
+             this.addChildNode(childNode, null, null);
             }
         }
 
@@ -677,11 +691,41 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isTopmostNode(){
-        if (classification != null){
-        	return classification.getRootNode().getChildNodes().contains(this);
-        }else{
-        	return false;
-        }
+    	boolean parentCheck = false;
+    	boolean classificationCheck = false;
+
+    	if(getParent() != null) {
+    		if(getParent().getTaxon() == null) {
+    			parentCheck = true;
+    		}
+    	}
+
+    	// FIXME This should work but doesn't, due to missing sort indexes
+    	if (classification != null){          	
+    		classificationCheck = classification.getRootNode().getChildNodes().contains(this);
+    	}else{
+    		classificationCheck = false;
+    	}
+
+    	// The following is just for logging purposes for the missing sort indexes problem
+    	// ticket #4098
+    	if(parentCheck != classificationCheck) {        	
+    		logger.warn("isTopmost node check " + parentCheck + " not same as classificationCheck : " + classificationCheck + " for taxon node ");        	
+    		if(this.getParent() != null) {
+    			logger.warn("-- with parent uuid " + this.getParent().getUuid().toString());
+    			logger.warn("-- with parent id " + this.getParent().getId());
+    			for(TaxonNode node : this.getParent().getChildNodes()) {
+    				if(node == null) {
+    					logger.warn("-- child node is null");
+    				} else if (node.getTaxon() == null) {
+    					logger.warn("-- child node taxon is null");
+    				} 
+    			}
+    			logger.warn("-- parent child count" + this.getParent().getChildNodes().size());        		
+    		}       	
+    	}
+
+    	return parentCheck;
     }
 
     /**

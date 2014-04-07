@@ -28,6 +28,14 @@
     <bean name="**/name_catalogue/* **/name_catalogue" class="eu.etaxonomy.cdm.remote.view.JsonView">
       <property name="jsonConfig" ref="nameCatalogueJsonConfig" />
     </bean>
+    
+   <bean name="**/occurrence_catalogue/* **/occurrence_catalogue" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="jsonConfig" ref="occurrenceCatalogueJsonConfig" />
+    </bean>
+
+    <bean name="**/csv/* **/export" class="eu.etaxonomy.cdm.remote.view.JsonView">
+      <property name="jsonConfig" ref="nameCatalogueJsonConfig" />
+    </bean>
 
     <!-- portal service -->
     <bean name="**/portal/* **/portal/**/*" class="eu.etaxonomy.cdm.remote.view.JsonView">

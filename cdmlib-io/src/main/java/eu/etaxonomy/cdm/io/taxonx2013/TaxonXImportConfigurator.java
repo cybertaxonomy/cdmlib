@@ -241,7 +241,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
      */
     public void setPersons(Map<String, Person> titleCachePerson) {
         this.titleCachePerson=titleCachePerson;
-        System.out.println(titleCachePerson);
+        //System.out.println(titleCachePerson);
 
     }
     public Map<String,UUID> getNamedAreaDecisions() {

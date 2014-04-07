@@ -68,7 +68,6 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.media.MediaUtils;
 import eu.etaxonomy.cdm.model.name.NameRelationship;
-import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -111,7 +110,7 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
  */
 @Controller
 @RequestMapping(value = {"/portal/taxon/{uuid}"})
-public class TaxonPortalController extends BaseController<TaxonBase, ITaxonService>
+public class TaxonPortalController extends TaxonController
 {
 
     public static final Logger logger = Logger.getLogger(TaxonPortalController.class);
@@ -167,7 +166,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             "name.status.type.representations",
             "name.nomenclaturalReference.authorTeam",
             "name.nomenclaturalReference.inReference",
-            "taxonNodes.classification.childNodes",
+            "taxonNodes.classification",
             });
 
     private static final List<String> SYNONYMY_INIT_STRATEGY = Arrays.asList(new String []{
@@ -252,14 +251,14 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String [] {
             "$",
             "elements.$",
-            "elements.states.$",
+            "elements.stateData.$",
             "elements.sources.citation.authorTeam",
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",
             "elements.modifyingText",
             "elements.modifiers",
-            "elements.stateData",
+            "elements.kindOfUnit",
             "name.$",
             "name.rank.representations",
             "name.status.type.representations",
@@ -534,7 +533,10 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
             }
         }
 
-        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(clazz, queryString, classification, features, languages, highlighting, pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
+        Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(
+                clazz, queryString, classification, features, languages, highlighting,
+                pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                ((List<OrderHint>)null), SIMPLE_TAXON_INIT_STRATEGY);
         return pager;
     }
 
@@ -587,91 +589,6 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return mv;
     }
 
-    /**
-     * Get the set of accepted {@link Taxon} entities for a given
-     * {@link TaxonBase} entity identified by the <code>{taxon-uuid}</code>.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;accepted</b>
-     *
-     * @param request
-     * @param response
-     * @return a Set of {@link Taxon} entities which are initialized
-     *         using the following initialization strategy:
-     *         {@link #SYNONYMY_INIT_STRATEGY}
-     * @throws IOException
-     */
-    @RequestMapping(value = "accepted/{classification_uuid}", method = RequestMethod.GET)
-    public Set<TaxonBase> getAccepted(
-                @PathVariable("uuid") UUID uuid,
-                @PathVariable("classification_uuid") UUID classification_uuid,
-                HttpServletRequest request,
-                HttpServletResponse response)
-                throws IOException {
-
-        if(request != null){
-            logger.info("getAccepted() " + requestPathAndQuery(request));
-        }
-
-        TaxonBase tb = service.load(uuid, SYNONYMY_WITH_NODES_INIT_STRATEGY);
-        if(tb == null){
-            response.sendError(HttpServletResponse.SC_NOT_FOUND, "A taxon with the uuid " + uuid + " does not exist");
-            return null;
-        }
-
-        HashSet<TaxonBase> resultset = new HashSet<TaxonBase>();
-
-        if (tb instanceof Taxon){
-            Taxon taxon = (Taxon) tb;
-            Set<TaxonNode> nodes = taxon.getTaxonNodes();
-            for (TaxonNode taxonNode : nodes) {
-                if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
-                    resultset.add(tb);
-                }
-            }
-            if (resultset.size() > 1){
-                //error!! A taxon is not allow to have more taxonnodes for a given classification
-                response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                "A taxon with the uuid " + uuid + " has more than one taxon node for the given classification" + classification_uuid);
-            }
-        }else{
-            Synonym syn = (Synonym) tb;
-            for(TaxonBase accepted : syn.getAcceptedTaxa()){
-                tb = service.load(accepted.getUuid(), SIMPLE_TAXON_WITH_NODES_INIT_STRATEGY);
-                if (tb instanceof Taxon){
-                    Taxon taxon = (Taxon) tb;
-                    Set<TaxonNode> nodes = taxon.getTaxonNodes();
-                    for (TaxonNode taxonNode : nodes) {
-                        if (taxonNode.getClassification().compareTo(classification_uuid) == 0){
-                            resultset.add(tb);
-                        }
-                    }
-                    if (resultset.size() > 1){
-                        //error!! A taxon is not allow to have more taxonnodes for a given classification
-                        response.sendError(HttpServletResponse.SC_INTERNAL_SERVER_ERROR,
-                        "A taxon with the uuid " + uuid + " has more than one taxon node for the given classification" + classification_uuid);
-                    }
-                }else{
-                    //ERROR!! perhaps missapplied name????
-                    //syn.getRelationType((Taxon)accepted);
-                }
-            }
-        }
-/**
- * OLD CODE!!
-        if(tb instanceof Taxon){
-            //the taxon already is accepted
-            //FIXME take the current view into account once views are implemented!!!
-            resultset.add((Taxon)tb);
-        } else {
-            Synonym syn = (Synonym)tb;
-            for(TaxonBase accepted : syn.getAcceptedTaxa()){
-                accepted = service.load(accepted.getUuid(), SIMPLE_TAXON_INIT_STRATEGY);
-                resultset.add(accepted);
-            }
-        }
-*/
-        return resultset;
-    }
 
     /**
      * Get the list of {@link TaxonRelationship}s for the given
@@ -755,33 +672,7 @@ public class TaxonPortalController extends BaseController<TaxonBase, ITaxonServi
         return list;
     }
 
-    /**
-     * Get the list of {@link TypeDesignationBase}s of the
-     * {@link TaxonBase} instance identified by the <code>{taxon-uuid}</code>.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;taxon&#x002F;{taxon-uuid}&#x002F;nameTypeDesignations</b>
-     *
-     * @param request
-     * @param response
-     * @return a List of {@link TypeDesignationBase} entities which are initialized
-     *         using the following initialization strategy:
-     *         {@link #TYPEDESIGNATION_INIT_STRATEGY}
-     * @throws IOException
-     * @Deprecated use &#x002F;name&#x002F;{uuid}&#x002F;typeDesignations & &#x002F;derivedunitfacade&#x002F;{uuid} instead
-     * also see http://dev.e-taxonomy.eu/trac/ticket/2280
-     */
-    @Deprecated
-    @RequestMapping(
-            value = {"nameTypeDesignations"},
-            method = RequestMethod.GET)
-    public List<TypeDesignationBase> doGetNameTypeDesignations(@PathVariable("uuid") UUID uuid,
-            HttpServletRequest request, HttpServletResponse response)throws IOException {
-        logger.info("doGetNameTypeDesignations()" + request.getRequestURI());
-        Taxon taxon = getCdmBaseInstance(Taxon.class, uuid, response, SIMPLE_TAXON_INIT_STRATEGY);
-        Pager<TypeDesignationBase> p = nameService.getTypeDesignations(taxon.getName(), null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        return p.getRecords();
-    }
-
+    @Override
     @RequestMapping(value = "taxonNodes", method = RequestMethod.GET)
     public Set<TaxonNode>  doGetTaxonNodes(
             @PathVariable("uuid") UUID uuid,

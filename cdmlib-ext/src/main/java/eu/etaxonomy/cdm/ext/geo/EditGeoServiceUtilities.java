@@ -38,6 +38,7 @@ import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.Point;
@@ -234,7 +235,7 @@ public class EditGeoServiceUtilities {
         boolean doNotReuseStyles = true;
 
         List<String>  perLayerAreaData = new ArrayList<String>();
-       Map<Integer, String> areaStyles = new HashMap<Integer, String>();
+        Map<Integer, String> areaStyles = new HashMap<Integer, String>();
         List<String> legendLabels = new ArrayList<String>();
 
 
@@ -514,8 +515,8 @@ public class EditGeoServiceUtilities {
         TermVocabulary<NamedArea> voc = area.getVocabulary();
         String result = null;
 
-        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary)) {
-            // TDWG
+        if (voc != null && voc.getUuid().equals(NamedArea.uuidTdwgAreaVocabulary) ||  voc.getUuid().equals(Country.uuidCountryVocabulary)) {
+            // TDWG or Country
             result = area.getIdInVocabulary();
             if (area.getLevel() != null && area.getLevel().equals(NamedAreaLevel.TDWG_LEVEL4())) {
                 result = result.replace("-", "");
@@ -561,6 +562,7 @@ public class EditGeoServiceUtilities {
             //unrecognized tdwg area
 
         }
+        //TODO countries
 
         // check if the matched layer equals the layer to project to
         // if not: recurse into the sub-level in order to find the specified one.
@@ -596,6 +598,8 @@ public class EditGeoServiceUtilities {
             //unrecognized tdwg area
             return null;
 
+        }else if (voc.getUuid().equals(Country.uuidCountryVocabulary)){
+        	return "country_earth";
         }
 
         GeoServiceArea areas = mapping.valueOf(area);

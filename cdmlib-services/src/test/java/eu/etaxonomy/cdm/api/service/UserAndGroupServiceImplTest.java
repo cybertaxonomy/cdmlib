@@ -333,11 +333,6 @@ public class UserAndGroupServiceImplTest extends AbstractSecurityTestBase {
 
         }
 
-
-
     }
-
-
-
 
 }

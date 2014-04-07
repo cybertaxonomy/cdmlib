@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
 import org.hibernate.event.spi.PostDeleteEvent;
 import org.hibernate.event.spi.PostDeleteEventListener;
@@ -68,7 +70,9 @@ public class Level3ValidationEventListener implements PostInsertEventListener, P
 				return;
 			}
 			if (!(object instanceof CdmBase)) {
-				logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName());
+				if (object.getClass() != HashMap.class) {
+					logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName());
+				}
 				return;
 			}
 			CdmBase entity = (CdmBase) object;

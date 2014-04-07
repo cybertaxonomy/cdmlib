@@ -83,7 +83,7 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	private static final UUID uuidUnspecified = UUID.fromString("230fd762-b143-49de-ac2e-744bcc48a63b");
 	private static final UUID uuidOriginalMaterial = UUID.fromString("49c96cae-6be6-401e-9b36-1bc12d9dc8f9");
 	private static final UUID uuidIsosyntype = UUID.fromString("052a5ff0-8e9a-4355-b24f-5e4bb6071f44");
-
+	private static final UUID uuidIsoparatype = UUID.fromString("497137f3-b614-4183-8a22-97fcd6e2bdd8");
 	
 //********************************** Constructor *********************************/	
 
@@ -293,6 +293,19 @@ public class SpecimenTypeDesignationStatus extends TypeDesignationStatusBase<Spe
 	public static final SpecimenTypeDesignationStatus ISONEOTYPE(){
 		return findTermByUuid(uuidIsoneotype);
 	}
+	
+	/**
+	 * Returns the "isoparatype" designation status. </BR>
+	 * An isoparatype is any
+	 * duplicate of a paratype; it is always a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen}.
+	 * 
+	 * @see	#PARATYPE()
+	 * @see #ISOTYPE()
+	 */
+	public static final SpecimenTypeDesignationStatus ISOPARATYPE(){
+		return findTermByUuid(uuidIsoparatype);
+	}
+	
 	/**
 	 * Returns the "paraneotype" designation status. </BR>
 	 * A paraneotype is a {@link eu.etaxonomy.cdm.model.occurrence.Specimen specimen},

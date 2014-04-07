@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -46,19 +46,19 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 /**
  * Alignment of multiple {@link SingleRead single sequences} to a consensus sequence.
  * This sequence is a part of (or the complete) DNA sequences of the related {@link DnaSample DNA Sample},
- * while 
- * 
- * <BR>This class holds information about both the combining process of 
+ * while
+ *
+ * <BR>This class holds information about both the combining process of
  * {@link SingleRead single sequences} to one consensus sequence
- * ({@link #getSingleReads() singleReads} , {@link #getContigFile() contigFile} ) 
+ * ({@link #getSingleReads() singleReads} , {@link #getContigFile() contigFile} )
  * as well as sequence related information.
- * The later includes the {@link #getConsensusSequence() sequence string} itself, 
- * important genetic information about the DNA that has been sequenced 
- * ({@link #getDnaMarker() marker} , {@link #getHaplotype()} haplotype) as well as 
+ * The later includes the {@link #getConsensusSequence() sequence string} itself,
+ * important genetic information about the DNA that has been sequenced
+ * ({@link #getDnaMarker() marker} , {@link #getHaplotype()} haplotype) as well as
  * registration information ({@link #getGeneticAccessionNumber() genetic accession number} ),
- * citations, and barcoding information ({@link #getBoldProcessId() BOLD-id}, 
+ * citations, and barcoding information ({@link #getBoldProcessId() BOLD-id},
  * {@link #getBarcodeSequencePart() barcode sequence}, ...).
- * 
+ *
  * @author m.doering
  * @created 08-Nov-2007 13:06:51
  * @author a.mueller
@@ -86,35 +86,36 @@ import eu.etaxonomy.cdm.model.reference.Reference;
 public class Sequence extends AnnotatableEntity implements Cloneable{
 	private static final long serialVersionUID = 8298983152731241775L;
 	private static final Logger logger = Logger.getLogger(Sequence.class);
-	
+
 	//TODO move to cdmlib-ext?
 	private static final String GENBANK_BASE_URI = "http://www.ncbi.nlm.nih.gov/nuccore/%s";
 	private static final String EMBL_BASE_URI = "http://www.ebi.ac.uk/ena/data/view/%s";
 	private static final String DDBJ_BASE_URI = "http://getentry.ddbj.nig.ac.jp/getentry/na/%s/?filetype=html";
 	private static final String BOLD_BASE_URI = "http://www.boldsystems.org/index.php/Public_RecordView?processid=%s";
-	
+
     @XmlElement( name = "DnaSample")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
     @IndexedEmbedded
     private DnaSample dnaSample;
-    
-	
+
+
 	/** @see #getContigFile() */
 	@XmlElement(name = "ContigFile")
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private Media contigFile;
-    
+
 	/** @see #getConsensusSequence() */
 	@XmlElement(name = "ConsensusSequence")
     private SequenceString consensusSequence = SequenceString.NewInstance();
-	
+
 	@XmlAttribute(name = "isBarcode")
 	private Boolean isBarcode = null;
-	
+
 	/** @see #getBarcodeSequence()*/
 	@XmlElement(name = "BarcodeSequencePart")
     private SequenceString barcodeSequencePart = SequenceString.NewInstance();
@@ -123,12 +124,12 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	@XmlElement(name = "GeneticAccessionNumber")
 	@Size(max=20)
 	private String geneticAccessionNumber;
-    
+
 	/** @see #getBoldProcessId() */
 	@XmlElement(name = "BoldProcessId")
 	@Size(max=20)
 	private String boldProcessId;
-	
+
     @XmlElementWrapper(name = "SingleReads")
     @XmlElement(name = "SingleRead")
     @XmlIDREF
@@ -136,7 +137,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Set<SingleRead> singleReads = new HashSet<SingleRead>();
-    
+
 	/** @see #getDnaMarker() */
 	@XmlElement(name = "DnaMarker")
     @XmlIDREF
@@ -145,12 +146,12 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	//no cascade as it is a defined term
 	private DefinedTerm dnaMarker;
 
-	
+
 	/** @see #getHaplotype() */
 	@XmlElement(name = "Haplotype")
 	@Size(max=100)
 	private String haplotype;
-	
+
 	/** @see #getCitations() */
 	@XmlElementWrapper(name = "Citations")
     @XmlElement(name = "Citation")
@@ -159,38 +160,38 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
     @ManyToMany(fetch = FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
 	private Set<Reference> citations = new HashSet<Reference>();
-	
+
 //	//should be calculated in case sequence is set
 //	@XmlElement (name = "DateSequenced", type= String.class)
 //	@XmlJavaTypeAdapter(DateTimeAdapter.class)
 //	@Type(type="dateTimeUserType")
 //	@Basic(fetch = FetchType.LAZY)
 //	private DateTime dateSequenced;
-	
-	
+
+
 //*********************** FACTORY ****************************************************/
-	
+
 	public static Sequence NewInstance(String consensusSequence){
 		Sequence result = new Sequence();
 		result.setSequenceString(consensusSequence);
 		return result;
 	}
-	
-	
+
+
 	public static Sequence NewInstance(String consensusSequence, Integer length){
 		Sequence result = NewInstance(consensusSequence);
 		result.getConsensusSequence().setLength(length);
 		return result;
 	}
 //*********************** CONSTRUCTOR ****************************************************/
-	
+
 	protected Sequence() {}
 
 //*********************** GETTER / SETTER ****************************************************/
-	
+
 
 	/**
-	 * The {@link DnaSample dna sample} this sequencing belongs too. 
+	 * The {@link DnaSample dna sample} this sequencing belongs too.
 	 */
 	public DnaSample getDnaSample() {
 		return dnaSample;
@@ -208,7 +209,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	 * The resulting consensus sequence represened by this {@link Sequence sequence} .
 	 * The consensus is usually computed from the {@link SingleRead single reads}.
 	 * The result of which is stored in a file called {@link #getContigFile() contig file}
-	 * 
+	 *
 	 * #see {@link #getContigFile()}
 	 * #see {@link #getSingleReads()}
 	 */
@@ -226,18 +227,18 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		}
 		this.consensusSequence = sequenceString;
 	}
-	
+
 	/**
-	 * The isBarcode flag should be set to true if this (consensus) sequence is or includes 
+	 * The isBarcode flag should be set to true if this (consensus) sequence is or includes
 	 * a barcoding sequence. If the barcoding sequence is only a part of the consensus sequence
 	 * this part shall be stored as {@link #getBarcodeSequencePart() barcoding sequence part}.
 	 * A isBarcode value of <code>null</code> indicates that we do have no knowledge
 	 * whether the sequence is a barcoding sequence or not.
-	 * 
+	 *
 	 * @see #getBarcodeSequencePart()
 	 * @see #getSequenceString()
 	 * @returns the isBarcode flag value (tri-state)
-	 * 
+	 *
 	 */
 	public Boolean getIsBarcode() {
 		return isBarcode;
@@ -252,10 +253,10 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 	/**
-	 * If the barcode sequence string does not include 100% of the (consensus) sequence 
+	 * If the barcode sequence string does not include 100% of the (consensus) sequence
 	 * the part used as barcode is provided here. However, the barcode part
 	 * should be kept empty if consensus sequence string and barcode sequence string are equal.
-	 * 
+	 *
 	 * @see #getIsBarcode()
 	 */
 	public SequenceString getBarcodeSequencePart() {
@@ -271,13 +272,13 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		}
 		this.barcodeSequencePart = barcodeSequencePart;
 	}
-	
+
 	/**
 	 * Sets the {@link TermType#DnaMarker DNA marker} examined and described by this sequencing.
 	 * The marker should usually be similar to the one used in the according {@link Amplification
 	 * amplification process}. However, it may slightly differ, or, if multiple amplifications where
 	 * used to build this consensus sequence it may be the super set of the markers used in amplification.
-	 * 
+	 *
 	 * @return
 	 */
 	public DefinedTerm getDnaMarker(){
@@ -307,7 +308,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public void setGeneticAccessionNumber(String geneticAccessionNumber) {
 		this.geneticAccessionNumber = geneticAccessionNumber;
 	}
-	
+
 
 	/**
 	 * The identifier used by the Barcode of Life Data Systems (BOLD, http://www.boldsystems.org/).
@@ -339,7 +340,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 	/**
 	 * The contigFile containing all data and data processing for this sequencing.
-	 * 
+	 *
 	 * @see #getConsensusSequence()
 	 * @see #getSingleReads()
 	 */
@@ -353,14 +354,14 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public void setContigFile(Media contigFile) {
 		this.contigFile = contigFile;
 	}
-	
-	
+
+
 	/**
 	 * Citations are the set of references in which this sequence was published.
 	 * Unlike taxonomic names the first publication of a sequence
 	 * is not so important (maybe because it is required by publishers
-	 * that they are all registered at Genbank) therefore we do not have something like an 
-	 * "original reference" attribute.<BR> 
+	 * that they are all registered at Genbank) therefore we do not have something like an
+	 * "original reference" attribute.<BR>
 	 * Links to these references are to be stored within the reference itself.
 	 * @return the set of references in which this sequence was published.
 	 */
@@ -388,7 +389,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 
 	/**
 	 * The {@link SingleRead single reads} that were used to build this consensus sequence.
-	 * 
+	 *
 	 * @see #getConsensusSequence()
 	 * @see #getContigFile()
 	 */
@@ -435,7 +436,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public void setSequenceString(String sequence) {
 		consensusSequence.setString(sequence);
 	}
-	
+
 	/**
 	 * Convenience method which computes the set of all related pherograms
 	 * @return the set of pherograms.
@@ -450,7 +451,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		}
 		return result;
 	}
-	
+
 
 	//***** Registrations ************/
 	/**
@@ -479,7 +480,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public URI getDdbjUri() {
 		return createExternalUri(DDBJ_BASE_URI, geneticAccessionNumber);
 	}
-	
+
 	/**
 	 * Returns the URI for the BOLD entry.
 	 * @see #getBoldProcessId()
@@ -488,7 +489,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public URI getBoldUri() {
 		return createExternalUri(BOLD_BASE_URI, boldProcessId);
 	}
-	
+
 	private URI createExternalUri(String baseUri, String id){
 		if (StringUtils.isNotBlank(id)){
 			return URI.create(String.format(baseUri, id.trim()));
@@ -498,15 +499,15 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	}
 
 
-	
-	
+
+
 	//*********************** CLONE ********************************************************/
-	/** 
+	/**
 	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
 	 * a new instance that differs only slightly from <i>this</i> sequencing by
 	 * modifying only some of the attributes.<BR><BR>
-	 * 
-	 *  
+	 *
+	 *
 	 * @see eu.etaxonomy.cdm.model.media.IdentifiableEntity#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -514,26 +515,26 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	public Object clone()  {
 		try{
 		Sequence result = (Sequence)super.clone();
-		
+
 		//sequences
 		result.consensusSequence = (SequenceString)this.consensusSequence.clone();
 		result.barcodeSequencePart = (SequenceString)this.barcodeSequencePart.clone();
-		
-		
+
+
 		//single sequences
 		result.singleReads = new HashSet<SingleRead>();
 		for (SingleRead seq: this.singleReads){
-			result.singleReads.add((SingleRead) seq);
+			result.singleReads.add(seq);
 		}
-		
+
 		//citations  //TODO do we really want to copy these ??
 		result.citations = new HashSet<Reference>();
 		for (Reference ref: this.citations){
-			result.citations.add((Reference) ref);
+			result.citations.add(ref);
 		}
-		
-		
-		
+
+
+
 		return result;
 		}catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

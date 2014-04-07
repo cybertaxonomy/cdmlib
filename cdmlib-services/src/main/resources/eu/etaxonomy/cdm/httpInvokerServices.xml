@@ -332,5 +332,15 @@
 			<value>org.springframework.security.authentication.AuthenticationManager</value>
 		</property>
 	</bean>
+	
+	<bean id="httpPrimerService"
+		class="org.springframework.remoting.httpinvoker.HttpInvokerServiceExporter">
+		<property name="service">
+			<ref bean="primerServiceImpl" />
+		</property>
+		<property name="serviceInterface">
+			<value>eu.etaxonomy.cdm.api.service.molecular.IPrimerService</value>
+		</property>
+	</bean>
  
 </beans>

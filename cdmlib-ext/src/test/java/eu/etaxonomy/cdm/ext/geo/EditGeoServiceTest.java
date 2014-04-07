@@ -32,6 +32,7 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.http.client.ClientProtocolException;
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -100,6 +102,33 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
 
 //******************************************** TESTS**************
+    
+    @Test
+    public void testGetWebServiceUrlCountry() throws MalformedURLException, IOException {
+    	Set<Distribution> distributions = new HashSet<Distribution>();
+    	Country germany = termService.getDefinedTermByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class, null, null);
+//        germany = (Country)termService.find(665);
+//        germany = (Country)termService.find(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
+        
+//        germany = Country.GERMANY();
+        
+        distributions.add(Distribution.NewInstance(germany, PresenceTerm.PRESENT()));
+        distributions.add(Distribution.NewInstance(termService.getDefinedTermByIdInVocabulary("DE", Country.uuidCountryVocabulary, Country.class, null, null), PresenceTerm.INTRODUCED()));
+        Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+        presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
+        presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.BLACK);
+        List<Language> languages = new ArrayList<Language>();
+
+        boolean subAreaPreference = false;
+        boolean statusOrderPreference = false;
+        String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
+                subAreaPreference, statusOrderPreference, null, mapping, 
+                presenceAbsenceColorMap, null, languages );
+        logger.warn(result);
+        Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.contains("ad=country_earth:a:DEU"));
+        
+    }
+    
     @Test
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";

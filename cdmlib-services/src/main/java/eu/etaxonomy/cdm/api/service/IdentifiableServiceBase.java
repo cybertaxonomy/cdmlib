@@ -12,8 +12,10 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -37,6 +39,8 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
+import eu.etaxonomy.cdm.persistence.dao.hibernate.HibernateBeanInitializer;
+import eu.etaxonomy.cdm.persistence.dao.initializer.AutoPropertyInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
@@ -231,7 +235,12 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			// not sure if such strict ordering is necessary here, but for safety reasons I do it
 			ArrayList<OrderHint> orderHints = new ArrayList<OrderHint>();
 			orderHints.add( new OrderHint("id", OrderHint.SortOrder.ASCENDING));
+			
+			
+			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
 			List<T> list = this.list(clazz, stepSize, i, orderHints, null);
+			switchOnOldAutoInitializer(oldAutoInit);
+			
 			List<T> entitiesToUpdate = new ArrayList<T>();
 			for (T entity : list){
 				if (entity.isProtectedTitleCache() == false){
@@ -254,6 +263,31 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			}
 		}
 		monitor.done();
+	}
+
+	/**
+	 * Brings back all auto initializers to the bean initializer
+	 * @see #switchOfAutoinitializer()
+	 * @param oldAutoInit
+	 */
+	protected void switchOnOldAutoInitializer(
+			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit) {
+		HibernateBeanInitializer initializer = (HibernateBeanInitializer)this.appContext.getBean("defaultBeanInitializer");
+		initializer.setBeanAutoInitializers(oldAutoInit);
+	}
+
+	/**
+	 * Removes all auto initializers from the bean initializer
+	 * 
+	 * @see #switchOnOldAutoInitializer(Map)
+	 * @return 
+	 */
+	protected Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> switchOfAutoinitializer() {
+		HibernateBeanInitializer initializer = (HibernateBeanInitializer)this.appContext.getBean("defaultBeanInitializer");
+		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInitializers = initializer.getBeanAutoInitializers();
+		Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> map = new HashMap<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>>();
+		initializer.setBeanAutoInitializers(map);
+		return oldAutoInitializers;
 	}
 
 	/**
@@ -296,7 +330,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		//old titleCache
 		entity.setProtectedTitleCache(true);
 		String oldTitleCache = entity.getTitleCache();
-		entity.setProtectedTitleCache(false);
+		entity.setTitleCache(oldTitleCache, false);   //before we had entity.setProtectedTitleCache(false) but this deleted the titleCache itself
 		
 		//NonViralNames have more caches //TODO handle in NameService
 		String oldNameCache = null;
@@ -319,7 +353,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		String newTitleCache = entityCacheStrategy.getTitleCache(entity);
 		if (oldTitleCache == null || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
-			entity.getTitleCache();
+			String newCache = entity.getTitleCache();
+			if (newCache == null){
+				logger.warn("newCache should never be null");
+			}
+			if (oldTitleCache == null){
+				logger.info("oldTitleCache should never be null");
+			}
 			if (entity instanceof NonViralName){
 				NonViralName<?> nvn = (NonViralName) entity;
 				nvn.getNameCache();
@@ -335,7 +375,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			}else if (oldFullTitleCache == null || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
-		}
+		};
 	}
 	
 	

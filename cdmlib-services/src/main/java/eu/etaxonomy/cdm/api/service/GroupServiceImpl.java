@@ -19,7 +19,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.Assert;
 
@@ -63,7 +62,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return users;
     }
 
-   
+
     /* (non-Javadoc)
      * @see org.springframework.security.provisioning.GroupManager#deleteGroup(java.lang.String)
      */
@@ -74,11 +73,12 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
 
         Group group = dao.findGroupByName(groupName);
         for (User user : group.getMembers()){
-        	group.removeMember(user);
+            group.removeMember(user);
         }
         if(group != null){
             dao.delete(group);
         }
+
     }
 
     /* (non-Javadoc)
@@ -200,6 +200,7 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         this.userDao = userDao;
     }
 
+    @Override
     @Transactional(readOnly = true)
     public List<Group> listByName(String queryString,MatchMode matchmode, List<Criterion> criteria, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
          Integer numberOfResults = dao.countByName(queryString, matchmode, criteria);
@@ -216,18 +217,18 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
      */
     @Override
     @Transactional(readOnly=false)
-	public void createGroup(String groupName, List<GrantedAuthority> authorities) {
-		Assert.hasText(groupName);
+    public void createGroup(String groupName, List<GrantedAuthority> authorities) {
+        Assert.hasText(groupName);
         Assert.notNull(authorities);
-		
-		Group newGroup = Group.NewInstance(groupName);
-		for (GrantedAuthority grantedAuthority: authorities){
-			newGroup.addGrantedAuthority(grantedAuthority);
-		}
-		saveGroup(newGroup);
-	}
-	
-	/* (non-Javadoc)
+
+        Group newGroup = Group.NewInstance(groupName);
+        for (GrantedAuthority grantedAuthority: authorities){
+            newGroup.addGrantedAuthority(grantedAuthority);
+        }
+        saveGroup(newGroup);
+    }
+
+    /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IUserService#saveGroup(eu.etaxonomy.cdm.model.common.Group)
      */
     @Override
@@ -236,5 +237,12 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
     public UUID saveGroup(Group group) {
         return dao.save(group);
     }
+
+//    @Override
+//    public UUID delete(Group group){
+//        UUID groupUUID = group.getUuid();
+//        this.deleteGroup(group.getName());
+//        return groupUUID;
+//    }
 
 }

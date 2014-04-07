@@ -1,5 +1,7 @@
 package eu.etaxonomy.cdm.persistence.hibernate;
 
+import java.util.HashMap;
+
 import org.apache.log4j.Logger;
 import org.hibernate.event.spi.PostInsertEvent;
 import org.hibernate.event.spi.PostInsertEventListener;
@@ -16,7 +18,7 @@ public class Level2ValidationEventListener implements PostInsertEventListener, P
 
 	private static final Logger logger = Logger.getLogger(Level2ValidationEventListener.class);
 
-	// We really would like to have a singleton instance injected here
+	// We would like to have a singleton instance injected here
 	private ValidationExecutor validationExecutor;
 
 
@@ -59,7 +61,9 @@ public class Level2ValidationEventListener implements PostInsertEventListener, P
 				return;
 			}
 			if (!(object instanceof CdmBase)) {
-				logger.warn("Level-3 validation bypassed for entities of type " + object.getClass().getName());
+				if (object.getClass() != HashMap.class) {
+					logger.warn("Level-2 validation bypassed for entities of type " + object.getClass().getName());
+				}
 				return;
 			}
 			CdmBase entity = (CdmBase) object;

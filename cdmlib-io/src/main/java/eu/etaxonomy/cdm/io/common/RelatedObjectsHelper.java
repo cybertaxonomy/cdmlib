@@ -23,18 +23,17 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
  * can be integrated into ImportStateBase
  * @author a.mueller
  * @created 02.03.2010
- * @version 1.0
  */
 public class RelatedObjectsHelper {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(RelatedObjectsHelper.class);
 	
-	private Map<Object, Map<String, CdmBase>> relatedObjects;
+	private Map<Object, Map<String, ? extends CdmBase>> relatedObjects;
 
 	/**
 	 * @param relatedObjects the relatedObjects to set
 	 */
-	public void setRelatedObjects(Map<Object, Map<String, CdmBase>> relatedObjects) {
+	public void setRelatedObjects(Map<Object, Map<String, ? extends CdmBase>> relatedObjects) {
 		this.relatedObjects = relatedObjects;
 	}
 
@@ -59,7 +58,7 @@ public class RelatedObjectsHelper {
 	 * @param relatedObject
 	 */
 	public void  addRelatedObjet(Object namespace, String id, CdmBase relatedObject){
-		Map<String, CdmBase> idMap = relatedObjects.get(namespace);
+		Map idMap = relatedObjects.get(namespace);
 		if (idMap == null){
 			idMap = new HashMap<String, CdmBase>();
 			relatedObjects.put(namespace, idMap);

@@ -23,6 +23,10 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 /**
  * @author a.babadshanjan
@@ -36,14 +40,24 @@ public class IdentifiableEntityTest {
 	private NonViralName<?> abiesAlba;
 	private NonViralName<?> abiesAlbaMichx;
 	private NonViralName<?> abiesAlbaMill;
-
+	
+	private Taxon abiesTaxon;
+	private Taxon abiesMillTaxon;
+	
+	private NonViralName<?> abiesAutonym;
+	private Taxon abiesAutonymTaxon;
+	
+	private NonViralName<?> abiesBalsamea;
+	private Taxon abiesBalsameaTaxon;
 	/**
 	 * @throws java.lang.Exception
 	 */
+	
 	@BeforeClass
-	public static void setUpBeforeClass() throws Exception {
+	public static void setUpBeforeClass() {
+		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
+		vocabularyStore.initialize();
 	}
-
 	/**
 	 * @throws java.lang.Exception
 	 */
@@ -60,10 +74,15 @@ public class IdentifiableEntityTest {
 		abies = NonViralName.NewInstance(Rank.GENUS(), null);
 		abies.setNameCache("Abies");
 		abies.setTitleCache("Abies", true);
+		Reference sec = ReferenceFactory.newArticle();
+		sec.setTitle("Abies alba Ref");
+		
+		abiesTaxon = Taxon.NewInstance(abies, sec);
 		
 		abiesMill = NonViralName.NewInstance(Rank.GENUS(), null);
 		abiesMill.setNameCache("Abies");
 		abiesMill.setTitleCache("Abies Mill.", true);
+		abiesMillTaxon = Taxon.NewInstance(abiesMill, sec);
 		
 		abiesAlba = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlba.setNameCache("Abies alba");
@@ -76,6 +95,22 @@ public class IdentifiableEntityTest {
 		abiesAlbaMill = NonViralName.NewInstance(Rank.SPECIES(), null);
 		abiesAlbaMill.setNameCache("Abies alba");
 		abiesAlbaMill.setTitleCache("Abies alba Mill.", true);
+		
+		abiesAutonym  = NonViralName.NewInstance(Rank.SECTION_BOTANY());
+		abiesAutonym.setGenusOrUninomial("Abies");
+		abiesAutonym.setInfraGenericEpithet("Abies");
+		
+		abiesAutonym.setTitleCache("Abies Mill. sect. Abies", true);
+		abiesAutonym.getNameCache();
+		abiesAutonymTaxon = Taxon.NewInstance(abiesAutonym, sec);
+		
+		abiesBalsamea  = NonViralName.NewInstance(Rank.SECTION_BOTANY());
+		abiesBalsamea.setGenusOrUninomial("Abies");
+		abiesBalsamea.setInfraGenericEpithet("Balsamea");
+		abiesBalsamea.getNameCache();
+		abiesBalsamea.setTitleCache("Abies sect. Balsamea L.", true);
+		abiesBalsameaTaxon = Taxon.NewInstance(abiesBalsamea, sec);
+		
 	}
 
 	/**
@@ -96,6 +131,14 @@ public class IdentifiableEntityTest {
 		result = abies.compareTo(abiesMill);
 		assertTrue(result < 0);
 		
+		abiesTaxon = abies.getTaxa().iterator().next();
+		
+		assertTrue(abiesTaxon.compareTo(abiesTaxon) == 0);
+		
+		assertTrue(abiesMillTaxon.compareTo(abiesTaxon) > 0);
+		
+		assertTrue(abiesTaxon.compareTo(abiesMillTaxon) < 0);
+		
 		// "Abies Mill." > "Abies"
 		result = abiesMill.compareTo(abies);
 		assertTrue(result > 0);
@@ -115,7 +158,11 @@ public class IdentifiableEntityTest {
 		// "Abies alba Michx." > "Abies Mill."
 		result = abiesAlbaMichx.compareTo(abiesMill);
 		assertTrue(result > 0);
-
+		
+		//Autonym should sorted without the authorstring
+		
+		result = abiesAutonym.compareTo(abiesBalsamea);
+		assertTrue(result < 0);
 	    // Test consistency of compareTo() with equals(): 
 		// Is consistent if and only if for every e1 and e2 of class C
 		// e1.compareTo(e2) == 0 has the same boolean value as e1.equals(e2) 

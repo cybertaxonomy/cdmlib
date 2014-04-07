@@ -228,9 +228,15 @@ public class EditGeoService implements IEditGeoService {
                     if (((FieldUnit) original).getGatheringEvent() != null) {
                         Point point = ((FieldUnit) original).getGatheringEvent().getExactLocation();
                         if (point != null) {
+                            // points with no longitude or latitude should not exist
+                            // see  #4173 ([Rule] Longitude and Latitude in Point must not be null)
+                            if (point.getLatitude() == null || point.getLongitude() == null){
+                                continue;
+                            }
                             // FIXME: remove next statement after
                             // DerivedUnitFacade or ABCD import is fixed
-                            if (point.getLatitude() == 0.0 && point.getLongitude() == 0.0) {
+                            //
+                            if(point.getLatitude() == 0.0 || point.getLongitude() == 0.0) {
                                 continue;
                             }
                             derivedUnitPoints.add(point);

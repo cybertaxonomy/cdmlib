@@ -18,9 +18,10 @@ import javax.sql.DataSource;
 import org.hibernate.cache.spi.RegionFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
 
+import eu.etaxonomy.cdm.config.ICdmSource;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
-public interface ICdmDataSource extends DataSource {
+public interface ICdmDataSource  extends DataSource,ICdmSource {
 
 	/**
 	 * Returns a BeanDefinition object of type  DataSource that contains
@@ -44,18 +45,6 @@ public interface ICdmDataSource extends DataSource {
 	 */
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass);
 
-	
-	/**
-	 * The name representation of thie Datasource.
-	 * @return
-	 */
-	public String getName();
-	
-
-	/**
-	 * @return
-	 */
-	public String getServer();
 
 	/**
 	 * Returns the name of the datasource on the given server.
@@ -70,11 +59,6 @@ public interface ICdmDataSource extends DataSource {
 	 */
 	public DatabaseTypeEnum getDatabaseType();
 	
-	/**
-	 * @return
-	 */
-	public int getPort();
-
 	/**
 	 * @return
 	 */
@@ -130,8 +114,6 @@ public interface ICdmDataSource extends DataSource {
 	public void rollback() throws SQLException;
 
 
-	public NomenclaturalCode getNomenclaturalCode();
-
 	/**
 	 * Returns the first value of the first row of a result set.<BR>
 	 * If no row exists in the result set
@@ -158,15 +140,6 @@ public interface ICdmDataSource extends DataSource {
 	 */
 	public DatabaseMetaData getMetaData();
 	
-	/**
-	 * 
-	 */
-	public void closeOpenConnections();
 
-	
-//
-//	public void setFilePath(String filePath);
-//	
-//	public void setMode(H2Mode mode);
 
 }

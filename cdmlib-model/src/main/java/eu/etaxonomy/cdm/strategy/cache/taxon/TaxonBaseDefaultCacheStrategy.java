@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.strategy.cache.taxon;
 
 import java.util.UUID;
 
-import eu.etaxonomy.cdm.common.CdmUtils;
+import org.apache.commons.lang.StringUtils;
+
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
@@ -35,11 +37,7 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 			String namePart = getNamePart(taxonBase);
 			
 			title = namePart + " sec. ";
-			if (taxonBase.getSec() != null){
-				title += taxonBase.getSec().getTitleCache();
-			}else{
-				title += "???";
-			}
+			title += getSecundumPart(taxonBase);
 		}else{
 			title = taxonBase.toString();
 		}
@@ -50,17 +48,41 @@ public class TaxonBaseDefaultCacheStrategy<T extends TaxonBase> extends Strategy
 	}
 
 	/**
+	 * @param taxonBase
+	 * @param title
+	 * @return
+	 */
+	private String getSecundumPart(T taxonBase) {
+		String result;
+		Reference<?> sec = taxonBase.getSec();
+		if (sec != null){
+			if (sec.getCacheStrategy() != null && 
+					sec.getAuthorTeam() != null && 
+					isNotBlank(sec.getAuthorTeam().getTitleCache()) && 
+					isNotBlank(sec.getYear())){
+				result = sec.getCacheStrategy().getCitation(sec);
+//				 sec.getAuthorTeam().getTitleCache() + sec.getYear();
+			}else{
+				result = taxonBase.getSec().getTitleCache();
+			}
+		}else{
+			result = "???";
+		}
+		return result;
+	}
+
+	/**
 	 * @param name
 	 */
-	private String getNamePart(TaxonBase taxonBase) {
-		TaxonNameBase nameBase = taxonBase.getName();
+	private String getNamePart(TaxonBase<?> taxonBase) {
+		TaxonNameBase<?,?> nameBase = taxonBase.getName();
 		String result = nameBase.getTitleCache();
 		//use name cache instead of title cache if required
 		if (taxonBase.isUseNameCache() && nameBase.isInstanceOf(NonViralName.class)){
-			NonViralName nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
+			NonViralName<?> nvn = HibernateProxyHelper.deproxy(nameBase, NonViralName.class);
 			result = nvn.getNameCache();
 		}
-		if (CdmUtils.isNotEmpty(taxonBase.getAppendedPhrase())){
+		if (StringUtils.isNotBlank(taxonBase.getAppendedPhrase())){
 			result = result.trim() + " " +  taxonBase.getAppendedPhrase().trim(); 
 		}
 		return result;

@@ -17,6 +17,7 @@ public enum UTF8 {
 	EN_DASH_SPATIUM("\u202F\u2013\u202F"),
 	HYBRID ("\u00D7"),   // hybrid sign
 	SHARP_S("\u00DF"),
+	NO_BREAK_SPACE("\u00A0")  
 	;
 
 	private String value;

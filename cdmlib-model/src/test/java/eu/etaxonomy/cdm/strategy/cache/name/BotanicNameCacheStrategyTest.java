@@ -13,10 +13,8 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.GregorianCalendar;
-import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.junit.Before;
@@ -34,13 +32,12 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
-import eu.etaxonomy.cdm.strategy.cache.TaggedText;
 
 /**
  * @author a.mueller
  *
  */
-public class BotanicNameCacheStrategyTest {
+public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private static final Logger logger = Logger.getLogger(BotanicNameCacheStrategyTest.class);
 	
 	private static final String familyNameString = "Familia";
@@ -64,7 +61,7 @@ public class BotanicNameCacheStrategyTest {
 	private INomenclaturalAuthor exAuthor;
 	private INomenclaturalAuthor basAuthor;
 	private INomenclaturalAuthor exBasAuthor;
-	private Reference citationRef;
+	private Reference<?> citationRef;
 	ReferenceFactory refFactory;
 	
 	/**
@@ -134,7 +131,7 @@ public class BotanicNameCacheStrategyTest {
 	 */
 	@Test
 	public final void testNewInstance() {
-		BotanicNameDefaultCacheStrategy cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
+		BotanicNameDefaultCacheStrategy<?> cacheStrategy = BotanicNameDefaultCacheStrategy.NewInstance();
 		assertNotNull(cacheStrategy);
 	}
 
@@ -276,22 +273,7 @@ public class BotanicNameCacheStrategyTest {
 		}
 		return method;
 	}
-	
-	protected String getStringValue(Method method, Object object,Object parameter){
-		try {
-			List<TaggedText> list = (List<TaggedText>)method.invoke(object, parameter);
-			return NonViralNameDefaultCacheStrategy.createString(list);
-		} catch (IllegalArgumentException e) {
-			logger.error("IllegalArgumentException " + e.getMessage());
-			return null;
-		} catch (IllegalAccessException e) {
-			logger.error("IllegalAccessException " + e.getMessage());
-			return null;
-		} catch (InvocationTargetException e) {
-			logger.error("InvocationTargetException " + e.getMessage());
-			return null;
-		}
-	}
+
 
 
 }

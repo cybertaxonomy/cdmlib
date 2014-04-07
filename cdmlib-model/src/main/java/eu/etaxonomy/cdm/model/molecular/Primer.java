@@ -62,6 +62,8 @@ public class Primer extends AnnotatableEntity {
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch=FetchType.LAZY)
     @Cascade({CascadeType.SAVE_UPDATE})
+	//TODO the use of Sequence in this case is a bit of a overhead since you would expect
+	// just having a SequenceString. This may change in future (see #4139)
 	private Sequence sequence;
 
 	/** @see #getPublishedIn() */
@@ -83,9 +85,9 @@ public class Primer extends AnnotatableEntity {
 	// ********************* CONSTRUCTOR ********************/
 
 	//FIXME
-	//made public to fix a java.lang.InstantiationException which occurred while loading an Amplification
+	//made protected to fix a java.lang.InstantiationException which occurred while loading an Amplification
 	//and its primer. see https://stackoverflow.com/questions/7273125/hibernate-envers-and-javassist-enhancement-failed-exception
-	public Primer(){};
+	protected Primer(){};
 
 // ********************* GETTER / SETTER ********************/
 

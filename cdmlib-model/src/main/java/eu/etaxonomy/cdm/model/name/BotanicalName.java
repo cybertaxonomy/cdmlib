@@ -318,12 +318,16 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 * Checks if this name is an autonym.<BR>
 	 * An autonym is a taxon name that has equal specific and infra specific epithets.<BR>
 	 * {@link http://ibot.sav.sk/icbn/frameset/0010Ch2Sec1a006.htm#6.8. Vienna Code §6.8}
+	 * or a taxon name that has equal generic and infrageneric epithets (A22.2)
 	 * @return true, if name has Rank, Rank is below species and species epithet equals infraSpeciesEpithtet, else false
 	 */
 	@Override
 	public boolean isAutonym(){
 		if (this.getRank() != null && this.getSpecificEpithet() != null && this.getInfraSpecificEpithet() != null && 
 				this.getRank().isInfraSpecific() && this.getSpecificEpithet().trim().equals(this.getInfraSpecificEpithet().trim())){
+			return true;
+		}else if (this.getRank() != null && this.getGenusOrUninomial() != null && this.getInfraGenericEpithet() != null && 
+				this.getRank().isInfraGeneric() && this.getGenusOrUninomial().trim().equals(this.getInfraGenericEpithet().trim())){
 			return true;
 		}else{
 			return false;

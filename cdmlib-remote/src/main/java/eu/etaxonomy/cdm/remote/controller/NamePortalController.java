@@ -28,6 +28,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.database.UpdatableRoutingDataSource;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.TypeDesignationBase;
@@ -112,13 +113,12 @@ public class NamePortalController extends BaseController<TaxonNameBase, INameSer
     @RequestMapping(
             value = {"typeDesignations"},
             method = RequestMethod.GET)
-    public ModelAndView doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
+    public List<TypeDesignationBase> doGetTypeDesignations(@PathVariable("uuid") UUID uuid,
             HttpServletRequest request, HttpServletResponse response)throws IOException {
         ModelAndView mv = new ModelAndView();
         TaxonNameBase tnb = getCdmBaseInstance(uuid, response, (List<String>)null);
         Pager<TypeDesignationBase> p = service.getTypeDesignations(tnb,  null, null, null, TYPEDESIGNATION_INIT_STRATEGY);
-        mv.addObject(p.getRecords());
-        return mv;
+        return p.getRecords();
     }
 
     /**

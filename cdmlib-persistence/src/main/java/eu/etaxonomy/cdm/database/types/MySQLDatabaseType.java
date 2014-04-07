@@ -55,6 +55,9 @@ public class MySQLDatabaseType extends DatabaseTypeBase {
     public String getDatabaseNameByConnectionString(String connectionString){
     	String result;
     	result = getDatabasePartOfConnectionString(connectionString, dbSeparator);
+    	if(result == null) {
+    		return null;
+    	}
     	int posParams = result.indexOf("?");
     	if (posParams != -1){
     		result = result.substring(0, posParams);

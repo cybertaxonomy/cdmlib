@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -61,7 +62,12 @@ public class FeatureTreePortalController extends FeatureTreeController {
         if(request != null) {
             logger.info("doGet() " + request.getRequestURI());
         }
-        FeatureTree obj = service.loadWithNodes(uuid, getInitializationStrategy(), featuretreeNodeInitStrategy);
-        return obj;
+        FeatureTree featureTree = null;
+        try {
+            featureTree = service.loadWithNodes(uuid, getInitializationStrategy(), featuretreeNodeInitStrategy);
+        } catch(EntityNotFoundException e){
+            HttpStatusMessage.UUID_NOT_FOUND.send(response);
+        }
+        return featureTree;
     }
 }

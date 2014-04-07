@@ -22,6 +22,7 @@ import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.IdentifiableDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
@@ -50,7 +51,7 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
     @Override
     @SuppressWarnings("unchecked")
-    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank,
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank,
             Integer limit, Integer start, List<String> propertyPaths){
 
         Query query = prepareRankSpecificRootNodes(classification, rank, false);
@@ -111,6 +112,39 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
         if (classification != null){
             query.setParameter("classification", classification);
         }
+        return query;
+    }
+
+    @Override
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths){
+        Query query = prepareListChildrenOf(taxon, classification, false);
+
+        setPagingParameter(query, pageSize, pageIndex);
+
+        @SuppressWarnings("unchecked")
+        List<TaxonNode> result = query.list();
+        defaultBeanInitializer.initializeAll(result, propertyPaths);
+        return result;
+    }
+
+    @Override
+    public Long countChildrenOf(Taxon taxon, Classification classification){
+        Query query = prepareListChildrenOf(taxon, classification, true);
+        Long count = (Long) query.uniqueResult();
+        return count;
+    }
+
+    private Query prepareListChildrenOf(Taxon taxon, Classification classification, boolean doCount){
+
+        String selectWhat = doCount ? "count(cn)" : "cn";
+
+        String hql = "select " + selectWhat + " from TaxonNode as tn left join tn.classification as c left join tn.taxon as t  left join tn.childNodes as cn "
+                + "where t = :taxon and c = :classification";
+
+        Query query = getSession().createQuery(hql);
+        query.setParameter("taxon", taxon);
+        query.setParameter("classification", classification);
+
         return query;
     }
 

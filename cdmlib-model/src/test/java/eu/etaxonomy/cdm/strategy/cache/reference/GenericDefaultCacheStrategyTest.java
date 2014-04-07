@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.model.reference.IBook;
 import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
 /**
  * @author a.mueller
@@ -104,6 +105,22 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Authorteam, My generic title", generic1.getTitleCache());
 	}
+	
+	@Test
+	public void testAuthorOnly(){
+		generic1.setAuthorTeam(team1);
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
+	}
+	
+	@Test
+	public void testYearAndAuthorOnly(){
+		generic1.setAuthorTeam(team1);
+		generic1.setDatePublished(TimePeriodParser.parseString("1792"));
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());
+	}
+
 
 	
 }

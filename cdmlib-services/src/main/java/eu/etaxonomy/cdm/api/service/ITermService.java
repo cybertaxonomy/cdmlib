@@ -153,4 +153,16 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return DeleteResult which holds the status of the deletion.
      */
     public DeleteResult delete(DefinedTermBase term, TermDeletionConfigurator config);
+
+	/**
+	 * Returns the term with the given idInVocabulary for the given vocabulary.
+	 * @param id idInVocabulary
+	 * @param vocabularyUuid uuid of vocabulary
+	 * @param clazz term clazz
+	 * @param pageSize page size
+	 * @param pageNumber page number
+	 * @return the term
+	 */
+	public <TERM extends DefinedTermBase> TERM getDefinedTermByIdInVocabulary(String id, UUID vocabularyUuid,
+			Class<TERM> clazz, Integer pageSize, Integer pageNumber);
 }

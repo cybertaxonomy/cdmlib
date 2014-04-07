@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 /**
  * @author a.mueller
  * @created 29.06.2008
- * @version 1.0
  */
 public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T>{
 	private static final long serialVersionUID = -725290113353165022L;
@@ -67,7 +66,8 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		if (team != null){
 			String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
 			if (teamTitle.length() > 0 ){
-				result = team.getTitleCache() + afterAuthor + result;
+				String concat = isNotBlank(result) ? afterAuthor : "";
+				result = team.getTitleCache() + concat + result;
 			}
 			
 		}
@@ -77,26 +77,28 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 	protected abstract String getTitleWithoutYearAndAuthor(T reference, boolean isAbbrev);
 
 	
+	@Override
 	public String getCitation(T referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
 		
+		String nextConcat = "";
+		
 		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
 		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
-			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
-			stringBuilder.append(team.getTitleCache() + afterAuthor);
+			stringBuilder.append(team.getTitleCache() );
+			nextConcat = afterAuthor;
 		}
 		
-		String year = CdmUtils.Nz(referenceBase.getYear());
-		if (!"".equals(year)){
-			stringBuilder.append(beforeYear + year);
+		String year = referenceBase.getYear();
+		if (StringUtils.isNotBlank(year)){
+			stringBuilder.append(nextConcat + year);
 		}
 		
 		return stringBuilder.toString();
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getBeforeMicroReference()
-	 */
+
+	@Override
 	public String getBeforeMicroReference(){
 		return beforeMicroReference;
 	}
@@ -110,12 +112,13 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		if (StringUtils.isBlank(year)){
 			result = string + afterYear;
 		}else{
-			result = string + beforeYear + year + afterYear;
-			//TODO remove double dots (..) if string ends with "."?  #3645
+			String concat = isBlank(string)  ? "" : string.endsWith(".")? " " : beforeYear;
+			result = string + concat + year + afterYear;
 		}
 		return result;
 	}
 	
+	@Override
 	public String getNomenclaturalCitation(T nomenclaturalReference, String microReference) {
 		if (nomenclaturalReference.isProtectedTitleCache()){
 			return nomenclaturalReference.getTitleCache();

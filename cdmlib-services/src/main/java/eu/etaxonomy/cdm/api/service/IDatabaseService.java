@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 import eu.etaxonomy.cdm.database.DataSourceNotFoundException;
 import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
@@ -20,25 +21,13 @@ import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
+ * Service interface which provides functionality to directly access database 
+ * related information.
+ * 
  * @author a.mueller
  *
  */
 public interface IDatabaseService {
-
-//TODO removed 04.02.2009 as spring 2.5.6 does not support DriverManagerDataSource.getDriverClassName anymore
-//Let's see if this is not needed by any other application1
-//	/**
-//	 * Returns the databaseTypeEnum
-//	 * @return
-//	 */
-//	public DatabaseTypeEnum getDatabaseEnum();
-//	
-//	
-//	/**
-//	 * Returns the database driver class name
-//	 * @return
-//	 */
-//	public String getDriverClassName();
 	
 	/**
 	 * Returns the database URL
@@ -104,5 +93,24 @@ public interface IDatabaseService {
 	 */
 	public CdmPersistentDataSource updateDataSource(String strDataSourceName, CdmPersistentDataSource dataSource) throws DataSourceNotFoundException;
 
+	/**
+	 * @param cdmApplicationController
+	 */
 	public void setApplicationController(CdmApplicationController cdmApplicationController);
+	
+	/**
+	 * Returns the CDM model schema version number
+	 * 
+	 * @return the CDM model schema version number
+	 * @throws CdmSourceException , incase of an underlying SQL error
+	 */
+	public  String getDbSchemaVersion() throws CdmSourceException;
+	
+	/**
+	 * Returns a boolean flag to indicate whether the database is empty
+	 * 
+	 * @return boolean flag to indicate whether the database is  empty
+	 * @throws CdmSourceException , incase of an underlying SQL error
+	 */
+	public boolean isDbEmpty() throws CdmSourceException;
 }

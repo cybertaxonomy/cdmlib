@@ -48,7 +48,7 @@ import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
-import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -88,12 +88,19 @@ public class TaxonXExtractor {
     private final Map<String,String> namesAsked = new HashMap<String, String>();
     private final Map<String,Rank>ranksAsked = new HashMap<String, Rank>();
 
-    Logger logger = Logger.getLogger(this.getClass());
+    Logger logger = Logger.getLogger(TaxonXExtractor.class);
 
     public class ReferenceBuilder{
         private int nbRef=0;
         private boolean foundBibref=false;
+        private final TaxonXAddSources sourceHandler;
 
+        /**
+         * @param sourceHandler
+         */
+        public ReferenceBuilder(TaxonXAddSources sourceHandler) {
+            this.sourceHandler=sourceHandler;
+        }
 
         /**
          * @return the foundBibref
@@ -108,6 +115,7 @@ public class TaxonXExtractor {
         public void setFoundBibref(boolean foundBibref) {
             this.foundBibref = foundBibref;
         }
+
 
         /**
          * @param ref
@@ -134,48 +142,27 @@ public class TaxonXExtractor {
             //                        logger.info("Current reference :"+nbRef+", "+ref+", "+treatmentMainName+"--"+ref.indexOf(treatmentMainName));
             Reference<?> reference = ReferenceFactory.newGeneric();
             reference.setTitleCache(ref);
-            /*
-            boolean sourceExists=false;
-            Set<IdentifiableSource> sources = acceptedTaxon.getSources();
-            for (IdentifiableSource src : sources){
-                String micro = src.getCitationMicroReference();
-                Reference r = src.getCitation();
-                if (r.equals(refMods)) {
-                    sourceExists=true;
-                }
-            }
-             System.out.println("sourceExists?:"+sourceExists);
-             */
 
+            //only add the first one if there is no nomenclatural reference yet
             if (nbRef==0){
-                acceptedTaxon.getName().setNomenclaturalReference(reference);
-                acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
-            }else{
-                TaxonDescription taxonDescription =importer.getTaxonDescription(acceptedTaxon, false, true);
-                acceptedTaxon.addDescription(taxonDescription);
-                acceptedTaxon.addSource(OriginalSourceType.Import,null,null,refMods,null);
-
-                TextData textData = TextData.NewInstance(Feature.CITATION());
-
-                textData.addSource(OriginalSourceType.Import, null,null, reference, null, acceptedTaxon.getName(), ref);
-                taxonDescription.addElement(textData);
-                /*
-                sourceExists=false;
-                sources = taxonDescription.getSources();
-                for (IdentifiableSource src : sources){
-                    String micro = src.getCitationMicroReference();
-                    Reference r = src.getCitation();
-                    if (r.equals(refMods) && micro == null) {
-                        sourceExists=true;
-                    }
+                if(acceptedTaxon.getName().getNomenclaturalReference()==null){
+                    acceptedTaxon.getName().setNomenclaturalReference(reference);
+                    sourceHandler.addSource(refMods, acceptedTaxon);
                 }
-                if(!sourceExists) {
-                    taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
-                }
-                 */
-                taxonDescription.addSource(OriginalSourceType.Import,null,null,refMods,null);
-                importer.getDescriptionService().saveOrUpdate(taxonDescription);
             }
+            //add all other references as Feature.Citation
+            TaxonDescription taxonDescription =importer.getTaxonDescription(acceptedTaxon, false, true);
+            acceptedTaxon.addDescription(taxonDescription);
+            sourceHandler.addSource(refMods, acceptedTaxon);
+
+            TextData textData = TextData.NewInstance(Feature.CITATION());
+            Language language = Language.DEFAULT();
+            textData.putText(language, ref);
+            sourceHandler.addSource(reference, textData,acceptedTaxon.getName(),refMods);
+            taxonDescription.addElement(textData);
+
+            sourceHandler.addSource(refMods, taxonDescription);
+
             importer.getTaxonService().saveOrUpdate(acceptedTaxon);
             //                        logger.warn("BWAAHHHH: "+nameToBeFilled.getParsingProblems()+", "+ref);
             nbRef++;
@@ -186,7 +173,6 @@ public class TaxonXExtractor {
 
     public class MySpecimenOrObservation{
         String descr="";
-        @SuppressWarnings("rawtypes")
         DerivedUnit derivedUnitBase=null;
 
         public String getDescr() {
@@ -195,11 +181,9 @@ public class TaxonXExtractor {
         public void setDescr(String descr) {
             this.descr = descr;
         }
-        @SuppressWarnings("rawtypes")
         public DerivedUnit getDerivedUnitBase() {
             return derivedUnitBase;
         }
-        @SuppressWarnings("rawtypes")
         public void setDerivedUnitBase(DerivedUnit derivedUnitBase) {
             this.derivedUnitBase = derivedUnitBase;
         }
@@ -636,7 +620,7 @@ public class TaxonXExtractor {
      * @throws TransformerException
      * @throws TransformerFactoryConfigurationError
      */
-    protected String getScientificName(String fullname,String atomised,String classificationName, Node fullParagraph) throws TransformerFactoryConfigurationError, TransformerException {
+    protected String askWhichScientificName(String fullname,String atomised,String classificationName, Node fullParagraph) throws TransformerFactoryConfigurationError, TransformerException {
         //        logger.info("getScientificName for "+ fullname);
         //        JFrame frame = new JFrame("I have a question");
         //        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -648,10 +632,16 @@ public class TaxonXExtractor {
         } else {
             defaultN=fullname;
         }
+
         if (namesAsked.containsKey(k)){
             return namesAsked.get(k);
         }
         else{
+            //activate it for ants because a lot of markup is incomplete
+            if (classificationName.indexOf("Ants")>-1) {
+                return defaultN;
+            }
+
             JTextArea textArea = new JTextArea("The names in the free text and in the xml tags do not match : "+fullname+
                     ", or "+atomised+"\n"+formatNode(fullParagraph));
             JScrollPane scrollPane = new JScrollPane(textArea);
@@ -766,17 +756,20 @@ public class TaxonXExtractor {
      * @param taxonnamebase2
      * @param bestMatchingTaxon
      * @param refMods
+     * @param similarityAuthor
      * @return
      */
-    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference<?> refMods, double similarityScore) {
+    protected boolean askIfReuseBestMatchingTaxon(NonViralName<?> taxonnamebase2, Taxon bestMatchingTaxon, Reference<?> refMods, double similarityScore, double similarityAuthor) {
         Object[] options = { UIManager.getString("OptionPane.yesButtonText"),
                 UIManager.getString("OptionPane.noButtonText")};
 
-        if (similarityScore<0.58) {
+        if (similarityScore<0.66 &&  similarityAuthor<0.5) {
             return false;
+            //            System.out.println("should say NO");
         }
 
         boolean sameSource=false;
+        boolean noRef=false;
 
         String sec = refMods.getTitleCache();
         String secBest = "";
@@ -788,20 +781,30 @@ public class TaxonXExtractor {
         }
 
         if (secBest.isEmpty()) {
-            sameSource=true;
+            noRef=true;
         }
 
-        Object defaultOption=options[0];
-        if(sec.equalsIgnoreCase(secBest) ||
-                taxonnamebase2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())) {
+        Object defaultOption=options[1];
+        if(sec.equalsIgnoreCase(secBest)
+                //                ||                taxonnamebase2.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(bestMatchingTaxon.getTitleCache().split("sec.")[0].trim())
+                ) {
+            //System.out.println(sec+" and "+secBest);
             sameSource=true;
-            if (similarityScore>0.65) {
+            //-1 <=> no author
+            if (similarityScore>0.65 && (similarityAuthor==-1 || similarityAuthor>0.8)) {
                 defaultOption=options[0];
             } else {
                 defaultOption=options[1];
             }
         } else {
-            defaultOption=options[1];
+            if (similarityScore>0.65 && similarityAuthor>0.8) {
+                if(similarityScore==1 ) {
+                    return true;
+                }
+                defaultOption=options[0];
+            } else {
+                defaultOption=options[1];
+            }
         }
 
         String sourcesStr="";
@@ -814,7 +817,7 @@ public class TaxonXExtractor {
                     sourcesStr+="\n "+srcSec;
                     if (srcSec.equalsIgnoreCase(sec)){
                         sameSource=true;
-                        if (similarityScore>0.64) {
+                        if (similarityScore>0.65 && similarityAuthor>0.8) {
                             defaultOption=options[0];
                         } else {
                             defaultOption=options[1];
@@ -826,14 +829,16 @@ public class TaxonXExtractor {
             }
         }
 
-        if(sameSource) {
-            System.out.println("Similarity : "+similarityScore);
-        }
-        if (sameSource && similarityScore>0.9999) {
+        if (sameSource && similarityScore>0.9999 && (similarityAuthor==-1 || similarityAuthor>0.8)) {
             return true;
         }
-        if(similarityScore<0.6) {
+        if(similarityScore<0.66) {
             defaultOption=options[1];
+        }
+
+        //        //only activate it if you know the data you are importing (ok for Chenopodium)
+        if(defaultOption==options[1]) {
+            return false;
         }
 
         JTextArea textArea =null;

@@ -22,7 +22,11 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
  * @author a.kohlbecker
  * @date Jun 25, 2013
  *
+ * @deprecated better avoid using this PropertyEditor since it will cause Hibernate to load the
+ *             term the data base. Use plain uuids instead for better performance!
+ *
  */
+@Deprecated
 public class TermBasePropertyEditor<T extends DefinedTermBase<?>> extends PropertyEditorSupport {
 
     protected final ITermService termService;

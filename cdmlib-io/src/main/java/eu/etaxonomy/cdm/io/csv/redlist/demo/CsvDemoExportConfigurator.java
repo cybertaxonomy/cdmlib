@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -48,14 +48,14 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	private String defaultBibliographicCitation = null;
 	private List<UUID> featureExclusions = new ArrayList<UUID>();
 	//filter on the classifications to be exported
-	private Set<UUID> classificationUuids = new HashSet<UUID>();   
+	private Set<UUID> classificationUuids = new HashSet<UUID>();
 	private boolean withHigherClassification = false;
 	private String setSeparator = ";";
 
 	private boolean doGeographicalFilter = true;
 	private boolean doDemoExport = false;
 	private boolean doTaxonConceptExport = false;
-	
+
 	//attributes for export
 	private boolean classification;
 	private boolean taxonName;
@@ -71,18 +71,27 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	private boolean parentID;
 	private boolean externalID;
 	private boolean lastChange;
-	
+
+	private List<CsvDemoRecord> recordList;
 
 
-	
-	private List<Feature> features;
+
+
+    private List<Feature> features;
 	private String classificationTitleCache;
 	private List<NamedArea> areas;
+
+
+    private Integer pageSize;
+
+    private Integer pageNumber;
+
+    private int taxonNodeListSize;
 
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
-	public static CsvDemoExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder) { 
+	public static CsvDemoExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder) {
 		return new CsvDemoExportConfigurator(source, destinationFolder);
 	}
 
@@ -94,18 +103,18 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 		};
 	}
 
-	
+
 	/**
-	 * This is function is only to have a shortcut for 
+	 * This is function is only to have a shortcut for
 	 * a preselection for available fields. One can still
 	 * select fields manually.
 	 * <p><p>
 	 * Only one of the parameter should be true, otherwise you
-	 * all fields are set to true and will be exported. 
+	 * all fields are set to true and will be exported.
 	 * <p><p>
-	 * In future this function might be removed. 
-	 * 
-	 * 
+	 * In future this function might be removed.
+	 *
+	 *
 	 * @param doDemoExport
 	 * @param doTaxonConceptExport
 	 */
@@ -130,9 +139,9 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 			setLastChange(true);
 		}
 	}
-	
-	
-	
+
+
+
 	/**
 	 * @param url
 	 * @param destination
@@ -172,7 +181,8 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.io.common.IExportConfigurator#getNewState()
 	 */
-	public CsvDemoExportState getNewState() {
+	@Override
+    public CsvDemoExportState getNewState() {
 		return new CsvDemoExportState(this);
 	}
 
@@ -271,11 +281,11 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	}
 
 	/**
-	 * The default value for the taxon.source column. This may be a column linking to a url that provides 
-	 * data about the given taxon. The id is replaced by a placeholder, 
+	 * The default value for the taxon.source column. This may be a column linking to a url that provides
+	 * data about the given taxon. The id is replaced by a placeholder,
 	 * e.g. http://wp6-cichorieae.e-taxonomy.eu/portal/?q=cdm_dataportal/taxon/{id}.
 	 * NOTE: This may be replaced in future versions by concrete CDM server implementations.
-	 * 
+	 *
 	 * @return the taxonSourceDefault
 	 */
 
@@ -327,18 +337,18 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 
 	public void setFeatures(List<Feature> features) {
 		this.features = features;
-		
+
 	}
-	
+
 	public List<Feature>  getFeatures() {
 		return features;
-		
+
 	}
 
 	public void setClassificationTitleCache(String classificationTitleCache) {
 		this.classificationTitleCache = classificationTitleCache;
 	}
-	
+
 	public String getClassificationTitleCache() {
 		return classificationTitleCache;
 	}
@@ -349,12 +359,12 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	public void setNamedAreas(List<NamedArea> areas) {
 		// TODO Auto-generated method stub
 		this.areas = areas;
-		
+
 	}
 	public List<NamedArea> getNamedAreas(){
 		return areas;
 	}
-	
+
 	public boolean isDoGeographicalFilter() {
 		return doGeographicalFilter;
 	}
@@ -370,7 +380,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	public void setDoDemoExport(boolean doDemoHeadlines) {
 		this.doDemoExport = doDemoHeadlines;
 	}
-	
+
 
 	public boolean isDoTaxonConceptExport() {
 		return doTaxonConceptExport;
@@ -379,7 +389,7 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	public void setDoTaxonConceptExport(boolean doTaxonConceptExport) {
 		this.doTaxonConceptExport = doTaxonConceptExport;
 	}
-	
+
 	public boolean isAuthor() {
 		return author;
 	}
@@ -490,4 +500,35 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 	public void setExternalID(boolean externalID) {
 		this.externalID = externalID;
 	}
+    public List<CsvDemoRecord> getRecordList() {
+        return recordList;
+    }
+    public void setRecordList(List<CsvDemoRecord> recordList) {
+        this.recordList = recordList;
+    }
+
+    public Integer getPageSize() {
+        return pageSize;
+    }
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
+
+    public Integer getPageNumber() {
+        return pageNumber;
+    }
+
+    public void setPageNumber(Integer pageNumber) {
+        this.pageNumber = pageNumber;
+    }
+
+
+    public int getTaxonNodeListSize() {
+        return taxonNodeListSize;
+    }
+
+    public void setTaxonNodeListSize(int size) {
+        this.taxonNodeListSize = size;
+
+    }
 }

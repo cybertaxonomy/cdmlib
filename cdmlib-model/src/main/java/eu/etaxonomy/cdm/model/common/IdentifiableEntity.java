@@ -51,11 +51,13 @@ import eu.etaxonomy.cdm.hibernate.search.StripHtmlBridge;
 import eu.etaxonomy.cdm.jaxb.FormattedTextAdapter;
 import eu.etaxonomy.cdm.jaxb.LSIDAdapter;
 import eu.etaxonomy.cdm.model.media.Rights;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
+import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -248,23 +250,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //**************************************************************************************
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getLsid()
-     */
     @Override
     public LSID getLsid(){
         return this.lsid;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setLsid(java.lang.String)
-     */
     @Override
     public void setLsid(LSID lsid){
         this.lsid = lsid;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getRights()
-     */
     @Override
     public Set<Rights> getRights() {
         if(rights == null) {
@@ -273,16 +266,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.rights;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addRights(eu.etaxonomy.cdm.model.media.Rights)
-     */
     @Override
     public void addRights(Rights right){
         getRights().add(right);
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeRights(eu.etaxonomy.cdm.model.media.Rights)
-     */
     @Override
     public void removeRights(Rights right){
         getRights().remove(right);
@@ -297,51 +284,32 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.credits;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getCredits(int)
-     */
     @Override
     public Credit getCredits(Integer index){
         return getCredits().get(index);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit)
-     */
     @Override
     public void addCredit(Credit credit){
         getCredits().add(credit);
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addCredit(eu.etaxonomy.cdm.model.common.Credit, int)
-     */
     @Override
     public void addCredit(Credit credit, int index){
         getCredits().add(index, credit);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(eu.etaxonomy.cdm.model.common.Credit)
-     */
     @Override
     public void removeCredit(Credit credit){
         getCredits().remove(credit);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeCredit(int)
-     */
     @Override
     public void removeCredit(int index){
         getCredits().remove(index);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getExtensions()
-     */
     @Override
     public Set<Extension> getExtensions(){
         if(extensions == null) {
@@ -374,9 +342,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         Extension.NewInstance(this, value, extensionType);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#addExtension(eu.etaxonomy.cdm.model.common.Extension)
-     */
     @Override
     public void addExtension(Extension extension){
         if (extension != null){
@@ -384,9 +349,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
             getExtensions().add(extension);
         }
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#removeExtension(eu.etaxonomy.cdm.model.common.Extension)
-     */
     @Override
     public void removeExtension(Extension extension){
         if (extension != null){
@@ -395,26 +357,16 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#isProtectedTitleCache()
-     */
     @Override
     public boolean isProtectedTitleCache() {
         return protectedTitleCache;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#setProtectedTitleCache(boolean)
-     */
     @Override
     public void setProtectedTitleCache(boolean protectedTitleCache) {
         this.protectedTitleCache = protectedTitleCache;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#getSources()
-     */
     @Override
     public Set<IdentifiableSource> getSources() {
         if(sources == null) {
@@ -423,13 +375,10 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return this.sources;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(eu.etaxonomy.cdm.model.common.OriginalSourceBase)
-     */
     @Override
     public void addSource(IdentifiableSource source) {
         if (source != null){
-            IdentifiableEntity oldSourcedObj = source.getSourcedObj();
+            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
             if (oldSourcedObj != null && oldSourcedObj != this){
                 oldSourcedObj.getSources().remove(source);
             }
@@ -438,9 +387,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -452,9 +398,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
     
     
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#addImportSource(java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)
-     */
     @Override
     public IdentifiableSource addImportSource(String id, String idNamespace, Reference<?> citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
@@ -465,9 +408,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         return source;
     }
 
-     /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ISourceable#removeSource(eu.etaxonomy.cdm.model.common.IOriginalSource)
-     */
+
     @Override
     public void removeSource(IdentifiableSource source) {
         getSources().remove(source);
@@ -517,6 +458,20 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          if(identifiableEntity instanceof NonViralName) {
              specifiedNameCache = HibernateProxyHelper.deproxy(identifiableEntity, NonViralName.class).getNameCache();
              specifiedTitleCache = identifiableEntity.getTitleCache();
+            if (identifiableEntity instanceof BotanicalName){
+            	 if (((BotanicalName)identifiableEntity).isAutonym()){
+            		 boolean isProtected = false;
+            		 String oldNameCache = ((BotanicalName) identifiableEntity).getNameCache();
+            		 if ( ((BotanicalName)identifiableEntity).isProtectedNameCache()){
+            			 isProtected = true;
+            		 }
+            		 ((BotanicalName)identifiableEntity).setProtectedNameCache(false);
+            		 ((BotanicalName)identifiableEntity).setNameCache(null, false);
+            		 specifiedNameCache = ((BotanicalName) identifiableEntity).getNameCache();
+            		 ((BotanicalName)identifiableEntity).setNameCache(oldNameCache, isProtected);
+            		 
+            	 }
+             }
 
          } else if(identifiableEntity instanceof TaxonBase) {
              TaxonBase taxonBase = HibernateProxyHelper.deproxy(identifiableEntity, TaxonBase.class);
@@ -539,16 +494,32 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
          if(this.isInstanceOf(NonViralName.class)) {
              thisNameCache = HibernateProxyHelper.deproxy(this, NonViralName.class).getNameCache();
              thisTitleCache = getTitleCache();
+             
+             if (this instanceof BotanicalName){
+            	 if (((BotanicalName)this).isAutonym()){
+            		 boolean isProtected = false;
+            		 String oldNameCache = ((BotanicalName) this).getNameCache();
+            		 if ( ((BotanicalName)this).isProtectedNameCache()){
+            			 isProtected = true;
+            		 }
+            		 ((BotanicalName)this).setProtectedNameCache(false);
+            		 ((BotanicalName)this).setNameCache(null, false);
+            		 thisNameCache = ((BotanicalName) this).getNameCache();
+            		 ((BotanicalName)this).setNameCache(oldNameCache, isProtected);
+            	 }
+             }
          } else if(this.isInstanceOf(TaxonBase.class)) {
              TaxonNameBase<?,?> taxonNameBase= HibernateProxyHelper.deproxy(this, TaxonBase.class).getName();
              NonViralName nonViralName = HibernateProxyHelper.deproxy(taxonNameBase, NonViralName.class);
              thisNameCache = nonViralName.getNameCache();
              thisTitleCache = taxonNameBase.getTitleCache();
-             thisReferenceTitleCache = getTitleCache();
+             thisReferenceTitleCache = ((TaxonBase)this).getSec().getTitleCache();
              thisGenusString = nonViralName.getGenusOrUninomial();
          }
 
          // Compare name cache of taxon names
+         
+        
 
          if (!specifiedNameCache.equals("") && !thisNameCache.equals("")) {
              result = thisNameCache.compareTo(specifiedNameCache);

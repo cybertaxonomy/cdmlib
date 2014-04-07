@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
@@ -105,16 +106,15 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         this.grantedAuthorityDao = grantedAuthorityDao;
     }
 
-    @Transactional(readOnly=false)
-    protected Authentication createNewAuthentication(Authentication currentAuth, String newPassword) {
-        UserDetails user = loadUserByUsername(currentAuth.getName());
-
-        UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
-        newAuthentication.setDetails(currentAuth.getDetails());
-
-        return newAuthentication;
-    }
-
+    /**
+     * Changes the own password of in the database of the user which is
+     * currently authenticated. Requires to supply the old password for security
+     * reasons. Refreshes the authentication in the SecurityContext after the
+     * password change by re-authenticating the user with the new password.
+     *
+     * @see org.springframework.security.provisioning.UserDetailsManager#changePassword(java.lang.String,
+     *      java.lang.String)
+     */
     @Override
     @Transactional(readOnly=false)
     @PreAuthorize("isAuthenticated()")
@@ -123,18 +123,28 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         Assert.hasText(newPassword);
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if(authentication != null && authentication.getPrincipal() != null && authentication.getPrincipal() instanceof User) {
-            User user = (User)authentication.getPrincipal();
 
+            // get current authentication and load it from the persistence layer,
+            // to make sure we are modifying the instance which is
+            // attached to the hibernate session
+            User user = (User)authentication.getPrincipal();
+            user = dao.load(user.getUuid());
+
+            // check if old password is valid
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(user.getUsername(), oldPassword));
 
+            // make new password and set it
             Object salt = this.saltSource.getSalt(user);
-
             String password = passwordEncoder.encodePassword(newPassword, salt);
             user.setPassword(password);
-
             dao.update(user);
-            SecurityContextHolder.getContext().setAuthentication(createNewAuthentication(authentication, newPassword));
+
+            // authenticate the user again with the new password
+            UsernamePasswordAuthenticationToken newAuthentication = new UsernamePasswordAuthenticationToken(user, user.getPassword(), user.getAuthorities());
+            newAuthentication.setDetails(authentication.getDetails());
+            SecurityContextHolder.getContext().setAuthentication(newAuthentication);
             userCache.removeUserFromCache(user.getUsername());
+
         } else {
             throw new AccessDeniedException("Can't change password as no Authentication object found in context for current user.");
         }
@@ -175,7 +185,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Transactional(readOnly=false)
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public void createUser(UserDetails user) {
-        Assert.isInstanceOf(User.class, user);
+    	Assert.isInstanceOf(User.class, user);
 
         String rawPassword = user.getPassword();
         Object salt = this.saltSource.getSalt(user);
@@ -183,8 +193,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         String password = passwordEncoder.encodePassword(rawPassword, salt);
         ((User)user).setPassword(password);
 
-        dao.save((User)user);
+        UUID userUUID = dao.save((User)user);
+
+
     }
+
+
 
     /* (non-Javadoc)
      * @see org.springframework.security.provisioning.UserDetailsManager#deleteUser(java.lang.String)
@@ -419,7 +433,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
      */
     @Override
     @Transactional(readOnly=false)
-    @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
+   // @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_RUN_AS_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public UUID save(User user) {
         if(user.getId() == 0 || dao.load(user.getUuid()) == null){
             createUser(user);
@@ -449,7 +463,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
         return grantedAuthorityDao.save((GrantedAuthorityImpl)grantedAuthority);
     }
 
-    
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.IUserService#listByUsername(java.lang.String, eu.etaxonomy.cdm.persistence.query.MatchMode, java.util.List, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
@@ -480,7 +494,12 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
     public Map<UUID, User> save(Collection<User> newInstances) {
-        return super.save(newInstances);
+        Map<UUID, User> users = new HashMap<UUID, User>();
+    	for (User user: newInstances){
+        	createUser(user);
+        	users.put(user.getUuid(), user);
+        }
+    	return users;
     }
 
     @Override

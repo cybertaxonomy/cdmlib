@@ -40,6 +40,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
+import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
+import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
+import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.CdmPermissionEvaluator;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
@@ -100,6 +103,21 @@ public interface ICdmApplicationConfiguration {
      * @return
      */
     public IOccurrenceService getOccurrenceService();
+
+    /**
+     * @return
+     */
+    public IPrimerService getPrimerService();
+
+    /**
+     * @return
+     */
+    public IAmplificationService getAmplificationService();
+
+    /**
+     * @return
+     */
+    public ISequenceService getSequenceService();
 
     /**
      * @return

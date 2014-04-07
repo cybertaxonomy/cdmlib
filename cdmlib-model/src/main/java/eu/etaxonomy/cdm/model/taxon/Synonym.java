@@ -299,16 +299,16 @@ public class Synonym extends TaxonBase<IIdentifiableEntityCacheStrategy<Synonym>
 		
 		for (SynonymRelationship rel : rels){
 			Taxon oldAcceptedTaxon = rel.getAcceptedTaxon();
+			Synonym syn = rel.getSynonym();
 			//remove old
-			oldAcceptedTaxon.getSynonymRelations().remove(rel);
-			Synonym syn = rel.getSynonym();  //syn should be this
-			syn.getSynonymRelations().remove(rel);
-			//create new
+			oldAcceptedTaxon.removeSynonym(rel.getSynonym(), false);
+			
+			
 			SynonymRelationship newRel = (SynonymRelationship)rel.clone();
 			newRel.setAcceptedTaxon(newAcceptedTaxon);
 			newAcceptedTaxon.getSynonymRelations().add(newRel);
 			newRel.setSynonym(syn);
-			syn.getSynonymRelations().add(newRel);
+			syn.addSynonymRelation(newRel);
 			
 			newRel.setType(relType);
 		}

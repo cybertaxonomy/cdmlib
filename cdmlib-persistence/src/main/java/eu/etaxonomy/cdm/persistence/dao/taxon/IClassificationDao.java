@@ -13,6 +13,7 @@ import java.util.List;
 
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 
@@ -23,7 +24,7 @@ import eu.etaxonomy.cdm.persistence.dao.common.IIdentifiableDao;
 public interface IClassificationDao extends IIdentifiableDao<Classification> {
 
     /**
-     * Loads all TaxonNodes of the specified tree for a given Rank.
+     * Lists all TaxonNodes of the specified tree for a given Rank.
      * If a branch does not contain a TaxonNode with a TaxonName at the given
      * Rank the node associated with the next lower Rank is taken as root node.
      * If the <code>rank</code> is null the absolute root nodes will be returned.
@@ -36,9 +37,13 @@ public interface IClassificationDao extends IIdentifiableDao<Classification> {
      * @param propertyPaths
      * @return
      */
-    public List<TaxonNode> loadRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths);
+    public List<TaxonNode> listRankSpecificRootNodes(Classification classification, Rank rank, Integer limit, Integer start, List<String> propertyPaths);
 
     public long countRankSpecificRootNodes(Classification classification, Rank rank);
+
+    public List<TaxonNode> listChildrenOf(Taxon taxon, Classification classification, Integer pageSize, Integer pageIndex, List<String> propertyPaths);
+
+    public abstract Long countChildrenOf(Taxon taxon, Classification classification);
 
 
 }

@@ -33,7 +33,9 @@ import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.config.BeanDefinition;
 
-import eu.etaxonomy.cdm.database.CdmPersistentDataSource.DbProperties;
+import eu.etaxonomy.cdm.config.CdmPersistentSourceUtils;
+import eu.etaxonomy.cdm.config.CdmPersistentXMLSource.CdmSourceProperties;
+
 
 /**
  * @author a.mueller
@@ -70,7 +72,7 @@ public class CdmPersistentDataSourceTest {
 		String dataSourceString = "tmp";
 		//delete
 		try {
-			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
+			CdmPersistentSourceUtils.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
 		} catch (DataSourceNotFoundException e) {
 			//;
 		}
@@ -87,7 +89,7 @@ public class CdmPersistentDataSourceTest {
 		String dataSourceString = "tmp";
 		//delete
 		try {
-			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
+			CdmPersistentSourceUtils.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
 		} catch (DataSourceNotFoundException e) {
 			//;
 		}
@@ -157,7 +159,7 @@ public class CdmPersistentDataSourceTest {
 	 */
 	@Test
 	public void testGetDbProperty() {
-		assertEquals("com.mysql.jdbc.Driver", dataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
+		assertEquals("com.mysql.jdbc.Driver", dataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
 	}
 
 	/**
@@ -272,13 +274,13 @@ public class CdmPersistentDataSourceTest {
 			fail();
 		}
 		assertEquals(databaseType, dataSource.getDatabaseType());
-		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), loadedDataSource.getDatasourceProperty(DbProperties.DRIVER_CLASS));
-		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", loadedDataSource.getDatasourceProperty(DbProperties.URL));
-		assertEquals(username, loadedDataSource.getDatasourceProperty(DbProperties.USERNAME));
-		assertEquals(password, loadedDataSource.getDatasourceProperty(DbProperties.PASSWORD));
+		assertEquals(DatabaseTypeEnum.SqlServer2005.getDriverClassName(), loadedDataSource.getCdmSourceProperty(CdmSourceProperties.DRIVER_CLASS));
+		assertEquals("jdbc:sqlserver://server:1234;databaseName=database;SelectMethod=cursor", loadedDataSource.getCdmSourceProperty(CdmSourceProperties.URL));
+		assertEquals(username, loadedDataSource.getCdmSourceProperty(CdmSourceProperties.USERNAME));
+		assertEquals(password, loadedDataSource.getCdmSourceProperty(CdmSourceProperties.PASSWORD));
 		//delete
 		try {
-			CdmPersistentDataSource.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
+			CdmPersistentSourceUtils.delete(CdmPersistentDataSource.NewInstance(dataSourceString));
 		} catch (DataSourceNotFoundException e) {
 			fail();
 		}
@@ -328,7 +330,7 @@ public class CdmPersistentDataSourceTest {
 	 */
 	@Test
 	public void testGetDataSourceInputStream() {
-		FileInputStream is = CdmPersistentDataSource.getDataSourceInputStream();
+		FileInputStream is = CdmPersistentSourceUtils.getCdmSourceInputStream();
 		assertNotNull( is);
 		int firstInput;
 		try {
@@ -346,7 +348,7 @@ public class CdmPersistentDataSourceTest {
 	@Ignore
 	@Test
 	public void testGetDataSourceOutputStream() {
-		FileOutputStream os = CdmPersistentDataSource.getDataSourceOutputStream();
+		FileOutputStream os = CdmPersistentSourceUtils.getCdmSourceOutputStream();
 		assertNotNull(os);
 	}
 

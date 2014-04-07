@@ -89,7 +89,6 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
  * @created 04.08.2008
  */
 public abstract class MarkupImportBase  {
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MarkupImportBase.class);
 
 	//Base
@@ -97,6 +96,7 @@ public abstract class MarkupImportBase  {
 	protected static final String ANNOTATION = "annotation";
 	protected static final String BOLD = "bold";
 	protected static final String BR = "br";
+	protected static final String DOUBTFUL = "doubtful";
 	protected static final String CITATION = "citation";
 	protected static final String CLASS = "class";
 	protected static final String COORDINATES = "coordinates";
@@ -115,6 +115,8 @@ public abstract class MarkupImportBase  {
 	protected static final String SUB_HEADING = "subHeading";
 	protected static final String TYPE = "type";
 	protected static final String TYPE_STATUS = "typeStatus";
+	protected static final String UNKNOWN = "unknown";
+	
 
 	protected static final boolean CREATE_NEW = true;
 	protected static final boolean NO_IMAGE_GALLERY = false;
@@ -162,8 +164,10 @@ public abstract class MarkupImportBase  {
 	protected static final String SERIALS_ABBREVIATIONS = "serialsAbbreviations";
 	protected static final String STRING = "string";
 	protected static final String URL = "url";
-	protected static final String VERNACULAR_NAMES = "vernacularNames";
 	protected static final String WRITER = "writer";
+	
+	protected static final String LOCALITY = "locality";
+	
 	
 	
 	//Nomenclature
@@ -208,6 +212,14 @@ public abstract class MarkupImportBase  {
 	protected static final String TO_COUPLET = "toCouplet";
 	protected static final String TO_KEY = "toKey";
 	protected static final String TO_TAXON = "toTaxon";
+	
+	
+	//Feature
+	protected static final String VERNACULAR_NAMES = "vernacularNames";
+	protected static final String VERNACULAR_NAME = "vernacularName";
+	protected static final String TRANSLATION = "translation";
+	protected static final String LOCAL_LANGUAGE = "localLanguage";
+	
 
 
 	protected MarkupDocumentImport docImport;
@@ -1040,6 +1052,9 @@ public abstract class MarkupImportBase  {
 			}
 			if (rank.equals(Rank.UNKNOWN_RANK())) {
 				rank = null;
+			}
+			if (rank == null && "sous-genre".equalsIgnoreCase(value)){
+				rank = Rank.SUBGENUS();
 			}
 		} catch (UnknownCdmTypeException e) {
 			// doNothing

@@ -3,15 +3,21 @@ package eu.etaxonomy.cdm.persistence.validation;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class LongRunningCheckCaseValidator implements ConstraintValidator<CheckCase, String> {
+/**
+ * A ConstraintValidator that deliberately takes some time to test task queue overruns.
+ * It calls Thread.sleep() to force a long execution time.
+ * 
+ * @author ayco_holleman
+ *
+ */
+public class LongRunningCheckCaseValidator implements ConstraintValidator<LongRunningCheckCase, String> {
+	
 	private CaseMode caseMode;
 
-
-	public void initialize(CheckCase constraintAnnotation)
+	public void initialize(LongRunningCheckCase constraintAnnotation)
 	{
 		this.caseMode = constraintAnnotation.value();
 	}
-
 
 	public boolean isValid(String object, ConstraintValidatorContext constraintContext)
 	{
@@ -22,11 +28,14 @@ public class LongRunningCheckCaseValidator implements ConstraintValidator<CheckC
 			e.printStackTrace();
 		}
 		System.out.println("stopped waiting");
-		if (object == null)
+		if (object == null) {
 			return true;
-		if (caseMode == CaseMode.UPPER)
+		}
+		if (caseMode == CaseMode.UPPER) {
 			return object.equals(object.toUpperCase());
-		else
+		}
+		else {
 			return object.equals(object.toLowerCase());
+		}
 	}
 }

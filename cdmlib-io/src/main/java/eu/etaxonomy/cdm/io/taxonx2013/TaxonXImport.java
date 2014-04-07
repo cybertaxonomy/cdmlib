@@ -119,7 +119,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         String s="";
         if (defaultClassificatioName != null && nodeList.indexOf(defaultClassificatioName)>-1) {
             s=defaultClassificatioName;
-            System.out.println("classifdic: "+classifDic);
+            //System.out.println("classifdic: "+classifDic);
         } else{
             JTextArea textArea = new JTextArea("Which classification do you want to use ? \nThe current value is "+classificationName);
             JScrollPane scrollPane = new JScrollPane(textArea);
@@ -138,7 +138,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         }
         ref=getReferenceService().find(ref.getUuid());
         if (!classifDic.containsKey(s)){
-            System.out.println("Classif inconnue ?? "+s+", "+classifDic);
+            //System.out.println("Classif inconnue ?? "+s+", "+classifDic);
             if (s.equalsIgnoreCase("Other classification - add a new one")){
                 classificationName = askForValue("classification name ?",classificationName);
             }
@@ -308,11 +308,11 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
     }
 
     public void deduplicate(){
-        System.out.println("DEDUPLICATE REFERENCE");
+        //System.out.println("DEDUPLICATE REFERENCE");
         getReferenceService().deduplicate(Reference.class, null,null);
-        System.out.println("DEDUPLICATE TAXONBASE");
+        //System.out.println("DEDUPLICATE TAXONBASE");
         getTaxonService().deduplicate(TaxonBase.class, null, null);
-        System.out.println("DEDUP END");
+        //System.out.println("DEDUP END");
     }
 
 

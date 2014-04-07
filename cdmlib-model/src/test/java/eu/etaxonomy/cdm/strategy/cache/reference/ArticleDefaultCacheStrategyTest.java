@@ -112,7 +112,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setAuthorTeam(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		article1.setAbbrevTitle("M. Art.");
-		Assert.assertEquals("T., M. Art. in M. Journ.. 1975", article1.getAbbrevTitleCache());  //double dot may be removed in future #3645
+		Assert.assertEquals("T., M. Art. in M. Journ. 1975", article1.getAbbrevTitleCache());  //double dot may be removed in future #3645
 
 		article1.setInJournal(null);
 		//TODO should not be needed here

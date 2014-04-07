@@ -57,7 +57,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
                 fail(e.getMessage());
             }
         } else {
-            logger.warn("SKIPPING TEST: no internet connecivity available");
+            logger.warn("SKIPPING TEST: no internet connectivity available");
         }
     }
 }

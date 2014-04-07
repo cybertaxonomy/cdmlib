@@ -28,6 +28,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -46,6 +47,7 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.IVolumeReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
+import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 /**
  * @author a.mueller
  *
@@ -1239,6 +1241,47 @@ public class NonViralNameParserImplTest {
 		logger.warn("Not yet implemented"); // TODO
 	}
 
+	/**
+	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#authorTeamAndEx(java.lang.String)}.
+	 * @throws StringNotParsableException 
+	 */
+	@Test
+	public final void testParseAuthorsTaxonNameString() throws StringNotParsableException {
+		NonViralName<?> nvn = ZoologicalName.NewInstance(null);
+		parser.parseAuthors(nvn, "Eckweiler & ten Hagen, 2003");
+		Team team = (Team)nvn.getCombinationAuthorTeam();
+		Assert.assertNotNull("Comb. author must not be null", team);
+		Assert.assertEquals("Must be team with 2 members", 2, team.getTeamMembers().size());
+		Assert.assertEquals("Second member must be 'ten Hagen'", "ten Hagen", team.getTeamMembers().get(1).getTitleCache());
+		
+		//Crosson du Cormier, 1964
+		ZoologicalName zooName = ZoologicalName.NewInstance(null);
+		parser.parseAuthors(zooName, "Crosson du Cormier, 1964");
+		Person person = (Person)zooName.getCombinationAuthorTeam();
+		Assert.assertNotNull("Comb. author must not be null", person);
+		Assert.assertEquals("Persons title must be 'Crosson du Cormier'", "Crosson du Cormier", person.getTitleCache());
+		Assert.assertEquals("Year must be 1964", Integer.valueOf(1964), zooName.getPublicationYear() );
+		
+		//(van der Hoeven, 1839)
+		zooName = ZoologicalName.NewInstance(null);
+		parser.parseAuthors(zooName, "(van der Hoeven, 1839)");
+		Assert.assertNull("Combination author must be null", zooName.getCombinationAuthorTeam());
+		person = (Person)zooName.getBasionymAuthorTeam();
+		Assert.assertNotNull("Basionym author must not be null", person);
+		Assert.assertEquals("Persons title must be 'van der Hoeven'", "van der Hoeven", person.getTitleCache());
+		Assert.assertEquals("Year must be 1839", Integer.valueOf(1839), zooName.getOriginalPublicationYear() );
+		
+		//le Doux, 1931
+		zooName = ZoologicalName.NewInstance(null);
+		parser.parseAuthors(zooName, "le Doux, 1931");
+		person = (Person)zooName.getCombinationAuthorTeam();
+		Assert.assertNotNull("Comb. author must not be null", person);
+		Assert.assertEquals("Persons title must be 'le Doux'", "le Doux", person.getTitleCache());
+		Assert.assertEquals("Year must be 1931", Integer.valueOf(1931), zooName.getPublicationYear() );
+		
+		
+	}
+	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl#authorTeamAndEx(java.lang.String)}.
 	 */

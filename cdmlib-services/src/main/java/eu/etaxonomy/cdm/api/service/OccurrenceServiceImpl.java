@@ -56,11 +56,14 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.molecular.DnaSample;
+import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
@@ -295,12 +298,28 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 occurrenceIds.add(o.getId());
             }
         }
-
         occurrences = (List<T>) dao.listByIds(occurrenceIds, pageSize, pageNumber, orderHints, propertyPaths);
 
         return new DefaultPagerImpl<T>(pageNumber, occurrenceIds.size(), pageSize, occurrences);
 
     }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#pageByAssociatedTaxon(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @SuppressWarnings("unchecked")
+    @Override
+    public <T extends SpecimenOrObservationBase> Pager<T> pageByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+            String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        UUID uuid = UUID.fromString(taxonUUID);
+        Taxon tax = (Taxon) taxonDao.load(uuid);
+       //TODO REMOVE NULL STATEMENT
+type=null;
+        return pageByAssociatedTaxon( type,includeRelationships,tax, maxDepth, pageSize, pageNumber, orderHints, propertyPaths );
+
+    }
+
 
     @Override
     public Pager<SearchResult<SpecimenOrObservationBase>> findByFullText(
@@ -405,6 +424,46 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 }
             }
         }
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#moveSequence(eu.etaxonomy.cdm.model.molecular.DnaSample, eu.etaxonomy.cdm.model.molecular.DnaSample, eu.etaxonomy.cdm.model.molecular.Sequence)
+     */
+    @Override
+    public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
+        from.removeSequence(sequence);
+        saveOrUpdate(from);
+        to.addSequence(sequence);
+        saveOrUpdate(to);
+        return true;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#moveDerivate(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.occurrence.DerivedUnit)
+     */
+    @Override
+    public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
+        SpecimenOrObservationType derivateType = derivate.getRecordBasis();
+        SpecimenOrObservationType toType = to.getRecordBasis();
+        //check if type is a sub derivate type
+        if(toType==SpecimenOrObservationType.FieldUnit //moving to FieldUnit always works
+                || (derivateType.isKindOf(toType) && toType!=derivateType)){ //moving only to parent derivate type
+            //remove derivation event from parent specimen of dragged object
+            DerivationEvent eventToRemove = null;
+            for(DerivationEvent event:from.getDerivationEvents()){
+                if(event.getDerivatives().contains(derivate)){
+                    eventToRemove = event;
+                    break;
+                }
+            }
+            from.removeDerivationEvent(eventToRemove);
+            saveOrUpdate(from);
+            //add new derivation event to target
+            to.addDerivationEvent(DerivationEvent.NewSimpleInstance(to, derivate, eventToRemove==null?null:eventToRemove.getType()));
+            saveOrUpdate(to);
+            return true;
+        }
+        return false;
     }
 
 }

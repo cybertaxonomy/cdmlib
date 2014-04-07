@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -66,7 +66,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * The most significant restriction is that a specimen may derive only from one
  * direct derivation event and there must be only one field unit
  * (gathering event) it derives from.<BR>
- * 
+ *
  * @author a.mueller
  * @date 14.05.2010
  */
@@ -82,11 +82,11 @@ public class DerivedUnitFacade {
 	private static final boolean CREATE_NOT = false;
 
 	private final DerivedUnitFacadeConfigurator config;
-	
-	private Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
 
+	private final Map<PropertyChangeListener, CdmBase> listeners = new HashMap<PropertyChangeListener, CdmBase>();
+
+	// Either fieldUnit or derivedUnit must not be null.
 	private FieldUnit fieldUnit;
-
 	private final DerivedUnit derivedUnit;
 
 	// media - the text data holding the media
@@ -99,18 +99,18 @@ public class DerivedUnitFacade {
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
 	 * <code>type</code>.
-	 * 
+	 *
 	 * @param type
 	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type) {
 		return new DerivedUnitFacade(type, null, null);
 	}
-	
+
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
 	 * <code>type</code>.
-	 * 
+	 *
 	 * @param type
 	 * @return
 	 */
@@ -121,22 +121,22 @@ public class DerivedUnitFacade {
 	/**
 	 * Creates a derived unit facade for a new derived unit of type
 	 * <code>type</code>.
-	 * 
+	 *
 	 * @param type
 	 * @param fieldUnit the field unit to use
 	 * @param config the facade configurator to use
-	 * //TODO are there any ambiguities to solve with defining a field unit or a configurator 
+	 * //TODO are there any ambiguities to solve with defining a field unit or a configurator
 	 * @return
 	 */
 	public static DerivedUnitFacade NewInstance(SpecimenOrObservationType type, FieldUnit fieldUnit, DerivedUnitFacadeConfigurator config) {
 		return new DerivedUnitFacade(type, fieldUnit, config);
 	}
 
-	
+
 	/**
 	 * Creates a derived unit facade for a given derived unit using the default
 	 * configuration.
-	 * 
+	 *
 	 * @param derivedUnit
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
@@ -161,6 +161,10 @@ public class DerivedUnitFacade {
 		this.config = config;
 		// derivedUnit
 		derivedUnit = getNewDerivedUnitInstance(type);
+		//TODO parameter checking should be solved in a more generic way if we start using other entity facades
+		if(derivedUnit==null && fieldUnit==null && type.isFieldUnit()){
+		    this.fieldUnit = getFieldUnit(CREATE);
+		}
 		setFieldUnit(fieldUnit);
 		if (derivedUnit != null){
 			setCacheStrategy();
@@ -184,6 +188,10 @@ public class DerivedUnitFacade {
 	private DerivedUnitFacade(DerivedUnit derivedUnit, DerivedUnitFacadeConfigurator config)
 			throws DerivedUnitFacadeNotSupportedException {
 
+	    if(derivedUnit==null){
+	        throw new IllegalArgumentException("DerivedUnit must not be null");
+	    }
+
 		if (config == null) {
 			config = DerivedUnitFacadeConfigurator.NewInstance();
 		}
@@ -191,7 +199,7 @@ public class DerivedUnitFacade {
 
 		// derived unit
 		this.derivedUnit = derivedUnit;
-		
+
 		// derivation event
 		if (this.derivedUnit.getDerivedFrom() != null) {
 			DerivationEvent derivationEvent = getDerivationEvent(CREATE);
@@ -213,12 +221,12 @@ public class DerivedUnitFacade {
 				throw new IllegalStateException("Illegal state");
 			}
 		}
-		
+
 		this.derivedUnitMediaTextData = inititializeTextDataWithSupportTest(Feature.IMAGE(), this.derivedUnit, false, true);
 
 		fieldObjectMediaTextData = initializeFieldObjectTextDataWithSupportTest(Feature.IMAGE(), false, true);
 
-		
+
 //direct media have been removed from specimenorobservationbase #3597
 //		// handle derivedUnit.getMedia()
 //		if (derivedUnit.getMedia().size() > 0) {
@@ -256,7 +264,7 @@ public class DerivedUnitFacade {
 				Feature.ECOLOGY(), false, false);
 		plantDescription = initializeFieldObjectTextDataWithSupportTest(
 				Feature.DESCRIPTION(), false, false);
-		
+
 		setCacheStrategy();
 
 	}
@@ -282,7 +290,7 @@ public class DerivedUnitFacade {
 	 * Initializes the derived unit according to the configuartions property
 	 * path. If the property path is <code>null</code> or no occurrence service
 	 * is given the returned object is the same as the input parameter.
-	 * 
+	 *
 	 * @param fieldUnit
 	 * @return
 	 */
@@ -307,7 +315,7 @@ public class DerivedUnitFacade {
 	 * like an ordinary CdmBase object.<BR>
 	 * E.g. a property path "collectinAreas" will be translated into
 	 * gatheringEvent.collectingAreas
-	 * 
+	 *
 	 * @param propertyPaths
 	 * @return
 	 */
@@ -366,10 +374,10 @@ public class DerivedUnitFacade {
 		/*
 		 * Gathering Event ==================== - gatheringEvent
 		 * (GatheringEvent)
-		 * 
+		 *
 		 * Field Object ================= - ecology/ ecologyAll (String) ??? -
 		 * plant description (like ecology)
-		 * 
+		 *
 		 * - fieldObjectImageGallery (SpecimenDescription) - is automatically
 		 * initialized via fieldObjectMedia
 		 */
@@ -382,10 +390,10 @@ public class DerivedUnitFacade {
 	 * like an ordinary CdmBase object.<BR>
 	 * E.g. a property path "collectinAreas" will be translated into
 	 * gatheringEvent.collectingAreas
-	 * 
+	 *
 	 * Not needed (?) as the facade works with REST service property paths
 	 * without using this method.
-	 * 
+	 *
 	 * @param propertyPaths
 	 * @return
 	 */
@@ -439,10 +447,10 @@ public class DerivedUnitFacade {
 
 		/*
 		 * //TODO Derived Unit =====================
-		 * 
+		 *
 		 * - derivedUnitImageGallery (SpecimenDescription) - is automatically
 		 * initialized via derivedUnitMedia
-		 * 
+		 *
 		 * - derivationEvent (DerivationEvent) - will always be initialized -
 		 * duplicates (??? Specimen???) ???
 		 */
@@ -451,7 +459,7 @@ public class DerivedUnitFacade {
 	}
 
 	/**
-	 * 
+	 *
 	 */
 	private void setCacheStrategy() {
 		if (derivedUnit == null) {
@@ -562,7 +570,7 @@ public class DerivedUnitFacade {
 	 * It returns the only text data attached to the given image gallery. If the
 	 * given image gallery does not have text data attached, it is created and
 	 * attached.
-	 * 
+	 *
 	 * @param imageGallery
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
@@ -686,7 +694,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Returns the media list for a specimen. Throws an exception if the
 	 * existing specimen descriptions are not supported by this facade.
-	 * 
+	 *
 	 * @param specimen
 	 *            the specimen the media belongs to
 	 * @param specimenExceptionText
@@ -710,7 +718,7 @@ public class DerivedUnitFacade {
 	 * image gallery exists a new one is created if
 	 * <code>createNewIfNotExists</code> is true and if specimen is not
 	 * <code>null</code>.
-	 * 
+	 *
 	 * @param specimen
 	 * @param specimenText
 	 * @param createNewIfNotExists
@@ -740,7 +748,7 @@ public class DerivedUnitFacade {
 	 * an exception if multiple such text data already exist. Creates a new text
 	 * data if none exists and adds it to the image gallery. If image gallery is
 	 * <code>null</code> nothing happens.
-	 * 
+	 *
 	 * @param imageGallery
 	 * @param textData
 	 * @return
@@ -774,7 +782,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Checks, if a specimen belongs to more than one description that is an
 	 * image gallery
-	 * 
+	 *
 	 * @param derivedUnit
 	 * @return
 	 */
@@ -797,7 +805,7 @@ public class DerivedUnitFacade {
 	 * image gallery exists, a new one is created if
 	 * <code>createNewIfNotExists</code> is <code>true</code>.<Br>
 	 * If specimen is <code>null</code> a null pointer exception is thrown.
-	 * 
+	 *
 	 * @param createNewIfNotExists
 	 * @return
 	 */
@@ -820,7 +828,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Adds a media to the specimens image gallery. If media is
 	 * <code>null</code> nothing happens.
-	 * 
+	 *
 	 * @param media
 	 * @param specimen
 	 * @return true if media is not null (as specified by
@@ -842,7 +850,7 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Removes a media from the specimens image gallery.
-	 * 
+	 *
 	 * @param media
 	 * @param specimen
 	 * @return true if an element was removed as a result of this call (as
@@ -867,7 +875,7 @@ public class DerivedUnitFacade {
 	 * Returns the one media list of a specimen which is part of the only image
 	 * gallery that this specimen is part of.<BR>
 	 * If these conditions are not hold an exception is thrwon.
-	 * 
+	 *
 	 * @param specimen
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
@@ -889,8 +897,8 @@ public class DerivedUnitFacade {
 	/**
 	 * Returns the one media list of a specimen which is part of the only image
 	 * gallery that this specimen is part of.<BR>
-	 * If these conditions are not hold an exception is thrwon.
-	 * 
+	 * If these conditions are not hold an exception is thrown.
+	 *
 	 * @param specimen
 	 * @return
 	 * @throws DerivedUnitFacadeNotSupportedException
@@ -950,12 +958,12 @@ public class DerivedUnitFacade {
 	}
 
 	static final String ALTITUDE_POSTFIX = " m";
-	
+
 	/**
 	 * Returns the correctly formatted <code>absolute elevation</code> information.
 	 * If absoluteElevationText is set, this will be returned,
-	 * otherwise we absoluteElevation will be returned, followed by absoluteElevationMax 
-	 * if existing, separated by " - " 
+	 * otherwise we absoluteElevation will be returned, followed by absoluteElevationMax
+	 * if existing, separated by " - "
 	 * @return
 	 */
 	@Transient
@@ -975,10 +983,10 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	
+
 	/**
 	 * meter above/below sea level of the surface
-	 * 
+	 *
 	 * @see #getAbsoluteElevationError()
 	 * @see #getAbsoluteElevationRange()
 	 **/
@@ -994,11 +1002,11 @@ public class DerivedUnitFacade {
 	public void setAbsoluteElevationMax(Integer absoluteElevationMax) {
 		getGatheringEvent(true).setAbsoluteElevationMax(absoluteElevationMax);
 	}
-	
+
 	public void setAbsoluteElevationText(String absoluteElevationText) {
 		getGatheringEvent(true).setAbsoluteElevationText(absoluteElevationText);
 	}
-	
+
 	/**
 	 * @see #getAbsoluteElevation()
 	 * @see #getAbsoluteElevationError()
@@ -1013,7 +1021,7 @@ public class DerivedUnitFacade {
 			return getGatheringEvent(true).getAbsoluteElevationMax();
 		}
 	}
-	
+
 	/**
 	 * @see #getAbsoluteElevation()
 	 * @see #getAbsoluteElevationError()
@@ -1031,7 +1039,7 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Convenience method to set absolute elevation minimum and maximum.
-	 * 
+	 *
 	 * @see #setAbsoluteElevation(Integer)
 	 * @see #setAbsoluteElevationMax(Integer)
 	 * @param minimumElevation minimum of the range
@@ -1064,12 +1072,12 @@ public class DerivedUnitFacade {
 	}
 
 	// distance to ground
-	
+
 	/**
 	 * Returns the correctly formatted <code>distance to ground</code> information.
 	 * If distanceToGroundText is not blank, it will be returned,
-	 * otherwise distanceToGround will be returned, followed by distanceToGroundMax 
-	 * if existing, separated by " - " 
+	 * otherwise distanceToGround will be returned, followed by distanceToGroundMax
+	 * if existing, separated by " - "
 	 * @return
 	 */
 	@Transient
@@ -1093,7 +1101,7 @@ public class DerivedUnitFacade {
 	public void setDistanceToGround(Double distanceToGround) {
 		getGatheringEvent(true).setDistanceToGround(distanceToGround);
 	}
-	
+
 	/**
 	 * @see #getDistanceToGround()
 	 * @see #getDistanceToGroundRange(Integer, Integer)
@@ -1106,11 +1114,11 @@ public class DerivedUnitFacade {
 			return getGatheringEvent(true).getDistanceToGroundMax();
 		}
 	}
-	
+
 	public void setDistanceToGroundMax(Double distanceToGroundMax) {
 		getGatheringEvent(true).setDistanceToGroundMax(distanceToGroundMax);
 	}
-	
+
 	/**
 	 * @see #getDistanceToGround()
 	 * @see #setDistanceToGroundRange(Integer, Integer)
@@ -1126,10 +1134,10 @@ public class DerivedUnitFacade {
 	public void setDistanceToGroundText(String distanceToGroundText) {
 		getGatheringEvent(true).setDistanceToGroundText(distanceToGroundText);
 	}
-	
+
 	/**
 	 * Convenience method to set distance to ground minimum and maximum.
-	 * 
+	 *
 	 * @see #getDistanceToGround()
 	 * @see #getDistanceToGroundMax()
 	 * @param minimumDistance minimum of the range
@@ -1139,13 +1147,13 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setDistanceToGround(minimumDistance);
 		getGatheringEvent(true).setDistanceToGroundMax(maximumDistance);
 	}
-	
-	
+
+
 	/**
 	 * Returns the correctly formatted <code>distance to water surface</code> information.
 	 * If distanceToWaterSurfaceText is not blank, it will be returned,
-	 * otherwise distanceToWaterSurface will be returned, followed by distanceToWatersurfaceMax 
-	 * if existing, separated by " - " 
+	 * otherwise distanceToWaterSurface will be returned, followed by distanceToWatersurfaceMax
+	 * if existing, separated by " - "
 	 * @return
 	 */
 	@Transient
@@ -1160,7 +1168,7 @@ public class DerivedUnitFacade {
 			return distanceString(min, max, text, METER);
 		}
 	}
-	
+
 	// distance to water surface
 	@Transient
 	public Double getDistanceToWaterSurface() {
@@ -1183,11 +1191,11 @@ public class DerivedUnitFacade {
 			return getGatheringEvent(true).getDistanceToWaterSurfaceMax();
 		}
 	}
-	
+
 	public void setDistanceToWaterSurfaceMax(Double distanceToWaterSurfaceMax) {
 		getGatheringEvent(true).setDistanceToWaterSurfaceMax(distanceToWaterSurfaceMax);
 	}
-	
+
 	/**
 	 * @see #getDistanceToWaterSurface()
 	 * @see #getDistanceToWaterSurfaceRange(Double, Double)
@@ -1203,10 +1211,10 @@ public class DerivedUnitFacade {
 	public void setDistanceToWaterSurfaceText(String distanceToWaterSurfaceText) {
 		getGatheringEvent(true).setDistanceToWaterSurfaceText(distanceToWaterSurfaceText);
 	}
-	
+
 	/**
 	 * Convenience method to set distance to ground minimum and maximum.
-	 * 
+	 *
 	 * @see #getDistanceToWaterSurface()
 	 * @see #getDistanceToWaterSurfaceMax()
 	 * @param minimumDistance minimum of the range, this is the distance which is closer to the water surface
@@ -1216,8 +1224,8 @@ public class DerivedUnitFacade {
 		getGatheringEvent(true).setDistanceToWaterSurface(minimumDistance);
 		getGatheringEvent(true).setDistanceToWaterSurfaceMax(maximumDistance);
 	}
-	
-	
+
+
 	// exact location
 	@Transient
 	public Point getExactLocation() {
@@ -1228,7 +1236,7 @@ public class DerivedUnitFacade {
 	 * Returns a sexagesimal representation of the exact location (e.g.
 	 * 12°59'N, 35°23E). If the exact location is <code>null</code> the empty
 	 * string is returned.
-	 * 
+	 *
 	 * @param includeEmptySeconds
 	 * @param includeReferenceSystem
 	 * @return
@@ -1286,7 +1294,7 @@ public class DerivedUnitFacade {
 	/**
 	 * convienience method for {@link #getLocality()}.
 	 * {@link LanguageString#getText() getText()}
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -1301,7 +1309,7 @@ public class DerivedUnitFacade {
 	/**
 	 * convienience method for {@link #getLocality()}.
 	 * {@link LanguageString#getLanguage() getLanguage()}
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -1315,7 +1323,7 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Sets the locality string in the default language
-	 * 
+	 *
 	 * @param locality
 	 */
 	public void setLocality(String locality) {
@@ -1336,7 +1344,7 @@ public class DerivedUnitFacade {
 	 * The gathering event will be used for the field object instead of the old
 	 * gathering event.<BR>
 	 * <B>This method will override all gathering values (see below).</B>
-	 * 
+	 *
 	 * @see #getAbsoluteElevation()
 	 * @see #getAbsoluteElevationError()
 	 * @see #getDistanceToGround()
@@ -1378,7 +1386,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Returns true if a field unit exists (even if all attributes are
 	 * empty or <code>null<code>.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasFieldObject() {
@@ -1403,7 +1411,7 @@ public class DerivedUnitFacade {
 	// }
 	/**
 	 * Returns a copy of the multilanguage text holding the ecology data.
-	 * 
+	 *
 	 * @see {@link TextData#getMultilanguageText()}
 	 * @return
 	 */
@@ -1482,7 +1490,7 @@ public class DerivedUnitFacade {
 	// }
 	/**
 	 * Returns a copy of the multilanguage text holding the description data.
-	 * 
+	 *
 	 * @see {@link TextData#getMultilanguageText()}
 	 * @return
 	 */
@@ -1572,7 +1580,7 @@ public class DerivedUnitFacade {
 	/**
 	 * Returns true, if an image gallery for the field object exists.<BR>
 	 * Returns also <code>true</code> if the image gallery is empty.
-	 * 
+	 *
 	 * @return
 	 */
 	public boolean hasFieldObjectImageGallery() {
@@ -1608,7 +1616,7 @@ public class DerivedUnitFacade {
 	 * Returns the field object image gallery. If no such image gallery exists
 	 * and createIfNotExists is true an new one is created. Otherwise null is
 	 * returned.
-	 * 
+	 *
 	 * @param createIfNotExists
 	 * @return
 	 */
@@ -1631,7 +1639,7 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Returns the media for the field object.<BR>
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -1723,7 +1731,7 @@ public class DerivedUnitFacade {
 	public void setSex(DefinedTerm sex) {
 		getFieldUnit(true).setSex(sex);
 	}
-	
+
 	// kind of Unit
 	@Transient
 	public DefinedTerm getKindOfUnit() {
@@ -1733,25 +1741,25 @@ public class DerivedUnitFacade {
 	public void setKindOfUnit(DefinedTerm kindOfUnit) {
 		getFieldUnit(true).setKindOfUnit(kindOfUnit);
 	}
-	
+
 
 	// field unit
 	public boolean hasFieldUnit() {
-		return (getFieldUnit(false) != null);
+		return (getFieldUnit(CREATE_NOT) != null);
 	}
 
 	/**
 	 * Returns the field unit as an object.
-	 * 
+	 *
 	 * @return
 	 */
 	public FieldUnit innerFieldUnit() {
-		return getFieldUnit(false);
+		return getFieldUnit(CREATE_NOT);
 	}
 
 	/**
 	 * Returns the field unit as an object.
-	 * 
+	 *
 	 * @return
 	 */
 	public FieldUnit getFieldUnit(boolean createIfNotExists) {
@@ -1760,7 +1768,7 @@ public class DerivedUnitFacade {
 		}
 		return this.fieldUnit;
 	}
-	
+
 
 	private void setFieldUnit(FieldUnit fieldUnit) {
 		this.fieldUnit = fieldUnit;
@@ -1808,16 +1816,14 @@ public class DerivedUnitFacade {
 
 	// Determination
 	public void addDetermination(DeterminationEvent determination) {
-		testDerivedUnit();
 		//TODO implement correct bidirectional mapping in model classes
-		determination.setIdentifiedUnit(derivedUnit);
-		derivedUnit.addDetermination(determination);
+		determination.setIdentifiedUnit(baseUnit());
+		baseUnit().addDetermination(determination);
 	}
 
 	@Transient
 	public DeterminationEvent getPreferredDetermination() {
-		testDerivedUnit();
-		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> events = baseUnit().getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
 				return event;
@@ -1825,7 +1831,7 @@ public class DerivedUnitFacade {
 		}
 		return null;
 	}
-	
+
 	/**
 	 * This method returns the preferred determination.
 	 * @see #getOtherDeterminations()
@@ -1834,8 +1840,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public void setPreferredDetermination(DeterminationEvent newEvent) {
-		testDerivedUnit();
-		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> events = baseUnit().getDeterminations();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() == true){
 				event.setPreferredFlag(false);
@@ -1844,7 +1849,7 @@ public class DerivedUnitFacade {
 		newEvent.setPreferredFlag(true);
 		events.add(newEvent);
 	}
-	
+
 	/**
 	 * This method returns all determinations except for the preferred one.
 	 * @see #getPreferredDetermination()
@@ -1853,8 +1858,7 @@ public class DerivedUnitFacade {
 	 */
 	@Transient
 	public Set<DeterminationEvent> getOtherDeterminations() {
-		testDerivedUnit();
-		Set<DeterminationEvent> events = derivedUnit.getDeterminations();
+		Set<DeterminationEvent> events = baseUnit().getDeterminations();
 		Set<DeterminationEvent> result = new HashSet<DeterminationEvent>();
 		for (DeterminationEvent event : events){
 			if (event.getPreferredFlag() != true){
@@ -1863,21 +1867,19 @@ public class DerivedUnitFacade {
 		}
 		return result;
 	}
-	
+
 	/**
-	 * This method returns all determination events. The preferred one {@link #getPreferredDetermination()} 
+	 * This method returns all determination events. The preferred one {@link #getPreferredDetermination()}
 	 * and all others {@link #getOtherDeterminations()}.
 	 * @return
 	 */
 	@Transient
 	public Set<DeterminationEvent> getDeterminations() {
-		testDerivedUnit();
-		return derivedUnit.getDeterminations();
+		return baseUnit().getDeterminations();
 	}
 
 	public void removeDetermination(DeterminationEvent determination) {
-		testDerivedUnit();
-		derivedUnit.removeDetermination(determination);
+		baseUnit().removeDetermination(determination);
 	}
 
 	// Media
@@ -1957,7 +1959,7 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Returns the media for the specimen.<BR>
-	 * 
+	 *
 	 * @return
 	 */
 	@Transient
@@ -2018,14 +2020,13 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Only supported by specimen and fossils
-	 * 
+	 *
 	 * @see #DerivedUnitType
 	 * @return
 	 */
 	@Transient
 	public PreservationMethod getPreservationMethod() throws MethodNotSupportedByDerivedUnitTypeException {
-		testDerivedUnit();
-		if (derivedUnit.getRecordBasis().isPreservedSpecimen()) {
+		if (derivedUnit!=null && derivedUnit.getRecordBasis().isPreservedSpecimen()) {
 			return CdmBase.deproxy(derivedUnit, DerivedUnit.class).getPreservation();
 		} else {
 			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
@@ -2039,18 +2040,16 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Only supported by specimen and fossils
-	 * 
+	 *
 	 * @see #DerivedUnitType
 	 * @return
 	 */
 	public void setPreservationMethod(PreservationMethod preservation)
 			throws MethodNotSupportedByDerivedUnitTypeException {
-		testDerivedUnit();
-		if (derivedUnit.getRecordBasis().isPreservedSpecimen()) {
+		if (derivedUnit!=null && derivedUnit.getRecordBasis().isPreservedSpecimen()) {
 			CdmBase.deproxy(derivedUnit, DerivedUnit.class).setPreservation(preservation);
 		} else {
-			if (this.config
-					.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
+			if (this.config.isThrowExceptionForNonSpecimenPreservationMethodRequest()) {
 				throw new MethodNotSupportedByDerivedUnitTypeException(
 						"A preservation method is only available in derived units of type 'Specimen' or 'Fossil'");
 			} else {
@@ -2073,8 +2072,8 @@ public class DerivedUnitFacade {
 
 	// title cache
 	public String getTitleCache() {
-		SpecimenOrObservationBase<?> titledUnit = getTitledUnit();
-		
+		SpecimenOrObservationBase<?> titledUnit = baseUnit();
+
 		if (!titledUnit.isProtectedTitleCache()) {
 			// always compute title cache anew as long as there are no property
 			// change listeners on
@@ -2083,41 +2082,37 @@ public class DerivedUnitFacade {
 		}
 		return titledUnit.getTitleCache();
 	}
-	
-	private SpecimenOrObservationBase<?> getTitledUnit(){
-		return (derivedUnit != null )? derivedUnit : fieldUnit;
-	}
 
 	public boolean isProtectedTitleCache() {
-		return getTitledUnit().isProtectedTitleCache();
+		return baseUnit().isProtectedTitleCache();
 	}
 
 	public void setTitleCache(String titleCache, boolean isProtected) {
-		this.getTitledUnit().setTitleCache(titleCache, isProtected);
+		this.baseUnit().setTitleCache(titleCache, isProtected);
 	}
 
 	/**
 	 * Returns the derived unit itself.
-	 * 
+	 *
 	 * @return the derived unit
 	 */
 	public DerivedUnit innerDerivedUnit() {
 		return this.derivedUnit;
 	}
-	
+
 //	/**
 //	 * Returns the derived unit itself.
-//	 * 
+//	 *
 //	 * @return the derived unit
 //	 */
 //	public DerivedUnit innerDerivedUnit(boolean createIfNotExists) {
-//		DerivedUnit result = this.derivedUnit; 
+//		DerivedUnit result = this.derivedUnit;
 //		if (result == null && createIfNotExists){
 //			if (this.fieldUnit == null){
 //				String message = "Field unit must exist to create derived unit.";
 //				throw new IllegalStateException(message);
 //			}else{
-//				DerivedUnit = 
+//				DerivedUnit =
 //				DerivationEvent derivationEvent = getDerivationEvent(true);
 //				derivationEvent.addOriginal(fieldUnit);
 //				return this.derivedUnit;
@@ -2135,7 +2130,7 @@ public class DerivedUnitFacade {
 
 	/**
 	 * Returns the derivation event. If no derivation event exists and <code>createIfNotExists</code>
-	 * is <code>true</code> a new derivation event is created and returned. 
+	 * is <code>true</code> a new derivation event is created and returned.
 	 * Otherwise <code>null</code> is returned.
 	 * @param createIfNotExists
 	 */
@@ -2151,7 +2146,7 @@ public class DerivedUnitFacade {
 			if (isAccessioned(derivedUnit)){
 				type = DerivationEventType.ACCESSIONING();
 			}
-			
+
 			result = DerivationEvent.NewInstance(type);
 			derivedUnit.setDerivedFrom(result);
 		}
@@ -2203,14 +2198,13 @@ public class DerivedUnitFacade {
 
 	// **** sources **/
 	public void addSource(IdentifiableSource source) {
-		testDerivedUnit();
-		this.derivedUnit.addSource(source);
+		this.baseUnit().addSource(source);
 	}
 
 	/**
-	 * Creates an {@link IOriginalSource orignal source} or type , 
+	 * Creates an {@link IOriginalSource orignal source} or type ,
 	 * adds it to the specimen and returns it.
-	 * 
+	 *
 	 * @param reference
 	 * @param microReference
 	 * @param originalNameString
@@ -2225,13 +2219,11 @@ public class DerivedUnitFacade {
 
 	@Transient
 	public Set<IdentifiableSource> getSources() {
-		testDerivedUnit();
-		return derivedUnit.getSources();
+		return baseUnit().getSources();
 	}
 
 	public void removeSource(IdentifiableSource source) {
-		testDerivedUnit();
-		this.derivedUnit.removeSource(source);
+		this.baseUnit().removeSource(source);
 	}
 
 	/**
@@ -2254,27 +2246,24 @@ public class DerivedUnitFacade {
 
 	// annotation
 	public void addAnnotation(Annotation annotation) {
-		testDerivedUnit();
-		this.derivedUnit.addAnnotation(annotation);
+		this.baseUnit().addAnnotation(annotation);
 	}
 
 	@Transient
 	public void getAnnotations() {
-		testDerivedUnit();
-		this.derivedUnit.getAnnotations();
+		this.baseUnit().getAnnotations();
 	}
 
 	public void removeAnnotation(Annotation annotation) {
-		testDerivedUnit();
-		this.derivedUnit.removeAnnotation(annotation);
+		this.baseUnit().removeAnnotation(annotation);
 	}
 
 	// ******************************* Events ***************************
-	
+
 	//set of events that were currently fired by this facades field unit
 	//to avoid recursive fireing of the same event
-	private Set<PropertyChangeEvent> fireingEvents = new HashSet<PropertyChangeEvent>();
-	
+	private final Set<PropertyChangeEvent> fireingEvents = new HashSet<PropertyChangeEvent>();
+
 	/**
 	 * @return
 	 */
@@ -2312,7 +2301,7 @@ public class DerivedUnitFacade {
 	 * as the facade specimen and adds collection data to it (all data available
 	 * in DerivedUnit and Specimen. Data from SpecimenOrObservationBase and
 	 * above are not yet shared at the moment.
-	 * 
+	 *
 	 * @param collection
 	 * @param catalogNumber
 	 * @param accessionNumber
@@ -2362,8 +2351,20 @@ public class DerivedUnitFacade {
 			getDerivationEvent(CREATE).removeDerivative(duplicateSpecimen);
 		}
 	}
-	
-	
+
+	public SpecimenOrObservationBase<?> baseUnit(){
+	    if(derivedUnit!=null){
+	        return derivedUnit;
+	    }
+	    else if(fieldUnit!=null){
+	        return fieldUnit;
+	    }
+	    else{
+	        throw new IllegalStateException("A DerivedUnitFacade must always have either a field unit or a derived unit");
+	    }
+	}
+
+
 
 	private void testDerivedUnit() {
 		if (derivedUnit == null){
@@ -2372,19 +2373,25 @@ public class DerivedUnitFacade {
 	}
 
 	public void setType(SpecimenOrObservationType type) {
-		if (type == SpecimenOrObservationType.FieldUnit){
-			throw new IllegalArgumentException("Type FieldUnit is not a legal record basis for a DerivedUnit");
+		if (type == null){
+			throw new IllegalArgumentException("The type of a specimen or observation may not be null");
 		}
-		this.innerDerivedUnit().setRecordBasis(type);
+		SpecimenOrObservationBase<?> baseUnit = baseUnit();
+		if(baseUnit.isInstanceOf(FieldUnit.class) && !type.isFieldUnit()){
+		    throw new IllegalArgumentException("A FieldUnit may only be of type FieldUnit") ;
+		}
+		else if(baseUnit.isInstanceOf(DerivedUnit.class) && type.isFieldUnit()){
+		    throw new IllegalArgumentException("A derived unit may not be of type FieldUnit") ;
+		}
+		baseUnit.setRecordBasis(type);
 	}
 
 	public SpecimenOrObservationType getType() {
-		return this.innerDerivedUnit().getRecordBasis();
+	    return baseUnit().getRecordBasis();
 	}
 
-	
 	/**
-	 * Closes this facade. As a minimum this method removes all listeners created by this facade from their 
+	 * Closes this facade. As a minimum this method removes all listeners created by this facade from their
 	 * listening objects.
 	 */
 	public void close(){
@@ -2393,12 +2400,12 @@ public class DerivedUnitFacade {
 			listeningObject.removePropertyChangeListener(listener);
 		}
 	}
-	
-	
+
+
 	/**
 	 * Computes the correct distance string for given values for min, max and text.
 	 * If text is not blank, text is returned, otherwise "min - max" or a single value is returned.
-	 * @param min min value as number  
+	 * @param min min value as number
 	 * @param max max value as number
 	 * @param text text representation of distance
 	 * @return the formatted distance string

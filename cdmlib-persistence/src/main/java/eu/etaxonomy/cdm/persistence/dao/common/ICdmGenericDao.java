@@ -140,5 +140,68 @@ public interface ICdmGenericDao {
 	@Deprecated
 	public Query getHqlQuery(String hqlQuery);
 	
+	/**
+	 * Initializes a lazy loaded persistent collection.
+	 * 
+	 * @param col the persistent collection to initialize
+	 * @return the initialized persistent collection
+	 */
 	public PersistentCollection initializeCollection(PersistentCollection col);
+	
+	/**
+	 * Checks if a lazy loaded persistent collection is empty.
+	 * 
+	 * @param col the persistent collection 
+	 * @return the initialized persistent collection
+	 */
+	public boolean isEmpty(PersistentCollection col);	
+	
+	/**
+	 * Returns the size of a persistent collection.
+	 * 
+	 * @param col the persistent collection to initialize
+	 * @return the size of the persistent collection
+	 */
+	
+	public int size(PersistentCollection col);
+	
+	/**
+	 * Returns the object contained in a persistent collection at the given index.
+	 * 
+	 * @param col the persistent collection 
+	 * @param index the index of the requested element
+	 * @return the object at the requested index
+	 */
+	
+	public Object get(PersistentCollection col, int index);
+	
+	/**
+	 * checks whether an object is contained within a persistent collection.
+	 * 
+	 * @param col the persistent collection 
+	 * @param element the element to check for
+	 * @return true if the element exists in the collection, false o/w
+	 */
+	
+    public boolean contains(PersistentCollection col, Object element);
+    
+	/**
+	 * checks whether an key object exists within a persistent collection
+	 * (usually a map)
+	 * 
+	 * @param col the persistent collection 
+	 * @param key the key object to look for.
+	 * @return true if the key object exists in the collection, false o/w
+	 */
+    public boolean containsKey(PersistentCollection col, Object key);
+    
+	/**
+	 * checks whether an value object exists within a persistent collection
+	 * (usually a map)
+	 * 
+	 * @param col the persistent collection 
+	 * @param key the value object to look for.
+	 * @return true if the value object exists in the collection, false o/w
+	 */
+    public boolean containsValue(PersistentCollection col, Object element);
 }

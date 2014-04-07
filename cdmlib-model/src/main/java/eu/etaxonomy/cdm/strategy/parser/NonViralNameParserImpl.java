@@ -412,7 +412,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			statusMatcher.find();
 			statusString = statusMatcher.group(0);
 			try {
-				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString);
+				NomenclaturalStatusType nomStatusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, nameToBeFilled);
 				if (! existingStatusTypeSet.contains(nomStatusType)){
 					NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(nomStatusType);
 					nameToBeFilled.addStatus(nomStatus);
@@ -983,10 +983,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	 * @param authorString
 	 * @throws StringNotParsableException
 	 */
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.parser.INonViralNameParser#parseAuthors(eu.etaxonomy.cdm.model.name.NonViralName, java.lang.String)
-	 */
-//	@Override
+	@Override
 	public void parseAuthors(NonViralName nonViralName, String authorString) throws StringNotParsableException{
 		TeamOrPersonBase<?>[] authors = new TeamOrPersonBase[4];
 		Integer[] years = new Integer[4];

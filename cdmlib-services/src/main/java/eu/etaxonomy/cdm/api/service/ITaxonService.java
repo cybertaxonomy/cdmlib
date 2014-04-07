@@ -224,11 +224,11 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param microReference
      * @return
      * 				the newly created concept
-     * @throws DataChangeNoRollbackException 
+     * @throws DataChangeNoRollbackException
      */
   public 	Synonym changeRelatedTaxonToSynonym(Taxon fromTaxon, Taxon toTaxon,
-			 TaxonRelationshipType oldRelationshipType,
-			SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
+             TaxonRelationshipType oldRelationshipType,
+            SynonymRelationshipType synonymRelationshipType) throws DataChangeNoRollbackException;
     /**
      * Deletes all synonym relationships of a given synonym. If taxon is given
      * only those relationships to the taxon are deleted.
@@ -420,12 +420,12 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public Pager<SynonymRelationship> getSynonyms(Taxon taxon, SynonymRelationshipType type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * This method returns in the first entry the list of synonyms of the 
-     * homotypic group of the accepted taxon. All other entries represent the lists of heterotypic 
-     * synonym groups. For detailed information about these 2 groups see 
+     * This method returns in the first entry the list of synonyms of the
+     * homotypic group of the accepted taxon. All other entries represent the lists of heterotypic
+     * synonym groups. For detailed information about these 2 groups see
      * {@link #getHomotypicSynonymsByHomotypicGroup(Taxon, List)} and
      * {@link #getHeterotypicSynonymyGroups(Taxon, List)}
-     *  
+     *
      * @see			#getSynonyms()
      * @see			SynonymRelationshipType#HETEROTYPIC_SYNONYM_OF()
      * @see			eu.etaxonomy.cdm.model.name.HomotypicalGroup
@@ -436,7 +436,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      */
     public List<List<Synonym>> getSynonymsByHomotypicGroup(Taxon taxon, List<String> propertyPaths);
 
-    
+
     /**
      * Returns the list of all synonyms that share the same homotypical group with the given taxon.
      * Only those homotypic synonyms are returned that do have a synonym relationship with the accepted taxon.
@@ -936,7 +936,13 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     void deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
 
-	
+    public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
+
+    public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
+            List<String> propertyPaths);
+
+
 
 
 

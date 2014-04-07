@@ -39,7 +39,7 @@ import eu.etaxonomy.cdm.strategy.merge.MergeMode;
 })
 @MappedSuperclass
 @Audited
-public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements IMediaDocumented, IMediaEntity{
+public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCacheStrategy<?>> extends IdentifiableEntity<S> implements IMediaDocumented, IMediaEntity{
 	private static final long serialVersionUID = 4038647011021908313L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IdentifiableMediaEntity.class);
@@ -58,6 +58,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#getMedia()
 	 */
+    @Override
 	public Set<Media> getMedia() {
 		return media;
 	}
@@ -65,12 +66,14 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#addMedia(eu.etaxonomy.cdm.model.media.Media)
 	 */
+    @Override
 	public void addMedia(Media media) {
 		this.media.add(media);
 	}
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#removeMedia(eu.etaxonomy.cdm.model.media.Media)
 	 */
+    @Override
 	public void removeMedia(Media media) {
 		this.media.remove(media);
 	}
@@ -82,7 +85,7 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
-		IdentifiableMediaEntity result = (IdentifiableMediaEntity)super.clone();
+		IdentifiableMediaEntity<?> result = (IdentifiableMediaEntity<?>)super.clone();
 		//Media
 		result.media = new HashSet<Media>();
 		for(Media media : this.media) {

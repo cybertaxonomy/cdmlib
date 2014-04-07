@@ -23,7 +23,9 @@ import javax.sql.DataSource;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.dialect.H2CorrectedDialect;
 import org.hibernate.dialect.MySQL5MyISAMUtf8Dialect;
+import org.hibernate.dialect.PostgreSQL82Dialect;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.xml.XmlBeanFactory;
 import org.springframework.context.annotation.Bean;
@@ -262,6 +264,9 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
      */
     private DataSource loadDataSourceBean(String beanName) {
 
+        File f = new File("./");
+        System.err.println(f.getAbsolutePath());
+
         String beanDefinitionFileFromProperty = findProperty(CDM_BEAN_DEFINITION_FILE, false);
         String path = (beanDefinitionFileFromProperty != null ? beanDefinitionFileFromProperty : beanDefinitionFile);
         logger.info("loading DataSourceBean '" + beanName + "' from: " + path);
@@ -357,12 +362,20 @@ public class DataSourceConfigurer extends AbstractWebApplicationConfigurer {
             logger.error(e);
         }
 
-        if(url != null && url.contains("mysql")){
-            // TODO we should switch all databases to InnoDB !
-            // TODO open jdbc connection to check engine and choose between
-            // MySQL5MyISAMUtf8Dialect and MySQL5MyISAMUtf8Dialect
-            // see #3371 (switch cdm to MySQL InnoDB)
-            return MySQL5MyISAMUtf8Dialect.class.getName();
+        if(url != null){
+            if(url.contains(":mysql:")){
+                // TODO we should switch all databases to InnoDB !
+                // TODO open jdbc connection to check engine and choose between
+                // MySQL5MyISAMUtf8Dialect and MySQL5MyISAMUtf8Dialect
+                // see #3371 (switch cdm to MySQL InnoDB)
+                return MySQL5MyISAMUtf8Dialect.class.getName();
+            }
+            if(url.contains(":h2:")){
+                return H2CorrectedDialect.class.getName();
+            }
+            if(url.contains(":postgresql:")){
+                return PostgreSQL82Dialect.class.getName();
+            }
         }
 
         logger.error("hibernate dialect mapping for "+url+ " not yet implemented or unavailable");

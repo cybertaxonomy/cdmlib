@@ -639,6 +639,8 @@ public class Country extends NamedArea {
 			
 			// iso codes extra
 			newInstance.setIso3166_A2(csvLine.get(4).trim());
+			newInstance.setIdInVocabulary(abbreviatedLabel);
+			
 			
 			String[] continentList;
 			String tmp = csvLine.get(5).trim();

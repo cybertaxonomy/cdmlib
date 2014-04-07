@@ -107,11 +107,19 @@ public abstract class StrategyBase implements IStrategy, Serializable {
 	}
 	
 	/**
-	 * Checks if a string is blank.
+	 * Checks if a string is not blank.
 	 * @see StringUtils#isNotBlank(String)
 	 */
 	protected boolean isNotBlank(String str){
 		return StringUtils.isNotBlank(str);
+	}
+	
+	/**
+	 * Checks if a string is blank.
+	 * @see StringUtils#isNotBlank(String)
+	 */
+	protected boolean isBlank(String str){
+		return StringUtils.isBlank(str);
 	}
 	
 	

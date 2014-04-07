@@ -266,5 +266,36 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
             return genericDao.initializeCollection(col);
 
     }
+    
+    @Override
+    public boolean isEmpty(PersistentCollection col) {
+            return genericDao.isEmpty(col);
+
+    }
+    
+    @Override
+	public int size(PersistentCollection col) {
+    	return genericDao.size(col);
+    }
+    
+    @Override
+    public Object get(PersistentCollection col, int index) {
+    	return genericDao.get(col, index);
+    }
+    
+    @Override
+    public boolean contains(PersistentCollection col, Object element) {
+    	return genericDao.contains(col, element);
+    }
+    
+    @Override    
+    public boolean containsKey(PersistentCollection col, Object key) {
+    	return genericDao.containsKey(col, key);
+    }
+    
+    @Override
+    public boolean containsValue(PersistentCollection col, Object element) {
+    	return genericDao.containsValue(col, element);
+    }
 
 }

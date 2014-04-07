@@ -19,14 +19,17 @@ import java.sql.Statement;
 
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.config.CdmSource;
+import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.database.types.IDatabaseType;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 
 /**
  * @author a.mueller
  * @created 18.12.2008
  * @veresultSetion 1.0
  */
-abstract class CdmDataSourceBase implements ICdmDataSource {
+abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
 
     private static final Logger logger = Logger.getLogger(CdmDataSourceBase.class);
@@ -104,6 +107,33 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
         return false;
     }
 
+	@Override
+	public boolean checkConnection() throws CdmSourceException {
+		try {
+			return testConnection();
+		} catch (ClassNotFoundException e) {
+			throw new CdmSourceException(e.getMessage());			
+		} catch (SQLException e) {
+			throw new CdmSourceException(e.getMessage());	
+		}
+		
+	}
+	
+	@Override
+	public String getConnectionMessage() {
+		String message = "";
+		if (getDatabaseType().equals(DatabaseTypeEnum.H2)) {
+			message = " local CDM Store ";
+		} else {
+			message = " CDM Community Store ";
+		}
+		message += "'" + getName() + "'";
+
+		message = "Connecting to" + message + ".";
+
+		return message;
+	}
+	
     @Override
     public Object getSingleValue(String query) throws SQLException{
         String queryString = query == null? "(null)": query;
@@ -124,7 +154,23 @@ abstract class CdmDataSourceBase implements ICdmDataSource {
         return object;
     }
 
+	@Override
+	public  String getDbSchemaVersion() throws CdmSourceException  {		
+		try {
+			return (String)getSingleValue(MetaDataPropertyName.DB_SCHEMA_VERSION.getSqlQuery());
+		} catch (SQLException e) {
+			throw new CdmSourceException(e.getMessage());	
+		}
+	}
+	
+	@Override
+	public boolean isDbEmpty() throws CdmSourceException {
+		// Any CDM DB should have a schema version
+		String dbSchemaVersion = (String) getDbSchemaVersion();
+		
+		return (dbSchemaVersion == null || dbSchemaVersion.equals(""));
 
+	}
     /**
      * Executes a query and returns the ResultSet.
      * @return ResultSet for the query.

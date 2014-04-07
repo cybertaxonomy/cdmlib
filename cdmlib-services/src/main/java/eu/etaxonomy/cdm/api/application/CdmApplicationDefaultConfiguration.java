@@ -56,6 +56,9 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IUserService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.api.service.IWorkingSetService;
+import eu.etaxonomy.cdm.api.service.molecular.IAmplificationService;
+import eu.etaxonomy.cdm.api.service.molecular.IPrimerService;
+import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.hibernate.permission.ICdmPermissionEvaluator;
 
@@ -101,6 +104,15 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     //@Qualifier("occurrenceService")
     private IOccurrenceService occurrenceService;
     @Autowired
+    //@Qualifier("primerService")
+    private IPrimerService primerService;
+    @Autowired
+    //@Qualifier("amplificationService")
+    private IAmplificationService amplificationService;
+    @Autowired
+    //@Qualifier("sequenceService")
+    private ISequenceService sequenceService;
+    @Autowired
     //@Qualifier("mediaService")
     private IMediaService mediaService;
     @Autowired
@@ -110,7 +122,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     private ILocationService locationService;
     //@Autowired
     private SessionFactory sessionFactory;
-    @Autowired
+    //@Autowired
     private DataSource dataSource;
     @Autowired
     private ProviderManager authenticationManager;
@@ -191,6 +203,11 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
         return this.databaseService;
     }
 
+    @Autowired
+    public void setDataSource(DataSource dataSource) {
+    	this.dataSource = dataSource;
+    }
+
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getNameService()
      */
@@ -206,7 +223,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     public IReferenceService getReferenceService() {
         return this.referenceService;
     }
-    
+
     @Autowired
     public void setSessionFactory(SessionFactory sessionFactory) {
     	this.sessionFactory = sessionFactory;
@@ -249,6 +266,31 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     @Override
     public IOccurrenceService getOccurrenceService(){
         return this.occurrenceService;
+    }
+
+    /*
+     * (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getOccurrenceService()
+     */
+    @Override
+    public IPrimerService getPrimerService(){
+        return this.primerService;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getAmplificationService()
+     */
+    @Override
+    public IAmplificationService getAmplificationService() {
+        return this.amplificationService;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration#getSequenceService()
+     */
+    @Override
+    public ISequenceService getSequenceService() {
+        return this.sequenceService;
     }
 
     /*
@@ -315,7 +357,7 @@ public class CdmApplicationDefaultConfiguration implements ICdmApplicationConfig
     public PlatformTransactionManager getTransactionManager() {
         return this.transactionManager;
     }
-    
+
     @Autowired
     public void setTransactionManager(PlatformTransactionManager transactionManager) {
         this.transactionManager = (HibernateTransactionManager) transactionManager;

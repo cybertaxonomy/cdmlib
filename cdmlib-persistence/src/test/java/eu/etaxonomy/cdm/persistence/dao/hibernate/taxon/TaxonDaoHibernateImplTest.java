@@ -100,9 +100,10 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     private UUID mimas;
     private UUID rethera;
     private UUID retheraSecCdmtest;
-    private UUID atroposAgassiz;
-    private UUID atroposLeach;
+    private UUID atroposAgassiz; // a Synonym
+    private UUID atroposLeach; // a Synonym
     private UUID acherontiaLachesis;
+
     private AuditEvent previousAuditEvent;
     private AuditEvent mostRecentAuditEvent;
 
@@ -664,10 +665,31 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
         List<SynonymRelationship> secondPage = taxonDao.getSynonyms(taxon, null, 4, 1,null,null);
 
         assertNotNull("getSynonyms: 4, 0 should return a List",firstPage);
-        assertEquals("getSynonyms: 4, 0 should return 4 SynonymRelationships", firstPage.size(),4);
+        assertEquals("getSynonyms: 4, 0 should return 4 SynonymRelationships", 4,firstPage.size());
         assertNotNull("getSynonyms: 4, 1 should return a List",secondPage);
-        assertEquals("getSynonyms: 4, 1 should return 1 SynonymRelationship",secondPage.size(),1);
+        assertEquals("getSynonyms: 4, 1 should return 1 SynonymRelationship", 1, secondPage.size());
     }
+
+    @Test
+    @DataSet("TaxonNodeDaoHibernateImplTest.xml")
+    public void testListAcceptedTaxaFor()  {
+        UUID acheontitia_ciprosus = UUID.fromString("3ef145f7-bd92-4a64-8afd-2b8203e00e02");
+
+        Synonym synonym = (Synonym)taxonDao.findByUuid(acheontitia_ciprosus);
+        assertNotNull("synonym must exist", synonym);
+
+        List<Taxon> list = taxonDao.listAcceptedTaxaFor(synonym, null, 4, 0, null, null);
+        assertNotNull("listAcceptedTaxaFor should return a List");
+        assertEquals("listAcceptedTaxaFor should return 2 Taxa", 2,  list.size());
+
+        Classification classification = classificationDao.load(classificationUuid);
+        assertNotNull("classification must exist", classification);
+
+        list = taxonDao.listAcceptedTaxaFor(synonym, classification, 4, 0, null, null);
+        assertNotNull("listAcceptedTaxaFor should return a List");
+        assertEquals("listAcceptedTaxaFor should return 1 Taxa", 1,  list.size());
+    }
+
 
     @Test
     @DataSet

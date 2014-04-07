@@ -15,6 +15,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -106,7 +108,10 @@ public class FeatureTreeServiceImpl extends IdentifiableServiceBase<FeatureTree,
         }
 
         FeatureTree featureTree = load(uuid, rootPaths);
-        dao.loadNodes(featureTree.getRoot(),nodePaths);
+        if(featureTree == null){
+            throw new EntityNotFoundException("No FeatureTree entity found for " + uuid);
+        }
+        dao.deepLoadNodes(featureTree.getRoot().getChildNodes() ,nodePaths);
         return featureTree;
     }
 

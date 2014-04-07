@@ -80,9 +80,9 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     @IndexedEmbedded(depth = 3)
     @NotEmpty(groups = Level2.class)
     private List<StateData> stateData = new ArrayList<StateData>();
-    
-	@XmlElement(name = "UnknownData")
-	private Boolean unknownData = false;
+
+    @XmlElement(name = "UnknownData")
+    private final Boolean unknownData = false;
 
 //****************************** FACTORY METHOD *******************************/
 
@@ -92,7 +92,7 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     public static CategoricalData NewInstance(){
         return new CategoricalData();
     }
-    
+
     /**
      * Creates a new empty categorical data instance.
      */
@@ -115,9 +115,9 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
     protected CategoricalData(List<State> states, Feature feature) {
         super(feature);
         for (State state : states){
-        	addStateData(state);
+            addStateData(state);
         }
-        
+
     }
 
 // ****************** GETTER / SETTER *********************************************/
@@ -131,10 +131,9 @@ public class CategoricalData extends DescriptionElementBase implements Cloneable
         return this.stateData;
     }
 
-    protected void setStates(List<StateData> stateData){
+    protected void setStateData(List<StateData> stateData){
         this.stateData = stateData;
     }
-
 
     /**
      * Adds a {@link State state} to the list of {@link #getStateData() states}

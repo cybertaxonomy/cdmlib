@@ -88,7 +88,7 @@ public class BioCaseQueryGenerator {
 
         elSearch.addContent(elResponseFormat);
         elResponseFormat.setAttribute(START, "0");
-        elResponseFormat.setAttribute(LIMIT, "10");
+        elResponseFormat.setAttribute(LIMIT, "100");
         elResponseFormat.addContent(ABCD_SCHEMA_2_0);
 
         elSearch.addContent(elFilter);

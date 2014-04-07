@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.FileCopy;
+import eu.etaxonomy.cdm.config.CdmPersistentXMLSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
 
 public class CdmApplicationUtils {
@@ -26,7 +27,7 @@ public class CdmApplicationUtils {
 
     //directory of the resources (configfiles etc.)
     static File fileResourceDir;
-    static final String MUST_EXIST_FILE = CdmPersistentDataSource.DATASOURCE_PATH + CdmPersistentDataSource.DATASOURCE_FILE_NAME;
+    static final String MUST_EXIST_FILE = CdmPersistentXMLSource.CDMSOURCE_PATH + CdmPersistentXMLSource.CDMSOURCE_FILE_NAME;
 
 //	static final String MUST_EXIST_FILE = "persistence.xml";
 //	static final String MUST_EXIST_FILE = "applicationContext.xml";
@@ -64,7 +65,7 @@ public class CdmApplicationUtils {
     }
 
     static private void copyResources(File directory){
-        copyResource(directory, CdmPersistentDataSource.DATASOURCE_FILE_NAME);
+        copyResource(directory, CdmPersistentXMLSource.CDMSOURCE_FILE_NAME);
     }
 
     /**

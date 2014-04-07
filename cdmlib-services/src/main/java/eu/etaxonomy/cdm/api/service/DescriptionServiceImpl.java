@@ -189,7 +189,7 @@ public class DescriptionServiceImpl extends IdentifiableServiceBase<DescriptionB
 
         Integer numberOfResults = dao.countDescriptionElements(description, descriptionType, features, type);
         List<DescriptionElementBase> results = new ArrayList<DescriptionElementBase>();
-        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+        if(AbstractPagerImpl.hasResultsInRange(numberOfResults.longValue(), pageNumber, pageSize)) {
             results = dao.getDescriptionElements(description, descriptionType, features, type, pageSize, pageNumber, propertyPaths);
         }
         return results;

@@ -14,6 +14,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
@@ -58,6 +59,7 @@ import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -359,6 +361,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 
 	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode){
+		return getNamedArea(state, uuid, label, text, labelAbbrev, areaType, level, voc, matchMode, null);
+	}
+	
+	
+	protected NamedArea getNamedArea(STATE state, UUID uuid, String label, String text, String labelAbbrev, NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc, TermMatchMode matchMode,
+			List<TermVocabulary<NamedArea>> vocabularyPreference){
 		Class<NamedArea> clazz = NamedArea.class;
 		if (uuid == null){
 			uuid = UUID.randomUUID();
@@ -370,15 +378,25 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		if (namedArea == null){
 			DefinedTermBase<?> term = getTermService().find(uuid);
 			namedArea = CdmBase.deproxy(term,NamedArea.class);
+			
+			if (vocabularyPreference == null){
+				vocabularyPreference =  new ArrayList<TermVocabulary<NamedArea>>();
+			}
+			if (vocabularyPreference.isEmpty()){
+				vocabularyPreference.add(Country.GERMANY().getVocabulary());
+				vocabularyPreference.add(TdwgAreaProvider.getAreaByTdwgAbbreviation("GER").getVocabulary());
+			}
+			
+			
 			//TODO matching still experimental
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_LABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL ))){
 				//TODO test
 				Pager<NamedArea> areaPager = (Pager)getTermService().findByTitle(clazz, label, null, null, null, null, null, null);
-				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
+				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, vocabularyPreference);
 			}
 			if (namedArea == null && (matchMode.equals(TermMatchMode.UUID_ABBREVLABEL) || matchMode.equals(TermMatchMode.UUID_LABEL_ABBREVLABEL))){
 				Pager<NamedArea> areaPager = getTermService().findByRepresentationAbbreviation(labelAbbrev, clazz, null, null);
-				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, areaType, level, voc);
+				namedArea = findBestMatchingArea(areaPager, uuid, label, text, labelAbbrev, vocabularyPreference);
 			}
 			
 			if (namedArea == null){
@@ -399,8 +417,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	}
 	
 	
-	private NamedArea findBestMatchingArea(Pager<NamedArea> areaPager, UUID uuid, String label, String text, String abbrev,
-			NamedAreaType areaType, NamedAreaLevel level, TermVocabulary voc) {
+	private NamedArea findBestMatchingArea(Pager<NamedArea> areaPager, UUID uuid, String label, String text, String abbrev, List<TermVocabulary<NamedArea>> vocabularyPreference) {
 		// TODO preliminary implementation
 		List<NamedArea> list = areaPager.getRecords();
 		if (list.size() == 0){
@@ -408,12 +425,68 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}else if (list.size() == 1){
 			return list.get(0);
 		}else if (list.size() > 1){
-			String message = "There is more than 1 matching area for %s, %s, %s. As a preliminary implementation I take the first";
-			message = String.format(message, label, abbrev, text);
-			logger.warn(message);
-			return list.get(0);
+			List<NamedArea> preferredList = new ArrayList<NamedArea>();
+			for (TermVocabulary<NamedArea> voc: vocabularyPreference){
+				for (NamedArea area : list){
+					if (voc.equals(area.getVocabulary())){
+						preferredList.add(area);
+					}
+				}
+				if (preferredList.size() > 0){
+					break;
+				}
+			}
+			if (preferredList.size() > 1 ){
+				preferredList = getLowestLevelAreas(preferredList);
+			}else if (preferredList.size() == 0 ){
+				preferredList = list;
+			}
+			if (preferredList.size() == 1 ){
+				return preferredList.get(0);
+			}else if (preferredList.size() > 1 ){
+				String message = "There is more than 1 matching area for %s, %s, %s. As a preliminary implementation I take the first";
+				message = String.format(message, label, abbrev, text);
+				logger.warn(message);
+				return list.get(0);
+			}
 		}
 		return null;
+	}
+
+
+	private List<NamedArea> getLowestLevelAreas(List<NamedArea> preferredList) {
+		List<NamedArea> result = new ArrayList<NamedArea>();
+		for (NamedArea area : preferredList){
+			if (result.isEmpty()){
+				result.add(area);
+			}else {
+				int compare = compareAreaLevel(area, result.get(0));
+				if (compare < 0){
+					result = new ArrayList<NamedArea>();
+					result.add(area);
+				}else if (compare == 0){
+					result.add(area);
+				}else{
+					//do nothing
+				}
+				
+			}
+		}
+		
+		return result;
+	}
+
+
+	private int compareAreaLevel(NamedArea area1, NamedArea area2) {
+		NamedAreaLevel level1 = area1.getLevel();
+		NamedAreaLevel level2 = area2.getLevel();
+		if (level1 == null){
+			return (level2 == null)? 0 : 1;
+		}else if (level2 == null){
+			return -1;
+		}else{
+			return level1.compareTo(level2);
+		}
 	}
 
 
@@ -833,8 +906,12 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @param childTaxon
 	 */
 	protected void fillMissingEpithetsForTaxa(Taxon parentTaxon, Taxon childTaxon) {
-		NonViralName parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
-		NonViralName childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
+		if (parentTaxon == null){
+			logger.warn("Parent taxon is null. Missing name parts can not be taken from parent");
+			return;
+		}
+		NonViralName<?> parentName = HibernateProxyHelper.deproxy(parentTaxon.getName(), NonViralName.class);
+		NonViralName<?> childName = HibernateProxyHelper.deproxy(childTaxon.getName(), NonViralName.class);
 		fillMissingEpithets(parentName, childName);
 	}
 	

@@ -451,8 +451,8 @@ public class IpniService  implements IIpniService{
 		name.setCombinationAuthorTeam(Team.NewTitledInstance(valueMap.get(PUBLISHING_AUTHOR), valueMap.get(PUBLISHING_AUTHOR)));
 		
 		//publication
-		Reference ref = ReferenceFactory.newGeneric();
-		ref.setTitleCache(valueMap.get(PUBLICATION));
+		Reference<?> ref = ReferenceFactory.newGeneric();
+		ref.setTitleCache(valueMap.get(PUBLICATION), true);
 		TimePeriod datePublished = TimePeriodParser.parseString(valueMap.get(PUBLICATION_YEAR_FULL));
 		name.setNomenclaturalReference(ref);
 		
@@ -461,7 +461,7 @@ public class IpniService  implements IIpniService{
 		String statusString = valueMap.get(NAME_STATUS);
 		if (StringUtils.isNotBlank(statusString)){
 			try {
-				statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString);
+				statusType = NomenclaturalStatusType.getNomenclaturalStatusTypeByAbbreviation(statusString, name);
 				NomenclaturalStatus nomStatus = NomenclaturalStatus.NewInstance(statusType);
 				name.addStatus(nomStatus);
 			} catch (UnknownCdmTypeException e) {

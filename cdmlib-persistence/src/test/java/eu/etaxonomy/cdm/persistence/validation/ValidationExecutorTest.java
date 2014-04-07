@@ -2,11 +2,14 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import static org.junit.Assert.fail;
 
+import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ValidationExecutorTest {
 
+	public static final Logger logger = Logger.getLogger(ValidationExecutorTest.class);
+	
 	private ValidationExecutor pool;
 
 
@@ -47,9 +50,12 @@ public class ValidationExecutorTest {
 		ValidationExecutor pool = new ValidationExecutor(taskQueueSize);
 		// we only want to test that ValidationExecutor.rejectedExecution()
 		// never throws an exception (for the rest it just logs something).
-		for(int i =0; i< taskQueueSize * 2; ++i) { // Force a task queue overrun
-			EmployeeWithLongRunningValidation emp = new EmployeeWithLongRunningValidation();
-			Level2ValidationTask task = new Level2ValidationTask(emp);
+		EmployeeWithLongRunningValidation emp;
+		Level2ValidationTask task;
+		logger.info("Testing task queue overruns. Error messages are expected");
+		for (int i = 0; i < taskQueueSize * 2; ++i) { // Force a task queue overrun
+			emp = new EmployeeWithLongRunningValidation();
+			task = new Level2ValidationTask(emp);
 			pool.execute(task);
 		}
 		try {

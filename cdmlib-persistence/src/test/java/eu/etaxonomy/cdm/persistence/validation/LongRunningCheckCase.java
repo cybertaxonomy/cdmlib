@@ -17,6 +17,7 @@ import javax.validation.Payload;
 @Constraint(validatedBy = LongRunningCheckCaseValidator.class)
 @Documented
 public @interface LongRunningCheckCase {
+
 	String message() default "Casing is wrong";
 
 
@@ -27,4 +28,5 @@ public @interface LongRunningCheckCase {
 
 
 	CaseMode value();
+
 }

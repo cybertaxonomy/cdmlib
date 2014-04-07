@@ -68,13 +68,14 @@ public class ProgressMonitorController {
 
             @Override
             public void run() {
-                scheduledCeanUp();
-                try {
-                    sleep(cleanUpInterval);
-                } catch (InterruptedException e) {
-                    /* IGNORE */
+                while(true){
+                    scheduledCeanUp();
+                    try {
+                        sleep(cleanUpInterval);
+                    } catch (InterruptedException e) {
+                        /* IGNORE */
+                    }
                 }
-                run();
             }
 
         };

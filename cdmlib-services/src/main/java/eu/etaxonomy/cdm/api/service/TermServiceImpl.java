@@ -79,30 +79,43 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	protected void setDao(IDefinedTermDao dao) {
 		this.dao = dao;
 	}
-		
+
+	
+	@Override
 	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		return dao.listByTermClass(clazz, limit, start, orderHints, propertyPaths);
 	}	
 	
-	/**
-	 * @see eu.etaxonomy.cdm.api.service.ITermService#getTermByUri(java.net.URI)
-	 */
+	@Override
 	public DefinedTermBase getByUri(URI uri) {
 		return dao.findByUri(uri);
 	}
 	
+	@Override
 	public Language getLanguageByIso(String iso639) {
 		return dao.getLanguageByIso(iso639);
 	}
 	
+	@Override
 	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales){
 		return dao.getLanguagesByLocale(locales);
 	}
 
-	/**
-	 *  (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITermService#getAreaByTdwgAbbreviation(java.lang.String)
-	 */
+	@Override
+	public <TERM extends DefinedTermBase> TERM getDefinedTermByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber) {
+		List<TERM> list = dao.getDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, pageSize, pageNumber);
+		if (list.isEmpty()){
+			return null;
+		}else if (list.size() == 1){
+			return list.get(0);
+		}else{
+			String message = "There is more then 1 (%d) term with the same id in vocabulary. This is forbidden. Check the state of your database.";
+			throw new IllegalStateException(String.format(message, list.size()));
+		}
+	}
+	
+
+	@Override
 	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {
 		if (StringUtils.isBlank(tdwgAbbreviation)){ //TDWG areas should always have a label
 			return null;
@@ -119,6 +132,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		
 	}
 
+	@Override
 	public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countGeneralizationOf(definedTerm);
 		
@@ -130,6 +144,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countIncludes(definedTerms);
 		
@@ -141,6 +156,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public Pager<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
         Integer numberOfResults = dao.countMedia(definedTerm);
 		
@@ -152,6 +168,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countPartOf(definedTerms);
 		
@@ -163,6 +180,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
 			List<OrderHint> orderHints, List<String> propertyPaths) {
 		Integer numberOfResults = dao.count(level, type);
@@ -175,6 +193,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<NamedArea>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
 		
@@ -186,6 +205,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 	
+	@Override
 	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
 		
@@ -197,14 +217,17 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
 	}
 
+	@Override
 	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
 		return languageStringDao.list(limit, start);
 	}
 
+	@Override
 	public List<Representation> getAllRepresentations(int limit, int start) {
 		return representationDao.list(limit,start);
 	}
 
+	@Override
 	public UUID saveLanguageData(LanguageStringBase languageData) {
 		return languageStringBaseDao.save(languageData);
 	}
@@ -214,6 +237,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	 */
 	/** @deprecated use {@link #delete(DefinedTermBase, TermDeletionConfigurator)} instead
 	 * to allow DeleteResult return type*/
+	@Override
 	@Deprecated
 	public UUID delete(DefinedTermBase term){
 		UUID result = term.getUuid();
@@ -353,10 +377,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		return result;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-	 */
 	@Override
 	@Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {

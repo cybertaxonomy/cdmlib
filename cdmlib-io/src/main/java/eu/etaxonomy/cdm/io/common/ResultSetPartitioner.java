@@ -27,7 +27,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 16.02.2010
- * @version 1.0
  */
 public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	private static final Logger logger = Logger.getLogger(ResultSetPartitioner.class);
@@ -36,7 +35,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 //************************* STATIC ***************************************************/
 	
 	public static ResultSetPartitioner NewInstance(Source source, String strIdQuery, String strRecordQuery, int partitionSize) throws SQLException{
-		ResultSetPartitioner resultSetPartitioner = new ResultSetPartitioner(source, strIdQuery, strRecordQuery, partitionSize);
+		ResultSetPartitioner<IPartitionedState> resultSetPartitioner = new ResultSetPartitioner<IPartitionedState>(source, strIdQuery, strRecordQuery, partitionSize);
 		return resultSetPartitioner;
 	}
 
@@ -69,7 +68,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 * creating a taxon partition the map holds all taxon names.
 	 * The key is a combination of a namespace and the id in the original source
 	 */
-	private Map<Object, Map<String, CdmBase>> relatedObjects;
+	private Map<Object, Map<String, ? extends CdmBase>> relatedObjects;
 	
 	/**
 	 * Number of records handled in the partition
@@ -121,7 +120,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 	 * stored in the destination, invoke the IOs partition handling and commit the transaction
 	 * @param partitionedIO
 	 */
-	public void doPartition(IPartitionedIO partitionedIO, STATE state) {
+	public void doPartition(IPartitionedIO<STATE> partitionedIO, STATE state) {
 		try{
 			profiler.startTx();
 			TransactionStatus txStatus = getTransaction(partitionSize, partitionedIO);
@@ -132,7 +131,7 @@ public class ResultSetPartitioner<STATE extends IPartitionedState> {
 			ResultSet rs = makePartitionResultSet();
 
 			profiler.startRelObjects();
-			this.relatedObjects = partitionedIO.getRelatedObjectsForPartition(rs);
+			this.relatedObjects = partitionedIO.getRelatedObjectsForPartition(rs, state);
 			state.setRelatedObjects(relatedObjects);
 			
 			profiler.startRs2();

@@ -1073,6 +1073,7 @@ cdmlib-model/src/main/resources/terms/NamedAreaType.csv -text
 cdmlib-model/src/main/resources/terms/NaturalLanguageTerm.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalCode.csv -text
 cdmlib-model/src/main/resources/terms/NomenclaturalStatusType.csv -text
+cdmlib-model/src/main/resources/terms/NomenclaturalStatusTypeIczn.csv -text
 cdmlib-model/src/main/resources/terms/PlantKindOfUnit.csv -text
 cdmlib-model/src/main/resources/terms/PresenceTerm.csv -text
 cdmlib-model/src/main/resources/terms/PreservationMethod.csv -text
@@ -1164,6 +1165,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/common/TermDefaultCac
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/description/TaxonDescriptionDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/media/MediaDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/BotanicNameCacheStrategyTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NameCacheStrategyTestBase.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/NonViralNameDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZooNameNoMarkerCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/name/ZoologicalNameCacheStrategyTest.java -text
@@ -1201,7 +1203,13 @@ cdmlib-persistence/LICENSE.TXT -text
 cdmlib-persistence/README.TXT -text
 cdmlib-persistence/pom.xml -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/api/application/CdmApplicationUtils.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/CdmPersistentSourceUtils.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/CdmPersistentXMLSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/CdmSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/CdmSourceException.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/Configuration.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/ICdmPersistentSource.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/config/ICdmSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSource.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmDataSourceBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/CdmPersistentDataSource.java -text
@@ -1369,6 +1377,9 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/desc
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaRepresentationHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/media/MediaRepresentationPartHibernateImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/molecular/AmplificationDaoHibernateImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/molecular/PrimerDaoHibernateImpl.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/molecular/SequenceDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/HomotypicalGroupDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/NomenclaturalStatusDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/hibernate/name/TaxonNameDaoHibernateImpl.java -text
@@ -1398,6 +1409,9 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/initializer/Ty
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaRepresentationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/media/IMediaRepresentationPartDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/molecular/IAmplificationDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/molecular/IPrimerDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/molecular/ISequenceDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/IHomotypicalGroupDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/INomenclaturalStatusDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/name/ITaxonNameDao.java -text
@@ -1446,6 +1460,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permissi
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/TaxonBaseVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/TaxonNameBaseVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/TaxonNodeVoter.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/permission/voter/TeamOrPersonBaseVoter.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadata.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactory.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/replace/impl/ListReferringObjectMetadata.java -text
@@ -1820,7 +1835,15 @@ cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/statistics.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/taxon.xsl -text
-cdmlib-remote-webapp/src/test/java/eu/etaxonomy/AppTest.java -text
+cdmlib-remote-webapp/src/test/java/eu/etaxonomy/cdm/remote/ClassificationIT.java -text
+cdmlib-remote-webapp/src/test/resources/datasources.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty-http.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty-https.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty-ssl.xml -text
+cdmlib-remote-webapp/src/test/resources/etc/jetty/jetty.xml -text
+cdmlib-remote-webapp/src/test/resources/h2/cdmTest.h2.db -text svneol=unset#unset
+cdmlib-remote-webapp/src/test/resources/log4j.properties -text
+cdmlib-remote/.springBeans -text
 cdmlib-remote/LICENSE.TXT -text
 cdmlib-remote/README.TXT -text
 cdmlib-remote/pom.xml -text
@@ -1888,9 +1911,10 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermController.ja
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyListController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/csv/CsvDemoController.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/csv/CsvExportController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/checklist/ChecklistDemoController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/checklist/CsvExportController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/NameCatalogueController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/OccurrenceCatalogueController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/dto/PolytomousKeyNodeDtoController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalBhleController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/ext/ExternalGeoController.java -text
@@ -1953,6 +1977,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/SetSpec.java -tex
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Status.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/Verb.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/oaipmh/package-info.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/occurrencecatalogue/OccurrenceSearch.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/package.html -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/AbstractLinkDto.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/LinkedPolytomousKeyNodeRowDto.java -text
@@ -2064,6 +2089,8 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/E
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/LoginView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/widgetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/BaseView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/CsvFileDownloadView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/FileDownloadView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/HtmlView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/JsonView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/OaiPmhResponseView.java -text
@@ -2086,6 +2113,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/view/oaipmh/rdf/ListRecordsV
 cdmlib-remote/src/main/java/eu/etaxonomy/remote/dto/rdf/Rdf.java -text
 cdmlib-remote/src/main/java/net/sf/json/CycleSetAcess.java -text
 cdmlib-remote/src/main/java/ru/xpoft/vaadin/CdmDiscoveryNavigator.java -text
+cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote-security.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/dwc/mappings.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/oaipmh/mappings.xml -text
@@ -2100,6 +2128,7 @@ cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/lsid/Assembler
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/AuthorityControllerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/DataControllerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/MetadataControllerTest.java -text
+cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/view/JsonToCsvViewTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/view/OaiPmhViewTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/view/RdfViewTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/test/function/GenericRemoteTester.java -text
@@ -2250,6 +2279,12 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/LsidWsdlWra
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/LsidWsdlWrapperImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/Pattern.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/lsid/impl/TaxonMetadataMapper.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/AmplificationServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/IAmplificationService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/IPrimerService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/ISequenceService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/PrimerServiceImpl.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/molecular/SequenceServiceImpl.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/Pager.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/PagerUtils.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/pager/impl/AbstractPagerImpl.java -text
@@ -2308,6 +2343,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBa
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTTT.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NaturalLanguageGeneratorTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/OccurenceServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyNodeServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PolytomousKeyServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/PreferenceServiceImplTest.java -text
@@ -2326,6 +2362,9 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDAuthoritySer
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDDataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDMetadataServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/lsid/LSIDRegistryTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/AmplificationServiceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/PrimerServiceTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/molecular/SequenceServiceTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/pager/PagerTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/utility/DescriptionUtilityTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/scripts/FixMultipleTextDataInImageGalleries.java -text
@@ -2440,3 +2479,4 @@ src/site/resources/images/cdm-server-oai-pmh.png -text
 src/site/resources/images/cdmlib-arch4.png -text
 src/site/resources/images/cdmlib_overview.png -text
 src/site/site.xml -text
+src/test/resources/h2/cdmTest.h2.db -text svneol=unset#unset

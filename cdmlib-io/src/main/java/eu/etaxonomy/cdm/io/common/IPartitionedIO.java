@@ -22,7 +22,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 16.02.2010
- * @version 1.0
  */
 public interface IPartitionedIO<STATE extends IPartitionedState> {
 	
@@ -41,7 +40,9 @@ public interface IPartitionedIO<STATE extends IPartitionedState> {
 	 * @param rs
 	 * @return
 	 */
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs);
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, STATE state);
+//	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs);
 
 	public IReferenceService getReferenceService();
+
 }
