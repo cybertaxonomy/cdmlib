@@ -9,8 +9,6 @@ import org.junit.Test;
 public class ValidationExecutorTest {
 
 	public static final Logger logger = Logger.getLogger(ValidationExecutorTest.class);
-	
-	private ValidationExecutor pool;
 
 
 	@Before
@@ -39,20 +37,23 @@ public class ValidationExecutorTest {
 	@Test
 	public void testValidationExecutor()
 	{
-		//fail("Not yet implemented");
+		// Constructor test  not implemented
 	}
 
 
+	/**
+	 * Test behaviour when the ValidationExecutor's task queue fills up. Make sure task queue
+	 * overruns do not throw an exception. To test this, we rapidly fill the queue with tasks
+	 * that we know will take some time to complete. See {@link LongRunningCheckCaseValidator}.
+	 */
 	@Test
 	public void testRejectedExecution()
 	{
 		int taskQueueSize = 10;
 		ValidationExecutor pool = new ValidationExecutor(taskQueueSize);
-		// we only want to test that ValidationExecutor.rejectedExecution()
-		// never throws an exception (for the rest it just logs something).
 		EmployeeWithLongRunningValidation emp;
 		Level2ValidationTask task;
-		logger.info("Testing task queue overruns. Error messages are expected");
+		System.out.println("Testing task queue overruns. Error messages are expected");
 		for (int i = 0; i < taskQueueSize * 2; ++i) { // Force a task queue overrun
 			emp = new EmployeeWithLongRunningValidation();
 			task = new Level2ValidationTask(emp);
@@ -65,7 +66,6 @@ public class ValidationExecutorTest {
 			pool.threads.iterator().next().get().join();
 		}
 		catch (InterruptedException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

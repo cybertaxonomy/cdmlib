@@ -2,25 +2,29 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import java.util.List;
 
+import javax.validation.Valid;
+
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
+import eu.etaxonomy.cdm.validation.Level3;
 
+/**
+ * A Mock class for testing entity validation tasks.
+ * 
+ * @author ayco_holleman
+ * 
+ */
 @SuppressWarnings("serial")
 public class Employee extends CdmBase {
 
-	@LongRunningCheckCase(value = CaseMode.UPPER, groups = { Level2.class })
+	@CheckCase(value = CaseMode.UPPER, groups = { Level2.class })
 	private String firstName;
+	@CheckCase(value = CaseMode.UPPER, groups = { Level3.class })
 	private String lastName;
-	private int age;
-	private double salary;
+	@Valid
 	private Company company;
+	@Valid
 	List<Address> addresses;
-
-
-	public Employee(Company company)
-	{
-		this.company = company;
-	}
 
 
 	public Employee()
@@ -49,30 +53,6 @@ public class Employee extends CdmBase {
 	public void setLastName(String lastName)
 	{
 		this.lastName = lastName;
-	}
-
-
-	public int getAge()
-	{
-		return age;
-	}
-
-
-	public void setAge(int age)
-	{
-		this.age = age;
-	}
-
-
-	public double getSalary()
-	{
-		return salary;
-	}
-
-
-	public void setSalary(double salary)
-	{
-		this.salary = salary;
 	}
 
 
@@ -110,6 +90,15 @@ public class Employee extends CdmBase {
 		}
 		Employee emp = (Employee) obj;
 		return firstName.equals(emp.firstName) && lastName.equals(emp.lastName);
+	}
+
+
+	public int hashCode()
+	{
+		int hash = 17;
+		hash = (hash * 31) + firstName.hashCode();
+		hash = (hash * 31) + lastName.hashCode();
+		return hash;
 	}
 
 }

@@ -1,19 +1,13 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
-import javax.validation.constraints.NotNull;
-
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
 
-public class Address {
+@SuppressWarnings("serial")
+public class Address extends CdmBase {
 
-	@NotNull
 	@CheckCase(value = CaseMode.UPPER, groups = { Level2.class })
 	String street;
-	@NotNull
-	String streetNo;
-	String zip;
-	@NotNull
-	String city;
 
 
 	public String getStreet()
@@ -28,39 +22,21 @@ public class Address {
 	}
 
 
-	public String getStreetNo()
+	public boolean equals(Object obj)
 	{
-		return streetNo;
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null) {
+			return false;
+		}
+		return street.equals(((Address) obj).street);
 	}
 
 
-	public void setStreetNo(String streetNo)
+	public int hashCode()
 	{
-		this.streetNo = streetNo;
-	}
-
-
-	public String getZip()
-	{
-		return zip;
-	}
-
-
-	public void setZip(String zip)
-	{
-		this.zip = zip;
-	}
-
-
-	public String getCity()
-	{
-		return city;
-	}
-
-
-	public void setCity(String city)
-	{
-		this.city = city;
+		return street.hashCode();
 	}
 
 }
