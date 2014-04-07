@@ -19,13 +19,10 @@ import net.sf.json.JsonConfig;
 import org.apache.log4j.Logger;
 import org.hibernate.Hibernate;
 
-import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermBase;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
-import eu.etaxonomy.cdm.remote.l10n.LocaleContext;
 import eu.etaxonomy.cdm.remote.l10n.TermRepresentation_L10n;
 
 /**
@@ -79,29 +76,29 @@ public class TermBaseBeanProcessor extends AbstractCdmBeanProcessor<TermBase> {
             }
         }
 
-    	TermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term);
-    	if (representation_L10n.getLabel() != null) {
-    		json.element("representation_L10n",representation_L10n.getLabel());    		
-    	}
-    	if (representation_L10n.getAbbreviatedLabel() != null) {
-    		json.element("representation_L10n_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());    		
-    	}
+        TermRepresentation_L10n representation_L10n = new TermRepresentation_L10n(term, false);
+        if (representation_L10n.getLabel() != null) {
+            json.element("representation_L10n",representation_L10n.getLabel());
+        }
+        if (representation_L10n.getAbbreviatedLabel() != null) {
+            json.element("representation_L10n_abbreviatedLabel", representation_L10n.getAbbreviatedLabel());
+        }
         if(!replaceRepresentations){
-        	json.element("representations", term.getRepresentations(), jsonConfig);
+            json.element("representations", term.getRepresentations(), jsonConfig);
         }
 
         // add additional representation for RelationShipBase
         if(RelationshipTermBase.class.isAssignableFrom(term.getClass())){
             RelationshipTermBase<?> relTerm = (RelationshipTermBase<?>)term;
-            TermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm);
+            TermRepresentation_L10n inverseRepresentation_L10n = new TermRepresentation_L10n(relTerm, true);
             if (inverseRepresentation_L10n.getLabel() != null) {
-            	json.element("inverseRepresentation_L10n", inverseRepresentation_L10n.getLabel());            	
+                json.element("inverseRepresentation_L10n", inverseRepresentation_L10n.getLabel());
             }
             if (inverseRepresentation_L10n.getAbbreviatedLabel() != null) {
-            	json.element("inverseRepresentation_L10n_abbreviatedLabel",  inverseRepresentation_L10n.getAbbreviatedLabel());                                	
+                json.element("inverseRepresentation_L10n_abbreviatedLabel",  inverseRepresentation_L10n.getAbbreviatedLabel());
             }
             if(!replaceRepresentations){
-            	json.element("inverseRepresentations", relTerm.getRepresentations(), jsonConfig);
+                json.element("inverseRepresentations", relTerm.getRepresentations(), jsonConfig);
             }
         }
         return json;
