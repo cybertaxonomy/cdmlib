@@ -70,23 +70,40 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	private static final Logger logger = Logger.getLogger(ValidationExecutor.class);
 
 	// Number of threads to keep in the thread pool
-	private static final int CORE_POOL_SIZE = 0;
+	static final int CORE_POOL_SIZE = 0;
 	// Maximum number of theads in the thread pool
-	private static final int MAX_POOL_SIZE = 1;
+	static final int MAX_POOL_SIZE = 1;
 	// Number of seconds to wait for a new task before killing the validation thread
-	private static final int KEEP_ALIFE_TIME = 5;
+	static final int KEEP_ALIFE_TIME = 5;
 	// Maximum number of tasks allowed to wait to be executed by the validation thread
-	private static final int TASK_QUEUE_SIZE = 1000;
+	static final int TASK_QUEUE_SIZE = 1000;
 
 	// Our basis for tracking the threads in the thread pool. We maintain
 	// a list of weak references to the thread in the real thread pool,
 	// maintained but totally hidden by the super class (ThreadPoolExecutor).
-	private final ArrayList<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(MAX_POOL_SIZE);
+	final ArrayList<WeakReference<EntityValidationThread>> threads = new ArrayList<WeakReference<EntityValidationThread>>(MAX_POOL_SIZE);
 
 
+	/**
+	 * Creates a {@code ValidationExecutor} with a task queue size of 1000. Thus there can be
+	 * at most 1000 pending validations. Thereafter newly submitted validation tasks will
+	 * simply be discarded. See {@link #rejectedExecution(Runnable, ThreadPoolExecutor)}.
+	 */
 	public ValidationExecutor()
 	{
 		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS, new EntityValidationTaskQueue(TASK_QUEUE_SIZE));
+		setThreadFactory(new ValidationThreadFactory());
+		setRejectedExecutionHandler(this);
+	}
+
+
+	/**
+	 * Creates a {@code ValidationExecutor} with a custom task queue size.
+	 * @param taskQueueSize
+	 */
+	public ValidationExecutor(int taskQueueSize)
+	{
+		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS, new EntityValidationTaskQueue(taskQueueSize));
 		setThreadFactory(new ValidationThreadFactory());
 		setRejectedExecutionHandler(this);
 	}
@@ -123,13 +140,6 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 
 
 	@Override
-	public void execute(Runnable command)
-	{
-		super.execute(command);
-	}
-
-
-	@Override
 	protected void beforeExecute(Thread thread, Runnable runnable)
 	{
 		EntityValidationThread validationThread = (EntityValidationThread) thread;
@@ -141,21 +151,17 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	}
 
 
-	@Override
-	protected void afterExecute(Runnable runnable, Throwable throwable)
-	{
-		super.afterExecute(runnable, throwable);
-	}
-
-
 	/*
-	 * Keep track of the threads in the thread pool. If there already is another thread
-	 * validating the same entity, we ask it to terminate itself. Whether or not this request
-	 * is honored, we wait for the thread to complete. Otherwise the two threads might conflict
-	 * with eachother when reading/writing from the error tables (i.e. the tables in which the
-	 * outcome of a validation is stored). Note that, currently, this is all a bit theoretical
-	 * because we only allow one thread in the thread pool. However, we want to be prepared for
-	 * a future with true concurrent validation.
+	 * This method does 2 things. [A] It keeps track of the threads in the thread pool. If
+	 * pendingThread is not yet in our "shadow pool" we add it to the shadow pool. [B] It
+	 * searches for other threads in the trhead pool that are still busy validating an older
+	 * version of the entity to be validated during pendingTask. If there is such a thread, we
+	 * ask it to terminate itself. Whether or not this request is honored, we wait for the
+	 * thread to complete. Otherwise the two threads might conflict with eachother when
+	 * reading/writing from the error tables (i.e. the tables in which the outcome of a
+	 * validation is stored). Note that, currently, this is all a bit theoretical because we
+	 * only allow one thread in the thread pool. However, we want to be prepared for a future
+	 * with truely concurrent validation.
 	 */
 	private void checkPool(EntityValidationThread pendingThread, EntityValidationTask pendingTask)
 	{

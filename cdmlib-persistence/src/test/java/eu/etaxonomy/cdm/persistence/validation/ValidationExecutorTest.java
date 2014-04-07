@@ -2,26 +2,17 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import static org.junit.Assert.fail;
 
-import javax.validation.Validation;
-import javax.validation.ValidatorFactory;
-
-import org.hibernate.validator.HibernateValidator;
-import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.junit.Before;
 import org.junit.Test;
 
 public class ValidationExecutorTest {
 
 	private ValidationExecutor pool;
-	private ValidatorFactory factory;
 
 
 	@Before
 	public void setUp() throws Exception
 	{
-		HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
-		factory = config.buildValidatorFactory();
-		pool = new ValidationExecutor();
 	}
 
 
@@ -29,6 +20,9 @@ public class ValidationExecutorTest {
 	public void testSetMaximumPoolSize()
 	{
 		try {
+			// Test that an exception is thrown when trying to change
+			// the thread pool size
+			ValidationExecutor pool = new ValidationExecutor();
 			pool.setMaximumPoolSize(10);
 		}
 		catch (Throwable t) {
@@ -49,31 +43,31 @@ public class ValidationExecutorTest {
 	@Test
 	public void testRejectedExecution()
 	{
-		//fail("Not yet implemented");
-	}
-
-
-	@Test
-	public void testBeforeExecuteThreadRunnable()
-	{
-
-		TestEntity03 one = new TestEntity03();
-		one.setFirstName("john");
-		one.setLastName("smith");
-		one.setAge(40);
-		one.setSalary(30000);
-
-		EntityValidationTask task = new Level2ValidationTask(one);
-		task.setValidator(factory.getValidator());
-		pool.execute(task);
-		
+		int taskQueueSize = 10;
+		ValidationExecutor pool = new ValidationExecutor(taskQueueSize);
+		// we only want to test that ValidationExecutor.rejectedExecution()
+		// never throws an exception (for the rest it just logs something).
+		for(int i =0; i< taskQueueSize * 2; ++i) { // Force a task queue overrun
+			EmployeeWithLongRunningValidation emp = new EmployeeWithLongRunningValidation();
+			Level2ValidationTask task = new Level2ValidationTask(emp);
+			pool.execute(task);
+		}
 		try {
-			Thread.sleep(10000);
+			// Make sure the test case waits at least long enough for
+			// the queue to actually overflow. Since the validation of
+			// takes at least 1000 milliseconds
+			pool.threads.iterator().next().get().join();
 		}
 		catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+	}
+
+
+	@Test
+	public void testBeforeExecute()
+	{
 
 	}
 

@@ -28,7 +28,7 @@ class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 	@Override
 	public boolean add(Runnable r)
 	{
-		checkQueue(r);
+		cleanup(r);
 		return super.add(r);
 	}
 
@@ -36,7 +36,7 @@ class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 	@Override
 	public boolean offer(Runnable r, long timeout, TimeUnit unit) throws InterruptedException
 	{
-		checkQueue(r);
+		cleanup(r);
 		return super.offer(r, timeout, unit);
 	}
 
@@ -44,7 +44,7 @@ class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 	@Override
 	public boolean offer(Runnable r)
 	{
-		checkQueue(r);
+		cleanup(r);
 		return super.offer(r);
 	}
 
@@ -52,7 +52,7 @@ class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 	@Override
 	public void put(Runnable r) throws InterruptedException
 	{
-		checkQueue(r);
+		cleanup(r);
 		super.put(r);
 	}
 
@@ -64,7 +64,7 @@ class EntityValidationTaskQueue extends ArrayBlockingQueue<Runnable> {
 	}
 
 
-	private void checkQueue(Runnable runnable)
+	private void cleanup(Runnable runnable)
 	{
 		EntityValidationTask newTask = (EntityValidationTask) runnable;
 		Iterator<Runnable> iterator = this.iterator();
