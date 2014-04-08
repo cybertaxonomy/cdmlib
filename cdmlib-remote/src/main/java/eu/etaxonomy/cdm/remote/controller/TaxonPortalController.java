@@ -159,7 +159,7 @@ public class TaxonPortalController extends TaxonController
             });
 
     private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = Arrays.asList(new String []{
-            "*",
+            "$",
             // the name
             "name.$",
             "name.rank.representations",
