@@ -1187,7 +1187,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 * @throws MalformedURLException
 	 */
-	protected Media getImageMedia(String uriString, boolean readMediaData, boolean isFigure) throws MalformedURLException {
+	protected Media getImageMedia(String uriString, boolean readMediaData) throws MalformedURLException {
 		if( uriString == null){
 			return null;
 		} else {
@@ -1212,7 +1212,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 					representation.setSuffix(imageInfo.getSuffix());
 				}
 				representation.addRepresentationPart(imageFile);
-				Media media = isFigure ? Media.NewInstance() : Media.NewInstance();  //TODO no difference any more since v3.3
+				Media media = Media.NewInstance();
 				media.addRepresentation(representation);
 				return media;
 			} catch (URISyntaxException e1) {

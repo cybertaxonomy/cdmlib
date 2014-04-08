@@ -355,7 +355,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 for (String multimediaObject : dataHolder.multimediaObjects) {
                     Media media;
                     try {
-                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA, false);
+                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
                         derivedUnitFacade.addDerivedUnitMedia(media);
                     } catch (MalformedURLException e) {
                         // TODO Auto-generated catch block
