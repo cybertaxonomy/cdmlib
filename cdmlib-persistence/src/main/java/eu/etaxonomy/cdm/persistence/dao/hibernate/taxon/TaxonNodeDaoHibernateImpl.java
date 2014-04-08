@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -22,6 +23,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
@@ -74,6 +77,20 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		
 		//taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
 		return persistentObject.getUuid();
+	}
+	
+	@Override
+	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(
+			Classification classification) {
+		int classificationId = classification.getId();
+
+        String queryString = "SELECT * FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
+
+        List<TaxonNode> result = getSession().createSQLQuery(queryString).list();
+
+       return result;
+     
+		
 	}
 
 }

@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.common.ITreeNode;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -82,6 +83,10 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public UUID deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config)
 			throws DataChangeNoRollbackException;
+	
+	public List<TaxonNode> listAllNodesForClassification(Classification classification);
+		
+	
 
 	
 

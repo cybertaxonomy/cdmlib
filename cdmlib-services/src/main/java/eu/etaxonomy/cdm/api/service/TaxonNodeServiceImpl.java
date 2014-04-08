@@ -329,6 +329,13 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	
     	return node.getUuid();
     }
+
+	@Override
+	public List<TaxonNode> listAllNodesForClassification(
+			Classification classification) {
+		List<TaxonNode> result = dao.getTaxonOfAcceptedTaxaByClassification(classification);
+		return result;
+	}
     
     
 }
