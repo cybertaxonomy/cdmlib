@@ -389,8 +389,11 @@ public class BerlinModelTransformer {
 			
 			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
 			
-			//FIXME doubtful
-			case 43: logger.warn("Doubful not yet implemented for Taxon Relationship congruent_to"); return TaxonRelationshipType.CONGRUENT_TO();
+			case 43: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_TO();
+			case 48: isDoubtful.setValue(true); return TaxonRelationshipType.INCLUDED_OR_INCLUDES();
+			case 51: isDoubtful.setValue(true); return TaxonRelationshipType.CONGRUENT_OR_OVERLAPS();
+			
+			
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(relTaxonTypeId).toString() + ")");
 			}
