@@ -364,7 +364,7 @@ public class BerlinModelTransformer {
 	}
 	
 	//TypeDesignation
-	public static TaxonRelationshipType taxonRelId2TaxonRelType (int relTaxonTypeId, ResultWrapper<Boolean> isInverse)  throws UnknownCdmTypeException{
+	public static TaxonRelationshipType taxonRelId2TaxonRelType (int relTaxonTypeId, ResultWrapper<Boolean> isInverse, ResultWrapper<Boolean> isDoubtful)  throws UnknownCdmTypeException{
 		isInverse.setValue(false);
 		switch (relTaxonTypeId){
 			case 0: return null;
@@ -390,7 +390,7 @@ public class BerlinModelTransformer {
 			case 40: return TaxonRelationshipType.NOT_CONGRUENT_TO();
 			
 			//FIXME doubtful
-			case 43: return TaxonRelationshipType.CONGRUENT_TO();
+			case 43: logger.warn("Doubful not yet implemented for Taxon Relationship congruent_to"); return TaxonRelationshipType.CONGRUENT_TO();
 			default: {
 				throw new UnknownCdmTypeException("Unknown TypeDesignationStatus (id=" + Integer.valueOf(relTaxonTypeId).toString() + ")");
 			}
