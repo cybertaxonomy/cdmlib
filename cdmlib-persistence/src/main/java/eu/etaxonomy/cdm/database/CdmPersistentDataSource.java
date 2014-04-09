@@ -52,7 +52,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	private static final Logger logger = Logger.getLogger(CdmPersistentDataSource.class);
 	
 	public static final String DATASOURCE_BEAN_POSTFIX = "DataSource";
-	public final static String DATASOURCE_PATH = "/eu/etaxonomy/cdm/";
+
 		
 	private String beanName;
 	private String dbUrl;

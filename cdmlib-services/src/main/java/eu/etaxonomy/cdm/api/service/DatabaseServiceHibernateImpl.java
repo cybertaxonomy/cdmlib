@@ -179,6 +179,9 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	
     /**
      * Execute a SQL query which returns a single value
+     * FIXME:Remoting maybe not a smart idea to have this method here 
+     * since private methods can also be accessed via reflection, which
+     * could be problematic specially for the case of remoting.
      * 
      * @param query , which returns a single value
      * @return
@@ -205,7 +208,10 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
     
     /**
      * Executes a query and returns the ResultSet.
-     * 
+     * FIXME:Remoting maybe not a smart idea to have this method here 
+     * since private methods can also be accessed via reflection, which
+     * could be problematic specially for the case of remoting.
+     *      
      * @return ResultSet for the query.
      * @throws SQLException
      */
