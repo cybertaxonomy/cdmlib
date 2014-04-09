@@ -103,7 +103,8 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
 
     protected static final List<String> DISTRIBUTION_INFO_INIT_STRATEGY = Arrays.asList(new String []{
             "sources.citation.authorTeam.$",
-            "sources.nameUsedInSource"
+            "sources.nameUsedInSource",
+            "annotations"
     });
 
     @Autowired
