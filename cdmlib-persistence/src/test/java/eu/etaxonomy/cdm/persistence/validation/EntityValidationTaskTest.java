@@ -34,7 +34,6 @@ public class EntityValidationTaskTest {
 	{
 		HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
 		factory = config.buildValidatorFactory();
-
 	}
 
 
@@ -62,28 +61,21 @@ public class EntityValidationTaskTest {
 		comp.setName("Google");
 		emp.setCompany(comp);
 
-		// This is an @Valid bean on the Employee class
-		List<Address> addresses = new ArrayList<Address>();
-		Address address1 = new Address();
-		// ERROR 3 (should be MARKET STREET)
-		address1.setStreet("Market Street");
-		emp.setAddresses(addresses);
-
 		// Validate
 		Level2ValidationTask task = new Level2ValidationTask(emp);
 		task.setValidator(factory.getValidator());
 		Set<ConstraintViolation<CdmBase>> violations = task.validate();
 
-		Assert.assertEquals("Expecting three validation errors", violations.size(), 3);
+		Assert.assertEquals("Expecting three validation errors", 2, violations.size());
 
 		// Test that validation failed where we expected it to fail
-		String[] paths = new String[3];
+		String[] paths = new String[violations.size()];
 		int i = 0;
 		for (ConstraintViolation<CdmBase> cv : violations) {
 			paths[i++] = cv.getPropertyPath().toString();
 		}
 		Arrays.sort(paths);
-		Assert.assertArrayEquals(paths, new String[] { "addresses[0].street", "company.name", "firstName" });
+		Assert.assertArrayEquals(paths, new String[] { "company.name", "firstName" });
 
 	}
 

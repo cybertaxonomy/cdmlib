@@ -184,9 +184,14 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
+      
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.View"/>
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
+      
+      <!-- Validation Package -->
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidationResult"/>
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityConstraintViolation"/>
       
       <!-- for filling caches -->
       <!-- since hibernate 4 listeners are not handled via hibernate.cfg.xml anymore -->

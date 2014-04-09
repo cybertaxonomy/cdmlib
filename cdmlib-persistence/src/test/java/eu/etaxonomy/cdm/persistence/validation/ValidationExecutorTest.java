@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.persistence.validation;
 
 import static org.junit.Assert.fail;
 
+import java.lang.ref.WeakReference;
+
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Test;
@@ -49,21 +51,31 @@ public class ValidationExecutorTest {
 	@Test
 	public void testRejectedExecution()
 	{
-		int taskQueueSize = 10;
-		ValidationExecutor pool = new ValidationExecutor(taskQueueSize);
-		EmployeeWithLongRunningValidation emp;
-		Level2ValidationTask task;
-		System.out.println("Testing task queue overruns. Error messages are expected");
-		for (int i = 0; i < taskQueueSize * 2; ++i) { // Force a task queue overrun
-			emp = new EmployeeWithLongRunningValidation();
-			task = new Level2ValidationTask(emp);
-			pool.execute(task);
-		}
 		try {
-			// Make sure the test case waits at least long enough for
-			// the queue to actually overflow. Since the validation of
-			// takes at least 1000 milliseconds
-			pool.threads.iterator().next().get().join();
+			// Bit awkward, but since unit tests themselves also run in a separate thread,
+			// we allow the previous test case some time to complete, otherwise the output
+			// from this test may interleave with the output from the previous test, which
+			// is confusing.
+			//Thread.sleep(3000);
+			int taskQueueSize = 5;
+			ValidationExecutor pool = new ValidationExecutor(taskQueueSize);
+			EmployeeWithLongRunningValidation emp;
+			Level2ValidationTask task;
+			System.out.println("************************************************************");
+			System.out.println("Forcing task queue overflow. Error messages are expected !!!");
+			System.out.println("************************************************************");
+			for (int i = 0; i < taskQueueSize * 2; ++i) { // Force a task queue overrun
+				emp = new EmployeeWithLongRunningValidation();
+				task = new Level2ValidationTask(emp);
+				pool.execute(task);
+			}
+			// Make sure the test case waits long enough for the queue to actually overflow.
+			for (WeakReference<EntityValidationThread> thread : pool.threads) {
+				if (thread.get() != null) {
+					thread.get().join();
+				}
+			}
+			//Thread.sleep(3000);
 		}
 		catch (InterruptedException e) {
 			e.printStackTrace();

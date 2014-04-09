@@ -27,7 +27,7 @@ public class LongRunningCheckCaseValidator implements ConstraintValidator<LongRu
 		catch (InterruptedException e) {
 			e.printStackTrace();
 		}
-		System.out.println("stopped waiting");
+		System.out.println("Mock validation completed");
 		if (object == null) {
 			return true;
 		}

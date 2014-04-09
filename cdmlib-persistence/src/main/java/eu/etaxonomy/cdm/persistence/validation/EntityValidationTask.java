@@ -11,6 +11,7 @@ import javax.validation.Validator;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.validation.CRUDEventType;
 
 /**
  * Abstract base class for JPA entity validation tasks. Note that in the future other types of

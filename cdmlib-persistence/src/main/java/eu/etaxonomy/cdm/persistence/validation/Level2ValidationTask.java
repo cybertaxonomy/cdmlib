@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**

@@ -1478,7 +1478,6 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/MatchMode.ja
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/NativeSqlOrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/OrderHint.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/query/RandomOrder.java -text
-cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/CRUDEventType.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTask.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationTaskQueue.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/validation/EntityValidationThread.java -text
@@ -1551,6 +1550,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/stat
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplBenchmark.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/validation/EntityValidationResultDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmAuthorityTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmPermissionClassTest.java -text
