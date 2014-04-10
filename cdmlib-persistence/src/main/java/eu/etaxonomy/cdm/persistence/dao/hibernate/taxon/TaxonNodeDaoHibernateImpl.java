@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
+import java.math.BigInteger;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -86,6 +87,17 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
 
 	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao#countTaxonOfAcceptedTaxaByClassification(eu.etaxonomy.cdm.model.taxon.Classification)
+     */
+    @Override
+    public int countTaxonOfAcceptedTaxaByClassification(Classification classification){
+        int classificationId = classification.getId();
+        //FIXME write test
+        String queryString = "SELECT DISTINCT COUNT('nodes.*') FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
+         List<BigInteger> result = getSession().createSQLQuery(queryString).list();
+         return result.get(0).intValue ();
+    }
 
 
 

@@ -135,7 +135,7 @@ public class CsvDemoExport extends CsvDemoBase {
         for(Classification c : classificationSet){
             classification = c;
             //this sets the total amount of records for pagination
-            config.setTaxonNodeListSize(c.getAllNodes().size());
+            config.setTaxonNodeListSize(getTaxonNodeService().countAllNodesForClassification(c));
         }
         //calculate pagination
         int start = config.getPageSize() * config.getPageNumber();
@@ -179,8 +179,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	    Classification classification = null;
 	    for(Classification c : classificationSet){
 	        classification = c;
-	        //TODO: fetch number witouht nodes
-	        totalWork = c.getAllNodes().size();
+	        totalWork = getTaxonNodeService().countAllNodesForClassification(c);
 	    }
 	    if(progressMonitor != null) {
 	        progressMonitor.beginTask("", totalWork);

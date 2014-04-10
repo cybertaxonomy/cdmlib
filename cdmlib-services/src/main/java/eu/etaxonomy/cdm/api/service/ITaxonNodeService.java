@@ -90,6 +90,13 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 */
 	public List<TaxonNode> listAllNodesForClassification(Classification classification, int start, int end);
 
+	/**
+	 * Counts all TaxonNodes for a given Classification
+	 *
+	 * @param classification - according to the given classification the TaxonNodes are filtered.
+	 * @return
+	 */
+	public int countAllNodesForClassification(Classification classification);
 
 
 

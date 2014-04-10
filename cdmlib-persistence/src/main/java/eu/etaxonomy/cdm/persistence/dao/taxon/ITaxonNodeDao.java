@@ -30,5 +30,11 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
     */
    public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, int start, int end);
 
+    /**
+     * @param classification
+     * @return
+     */
+    public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
+
 
 }
