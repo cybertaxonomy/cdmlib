@@ -88,11 +88,13 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
 
     private int taxonNodeListSize;
 
+
 	//TODO
 	private static IExportTransformer defaultTransformer = null;
 
 	public static CsvDemoExportConfigurator NewInstance(ICdmDataSource source, File destinationFolder) {
-		return new CsvDemoExportConfigurator(source, destinationFolder);
+	    return new CsvDemoExportConfigurator(source, destinationFolder);
+
 	}
 
 	@Override
@@ -531,4 +533,5 @@ public class CsvDemoExportConfigurator extends XmlExportConfiguratorBase<CsvDemo
         this.taxonNodeListSize = size;
 
     }
+
 }

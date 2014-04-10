@@ -1,29 +1,25 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.persistence.dao.hibernate.taxon;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.Query;
-import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
-import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
@@ -41,10 +37,10 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 		implements ITaxonNodeDao {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeDaoHibernateImpl.class);
-	
+
 	@Autowired
 	private ITaxonDao taxonDao;
-	
+
 	public TaxonNodeDaoHibernateImpl() {
 		super(TaxonNode.class);
 	}
@@ -52,45 +48,46 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	public UUID delete(TaxonNode persistentObject, boolean deleteChildren){
 		Taxon taxon = persistentObject.getTaxon();
 		taxon = HibernateProxyHelper.deproxy(taxon, Taxon.class);
-		
+
 		/*Session session = this.getSession();
 		Query query = session.createQuery("from TaxonNode t where t.taxon = :taxon");
 		query.setParameter("taxon", taxon);
 		List result = query.list();*/
 		if (taxon != null){
 			Set<TaxonNode> nodes = taxon.getTaxonNodes();
-		
+
 			if (nodes.size()==1){
-				
+
 				TaxonNode node = nodes.iterator().next();
 				node = HibernateProxyHelper.deproxy(node, TaxonNode.class);
-				
+
 				taxon.removeTaxonNode(node, deleteChildren);
 				taxonDao.delete(taxon);
 			}
 		}
 		//persistentObject.delete();
-		
+
 		super.delete(persistentObject);
-		
-		
-		
+
+
+
 		//taxon = (Taxon)taxonDao.findByUuid(taxon.getUuid());
 		return persistentObject.getUuid();
 	}
-	
+
 	@Override
-	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(
-			Classification classification) {
+	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, int start, int end) {
 		int classificationId = classification.getId();
-
-        String queryString = "SELECT * FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId;
-
-        List<TaxonNode> result = getSession().createSQLQuery(queryString).list();
+		//FIXME write test
+        String queryString = "SELECT DISTINCT nodes.* FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId + " ORDER BY taxa.titleCache LIMIT "+start+"," +end;
+        List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
 
        return result;
-     
-		
+
+
 	}
+
+
+
 
 }
