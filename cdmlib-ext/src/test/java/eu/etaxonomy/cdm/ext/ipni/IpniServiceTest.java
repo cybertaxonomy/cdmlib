@@ -10,6 +10,7 @@ import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.junit.Ignore;
 
 import eu.etaxonomy.cdm.api.application.ICdmApplicationConfiguration;
 import eu.etaxonomy.cdm.common.UriUtils;
@@ -30,6 +31,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  *
  */
+@Ignore
 public class IpniServiceTest {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(IpniServiceTest.class);
