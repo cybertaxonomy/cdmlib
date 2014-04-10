@@ -139,4 +139,34 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         assertEquals(2, children.size());
 
     }
+
+    @Test
+    @DataSet
+    public void testGetAllTaxaByClassification(){
+        Classification classification =  classificationDao.load(UUID.fromString("aeee7448-5298-4991-b724-8d5b75a0a7a9"), CLASSIFICATION_INIT_STRATEGY);
+
+        assertNotNull("findByUuid should return a taxon tree", classification);
+        assertNotNull("classification should have a name",classification.getName());
+        assertEquals("classification should have a name which is 'Name'",classification.getName().getText(),"Name");
+        TaxonNode taxNode = taxonNodeDao.load(uuid1,TAXONNODE_INIT_STRATEGY);
+        TaxonNode taxNode2 = taxonNodeDao.load(uuid2,TAXONNODE_INIT_STRATEGY);
+
+        TaxonNode taxNode3 = taxonNodeDao.load(uuid3, TAXONNODE_INIT_STRATEGY);
+        Taxon taxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        Taxon taxon1 = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        Taxon taxon2 = Taxon.NewInstance(BotanicalName.NewInstance(Rank.GENUS()), null);
+        taxNode.addChildTaxon(taxon, null, null);
+        taxNode2.addChildTaxon(taxon1, null, null);
+        taxNode3.addChildTaxon(taxon2, null, null);
+
+        List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
+        logger.info(taxas.size());
+        assertEquals("there should be 6 taxa left", 6, taxas.size());
+
+        int countTaxa = taxonNodeDao.countTaxonOfAcceptedTaxaByClassification(classification);
+        logger.info(countTaxa);
+        assertEquals("there should be 6 taxa left", 6, countTaxa);
+
+
+    }
 }
