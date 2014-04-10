@@ -245,6 +245,8 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         for(int i = 0; i < childNodes.size(); i++){
         	if (childNodes.get(i) != null){
         		childNodes.get(i).sortIndex = i;
+        	}else{
+        		logger.warn("ChildNode is null for index " + i);
         	}
         }
         child.sortIndex = index;
