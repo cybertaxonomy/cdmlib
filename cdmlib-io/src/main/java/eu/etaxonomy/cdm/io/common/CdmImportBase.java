@@ -44,7 +44,6 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
-import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -831,14 +830,14 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	 * @return
 	 * 
 	 */
-	protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(TermType termType, UUID uuid, String text, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
+	protected <T extends DefinedTermBase> TermVocabulary<T> getVocabulary(TermType termType, UUID uuid, String description, String label, String abbrev, URI termSourceUri, boolean isOrdered, T type) {
 		List<String> propPath = Arrays.asList(new String[]{"terms"});
 		TermVocabulary<T> voc = getVocabularyService().load(uuid, propPath);
 		if (voc == null){
 			if (isOrdered){
-				voc = OrderedTermVocabulary.NewInstance(termType, text, label, abbrev, termSourceUri);
+				voc = OrderedTermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
 			}else{
-				voc = TermVocabulary.NewInstance(termType, text, label, abbrev, termSourceUri);
+				voc = TermVocabulary.NewInstance(termType, description, label, abbrev, termSourceUri);
 			}
 			voc.setUuid(uuid);
 			getVocabularyService().save(voc);
@@ -1198,6 +1197,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				uri = new URI(uriString);
 				try {
 					if (readMediaData){
+						logger.warn(uri);
 						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {
