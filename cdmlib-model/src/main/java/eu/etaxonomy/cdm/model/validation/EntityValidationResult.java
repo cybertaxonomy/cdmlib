@@ -2,8 +2,11 @@ package eu.etaxonomy.cdm.model.validation;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -11,11 +14,16 @@ import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Type;
+import org.hibernate.search.annotations.FieldBridge;
 
+import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
+import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.CRUDEventType;
 
@@ -34,7 +42,7 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
 public class EntityValidationResult extends CdmBase {
 
 	private static final long serialVersionUID = 9120571815593117363L;
-	
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EntityValidationResult.class);
 
@@ -48,18 +56,22 @@ public class EntityValidationResult extends CdmBase {
 	private int validatedEntityId;
 
 	@XmlElement(name = "ValidatedEntityUuid")
-	private int validatedEntityUuid;
+	@XmlJavaTypeAdapter(UUIDAdapter.class)
+	@Type(type = "uuidUserType")
+	@FieldBridge(impl = UuidBridge.class)
+	private UUID validatedEntityUuid;
 
 	@XmlElement(name = "ValidatedEntityClass")
 	private String validatedEntityClass;
 
 	@XmlElement(name = "CrudEventType")
+	@Enumerated(EnumType.STRING)
 	private CRUDEventType crudEventType;
 
-	@XmlElementWrapper(name = "ConstraintViolations")
+	@XmlElementWrapper(name = "EntityConstraintViolations")
 	@OneToMany(mappedBy = "entityValidationResult")
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH })
-	private Set<EntityConstraintViolation> constraintViolations;
+	private Set<EntityConstraintViolation> entityConstraintViolations;
 
 
 	public int getValidatedEntityId()
@@ -74,13 +86,13 @@ public class EntityValidationResult extends CdmBase {
 	}
 
 
-	public int getValidatedEntityUuid()
+	public UUID getValidatedEntityUuid()
 	{
 		return validatedEntityUuid;
 	}
 
 
-	public void setValidatedEntityUuid(int validatedEntityUuid)
+	public void setValidatedEntityUuid(UUID validatedEntityUuid)
 	{
 		this.validatedEntityUuid = validatedEntityUuid;
 	}
@@ -110,27 +122,27 @@ public class EntityValidationResult extends CdmBase {
 	}
 
 
-	public Set<EntityConstraintViolation> getConstraintViolations()
+	public Set<EntityConstraintViolation> getEntityConstraintViolations()
 	{
-		if (constraintViolations == null) {
-			constraintViolations = new HashSet<EntityConstraintViolation>();
+		if (entityConstraintViolations == null) {
+			entityConstraintViolations = new HashSet<EntityConstraintViolation>();
 		}
-		return constraintViolations;
+		return entityConstraintViolations;
 	}
 
 
-	public void addConstraintViolation(EntityConstraintViolation ecv)
+	public void addEntityConstraintViolation(EntityConstraintViolation ecv)
 	{
 		if (ecv != null) {
-			getConstraintViolations().add(ecv);
+			getEntityConstraintViolations().add(ecv);
 		}
 	}
 
 
-	public void removeConstraintViolation(EntityConstraintViolation ecv)
+	public void removeEntityConstraintViolation(EntityConstraintViolation ecv)
 	{
 		if (ecv != null) {
-			getConstraintViolations().remove(ecv);
+			getEntityConstraintViolations().remove(ecv);
 		}
 	}
 

@@ -1,6 +1,8 @@
 package eu.etaxonomy.cdm.model.validation;
 
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -21,7 +23,7 @@ import eu.etaxonomy.cdm.validation.Severity;
 		"InvalidValue",
 		"Severity",
 		"Message",
-		"ConstraintValidatorClass",
+		"Validator",
 		"EntityValidationResult"
 })
 //@formatter:on
@@ -47,19 +49,27 @@ public class EntityConstraintViolation extends CdmBase {
 	private String invalidValue;
 
 	@XmlElement(name = "Severity")
+	@Enumerated(EnumType.STRING)
 	private Severity severity;
 
 	@XmlElement(name = "Message")
 	private String message;
 
-	@XmlElement(name = "ConstraintValidatorClass")
-	private String constraintValidatorClass;
+	@XmlElement(name = "Validator")
+	private String validator;
 
 	@XmlElement(name = "EntityValidationResult")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private EntityValidationResult entityValidationResult;
 
 
+	/**
+	 * Get the path from the root bean to the field with the invalid value. Ordinarily this
+	 * simply is the simple name of the field of the validated entity (see
+	 * {@link EntityValidationResult#getValidatedEntityClass()}). Only if you have used @Valid
+	 * annotations, and the error was in a parent or child entity, will this be a dot-separated
+	 * path (e.g. "addresses[0].street" or "company.name").
+	 */
 	public String getPropertyPath()
 	{
 		return propertyPath;
@@ -108,15 +118,15 @@ public class EntityConstraintViolation extends CdmBase {
 	}
 
 
-	public String getConstraintValidatorClass()
+	public String gettValidator()
 	{
-		return constraintValidatorClass;
+		return validator;
 	}
 
 
-	public void setConstraintValidatorClass(String constraintValidatorClass)
+	public void setConstraintValidatorClass(String validator)
 	{
-		this.constraintValidatorClass = constraintValidatorClass;
+		this.validator = validator;
 	}
 
 
