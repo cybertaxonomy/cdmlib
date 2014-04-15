@@ -1,11 +1,16 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
 import java.util.List;
+import java.util.Set;
+
+import javax.validation.ConstraintViolation;
+import javax.validation.Payload;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
 import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
@@ -21,6 +26,18 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 	public EntityValidationResultDaoHibernateImpl()
 	{
 		super(EntityValidationResult.class);
+	}
+
+
+	@Override
+	public void save(ConstraintViolation<CdmBase> error)
+	{
+		EntityConstraintViolation ecv = new EntityConstraintViolation();
+		ecv.setInvalidValue(error.getInvalidValue().toString());
+		ecv.setMessage(error.getMessage());
+		ecv.setPropertyPath(error.getPropertyPath().toString());
+		Set<Class<? extends Payload>> payloads = error.getConstraintDescriptor().getPayload();
+		//ecv.setSeverity(error.getConstraintDescriptor().);
 	}
 
 
@@ -139,7 +156,8 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		);
 		//@formatter:on
 		query.setString("cls", validatedEntityClass);
-		query.setString("severity", severity.name());
+		System.out.println("Severity: " + severity);
+		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
 		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
 		return result;
@@ -158,7 +176,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
 		//@formatter:on
 		query.setString("cls", validatedEntityClass);
-		query.setString("severity", severity.name());
+		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
 		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
 		return result;
@@ -176,7 +194,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId"
 		);
 		//@formatter:on
-		query.setString("severity", severity.name());
+		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
 		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
 		return result;
@@ -193,7 +211,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 					+ "WHERE cv.severity = :severity "
 					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
 		//@formatter:on
-		query.setString("severity", severity.name());
+		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
 		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
 		return result;

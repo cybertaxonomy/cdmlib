@@ -75,7 +75,7 @@ public abstract class EntityValidationTask implements Runnable {
 				waitForThread.get().join();
 			}
 			Set<ConstraintViolation<CdmBase>> violations = validate();
-			// TODO: SAVE VIOLATIONS TO DATABASE
+			
 		}
 		catch (Throwable t) {
 			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());

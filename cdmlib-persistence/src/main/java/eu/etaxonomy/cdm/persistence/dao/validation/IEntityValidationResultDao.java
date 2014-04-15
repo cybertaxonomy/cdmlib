@@ -3,7 +3,9 @@ package eu.etaxonomy.cdm.persistence.dao.validation;
 import java.util.List;
 
 import javax.validation.ConstraintValidator;
+import javax.validation.ConstraintViolation;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -19,6 +21,8 @@ import eu.etaxonomy.cdm.validation.Severity;
  * 
  */
 public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidationResult> {
+	
+	void save(ConstraintViolation<CdmBase> error);
 
 	/**
 	 * Get the validation result for a particular entity.

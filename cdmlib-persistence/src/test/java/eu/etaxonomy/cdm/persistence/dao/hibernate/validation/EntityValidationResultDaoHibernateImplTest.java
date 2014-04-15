@@ -83,6 +83,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 		assertEquals("Unexpected number of validation results", 0, results.size());
 	}
 
+
 	@Test
 	public void testGetEntitiesViolatingConstraint_String()
 	{
@@ -174,11 +175,11 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 1 , results.size());
+		assertEquals("Unexpected number of validation results", 1, results.size());
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 1 , results.size());
+		assertEquals("Unexpected number of validation results", 1, results.size());
 		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 2 , results.size());
+		assertEquals("Unexpected number of validation results", 2, results.size());
 
 		results = dao.getConstraintViolations("foo.bar", Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 0, results.size());
