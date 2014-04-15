@@ -1,27 +1,20 @@
 package eu.etaxonomy.cdm.persistence.dao.hibernate.validation;
 
 import java.util.List;
-import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.springframework.stereotype.Repository;
 
+import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.validation.Severity;
 
+@Repository
 public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<EntityValidationResult> implements IEntityValidationResultDao {
 
-//	public static void main(String[] args)
-//	{
-//		EntityValidationResultDaoHibernateImpl dao = new EntityValidationResultDaoHibernateImpl();
-//		EntityValidationResult entity = EntityValidationResult.newInstance();
-//		entity.setUuid(UUID.fromString("496b1325-be50-4b0a-9aa2-3ecd610215f2"));
-//		entity.set
-//		System.out.println("done");
-//	}
-//
 	private static final Logger logger = Logger.getLogger(EntityValidationResultDaoHibernateImpl.class);
 
 
@@ -32,9 +25,15 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 
 
 	@Override
-	public EntityValidationResult getEntityValidationResult(String validatedEntityClass, int validatedEntityId)
+	public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId)
 	{
-		Query query = getSession().createQuery("from EntityValidationResult where validatedEntityClass = :cls and validatedEntityId = : id");
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityValidationResult vr "
+					+ "WHERE vr.validatedEntityClass = :cls "
+					+ "AND vr.validatedEntityId = :id"
+		);
+		//@formatter:on
 		query.setString("cls", validatedEntityClass);
 		query.setInteger("id", validatedEntityId);
 		@SuppressWarnings("unchecked")
@@ -42,27 +41,143 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		if (result.size() == 0) {
 			return null;
 		}
-		if (result.size() != 1) {
-			String msg = String.format("Illegal multiplicity of validation results for %s with id %s", validatedEntityClass, validatedEntityId);
-			logger.error(msg);
-		}
 		return result.iterator().next();
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getEntityValidationResults()
+	public List<EntityValidationResult> getValidationResults()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityValidationResult vr "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId"
+		);
+		//@formatter:on
+		@SuppressWarnings("unchecked")
+		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		return result;
 	}
 
 
 	@Override
-	public List<EntityValidationResult> getEntityValidationResults(Severity severity)
+	public List<EntityConstraintViolation> getConstraintViolations()
 	{
-		// TODO Auto-generated method stub
-		return null;
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityConstraintViolation cv "
+					+ "JOIN FETCH cv.entityValidationResult vr "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+		//@formatter:on
+		@SuppressWarnings("unchecked")
+		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
+		return result;
 	}
+
+
+	@Override
+	public List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityValidationResult vr "
+					+ "WHERE vr.validatedEntityClass = :cls "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+		//@formatter:on
+		query.setString("cls", validatedEntityClass);
+		@SuppressWarnings("unchecked")
+		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		return result;
+	}
+
+
+	@Override
+	public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityConstraintViolation cv "
+					+ "JOIN FETCH cv.entityValidationResult vr "
+					+ "WHERE vr.validatedEntityClass = :cls "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+		//@formatter:on
+		query.setString("cls", validatedEntityClass);
+		@SuppressWarnings("unchecked")
+		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
+		return result;
+	}
+
+
+	@Override
+	public List<EntityValidationResult> getValidationResults(String validatedEntityClass, Severity severity)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityValidationResult vr "
+					+ "JOIN FETCH vr.entityConstraintViolations cv "
+					+ "WHERE vr.validatedEntityClass = :cls "
+					+ "AND cv.severity = :severity "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId"
+		);
+		//@formatter:on
+		query.setString("cls", validatedEntityClass);
+		query.setString("severity", severity.name());
+		@SuppressWarnings("unchecked")
+		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		return result;
+	}
+
+
+	@Override
+	public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass, Severity severity)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityConstraintViolation cv "
+					+ "JOIN FETCH cv.entityValidationResult vr "
+					+ "WHERE vr.validatedEntityClass = :cls "
+					+ "AND cv.severity = :severity "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+		//@formatter:on
+		query.setString("severity", severity.name());
+		@SuppressWarnings("unchecked")
+		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
+		return result;
+	}
+
+	@Override
+	public List<EntityValidationResult> getValidationResults(Severity severity)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityValidationResult vr " 
+					+ "JOIN FETCH vr.entityConstraintViolations cv " 
+					+ "WHERE cv.severity = :severity "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId"
+		);
+		//@formatter:on
+		query.setString("severity", severity.name());
+		@SuppressWarnings("unchecked")
+		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		return result;
+	}
+
+
+	@Override
+	public List<EntityConstraintViolation> getConstraintViolations(Severity severity)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityConstraintViolation cv "
+					+ "JOIN FETCH cv.entityValidationResult vr "
+					+ "WHERE cv.severity = :severity "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
+		//@formatter:on
+		query.setString("severity", severity.name());
+		@SuppressWarnings("unchecked")
+		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
+		return result;
+	}
+
 
 }
