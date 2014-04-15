@@ -5,6 +5,7 @@ import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
+import javax.validation.ConstraintValidator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -82,6 +83,11 @@ public class EntityConstraintViolation extends CdmBase {
 	}
 
 
+	/**
+	 * Get the value that violated the constraint.
+	 * 
+	 * @return
+	 */
 	public String getInvalidValue()
 	{
 		return invalidValue;
@@ -94,6 +100,11 @@ public class EntityConstraintViolation extends CdmBase {
 	}
 
 
+	/**
+	 * Get the severity of the constraint violation.
+	 * 
+	 * @return
+	 */
 	public Severity getSeverity()
 	{
 		return severity;
@@ -106,6 +117,11 @@ public class EntityConstraintViolation extends CdmBase {
 	}
 
 
+	/**
+	 * Get the error message associated with the constraint violation.
+	 * 
+	 * @return The error message
+	 */
 	public String getMessage()
 	{
 		return message;
@@ -118,13 +134,19 @@ public class EntityConstraintViolation extends CdmBase {
 	}
 
 
-	public String gettValidator()
+	/**
+	 * Get the fully qualified class name of the {@link ConstraintValidator} responsible for
+	 * invalidating the entity.
+	 * 
+	 * @param validator
+	 */
+	public String getValidator()
 	{
 		return validator;
 	}
 
 
-	public void setConstraintValidatorClass(String validator)
+	public void setValidator(String validator)
 	{
 		this.validator = validator;
 	}
