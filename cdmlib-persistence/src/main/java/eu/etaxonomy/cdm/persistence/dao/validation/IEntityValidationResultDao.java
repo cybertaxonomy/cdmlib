@@ -2,6 +2,8 @@ package eu.etaxonomy.cdm.persistence.dao.validation;
 
 import java.util.List;
 
+import javax.validation.ConstraintValidator;
+
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
@@ -63,6 +65,18 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 	 * @return The {@code EntityValidationResult}s
 	 */
 	List<EntityValidationResult> getEntityValidationResults(String validatedEntityClass);
+
+
+	/**
+	 * Get all entities that violated a particular constraint. The results are sorted according
+	 * to the type and id of the validated entities.
+	 * 
+	 * @param validatorClass
+	 *            The fully qualified class name of the {@link ConstraintValidator}.
+	 * 
+	 * @return The {@code EntityValidationResult}s
+	 */
+	List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass);
 
 
 	/**

@@ -92,6 +92,24 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 
 
 	@Override
+	public List<EntityValidationResult> getEntitiesViolatingConstraint(String validatorClass)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"FROM EntityValidationResult vr "
+					+ "JOIN FETCH vr.entityConstraintViolations cv "
+					+ "WHERE cv.validator = :cls "
+					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId"
+		);
+		//@formatter:on
+		query.setString("cls", validatorClass);
+		@SuppressWarnings("unchecked")
+		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
+		return result;
+	}
+
+
+	@Override
 	public List<EntityConstraintViolation> getConstraintViolations(String validatedEntityClass)
 	{
 		//@formatter:off
@@ -139,11 +157,13 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 					+ "AND cv.severity = :severity "
 					+ "ORDER BY vr.validatedEntityClass, vr.validatedEntityId");
 		//@formatter:on
+		query.setString("cls", validatedEntityClass);
 		query.setString("severity", severity.name());
 		@SuppressWarnings("unchecked")
 		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
 		return result;
 	}
+
 
 	@Override
 	public List<EntityValidationResult> getValidationResults(Severity severity)
@@ -178,6 +198,5 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
 		return result;
 	}
-
 
 }

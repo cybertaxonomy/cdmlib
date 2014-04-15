@@ -19,19 +19,9 @@ import eu.etaxonomy.cdm.validation.Severity;
 @DataSet
 public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTest {
 
-	//	public static void main(String[] args)
-	//	{
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//		System.out.println(UUID.randomUUID());
-	//	}
+	private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
+	private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
+	private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
 	@SpringBeanByType
 	IEntityValidationResultDao dao;
@@ -49,22 +39,22 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	{
 		EntityValidationResult result;
 
-		result = dao.getValidationResult("eu.etaxonomy.cdm.model.media.Media", 100);
+		result = dao.getValidationResult(MEDIA, 100);
 		assertNotNull(result);
 		assertEquals("Unexpected entity id", 1, result.getId());
 		assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
 
-		result = dao.getValidationResult("eu.etaxonomy.cdm.model.taxon.SynonymRelationship", 200);
+		result = dao.getValidationResult(SYNONYM_RELATIONSHIP, 200);
 		assertNotNull(result);
 		assertEquals("Unexpected entity id", 2, result.getId());
 		assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
 
-		result = dao.getValidationResult("eu.etaxonomy.cdm.model.occurrence.GatheringEvent", 300);
+		result = dao.getValidationResult(GATHERING_EVENT, 300);
 		assertNotNull(result);
 		assertEquals("Unexpected entity id", 3, result.getId());
 		assertEquals("Unexpected number of constraint violations", 3, result.getEntityConstraintViolations().size());
 
-		result = dao.getValidationResult("eu.etaxonomy.cdm.model.occurrence.GatheringEvent", 301);
+		result = dao.getValidationResult(GATHERING_EVENT, 301);
 		assertNotNull(result);
 		assertEquals("Unexpected entity id", 4, result.getId());
 		assertEquals("Unexpected number of constraint violations", 1, result.getEntityConstraintViolations().size());
@@ -80,13 +70,13 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	{
 		List<EntityValidationResult> results;
 
-		results = dao.getEntityValidationResults("eu.etaxonomy.cdm.model.media.Media");
+		results = dao.getEntityValidationResults(MEDIA);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
-		results = dao.getEntityValidationResults("eu.etaxonomy.cdm.model.taxon.SynonymRelationship");
+		results = dao.getEntityValidationResults(SYNONYM_RELATIONSHIP);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
-		results = dao.getEntityValidationResults("eu.etaxonomy.cdm.model.occurrence.GatheringEvent");
+		results = dao.getEntityValidationResults(GATHERING_EVENT);
 		assertEquals("Unexpected number of validation results", 2, results.size());
 
 		results = dao.getEntityValidationResults("foo.bar");
@@ -94,17 +84,36 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 	@Test
+	public void testGetEntitiesViolatingConstraint_String()
+	{
+		List<EntityValidationResult> results;
+
+		results = dao.getEntitiesViolatingConstraint("com.example.NameValidator");
+		assertEquals("Unexpected number of validation results", 1, results.size());
+
+		results = dao.getEntitiesViolatingConstraint("com.example.DistanceToGroundValidator");
+		assertEquals("Unexpected number of validation results", 1, results.size());
+
+		results = dao.getEntitiesViolatingConstraint("com.example.CountryValidator");
+		assertEquals("Unexpected number of validation results", 2, results.size());
+
+		results = dao.getEntitiesViolatingConstraint("foo.bar");
+		assertEquals("Unexpected number of validation results", 0, results.size());
+	}
+
+
+	@Test
 	public void testGetConstraintViolations_String()
 	{
 		List<EntityConstraintViolation> results;
 
-		results = dao.getConstraintViolations("eu.etaxonomy.cdm.model.media.Media");
+		results = dao.getConstraintViolations(MEDIA);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
-		results = dao.getConstraintViolations("eu.etaxonomy.cdm.model.taxon.SynonymRelationship");
+		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP);
 		assertEquals("Unexpected number of validation results", 2, results.size());
 
-		results = dao.getConstraintViolations("eu.etaxonomy.cdm.model.occurrence.GatheringEvent");
+		results = dao.getConstraintViolations(GATHERING_EVENT);
 		assertEquals("Unexpected number of validation results", 4, results.size());
 
 		results = dao.getConstraintViolations("foo.bar");
@@ -117,30 +126,61 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	{
 		List<EntityValidationResult> results;
 
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.media.Media", Severity.NOTICE);
+		results = dao.getValidationResults(MEDIA, Severity.NOTICE);
 		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.media.Media", Severity.WARNING);
+		results = dao.getValidationResults(MEDIA, Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.media.Media", Severity.ERROR);
+		results = dao.getValidationResults(MEDIA, Severity.ERROR);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 		assertEquals("Unexpected number of validation results", 1, results.iterator().next().getEntityConstraintViolations().size());
 		assertEquals("Unexpected severity", Severity.ERROR, results.iterator().next().getEntityConstraintViolations().iterator().next().getSeverity());
 
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.taxon.SynonymRelationship", Severity.NOTICE);
+		results = dao.getValidationResults(SYNONYM_RELATIONSHIP, Severity.NOTICE);
 		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.taxon.SynonymRelationship", Severity.WARNING);
+		results = dao.getValidationResults(SYNONYM_RELATIONSHIP, Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.taxon.SynonymRelationship", Severity.ERROR);
+		results = dao.getValidationResults(SYNONYM_RELATIONSHIP, Severity.ERROR);
 		assertEquals("Unexpected number of validation results", 1, results.size());
 
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.occurrence.GatheringEvent", Severity.NOTICE);
+		results = dao.getValidationResults(GATHERING_EVENT, Severity.NOTICE);
 		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.occurrence.GatheringEvent", Severity.WARNING);
+		results = dao.getValidationResults(GATHERING_EVENT, Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getValidationResults("eu.etaxonomy.cdm.model.occurrence.GatheringEvent", Severity.ERROR);
+		results = dao.getValidationResults(GATHERING_EVENT, Severity.ERROR);
 		assertEquals("Unexpected number of validation results", 2, results.size());
 
 		results = dao.getValidationResults("foo.bar", Severity.ERROR);
+		assertEquals("Unexpected number of validation results", 0, results.size());
+	}
+
+
+	@Test
+	public void testGetConstraintViolations_String_Severity()
+	{
+		List<EntityConstraintViolation> results;
+
+		results = dao.getConstraintViolations(MEDIA, Severity.NOTICE);
+		assertEquals("Unexpected number of validation results", 0, results.size());
+		results = dao.getConstraintViolations(MEDIA, Severity.WARNING);
+		assertEquals("Unexpected number of validation results", 0, results.size());
+		results = dao.getConstraintViolations(MEDIA, Severity.ERROR);
+		assertEquals("Unexpected number of validation results", 1, results.size());
+
+		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.NOTICE);
+		assertEquals("Unexpected number of validation results", 0, results.size());
+		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.WARNING);
+		assertEquals("Unexpected number of validation results", 1, results.size());
+		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.ERROR);
+		assertEquals("Unexpected number of validation results", 1, results.size());
+
+		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.NOTICE);
+		assertEquals("Unexpected number of validation results", 1 , results.size());
+		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.WARNING);
+		assertEquals("Unexpected number of validation results", 1 , results.size());
+		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.ERROR);
+		assertEquals("Unexpected number of validation results", 2 , results.size());
+
+		results = dao.getConstraintViolations("foo.bar", Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 0, results.size());
 	}
 
