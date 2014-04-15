@@ -1,8 +1,6 @@
 package eu.etaxonomy.cdm.model.validation;
 
 import javax.persistence.Entity;
-import javax.persistence.EnumType;
-import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
 import javax.validation.ConstraintValidator;
@@ -50,8 +48,7 @@ public class EntityConstraintViolation extends CdmBase {
 	private String invalidValue;
 
 	@XmlElement(name = "Severity")
-	@Enumerated(EnumType.STRING)
-	private Severity severity;
+	private String severity;
 
 	@XmlElement(name = "Message")
 	private String message;
@@ -65,11 +62,11 @@ public class EntityConstraintViolation extends CdmBase {
 
 
 	/**
-	 * Get the path from the root bean to the field with the invalid value. Ordinarily this
-	 * simply is the simple name of the field of the validated entity (see
+	 * Get the path from the root bean to the field with the invalid value. Ordinarily
+	 * this simply is the simple name of the field of the validated entity (see
 	 * {@link EntityValidationResult#getValidatedEntityClass()}). Only if you have used @Valid
-	 * annotations, and the error was in a parent or child entity, will this be a dot-separated
-	 * path (e.g. "addresses[0].street" or "company.name").
+	 * annotations, and the error was in a parent or child entity, will this be a
+	 * dot-separated path (e.g. "addresses[0].street" or "company.name").
 	 */
 	public String getPropertyPath()
 	{
@@ -105,13 +102,13 @@ public class EntityConstraintViolation extends CdmBase {
 	 * 
 	 * @return
 	 */
-	public Severity getSeverity()
+	public String getSeverity()
 	{
 		return severity;
 	}
 
 
-	public void setSeverity(Severity severity)
+	public void setSeverity(String severity)
 	{
 		this.severity = severity;
 	}
@@ -135,8 +132,8 @@ public class EntityConstraintViolation extends CdmBase {
 
 
 	/**
-	 * Get the fully qualified class name of the {@link ConstraintValidator} responsible for
-	 * invalidating the entity.
+	 * Get the fully qualified class name of the {@link ConstraintValidator} responsible
+	 * for invalidating the entity.
 	 * 
 	 * @param validator
 	 */
