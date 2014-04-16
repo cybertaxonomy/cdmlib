@@ -11,6 +11,14 @@ import org.hibernate.usertype.UserType;
 
 import eu.etaxonomy.cdm.validation.Severity;
 
+/**
+ * A Hibernate {@code UserType} implementation for persisting {@link Severity} instances.
+ * 
+ * @see EntityConstraintViolation
+ * 
+ * @author ayco_holleman
+ * 
+ */
 public class SeverityType implements UserType {
 
 	@Override

@@ -70,7 +70,7 @@ public class EntityValidationResult extends CdmBase {
 
 	@XmlElementWrapper(name = "EntityConstraintViolations")
 	@OneToMany(mappedBy = "entityValidationResult")
-	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE, CascadeType.REFRESH })
+	@Cascade({ CascadeType.ALL })
 	private Set<EntityConstraintViolation> entityConstraintViolations;
 
 

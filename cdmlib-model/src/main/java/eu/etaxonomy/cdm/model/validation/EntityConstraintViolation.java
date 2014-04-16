@@ -11,6 +11,8 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Cascade;
+import org.hibernate.annotations.CascadeType;
 import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -60,6 +62,7 @@ public class EntityConstraintViolation extends CdmBase {
 
 	@XmlElement(name = "EntityValidationResult")
 	@ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({ CascadeType.ALL })
 	private EntityValidationResult entityValidationResult;
 
 
