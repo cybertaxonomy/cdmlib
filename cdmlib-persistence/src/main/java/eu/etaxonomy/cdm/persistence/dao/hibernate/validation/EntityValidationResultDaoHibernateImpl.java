@@ -15,6 +15,7 @@ import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
+import eu.etaxonomy.cdm.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Severity;
 
 @Repository
@@ -29,15 +30,44 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 	}
 
 
+//	public void save(ConstraintViolation<CdmBase> error)
+//	{
+//		EntityConstraintViolation ecv = new EntityConstraintViolation();
+//		ecv.setInvalidValue(error.getInvalidValue().toString());
+//		ecv.setMessage(error.getMessage());
+//		ecv.setPropertyPath(error.getPropertyPath().toString());
+//		Set<Class<? extends Payload>> payloads = error.getConstraintDescriptor().getPayload();
+//		for (Class<? extends Payload> payload : payloads) {
+//			if (Severity.class.isAssignableFrom(payload)) {
+//				ecv.setSeverity(payload.getSimpleName());
+//				break;
+//			}
+//		}
+//		ecv.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
+//
+//		EntityValidationResult evr = EntityValidationResult.newInstance();
+//		//evr.setCrudEventType(crudEventType);
+//		ecv.setEntityValidationResult(evr);
+//		evr.addEntityConstraintViolation(ecv);
+//	}
+
+
 	@Override
-	public void save(ConstraintViolation<CdmBase> error)
+	public void saveValidationResult(List<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType)
 	{
-		EntityConstraintViolation ecv = new EntityConstraintViolation();
-		ecv.setInvalidValue(error.getInvalidValue().toString());
-		ecv.setMessage(error.getMessage());
-		ecv.setPropertyPath(error.getPropertyPath().toString());
-		Set<Class<? extends Payload>> payloads = error.getConstraintDescriptor().getPayload();
-		//ecv.setSeverity(error.getConstraintDescriptor().);
+		EntityValidationResult evr = EntityValidationResult.newInstance();
+		ConstraintViolation<CdmBase> first = errors.iterator().next();
+		evr.setCrudEventType(crudEventType);
+		evr.setValidatedEntityClass(entity.getClass().getName());
+		evr.setValidatedEntityId(entity.getId());
+		evr.setValidatedEntityUuid(entity.getUuid());
+		for (ConstraintViolation<CdmBase> error : errors) {
+			EntityConstraintViolation ecv = EntityConstraintViolation.newInstance();
+			Severity severity = Severity.getSeverity(error);
+			if (severity != null) {
+				ecv.setSeverity(Severity.getSeverity(error));
+			}
+		}
 	}
 
 
