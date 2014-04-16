@@ -74,6 +74,12 @@ public class EntityValidationResult extends CdmBase {
 	private Set<EntityConstraintViolation> entityConstraintViolations;
 
 
+	protected EntityValidationResult()
+	{
+		super();
+	}
+
+
 	public int getValidatedEntityId()
 	{
 		return validatedEntityId;
@@ -146,14 +152,8 @@ public class EntityValidationResult extends CdmBase {
 		}
 	}
 
-
 	/////////////////////////////////
 	// END PUBLIC INTERFACE
 	/////////////////////////////////
-
-	protected EntityValidationResult()
-	{
-		super();
-	}
 
 }

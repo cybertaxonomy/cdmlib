@@ -1,0 +1,100 @@
+package eu.etaxonomy.cdm.model.validation;
+
+import java.io.Serializable;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.hibernate.HibernateException;
+import org.hibernate.engine.spi.SessionImplementor;
+import org.hibernate.usertype.UserType;
+
+import eu.etaxonomy.cdm.validation.Severity;
+
+public class SeverityType implements UserType {
+
+	@Override
+	public int[] sqlTypes()
+	{
+		return new int[] { java.sql.Types.VARCHAR };
+	}
+
+
+	@SuppressWarnings("rawtypes")
+	@Override
+	public Class returnedClass()
+	{
+		return Severity.class;
+	}
+
+
+	@Override
+	public boolean equals(Object x, Object y) throws HibernateException
+	{
+		if (x == null && y != null) {
+			return false;
+		}
+		if (x != null && y == null) {
+			return false;
+		}
+		return ((Severity) x).equals(y);
+	}
+
+
+	@Override
+	public int hashCode(Object x) throws HibernateException
+	{
+		return x.getClass().hashCode();
+	}
+
+
+	@Override
+	public Object nullSafeGet(ResultSet rs, String[] names, SessionImplementor session, Object owner) throws HibernateException, SQLException
+	{
+		String severity = rs.getString(names[0]);
+		return rs.wasNull() ? null : Severity.forName(severity);
+	}
+
+
+	@Override
+	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException
+	{
+		st.setString(index, value.toString());
+	}
+
+
+	@Override
+	public Object deepCopy(Object value) throws HibernateException
+	{
+		return value;
+	}
+
+
+	@Override
+	public boolean isMutable()
+	{
+		return false;
+	}
+
+
+	@Override
+	public Serializable disassemble(Object value) throws HibernateException
+	{
+		return null;
+	}
+
+
+	@Override
+	public Object assemble(Serializable cached, Object owner) throws HibernateException
+	{
+		return null;
+	}
+
+
+	@Override
+	public Object replace(Object original, Object target, Object owner) throws HibernateException
+	{
+		return original;
+	}
+
+}

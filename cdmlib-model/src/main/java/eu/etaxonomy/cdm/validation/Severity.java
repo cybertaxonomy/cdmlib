@@ -1,34 +1,78 @@
 package eu.etaxonomy.cdm.validation;
 
+import java.util.Set;
+
 import javax.validation.ConstraintViolation;
 import javax.validation.Payload;
 
 /**
- * A class conveying the severity of a {@link ConstraintViolation}. It looks a bit odd
- * because this type of information is in fact extraneous to javax.validation and can only
- * be conveyed using {@link Payload}s. Strangely however, payloads <i>must</i> be
- * {@code Class} objects rather than ordinary objects or enums (an obvious choice for
- * severity levels). The Severity class enables you to program using true Severity
- * instances (one for each level), while behind the scenes only the class of those
- * instances is inspected.
- * 
- * @author ayco_holleman
- * 
+ * A class conveying the severity of a {@link ConstraintViolation}. Severity levels are in
+ * fact extraneous to the javax.validation framework and can only be conveyed using
+ * generic {@link Payload} objects. Unfortunately, only the class of those objects is
+ * communicated back to clients of the javax.validation framework. The class <i>is</i> the
+ * message. Concrete instances or {@code enum}s (an obvious choice for severity levels)
+ * cannot function as {@code Payload} objects. The Severity class enables you to program
+ * using true Severity instances (one for each level), while behind the scenes only the
+ * class of those instances is taken into account (e.g. when sending data back and forth
+ * from the database)
  */
-public abstract class Severity {
+public abstract class Severity implements Payload {
 
 	public static final Notice NOTICE = new Notice();
 	public static final Warning WARNING = new Warning();
 	public static final Error ERROR = new Error();
 
-	public static final class Notice extends Severity implements Payload {
-	};
+	//@formatter:off
+	public static final class Notice extends Severity {};
+	public static final class Warning extends Severity {};
+	public static final class Error extends Severity {};
+	//@formatter:on
 
-	public static final class Warning extends Severity implements Payload {
-	};
+	/**
+	 * Get {@code Severity} object for the specified {@code String} represention. Does the
+	 * opposite of {@link #toString()}.
+	 * 
+	 * @param name
+	 *            The {@code String} represention of {@code Severity} object you want.
+	 * 
+	 * @return The {@code Severity} object
+	 */
+	public static Severity forName(String name)
+	{
+		if (name.equals(Error.class.getSimpleName())) {
+			return ERROR;
+		}
+		if (name.equals(Warning.class.getSimpleName())) {
+			return WARNING;
+		}
+		return NOTICE;
+	}
 
-	public static final class Error extends Severity implements Payload {
-	};
+
+	/**
+	 * Get the {@code Severity} of the specified {@code ConstraintViolation}.
+	 * 
+	 * @param error
+	 *            The {@code ConstraintViolation}
+	 * 
+	 * @return The {@code Severity}
+	 */
+	public static Severity getSeverity(ConstraintViolation<?> error)
+	{
+		Set<Class<? extends Payload>> payloads = error.getConstraintDescriptor().getPayload();
+		for (Class<? extends Payload> payload : payloads) {
+			if (payload == Error.class) {
+				return ERROR;
+			}
+			if (payload == Warning.class) {
+				return WARNING;
+			}
+			if (payload == Notice.class) {
+				return NOTICE;
+			}
+		}
+		return null;
+	}
 
 
 	private Severity()
@@ -39,6 +83,6 @@ public abstract class Severity {
 	@Override
 	public String toString()
 	{
-		return getClass().getSimpleName().toUpperCase();
+		return getClass().getSimpleName();
 	}
 }

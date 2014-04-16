@@ -11,6 +11,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Severity;
@@ -48,7 +49,8 @@ public class EntityConstraintViolation extends CdmBase {
 	private String invalidValue;
 
 	@XmlElement(name = "Severity")
-	private String severity;
+	@Type(type = "eu.etaxonomy.cdm.model.validation.SeverityType")
+	private Severity severity;
 
 	@XmlElement(name = "Message")
 	private String message;
@@ -59,6 +61,11 @@ public class EntityConstraintViolation extends CdmBase {
 	@XmlElement(name = "EntityValidationResult")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private EntityValidationResult entityValidationResult;
+
+
+	protected EntityConstraintViolation()
+	{
+	}
 
 
 	/**
@@ -102,13 +109,13 @@ public class EntityConstraintViolation extends CdmBase {
 	 * 
 	 * @return
 	 */
-	public String getSeverity()
+	public Severity getSeverity()
 	{
 		return severity;
 	}
 
 
-	public void setSeverity(String severity)
+	public void setSeverity(Severity severity)
 	{
 		this.severity = severity;
 	}
