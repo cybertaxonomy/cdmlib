@@ -4,16 +4,30 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.lang.reflect.Method;
 import java.util.List;
+import java.util.Set;
 
+import javax.validation.ConstraintViolation;
+import javax.validation.Validation;
+import javax.validation.Validator;
+import javax.validation.ValidatorFactory;
+
+import org.hibernate.validator.HibernateValidator;
+import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
+import eu.etaxonomy.cdm.persistence.validation.Company;
+import eu.etaxonomy.cdm.persistence.validation.Employee;
+import eu.etaxonomy.cdm.persistence.validation.Level2ValidationTask;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Severity;
 
 @DataSet
@@ -31,6 +45,49 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	public void init()
 	{
 		assertNotNull("Expecting an instance of IEntityValidationResultDao", dao);
+	}
+
+
+	//@Test
+	public void testSaveValidationResult()
+	{
+
+		HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
+		ValidatorFactory factory = config.buildValidatorFactory();
+
+		// This is the bean that is bean that is going to be tested
+		Employee emp = new Employee();
+		// ERROR 1 (should be JOHN)
+		emp.setFirstName("john");
+		// This is an error (should be SMITH), but it is a Level-3
+		// validation error, so the error should be ignored
+		emp.setLastName("smith");
+
+		// This is an @Valid bean on the Employee class, so Level-2
+		// validation errors on the Company object should also be
+		// listed.
+		Company comp = new Company();
+		// ERROR 2 (should be GOOGLE)
+		comp.setName("Google");
+		emp.setCompany(comp);
+
+		// Validate
+		Level2ValidationTask task = new Level2ValidationTask(emp);
+		Class<Level2ValidationTask> cls = Level2ValidationTask.class;
+		try {
+			Method setValidator = cls.getMethod("setValidator", Validator.class);
+			setValidator.setAccessible(true);
+			setValidator.invoke(task, factory.getValidator());
+			Method validate = cls.getMethod("validate");
+			validate.setAccessible(true);
+			@SuppressWarnings("unchecked")
+			Set<ConstraintViolation<CdmBase>> errors = (Set<ConstraintViolation<CdmBase>>) validate.invoke(task);
+			dao.saveValidationResult(errors, emp, CRUDEventType.NONE);		
+		}
+		catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 

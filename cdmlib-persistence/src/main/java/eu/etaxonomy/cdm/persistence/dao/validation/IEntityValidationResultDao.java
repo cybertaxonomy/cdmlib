@@ -1,6 +1,7 @@
 package eu.etaxonomy.cdm.persistence.dao.validation;
 
 import java.util.List;
+import java.util.Set;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintViolation;
@@ -35,7 +36,7 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 	 * @param crudEventType
 	 *            The CRUD operation triggering the validation
 	 */
-	void saveValidationResult(List<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType);
+	void saveValidationResult(Set<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType);
 
 
 	/**

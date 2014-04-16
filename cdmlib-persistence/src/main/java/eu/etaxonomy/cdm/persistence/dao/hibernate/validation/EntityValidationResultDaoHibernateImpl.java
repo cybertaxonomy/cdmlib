@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
-import javax.validation.Payload;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
@@ -30,44 +29,29 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 	}
 
 
-//	public void save(ConstraintViolation<CdmBase> error)
-//	{
-//		EntityConstraintViolation ecv = new EntityConstraintViolation();
-//		ecv.setInvalidValue(error.getInvalidValue().toString());
-//		ecv.setMessage(error.getMessage());
-//		ecv.setPropertyPath(error.getPropertyPath().toString());
-//		Set<Class<? extends Payload>> payloads = error.getConstraintDescriptor().getPayload();
-//		for (Class<? extends Payload> payload : payloads) {
-//			if (Severity.class.isAssignableFrom(payload)) {
-//				ecv.setSeverity(payload.getSimpleName());
-//				break;
-//			}
-//		}
-//		ecv.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
-//
-//		EntityValidationResult evr = EntityValidationResult.newInstance();
-//		//evr.setCrudEventType(crudEventType);
-//		ecv.setEntityValidationResult(evr);
-//		evr.addEntityConstraintViolation(ecv);
-//	}
-
-
 	@Override
-	public void saveValidationResult(List<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType)
+	public void saveValidationResult(Set<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType)
 	{
-		EntityValidationResult evr = EntityValidationResult.newInstance();
-		ConstraintViolation<CdmBase> first = errors.iterator().next();
-		evr.setCrudEventType(crudEventType);
-		evr.setValidatedEntityClass(entity.getClass().getName());
-		evr.setValidatedEntityId(entity.getId());
-		evr.setValidatedEntityUuid(entity.getUuid());
-		for (ConstraintViolation<CdmBase> error : errors) {
-			EntityConstraintViolation ecv = EntityConstraintViolation.newInstance();
-			Severity severity = Severity.getSeverity(error);
-			if (severity != null) {
-				ecv.setSeverity(Severity.getSeverity(error));
-			}
+		EntityValidationResult old = getValidationResult(entity.getClass().getName(), entity.getId());
+		if(old != null) {
+			getSession().delete(old);
 		}
+		EntityValidationResult result = EntityValidationResult.newInstance();
+		result.setCrudEventType(crudEventType);
+		result.setValidatedEntityClass(entity.getClass().getName());
+		result.setValidatedEntityId(entity.getId());
+		result.setValidatedEntityUuid(entity.getUuid());
+		for (ConstraintViolation<CdmBase> error : errors) {
+			EntityConstraintViolation violation = EntityConstraintViolation.newInstance();
+			violation.setSeverity(Severity.getSeverity(error));
+			violation.setInvalidValue(error.getInvalidValue().toString());
+			violation.setMessage(error.getMessage());
+			violation.setPropertyPath(error.getPropertyPath().toString());
+			violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
+			result.addEntityConstraintViolation(violation);
+			violation.setEntityValidationResult(result);
+		}
+		getSession().merge(result);
 	}
 
 

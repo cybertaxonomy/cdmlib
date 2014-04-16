@@ -1,8 +1,6 @@
 package eu.etaxonomy.cdm.persistence.validation;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Set;
 
 import javax.validation.ConstraintViolation;
@@ -18,8 +16,8 @@ import org.junit.Test;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
- * Basically just tests that the JSR-303 validation is working in the first place, and that it
- * is working as expected.
+ * Basically just tests that the JSR-303 validation is working in the first place, and
+ * that it is working as expected.
  * 
  * @author ayco holleman
  * 

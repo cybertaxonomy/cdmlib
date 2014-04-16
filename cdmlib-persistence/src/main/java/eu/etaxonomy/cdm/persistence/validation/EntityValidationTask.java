@@ -19,9 +19,9 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
  * Abstract base class for JPA entity validation tasks. Note that in the future other
  * types of classes might be decorated with annotations from the JSR-303 validation
  * framework. This base class, hoewever, is specifically targeted at the validation of JPA
- * entities.
+ * entities (more specifically instances of {@link CdmBase}.
  * 
- * @author ayco holleman
+ * @author ayco_holleman
  * 
  */
 public abstract class EntityValidationTask implements Runnable {
@@ -81,8 +81,7 @@ public abstract class EntityValidationTask implements Runnable {
 				waitForThread.get().join();
 			}
 			Set<ConstraintViolation<CdmBase>> errors = validate();
-			for (ConstraintViolation<CdmBase> error : errors) {
-			}
+			dao.saveValidationResult(errors, entity, crudEventType);
 		}
 		catch (Throwable t) {
 			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
@@ -108,7 +107,7 @@ public abstract class EntityValidationTask implements Runnable {
 		if (!Arrays.deepEquals(validationGroups, other.validationGroups)) {
 			return false;
 		}
-		return entity.equals(other.entity);
+		return entity.getId() == other.getEntity().getId();
 	}
 
 
@@ -116,7 +115,7 @@ public abstract class EntityValidationTask implements Runnable {
 	public int hashCode()
 	{
 		int hash = 17;
-		hash = (hash * 31) + entity.hashCode();
+		hash = (hash * 31) + entity.getId();
 		hash = (hash * 31) + Arrays.deepHashCode(validationGroups);
 		return hash;
 	}
@@ -154,14 +153,17 @@ public abstract class EntityValidationTask implements Runnable {
 	/**
 	 * Make this task wait for the specified thread to complete. Will be called by
 	 * {@link ValidationExecutor#beforeExecute(Thread, Runnable)} when it detects that the
-	 * specified thread is validating the same entity. This is currently a completely
-	 * theoretical exercise, since we only allow one thread in the thread pool. Thus
-	 * concurrent validation of one and the same entity can never happen (in fact,
-	 * concurrent validation cannot happen at all). However, to be future-proof we already
-	 * implemented a mechanism to prevent the concurrent validation of one and the same
-	 * entity. This method only stores a {@link WeakReference} to the thread to interfere
-	 * as little as possible with what's going on within the java concurrency framework
-	 * (i.e. the {@link ThreadPoolExecutor}).
+	 * specified thread is validating the same entity.
+	 * <p>
+	 * Currently this is a theoretical exercise, since we only allow one thread in the
+	 * thread pool. Thus concurrent validation of one and the same entity can never happen
+	 * (in fact, concurrent validation cannot happen any which way). However, to be future
+	 * proof we already implemented a mechanism to prevent the concurrent validation of
+	 * one and the same entity.
+	 * <p>
+	 * This method only stores a {@link WeakReference} to the thread to interfere as
+	 * little as possible with what's going on within the java concurrency framework (i.e.
+	 * the {@link ThreadPoolExecutor} ).
 	 */
 	void waitFor(EntityValidationThread thread)
 	{
