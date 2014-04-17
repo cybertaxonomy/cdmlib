@@ -23,9 +23,8 @@ import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 
 /**
- * @author p.kelbert
- * @created 29.10.2008
- * @version 1.0
+ * @author a.mueller
+ * @created 15.05.2010
  */
 @Component
 public class NamedAreaLevelExcelImport  extends ExcelImporterBase<SpecimenCdmExcelImportState>  implements ICdmIO<SpecimenCdmExcelImportState> {

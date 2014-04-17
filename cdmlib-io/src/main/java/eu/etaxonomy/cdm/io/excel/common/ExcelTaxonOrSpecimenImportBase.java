@@ -48,6 +48,8 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	protected static final String GENUS_COLUMN = "(?i)(Genus)";
 	protected static final String SPECIFIC_EPITHET_COLUMN = "(?i)(SpecificEpi(thet)?)";
 	protected static final String INFRASPECIFIC_EPITHET_COLUMN = "(?i)(InfraSpecificEpi(thet)?)";
+	
+	protected static final String LANGUAGE = "(?i)(Language)";
 
 	@Override
 	protected void analyzeRecord(HashMap<String, String> record, STATE state) {

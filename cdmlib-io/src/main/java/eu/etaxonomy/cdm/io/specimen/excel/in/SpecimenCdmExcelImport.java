@@ -185,7 +185,8 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			}else{
 				logger.warn("Not yet implemented");
 			}
-		
+		} else if(keyValue.key.matches(LANGUAGE)) {
+			row.setLanguage(value);		
 			
 			
 		} else if(keyValue.key.matches(ACCESSION_NUMBER_COLUMN)) {
@@ -266,6 +267,18 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		}
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(type);
 		
+		
+		Language lang = Language.DEFAULT();
+		if (StringUtils.isNotBlank(row.getLanguage())){
+			Language langIso = getTermService().getLanguageByIso(row.getLanguage());
+			if (langIso == null){
+				String message = "Language could not be recognized: %s. Use default language instead. Line %d.";
+				message = String.format(message, langIso, state.getCurrentLine());
+			}else{
+				lang = langIso;
+			}
+		}
+		
 		//country
 		handleCountry(facade, row, state);
 		handleAreas(facade,row, state);
@@ -274,14 +287,13 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 		facade.setLocality(row.getLocality());
 		facade.setFieldNotes(row.getFieldNotes());
 		facade.setFieldNumber(row.getCollectorsNumber());
-		facade.setEcology(row.getEcology());
-		facade.setPlantDescription(row.getPlantDescription());
+		facade.setEcology(row.getEcology(), lang);
+		facade.setPlantDescription(row.getPlantDescription(), lang);
 //		facade.setSex(row.get)
 		handleExactLocation(facade, row, state);
 		facade.setCollector(getOrMakeAgent(state, row.getCollectors()));
 		facade.setPrimaryCollector(getOrMakePrimaryCollector(facade, row.getPrimaryCollector(), state));
 		handleAbsoluteElevation(facade, row, state);
-		
 		
 		//derivedUnit
 		facade.setBarcode(row.getBarcode());
@@ -871,6 +883,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			try {
 				refSys = state.getTransformer().getReferenceSystemByKey(strRefSys);
 				if (refSys == null){
+					//TODO we still need user defined Reference Systems here
 					refUuid = state.getTransformer().getReferenceSystemUuid(strRefSys);
 					if (refUuid == null){
 						String message = "Unknown reference system %s in line %d";

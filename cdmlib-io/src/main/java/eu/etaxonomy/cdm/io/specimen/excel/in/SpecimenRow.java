@@ -49,6 +49,7 @@ public class SpecimenRow extends ExcelRowBase{
 	private String collectingDateEnd;
 	private String collectorsNumber;
 	private String primaryCollector;
+	private String language;
 
 	private String sex;
 
@@ -590,6 +591,16 @@ public class SpecimenRow extends ExcelRowBase{
 	 */
 	public String getPrimaryCollector() {
 		return primaryCollector;
+	}
+
+
+	public String getLanguage() {
+		return language;
+	}
+
+
+	public void setLanguage(String language) {
+		this.language = language;
 	}
 	
 }
