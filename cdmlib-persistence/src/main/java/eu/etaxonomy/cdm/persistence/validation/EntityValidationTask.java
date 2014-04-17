@@ -15,10 +15,10 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.validation.CRUDEventType;
 
 /**
- * Abstract base class for JPA entity validation tasks. Note that in the future other
- * types of classes might be decorated with annotations from the JSR-303 validation
- * framework. This base class, hoewever, is specifically targeted at the validation of JPA
- * entities (more specifically instances of {@link CdmBase}.
+ * Abstract base class for JPA entity validation tasks. Note that in the future non-entity
+ * classes might also be decorated with constraint annotations. This base class, hoewever,
+ * is specifically targeted at the validation of JPA entities (more specifically instances
+ * of {@link CdmBase}.
  * 
  * @author ayco_holleman
  * 
@@ -176,13 +176,13 @@ public abstract class EntityValidationTask implements Runnable {
 	 * <p>
 	 * Currently this is a theoretical exercise, since we only allow one thread in the
 	 * thread pool. Thus concurrent validation of one and the same entity can never happen
-	 * (in fact, concurrent validation cannot happen any which way). However, to be future
+	 * (in fact, concurrent validation cannot happen full-stop). However, to be future
 	 * proof we already implemented a mechanism to prevent the concurrent validation of
 	 * one and the same entity.
 	 * <p>
 	 * This method only stores a {@link WeakReference} to the thread to interfere as
 	 * little as possible with what's going on within the java concurrency framework (i.e.
-	 * the {@link ThreadPoolExecutor} ).
+	 * the {@link ThreadPoolExecutor}).
 	 */
 	void waitFor(EntityValidationThread thread)
 	{
