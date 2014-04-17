@@ -9,7 +9,6 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Validator;
 
 import org.apache.log4j.Logger;
-import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
@@ -32,11 +31,9 @@ public abstract class EntityValidationTask implements Runnable {
 	private final CRUDEventType crudEventType;
 	private final Class<?>[] validationGroups;
 
+	private IEntityValidationResultDao dao;
 	private Validator validator;
 	private WeakReference<EntityValidationThread> waitForThread;
-
-	@SpringBeanByType
-	private IEntityValidationResultDao dao;
 
 
 	/**
@@ -73,6 +70,18 @@ public abstract class EntityValidationTask implements Runnable {
 	}
 
 
+	public void setValidator(Validator validator)
+	{
+		this.validator = validator;
+	}
+
+
+	public void setDao(IEntityValidationResultDao dao)
+	{
+		this.dao = dao;
+	}
+
+
 	@Override
 	public void run()
 	{
@@ -81,7 +90,23 @@ public abstract class EntityValidationTask implements Runnable {
 				waitForThread.get().join();
 			}
 			Set<ConstraintViolation<CdmBase>> errors = validate();
-			dao.saveValidationResult(errors, entity, crudEventType);
+			if (dao != null) {
+				/*
+				 * This test for null is a hack!!! It should normally be regarded as a
+				 * program error (assertion error) if the dao is null. The beforeExecute()
+				 * method of the ValidationExecutor guarantees that both the dao and the
+				 * validator are set before an entity is validated. However, in the test
+				 * phase mock records are inserted into the test database (H2), which
+				 * triggers their validation (i.e. this method will be called). At that
+				 * time the dao is not set yet. So where I can have the dao injected such
+				 * that I can pass it on to the EntityValidationTask? When I annotate the
+				 * dao field with @SpringBeanByType, it doesn't work, even though when I
+				 * add @SpringBeanByType to the same dao in my test classes (e.g.
+				 * eu.etaxonomy.cdm.persistence.dao.hibernate.validation.
+				 * EntityValidationResultDaoHibernateImplTest) it DOES work.
+				 */
+				dao.saveValidationResult(errors, entity, crudEventType);
+			}
 		}
 		catch (Throwable t) {
 			logger.error("Error while validating " + entity.toString() + ": " + t.getMessage());
@@ -141,12 +166,6 @@ public abstract class EntityValidationTask implements Runnable {
 	CdmBase getEntity()
 	{
 		return entity;
-	}
-
-
-	void setValidator(Validator validator)
-	{
-		this.validator = validator;
 	}
 
 

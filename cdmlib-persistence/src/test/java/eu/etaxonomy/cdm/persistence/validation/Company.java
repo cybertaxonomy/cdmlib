@@ -6,7 +6,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Level2;
 
 /**
- * Mock class for validating entity validation tasks
+ * Mock class for validating entity validation tasks. DO NOT MODIFY UNLESS YOU ALSO MODIFY
+ * THE UNIT TESTS MAKING USE OF THIS CLASS!
  * 
  * @author ayco_holleman
  * 

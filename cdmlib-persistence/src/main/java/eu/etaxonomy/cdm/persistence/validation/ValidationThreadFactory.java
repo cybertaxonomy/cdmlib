@@ -19,8 +19,7 @@ class ValidationThreadFactory implements ThreadFactory {
 	private static final String THREAD_GROUP_NAME = "VALIDATION";
 	private static final String DEFAULT_THREAD_NAME = "";
 
-	// TODO: Should problably be autowired, but that requires a Spring
-	// bean configuration for cdmlib-persistence
+	// TODO: Autowire this?
 	private final ValidatorFactory factory;
 	
 	private final ThreadGroup threadGroup;

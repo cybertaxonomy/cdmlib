@@ -5,10 +5,10 @@ import javax.validation.Validator;
 
 /**
  * A subclass of {@code Thread} specialised in running validation tasks. Each
- * {@code ValidationThread} has its own {@link Validator} instance. In addition it allows a
- * flag to be set (by the main thread) that the currently running {@link ConstraintValidator}
- * may query to see if there is a termination request. See {@link ValidationExecutor} for the
- * rationale behind this.
+ * {@code ValidationThread} has its own {@link Validator} instance. In addition it allows
+ * a flag to be set (by the main thread) that the currently running
+ * {@link ConstraintValidator} may query to see if there is a termination request. See
+ * {@link ValidationExecutor} for the rationale behind this.
  * 
  * @see {@link #isTerminationRequested()}.
  * 
@@ -33,8 +33,8 @@ public final class EntityValidationThread extends Thread {
 
 	/**
 	 * Flag indicating that the {@link ConstraintValidator} currently running in this
-	 * {@code ValidationThread} is requested to terminate itself. Constraint validators can
-	 * check whether to abort the validation like so:<br>
+	 * {@code ValidationThread} is requested to terminate itself. Constraint validators
+	 * can check whether to abort the validation like so:<br>
 	 * <code>
 	 * if(Thread.currentThread() instanceof ValidationThread) {
 	 * 	ValidationThread vt = (ValidationThread) Thread.currentThread();
@@ -44,8 +44,8 @@ public final class EntityValidationThread extends Thread {
 	 * }
 	 * </code>
 	 * 
-	 * @return Whether or not the currently running {@link ConstraintValidator} is requested to
-	 *         terminate itself
+	 * @return Whether or not the currently running {@link ConstraintValidator} is
+	 *         requested to terminate itself
 	 */
 	public boolean isTerminationRequested()
 	{
