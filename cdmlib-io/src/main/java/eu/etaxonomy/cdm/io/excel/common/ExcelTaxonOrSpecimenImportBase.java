@@ -171,7 +171,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			keyValue.index = 0;
 		}
 		//source
-		if (split.length > current){
+		if (split.length > current && ! isIgnore(keyValue.key)){
 			//refType
 			if (isRefType(split[current])){
 				String refTypeStr = split[current++];
@@ -204,7 +204,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 			}
 			
 		}
-		if (split.length > current){
+		if (split.length > current  && ! isIgnore(keyValue.key)){
 			String message = "Key has unexpected part at position %d of key. %s (and following parts) can not be handled";
 			message = String.format(message, current, split[current]);
 			fireWarningEvent(message, state, 10);
@@ -225,6 +225,10 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 	}
 
 	
+	private boolean isIgnore(String key) {
+		return key.matches(IGNORE_COLUMN);
+	}
+
 	private boolean isRefType(String string) {
 		return SourceType.isKeyName(string);
 	}
@@ -243,7 +247,7 @@ public abstract class ExcelTaxonOrSpecimenImportBase<STATE extends ExcelImportSt
 		String key = keyValue.key;
 		if (key.matches(CDM_UUID_COLUMN)){
 			return true;
-		} else if(keyValue.key.matches(IGNORE_COLUMN)) {
+		} else if(isIgnore(keyValue.key)) {
 			logger.debug("Ignored column" + keyValue.originalKey);
 			return true;
 		}
