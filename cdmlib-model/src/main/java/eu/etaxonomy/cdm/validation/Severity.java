@@ -13,8 +13,7 @@ import javax.validation.Payload;
  * message. Concrete instances or {@code enum}s (an obvious choice for severity levels)
  * cannot function as {@code Payload} objects. The Severity class enables you to program
  * using true Severity instances (one for each level), while behind the scenes only the
- * class of those instances is taken into account (e.g. when sending data back and forth
- * from the database)
+ * class of those instances is taken into account.
  */
 public abstract class Severity implements Payload {
 

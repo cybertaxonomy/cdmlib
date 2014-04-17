@@ -12,7 +12,7 @@ import org.hibernate.usertype.UserType;
 import eu.etaxonomy.cdm.validation.Severity;
 
 /**
- * A Hibernate {@code UserType} implementation for persisting {@link Severity} instances.
+ * A Hibernate {@code UserType} for persisting {@link Severity} instances.
  * 
  * @see EntityConstraintViolation
  * 
@@ -39,10 +39,13 @@ public class SeverityType implements UserType {
 	@Override
 	public boolean equals(Object x, Object y) throws HibernateException
 	{
-		if (x == null && y != null) {
+		if (x == null) {
+			if (y == null) {
+				return true;
+			}
 			return false;
 		}
-		if (x != null && y == null) {
+		if (y == null) {
 			return false;
 		}
 		return ((Severity) x).equals(y);
@@ -67,7 +70,7 @@ public class SeverityType implements UserType {
 	@Override
 	public void nullSafeSet(PreparedStatement st, Object value, int index, SessionImplementor session) throws HibernateException, SQLException
 	{
-		st.setString(index, value.toString());
+		st.setString(index, value == null ? null : value.toString());
 	}
 
 
