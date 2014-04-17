@@ -121,7 +121,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 	private static final String DETERMINATION_AUTHOR_COLUMN = "(?i)(Author)";
 	private static final String DETERMINATION_MODIFIER_COLUMN = "(?i)(DeterminationModifier)";
 	private static final String DETERMINED_BY_COLUMN = "(?i)(DeterminationBy)";
-	private static final String DETERMINED_WHEN_COLUMN = "(?i)(DeterminationWhen)";
+	private static final String DETERMINED_WHEN_COLUMN = "(?i)(Det(ermination)?When)";
 	private static final String DETERMINATION_NOTES_COLUMN = "(?i)(DeterminationNote)";
 	private static final String EXTENSION_COLUMN = "(?i)(Ext(ension)?)";
 	
