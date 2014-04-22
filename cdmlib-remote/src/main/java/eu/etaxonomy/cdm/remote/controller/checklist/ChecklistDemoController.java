@@ -236,7 +236,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
         }
         //if file exists return file instantly
         //timestamp older than one day?
-        if(clearCache == false && result != null && result < DAY_IN_MILLIS){
+        if(clearCache == false && result != null && result < 7*(DAY_IN_MILLIS)){
             logger.info("result of calculation: " + result);
             Map<String, File> modelMap = new HashMap<String, File>();
             modelMap.put("file", cacheFile);
