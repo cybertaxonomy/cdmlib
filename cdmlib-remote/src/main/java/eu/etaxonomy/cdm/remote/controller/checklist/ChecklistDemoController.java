@@ -162,8 +162,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
             HttpServletRequest request) throws IOException {
 
         try{
-            //TODO: Fix bug with pageNumber and pageSize
-            //FIXME:Pagination won't work as expected...as soon as pageNumber is greater than 9, then the page won't pull new entries...
             if(pageSize == null) {
                 pageSize = 20;
             }
@@ -235,23 +233,19 @@ public class ChecklistDemoController extends AbstractController implements Resou
             long result = System.currentTimeMillis() - cacheFile.lastModified();
             final long day = 86400000;
             logger.info("result of calculation: " + result);
-            if(result < day){
+            //FIXME: if file older than one day won't trigger new export automatically
+//            if(result < day){
                 Map<String, File> modelMap = new HashMap<String, File>();
                 modelMap.put("file", cacheFile);
                 mv.addAllObjects(modelMap);
                 FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
                 mv.setView(fdv);
                 return mv;
-            }
+//            }
         }else{//trigger progress monitor and performExport()
             String processLabel = "Exporting...";
             final String frontbaseUrl = null;
             ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
-
-//            if(clearCache == true){
-//                IRestServiceProgressMonitor monitor = progressMonitorController.getMonitor(indexMonitorUuid);
-//                monitor.setCanceled(true);
-//            }
             if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
                 indexMonitorUuid = progressUtil.registerNewMonitor();
                 Thread subThread = new Thread() {
