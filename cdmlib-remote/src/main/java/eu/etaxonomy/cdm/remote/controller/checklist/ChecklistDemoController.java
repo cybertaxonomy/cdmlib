@@ -95,6 +95,9 @@ public class ChecklistDemoController extends AbstractController implements Resou
      */
     private static UUID indexMonitorUuid = null;
 
+    private final static long DAY_IN_MILLIS = 86400000;
+
+
 
 	private static final Logger logger = Logger.getLogger(ChecklistDemoController.class);
 
@@ -227,21 +230,20 @@ public class ChecklistDemoController extends AbstractController implements Resou
         final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
         final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
 
+        Long result = null;
+        if(cacheFile.exists()){
+            result = System.currentTimeMillis() - cacheFile.lastModified();
+        }
         //if file exists return file instantly
-        if(clearCache == false && cacheFile.exists()){
-            //timestamp older than one day?
-            long result = System.currentTimeMillis() - cacheFile.lastModified();
-            final long day = 86400000;
+        //timestamp older than one day?
+        if(clearCache == false && result != null && result < DAY_IN_MILLIS){
             logger.info("result of calculation: " + result);
-            //FIXME: if file older than one day won't trigger new export automatically
-//            if(result < day){
-                Map<String, File> modelMap = new HashMap<String, File>();
-                modelMap.put("file", cacheFile);
-                mv.addAllObjects(modelMap);
-                FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
-                mv.setView(fdv);
-                return mv;
-//            }
+            Map<String, File> modelMap = new HashMap<String, File>();
+            modelMap.put("file", cacheFile);
+            mv.addAllObjects(modelMap);
+            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
+            mv.setView(fdv);
+            return mv;
         }else{//trigger progress monitor and performExport()
             String processLabel = "Exporting...";
             final String frontbaseUrl = null;
