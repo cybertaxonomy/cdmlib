@@ -46,7 +46,7 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  * A derived unit is regarded as derived from a field unit,
  * so locality and gathering related information is captured as a separate FieldUnit object
  * related to a specimen via a derivation event
- * 
+ *
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/ReprintTNR.pdf
  * http://www.bgbm.org/biodivinf/docs/CollectionModel/
  * <BR>
@@ -79,7 +79,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	private static final long serialVersionUID = -3525746216270843517L;
 
 	private static final Logger logger = Logger.getLogger(DnaSample.class);
-	
+
 	@XmlElement(name = "Collection")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -138,13 +138,14 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE })
 	private final Set<SpecimenTypeDesignation> specimenTypeDesignations = new HashSet<SpecimenTypeDesignation>();
 
-	
+
 //*** attributes valid only for preserved specimen (PreservedSpecimen, Fossil, DnaSample)
-	
+
 	@XmlElement(name = "Preservation")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
+    @Cascade(CascadeType.SAVE_UPDATE)
 	private PreservationMethod preservation;
 
 
@@ -154,14 +155,14 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	@Field
 	@Size(max = 255)
     private String exsiccatum;
-	
+
 // ******************** FACTORY METHOD **********************************/
 
 
 	public static DerivedUnit NewInstance(SpecimenOrObservationType type) {
 		return new DerivedUnit(type);
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -170,13 +171,13 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		DerivedUnit result = new DerivedUnit(SpecimenOrObservationType.PreservedSpecimen);
 		return result;
 	}
-	
-//************************** CONSTRUCTOR *********************************/	
-	
+
+//************************** CONSTRUCTOR *********************************/
+
 	//Constructor: For hibernate use only
 	protected DerivedUnit() {super();}
-	
-	
+
+
 	/**
 	 * Constructor
 	 * @param recordBasis
@@ -184,8 +185,8 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	protected DerivedUnit(SpecimenOrObservationType recordBasis) {
 		super(recordBasis);
 	}
-	
-	
+
+
 	/**
 	 * Create new unit derived from an existing field unit
 	 * @param fieldUnit existing field unit from where this unit is derived
@@ -199,7 +200,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 		derivedFrom.getDerivatives().add(this);
 		this.setDerivedFrom(derivedFrom);
 	}
-	
+
 	/**
 	 * create new unit derived from an existing gathering event,
 	 * thereby creating a new empty field unit
@@ -212,7 +213,7 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
 // ******************** GETTER / SETTER *************************************/
-	
+
 	public DerivationEvent getDerivedFrom() {
 		return derivedFrom;
 	}
@@ -320,11 +321,11 @@ public class DerivedUnit extends SpecimenOrObservationBase<IIdentifiableEntityCa
 	}
 
 // ******* GETTER / SETTER for preserved specimen only ******************/
-	
+
 	public Set<SpecimenTypeDesignation> getSpecimenTypeDesignations(){
 		return specimenTypeDesignations;
 	}
-	
+
 	public PreservationMethod getPreservation(){
 		return this.preservation;
 	}
