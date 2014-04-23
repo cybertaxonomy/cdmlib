@@ -190,7 +190,7 @@ public class SpecimenCdmExcelImport  extends ExcelTaxonOrSpecimenImportBase<Spec
 			
 			
 		} else if(keyValue.key.matches(ACCESSION_NUMBER_COLUMN)) {
-			row.setLocality(value);		
+			row.setAccessionNumber(value);		
 		} else if(keyValue.key.matches(BARCODE_COLUMN)) {
 			row.setBarcode(value);		
 		} else if(keyValue.key.matches(UNIT_NOTES_COLUMN)) {
