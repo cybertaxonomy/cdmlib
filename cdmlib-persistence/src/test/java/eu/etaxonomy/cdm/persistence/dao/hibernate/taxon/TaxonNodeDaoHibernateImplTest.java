@@ -159,7 +159,11 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         taxNode2.addChildTaxon(taxon1, null, null);
         taxNode3.addChildTaxon(taxon2, null, null);
 
-        List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
+        List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
+        assertEquals("there should be 6 taxa left", 6, taxas.size());
+
+
+        taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
         logger.info(taxas.size());
         assertEquals("there should be 6 taxa left", 6, taxas.size());
 

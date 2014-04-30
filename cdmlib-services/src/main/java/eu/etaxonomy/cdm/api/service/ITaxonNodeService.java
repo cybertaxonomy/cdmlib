@@ -88,7 +88,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param end  - limit of how many rows are to be pulled from the database, i.e. 1000 rows.
 	 * @return filtered List of TaxonNode according to the classification provided
 	 */
-	public List<TaxonNode> listAllNodesForClassification(Classification classification, int start, int end);
+	public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end);
 
 	/**
 	 * Counts all TaxonNodes for a given Classification

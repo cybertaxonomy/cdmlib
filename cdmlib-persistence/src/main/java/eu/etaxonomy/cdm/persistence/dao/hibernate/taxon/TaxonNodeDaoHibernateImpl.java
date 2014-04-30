@@ -77,10 +77,14 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 	}
 
 	@Override
-	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, int start, int end) {
+	public List<TaxonNode> getTaxonOfAcceptedTaxaByClassification(Classification classification, Integer start, Integer end) {
 		int classificationId = classification.getId();
+		String limit = "";
+		if(start !=null && end != null){
+		    limit = "LIMIT "+start+"," +end;
+		}
 		//FIXME write test
-        String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId + " ORDER BY taxa.titleCache LIMIT "+start+"," +end;
+        String queryString = "SELECT DISTINCT nodes.*,taxa.titleCache FROM TaxonNode AS nodes LEFT JOIN TaxonBase AS taxa ON nodes.taxon_id = taxa.id WHERE taxa.DTYPE = 'Taxon' AND nodes.classification_id = " + classificationId + " ORDER BY taxa.titleCache " + limit;
         List<TaxonNode> result  = getSession().createSQLQuery(queryString).addEntity(TaxonNode.class).list();
 
        return result;

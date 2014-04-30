@@ -332,7 +332,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      * @see eu.etaxonomy.cdm.api.service.ITaxonNodeService#listAllNodesForClassification(eu.etaxonomy.cdm.model.taxon.Classification, int, int)
      */
     @Override
-    public List<TaxonNode> listAllNodesForClassification(Classification classification, int start, int end) {
+    public List<TaxonNode> listAllNodesForClassification(Classification classification, Integer start, Integer end) {
         return dao.getTaxonOfAcceptedTaxaByClassification(classification, start, end);
     }
 
