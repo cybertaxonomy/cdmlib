@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
@@ -98,7 +99,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference) throws DataChangeNoRollbackException {
+    public Synonym makeTaxonNodeASynonymOfAnotherTaxonNode(TaxonNode oldTaxonNode, TaxonNode newAcceptedTaxonNode, SynonymRelationshipType synonymRelationshipType, Reference citation, String citationMicroReference)  {
 
         // TODO at the moment this method only moves synonym-, concept relations and descriptions to the new accepted taxon
         // in a future version we also want to move cdm data like annotations, marker, so., but we will need a policy for that
@@ -109,10 +110,12 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         if(oldTaxonNode.equals(newAcceptedTaxonNode)){
             throw new IllegalArgumentException("Taxon can not be made synonym of its own.");
         }
-
+        
+        
+       
         Taxon oldTaxon = (Taxon) HibernateProxyHelper.deproxy(oldTaxonNode.getTaxon());
         Taxon newAcceptedTaxon = (Taxon) HibernateProxyHelper.deproxy(newAcceptedTaxonNode.getTaxon());
-
+        
         // Move oldTaxon to newTaxon
         //TaxonNameBase<?,?> synonymName = oldTaxon.getName();
         TaxonNameBase<?,?> synonymName = (TaxonNameBase)HibernateProxyHelper.deproxy(oldTaxon.getName());
@@ -126,7 +129,10 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }
 
         //set homotypic group
-
+        HomotypicalGroup newAcceptedTaxonHomotypicalgroup = newAcceptedTaxon.getHomotypicGroup();
+       HibernateProxyHelper.deproxy(newAcceptedTaxonHomotypicalgroup);
+       HibernateProxyHelper.deproxy(newAcceptedTaxon.getName());
+        // Move Synonym Relations to new Taxon
         SynonymRelationship synonmyRelationship = newAcceptedTaxon.addSynonymName(synonymName,
                 synonymRelationshipType, citation, citationMicroReference);
          HomotypicalGroup homotypicalGroupAcceptedTaxon = synonmyRelationship.getSynonym().getHomotypicGroup();
@@ -211,12 +217,21 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
             description.setTitleCache(message, true);
             newAcceptedTaxon.addDescription(description);
         }
-
+        taxonService.update(newAcceptedTaxon);
         TaxonDeletionConfigurator conf = new TaxonDeletionConfigurator();
         conf.setDeleteSynonymsIfPossible(false);
+        List<String> deleteMessages = taxonService.isDeletable(oldTaxon, conf);
 //        conf.setDeleteNameIfPossible(false);
-        taxonService.deleteTaxon(oldTaxon, conf, null);
-
+        if (deleteMessages.isEmpty()){
+        	String uuidString = taxonService.deleteTaxon(oldTaxon, conf, null);
+        	 logger.debug(uuidString);
+        }else{
+        	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
+        	config.setDeleteTaxon(false);
+        	conf.setTaxonNodeConfig(config);
+        	deleteTaxonNode(oldTaxonNode, conf);
+        }
+       
         //oldTaxonNode.delete();
         return synonmyRelationship.getSynonym();
     }
@@ -226,7 +241,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+    public List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes, TaxonDeletionConfigurator config) {
         if (config == null){
         	config = new TaxonDeletionConfigurator();
         }
@@ -300,7 +315,8 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
 		            }
 
-		            dao.delete(taxonNode);
+		            UUID uuid = dao.delete(taxonNode);
+		            logger.debug("Deleted node " +uuid.toString());
 	        	}else {
 	        		classification = (Classification) treeNode;
 
@@ -321,11 +337,19 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public UUID deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) throws DataChangeNoRollbackException{
+    public String deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
-    	taxonService.deleteTaxon(taxon, config, node.getClassification());
-
-    	return node.getUuid();
+    	if (config == null){
+    		config = new TaxonDeletionConfigurator();
+    	}
+    	if (config.getTaxonNodeConfig().isDeleteTaxon()){
+    		return taxonService.deleteTaxon(taxon, config, node.getClassification());
+    	} else{
+    		taxon.removeTaxonNode(node);
+    		dao.delete(node);
+    		return node.getUuid().toString();
+    	}
+    	
     }
 
     /* (non-Javadoc)

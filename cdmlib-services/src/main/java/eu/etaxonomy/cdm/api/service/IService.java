@@ -20,8 +20,10 @@ import java.util.UUID;
 import org.hibernate.LockMode;
 import org.hibernate.Session;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -79,10 +81,12 @@ public interface IService<T extends ICdmBase>{
      *
      * @param persistentObject the object to be deleted
      * @return the unique identifier of the deleted entity
-     * @throws ReferencedObjectUndeletableException
+     * 
      */
-    public UUID delete(T persistentObject) throws ReferencedObjectUndeletableException;
+    public String delete(T persistentObject) ;
 
+	
+    
     /**
      * Returns true if an entity of type <T> with a unique identifier matching the
      * identifier supplied exists in the database, or false if no such entity can be

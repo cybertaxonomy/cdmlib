@@ -14,6 +14,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -23,6 +24,7 @@ import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -56,8 +58,8 @@ import eu.etaxonomy.cdm.strategy.merge.MergeException;
 public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO extends IIdentifiableDao<T>> extends AnnotatableServiceBase<T,DAO> 
 						implements IIdentifiableEntityService<T>{
 	
-    @Autowired
-    protected ICommonService commonService;
+//    @Autowired
+//    protected ICommonService commonService;
 
 	
 	protected static final int UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE = 1000;
@@ -523,6 +525,25 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				config.getMatchMode(), config.getCriteria());
 		
 	}
+	
+	 /**
+     * the basic isDeletable method return false if the object is referenced from any other object.
+     */
+    
+    @Override
+    public List<String> isDeletable(T base, DeleteConfiguratorBase config){
+    	List<String> result = new ArrayList<String>();
+    	Set<CdmBase> references = commonService.getReferencingObjects(base);
+    	Iterator<CdmBase> iterator = references.iterator();
+    	CdmBase ref;
+    	while (iterator.hasNext()){
+    		ref = iterator.next();
+    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing " + base.getTitleCache();
+    		result.add(message);
+    	}
+    	return result;
+    }
+
 
 }
 

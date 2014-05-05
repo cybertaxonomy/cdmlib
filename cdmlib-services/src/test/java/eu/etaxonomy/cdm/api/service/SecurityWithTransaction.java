@@ -12,7 +12,6 @@ import java.util.UUID;
 import javax.sql.DataSource;
 
 import org.junit.Assert;
-
 import org.apache.log4j.Logger;
 import org.junit.Before;
 import org.junit.Ignore;
@@ -96,11 +95,16 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         context.setAuthentication(authentication);
         Taxon actualTaxon = (Taxon)taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
 
-        try {
-			taxonService.deleteTaxon(actualTaxon, null, null);
-		} catch (DataChangeNoRollbackException e) {
+        //try {
+		String uuidString = taxonService.deleteTaxon(actualTaxon, null, null);
+		/*} catch (DataChangeNoRollbackException e) {
 			Assert.fail();
-		}
+		}*/
+			 try{
+		        UUID uuid = UUID.fromString(uuidString);
+		        }catch(IllegalArgumentException e){
+		        	Assert.fail();
+		        }
     }
 
 

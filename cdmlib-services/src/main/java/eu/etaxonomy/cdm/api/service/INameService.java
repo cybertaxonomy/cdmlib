@@ -57,9 +57,9 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * If name is <code>null</code> this method has no effect.
 	 * @param name
 	 * @param config
-	 * @throws ReferencedObjectUndeletableException
+	 * 
 	 */
-	public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException;
+	public String delete(TaxonNameBase name, NameDeletionConfigurator config);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from

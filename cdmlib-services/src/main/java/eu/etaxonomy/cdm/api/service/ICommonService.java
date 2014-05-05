@@ -18,6 +18,7 @@ import java.util.Set;
 import org.hibernate.Session;
 import org.hibernate.collection.spi.PersistentCollection;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.database.DatabaseSchemaMismatchException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
@@ -181,5 +182,7 @@ public interface ICommonService extends IService<OriginalSourceBase>{
 	 * @return true if the value object exists in the collection, false o/w
 	 */
 	public boolean containsValue(PersistentCollection col, Object element);
+	
+	
 	
 }

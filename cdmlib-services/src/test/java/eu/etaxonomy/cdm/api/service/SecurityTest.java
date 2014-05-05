@@ -329,10 +329,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         } catch (RuntimeException e){
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-        } catch (DataChangeNoRollbackException e) {
-            logger.error("Unexpected failure of evaluation.", e);
-            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-        } finally {
+        }finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
@@ -363,10 +360,7 @@ public class SecurityTest extends AbstractSecurityTestBase{
         } catch (RuntimeException e){
             logger.error("Unexpected failure of evaluation.", e);
             exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-        } catch (DataChangeNoRollbackException e) {
-            logger.error("Unexpected failure of evaluation.", e);
-            exception = findThrowableOfTypeIn(PermissionDeniedException.class, e);
-        } finally {
+        }  finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException
             // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
             endTransaction();
@@ -774,20 +768,12 @@ public class SecurityTest extends AbstractSecurityTestBase{
         RuntimeException securityException= null;
 
         TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
-        try{
-            taxonService.delete(taxon);
-            commitAndStartNewTransaction(null);
-        } catch (RuntimeException e){
-            securityException  = findSecurityRuntimeException(e);
-            logger.error("Unexpected failure of evaluation.", e);
-        }catch(ReferencedObjectUndeletableException e){
-            Assert.fail();
-        }finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
-            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
-            endTransaction();
-            startNewTransaction();
-        }
+        taxonService.delete(taxon);
+        commitAndStartNewTransaction(null);
+       
+       
+            
+       
         Assert.assertNull("evaluation must not fail since the user is permitted, CAUSE :" + (securityException != null ? securityException.getMessage() : ""), securityException);
         // reload taxon
         taxon = taxonService.load(UUID_LACTUCA);
@@ -808,11 +794,16 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
-            try {
-                taxonService.deleteTaxon(taxon, null, null);
-            } catch (DataChangeNoRollbackException e) {
+           // try {
+        	String uuidString = taxonService.deleteTaxon(taxon, null, null);
+            /*} catch (DataChangeNoRollbackException e) {
                 Assert.fail();
-            }
+            }*/
+                try{
+                	UUID uuid = UUID.fromString(uuidString);
+                }catch(IllegalArgumentException e){
+                	Assert.fail();
+                }
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -844,21 +835,17 @@ public class SecurityTest extends AbstractSecurityTestBase{
         context.setAuthentication(authentication);
 
         TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
-
-        try {
-            taxonService.delete(taxon);
-            commitAndStartNewTransaction(null);
-        } catch (RuntimeException e){
-            securityException = findSecurityRuntimeException(e);
-            logger.debug("Expected failure of evaluation.", securityException);
-        }catch(ReferencedObjectUndeletableException e){
-            Assert.fail();
-        }	finally {
-            // needed in case saveOrUpdate was interrupted by the RuntimeException
-            // commitAndStartNewTransaction() would raise an UnexpectedRollbackException
-            endTransaction();
-            startNewTransaction();
-        }
+       try{
+    	   String result = taxonService.delete(taxon);
+      
+    	   UUID uuid = UUID.fromString(result);
+    	   Assert.fail();
+       }catch(PermissionDeniedException e){
+    	   securityException = e;
+       }
+       endTransaction();
+       startNewTransaction();
+       
 
         Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
@@ -967,8 +954,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
         } catch (RuntimeException e){
             securityException = findSecurityRuntimeException(e);
             logger.error("Unexpected Exception ", e);
-            Assert.fail("Unexpected Exception: " + e.getMessage());
-        } catch (DataChangeNoRollbackException e) {
             Assert.fail("Unexpected Exception: " + e.getMessage());
         } finally {
             // needed in case saveOrUpdate was interrupted by the RuntimeException

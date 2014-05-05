@@ -239,8 +239,8 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	 * to allow DeleteResult return type*/
 	@Override
 	@Deprecated
-	public UUID delete(DefinedTermBase term){
-		UUID result = term.getUuid();
+	public String delete(DefinedTermBase term){
+		String result = term.getUuid().toString();
 		
 		TermDeletionConfigurator defaultConfig = new TermDeletionConfigurator();
 		delete(term, defaultConfig);

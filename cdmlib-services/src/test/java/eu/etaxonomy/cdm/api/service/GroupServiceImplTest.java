@@ -40,12 +40,8 @@ public class GroupServiceImplTest extends CdmIntegrationTest {
     	User user1 = User.NewInstance("TestUser1", "pwd");
     	UUID UserUUID =  userService.save(user1);
     	
-    	try {
-			groupService.delete(group);
-		} catch (ReferencedObjectUndeletableException e) {
-			Assert.fail();
-			
-		}
+		groupService.delete(group);
+		
     	group = groupService.find(groupUUID);
     	assertNull(group);
     	user1 = userService.find(UserUUID);

@@ -159,7 +159,7 @@ public class ClassificationServiceImplTest extends CdmIntegrationTest{
 
         taxonNodes = service.listRankSpecificRootNodes(classification, null, null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(1, taxonNodes.size());
-
+        
         taxonNodes = service.listRankSpecificRootNodes(classification, Rank.SECTION_BOTANY(), null, null, NODE_INIT_STRATEGY);
         Assert.assertEquals(2, taxonNodes.size());
 

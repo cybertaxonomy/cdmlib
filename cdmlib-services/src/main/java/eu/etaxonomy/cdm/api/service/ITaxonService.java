@@ -252,9 +252,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
      * @param taxon
      * @param config
-     * @throws ReferencedObjectUndeletableException
+     * 
      */
-    public UUID deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) throws DataChangeNoRollbackException;
+    public String deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -855,9 +855,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param synonym
      * @param removeNameIfPossible
-     * @throws DataChangeNoRollbackException
+     * 
      */
-    public void deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
+    public String deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
 
     /**
@@ -931,9 +931,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param synonym
      * @param config
-     * @throws DataChangeNoRollbackException
+     * 
      */
-    void deleteSynonym(Synonym synonym, Taxon taxon,
+    String deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
 
     public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,

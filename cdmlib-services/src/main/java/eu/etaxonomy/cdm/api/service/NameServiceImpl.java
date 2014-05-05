@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -35,8 +36,8 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -48,6 +49,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -123,123 +125,136 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public UUID delete(TaxonNameBase name){
+    public String delete(TaxonNameBase name){
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-        try {
-            return delete(name, config);
-        } catch (ReferencedObjectUndeletableException e) {
-            //TODO throw DeleteException - current implementation is preliminary for testing
-            throw new RuntimeException(e);
-        }
+        String result = delete(name, config);
+       
+      
+        return result;
+        
     }
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
      */
     @Override
-    public UUID delete(TaxonNameBase name, NameDeletionConfigurator config) throws ReferencedObjectUndeletableException{
+    public String delete(TaxonNameBase name, NameDeletionConfigurator config) {
         if (name == null){
             return null;
         }
-
+        
+        List<String> messages = this.isDeletable(name, config);
+       
+        if (messages.isEmpty()){
         //remove references to this name
-        removeNameRelationshipsByDeleteConfig(name, config);
-
-
-        //remove name from homotypical group
-        HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
-        if (homotypicalGroup != null){
-            homotypicalGroup.removeTypifiedName(name);
+        	// if (config.isRemoveAllNameRelationships()){
+             	removeNameRelationshipsByDeleteConfig(name, config);
+             //}
+           //remove name from homotypical group
+             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
+             if (homotypicalGroup != null){
+                 homotypicalGroup.removeTypifiedName(name);
+             }
+             
+             
+             
+	        
+	
+	
+	        /*check if this name is still used somewhere
+	
+	        //name relationships
+	        if (! name.getNameRelations().isEmpty() && !config.isRemoveAllNameRelationships()){
+	            String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
+	            throw new ReferencedObjectUndeletableException(message);
+	//			return null;
+	        }
+	
+	        //concepts
+	        if (! name.getTaxonBases().isEmpty()){
+	            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
+	            throw new ReferencedObjectUndeletableException(message);
+	        }
+	
+	        //hybrid relationships
+	        if (name.isInstanceOf(NonViralName.class)){
+	            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+	//			if (! nvn.getHybridChildRelations().isEmpty()){
+	//				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
+	//				throw new RuntimeException(message);
+	//			}
+	            if (! nvn.getHybridParentRelations().isEmpty()){
+	                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
+	                throw new ReferencedObjectUndeletableException(message);
+	            }
+	        }
+	         */
+	        //all type designation relationships are removed as they belong to the name
+	        deleteTypeDesignation(name, null);
+	//		//type designations
+	//		if (! name.getTypeDesignations().isEmpty()){
+	//			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
+	//			throw new ReferrencedObjectUndeletableException(message);
+	//		}
+	
+	        /*check references with only reverse mapping
+	        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+	        for (CdmBase referencingObject : referencingObjects){
+	            //DerivedUnit?.storedUnder
+	            if (referencingObject.isInstanceOf(DerivedUnit.class)){
+	                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+	                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
+	                throw new ReferencedObjectUndeletableException(message);
+	            }
+	            //DescriptionElementSource#nameUsedInSource
+	            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+	                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+	                throw new ReferencedObjectUndeletableException(message);
+	            }
+	            //NameTypeDesignation#typeName
+	            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+	                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+	                throw new ReferencedObjectUndeletableException(message);
+	            }
+	
+	            //TaxonNameDescriptions#taxonName
+	            //deleted via cascade?
+	
+	            //NomenclaturalStatus
+	            //deleted via cascade?
+	
+	        }
+	
+	        //TODO inline references
+	
+	        if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
+	            String message = "Name can't be deleted as it is a basionym.";
+	            throw new ReferencedObjectUndeletableException(message);
+	        }
+	        if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
+	            String message = "Name can't be deleted as it has a basionym.";
+	            throw new ReferencedObjectUndeletableException(message);
+	        }
+	        if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
+	            String message = "Name can't be deleted as it is a replaced synonym.";
+	            throw new ReferencedObjectUndeletableException(message);
+	        }
+	        if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
+	            String message = "Name can't be deleted as it has a replaced synonym.";
+	            throw new ReferencedObjectUndeletableException(message);
+	        }
+	
+	         */
+	        
+	        UUID nameUuid = dao.delete(name);
+	        return name.getUuid().toString();
+        } 
+        StringBuffer result = new StringBuffer();
+        for (String message: messages){
+        	result.append(message);
+        	result.append("/n");
         }
-
-
-        //check if this name is still used somewhere
-
-        //name relationships
-        if (! name.getNameRelations().isEmpty() && !config.isRemoveAllNameRelationships()){
-            String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-            throw new ReferencedObjectUndeletableException(message);
-//			return null;
-        }
-
-        //concepts
-        if (! name.getTaxonBases().isEmpty()){
-            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-            throw new ReferencedObjectUndeletableException(message);
-        }
-
-        //hybrid relationships
-        if (name.isInstanceOf(NonViralName.class)){
-            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
-//			if (! nvn.getHybridChildRelations().isEmpty()){
-//				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-//				throw new RuntimeException(message);
-//			}
-            if (! nvn.getHybridParentRelations().isEmpty()){
-                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-                throw new ReferencedObjectUndeletableException(message);
-            }
-        }
-
-        //all type designation relationships are removed as they belong to the name
-        deleteTypeDesignation(name, null);
-//		//type designations
-//		if (! name.getTypeDesignations().isEmpty()){
-//			String message = "Name can't be deleted as it has types. Remove types prior to deletion.";
-//			throw new ReferrencedObjectUndeletableException(message);
-//		}
-
-        //check references with only reverse mapping
-        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
-        for (CdmBase referencingObject : referencingObjects){
-            //DerivedUnit?.storedUnder
-            if (referencingObject.isInstanceOf(DerivedUnit.class)){
-                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-                throw new ReferencedObjectUndeletableException(message);
-            }
-            //DescriptionElementSource#nameUsedInSource
-            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
-                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-                throw new ReferencedObjectUndeletableException(message);
-            }
-            //NameTypeDesignation#typeName
-            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-                throw new ReferencedObjectUndeletableException(message);
-            }
-
-            //TaxonNameDescriptions#taxonName
-            //deleted via cascade?
-
-            //NomenclaturalStatus
-            //deleted via cascade?
-
-        }
-
-        //TODO inline references
-
-        if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
-            String message = "Name can't be deleted as it is a basionym.";
-            throw new ReferencedObjectUndeletableException(message);
-        }
-        if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-            String message = "Name can't be deleted as it has a basionym.";
-            throw new ReferencedObjectUndeletableException(message);
-        }
-        if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
-            String message = "Name can't be deleted as it is a replaced synonym.";
-            throw new ReferencedObjectUndeletableException(message);
-        }
-        if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
-            String message = "Name can't be deleted as it has a replaced synonym.";
-            throw new ReferencedObjectUndeletableException(message);
-        }
-
-
-
-        dao.delete(name);
-        return name.getUuid();
+        return result.toString();
     }
 
     /* (non-Javadoc)
@@ -986,6 +1001,91 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         TaxonNameBase taxonNameBase = dao.load(uuid);
         List taggedName = taxonNameBase.getTaggedName();
         return taggedName;
+    }
+    
+    @Override
+    public List<String> isDeletable(TaxonNameBase name, DeleteConfiguratorBase config){
+    	List<String> result = new ArrayList<String>();
+    	name = (TaxonNameBase)HibernateProxyHelper.deproxy(name);
+    	NameDeletionConfigurator nameConfig = null;
+    	if (config instanceof NameDeletionConfigurator){
+    		nameConfig = (NameDeletionConfigurator) config;
+    	}else{
+    		 result.add("The delete configurator should be of the type NameDeletionConfigurator.");
+    		 return result;
+    	}
+    	
+    	if (!name.getNameRelations().isEmpty() && !nameConfig.isRemoveAllNameRelationships()){
+    		if (!nameConfig.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
+                String message = "Name can't be deleted as it is a basionym.";
+                result.add(message);
+            }
+            if (!nameConfig.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
+                String message = "Name can't be deleted as it has a basionym.";
+                result.add(message);
+            }
+            Set<NameRelationship> relationships = name.getNameRelations();
+            for (NameRelationship rel: relationships){
+            	if (!rel.getType().equals(NameRelationshipType.BASIONYM())){
+            		String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
+                    result.add(message);
+            		break;
+            	}
+            	
+            }
+            
+        }
+
+        //concepts
+        if (! name.getTaxonBases().isEmpty()){
+            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
+            result.add(message);
+        }
+
+        //hybrid relationships
+        if (name.isInstanceOf(NonViralName.class)){
+            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
+            if (! nvn.getHybridParentRelations().isEmpty()){
+                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
+                result.add(message);
+            }
+        }
+        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+        for (CdmBase referencingObject : referencingObjects){
+            //DerivedUnit?.storedUnder
+            if (referencingObject.isInstanceOf(DerivedUnit.class)){
+                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
+                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
+                result.add(message);
+            }
+            //DescriptionElementSource#nameUsedInSource
+            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
+                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
+                result.add(message);
+            }
+            //NameTypeDesignation#typeName
+            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
+                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
+                result.add(message);
+            }
+
+           
+
+        }
+
+        //TODO inline references
+
+        
+        if (!nameConfig.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
+            String message = "Name can't be deleted as it is a replaced synonym.";
+            result.add(message);
+        }
+        if (!nameConfig.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
+            String message = "Name can't be deleted as it has a replaced synonym.";
+            result.add(message);
+        }
+    	return result;
+    	
     }
 
 

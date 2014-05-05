@@ -89,15 +89,19 @@ private ICdmGenericDao genericDao;
 	}
 	
 	@Override
-	public UUID delete(Reference reference) throws ReferencedObjectUndeletableException{
+	public String delete(Reference reference) {
 		//check whether the reference is used somewhere
-		Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(reference);
-		
-		if (referencingObjects.size()>0){
+		List<String> messages = isDeletable(reference, null);
+		StringBuffer result = new StringBuffer();
+		if (messages.size()>0){
+			for (String message:messages){
+				result.append(message);
+				result.append(" - ");
+			}
 			
-			throw new ReferencedObjectUndeletableException();
+			return result.toString();
 		}
 		
-		return reference.getUuid();
+		return dao.delete(reference).toString();
 	}
 }
