@@ -601,11 +601,11 @@ public class Country extends NamedArea {
 		return continents;
 	}
 
-	public void addContinents(NamedArea continent) {
+	public void addContinent(NamedArea continent) {
 		this.continents.add(continent);
 	}
 	
-	public void removeContinents(NamedArea continent) {
+	public void removeContinent(NamedArea continent) {
 		this.continents.remove(continent);
 	}
 
@@ -648,9 +648,17 @@ public class Country extends NamedArea {
 				tmp=tmp.substring(1, tmp.length()-1);
 
 				continentList=tmp.split(",");
-				for (String continent : continentList){
-					logger.debug("continent: "+ continent);
-					newInstance.addContinents((NamedArea)terms.get(UUID.fromString(continent)));
+				for (String continentStr : continentList){
+					logger.debug("continent: "+ continentStr);
+					UUID uuidContinent = UUID.fromString(continentStr);
+					NamedArea continent = NamedArea.getContinentByUuid(uuidContinent);
+					//old version: but this is null if you use the new termloading mechanism which does not hold
+					//ALL terms in the terms set:
+					//NamedArea continent = (NamedArea)terms.get(uuidContinent)
+					if (continent == null){
+						throw new RuntimeException("Contient referenced by a country could not be found: " + continentStr);
+					}
+					newInstance.addContinent(continent);
 				}
 			}
 			return newInstance;
