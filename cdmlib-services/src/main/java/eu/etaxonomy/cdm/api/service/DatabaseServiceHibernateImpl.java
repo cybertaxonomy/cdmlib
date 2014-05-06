@@ -14,6 +14,8 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -154,6 +156,8 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 		this.appContext = applicationContext;
 	}
 	
+	
+	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#getDbSchemaVersion()
 	 */
@@ -187,7 +191,7 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
      * @return
      * @throws SQLException
      */
-    private Object getSingleValue(String query) throws SQLException{
+    private Object getSingleValue(String query) throws SQLException {
         String queryString = query == null? "(null)": query;
         ResultSet resultSet = executeQuery(query);
         if (resultSet == null || resultSet.next() == false){
@@ -234,4 +238,24 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
         return resultSet;
 
     }
+
+
+	@Override
+	public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException {
+		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
+		
+		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()){
+			String value = null;
+			try {
+				value = (String)getSingleValue(mdpn.getSqlQuery());
+			} catch (SQLException e) {
+				throw new CdmSourceException(e.getMessage());
+			}			
+			if(value != null) {
+				cdmMetaDataMap.put(mdpn, value);
+			}
+		}
+		return cdmMetaDataMap;
+	}
+
 }

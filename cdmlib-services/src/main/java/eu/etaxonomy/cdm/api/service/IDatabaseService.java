@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.api.service;
 
+import java.util.Map;
+
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.config.CdmSourceException;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -18,6 +20,7 @@ import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
 import eu.etaxonomy.cdm.database.H2Mode;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.init.TermNotFoundException;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
@@ -113,4 +116,8 @@ public interface IDatabaseService {
 	 * @throws CdmSourceException , incase of an underlying SQL error
 	 */
 	public boolean isDbEmpty() throws CdmSourceException;
+	
+	
+	public Map<MetaDataPropertyName, String> getCdmMetadataMap() throws CdmSourceException;
+
 }
