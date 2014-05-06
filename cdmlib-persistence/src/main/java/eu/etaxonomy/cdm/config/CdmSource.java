@@ -8,9 +8,6 @@
 */
 package eu.etaxonomy.cdm.config;
 
-import java.util.Map;
-
-import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**

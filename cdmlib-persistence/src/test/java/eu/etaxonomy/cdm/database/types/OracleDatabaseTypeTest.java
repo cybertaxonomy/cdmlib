@@ -9,11 +9,10 @@
 
 package eu.etaxonomy.cdm.database.types;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 import org.apache.log4j.Logger;
 import org.junit.After;
-import org.junit.AfterClass;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -51,13 +50,6 @@ public class OracleDatabaseTypeTest {
 	/**
 	 * @throws java.lang.Exception
 	 */
-	@AfterClass
-	public static void tearDownAfterClass() throws Exception {
-	}
-
-	/**
-	 * @throws java.lang.Exception
-	 */
 	@Before
 	public void setUp() throws Exception {
 		server = "server";
@@ -77,18 +69,13 @@ public class OracleDatabaseTypeTest {
 	public void tearDown() throws Exception {
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getConnectionString(eu.etaxonomy.cdm.database.ICdmDataSource)}.
-	 */
+
 	@Test
 	public void testGetConnectionStringICdmDataSource() {
 		String expected = "jdbc:oracle:thin:@" + server + ":" + port + ":" + dbName ;
 		assertEquals(expected, enumType.getConnectionString(dataSource));
 	}
 	
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getConnectionString(eu.etaxonomy.cdm.database.ICdmDataSource, int)}.
-	 */
 	@Test
 	public void testGetConnectionStringICdmDataSourceInt() {
 		port = 357;
@@ -96,17 +83,12 @@ public class OracleDatabaseTypeTest {
 		assertEquals(expected, ((OracleDatabaseType)enumType.getDatabaseType()).getConnectionString(dataSource, port));
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.PostgreSQLDatabaseType#getDatabaseNameByConnectionString(java.lang.String)}.
-	 */
 	@Test
 	public void testGetDatabaseNameByConnectionString() {
 		assertEquals(dbName, dataSource.getDatabase());
 	}
 
-	/**
-	 * Test method for {@link eu.etaxonomy.cdm.database.types.DatabaseTypeBase#getServerNameByConnectionString(java.lang.String)}.
-	 */
+
 	@Test
 	public void testGetServerNameByConnectionStringString() {
 		assertEquals(server, dataSource.getServer());
