@@ -46,18 +46,6 @@ public interface ICdmDataSource  extends DataSource,ICdmSource {
 	public BeanDefinition getHibernatePropertiesBean(DbSchemaValidation hbm2dll, Boolean showSql, Boolean formatSql, Boolean registerSearchListener, Class<? extends RegionFactory> cacheProviderClass);
 
 
-	/**
-	 * Returns the name of the datasource on the given server.
-	 * @return
-	 */
-	public String getDatabase();
-	
-	/**
-	 * Returns the database type of the data source. 
-	 * @return the database type of the data source. 
-	 * <code>null</code> if the bean or the driver class property does not exist or the driver class is unknown.
-	 */
-	public DatabaseTypeEnum getDatabaseType();
 	
 	/**
 	 * @return
@@ -69,6 +57,27 @@ public interface ICdmDataSource  extends DataSource,ICdmSource {
 	 */
 	public H2Mode getMode();
 	
+	public String getUsername();
+	
+	public String getPassword();
+	
+	public String getDatabase();
+	
+	public void setMode(H2Mode h2Mode);
+	
+	public void setUsername(String username);
+	
+	public void setPassword(String password);
+	
+	public void setDatabase(String database);
+	
+	
+	/**
+	 * Returns the database type of the data source. 
+	 * @return the database type of the data source. 
+	 * <code>null</code> if the bean or the driver class property does not exist or the driver class is unknown.
+	 */
+	public DatabaseTypeEnum getDatabaseType();
 	/**
 	 * Tests, if a database connection can be established.
 	 * @return true if test was successful, false otherwise
@@ -78,10 +87,7 @@ public interface ICdmDataSource  extends DataSource,ICdmSource {
 	 */
 	public boolean testConnection() throws ClassNotFoundException, SQLException;
 	
-	public String getUsername();
-	
-	public String getPassword();
-	
+
 	 /**
      * Executes a query and returns the ResultSet.
      * @return ResultSet for the query.

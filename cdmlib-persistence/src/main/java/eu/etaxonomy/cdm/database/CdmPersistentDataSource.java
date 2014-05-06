@@ -56,8 +56,14 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		
 	private String beanName;
 	private String dbUrl;
+	
+	private String database;
+	
+	/**
+	 * This is strictly a <String, String> list of properties
+	 */
 	private Properties cdmSourceProperties;
-	private Properties dataSourceProperties;
+
 	private List<Attribute> cdmSourceAttributes;
 
 
@@ -115,8 +121,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			// properties from the persistent xml file 
 			cdmSourceProperties = cdmPersistentXMLSource.getCdmSourceProperties();
 			cdmSourceAttributes = cdmPersistentXMLSource.getCdmSourceAttributes();
-			// properties we must have for a data source
-			dataSourceProperties = new Properties(cdmSourceProperties);
+			
 			// added database specific properties if they are null
 			String url = getCdmSourceProperty(CdmSourceProperties.URL);
 			DatabaseTypeEnum dbTypeEnum = getDatabaseType();
@@ -125,19 +130,19 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 				if (getCdmSourceProperty(CdmSourceProperties.DATABASE) == null){
 					String database = dbType.getDatabaseNameByConnectionString(url);
 					if(database != null) {
-						dataSourceProperties.setProperty(CdmSourceProperties.DATABASE.toString(), database);
+						setDatabase(database);
 					}
 				}
 				if(getCdmSourceProperty(CdmSourceProperties.SERVER) == null){
 					String server = dbType.getServerNameByConnectionString(url);
 					if(server != null) {
-						dataSourceProperties.setProperty(CdmSourceProperties.SERVER.toString(),server);
+						setServer(server);
 					}
 				}
 				if(getCdmSourceProperty(CdmSourceProperties.PORT) == null){
 					int port = dbType.getPortByConnectionString(url); 
 					if(port > 0) {
-						dataSourceProperties.setProperty(CdmSourceProperties.PORT.toString(),String.valueOf(port));
+						setPort(port);
 					}
 				}
 			}
@@ -148,13 +153,18 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		return beanName;
 	}
 	
-	
 	@Override
 	public String getDatabase() {
-		return getCdmSourceProperty(CdmSourceProperties.DATABASE);
+		return database;
 	}
 
 
+	@Override
+	public void setDatabase(String database) {
+		this.database = database;
+		
+	}
+		
 	@Override
 	public String getFilePath() {		
 		return getCdmSourceProperty(CdmSourceProperties.FILEPATH);
@@ -167,13 +177,31 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	}
 	
 	@Override
+	public void setMode(H2Mode h2Mode) {
+		cdmSourceProperties.put(CdmSourceProperties.MODE.toString(), h2Mode.name());
+		
+	}
+	
+	@Override
 	public String getUsername(){
 		return getCdmSourceProperty(CdmSourceProperties.USERNAME);
 	}
 	
 	@Override
+	public void setUsername(String username) {
+		cdmSourceProperties.put(CdmSourceProperties.USERNAME.toString(), username);
+		
+	}
+	
+	@Override
 	public String getPassword(){
 		return getCdmSourceProperty(CdmSourceProperties.PASSWORD);
+	}
+	
+	@Override
+	public void setPassword(String password) {
+		cdmSourceProperties.put(CdmSourceProperties.PASSWORD.toString(), password);
+		
 	}
 
 	@Override
@@ -183,21 +211,10 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 	}
 
 	@Override
-	public int getPort() {
-		String port = CdmUtils.Nz(getCdmSourceProperty(CdmSourceProperties.PORT));
-		if (port == null || "".equals(port)){
-			return -1;
-		}else{
-			//TODO exception if non integer
-			return Integer.valueOf(port);
-		}
+	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
+		cdmSourceProperties.put(CdmSourceProperties.NOMENCLATURAL_CODE.toString(), nomenclaturalCode.name());
 	}
 
-
-	@Override
-	public String getServer() {
-		return getCdmSourceProperty(CdmSourceProperties.SERVER);
-	}
 
 
 	@Override
@@ -206,13 +223,12 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		DatabaseTypeEnum dbType = DatabaseTypeEnum.getDatabaseEnumByDriverClass(strDriverClass);
 		return dbType;
 	}
-	
-	
-
+		
 	
 	public String getCdmSourceProperty(CdmSourceProperties property){		
-		return dataSourceProperties.getProperty(property.toString(),null);
+		return cdmSourceProperties.getProperty(property.toString(),null);
 	}
+
 	/**
 	 * Returns a BeanDefinition object of type DataSource that contains
 	 * datsource properties (url, username, password, ...)
@@ -327,6 +343,43 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		return (bean != null);
 	}
 
+	/**
+	 * @param strDataSourceName
+	 * @param dataSource
+	 * @param code 
+	 * @return
+	 * 			the updated dataSource, null if not succesful
+	 */
+	public static CdmPersistentDataSource update(String strDataSourceName,
+			ICdmDataSource dataSource) throws DataSourceNotFoundException, IllegalArgumentException{
+		CdmPersistentSourceUtils.delete(CdmPersistentSourceUtils.getBeanName(strDataSourceName,DATASOURCE_BEAN_POSTFIX));
+		return save(strDataSourceName, dataSource);
+	}
+	
+	/**
+	 * Replace the persisted datasource with another one.
+	 * Used primarily for renaming a datasource.
+	 * 
+	 * @param strDataSourceName
+	 * @param dataSource
+	 * @return
+	 * @throws DataSourceNotFoundException
+	 * @throws IllegalArgumentException
+	 */
+	public static CdmPersistentDataSource replace(String strDataSourceName,
+			ICdmDataSource dataSource) throws DataSourceNotFoundException, IllegalArgumentException{
+		CdmPersistentSourceUtils.delete(CdmPersistentSourceUtils.getBeanName(strDataSourceName,DATASOURCE_BEAN_POSTFIX));
+		return save(dataSource);
+	}
+	
+	/**
+	 * @param dataSource
+	 * @return
+	 * @throws IllegalArgumentException
+	 */
+	public static CdmPersistentDataSource save(ICdmDataSource dataSource)  throws IllegalArgumentException {
+		return save(dataSource.getName(),dataSource);
+	}
 	
 	/**
 	 * 
@@ -408,18 +461,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 		}
 	}
 	
-	/**
-	 * @param strDataSourceName
-	 * @param dataSource
-	 * @param code 
-	 * @return
-	 * 			the updated dataSource, null if not succesful
-	 */
-	public static CdmPersistentDataSource update(String strDataSourceName,
-			ICdmDataSource dataSource) throws DataSourceNotFoundException, IllegalArgumentException{
-		CdmPersistentSourceUtils.delete(CdmPersistentSourceUtils.getBeanName(strDataSourceName,DATASOURCE_BEAN_POSTFIX));
-		return save(strDataSourceName, dataSource);
-	}
 
 	/**
 	 * Saves a datasource to the datasource config file. If strDataSourceName differs a new dataSource
@@ -451,7 +492,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 					getCheckedDataSourceParameter(dataSource.getPassword()), 
 					dataSourceClass, 
 					null, null, null, null, 
-					getCheckedDataSourceParameter(dataSource.getFilePath()), 
+					dataSource.getFilePath(), 
 					dataSource.getMode(),
 					dataSource.getNomenclaturalCode());
 		}else{
@@ -459,7 +500,7 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			Class<? extends DataSource> dataSourceClass;
 			try {
 				dataSourceClass = (Class<? extends DataSource>) Class.forName(dataSourceClassName);
-				
+				String server = getCheckedDataSourceParameter(dataSource.getServer());
 				CdmPersistentDataSource persistendDatasource =  save(
 					strDataSourceName, 
 					dataSource.getDatabaseType(), 
@@ -538,6 +579,11 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			return null;
 		}
 	}
+
+
+
+
+
 
 
 
