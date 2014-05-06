@@ -318,7 +318,7 @@ public class NormalExplicitImport extends TaxonExcelImporterBase {
 						td.addElement(mediaHolder);
 					}
 					try {
-						Media media = getImageMedia(imageUrl, READ_MEDIA_DATA, false);
+						Media media = getImageMedia(imageUrl, READ_MEDIA_DATA);
 						mediaHolder.addMedia(media);
 					} catch (MalformedURLException e) {
 						logger.warn("Can't add media: " + e.getMessage());

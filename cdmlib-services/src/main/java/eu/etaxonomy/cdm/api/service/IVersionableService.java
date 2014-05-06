@@ -14,7 +14,9 @@ import java.util.List;
 
 import org.hibernate.envers.query.criteria.AuditCriterion;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
@@ -73,4 +75,11 @@ public interface IVersionableService<T extends VersionableEntity> extends IServi
 	 */
 	public Pager<AuditEventRecord<T>> pageAuditEvents(Class<? extends T> clazz,AuditEvent from,AuditEvent to, List<AuditCriterion> criteria, Integer pageSize, Integer pageValue, AuditEventSort sort,List<String> propertyPaths);
  
+
+    /**
+	 * checks whether the object is deletable concerning the configurator or not
+	 */
+	
+	public List<String> isDeletable(T object, DeleteConfiguratorBase config);
+	
 }

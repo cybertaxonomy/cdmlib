@@ -68,8 +68,8 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public UUID delete(T persistentObject) throws ReferencedObjectUndeletableException {
-        return dao.delete(persistentObject);
+    public String delete(T persistentObject) {
+        return dao.delete(persistentObject).toString();
     }
 
     @Override
@@ -212,5 +212,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         return dao.list(example, includeProperties, limit, start, orderHints, propertyPaths);
     }
+    
+    
 
 }

@@ -717,7 +717,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
                 for (String multimediaObject : multimediaObjects) {
                     Media media;
                     try {
-                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA, false);
+                        media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
                         derivedUnitFacade.addDerivedUnitMedia(media);
                     } catch (MalformedURLException e) {
                         // TODO Auto-generated catch block

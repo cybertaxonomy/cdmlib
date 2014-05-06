@@ -64,6 +64,7 @@ public class CdmPersistentXMLSource {
 		SERVER, 		
 		PORT,		
 		FILEPATH,
+		CONTEXTPATH,
 		USERNAME,
 		PASSWORD, 
 		NOMENCLATURAL_CODE,
@@ -82,6 +83,8 @@ public class CdmPersistentXMLSource {
 					return "port";
 				case FILEPATH:
 					return "filePath";
+				case CONTEXTPATH:
+					return "contextPath";
 				case USERNAME:
 					return "username";
 				case PASSWORD:

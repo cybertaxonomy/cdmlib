@@ -68,10 +68,10 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
      */
     @Override
     @Transactional(readOnly=false)
-    public void deleteGroup(String groupName) {
-        Assert.hasText(groupName);
+    public void deleteGroup(String groupUUID) {
+        Assert.notNull(groupUUID);
 
-        Group group = dao.findGroupByName(groupName);
+        Group group = dao.findByUuid(UUID.fromString(groupUUID));
         for (User user : group.getMembers()){
             group.removeMember(user);
         }
@@ -238,11 +238,12 @@ public class GroupServiceImpl extends ServiceBase<Group,IGroupDao> implements IG
         return dao.save(group);
     }
 
-//    @Override
-//    public UUID delete(Group group){
-//        UUID groupUUID = group.getUuid();
-//        this.deleteGroup(group.getName());
-//        return groupUUID;
-//    }
+    @Override
+    public String delete(Group group){
+       String groupUUID = group.getUuid().toString();
+       //org.springframework.security.provisioning.GroupManager#deleteGroup needs a string argument
+        this.deleteGroup(groupUUID);
+        return groupUUID;
+    }
 
 }

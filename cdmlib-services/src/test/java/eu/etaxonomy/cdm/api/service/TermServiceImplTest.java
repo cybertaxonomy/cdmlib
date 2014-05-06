@@ -203,11 +203,9 @@ public class TermServiceImplTest extends CdmTransactionalIntegrationTest{
     	UUID vocUUIDs = vocabularyService.save(vocs);*/
     	Pager<DefinedTermBase> term = termService.findByRepresentationText("green", DefinedTermBase.class, null, null);
     	if (term.getCount() != 0){
-    		try{
-    			termService.delete(term.getRecords().get(0));
-    		}catch(ReferencedObjectUndeletableException e){
-    			Assert.fail();
-    		}
+    		
+    		String result = termService.delete(term.getRecords().get(0));
+    		assertNotNull(result);
     		commitAndStartNewTransaction(tableNames);
        	}
     	TermVocabulary<DefinedTerm> voc = TermVocabulary.NewInstance(TermType.Feature, "TestFeatures", null, null, null);

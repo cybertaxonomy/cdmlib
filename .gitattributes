@@ -1061,6 +1061,7 @@ cdmlib-model/src/main/resources/terms/DnaMarkerChloroplast.csv -text
 cdmlib-model/src/main/resources/terms/DnaMarkerEukaryote.csv -text
 cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
+cdmlib-model/src/main/resources/terms/FormerCountries -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
 cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
@@ -2465,6 +2466,7 @@ src/site/apt/index.apt -text
 src/site/apt/oai-pmh.apt -text
 src/site/apt/overview.apt -text
 src/site/apt/reference.apt -text
+src/site/apt/remote/checklist-catalogue-default.apt -text
 src/site/apt/remote/name-catalogue-accepted.apt -text
 src/site/apt/remote/name-catalogue-default.apt -text
 src/site/apt/remote/name-catalogue-fuzzy.apt -text

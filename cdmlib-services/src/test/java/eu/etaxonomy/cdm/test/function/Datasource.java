@@ -145,12 +145,12 @@ public class Datasource {
 //		service.delete(node);
 		ITaxonService taxonService = appCtr.getTaxonService();
 		Taxon taxon = node.getTaxon();
-		try {
+		//try {
 			taxonService.deleteTaxon(taxon, new TaxonDeletionConfigurator(), node.getClassification());
 			
-		} catch (DataChangeNoRollbackException e) {
+		/*} catch (DataChangeNoRollbackException e) {
 			e.printStackTrace();
-		}
+		}*/
 		try {
 			appCtr.commitTransaction(tx);
 		} catch (Exception e) {

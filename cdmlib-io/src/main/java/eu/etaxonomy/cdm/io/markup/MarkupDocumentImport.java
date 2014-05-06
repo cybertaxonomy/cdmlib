@@ -208,8 +208,8 @@ public class MarkupDocumentImport extends XmlImportBase<MarkupImportConfigurator
 		return this.READ_MEDIA_DATA;
 	}
 	
-	public Media getImageMedia(String uriString, boolean readMediaData, boolean isFigure) throws MalformedURLException {
-		return super.getImageMedia(uriString, readMediaData, isFigure);
+	public Media getImageMedia(String uriString, boolean readMediaData) throws MalformedURLException {
+		return super.getImageMedia(uriString, readMediaData);
 	}
 
 	public IEditGeoService getEditGeoService() {

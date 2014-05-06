@@ -1538,11 +1538,11 @@ public abstract class MarkupImportBase  {
 	private Media makeFigure(MarkupImportState state, String id, String type, String urlString, 
 			String legendString, String titleString, String numString, XMLEvent next) {
 		Media media = null;
-		boolean isFigure = false;
+//		boolean isFigure = false;  //no difference between figure and media since v3.3
 		try {
 			//TODO maybe everything is a figure as it is all taken from a book
 			if ("lineart".equals(type)) {
-				isFigure = true;
+//				isFigure = true;
 //				media = Figure.NewInstance(url.toURI(), null, null,	null);
 			} else if (type == null || "photo".equals(type)
 					|| "signature".equals(type)
@@ -1553,7 +1553,7 @@ public abstract class MarkupImportBase  {
 				message = String.format(message, type);
 				fireWarningEvent(message, next, 2);
 			}
-			media = docImport.getImageMedia(urlString, docImport.getReadMediaData(), isFigure);
+			media = docImport.getImageMedia(urlString, docImport.getReadMediaData());
 			
 			if (media != null){
 				// title

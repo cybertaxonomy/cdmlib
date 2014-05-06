@@ -315,8 +315,12 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
             if (taxonNode.getClassification().equals(this)){
                 if (this.getChildNodes().contains(taxonNode)){
-                    if (taxonNode.getParent() != null){
-                        logger.warn("A topmost node should have no parent but actually has a parent");
+                    if (taxonNode.getParent() == null){
+                        logger.warn("A topmost node should always have the root node as parent but actually has no parent");
+                    }else if (taxonNode.getParent().getParent() != null){
+                        logger.warn("The root node should have not parent but actually has one");
+                    }else if (taxonNode.getParent().getTaxon() != null){
+                        logger.warn("The root node should have not taxon but actually has one");
                     }
                     return taxonNode;
                 }
@@ -402,7 +406,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                     }else{
                         logger.warn("ChildNode has no classification: " + childNode.getId());
                     }
-                        parentNode.addChildNode(childNode, citation, microCitation);
+                    parentNode.addChildNode(childNode, citation, microCitation);
                     if (!parentNode.isTopmostNode()){
                         this.addChildNode(parentNode, citation, microCitation);
                         logger.warn("parent is added as a topmost node");
@@ -411,7 +415,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                     }
                 }else{
                     this.makeTopmostNodeChildOfOtherNode(childNode, parentNode, citation, microCitation);
-
                 }
             }
             return childNode;

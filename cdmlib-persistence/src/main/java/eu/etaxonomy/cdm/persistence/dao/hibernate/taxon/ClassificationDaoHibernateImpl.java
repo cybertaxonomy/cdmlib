@@ -123,6 +123,10 @@ public class ClassificationDaoHibernateImpl extends IdentifiableDaoBase<Classifi
 
         @SuppressWarnings("unchecked")
         List<TaxonNode> result = query.list();
+        //check if array is "empty" (not containing null objects)
+        if(!result.isEmpty() && result.iterator().next()==null){
+        	return java.util.Collections.emptyList();
+        }
         defaultBeanInitializer.initializeAll(result, propertyPaths);
         return result;
     }

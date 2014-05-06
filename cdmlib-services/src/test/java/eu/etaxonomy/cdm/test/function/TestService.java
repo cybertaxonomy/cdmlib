@@ -16,6 +16,7 @@ import java.util.SortedSet;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Ignore;
 import org.springframework.transaction.TransactionStatus;
 
@@ -157,11 +158,16 @@ public class TestService {
 		logger.info("  UUID: " + uuidTaxon2);
 		logger.info("Remove taxon ...");
 		UUID uuid = null;
-		try {
-			uuid = taxonService.deleteTaxon(taxon1, null, null);
-		} catch (DataChangeNoRollbackException e) {
+		//try {
+		String uuidString = taxonService.deleteTaxon(taxon1, null, null);
+		/*} catch (DataChangeNoRollbackException e) {
 			logger.info(e.getMessage());
-		}
+		}*/
+		 try{
+	        	uuid = UUID.fromString(uuidString);
+	     }catch(IllegalArgumentException e){
+	        	Assert.fail();
+	     }
 		logger.info("  UUID: " + uuid);
 	}
 

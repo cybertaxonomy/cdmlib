@@ -487,7 +487,7 @@ public class UserService extends ServiceBase<User,IUserDao> implements IUserServ
 
     @Override
     @PreAuthorize("hasRole('ROLE_ADMIN') or hasRole('ROLE_USER_MANAGER')")
-    public UUID delete(User persistentObject) throws ReferencedObjectUndeletableException {
+    public String delete(User persistentObject)  {
         return super.delete(persistentObject);
     }
 

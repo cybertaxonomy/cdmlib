@@ -75,7 +75,7 @@ public class CdmApplicationUtils {
      */
     static private boolean copyResource(File directory, String resourceFileName){
         try {
-            InputStream isDataSource = CdmUtils.class.getResourceAsStream(CdmPersistentDataSource.DATASOURCE_PATH + resourceFileName);
+            InputStream isDataSource = CdmUtils.class.getResourceAsStream(CdmPersistentXMLSource.CDMSOURCE_PATH + resourceFileName);
             if (isDataSource != null){
                 File fileToCopy = new File(directory + File.separator + resourceFileName);
                 if (fileToCopy.createNewFile()){

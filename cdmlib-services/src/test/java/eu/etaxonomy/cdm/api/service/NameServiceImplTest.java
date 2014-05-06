@@ -24,6 +24,7 @@ import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
@@ -170,29 +171,24 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
 
-        try {
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1);
-            Assert.fail("Delete should throw an error as long as name relationships exist.");
-        } catch (Exception e) {
-            if (e.getMessage().contains("Name can't be deleted as it is used in name relationship")){
-                //ok
-                endTransaction();  //exception rolls back transaction!
-//				printDataSet(System.out, tableNames);
-                startNewTransaction();
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-            }
+       
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        try{
+        	UUID uuid = UUID.fromString(nameService.delete(name1));
+        	Assert.fail();
+        }catch(IllegalArgumentException e){
+
+        	
         }
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         nameWithBasionym = ((NameRelationship)name1.getNameRelations().iterator().next()).getToName();
         nameWithBasionym.removeBasionyms();
-        try{
-        	nameService.delete(name1); //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+       
+        String result = nameService.delete(name1); //should throw now exception
+        
+        
+        
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -223,34 +219,29 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-        try {
+       
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1, config);
-            Assert.fail("Delete should throw an error as long as name relationships exist.");
-        } catch (Exception e) {
-            if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
-                //ok
-                endTransaction();  //exception rolls back transaction!
-//				printDataSet(System.out, tableNames);
-                startNewTransaction();
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-            }
-        }
+            String result = nameService.delete(name1, config);
+           try{
+        	   UUID uuid = UUID.fromString(result);
+        	   Assert.fail("This should throw an error as long as name relationships exist.");
+           }catch(IllegalArgumentException e){
+        	   commitAndStartNewTransaction(tableNames);
+           }
+            
+        
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
 
         //ignore is basionym for
         config.setIgnoreIsBasionymFor(true);
-        try {
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1,  config);
-            commitAndStartNewTransaction(tableNames);
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            Assert.assertNull("Name should not be in database anymore",name1);
-        } catch (Exception e) {
-            Assert.fail("Delete should not throw an error for .");
-        }
+       
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        nameService.delete(name1,  config);
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+       
     }
 
     /**
@@ -270,34 +261,30 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         nameService.save(name1);
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
+       
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        String result = nameService.delete(name1, config);
         try {
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1, config);
-            Assert.fail("Delete should throw an error as long as name relationships exist.");
-        } catch (Exception e) {
-            if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
-                //ok
-                endTransaction();  //exception rolls back transaction!
-//				printDataSet(System.out, tableNames);
-                startNewTransaction();
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-            }
+        	UUID uuid = UUID.fromString(result);
+        	Assert.fail("Delete should throw an error as long as name relationships exist.");
+        }catch(IllegalArgumentException e){
+        	commitAndStartNewTransaction(tableNames);
         }
+        
+        
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
 
         //ignore all name relationships
         config.setRemoveAllNameRelationships(true);
-        try {
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1, config);
-            commitAndStartNewTransaction(tableNames);
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            Assert.assertNull("Name should not be in database anymore",name1);
-        } catch (Exception e) {
-            Assert.fail("Delete should not throw an error for .");
-        }
+      
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        result = nameService.delete(name1, config);
+        logger.debug(result);
+        commitAndStartNewTransaction(tableNames);
+        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        Assert.assertNull("Name should not be in database anymore",name1);
+        
     }
 
     /**
@@ -318,20 +305,18 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
         NameDeletionConfigurator config = new NameDeletionConfigurator();
         config.setIgnoreHasBasionym(false);
-        try {
+       
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1, config);
-            Assert.fail("Delete should throw an error as long as name relationships exist.");
-        } catch (Exception e) {
-            if (e.getMessage().startsWith("Name can't be deleted as it is used in name relationship")){
-                //ok
-                endTransaction();  //exception rolls back transaction!
-//				printDataSet(System.out, tableNames);
-                startNewTransaction();
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
+           String result = nameService.delete(name1, config);
+           logger.debug(result);
+            try{
+            	UUID uuid = UUID.fromString(result);
+            	 Assert.fail("Delete should throw an error as long as name relationships exist.");
+            }catch(IllegalArgumentException e){
+            	commitAndStartNewTransaction(tableNames);
             }
-        }
+           
+        
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
 
@@ -339,7 +324,8 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         config.setIgnoreHasBasionym(true);
         try {
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1, config);
+            result = nameService.delete(name1, config);
+            logger.debug(result);
             commitAndStartNewTransaction(tableNames);
             name1 = (NonViralName<?>)nameService.find(name1.getUuid());
             Assert.assertNull("Name should not be in database anymore",name1);
@@ -406,11 +392,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         name1.removeHybridChild(child);
-        try{
+        
         	 nameService.delete(name1); //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        
        
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -453,11 +437,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         Assert.assertNotNull("Taxon should still be in database",taxon);
         taxon.setName(basionym);
         taxonService.save(taxon);
-        try{
+       
         	nameService.delete(name1); //should throw now exception
-        }catch (ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -479,41 +461,35 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         specimen.setStoredUnder(name1);
 
         occurrenceService.save(specimen);
-        nameService.save(name1);
-        try {
-            commitAndStartNewTransaction(tableNames);
-            nameService.delete(name1);
-            Assert.fail("Delete should throw an error as long as name is used for specimen#storedUnder.");
-        } catch (Exception e) {
-            if (e.getMessage().contains("Name can't be deleted as it is used as derivedUnit#storedUnder")){
-                //ok
-                endTransaction();  //exception rolls back transaction!
-                startNewTransaction();
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-            }
-        }
-        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        UUID uuidName1 = nameService.save(name1);
+        
+        commitAndStartNewTransaction(tableNames);
+         String result = nameService.delete(name1);
+         try{
+        	 UUID uuid = UUID.fromString(result);
+        	 Assert.fail("This should throw an error because name is used for specimen#storedUnder.");
+         }catch(IllegalArgumentException e){
+        	 
+         }
+         commitAndStartNewTransaction(tableNames);
+        
+        name1 = (NonViralName<?>)nameService.find(uuidName1);
         Assert.assertNotNull("Name should still be in database",name1);
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",name1);
         specimen.setStoredUnder(null);
         occurrenceService.saveOrUpdate(specimen);
-        try{
-                	nameService.delete(name1); //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
-        commitAndStartNewTransaction(tableNames);
-        name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+        
+        nameService.delete(name1); //should throw no exception
+       
+        
+        name1 = (NonViralName<?>)nameService.find(uuidName1);
         Assert.assertNull("Name should not be in database anymore",name1);
         specimen = (DerivedUnit)occurrenceService.find(specimen.getUuid());
         Assert.assertNotNull("Specimen should still be in database",specimen);
-        try{
+        
         	occurrenceService.delete(specimen); //this is to better run this test in the test suit
-    	}catch(ReferencedObjectUndeletableException e){
-    		Assert.fail();
-    	}
+    	
     }
 
     /**
@@ -561,11 +537,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         source = taxon.getDescriptions().iterator().next().getElements().iterator().next().getSources().iterator().next();
         source.setNameUsedInSource(null);
         taxonService.saveOrUpdate(taxon);
-        try{
-        	nameService.delete(name1);  //should throw now exception
-    	}catch(ReferencedObjectUndeletableException e){
-    		Assert.fail();
-    	}
+       
+        nameService.delete(name1);  //should throw now exception
+    	
         commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -593,30 +567,26 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         boolean addToAllHomotypicNames = true;
         higherName.addNameTypeDesignation(name1, null, null, null, typeStatus, addToAllHomotypicNames);
         nameService.save(higherName);
-        try {
-            commitAndStartNewTransaction(tableNames);
-            name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-            nameService.delete(name1);
-            Assert.fail("Delete should throw an error as long as name is used in a type designation.");
-        } catch (Exception e) {
-            if (e.getMessage().contains("Name can't be deleted as it is used as a name type")){
-                //ok
-                endTransaction();  //exception rolls back transaction!
-                startNewTransaction();
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon name: " + e.getMessage());
-            }
+       
+       commitAndStartNewTransaction(tableNames);
+       name1 = (NonViralName<?>)nameService.find(name1.getUuid());
+       String result = nameService.delete(name1);
+        try{
+        	UUID uuid = UUID.fromString(result);
+        	Assert.fail("This should throw an error because name is used in a type designation.");
+        }catch(IllegalArgumentException e){
+        	
         }
+        
+        commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNotNull("Name should still be in database",name1);
         higherName = (NonViralName<?>)nameService.find(higherName.getUuid());
         higherName.getNameTypeDesignations().iterator().next().removeType();  //keeps the designation but removes the name from it
 //		nameService.deleteTypeDesignation(higherName,commitAndStartNewTransaction(tableNames) );  //deletes the complete designation  //both options can be used
-        try{
-    	   nameService.delete(name1);  //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        
+    	nameService.delete(name1);  //should throw now exception
+       
     	commitAndStartNewTransaction(tableNames);
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
         Assert.assertNull("Name should not be in database anymore",name1);
@@ -645,11 +615,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        try{
-        	nameService.delete(name1);  //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+       
+        UUID uuid  = UUID.fromString(nameService.delete(name1));  //should throw now exception
+       
         setComplete();
         endTransaction();
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
@@ -667,11 +635,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        try{	
-        	nameService.delete(name1);  //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        	
+        nameService.delete(name1);  //should throw now exception
+        
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -694,11 +660,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
 //		printDataSet(System.out, tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        try{
+        
         	nameService.delete(name1);  //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);
@@ -735,11 +699,9 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         commitAndStartNewTransaction(tableNames);
 
         name1 = (NonViralName<?>)nameService.find(name1.getUuid());
-        try{
+        
         	nameService.delete(name1);  //should throw now exception
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        
         setComplete();
         endTransaction();
 //		printDataSet(System.out, tableNames);

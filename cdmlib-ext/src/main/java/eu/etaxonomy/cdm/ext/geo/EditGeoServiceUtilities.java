@@ -455,23 +455,6 @@ public class EditGeoServiceUtilities {
     }
 
 
-    private static String compileMapSizeParameterValue(int width, int height) {
-
-        String widthStr = "";
-        String heightStr = "";
-
-        if (width > 0) {
-            widthStr = "" + width;
-        }
-        if (height > 0) {
-            heightStr = SUBENTRY_DELIMITER + height;
-        }
-        String ms = widthStr + heightStr;
-        if(ms.length() == 0){
-            ms = null;
-        }
-        return ms;
-    }
 
     /**
      * URI encode the given String
@@ -599,7 +582,7 @@ public class EditGeoServiceUtilities {
             return null;
 
         }else if (voc.getUuid().equals(Country.uuidCountryVocabulary)){
-        	return "country_earth";
+        	return "country_earth:gmi_cntry";
         }
 
         GeoServiceArea areas = mapping.valueOf(area);

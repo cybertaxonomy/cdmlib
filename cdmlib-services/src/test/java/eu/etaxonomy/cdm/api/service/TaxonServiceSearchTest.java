@@ -796,11 +796,9 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         taxon = taxonService.find(taxon.getUuid());
         Assert.assertEquals(newName + " sec. ", taxon.getTitleCache());
         DefinedTermBase term = termService.find(termUUID);
-        try {
-        	termService.delete(term);
-        }catch(ReferencedObjectUndeletableException e){
-        	Assert.fail();
-        }
+        
+        termService.delete(term);
+        
     }
 
     @SuppressWarnings("rawtypes")

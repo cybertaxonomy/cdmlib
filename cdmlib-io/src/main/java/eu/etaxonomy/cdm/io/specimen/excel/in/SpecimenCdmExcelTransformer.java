@@ -33,13 +33,16 @@ public final class SpecimenCdmExcelTransformer extends InputTransformerBase {
 	public static final UUID uuidRefSysEstimated = UUID.fromString("3b625520-e5cf-4d9c-9599-0cb048e0e8d2");
 	public static final UUID uuidRefSysLabel = UUID.fromString("c72335ed-c9aa-4d1c-b6fc-9f307d207862");
 	public static final UUID uuidRefSysGps = UUID.fromString("b3c36751-b2ac-47f7-8ac1-3dc5c129e0b2");
+	public static final UUID uuidRefSysUtm = UUID.fromString("bc64f335-a80a-432a-82ff-5c08a308324f");
+	public static final UUID uuidRefSysDescription = UUID.fromString("a9c42b52-c8cf-4658-86ce-271dca569f2c");
+	public static final UUID uuidRefSysMapBR = UUID.fromString("64b8dc38-e532-45bf-bea7-86b9467973a1");
+	public static final UUID uuidRefSysUnsure = UUID.fromString("91781b31-29e9-4807-8172-e7e25433ea06");
+	
+	
 	
 	
 	//Languages
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase#getMarkerTypeByKey(java.lang.String)
-	 */
 	@Override
 	public SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(String key) throws UndefinedTransformerMethodException {
 		return super.getSpecimenTypeDesignationStatusByKey(key);
@@ -67,6 +70,10 @@ public final class SpecimenCdmExcelTransformer extends InputTransformerBase {
 		}else if (key.matches("(?i)(estimated)")){return uuidRefSysEstimated;
 		}else if (key.matches("(?i)(label)")){return uuidRefSysLabel;
 		}else if (key.matches("(?i)(gps)")){return uuidRefSysLabel;
+		}else if (key.matches("(?i)(utm)")){return uuidRefSysUtm;
+		}else if (key.matches("(?i)(description)")){return uuidRefSysDescription;
+		}else if (key.matches("(?i)(mapBR)")){return uuidRefSysMapBR;
+		}else if (key.matches("(?i)(Unsure)")){return uuidRefSysUnsure;
 		}
 		return null;
 	}

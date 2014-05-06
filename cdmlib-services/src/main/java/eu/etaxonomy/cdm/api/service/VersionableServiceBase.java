@@ -13,10 +13,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.hibernate.envers.query.criteria.AuditCriterion;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
+import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
 import eu.etaxonomy.cdm.model.view.AuditEvent;
 import eu.etaxonomy.cdm.model.view.AuditEventRecord;
@@ -24,7 +27,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.AuditEventSort;
 import eu.etaxonomy.cdm.persistence.dao.common.IVersionableDao;
 
 public abstract class VersionableServiceBase<T extends VersionableEntity, DAO extends IVersionableDao<T>> extends ServiceBase<T,DAO> implements IVersionableService<T> {
-
+	@Autowired
+    protected ICommonService commonService;
 	@Transactional(readOnly = true)
 	public Pager<AuditEventRecord<T>> pageAuditEvents(T t, Integer pageSize,	Integer pageNumber, AuditEventSort sort, List<String> propertyPaths) {
 		Integer numberOfResults = dao.countAuditEvents(t, sort);
@@ -58,4 +62,18 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
 		
 		return new DefaultPagerImpl<AuditEventRecord<T>>(pageNumber, numberOfResults, pageSize, results);
 	}
+	
+	 /**
+     * the basic isDeletable method return false if the object is referenced from any other object.
+     */
+    
+    @Override
+    public List<String> isDeletable(T base, DeleteConfiguratorBase config){
+    	List result = new ArrayList<String>();
+    	if (commonService.getReferencingObjects(base).size() > 0){
+    		//TODO
+    	}
+    	return result;
+    }
+
 }

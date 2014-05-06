@@ -1439,18 +1439,21 @@ public class DerivedUnitFacade {
 		if (language == null) {
 			language = Language.DEFAULT();
 		}
+		boolean isEmpty = StringUtils.isBlank(ecologyText);
 		if (ecology == null) {
 			try {
 				ecology = initializeFieldObjectTextDataWithSupportTest(
-						Feature.ECOLOGY(), true, false);
+						Feature.ECOLOGY(), !isEmpty, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
 		}
-		if (ecologyText == null) {
-			ecology.removeText(language);
-		} else {
-			ecology.putText(language, ecologyText);
+		if (ecology != null){
+			if (ecologyText == null) {
+				ecology.removeText(language);
+			} else {
+				ecology.putText(language, ecologyText);
+			}
 		}
 	}
 
@@ -1514,23 +1517,25 @@ public class DerivedUnitFacade {
 		setPlantDescription(plantDescription, null);
 	}
 
-	public void setPlantDescription(String plantDescriptionText,
-			Language language) {
+	public void setPlantDescription(String plantDescriptionText, Language language) {
 		if (language == null) {
 			language = Language.DEFAULT();
 		}
+		boolean isEmpty = StringUtils.isBlank(plantDescriptionText);
 		if (plantDescription == null) {
 			try {
 				plantDescription = initializeFieldObjectTextDataWithSupportTest(
-						Feature.DESCRIPTION(), true, false);
+						Feature.DESCRIPTION(), !isEmpty, false);
 			} catch (DerivedUnitFacadeNotSupportedException e) {
 				throw new IllegalStateException(notSupportMessage, e);
 			}
 		}
-		if (plantDescriptionText == null) {
-			plantDescription.removeText(language);
-		} else {
-			plantDescription.putText(language, plantDescriptionText);
+		if (plantDescription != null){
+			if (plantDescriptionText == null) {
+				plantDescription.removeText(language);
+			} else {
+				plantDescription.putText(language, plantDescriptionText);
+			}
 		}
 	}
 

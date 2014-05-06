@@ -9,7 +9,7 @@
 
 package eu.etaxonomy.cdm.io.csv.redlist.demo;
 
-import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -23,6 +23,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -78,69 +79,170 @@ public class CsvDemoExport extends CsvDemoBase {
 	 */
 	@Override
 	protected void doInvoke(CsvDemoExportState state){
-		CsvDemoExportConfigurator config = state.getConfig();
-		TransactionStatus txStatus = startTransaction(true);
-		List<NamedArea> selectedAreas = config.getNamedAreas();
-		Set<Classification> classificationSet = assembleClassificationSet(config);
+	    CsvDemoExportConfigurator config = state.getConfig();
+	    TransactionStatus txStatus = startTransaction(true);
 
-		PrintWriter writer = null;
-		ByteArrayOutputStream byteArrayOutputStream;
-		try {
-		    if(config.getByteArrayOutputStream() != null){
-    			byteArrayOutputStream = config.getByteArrayOutputStream();
-    			writer = new PrintWriter(byteArrayOutputStream);
-		    }
-			//geographical Filter
-			List<TaxonNode> taxonNodes = handleGeographicalFilter(state, classificationSet, config);
+	    List<NamedArea> selectedAreas = config.getNamedAreas();
+	    Set<Classification> classificationSet = assembleClassificationSet(config);
 
-			//sorting List
-			sortTaxonNodes(taxonNodes);
-			List<CsvDemoRecord> recordList = null;
-			if(config.getRecordList() != null){
-			    recordList = config.getRecordList();
-			}
+	    IProgressMonitor progressMonitor = null;
+	    if(config.getProgressMonitor() != null) {
+	        progressMonitor = config.getProgressMonitor();
+	    }
+	    PrintWriter writer = null;
+	    try {
+	        //json/xml result list
+            List<CsvDemoRecord> recordList = null;
+            if(config.getRecordList() != null){
+                recordList = config.getRecordList();
+                performJsonXMLPagination(state, config, txStatus, classificationSet, recordList);
+            }
 
-			for (TaxonNode node : taxonNodes){
-				Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-				CsvDemoRecord record = assembleRecord(state);
-				NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
-				Classification classification = node.getClassification();
-				config.setClassificationTitleCache(classification.getTitleCache());
-				if (! this.recordExists(taxon)){
-					handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config, node);
-					if(config.getByteArrayOutputStream() != null){
-					    record.write(writer);
-					}
-					if(recordList != null){
-					    recordList.add(record);
-					}
 
-					this.addExistingRecord(taxon);
-				}
-				//misapplied names
-				handleMisapplication(taxon, writer, classification, record, config, node);
-				if(writer != null){
-				    writer.flush();
-				}
-			}
-		} catch (ClassCastException e) {
-			e.printStackTrace();
-		}
-		finally{
-		    if(writer != null){
-		        writer.close();
-		    }
-		    this.clearExistingRecordIds();
-		}
-		commitTransaction(txStatus);
-		return;
-
+	        if(!config.getDestination().isDirectory()){
+	            try {
+                    writer = new PrintWriter(config.getDestination());
+                    performCSVExport(state, config, txStatus, classificationSet, progressMonitor, writer);
+                } catch (FileNotFoundException e) {
+                    e.printStackTrace();
+                }
+	        }
+	    } catch (ClassCastException e) {
+	        e.printStackTrace();
+	    }
+	    finally{
+	        if(writer != null){
+	            writer.close();
+	        }
+	        this.clearExistingRecordIds();
+	    }
+//	    commitTransaction(txStatus);
+	    return;
 	}
 
 
+    /**
+     * @param state
+     * @param config
+     * @param txStatus
+     * @param classificationSet
+     * @param recordList
+     */
+    private void performJsonXMLPagination(CsvDemoExportState state, CsvDemoExportConfigurator config,
+            TransactionStatus txStatus, Set<Classification> classificationSet, List<CsvDemoRecord> recordList) {
+        // TODO Auto-generated method stub
+        Classification classification = null;
+        for(Classification c : classificationSet){
+            classification = c;
+            //this sets the total amount of records for pagination
+            config.setTaxonNodeListSize(getTaxonNodeService().countAllNodesForClassification(c));
+        }
+        //calculate pagination
+        int start = config.getPageSize() * config.getPageNumber();
+        List<TaxonNode> result = getTaxonNodeService().listAllNodesForClassification(classification, start, config.getPageSize());
+
+        for (TaxonNode node : result){
+            Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+            CsvDemoRecord record = assembleRecord(state);
+            NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+            config.setClassificationTitleCache(classification.getTitleCache());
+            if (! this.recordExists(taxon)){
+                handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config, node);
+                recordList.add(record);
+                this.addExistingRecord(taxon);
+            }
+        }
+        commitTransaction(txStatus);
+    }
 
 
-	//TODO: Exception handling
+    /**
+     * @param state
+     * @param config
+     * @param txStatus
+     * @param classificationSet
+     * @param progressMonitor
+     * @param writer
+     * @return
+     */
+	private void performCSVExport(CsvDemoExportState state, CsvDemoExportConfigurator config,
+	        TransactionStatus txStatus, Set<Classification> classificationSet, IProgressMonitor progressMonitor,
+	        PrintWriter writer) {
+	    //obtain chuncks of taxonNodes
+	    int totalWork = 0;
+	    int work = 0;
+	    int limit = 1000;
+	    int end = 1000;
+	    int start = 0;
+
+	    //TODO: Questionable if this information is really necessary, with respect to memory usage
+	    Classification classification = null;
+	    for(Classification c : classificationSet){
+	        classification = c;
+	        totalWork = getTaxonNodeService().countAllNodesForClassification(c);
+	    }
+	    if(progressMonitor != null) {
+	        progressMonitor.beginTask("", totalWork);
+	    }
+	    List<TaxonNode> result = new ArrayList<TaxonNode>();
+	    int totalNodes = getTaxonNodeService().count(TaxonNode.class);
+
+	    for(int i = 0 ; i < totalNodes; i++){
+
+	        //geographical Filter
+	        //	     List<TaxonNode> taxonNodes =  handleGeographicalFilter(state, classificationSet, config, limit, start);
+
+	        result = getTaxonNodeService().listAllNodesForClassification(classification, start, limit);
+
+	        logger.info(result.size());
+
+
+	        for (TaxonNode node : result){
+	            Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+	            CsvDemoRecord record = assembleRecord(state);
+	            NonViralName<?> name = CdmBase.deproxy(taxon.getName(), NonViralName.class);
+	            //	                Classification classification = node.getClassification();
+	            config.setClassificationTitleCache(classification.getTitleCache());
+	            if (! this.recordExists(taxon)){
+
+	                handleTaxonBase(record, taxon, name, taxon, classification, null, false, false, config, node);
+	                if(config.getDestination() != null){
+	                    record.write(writer);
+	                }
+	                this.addExistingRecord(taxon);
+	            }
+	            //misapplied names
+	            //handleMisapplication(taxon, writer, classification, record, config, node);
+
+	            if(progressMonitor !=null) {
+	                if(work < totalWork-1) {
+	                    progressMonitor.worked(1);
+	                }
+	                work++;
+	            }
+	        }
+	        if(writer != null){
+	            writer.flush();
+	            commitTransaction(txStatus);
+	            txStatus = startTransaction(true);
+	        }
+	        //get next 1000 results
+	        if(result.size()%limit == 0){
+	            //increase only once to avoid same row
+	            if(i==0){
+	                start++;
+	            }
+	            start = start + limit;
+	            end = end + limit;
+	            result = null;
+	        }else{
+	            return;
+	        }
+	    }
+	}
+
+
+    //TODO: Exception handling
 	/**
 	 *
 	 * @param config
@@ -185,55 +287,62 @@ public class CsvDemoExport extends CsvDemoBase {
 	 *
 	 * @param selectedAreas
 	 * @param classificationSet
+	 * @param limit
+	 * @param start
 	 * @return
 	 */
-	protected List<TaxonNode> handleGeographicalFilter(CsvDemoExportState state,
-			Set<Classification> classificationSet, CsvDemoExportConfigurator config ) {
-		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
-		List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
-		//Check if json/XML export
-		if(config.getRecordList() != null){
-		    allNodes = getTaxonNodeService().list(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null);
-		    config.setTaxonNodeListSize(getAllNodes(classificationSet).size());
-		    //getTaxonNodeService().page(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null).getRecords();
-		}else{
-		    //just for the csv export
-		    //will probably change in the future
-		    allNodes =  getAllNodes(classificationSet);
-		}
-		//Geographical filter
-		if(state.getConfig().isDoGeographicalFilter()){
-			List<NamedArea> selectedAreas = state.getConfig().getNamedAreas();
-			logger.info(selectedAreas.size());
-			if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
-				//				if(selectedAreas.size() == 16){
-				//					//Germany TDWG Level 3
-				//					String germany="uu7b7c2db5-aa44-4302-bdec-6556fd74b0b9id";
-				//					selectedAreas.add((NamedArea) getTermService().find(UUID.fromString(germany)));
-				//				}
-				for (TaxonNode node : allNodes){
-					Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
-					Set<TaxonDescription> descriptions = taxon.getDescriptions();
-					for (TaxonDescription description : descriptions){
-						for (DescriptionElementBase el : description.getElements()){
-							if (el.isInstanceOf(Distribution.class) ){
-								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
-								NamedArea area = distribution.getArea();
-								for(NamedArea selectedArea:selectedAreas){
-									if(selectedArea.getUuid().equals(area.getUuid())){
-										filteredNodes.add(node);
-									}
-								}
-							}
-						}
-					}
-				}
-			}else{
-				filteredNodes = allNodes;
-			}
-		}
-		return filteredNodes;
-	}
+//	protected List<TaxonNode> handleGeographicalFilter(CsvDemoExportState state,
+//			Set<Classification> classificationSet, CsvDemoExportConfigurator config, int limit, int start) {
+//		List<TaxonNode> filteredNodes = new ArrayList<TaxonNode>();
+//		List<TaxonNode> allNodes = new ArrayList<TaxonNode>();
+//		//Check if json/XML export
+//		if(config.getRecordList() != null){
+//		    if(config.getProgressMonitor() != null) {
+//                config.getProgressMonitor().subTask("Calculate size of export...");
+//            }
+//		    //FIXME does not filter for classifications
+//		    allNodes = getTaxonNodeService().list(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null);
+//		    config.setTaxonNodeListSize(getAllNodes(classificationSet).size());
+//		    //getTaxonNodeService().page(TaxonNode.class, config.getPageSize(), config.getPageNumber(), null, null).getRecords();
+//		}else{
+//
+//		    //do your own pagination
+//		        allNodes =  getAllNodes(classificationSet);
+//
+//		}
+//		//Geographical filter
+//		if(state.getConfig().isDoGeographicalFilter()){
+//			List<NamedArea> selectedAreas = state.getConfig().getNamedAreas();
+//			logger.info(selectedAreas.size());
+//			if(selectedAreas != null && !selectedAreas.isEmpty() && selectedAreas.size() < 16){
+//				//				if(selectedAreas.size() == 16){
+//				//					//Germany TDWG Level 3
+//				//					String germany="uu7b7c2db5-aa44-4302-bdec-6556fd74b0b9id";
+//				//					selectedAreas.add((NamedArea) getTermService().find(UUID.fromString(germany)));
+//				//				}
+//				for (TaxonNode node : allNodes){
+//					Taxon taxon = CdmBase.deproxy(node.getTaxon(), Taxon.class);
+//					Set<TaxonDescription> descriptions = taxon.getDescriptions();
+//					for (TaxonDescription description : descriptions){
+//						for (DescriptionElementBase el : description.getElements()){
+//							if (el.isInstanceOf(Distribution.class) ){
+//								Distribution distribution = CdmBase.deproxy(el, Distribution.class);
+//								NamedArea area = distribution.getArea();
+//								for(NamedArea selectedArea:selectedAreas){
+//									if(selectedArea.getUuid().equals(area.getUuid())){
+//										filteredNodes.add(node);
+//									}
+//								}
+//							}
+//						}
+//					}
+//				}
+//			}else{
+//				filteredNodes = allNodes;
+//			}
+//		}
+//		return filteredNodes;
+//	}
 
 	/**
 	 * handles misapplied {@link Taxon}
@@ -242,6 +351,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param classification
 	 * @param metaRecord
 	 * @param config
+	 * @param node
 	 */
 	private void handleMisapplication(Taxon taxon, PrintWriter writer, Classification classification, CsvDemoRecord record, CsvDemoExportConfigurator config, TaxonNode node) {
 		Set<Taxon> misappliedNames = taxon.getMisappliedNames();
@@ -273,6 +383,7 @@ public class CsvDemoExport extends CsvDemoBase {
 	 * @param isProParte
 	 * @param config
 	 * @param node
+	 * @param node
 	 * @param type
 	 */
 	private void handleTaxonBase(CsvDemoRecord record,TaxonBase<?> taxonBase,
@@ -282,7 +393,7 @@ public class CsvDemoExport extends CsvDemoBase {
 
 		Taxon taxon = (Taxon) taxonBase;
 		List<Feature> features = config.getFeatures();
-		if(config.getByteArrayOutputStream() != null){
+		if(config.getDestination() != null){
 		    record.setHeadLinePrinted(config.isHasHeaderLines());
 		    if(config.isRedlistFeatures()){
 		        if(features != null){

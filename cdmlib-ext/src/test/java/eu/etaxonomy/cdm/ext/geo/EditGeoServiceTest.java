@@ -125,7 +125,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
                 subAreaPreference, statusOrderPreference, null, mapping, 
                 presenceAbsenceColorMap, null, languages );
         logger.warn(result);
-        Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.contains("ad=country_earth:a:DEU"));
+        Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:a:DEU.*"));
         
     }
     

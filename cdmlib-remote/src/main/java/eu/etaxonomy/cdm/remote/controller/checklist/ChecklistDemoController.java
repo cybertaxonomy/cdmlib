@@ -8,14 +8,9 @@
 */
 package eu.etaxonomy.cdm.remote.controller.checklist;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -69,9 +64,10 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
 /**
  * @author a.oppermann
  * @created 20.09.2012
- *
- *  This controller is not a typical rest service. It enables an export of the cdm platform via a
- *  REST request. It is debatable if this a wanted behavior. For the time being it serves its purpose.
+ * <p>
+ *  This controller enables an export of the cdm platform via a
+ *  REST request. It is debatable if this a wanted behavior.
+ *  For the time being it serves its purpose.
  */
 @Controller
 @RequestMapping(value = { "/checklist" })
@@ -97,8 +93,10 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * therefore the according progress monitor uuid is stored in this static
      * field.
      */
-
     private static UUID indexMonitorUuid = null;
+
+    private final static long DAY_IN_MILLIS = 86400000;
+
 
 
 	private static final Logger logger = Logger.getLogger(ChecklistDemoController.class);
@@ -118,7 +116,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
     /**
      * This service endpoint is for generating the documentation site.
      * If any request of the other endpoint below is incomplete or false
-     *  then this method will be triggered.
+     * then this method will be triggered.
      *
      * @param response
      * @param request
@@ -158,7 +156,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @return
      * @throws IOException
      */
-//    @RequestMapping(value = { "export" }, method = { RequestMethod.GET })
+    @RequestMapping(value = { "export" }, method = { RequestMethod.GET })
     public ModelAndView doGeneralExport(
             @RequestParam(value = "classification", required = false) String classificationUUID,
             @RequestParam(value = "pageNumber", required = false) Integer pageNumber,
@@ -167,8 +165,6 @@ public class ChecklistDemoController extends AbstractController implements Resou
             HttpServletRequest request) throws IOException {
 
         try{
-            //TODO: Fix bug with pageNumber and pageSize
-            //FIXME:Pagination won't work as expected...as soon as pageNumber is greater than 9, then the page won't pull new entries...
             if(pageSize == null) {
                 pageSize = 20;
             }
@@ -181,7 +177,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
             List<CsvDemoRecord> recordList = new ArrayList<CsvDemoRecord>();
 
-            CsvDemoExportConfigurator config = setTaxExportConfigurator(classificationUUID, null, null, null);
+            CsvDemoExportConfigurator config = setTaxExportConfigurator(null ,classificationUUID, null, null, null);
             config.setPageSize(pagerParams.getPageSize());
             config.setPageNumber(pagerParams.getPageIndex());
             config.setRecordList(recordList);
@@ -212,7 +208,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @param response HttpServletResponse which returns the ByteArrayOutputStream
      * @throws Exception
      */
-//	@RequestMapping(value = { "exportCSV" }, method = { RequestMethod.GET })
+	@RequestMapping(value = { "exportCSV" }, method = { RequestMethod.GET })
 	public synchronized ModelAndView doExportRedlist(
 			@RequestParam(value = "features", required = false) final UuidList featureUuids,
 			@RequestParam(value = "clearCache", required = false) final boolean clearCache,
@@ -224,47 +220,44 @@ public class ChecklistDemoController extends AbstractController implements Resou
 			@RequestParam(value = "priority", required = false) Integer priority,
 			final HttpServletResponse response,
 			final HttpServletRequest request) throws Exception {
-
 	    /**
 	     * ========================================
 	     * progress monitor & new thread for export
 	     * ========================================
 	     */
-
         ModelAndView mv = new ModelAndView();
-
         String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
-        //Create File
         final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
-
         final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
 
-        //if file exists
-        if(clearCache == false && cacheFile.exists()){
-            //timestamp older than one day
-            long result = System.currentTimeMillis() - cacheFile.lastModified();
-            final long day = 86400000;
+        Long result = null;
+        if(cacheFile.exists()){
+            result = System.currentTimeMillis() - cacheFile.lastModified();
+        }
+        //if file exists return file instantly
+        //timestamp older than one day?
+        if(clearCache == false && result != null && result < 7*(DAY_IN_MILLIS)){
             logger.info("result of calculation: " + result);
-            if(result < day){
-                Map<String, File> modelMap = new HashMap<String, File>();
-                modelMap.put("file", cacheFile);
-                mv.addAllObjects(modelMap);
-                FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
-                mv.setView(fdv);
-                return mv;
-            }
-        }else{
-
+            Map<String, File> modelMap = new HashMap<String, File>();
+            modelMap.put("file", cacheFile);
+            mv.addAllObjects(modelMap);
+            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
+            mv.setView(fdv);
+            return mv;
+        }else{//trigger progress monitor and performExport()
             String processLabel = "Exporting...";
             final String frontbaseUrl = null;
             ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
-
             if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
                 indexMonitorUuid = progressUtil.registerNewMonitor();
                 Thread subThread = new Thread() {
                     @Override
                     public void run() {
-                        //                    indexer.reindex(typeSet, progressMonitorController.getMonitor(indexMonitorUuid));
+                        try {
+                            cacheFile.createNewFile();
+                        } catch (IOException e) {
+                            logger.info("Could not create file "+ e);
+                        }
                         performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
                     }
                 };
@@ -274,12 +267,9 @@ public class ChecklistDemoController extends AbstractController implements Resou
                 subThread.setPriority(priority);
                 subThread.start();
             }
-
             mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
         }
-
         return mv;
-
 	}
 
 
@@ -298,52 +288,36 @@ public class ChecklistDemoController extends AbstractController implements Resou
     private void performExport(File cacheFile, UuidList featureUuids,String classificationUUID, UuidList areas,
             String downloadTokenValueId, String origin, HttpServletResponse response, IRestServiceProgressMonitor progressMonitor) {
 
-        ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
-        CsvDemoExportConfigurator config = setTaxExportConfigurator(classificationUUID, featureUuids, areas, byteArrayOutputStream);
+        progressMonitor.subTask("configure export");
+        CsvDemoExportConfigurator config = setTaxExportConfigurator(cacheFile, classificationUUID, featureUuids, areas, progressMonitor);
         CdmApplicationAwareDefaultExport<?> defaultExport = (CdmApplicationAwareDefaultExport<?>) appContext.getBean("defaultExport");
-
-        defaultExport.invoke(config);
-		try {
-		    //file does not exists beforehand
-            cacheFile.createNewFile();
-
-		    ByteArrayInputStream bais = new ByteArrayInputStream(byteArrayOutputStream.toByteArray());
-		    InputStreamReader isr = new InputStreamReader(bais);
-		    FileOutputStream fos = new FileOutputStream(cacheFile);
-		    OutputStreamWriter outWriter = new OutputStreamWriter(fos, "UTF8");
-		    int i;
-		    while((i = isr.read())!= -1){
-		        outWriter.write(i);
-		    }
-		    byteArrayOutputStream.flush();
-		    isr.close();
-		    byteArrayOutputStream.close();
-		    outWriter.flush();
-		    fos.flush();
-		    outWriter.close();
-		    fos.close();
-		    progressMonitor.done();
-		    progressMonitor.setOrigin(origin);
-		} catch (Exception e) {
-		    logger.error("error generating feed", e);
-		}
+        progressMonitor.subTask("invoke export");
+        defaultExport.invoke(config);  //triggers export
+        progressMonitor.subTask("wrote results to cache");
+        progressMonitor.done();
+        progressMonitor.setOrigin(origin);
     }
 
 	/**
 	 * Cofiguration method to set the configuration details for the defaultExport in the application context.
+	 * @param cacheFile
 	 *
 	 * @param classificationUUID pass-through the selected {@link Classification classification}
 	 * @param featureUuids pass-through the selected {@link Feature feature} of a {@link Taxon}, in order to fetch it.
 	 * @param areas
 	 * @param byteArrayOutputStream pass-through the stream to write out the data later.
+	 * @param progressMonitor
 	 * @return the CsvTaxExportConfiguratorRedlist config
 	 */
-	private CsvDemoExportConfigurator setTaxExportConfigurator(String classificationUUID, UuidList featureUuids, UuidList areas, ByteArrayOutputStream byteArrayOutputStream) {
+	private CsvDemoExportConfigurator setTaxExportConfigurator(File cacheFile, String classificationUUID, UuidList featureUuids, UuidList areas, IRestServiceProgressMonitor progressMonitor) {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		Set<UUID> classificationUUIDS = new HashSet
 		(Arrays.asList(new UUID[] {UUID.fromString(classificationUUID)}));
-		String destination = System.getProperty("java.io.tmpdir");
+		if(cacheFile == null){
+		    String destination = System.getProperty("java.io.tmpdir");
+		    cacheFile = new File(destination);
+		}
 		List<Feature> features = new ArrayList<Feature>();
 		if(featureUuids != null){
 			for(UUID uuid : featureUuids) {
@@ -358,11 +332,12 @@ public class ChecklistDemoController extends AbstractController implements Resou
 			}
 		}
 
-		CsvDemoExportConfigurator config = CsvDemoExportConfigurator.NewInstance(null, new File(destination));
+		CsvDemoExportConfigurator config = CsvDemoExportConfigurator.NewInstance(null, cacheFile);
+		config.setDestination(cacheFile);
+		config.setProgressMonitor(progressMonitor);
 		config.setHasHeaderLines(true);
 		config.setFieldsTerminatedBy("\t");
 		config.setClassificationUuids(classificationUUIDS);
-		config.setByteArrayOutputStream(byteArrayOutputStream);
 		config.createPreSelectedExport(false, true);
 		if(features != null) {
             config.setFeatures(features);

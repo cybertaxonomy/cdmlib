@@ -47,6 +47,7 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author n.hoffmann
@@ -144,7 +145,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		t1.addTaxonRelation(Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null), TaxonRelationshipType.CONGRUENT_OR_EXCLUDES(), null, null);
 		Synonym synonym = Synonym.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
 		UUID uuidSynonym = taxonService.save(synonym);
+		
 		t1.addHomotypicSynonym(synonym, null, null);
+		UUID uuidT1 = taxonService.saveOrUpdate(t1);
+		t1 = null;
+		t1 =(Taxon) taxonService.load(uuidT1);
+		t1 = (Taxon)HibernateProxyHelper.deproxy(t1);
 		TaxonNameBase nameT1 = t1.getName();
 		UUID t1UUID = t1.getUuid();
 		t2 = node2.getTaxon();
@@ -154,21 +160,22 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(2,t1.getSynonyms().size());
 		UUID synUUID = null;
 		Synonym syn;
-		try {
-			syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-			synUUID = syn.getUuid();
-		} catch (DataChangeNoRollbackException e) {
-			logger.debug(e.getMessage());
+		//Taxon can't be deleted because of the polytomous key node 
+		
+		syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		if (syn == null){
 			Assert.fail();
 		}
-		termService.saveOrUpdate(synonymRelationshipType);
-		Assert.assertFalse(t2.getSynonyms().isEmpty());
-		assertEquals(3,t2.getSynonyms().size());
-		assertEquals(2, t2.getDescriptions().size());
+		commitAndStartNewTransaction(new String[]{"TaxonNode"});
+		t1 = (Taxon)taxonService.find(t1Uuid);
+		assertNotNull(t1);//because of the polytomous key node
+		node1 = taxonNodeService.load(node1Uuid);
+		assertNull(node1);
 	
 		
-		assertNotNull(taxonService.find(t1Uuid));
-		assertNull(taxonNodeService.find(node1Uuid));
+	
+		
+		synUUID = syn.getUuid();
 		syn = (Synonym)taxonService.find(synUUID);
 		synonym = (Synonym)taxonService.find(uuidSynonym);
 		assertNotNull(syn);
@@ -187,7 +194,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	 * Test method for {@link eu.etaxonomy.cdm.api.service.TaxonNodeServiceImpl#makeTaxonNodeASynonymOfAnotherTaxonNode(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType, eu.etaxonomy.cdm.model.reference.Reference, java.lang.String)}.
 	 */
 	@Test
-	@DataSet
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public final void testMakeTaxonNodeAHeterotypicSynonymOfAnotherTaxonNode() {
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -228,20 +235,35 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		assertEquals(2,t1.getSynonyms().size());
 		UUID synUUID = null;
 		Synonym syn;
-		try {
-			syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
-			synUUID = syn.getUuid();
-		} catch (DataChangeNoRollbackException e) {
-			logger.debug(e.getMessage());
-			Assert.fail();
-		}
+		
+		syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+		synUUID = syn.getUuid();
+		assertNotNull(taxonService.find(t1Uuid));
+		assertNull(taxonNodeService.find(node1Uuid));
+		
+		syn = (Synonym)taxonService.find(synUUID);
+		synonym = (Synonym)taxonService.find(uuidSynonym);
+		assertNotNull(syn);
+		assertNotNull(synonym);
+		keyNode.setTaxon(null);
+		polKeyNodeService.saveOrUpdate(keyNode);
+		HibernateProxyHelper.deproxy(t2);
+		HibernateProxyHelper.deproxy(t2.getHomotypicGroup());
+		HibernateProxyHelper.deproxy(t2.getName());
+//		syn = taxonNodeService.makeTaxonNodeASynonymOfAnotherTaxonNode(node1, node2, synonymRelationshipType, reference, referenceDetail);
+//		if (syn == null){
+//			Assert.fail();
+//		}
+//		synUUID = syn.getUuid();
+		
+			
 		termService.saveOrUpdate(synonymRelationshipType);
 		Assert.assertFalse(t2.getSynonyms().isEmpty());
 		assertEquals(3,t2.getSynonyms().size());
 		assertEquals(2, t2.getDescriptions().size());
 	
-		
-		assertNotNull(taxonService.find(t1Uuid));
+		taxonService.deleteTaxon(t1, null, null);
+		assertNull(taxonService.find(t1Uuid));
 		assertNull(taxonNodeService.find(node1Uuid));
 		syn = (Synonym)taxonService.find(synUUID);
 		synonym = (Synonym)taxonService.find(uuidSynonym);
@@ -260,7 +282,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	
 		
 	@Test
-	@DataSet(value="TaxonNodeServiceImplTest-indexing.xml")
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexCreateNode() {
 		Taxon taxon = Taxon.NewInstance(null, null);
 		classification = classificationService.load(classificationUuid);
@@ -276,7 +298,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	
 	@Test
-	@DataSet(value="TaxonNodeServiceImplTest-indexing.xml")
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexMoveNode() {
 		//in classification
 		classification = classificationService.load(classificationUuid);
@@ -311,8 +333,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 }
 
 	@Test  
-	@DataSet(value="TaxonNodeServiceImplTest-indexing.xml")
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class, value="TaxonNodeServiceImplTest-indexing.xml")
 	public final void testIndexDeleteNode() {
+		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node1 = taxonNodeService.load(node1Uuid);
 		TaxonNode node4 = taxonNodeService.load(node4Uuid);
 		String treeIndex = node1.treeIndex();
@@ -328,10 +351,12 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		
 		treeIndex = node6.treeIndex();
 		Taxon newTaxon= Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
-				
+		UUID taxonNewUuid = taxonService.save(newTaxon);
+		
 		node5.addChildTaxon(newTaxon, null, null);
 		String node5TreeIndex =node5.treeIndex();
 		taxonNodeService.saveOrUpdate(node5);
+		
 		commitAndStartNewTransaction(new String[]{"TaxonNode"});
 		node5 = taxonNodeService.load(node5Uuid);
 		List<TaxonNode> children =  node5.getChildNodes();
@@ -343,7 +368,7 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 	
 	
 	@Test
-	@DataSet
+	@DataSet(loadStrategy=CleanSweepInsertLoadStrategy.class)
 	public final void testDeleteNode(){
 		classification = classificationService.load(classificationUuid);
 		node1 = taxonNodeService.load(node1Uuid);
@@ -354,11 +379,9 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		UUID uuidNewNode = taxonNodeService.save(newNode);
 		newNode = taxonNodeService.load(uuidNewNode);
 		UUID taxUUID = newNode.getTaxon().getUuid();
-		try {
-			taxonNodeService.deleteTaxonNode(node1, null);
-		} catch (DataChangeNoRollbackException e) {
-			Assert.fail();
-		}
+		
+		String result = taxonNodeService.deleteTaxonNode(node1, null);
+		
 		newNode = taxonNodeService.load(uuidNewNode);
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(newNode);
@@ -384,11 +407,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		Set<ITaxonTreeNode> treeNodes = new HashSet<ITaxonTreeNode>();
 		treeNodes.add(node1);
 		treeNodes.add(node2);
-		try {
-			taxonNodeService.deleteTaxonNodes(treeNodes, null);
-		} catch (DataChangeNoRollbackException e) {
-			Assert.fail();
-		}
+		
+		List<UUID> uuids = taxonNodeService.deleteTaxonNodes(treeNodes, null);
+		
+		
 		newNode = taxonNodeService.load(uuidNewNode);
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(newNode);

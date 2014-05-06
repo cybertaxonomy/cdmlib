@@ -94,7 +94,6 @@ public class TitleAndNameCacheAutoInitializer extends AutoPropertyInitializer<Id
         if (TaxonNameBase.class.isAssignableFrom(clazz)){
             result += String.format(" LEFT JOIN FETCH %s.rank ", beanAlias);
             result += String.format(" LEFT JOIN FETCH %s.relationsToThisName relTo LEFT JOIN FETCH relTo.relatedFrom ", beanAlias);
-            result += String.format(" LEFT JOIN FETCH %s.relationsFromThisName relFrom LEFT JOIN FETCH relFrom.relatedTo ", beanAlias);
             if (NonViralName.class.isAssignableFrom(clazz)){
                 result += String.format(" LEFT JOIN FETCH %s.combinationAuthorTeam ", beanAlias);
                 result += String.format(" LEFT JOIN FETCH %s.exCombinationAuthorTeam ", beanAlias);

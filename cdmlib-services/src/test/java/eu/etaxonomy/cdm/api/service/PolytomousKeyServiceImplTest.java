@@ -113,11 +113,8 @@ public class PolytomousKeyServiceImplTest extends CdmTransactionalIntegrationTes
 		PolytomousKeyNode someChild = key.getRoot().getChildren().iterator().next();
 //		service.delete(key);
 		key.getRoot().removeChild(someChild);
-		try{
-			nodeService.delete(someChild);
-		 }catch(ReferencedObjectUndeletableException e){
-	       	Assert.fail();
-	     }
+		nodeService.delete(someChild);
+		
 		
 		setComplete(); 
 		endTransaction();

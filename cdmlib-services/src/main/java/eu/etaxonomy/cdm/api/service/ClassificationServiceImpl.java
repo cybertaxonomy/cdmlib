@@ -242,7 +242,9 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
         Classification classification = dao.load(classificationUuid);
         Taxon taxon = (Taxon) taxonDao.load(taxonUuid);
 
-        return dao.listChildrenOf(taxon, classification, pageSize, pageIndex, propertyPaths);
+        List<TaxonNode> results = dao.listChildrenOf(taxon, classification, pageSize, pageIndex, propertyPaths);
+        Collections.sort(results, taxonNodeComparator); // FIXME this is only a HACK, order during the hibernate query in the dao
+        return results;
     }
 
 
