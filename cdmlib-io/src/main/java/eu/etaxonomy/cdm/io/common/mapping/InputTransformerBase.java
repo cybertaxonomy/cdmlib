@@ -193,6 +193,7 @@ public class InputTransformerBase implements IInputTransformer {
 		}else if (key.matches("(?i)(wgs84)")){return ReferenceSystem.WGS84();
 		}else if (key.matches("(?i)(googleearth)")){return ReferenceSystem.GOOGLE_EARTH();
 		}else if (key.matches("(?i)(gazetteer)")){return ReferenceSystem.GAZETTEER();
+		}else if (key.matches("(?i)(map)")){return ReferenceSystem.MAP();
 		}else{
 			String warning = "getReferenceSystemByKey is not implemented in implementing transformer class";
 			throw new UndefinedTransformerMethodException(warning);
