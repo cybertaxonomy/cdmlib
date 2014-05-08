@@ -26,13 +26,8 @@
   <DEFINEDTERMBASE DTYPE="NamedArea" PROTECTEDTITLECACHE="false" TITLECACHE="Any country" ORDERINDEX="7" LEVEL_ID="931" TYPE_ID="929"/>
   <DETERMINATIONEVENT PREFERREDFLAG="true" />
   <DESCRIPTIONELEMENTBASE DTYPE="TextData"/>
-  <DESCRIPTIONELEMENTBASE DTYPE="TextData"/>
   <DESCRIPTIONELEMENTBASE DTYPE="IndividualsAssociation" FEATURE_ID="965" ASSOCIATEDSPECIMENOROBSERVATION_ID="10"/>
-  <DESCRIPTIONELEMENTBASE DTYPE="TextData"/>
-  <DESCRIPTIONELEMENTBASE DTYPE="TextData"/>
   <DESCRIPTIONELEMENTBASE DTYPE="IndividualsAssociation" FEATURE_ID="965" ASSOCIATEDSPECIMENOROBSERVATION_ID="12"/>
-  <DESCRIPTIONELEMENTBASE DTYPE="TextData"/>
-  <DESCRIPTIONELEMENTBASE DTYPE="TextData"/>
   <DESCRIPTIONELEMENTBASE DTYPE="IndividualsAssociation" FEATURE_ID="965" ASSOCIATEDSPECIMENOROBSERVATION_ID="14"/>
   <EXTENSION EXTENDEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit" VALUE="Label name: Vaccinium stanleyi Schweinf. ::"/>
   <EXTENSION EXTENDEDOBJ_TYPE="eu.etaxonomy.cdm.model.occurrence.DerivedUnit" VALUE="Label name: Philippia johnstonii engl. :: Det. as: Erica mannii (Hook.f.) Beentje by Geerinck D. (BR) in: Nov 2007. (Verification # 57888):: Det. as: Erica johnstonii (Schweinf. ex Engl.) Dorr by : Geerinck D. (BR) in Aug 2007. (Verification #"/>

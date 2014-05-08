@@ -22,12 +22,15 @@ public abstract class CdmSource implements ICdmSource {
 	private int port;
 	private NomenclaturalCode nomenclaturalCode;
 	
+	public static final String DEFAULT_ENTRY = "-";
+	
 	/**
 	 * Sets the CDM Source name
 	 * 
 	 * @param name
 	 */
-	protected void setName(String name) {
+	@Override
+	public void setName(String name) {
 		this.name = name;
 	}
 
@@ -36,7 +39,8 @@ public abstract class CdmSource implements ICdmSource {
 	 * 
 	 * @param server
 	 */
-	protected void setServer(String server) {
+	@Override
+	public void setServer(String server) {
 		this.server = server;
 	}
 
@@ -45,7 +49,8 @@ public abstract class CdmSource implements ICdmSource {
 	 * 
 	 * @param port
 	 */
-	protected void setPort(int port) {
+	@Override
+	public void setPort(int port) {
 		this.port = port;
 	}
 
@@ -54,7 +59,8 @@ public abstract class CdmSource implements ICdmSource {
 	 * 
 	 * @param nomenclaturalCode
 	 */
-	protected void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
+	@Override
+	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode) {
 		this.nomenclaturalCode = nomenclaturalCode;
 	}
 
@@ -121,7 +127,6 @@ public abstract class CdmSource implements ICdmSource {
 	@Override
 	public void closeOpenConnections() {
 		
-	}
-
+	}		
 
 }

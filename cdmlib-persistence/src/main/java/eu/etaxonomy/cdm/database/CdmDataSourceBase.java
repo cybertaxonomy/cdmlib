@@ -16,6 +16,8 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 
@@ -366,5 +368,24 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
         return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     }
+    
+    @Override
+    public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
+		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
+		
+		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()) {
+			String value = null;
+			try {
+				value = (String)getSingleValue(mdpn.getSqlQuery());
+			} catch (SQLException e) {
+				throw new CdmSourceException(e.getMessage());
+			}			
+			if(value != null) {
+				cdmMetaDataMap.put(mdpn, value);
+			}		
+		}
+		return cdmMetaDataMap;
+    }
 
+    
 }

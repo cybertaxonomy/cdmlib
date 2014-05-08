@@ -130,6 +130,17 @@ public class CdmDataSource extends CdmDataSourceBase {
 	}
 
 
+	public static CdmDataSource NewInstance(ICdmDataSource dataSource) {
+		return new CdmDataSource(dataSource.getDatabaseType(),
+				dataSource.getServer(),
+				dataSource.getDatabase(),
+				dataSource.getPort(),
+				dataSource.getUsername(),
+				dataSource.getPassword(),
+				dataSource.getFilePath(),
+				dataSource.getMode(),
+				dataSource.getNomenclaturalCode());
+	}
 	/**
 	 * @param server
 	 * @param database
@@ -160,6 +171,21 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return database;
 	}
 
+	@Override
+	public String getServer() {
+		return server;
+	}
+	
+	@Override
+	public int getPort() {
+		return port;
+	}
+
+	@Override
+	public NomenclaturalCode getNomenclaturalCode() {
+		return nomenclaturalCode;
+	}
+	
 	@Override
 	public BeanDefinition getDatasourceBean(){
 		AbstractBeanDefinition bd = new RootBeanDefinition(dbType.getDataSourceClass());
@@ -267,6 +293,11 @@ public class CdmDataSource extends CdmDataSourceBase {
 	public String getDatabase() {
 		return database;
 	}
+	
+	@Override
+	public void setDatabase(String database) {
+		this.database = database;		
+	}
 
 	@Override
 	public DatabaseTypeEnum getDatabaseType() {
@@ -278,36 +309,45 @@ public class CdmDataSource extends CdmDataSourceBase {
 		return filePath;
 	}
 
-
-	@Override
-	public int getPort() {
-		return port;
-	}
-
-	@Override
-	public String getServer() {
-		return server;
-	}
-
 	@Override
 	public H2Mode getMode() {
 		return mode;
 	}
 
 	@Override
+	public void setMode(H2Mode h2Mode) {
+		this.mode = h2Mode;
+		
+	}
+	
+	@Override
 	public String getPassword() {
 		return password;
 	}
 
+	@Override
+	public void setPassword(String password) {
+		this.password = password;
+		
+	}
+	
 	@Override
 	public String getUsername() {
 		return username;
 	}
 
 	@Override
-	public NomenclaturalCode getNomenclaturalCode() {
-		return nomenclaturalCode;
+	public void setUsername(String username) {
+		this.username = username;
+		
 	}
+
+
+
+
+
+
+
 
 	@Override
 	public String toString() {
@@ -318,6 +358,8 @@ public class CdmDataSource extends CdmDataSourceBase {
 			return result;
 		}
 	}
+
+
 	
 	
 

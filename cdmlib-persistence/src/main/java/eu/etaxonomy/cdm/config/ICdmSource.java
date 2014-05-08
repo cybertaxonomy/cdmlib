@@ -8,6 +8,10 @@
 */
 package eu.etaxonomy.cdm.config;
 
+import java.util.Map;
+
+import eu.etaxonomy.cdm.database.DatabaseTypeEnum;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData.MetaDataPropertyName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 
 /**
@@ -18,9 +22,18 @@ public interface ICdmSource {
 	
 	/**
 	 * Returns the name representation of this CDM Source
+	 * 
 	 * @return name representation of this CDM Source
 	 */
 	public String getName();
+	
+	/**
+	 * Sets the name representation of this CDM Source
+	 * 
+	 * @param name
+	 * @return
+	 */
+	public void setName(String name);
 	
 	/**
 	 * Returns the server (string representation) where this CDM Source resides
@@ -30,12 +43,26 @@ public interface ICdmSource {
 	public String getServer();
 	
 	/**
+	 * Sets the server (string representation) where this CDM Source resides
+	 * 
+	 * @param server
+	 * @return
+	 */
+	public void setServer(String server);
+	
+	/**
 	 * Returns the port on which this CDM Source is listening
 	 * 
 	 * @return port on which this CDM Source is listening
 	 */
 	public int getPort();
-		
+			
+	/**
+	 * Sets the port on which this CDM Source is listening
+	 * 
+	 * @param port
+	 */
+	public void setPort(int port);
 	
 	/**
 	 * Returns the {@link NomenclaturalCode} object for this CDM Source
@@ -44,6 +71,12 @@ public interface ICdmSource {
 	 */
 	public NomenclaturalCode getNomenclaturalCode();
 	
+	/**
+	 * Sets the {@link NomenclaturalCode} object for this CDM Source
+	 * 
+	 * @param nomenclaturalCode
+	 */
+	public void setNomenclaturalCode(NomenclaturalCode nomenclaturalCode);
 	
 	/**
 	 * Returns the CDM  schema version of this CDM Source
@@ -81,5 +114,14 @@ public interface ICdmSource {
 	 * 
 	 */
 	public void closeOpenConnections();
+	
+	
+	
+	public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException ;
+
+	
+	
+	
+
 
 }
