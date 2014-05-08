@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class ThesisDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class ThesisDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements  INomenclaturalReferenceCacheStrategy {
 	private static final Logger logger = Logger.getLogger(ThesisDefaultCacheStrategy.class);
 	
 
@@ -28,9 +28,6 @@ public class ThesisDefaultCacheStrategy <T extends Reference> extends NomRefDefa
 	
 	final static UUID uuid = UUID.fromString("95cceb30-6b16-4dc3-8243-c15e746565bc");
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid; 
@@ -54,12 +51,12 @@ public class ThesisDefaultCacheStrategy <T extends Reference> extends NomRefDefa
 
 
 	@Override
-	public String getAbbrevTitleCache(T thesis) {
+	public String getAbbrevTitleCache(Reference thesis) {
 		return getTitleWithoutYearAndAuthor(thesis, true);
 	}
 	
 	@Override
-	protected String getTitleWithoutYearAndAuthor(T thesis, boolean isAbbrev){
+	protected String getTitleWithoutYearAndAuthor(Reference thesis, boolean isAbbrev){
 		//FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
 		
 		if (thesis == null){

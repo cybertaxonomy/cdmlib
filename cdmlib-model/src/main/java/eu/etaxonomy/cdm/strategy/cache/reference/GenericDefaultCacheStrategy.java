@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
 	private static final long serialVersionUID = 6687224678019228192L;
 
 	@SuppressWarnings("unused")
@@ -52,7 +52,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 	 * Factory method
 	 * @return
 	 */
-	public static GenericDefaultCacheStrategy<Reference> NewInstance(){
+	public static GenericDefaultCacheStrategy NewInstance(){
 		return new GenericDefaultCacheStrategy();
 	}
 	
@@ -65,7 +65,7 @@ public class GenericDefaultCacheStrategy <T extends Reference> extends InRefDefa
 	
 
 	@Override
-	protected String getTitleWithoutYearAndAuthor(T genericReference, boolean isAbbrev){
+	protected String getTitleWithoutYearAndAuthor(Reference genericReference, boolean isAbbrev){
 		if (genericReference == null){
 			return null;
 		}

@@ -1177,7 +1177,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setInJournal(IJournal journal) {
-		this.inReference = (Reference<JournalDefaultCacheStrategy<Reference>>) journal;
+		this.inReference = (Reference<JournalDefaultCacheStrategy>) journal;
 
 	}
 
@@ -1190,7 +1190,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setInSeries(IPrintSeries inSeries) {
-		this.inReference = (Reference<IReferenceBaseCacheStrategy<Reference>>) inSeries;
+		this.inReference = (Reference<IReferenceBaseCacheStrategy>) inSeries;
 	}
 
 	@Override
@@ -1204,7 +1204,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setInBook(IBook book) {
-		this.inReference = (Reference<BookDefaultCacheStrategy<Reference>>) book;
+		this.inReference = (Reference<BookDefaultCacheStrategy>) book;
 	}
 
 	@Override
@@ -1216,7 +1216,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 	@Override
     public void setInProceedings(IProceedings proceeding) {
-		this.inReference = (Reference<BookDefaultCacheStrategy<Reference>>) proceeding;
+		this.inReference = (Reference<BookDefaultCacheStrategy>) proceeding;
 	}
 
 //*************************** CACHE STRATEGIES ******************************/

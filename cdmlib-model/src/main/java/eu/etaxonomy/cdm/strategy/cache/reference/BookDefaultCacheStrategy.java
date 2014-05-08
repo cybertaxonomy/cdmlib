@@ -16,7 +16,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BookDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
 	static final long serialVersionUID = -8535065052672341462L;
 
 	@SuppressWarnings("unused")
@@ -31,9 +31,6 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 	
 	final static UUID uuid = UUID.fromString("68076ca5-d517-489c-8ae2-01d3c38cc788");
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid; 
@@ -45,7 +42,7 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 	 * @return
 	 */
 	public static BookDefaultCacheStrategy NewInstance(){
-		return new BookDefaultCacheStrategy<Reference>();
+		return new BookDefaultCacheStrategy();
 	}
 	
 	/**
@@ -57,7 +54,7 @@ public class BookDefaultCacheStrategy <T extends Reference> extends NomRefDefaul
 
 
 	@Override
-	public String getTitleWithoutYearAndAuthor(T ref, boolean isAbbrev){
+	public String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev){
 		if (ref == null){
 			return null;
 		}

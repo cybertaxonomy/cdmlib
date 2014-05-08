@@ -14,13 +14,13 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class BookSectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
-	private static final long serialVersionUID = 7293886681984614996L;
+public class SectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
+	private static final long serialVersionUID = -4534389083526558368L;
+	private static final Logger logger = Logger.getLogger(SectionDefaultCacheStrategy.class);
 
-	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
-	final static UUID uuid = UUID.fromString("f9c53f20-addd-4d2f-9697-ef1fe727deba");
+	final static UUID uuid = UUID.fromString("a7150cd3-107b-4169-ac84-71ffe3219152");
 	
-	private static final String inRefTypeStr = "book";
+	private static final String inRefTypeStr = "section";
 
 	private static final boolean inRefIsObligatory = true;
 	
@@ -38,20 +38,20 @@ public class BookSectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBa
 	 * Factory method
 	 * @return
 	 */
-	public static BookSectionDefaultCacheStrategy NewInstance(){
-		return new BookSectionDefaultCacheStrategy();
+	public static SectionDefaultCacheStrategy NewInstance(){
+		return new SectionDefaultCacheStrategy();
 	}
 	
 	/**
 	 * Constructor
 	 */
-	private BookSectionDefaultCacheStrategy(){
+	private SectionDefaultCacheStrategy(){
 		super();
 	}
 
 	@Override
 	protected String getTitleWithoutYearAndAuthor(Reference reference, boolean isAbbrev) {
-		// not needed in BookSection
+		// not needed in Section
 		logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
 		return null;
 	}

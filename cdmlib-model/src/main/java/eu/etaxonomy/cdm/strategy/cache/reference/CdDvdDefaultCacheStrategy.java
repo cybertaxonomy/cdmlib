@@ -15,7 +15,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class CdDvdDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+public class CdDvdDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
 	private static final Logger logger = Logger.getLogger(CdDvdDefaultCacheStrategy.class);
 	
 	private String prefixEdition = "ed.";
@@ -27,21 +27,17 @@ public class CdDvdDefaultCacheStrategy <T extends Reference> extends NomRefDefau
 	
 	final static UUID uuid = UUID.fromString("68076ca5-d517-489c-8ae2-01d3c38cc788");
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid; 
 	}
-	
 	
 	/**
 	 * Factory method
 	 * @return
 	 */
 	public static CdDvdDefaultCacheStrategy NewInstance(){
-		return new CdDvdDefaultCacheStrategy<Reference>();
+		return new CdDvdDefaultCacheStrategy();
 	}
 	
 	/**
@@ -52,7 +48,7 @@ public class CdDvdDefaultCacheStrategy <T extends Reference> extends NomRefDefau
 	}
 	
 	@Override
-	protected String getTitleWithoutYearAndAuthor(T ref, boolean isAbbrev){
+	protected String getTitleWithoutYearAndAuthor(Reference ref, boolean isAbbrev){
 		if (ref == null){
 			return null;
 		}

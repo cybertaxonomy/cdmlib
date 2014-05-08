@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDefaultCacheStrategyBase<T> implements  INomenclaturalReferenceCacheStrategy<T> {
+public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
 	private static final long serialVersionUID = -1639068590864589314L;
 
 	@SuppressWarnings("unused")
@@ -54,7 +54,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 	}
 
 	@Override
-	public String getTitleCache(T article) {
+	public String getTitleCache(Reference article) {
 		if (article.isProtectedTitleCache()){
 			return article.getTitleCache();
 		}
@@ -70,7 +70,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 	}
 
 	@Override
-	public String getAbbrevTitleCache(T article) {
+	public String getAbbrevTitleCache(Reference article) {
 		if (article.isProtectedAbbrevTitleCache()){
 			return article.getAbbrevTitleCache();
 		}
@@ -87,7 +87,7 @@ public class ArticleDefaultCacheStrategy <T extends Reference> extends NomRefDef
 	}
 
 	@Override
-	protected String getTitleWithoutYearAndAuthor(T article, boolean isAbbrev){
+	protected String getTitleWithoutYearAndAuthor(Reference article, boolean isAbbrev){
 		if (article == null){
 			return null;
 		}

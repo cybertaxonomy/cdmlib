@@ -18,7 +18,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  *
  * @param <T> The concrete Reference class this strategy applies for
  */
-public interface INomenclaturalReferenceCacheStrategy<T extends Reference> extends IReferenceBaseCacheStrategy<T> {
+public interface INomenclaturalReferenceCacheStrategy extends IReferenceBaseCacheStrategy {
 	
 	
 	/**
@@ -26,14 +26,14 @@ public interface INomenclaturalReferenceCacheStrategy<T extends Reference> exten
 	 * @param object
 	 * @return
 	 */
-	public String getTitleCache(T nomenclaturalReference);
+	public String getTitleCache(Reference nomenclaturalReference);
 	
 	/**
 	 * returns the composed author string 
 	 * @param object
 	 * @return
 	 */
-	public String getTokenizedNomenclaturalTitel(T referenceBase);
+	public String getTokenizedNomenclaturalTitel(Reference referenceBase);
 	
 	/**
 	 * Returns the character sequence before the micro reference (e.g. ": ") 
@@ -58,5 +58,5 @@ public interface INomenclaturalReferenceCacheStrategy<T extends Reference> exten
 	 * @see 					name.TaxonNameBase#getNomenclaturalReference()
 	 * @see 					strategy.cache.reference.INomenclaturalReferenceCacheStrategy
 	 */
-	public String getNomenclaturalCitation(T nomenclaturalReference, String microReference);
+	public String getNomenclaturalCitation(Reference nomenclaturalReference, String microReference);
 }

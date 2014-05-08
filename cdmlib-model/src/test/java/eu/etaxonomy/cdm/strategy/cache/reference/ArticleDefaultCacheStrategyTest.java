@@ -38,7 +38,7 @@ public class ArticleDefaultCacheStrategyTest {
 	private static IJournal journal1;
 	private static Team team1;
 	private static Team team2;
-	private static ArticleDefaultCacheStrategy<Reference<?>> defaultStrategy;
+	private static ArticleDefaultCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
 	
 	/**
