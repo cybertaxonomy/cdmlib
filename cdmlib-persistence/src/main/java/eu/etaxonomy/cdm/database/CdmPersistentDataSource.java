@@ -140,10 +140,12 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 					}
 				}
 				if(getCdmSourceProperty(CdmSourceProperties.PORT) == null){
-					int port = dbType.getPortByConnectionString(url); 
-					if(port != 0) {
-						setPort(port);
-					}
+					int port = dbType.getPortByConnectionString(url); 		
+						if(port > 0) {
+							setPort(port);
+						} else {
+							setPort(NULL_PORT);
+						}
 				}
 			}
 		}					

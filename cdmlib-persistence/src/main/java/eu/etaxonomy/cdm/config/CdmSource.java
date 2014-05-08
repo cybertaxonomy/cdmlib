@@ -22,6 +22,8 @@ public abstract class CdmSource implements ICdmSource {
 	private int port;
 	private NomenclaturalCode nomenclaturalCode;
 	
+	public static final int NULL_PORT = -1;
+	
 	public static final String DEFAULT_ENTRY = "-";
 	
 	/**
