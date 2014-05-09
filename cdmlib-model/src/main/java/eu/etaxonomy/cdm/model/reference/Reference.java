@@ -359,14 +359,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	private boolean cacheStrategyRectified = false;
 
     protected Reference(){
-		this(null);
+		this(ReferenceType.Generic);  //just in case someone uses constructor
 	}
 
 	protected Reference(ReferenceType type) {
 		this.type = type;
-		if (type != null){
-			rectifyCacheStrategy();
-		}
 	}
 
 
