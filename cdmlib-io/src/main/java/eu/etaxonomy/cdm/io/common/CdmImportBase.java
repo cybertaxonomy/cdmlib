@@ -1242,6 +1242,15 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 		}
 	}
 	
+	protected Boolean nullSafeBoolean(ResultSet rs, String columnName) throws SQLException {
+		Object bitObject = rs.getObject(columnName);
+		if (bitObject == null){
+			return null;
+		}else{
+			return Boolean.valueOf(bitObject.toString());
+		}
+	}
+	
 	protected Double nullSafeDouble(ResultSet rs, String columnName) throws SQLException {
 		Object doubleObject = rs.getObject(columnName);
 		if (doubleObject == null){
