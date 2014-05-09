@@ -33,7 +33,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 	
 	protected abstract String getInRefType();
 	
-	private String afterInRefAuthor = ", ";
+	protected String afterInRefAuthor = ", ";
 
 	@Override
 	public String getTokenizedNomenclaturalTitel(Reference generic) {

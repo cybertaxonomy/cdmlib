@@ -39,9 +39,6 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	
 	final static UUID uuid = UUID.fromString("95cceb30-6b16-4dc3-8243-c15e746565bc");
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid; 

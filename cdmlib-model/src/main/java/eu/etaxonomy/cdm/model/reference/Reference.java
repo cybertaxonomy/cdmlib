@@ -359,12 +359,14 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	private boolean cacheStrategyRectified = false;
 
     protected Reference(){
-		this(ReferenceType.Generic);
+		this(null);
 	}
 
 	protected Reference(ReferenceType type) {
 		this.type = type;
-		this.cacheStrategy =(S) type.getCacheStrategy();
+		if (type != null){
+			rectifyCacheStrategy();
+		}
 	}
 
 
@@ -865,11 +867,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Transient
 	public String getCitation(){
 		rectifyCacheStrategy();
-		if (cacheStrategy == null){
+		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
 			return null;
 		}else{
-			return cacheStrategy.getTitleCache(this);
+			return getCacheStrategy().getTitleCache(this);
 		}
 	}
 
@@ -884,7 +886,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	
     public String generateAbbrevTitle() {
 		rectifyCacheStrategy();
-		return this.cacheStrategy.getAbbrevTitleCache(this);
+		return getCacheStrategy().getAbbrevTitleCache(this);
 	}
 
 	/**
@@ -1020,11 +1022,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	public String getNomenclaturalCitation(String microReference) {
 		rectifyCacheStrategy();
 		String typeName = this.getType()== null ? "(no type defined)" : this.getType().getMessage();
-		if (cacheStrategy == null){
+		if (getCacheStrategy() == null){
 			logger.warn("No CacheStrategy defined for "+ typeName + ": " + this.getUuid());
 			return null;
 		}else{
-			if (cacheStrategy instanceof INomenclaturalReferenceCacheStrategy){
+			if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
 				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
 			}else {
 				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
@@ -1221,6 +1223,11 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 
 //*************************** CACHE STRATEGIES ******************************/
 
+    public S getCacheStrategy() {
+    	rectifyCacheStrategy();
+    	return this.cacheStrategy;
+    }
+	
 	/**
 	 * The type property of this class is mapped on the field level to the data base column, so
 	 * Hibernate will consequently use the {@link org.hibernate.property.DirectPropertyAccessor}
