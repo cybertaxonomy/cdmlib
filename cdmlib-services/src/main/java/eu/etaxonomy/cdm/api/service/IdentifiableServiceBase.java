@@ -526,23 +526,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		
 	}
 	
-	 /**
-     * the basic isDeletable method return false if the object is referenced from any other object.
-     */
-    
-    @Override
-    public List<String> isDeletable(T base, DeleteConfiguratorBase config){
-    	List<String> result = new ArrayList<String>();
-    	Set<CdmBase> references = commonService.getReferencingObjects(base);
-    	Iterator<CdmBase> iterator = references.iterator();
-    	CdmBase ref;
-    	while (iterator.hasNext()){
-    		ref = iterator.next();
-    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing " + base.getTitleCache();
-    		result.add(message);
-    	}
-    	return result;
-    }
+	
 
 
 }
