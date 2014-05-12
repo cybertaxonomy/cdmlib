@@ -22,6 +22,7 @@ import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
@@ -190,6 +191,45 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return
      */
     public <T extends SpecimenOrObservationBase> List<T> listByAssociatedTaxon(Class<T> type, Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Lists all instances of {@link FieldUnit} which are
+     * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
+     * as parameter. "Indirectly" means that a sub derivate of the FieldUnit is
+     * directly associated with the given taxon.
+     * SpecimenOrObservationBase instances can be associated to taxa in multiple
+     * ways, all these possible relations are taken into account:
+     * <ul>
+     * <li>The {@link IndividualsAssociation} elements in a
+     * {@link TaxonDescription} contain {@link DerivedUnit}s</li>
+     * <li>{@link SpecimenTypeDesignation}s may be associated with any
+     * {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
+     * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent}
+     * of the {@link SpecimenOrObservationBase}</li>
+     * </ul>
+     * Further more there also can be taxa which are associated with the taxon
+     * in question (parameter associatedTaxon) by {@link TaxonRelationship}s. If
+     * the parameter <code>includeRelationships</code> is containing elements,
+     * these according {@TaxonRelationshipType}s and
+     * directional information will be used to collect further
+     * {@link SpecimenOrObservationBase} instances found this way.
+     *
+     * @param <T>
+     * @param type
+     * @param associatedTaxon
+     * @param Set<TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
+     * @param maxDepth TODO
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    public Collection<DerivateHierarchyDTO> listDerivateHierarchyDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**

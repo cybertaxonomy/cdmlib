@@ -2232,6 +2232,7 @@ cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonDe
 cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDeletionConfigurator.java -text
 cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
 cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineDistribution.java -text
+cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DerivateHierarchyDTO.java -text
 cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DistributionInfoDTO.java -text
 cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib/cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text

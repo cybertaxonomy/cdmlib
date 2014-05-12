@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
@@ -266,6 +267,57 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         return pageByAssociatedTaxon(type, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#listByAnyAssociation(java.lang.Class, java.util.Set, eu.etaxonomy.cdm.model.taxon.Taxon, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
+
+        List<SpecimenOrObservationBase> records = pageByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
+        for(SpecimenOrObservationBase<?> specimen:records){
+            fieldUnits.addAll(getFieldUnits(specimen.getUuid()));
+        }
+        return fieldUnits;
+    }
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#createDerivateHierarchyDTO(java.util.Collection)
+     */
+    @Override
+    public Collection<DerivateHierarchyDTO> listDerivateHierarchyDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+        Collection<FieldUnit> fieldUnits = listFieldUnitsByAssociatedTaxon(includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
+        Collection<DerivateHierarchyDTO> derivateHierarchyDTOs = new ArrayList<DerivateHierarchyDTO>();
+        for(FieldUnit fieldUnit:fieldUnits){
+            derivateHierarchyDTOs.add(assembleDerivateHierarchyDTO(fieldUnit));
+        }
+        return derivateHierarchyDTOs;
+    }
+
+    private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit){
+        DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
+        dto.setFieldUnit(fieldUnit);
+
+        //get derivatives
+        Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
+        getDerivedUnitsFor(fieldUnit, derivedUnits);
+
+        dto.setNumberOfDerivates(derivedUnits.size());
+
+        return dto;
+    }
+
+    private void getDerivedUnitsFor(SpecimenOrObservationBase<?> specimen, Collection<DerivedUnit> derivedUnits){
+        for(DerivationEvent derivationEvent:specimen.getDerivationEvents()){
+            for(DerivedUnit derivative:derivationEvent.getDerivatives()){
+                derivedUnits.add(derivative);
+                getDerivedUnitsFor(derivative, derivedUnits);
+            }
+        }
     }
 
 
