@@ -2198,6 +2198,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICollectionService.ja
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/ICommonService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDatabaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IDescriptionService.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEntityValidationResultService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IEventBaseService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureNodeService.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/IFeatureTreeService.java -text
