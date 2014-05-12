@@ -19,6 +19,7 @@ import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
+import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -100,7 +101,15 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
+	@ExpectedDataSet
+	public void testDeleteValidationResult()
+	{
+		dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 2);
+	}
+
+
+	@Test
 	public void testGetEntityValidationResult()
 	{
 		EntityValidationResult result;
@@ -131,7 +140,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
 	public void testGetEntityValidationResults_String()
 	{
 		List<EntityValidationResult> results;
@@ -150,7 +159,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
 	public void testGetEntitiesViolatingConstraint_String()
 	{
 		List<EntityValidationResult> results;
@@ -169,7 +178,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
 	public void testGetConstraintViolations_String()
 	{
 		List<EntityConstraintViolation> results;
@@ -188,7 +197,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
 	public void testGetEntityValidationResults_String_Severity()
 	{
 		List<EntityValidationResult> results;
@@ -221,7 +230,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
 	public void testGetConstraintViolations_String_Severity()
 	{
 		List<EntityConstraintViolation> results;
@@ -252,7 +261,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	}
 
 
-	//@Test
+	@Test
 	public void testGetEntityValidationResults_Severity()
 	{
 		List<EntityValidationResult> results;

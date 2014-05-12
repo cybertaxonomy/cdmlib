@@ -105,6 +105,7 @@ public abstract class EntityValidationTask implements Runnable {
 				 * eu.etaxonomy.cdm.persistence.dao.hibernate.validation.
 				 * EntityValidationResultDaoHibernateImplTest) it DOES work.
 				 */
+				dao.deleteValidationResult(entity.getClass().getName(), entity.getId());
 				dao.saveValidationResult(errors, entity, crudEventType);
 			}
 		}

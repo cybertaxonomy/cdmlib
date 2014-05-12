@@ -10,6 +10,7 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.common.ICdmEntityDao;
+import eu.etaxonomy.cdm.persistence.validation.EntityValidationTask;
 import eu.etaxonomy.cdm.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Severity;
 
@@ -27,7 +28,11 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 
 	/**
 	 * Save the result of an entity validation to the error tables. Previous validation
-	 * results of the same entity will be cleared first.
+	 * results of the same entity will be cleared first. Note that this method should not
+	 * be exposed via cdmlib-services, because this is a backend-only affair. Populating
+	 * the error tables is done by the CVI (more particularly by an
+	 * {@link EntityValidationTask}). External software like the TaxEditor can and should
+	 * not have access to this method.
 	 * 
 	 * @param errors
 	 *            All constraints violated by the specified entity
@@ -40,12 +45,24 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 
 
 	/**
+	 * Delete validation result for the specified entity, presumably because it has become
+	 * obsolete. This method should not be exposed via cdmlib-services.
+	 * 
+	 * @param validatedEntityClass
+	 *            The fully qualified class name of the entity's class.
+	 * @param validatedEntityId
+	 *            The id of the entity
+	 */
+	void deleteValidationResult(String validatedEntityClass, int validatedEntityId);
+
+
+	/**
 	 * Get the validation result for a particular entity.
 	 * 
 	 * @param validatedEntityClass
 	 *            The fully qualified class name of the entity's class.
 	 * @param validatedEntityId
-	 *            The id of th entity
+	 *            The id of the entity
 	 * @return The {@code EntityValidationResult} or null if the entity has not been
 	 *         validated yet
 	 * 
@@ -89,7 +106,11 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 
 	/**
 	 * Get all entities that violated a particular constraint. The results are sorted
-	 * according to the type and id of the validated entities.
+	 * according to the type and id of the validated entities. Note that the
+	 * {@code validatorClass} argument is a {@code String} (like all the {@code ***Class}
+	 * arguments). This is because it is stored as such in the database, and also because
+	 * the {@code Class} object itself may not be on the caller's classpath - e.g. when
+	 * called from the TaxEditor.
 	 * 
 	 * @param validatorClass
 	 *            The fully qualified class name of the {@link ConstraintValidator}.

@@ -54,6 +54,20 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		getSession().merge(result);
 	}
 
+	@Override
+	public void deleteValidationResult(String validatedEntityClass, int validatedEntityId)
+	{
+		//@formatter:off
+		Query query = getSession().createQuery(
+				"DELETE FROM EntityValidationResult vr "
+					+ "WHERE vr.validatedEntityClass = :cls "
+					+ "AND vr.validatedEntityId = :id"
+		);
+		//@formatter:on
+		query.setString("cls", validatedEntityClass);
+		query.setInteger("id", validatedEntityId);
+		query.executeUpdate();
+	}
 
 	@Override
 	public EntityValidationResult getValidationResult(String validatedEntityClass, int validatedEntityId)
@@ -170,7 +184,6 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		);
 		//@formatter:on
 		query.setString("cls", validatedEntityClass);
-		System.out.println("Severity: " + severity);
 		query.setString("severity", severity.toString());
 		@SuppressWarnings("unchecked")
 		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
@@ -230,5 +243,6 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		List<EntityConstraintViolation> result = (List<EntityConstraintViolation>) query.list();
 		return result;
 	}
+
 
 }
