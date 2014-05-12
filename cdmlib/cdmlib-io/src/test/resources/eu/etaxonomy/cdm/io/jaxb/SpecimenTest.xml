@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSet 
+    xmlns="http://etaxonomy.eu/cdm/model/1.0"
+    xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
+    xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
+    xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+    xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+    xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
+    xmlns:occurrence="http://etaxonomy.eu/cdm/model/occurrence/1.0"
+    xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0"
+    xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
+    xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
+                             ../../../../../../classes/schema/cdm/cdm.xsd">
+    <Terms>
+        <common:Language id="1" uuid="urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5"/>
+        <description:Sex id="2" uuid="urn-uuid-5a6efefb-181a-4d9d-984f-ff7d8a076562">
+            <common:Representations>
+              <common:Representation id="1" uuid="urn-uuid-f90974d0-fc2c-11dd-87af-0800200c9a66">
+                <common:Text>Male</common:Text>
+                <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-3345de2b-02f7-4927-9fe2-4d094449b09c</common:TermVocabulary>
+            <common:OrderIndex>1</common:OrderIndex>
+        </description:Sex>
+    </Terms>
+    <TermVocabularies>
+        <common:TermVocabulary id="1" uuid="urn-uuid-3345de2b-02f7-4927-9fe2-4d094449b09c">
+            <common:Terms>
+                <common:Term>urn-uuid-5a6efefb-181a-4d9d-984f-ff7d8a076562</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+    </TermVocabularies>
+    <Agents>
+        <agent:Institution id="1" uuid="urn-uuid-b116ad18-fede-416c-938a-f491764b5ca8">
+            <common:TitleCache>Institution Name</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+        </agent:Institution>
+        <agent:Person id="2" uuid="urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235">
+            <common:TitleCache>Collector's Name</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+        </agent:Person>
+    </Agents>
+    <Collections>
+        <occurrence:Collection id="1" uuid="urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb">
+            <common:TitleCache>Collection Name</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <occurrence:Name>Collection Name</occurrence:Name>
+            <occurrence:Institution>urn-uuid-b116ad18-fede-416c-938a-f491764b5ca8</occurrence:Institution>
+        </occurrence:Collection>
+    </Collections>
+    <Occurrences>
+        <occurrence:DerivedUnit id="1" uuid="urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176">
+            <common:TitleCache>Test Specimen</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <media:Media>
+              <media:Medium>urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a</media:Medium>
+            </media:Media>
+            <occurrence:Sex>urn-uuid-5a6efefb-181a-4d9d-984f-ff7d8a076562</occurrence:Sex>
+            <occurrence:Determinations>
+              <occurrence:Determination id="1" uuid="urn-uuid-e79940b4-e846-469d-aa22-43cb5ce15705">
+                <common:TimePeriod>
+                  <common:Start>2006-10-01</common:Start>
+                  <common:End>2006-10-01</common:End>
+                </common:TimePeriod>
+                <common:Actor>urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235</common:Actor>
+                <occurrence:IdentifiedUnit>urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176</occurrence:IdentifiedUnit>
+                <occurrence:Taxon>urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c</occurrence:Taxon>
+                <occurrence:PreferredFlag>true</occurrence:PreferredFlag>
+              </occurrence:Determination>
+            </occurrence:Determinations>            
+            <occurrence:Collection>urn-uuid-b8cd17ba-32ea-4201-85f1-63d31526ccdb</occurrence:Collection>
+            <occurrence:CatalogNumber>1234</occurrence:CatalogNumber>
+            <occurrence:StoredUnder>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</occurrence:StoredUnder>
+            <occurrence:DerivedFrom>urn-uuid-a18f8610-0323-11de-87af-0800200c9a66</occurrence:DerivedFrom>
+        </occurrence:DerivedUnit>
+        <occurrence:FieldUnit id="2" uuid="urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187">
+            <common:TitleCache>Field Unit</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <occurrence:DerivationEvents>
+                <occurrence:DerivationEvent>urn-uuid-a18f8610-0323-11de-87af-0800200c9a66</occurrence:DerivationEvent> 
+            </occurrence:DerivationEvents>
+            <occurrence:FieldNumber>5678</occurrence:FieldNumber>
+            <occurrence:GatheringEvent>urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c</occurrence:GatheringEvent>
+        </occurrence:FieldUnit>
+    </Occurrences>
+    <EventBases>
+      <occurrence:GatheringEvent id="1" uuid="urn-uuid-cb525bcb-3736-4fda-91f1-13dceb64466c">
+        <common:TimePeriod>
+          <common:Start>2006-09-01</common:Start>
+          <common:End>2006-09-01</common:End>
+        </common:TimePeriod>
+        <common:Actor>urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235</common:Actor>
+        <occurrence:Locality id="2" uuid="urn-uuid-b851b5d0-fdba-11dd-87af-0800200c9a66">
+          <common:Text>LocationText</common:Text>
+          <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+        </occurrence:Locality>
+      </occurrence:GatheringEvent>
+      <occurrence:DerivationEvent id="2" uuid="urn-uuid-a18f8610-0323-11de-87af-0800200c9a66">
+            <common:TimePeriod>
+                <common:Start>2006-09-01</common:Start>
+                <common:End>2006-09-01</common:End>
+            </common:TimePeriod>
+            <common:Actor>urn-uuid-28e67c60-ca40-41bb-aa1c-f713efd0f235</common:Actor>
+            <occurrence:Originals>
+                <occurrence:Original>urn-uuid-4e8ba982-c79b-4f85-8aea-13d742e48187</occurrence:Original>
+            </occurrence:Originals>
+            <occurrence:Derivatives>
+                <occurrence:Derivative>urn-uuid-9f88eff9-355f-427e-838b-a543ac5c4176</occurrence:Derivative>
+            </occurrence:Derivatives>
+        </occurrence:DerivationEvent>
+    </EventBases>    
+    <TaxonomicNames>
+        <name:ZoologicalName id="1" uuid="urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40" hasProblem="false" problemStarts="-1" problemEnds="-1">
+          <common:TitleCache>Aus aus L., 1758</common:TitleCache>
+          <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+          <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+          <name:NameCache>Aus aus</name:NameCache>
+          <name:AuthorshipCache>L., 1758</name:AuthorshipCache>
+          <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+          <name:ProtectedNameCache>false</name:ProtectedNameCache>  
+        </name:ZoologicalName>
+    </TaxonomicNames>
+    <TaxonBases>
+        <taxon:Taxon id="1" uuid="urn-uuid-dcf295c9-a5ec-4b03-8daa-a69741d1611c" isDoubtful="false">
+            <common:TitleCache>Aus aus L.</common:TitleCache>
+             <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <taxon:Name>urn-uuid-e7542758-5311-47b2-b4f8-bb770822ae40</taxon:Name>
+            <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
+        </taxon:Taxon>
+    </TaxonBases>
+    <Media>
+        <media:Media id="0" uuid="urn-uuid-5d3161eb-d227-415f-ba2a-93b8c7ddb98a"/>
+    </Media>
+</DataSet>

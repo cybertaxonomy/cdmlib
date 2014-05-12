@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSet 
+    xmlns="http://etaxonomy.eu/cdm/model/1.0"
+    xmlns:agent="http://etaxonomy.eu/cdm/model/agent/1.0"
+    xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+    xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
+    xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
+    xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+    xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
+    xmlns:occurence="http://etaxonomy.eu/cdm/model/occurence/1.0"
+    xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
+                             ../../../../../../classes/schema/cdm/cdm.xsd">
+    <Terms>                    
+        <common:Language id="1" uuid="urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5" iso639_1="en" iso639_2="eng"/>
+        <media:RightsType id="2" uuid="urn-uuid-ec428771-3cb4-4062-b414-fcc35729f7e2">
+            <common:Representations>
+              <common:Representation id="1" uuid="urn-uuid-f90974d0-fc2c-11dd-87af-0800200c9a66">
+                <common:Text>Access Rights</common:Text>
+                <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c</common:TermVocabulary>
+        </media:RightsType>
+        <media:RightsType id="3" uuid="urn-uuid-d228293e-4139-48a5-ac34-898a263d47ed">
+            <common:Representations>
+              <common:Representation id="2" uuid="urn-uuid-a8cc5690-fcef-11dd-87af-0800200c9a66">
+                <common:Text>License</common:Text>
+                <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c</common:TermVocabulary>
+        </media:RightsType>     
+        <media:RightsType id="4" uuid="urn-uuid-3f222fa1-ad70-4ec3-aa7f-6b917362c072">
+            <common:Representations>
+              <common:Representation id="3" uuid="urn-uuid-c3547ba0-fcef-11dd-87af-0800200c9a66">
+                <common:Text>Copyright</common:Text>
+                <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+              </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c</common:TermVocabulary>
+        </media:RightsType>
+    </Terms>
+    <TermVocabularies>
+        <common:TermVocabulary id="1" uuid="urn-uuid-7d4d7234-6ce5-40f4-934d-3dc3e0a86e9c">
+            <common:TermSourceURI>http://purl.org/dc/terms/accessRights</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-ec428771-3cb4-4062-b414-fcc35729f7e2</common:Term>
+                <common:Term>urn-uuid-d228293e-4139-48a5-ac34-898a263d47ed</common:Term>
+                <common:Term>urn-uuid-3f222fa1-ad70-4ec3-aa7f-6b917362c072</common:Term>
+            </common:Terms>            
+        </common:TermVocabulary>
+    </TermVocabularies>
+    <Agents>
+        <agent:Person id="1" uuid="urn-uuid-7c441738-7756-416e-b068-01e6932d7c36">
+            <common:TitleCache>Person's Name</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+        </agent:Person>
+    </Agents>
+    <Media>
+        <media:Media id="1" uuid="urn-uuid-39a306b3-c4fd-4c8c-b0e8-22d8001e8410">
+            <media:MediaTitle>
+                <common:LanguageString id="2" uuid="urn-uuid-908a8369-331c-4aad-a344-f9d5a7ff8ee0">
+                    <common:Text>English Title</common:Text>
+                    <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+                </common:LanguageString>
+            </media:MediaTitle>
+            <media:MediaCreated>2006-10-01T00:00:00.000</media:MediaCreated>
+            <media:MediaRepresentations>
+                <media:MediaRepresentation id="1" uuid="urn-uuid-2d7fa0d1-4546-4867-b80f-e2bb4d48afb3">
+                    <media:MimeType>image/png</media:MimeType>
+                    <media:Media>urn-uuid-39a306b3-c4fd-4c8c-b0e8-22d8001e8410</media:Media>
+                    <media:MediaRepresentationParts>
+                        <media:ImageFile id="1" uuid="urn-uuid-207e2af0-46a7-4fb9-a32a-284bf585950e">
+                            <media:URI>file:src/test/resources/image.png</media:URI>
+                            <media:MediaRepresentation>urn-uuid-2d7fa0d1-4546-4867-b80f-e2bb4d48afb3</media:MediaRepresentation>
+                            <media:Height>1200</media:Height>
+                            <media:Width>1600</media:Width>
+                        </media:ImageFile>
+                    </media:MediaRepresentationParts>
+                </media:MediaRepresentation>
+            </media:MediaRepresentations>
+            <media:Rights>
+                <media:Right id="1" uuid="urn-uuid-4aec134e-bca8-4e1f-b115-84bb4f8f7923">
+                    <common:Text>Creative Commons Attribution 3.0 Unported License</common:Text>
+                    <common:Language>urn-uuid-3d14c42f-f1a4-4e49-b287-7fbc63034dd5</common:Language>
+                    <media:URI>http://creativecommons.org/licenses/by/3.0/</media:URI>
+                    <media:AbbreviatedText>Abbreviated Text</media:AbbreviatedText>
+                    <media:Type>urn-uuid-3f222fa1-ad70-4ec3-aa7f-6b917362c072</media:Type>
+                    <media:Agent>urn-uuid-7c441738-7756-416e-b068-01e6932d7c36</media:Agent>
+                </media:Right>
+            </media:Rights>
+            <media:Artist>urn-uuid-7c441738-7756-416e-b068-01e6932d7c36</media:Artist>
+        </media:Media>
+    </Media>
+</DataSet>

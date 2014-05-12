@@ -1,0 +1,1615 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets xmlns="http://rs.tdwg.org/UBIF/2006/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd">
+    <TechnicalMetadata created="1970-01-01T09:34:00">
+        <Generator name="Xper2"
+            notes="This software is developed and distributed by LIS - Laboratoire Informatique et SystÈmatique (LIS) - UniversitÈ Pierre et Marie Curie - Paris VI - Copyright (c) 2004-2009" version="1.1"/>
+    </TechnicalMetadata>
+    <Dataset xml:lang="fr">
+        <Representation>
+            <Label>ant base</Label>
+        </Representation>
+        <RevisionData>
+            <Creators>
+                <Agent ref="a0" role="aut"/>
+            </Creators>
+            <DateCreated>2012-06-06T09:34:58</DateCreated>
+            <DateModified>2012-06-06T09:34:58</DateModified>
+        </RevisionData>
+        <TaxonNames>
+            <TaxonName id="t1">
+                <Representation>
+                    <Label>Dolichoderinae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t2">
+                <Representation>
+                    <Label>Formicinae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t3">
+                <Representation>
+                    <Label>Ponerinae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t4">
+                <Representation>
+                    <Label>Myrmicinae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t5">
+                <Representation>
+                    <Label>Pseudomyrmecinae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t6">
+                <Representation>
+                    <Label>Ecitoninae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t7">
+                <Representation>
+                    <Label>Ectatomminae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t8">
+                <Representation>
+                    <Label>Cerapachyinae</Label>
+                </Representation>
+            </TaxonName>
+            <TaxonName id="t9">
+                <Representation>
+                    <Label>Genus Ectatom</Label>
+                </Representation>
+            </TaxonName>
+        </TaxonNames>
+        <TaxonHierarchies>
+            <TaxonHierarchy id="th1">
+                <Representation>
+                    <Label>Default Entity Tree</Label>
+                </Representation>
+                <TaxonHierarchyType>UnspecifiedTaxonomy</TaxonHierarchyType>
+                <Nodes>
+                    <Node id="tn1">
+                        <TaxonName ref="t1"/>
+                    </Node>
+                    <Node id="tn2">
+                        <TaxonName ref="t2"/>
+                    </Node>
+                    <Node id="tn3">
+                        <Parent ref="tn2"/>
+                        <TaxonName ref="t3"/>
+                    </Node>
+                    <Node id="tn4">
+                        <TaxonName ref="t4"/>
+                    </Node>
+                    <Node id="tn5">
+                        <Parent ref="tn4"/>
+                        <TaxonName ref="t5"/>
+                    </Node>
+                    <Node id="tn6">
+                        <TaxonName ref="t6"/>
+                    </Node>
+                    <Node id="tn7">
+                        <Parent ref="tn6"/>
+                        <TaxonName ref="t8"/>
+                    </Node>
+                </Nodes>
+            </TaxonHierarchy>
+        </TaxonHierarchies>
+        <Characters>
+            <CategoricalCharacter id="c1">
+                <Representation>
+                    <Label>Pétiole</Label>
+                    <Detail>Le &lt;b&gt;pétiole&lt;/b&gt; se situe entre le mésosoma et l'alitrunk.</Detail>
+                    <MediaObject ref="m35"/>
+                    <MediaObject ref="m36"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s1">
+                        <Representation>
+                            <Label>un seul article réduit ou isolé</Label>
+                            <MediaObject ref="m37"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s2">
+                        <Representation>
+                            <Label>deux articles réduits ou isolés</Label>
+                            <Detail>Les deux articles correspondent au&lt;b&gt;pétiole&lt;/b&gt; et au &lt;b&gt;post-pétiole&lt;/b&gt;.&lt;br&gt;Soit les deux segments sont plus ou moins réduits, soit le deuxième article est plus large que le premier, soit le postpétiole est largement plus réduit.</Detail>
+                            <MediaObject ref="m38"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c2">
+                <Representation>
+                    <Label>Aiguillon venimeux</Label>
+                    <Detail>Quand il est vestigial et non fonctionnel, on le considère comme absent.</Detail>
+                    <MediaObject ref="m39"/>
+                    <MediaObject ref="m40"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s3">
+                        <Representation>
+                            <Label>absent</Label>
+                            <Detail>Apex du gastre &lt;b&gt;sans aiguillon&lt;/b&gt;.</Detail>
+                            <MediaObject ref="m41"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s4">
+                        <Representation>
+                            <Label>présent</Label>
+                            <Detail>C'est l'&lt;b&gt;apex du gastre&lt;/b&gt; qui porte l'aiguillon.&lt;br&gt;Il est considéré comme présent uniquement s'il &lt;b&gt;est fonctionnel&lt;/b&gt;. Certains aiguillons sont dévaginables, d'autres sont visibles de façon permanente.</Detail>
+                            <MediaObject ref="m42"/>
+                            <MediaObject ref="m43"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c3">
+                <Representation>
+                    <Label>Acidopore</Label>
+                    <Detail>L'&lt;b&gt;acidopore&lt;/b&gt; est l'ouverture à la base du gastre par laquelle le venin est éjecté ou vaporisé</Detail>
+                    <MediaObject ref="m44"/>
+                    <MediaObject ref="m45"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s5">
+                        <Representation>
+                            <Label>circulaire et entouré de soies</Label>
+                            <Detail>Quand cette structure est présente, le venin est projeté sous forme de spray. L'&lt;b&gt;acidopore circulaire&lt;/b&gt; est parfois visible à l'oeil nu chez les fourmis de grande taille.</Detail>
+                            <MediaObject ref="m46"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s6">
+                        <Representation>
+                            <Label>sous forme de fente</Label>
+                            <Detail>Contrairement à l'acidopore circulaire, la &lt;b&gt;fente&lt;/b&gt; est rarement visible à l'oeil nu.</Detail>
+                            <MediaObject ref="m47"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s7">
+                        <Representation>
+                            <Label>absent ou quasi invisible</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c4">
+                <Representation>
+                    <Label>Pygidium</Label>
+                    <Detail>Le &lt;b&gt;pygidium&lt;/b&gt; correspond au tergite à l'apex du gastre.</Detail>
+                    <MediaObject ref="m48"/>
+                    <MediaObject ref="m49"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s8">
+                        <Representation>
+                            <Label>non armé</Label>
+                            <Detail>&lt;b&gt;Pygidium lisse non armé&lt;/b&gt; latéralement ou postérieurement.</Detail>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s9">
+                        <Representation>
+                            <Label>armé</Label>
+                            <Detail>&lt;b&gt;Pygidium armé &lt;/b&gt; latéralement, postérieurement ou les deux par une rangée de courtes épines ou dents.</Detail>
+                            <MediaObject ref="m50"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c5">
+                <Representation>
+                    <Label>Marge clypéale</Label>
+                    <MediaObject ref="m51"/>
+                    <MediaObject ref="m52"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s10">
+                        <Representation>
+                            <Label>sans projection</Label>
+                            <Detail>Il s'agit de la &lt;b&gt;marge clypéale antérolatérale&lt;/b&gt;.</Detail>
+                            <MediaObject ref="m53"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s11">
+                        <Representation>
+                            <Label>avec projection</Label>
+                            <MediaObject ref="m54"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c6">
+                <Representation>
+                    <Label>Yeux</Label>
+                    <Detail>Les &lt;b&gt;yeux&lt;/b&gt; des insectes sont des yeux composés d'&lt;b&gt;ommatidies&lt;/b&gt;. Attention à ne pas les confondre avec les &lt;b&gt;ocelles&lt;/b&gt;, yeux simples souvent situés sur le dessu-de la tête, servant à détecter les variations de luminosité.</Detail>
+                    <MediaObject ref="m55"/>
+                    <MediaObject ref="m56"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s12">
+                        <Representation>
+                            <Label>absents ou très réduits</Label>
+                            <Detail>Yeux absents ou très réduits c'est à dire représentés seulement par une seule ou un petit nombre d'ommatidies.</Detail>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s13">
+                        <Representation>
+                            <Label>présents et bien visibles</Label>
+                            <Detail>Yeux présent et bien visibles composés d'un grand nombre d'ommatidies.</Detail>
+                            <MediaObject ref="m57"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c7">
+                <Representation>
+                    <Label>Antennes</Label>
+                    <MediaObject ref="m58"/>
+                    <MediaObject ref="m59"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s14">
+                        <Representation>
+                            <Label>de 8 à 10 segments</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s15">
+                        <Representation>
+                            <Label>de 12 segments</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s16">
+                        <Representation>
+                            <Label>moins de 8 segments</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s17">
+                        <Representation>
+                            <Label>10 ou 11 segments</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c8">
+                <Representation>
+                    <Label>Répartition mondiale</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s18">
+                        <Representation>
+                            <Label>monde entier</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s19">
+                        <Representation>
+                            <Label>régions tempérées</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s20">
+                        <Representation>
+                            <Label>tropiques</Label>
+                            <Detail>Il s'agit des tropiques (voire subtropiques) du monden entier.</Detail>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s21">
+                        <Representation>
+                            <Label>néotropiques</Label>
+                            <Detail>Il s'agit des zones tropicales américaines.</Detail>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c9">
+                <Representation>
+                    <Label>Lobes frontaux</Label>
+                    <MediaObject ref="m60"/>
+                    <MediaObject ref="m61"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s22">
+                        <Representation>
+                            <Label>absents ou très réduits et verticaux</Label>
+                            <MediaObject ref="m62"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s23">
+                        <Representation>
+                            <Label>présents et horizontaux</Label>
+                            <MediaObject ref="m63"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c10">
+                <Representation>
+                    <Label>Bases antennaires</Label>
+                    <MediaObject ref="m64"/>
+                    <MediaObject ref="m65"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s24">
+                        <Representation>
+                            <Label>partiellement ou complètement camouflées</Label>
+                            <Detail>En vue de face, les &lt;b&gt;bases antennaires&lt;/b&gt; sont partiellement ou complètement recouvertes par les &lt;b&gt; lobes frontaux&lt;/b&gt; (jamais complètement exposées).</Detail>
+                            <MediaObject ref="m66"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s25">
+                        <Representation>
+                            <Label>totalement exposées</Label>
+                            <Detail>En vue de face, les &lt;b&gt;bases antennaires&lt;/b&gt; sont complètement exposées et non recouvertes par les lobes frontaux.</Detail>
+                            <MediaObject ref="m67"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c11">
+                <Representation>
+                    <Label>Suture promésonotale</Label>
+                    <Detail>La &lt;b&gt;suture promésonotale&lt;/b&gt; est la suture (ligne de ligne de fusion) entre le pronotum et le mesonotum, les deux premiers articles du thorax.</Detail>
+                    <MediaObject ref="m68"/>
+                    <MediaObject ref="m69"/>
+                    <MediaObject ref="m70"/>
+                    <MediaObject ref="m71"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s26">
+                        <Representation>
+                            <Label>absente</Label>
+                            <MediaObject ref="m72"/>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s27">
+                        <Representation>
+                            <Label>vestigiale</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s28">
+                        <Representation>
+                            <Label>présente</Label>
+                            <MediaObject ref="m73"/>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c12">
+                <Representation>
+                    <Label>Ocelle(s)</Label>
+                    <Detail>Les &lt;b&gt;ocelles&lt;/b&gt; sont des yeux simples servant à détecter les variations de luminosité. Les ouvrières peuvent avoir un ou plusieurs ocelles.</Detail>
+                    <MediaObject ref="m74"/>
+                    <MediaObject ref="m75"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s29">
+                        <Representation>
+                            <Label>absent(s)</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s30">
+                        <Representation>
+                            <Label>présent(s)</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c13">
+                <Representation>
+                    <Label>Palpes maxillaires</Label>
+                    <MediaObject ref="m76"/>
+                </Representation>
+                <States>
+                    <StateDefinition id="s31">
+                        <Representation>
+                            <Label>présents et bien visibles</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s32">
+                        <Representation>
+                            <Label>absents ou très difficilement visibles</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+        </Characters>
+        <CharacterTrees>
+            <CharacterTree id="ct1">
+                <Representation>
+                    <Label>Ordre et dÈpendance entre caractËres</Label>
+                </Representation>
+                <ShouldContainAllCharacters>true</ShouldContainAllCharacters>
+                <Nodes>
+                    <CharNode>
+                        <Character ref="c1"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c2"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s2"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c3"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c4"/>
+                    </CharNode>
+                    <CharNode>
+                        <DependencyRules>
+                            <InapplicableIf>
+                                <State ref="s3"/>
+                            </InapplicableIf>
+                        </DependencyRules>
+                        <Character ref="c5"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c6"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c7"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c8"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c9"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c10"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c11"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c12"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c13"/>
+                    </CharNode>
+                </Nodes>
+            </CharacterTree>
+        </CharacterTrees>
+        <CodedDescriptions>
+            <CodedDescription id="D1">
+                <Representation>
+                    <Label>Dolichoderinae</Label>
+                    <MediaObject ref="m1"/>
+                    <MediaObject ref="m2"/>
+                    <MediaObject ref="m3"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t1"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <Note>Leur aiguillon venimeux est vestigial et non fonctionnel.</Note>
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5"/>
+                    <Categorical ref="c6">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <Note>Les ouvrières possèdent généralement 11 articles antennaires, rarement 10 ou 11.</Note>
+                        <State ref="s14"/>
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <Note>Elles sont partiellement ou totalement cachées par la carèbe frontale, marge du lbe frontal.</Note>
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Note>Elle est présente et flexible.</Note>
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <Note>Les ocelles sont pratiquement tout le temps absents.</Note>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s31"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D2">
+                <Representation>
+                    <Label>Formicinae</Label>
+                    <MediaObject ref="m4"/>
+                    <MediaObject ref="m5"/>
+                    <MediaObject ref="m6"/>
+                    <MediaObject ref="m7"/>
+                    <MediaObject ref="m8"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t2"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <Note>Leur aiguillon est non fonctionnel.</Note>
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5"/>
+                    <Categorical ref="c6">
+                        <Note>Leurs yeux sont généralement bien développés, rarement réduits ou absents.</Note>
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s14"/>
+                        <State ref="s15"/>
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s25"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <Note>Les ocelles sont présents dans la grande majorité des genres.</Note>
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s31"/>
+                        <State ref="s32"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D3">
+                <Representation>
+                    <Label>Ponerinae</Label>
+                    <MediaObject ref="m9"/>
+                    <MediaObject ref="m10"/>
+                    <MediaObject ref="m11"/>
+                    <MediaObject ref="m12"/>
+                    <MediaObject ref="m13"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t3"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <Note>Les Ponerinae possèdent des yeux bien développés dans la grande majorité des cas.</Note>
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s19"/>
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Note>Si les yeux et les lobes frontaux sont absents, la suture promésonotale est toujours absente.</Note>
+                        <State ref="s26"/>
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <Note>En général les ouvrières de poneriane ne portent pas d'ocelles.</Note>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s31"/>
+                        <State ref="s32"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D4">
+                <Representation>
+                    <Label>Myrmicinae</Label>
+                    <MediaObject ref="m14"/>
+                    <MediaObject ref="m15"/>
+                    <MediaObject ref="m16"/>
+                    <MediaObject ref="m17"/>
+                    <MediaObject ref="m18"/>
+                    <MediaObject ref="m19"/>
+                    <MediaObject ref="m20"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t4"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3"/>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <Note>Le nombre d'articles antennaires peut varier de 4 à 12 chez les Myrmicinae.</Note>
+                        <State ref="s14"/>
+                        <State ref="s15"/>
+                        <State ref="s16"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s22"/>
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s24"/>
+                        <State ref="s25"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Note>Elle est souvent complètement absente et rarement vestigiale. Quand c'est le cas, elle donne l'impression transversalement s'un arche en vue dorsale.</Note>
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <Note>Les ocelles sont la plupart du temps absents, très rarement présents.</Note>
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s31"/>
+                        <State ref="s32"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D5">
+                <Representation>
+                    <Label>Pseudomyrmecinae</Label>
+                    <MediaObject ref="m21"/>
+                    <MediaObject ref="m22"/>
+                    <MediaObject ref="m23"/>
+                    <MediaObject ref="m24"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t5"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3"/>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <Note>La projestion clypéale concernée est postérieure c'est à dir vers les mandibules, et non vers le haut de la tête.</Note>
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s22"/>
+                        <State ref="s23"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Note>Elle est très visible en vue dorsale.</Note>
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s32"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D6">
+                <Representation>
+                    <Label>Ecitoninae</Label>
+                    <MediaObject ref="m25"/>
+                    <MediaObject ref="m26"/>
+                    <MediaObject ref="m27"/>
+                    <MediaObject ref="m28"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t6"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3"/>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <Note>Leurs yeux sont réduits à une seule ommatidies ou absents.</Note>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s15"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s19"/>
+                        <State ref="s21"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s25"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Note>Cette suture n'est jamais marqué et elle est flexible.</Note>
+                        <State ref="s26"/>
+                        <State ref="s27"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s32"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D7">
+                <Representation>
+                    <Label>Ectatomminae</Label>
+                    <MediaObject ref="m29"/>
+                    <MediaObject ref="m30"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t7"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c5"/>
+                    <Categorical ref="c6">
+                        <State ref="s13"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s18"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <State ref="s22"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s24"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s29"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <State ref="s32"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D8">
+                <Representation>
+                    <Label>Cerapachyinae</Label>
+                    <MediaObject ref="m31"/>
+                    <MediaObject ref="m32"/>
+                    <MediaObject ref="m33"/>
+                    <MediaObject ref="m34"/>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t8"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <Note>Aiguillon bien dévellopé et fonctionnel.</Note>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <Note>Il existe un rangée apicale ou marginale de courtes dents ou épines.</Note>
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c6">
+                        <Note>Les yeux sont généralement présents, très rarement réduits ou absents.</Note>
+                        <State ref="s12"/>
+                    </Categorical>
+                    <Categorical ref="c7">
+                        <State ref="s15"/>
+                        <State ref="s17"/>
+                    </Categorical>
+                    <Categorical ref="c8">
+                        <State ref="s20"/>
+                    </Categorical>
+                    <Categorical ref="c9">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                    <Categorical ref="c10">
+                        <State ref="s25"/>
+                    </Categorical>
+                    <Categorical ref="c11">
+                        <Note>La plupart du temps, elle est complètement absente. Elle n'est que très rarement visible.</Note>
+                        <State ref="s26"/>
+                        <State ref="s28"/>
+                    </Categorical>
+                    <Categorical ref="c12">
+                        <State ref="s30"/>
+                    </Categorical>
+                    <Categorical ref="c13">
+                        <Status code="DataUnavailable"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D9">
+                <Representation>
+                    <Label>Genus Ectatom</Label>
+                </Representation>
+                <Scope>
+                    <TaxonName ref="t9"/>
+                </Scope>
+                <SummaryData>
+                    <Categorical ref="c1"/>
+                    <Categorical ref="c2"/>
+                    <Categorical ref="c3"/>
+                    <Categorical ref="c4"/>
+                    <Categorical ref="c5"/>
+                    <Categorical ref="c6"/>
+                    <Categorical ref="c7"/>
+                    <Categorical ref="c8"/>
+                    <Categorical ref="c9"/>
+                    <Categorical ref="c10"/>
+                    <Categorical ref="c11"/>
+                    <Categorical ref="c12"/>
+                    <Categorical ref="c13"/>
+                </SummaryData>
+            </CodedDescription>
+        </CodedDescriptions>
+        <Agents>
+            <Agent id="a0">
+                <Representation>
+                    <Label>Unknown</Label>
+                </Representation>
+            </Agent>
+        </Agents>
+        <MediaObjects>
+            <MediaObject id="m1">
+                <Representation>
+                    <Label>Dolichoderinae - m1</Label>
+                    <Detail role="Caption">Dolichoderinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/aztins2reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m2">
+                <Representation>
+                    <Label>Dolichoderinae - m2</Label>
+                    <Detail role="Caption">Dolichoderinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/linhum10reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m3">
+                <Representation>
+                    <Label>Dolichoderinae - m3</Label>
+                    <Detail role="Caption">Dolichoderinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/casent0005323_p_1_med.jpg"/>
+            </MediaObject>
+            <MediaObject id="m4">
+                <Representation>
+                    <Label>Formicinae - m4</Label>
+                    <Detail role="Caption">Formicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/023dimg_1302.jpg"/>
+            </MediaObject>
+            <MediaObject id="m5">
+                <Representation>
+                    <Label>Formicinae - m5</Label>
+                    <Detail role="Caption">Formicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/dolich5.jpg"/>
+            </MediaObject>
+            <MediaObject id="m6">
+                <Representation>
+                    <Label>Formicinae - m6</Label>
+                    <Detail role="Caption">Formicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/gigdes3reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m7">
+                <Representation>
+                    <Label>Formicinae - m7</Label>
+                    <Detail role="Caption">Formicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/polbre6reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m8">
+                <Representation>
+                    <Label>Formicinae - m8</Label>
+                    <Detail role="Caption">Formicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/095.jpg"/>
+            </MediaObject>
+            <MediaObject id="m9">
+                <Representation>
+                    <Label>Ponerinae - m9</Label>
+                    <Detail role="Caption">Ponerinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/hagensia_havilandi_frontal_mandible.jpg"/>
+            </MediaObject>
+            <MediaObject id="m10">
+                <Representation>
+                    <Label>Ponerinae - m10</Label>
+                    <Detail role="Caption">Ponerinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/odohae1reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m11">
+                <Representation>
+                    <Label>Ponerinae - m11</Label>
+                    <Detail role="Caption">Ponerinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/paccom1reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m12">
+                <Representation>
+                    <Label>Ponerinae - m12</Label>
+                    <Detail role="Caption">Ponerinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/odobau2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m13">
+                <Representation>
+                    <Label>Ponerinae - m13</Label>
+                    <Detail role="Caption">Ponerinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/caa3ctaz.jpg"/>
+            </MediaObject>
+            <MediaObject id="m14">
+                <Representation>
+                    <Label>Myrmicinae - m14</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/81797794-s.jpg"/>
+            </MediaObject>
+            <MediaObject id="m15">
+                <Representation>
+                    <Label>Myrmicinae - m15</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_heads.jpg"/>
+            </MediaObject>
+            <MediaObject id="m16">
+                <Representation>
+                    <Label>Myrmicinae - m16</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/c_ashmeadi01.jpg"/>
+            </MediaObject>
+            <MediaObject id="m17">
+                <Representation>
+                    <Label>Myrmicinae - m17</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/crecer2reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m18">
+                <Representation>
+                    <Label>Myrmicinae - m18</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/medium.jpg"/>
+            </MediaObject>
+            <MediaObject id="m19">
+                <Representation>
+                    <Label>Myrmicinae - m19</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/oecsma9.jpg"/>
+            </MediaObject>
+            <MediaObject id="m20">
+                <Representation>
+                    <Label>Myrmicinae - m20</Label>
+                    <Detail role="Caption">Myrmicinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/15.jpg"/>
+            </MediaObject>
+            <MediaObject id="m21">
+                <Representation>
+                    <Label>Pseudomyrmecinae - m21</Label>
+                    <Detail role="Caption">Pseudomyrmecinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pseapa9reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m22">
+                <Representation>
+                    <Label>Pseudomyrmecinae - m22</Label>
+                    <Detail role="Caption">Pseudomyrmecinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/casent0005838_p_1_med.jpg"/>
+            </MediaObject>
+            <MediaObject id="m23">
+                <Representation>
+                    <Label>Pseudomyrmecinae - m23</Label>
+                    <Detail role="Caption">Pseudomyrmecinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/images.jpg"/>
+            </MediaObject>
+            <MediaObject id="m24">
+                <Representation>
+                    <Label>Pseudomyrmecinae - m24</Label>
+                    <Detail role="Caption">Pseudomyrmecinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pseudomyrmex-sp.-frontal.jpg"/>
+            </MediaObject>
+            <MediaObject id="m25">
+                <Representation>
+                    <Label>Ecitoninae - m25</Label>
+                    <Detail role="Caption">Ecitoninae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ecibur4reduced1.jpg"/>
+            </MediaObject>
+            <MediaObject id="m26">
+                <Representation>
+                    <Label>Ecitoninae - m26</Label>
+                    <Detail role="Caption">Ecitoninae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/eciton.jpg"/>
+            </MediaObject>
+            <MediaObject id="m27">
+                <Representation>
+                    <Label>Ecitoninae - m27</Label>
+                    <Detail role="Caption">Ecitoninae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/308dimg_2492.jpg"/>
+            </MediaObject>
+            <MediaObject id="m28">
+                <Representation>
+                    <Label>Ecitoninae - m28</Label>
+                    <Detail role="Caption">Ecitoninae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ecibur6reduced.jpg"/>
+            </MediaObject>
+            <MediaObject id="m29">
+                <Representation>
+                    <Label>Ectatomminae - m29</Label>
+                    <Detail role="Caption">Ectatomminae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ectatomma-tuberculatum-frontal.100a.jpg"/>
+            </MediaObject>
+            <MediaObject id="m30">
+                <Representation>
+                    <Label>Ectatomminae - m30</Label>
+                    <Detail role="Caption">Ectatomminae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ecttub2reduced1.jpg"/>
+            </MediaObject>
+            <MediaObject id="m31">
+                <Representation>
+                    <Label>Cerapachyinae - m31</Label>
+                    <Detail role="Caption">Cerapachyinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/casent0059682_p_1_med.jpg"/>
+            </MediaObject>
+            <MediaObject id="m32">
+                <Representation>
+                    <Label>Cerapachyinae - m32</Label>
+                    <Detail role="Caption">Cerapachyinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/cerapach.gif"/>
+            </MediaObject>
+            <MediaObject id="m33">
+                <Representation>
+                    <Label>Cerapachyinae - m33</Label>
+                    <Detail role="Caption">Cerapachyinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/images.jpg"/>
+            </MediaObject>
+            <MediaObject id="m34">
+                <Representation>
+                    <Label>Cerapachyinae - m34</Label>
+                    <Detail role="Caption">Cerapachyinae</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/img_3456.0.jpg"/>
+            </MediaObject>
+            <MediaObject id="m35">
+                <Representation>
+                    <Label>Pétiole - m35</Label>
+                    <Detail role="Caption">Pétiole</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/1_article.gif"/>
+            </MediaObject>
+            <MediaObject id="m36">
+                <Representation>
+                    <Label>Pétiole - m36</Label>
+                    <Detail role="Caption">Pétiole</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/2_articles.gif"/>
+            </MediaObject>
+            <MediaObject id="m37">
+                <Representation>
+                    <Label>un seul article réduit ou isolé - m37</Label>
+                    <Detail role="Caption">un seul article réduit ou isolé</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/1_article.gif"/>
+            </MediaObject>
+            <MediaObject id="m38">
+                <Representation>
+                    <Label>deux articles réduits ou isolés - m38</Label>
+                    <Detail role="Caption">deux articles réduits ou isolés</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/2_articles.gif"/>
+            </MediaObject>
+            <MediaObject id="m39">
+                <Representation>
+                    <Label>Aiguillon venimeux - m39</Label>
+                    <Detail role="Caption">Aiguillon venimeux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/aiguillon_absent.gif"/>
+            </MediaObject>
+            <MediaObject id="m40">
+                <Representation>
+                    <Label>Aiguillon venimeux - m40</Label>
+                    <Detail role="Caption">Aiguillon venimeux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/aiguillon_présent.gif"/>
+            </MediaObject>
+            <MediaObject id="m41">
+                <Representation>
+                    <Label>absent - m41</Label>
+                    <Detail role="Caption">absent</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/figure4.jpg"/>
+            </MediaObject>
+            <MediaObject id="m42">
+                <Representation>
+                    <Label>présent - m42</Label>
+                    <Detail role="Caption">présent</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/amblyopone.gaster.web.jpg"/>
+            </MediaObject>
+            <MediaObject id="m43">
+                <Representation>
+                    <Label>présent - m43</Label>
+                    <Detail role="Caption">présent</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ponera.petiole_gaster.jpg"/>
+            </MediaObject>
+            <MediaObject id="m44">
+                <Representation>
+                    <Label>Acidopore - m44</Label>
+                    <Detail role="Caption">Acidopore</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_circulaire_avec_touffe_de_soies.gif"/>
+            </MediaObject>
+            <MediaObject id="m45">
+                <Representation>
+                    <Label>Acidopore - m45</Label>
+                    <Detail role="Caption">Acidopore</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_en_fente.gif"/>
+            </MediaObject>
+            <MediaObject id="m46">
+                <Representation>
+                    <Label>circulaire et entouré de soies - m46</Label>
+                    <Detail role="Caption">circulaire et entouré de soies</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_circulaire_avec_touffe_de_soies.gif"/>
+            </MediaObject>
+            <MediaObject id="m47">
+                <Representation>
+                    <Label>sous forme de fente - m47</Label>
+                    <Detail role="Caption">sous forme de fente</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/acidopore_en_fente.gif"/>
+            </MediaObject>
+            <MediaObject id="m48">
+                <Representation>
+                    <Label>Pygidium - m48</Label>
+                    <Detail role="Caption">Pygidium</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pygidium_bordé_de_dents.gif"/>
+            </MediaObject>
+            <MediaObject id="m49">
+                <Representation>
+                    <Label>Pygidium - m49</Label>
+                    <Detail role="Caption">Pygidium</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m50">
+                <Representation>
+                    <Label>armé - m50</Label>
+                    <Detail role="Caption">armé</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pygidium_bordé_de_dents.gif"/>
+            </MediaObject>
+            <MediaObject id="m51">
+                <Representation>
+                    <Label>Marge clypéale - m51</Label>
+                    <Detail role="Caption">Marge clypéale</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/marge_clypéale_sans_projection.gif"/>
+            </MediaObject>
+            <MediaObject id="m52">
+                <Representation>
+                    <Label>Marge clypéale - m52</Label>
+                    <Detail role="Caption">Marge clypéale</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/102004b.gif"/>
+            </MediaObject>
+            <MediaObject id="m53">
+                <Representation>
+                    <Label>sans projection - m53</Label>
+                    <Detail role="Caption">sans projection</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/marge_clypéale_sans_projection.gif"/>
+            </MediaObject>
+            <MediaObject id="m54">
+                <Representation>
+                    <Label>avec projection - m54</Label>
+                    <Detail role="Caption">avec projection</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pygidium_bordé_de_dents_-_marge_clypéale_avec_une_projection.gif"/>
+            </MediaObject>
+            <MediaObject id="m55">
+                <Representation>
+                    <Label>Yeux - m55</Label>
+                    <Detail role="Caption">Yeux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/yeux_larges.gif"/>
+            </MediaObject>
+            <MediaObject id="m56">
+                <Representation>
+                    <Label>Yeux - m56</Label>
+                    <Detail role="Caption">Yeux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_eye.jpg"/>
+            </MediaObject>
+            <MediaObject id="m57">
+                <Representation>
+                    <Label>présents et bien visibles - m57</Label>
+                    <Detail role="Caption">présents et bien visibles</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/yeux_larges.gif"/>
+            </MediaObject>
+            <MediaObject id="m58">
+                <Representation>
+                    <Label>Antennes - m58</Label>
+                    <Detail role="Caption">Antennes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_antenna.jpg"/>
+            </MediaObject>
+            <MediaObject id="m59">
+                <Representation>
+                    <Label>Antennes - m59</Label>
+                    <Detail role="Caption">Antennes</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy_head_ocelli_copy.jpg"/>
+            </MediaObject>
+            <MediaObject id="m60">
+                <Representation>
+                    <Label>Lobes frontaux - m60</Label>
+                    <Detail role="Caption">Lobes frontaux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/horizontaux.jpg"/>
+            </MediaObject>
+            <MediaObject id="m61">
+                <Representation>
+                    <Label>Lobes frontaux - m61</Label>
+                    <Detail role="Caption">Lobes frontaux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pas_horizontaux.jpg"/>
+            </MediaObject>
+            <MediaObject id="m62">
+                <Representation>
+                    <Label>absents ou très réduits et verticaux - m62</Label>
+                    <Detail role="Caption">absents ou très réduits et verticaux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/pas_horizontaux.jpg"/>
+            </MediaObject>
+            <MediaObject id="m63">
+                <Representation>
+                    <Label>présents et horizontaux - m63</Label>
+                    <Detail role="Caption">présents et horizontaux</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/horizontaux.jpg"/>
+            </MediaObject>
+            <MediaObject id="m64">
+                <Representation>
+                    <Label>Bases antennaires - m64</Label>
+                    <Detail role="Caption">Bases antennaires</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/bases_antennaires_complètement_exposées.gif"/>
+            </MediaObject>
+            <MediaObject id="m65">
+                <Representation>
+                    <Label>Bases antennaires - m65</Label>
+                    <Detail role="Caption">Bases antennaires</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/bases_antennaires_incluses_ds_lobes_frontaux.gif"/>
+            </MediaObject>
+            <MediaObject id="m66">
+                <Representation>
+                    <Label>partiellement ou complètement camouflées - m66</Label>
+                    <Detail role="Caption">partiellement ou complètement camouflées</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/bases_antennaires_incluses_ds_lobes_frontaux.gif"/>
+            </MediaObject>
+            <MediaObject id="m67">
+                <Representation>
+                    <Label>totalement exposées - m67</Label>
+                    <Detail role="Caption">totalement exposées</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/bases_antennaires_complètement_exposées.gif"/>
+            </MediaObject>
+            <MediaObject id="m68">
+                <Representation>
+                    <Label>Suture promésonotale - m68</Label>
+                    <Detail role="Caption">Suture promésonotale</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/promésonotal_suture.jpg"/>
+            </MediaObject>
+            <MediaObject id="m69">
+                <Representation>
+                    <Label>Suture promésonotale - m69</Label>
+                    <Detail role="Caption">Suture promésonotale</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/proceratiumbody.web.jpg"/>
+            </MediaObject>
+            <MediaObject id="m70">
+                <Representation>
+                    <Label>Suture promésonotale - m70</Label>
+                    <Detail role="Caption">Suture promésonotale</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy.jpg"/>
+            </MediaObject>
+            <MediaObject id="m71">
+                <Representation>
+                    <Label>Suture promésonotale - m71</Label>
+                    <Detail role="Caption">Suture promésonotale</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy2.jpg"/>
+            </MediaObject>
+            <MediaObject id="m72">
+                <Representation>
+                    <Label>absente - m72</Label>
+                    <Detail role="Caption">absente</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/proceratiumbody.web.jpg"/>
+            </MediaObject>
+            <MediaObject id="m73">
+                <Representation>
+                    <Label>présente - m73</Label>
+                    <Detail role="Caption">présente</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/promésonotal_suture.jpg"/>
+            </MediaObject>
+            <MediaObject id="m74">
+                <Representation>
+                    <Label>Ocelle(s) - m74</Label>
+                    <Detail role="Caption">Ocelle(s)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/ant_anatomy_head_ocelli_copy.jpg"/>
+            </MediaObject>
+            <MediaObject id="m75">
+                <Representation>
+                    <Label>Ocelle(s) - m75</Label>
+                    <Detail role="Caption">Ocelle(s)</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/tetraponera_aethiops_faceforkey.jpg"/>
+            </MediaObject>
+            <MediaObject id="m76">
+                <Representation>
+                    <Label>Palpes maxillaires - m76</Label>
+                    <Detail role="Caption">Palpes maxillaires</Detail>
+                </Representation>
+                <Type>Image</Type>
+                <Source href="http://lully.snv.jussieu.fr/xper2AppletThumbnailsMaker/sdd/images/lneoniger_palps_.jpg"/>
+            </MediaObject>
+            <MediaObject id="m77">
+                <Representation>
+                    <Label>http://http://antweb.org/description.do?rank=subfamily&amp;name=ecitoninae&amp;project=calants</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://http://antweb.org/description.do?rank=subfamily&amp;name=ecitoninae&amp;project=calants"/>
+            </MediaObject>
+            <MediaObject id="m78">
+                <Representation>
+                    <Label>http://pick5.pick.uga.edu/mp/20q?guide=Ants_Dominican_Republic</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://pick5.pick.uga.edu/mp/20q?guide=Ants_Dominican_Republic"/>
+            </MediaObject>
+            <MediaObject id="m79">
+                <Representation>
+                    <Label>http://jmath.freesurf.fr/ants_key/one.htm</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://jmath.freesurf.fr/ants_key/one.htm"/>
+            </MediaObject>
+            <MediaObject id="m80">
+                <Representation>
+                    <Label>http://ant.edb.miyakyo-u.ac.jp/E/2B/F----01.html</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://ant.edb.miyakyo-u.ac.jp/E/2B/F----01.html"/>
+            </MediaObject>
+            <MediaObject id="m81">
+                <Representation>
+                    <Label>http://antbase.org/ants/africa/contents.htm</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://antbase.org/ants/africa/contents.htm"/>
+            </MediaObject>
+            <MediaObject id="m82">
+                <Representation>
+                    <Label>http://antbase.org/ants/africa/taxonom5.htm</Label>
+                </Representation>
+                <Type>Text</Type>
+                <Source href="http://antbase.org/ants/africa/taxonom5.htm"/>
+            </MediaObject>
+        </MediaObjects>
+    </Dataset>
+</Datasets>

@@ -1,0 +1,8 @@
+"48917fde-d083-4659-b07d-413db843bd50",,"Synonym Relationship Type","Synonym Relationship Type","SRT","0"
+"1afa5429-095a-48da-8877-836fa4fe709e",,"synonym of","synonym of","","has synonym","has synonym","",FALSE,FALSE
+"294313a9-5617-4ed5-ae2d-c57599907cb2",,"homotypic synonym of","homotypic synonym of","","has homotypic synonym","has homotypic synonym","",FALSE,FALSE
+"4c1e2c59-ca55-41ac-9a82-676894976084",,"heterotypic synonym of","heterotypic synonym of","","has heterotypic synonym","has heterotypic synonym","",FALSE,FALSE
+"cb5bad12-9dbc-4b38-9977-162e45089c11",,"inferred synonym of","inferred synonym of","","has inferred synonym","has inferred synonym","",FALSE,FALSE
+"7c45871f-6dc5-40e7-9f26-228318d0f63a",,"potential combination of","potential combination of","","has potential combination","has potential combination","",FALSE,FALSE
+"f55a574b-c1de-45cc-9ade-1aa2e098c3b5",,"inferred genus of","inferred genus of","","has inferred genus","has inferred genus","",FALSE,FALSE
+"089c1926-eb36-47e7-a2d1-fd5f3918713d",,"inferred epithet of","inferred epithet of","","has inferred epithet","has inferred epithet","",FALSE,FALSE

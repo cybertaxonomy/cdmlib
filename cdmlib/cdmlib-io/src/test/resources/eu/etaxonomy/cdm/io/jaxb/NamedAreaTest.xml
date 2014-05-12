@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSet 
+    xmlns="http://etaxonomy.eu/cdm/model/1.0"
+    xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
+    xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+    xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
+                        ../../../../../../classes/schema/cdm/cdm.xsd">
+    <Terms>
+        <common:Language id="1" uuid="urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d" iso639_1="en" iso639_2="eng">
+            <common:Representations>
+                <common:Representation id="1" uuid="urn-uuid-bfffa3de-d7ea-4090-b891-75bffbff1cc6">
+                    <common:Text>English</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>en</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-f9a943ed-a992-48ea-9df2-0b374d485b36</common:TermVocabulary>
+        </common:Language>
+        <location:NamedArea id="2" uuid="urn-uuid-dae3a746-ae81-40b0-8d4b-24cdd27ce4ae">
+            <common:Representations>
+                <common:Representation id="2" uuid="urn-uuid-6700cc15-3995-49b6-b8d2-266ff7722666">
+                    <common:Text>Europe</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>eu</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-d4a16fe7-f8a6-44cc-a936-e91917cf39d4</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+            <location:NamedAreaLevel>urn-uuid-ccfbea72-3017-4aec-9582-a72e858b4de2</location:NamedAreaLevel>
+        </location:NamedArea>
+        <location:NamedAreaLevel id="3" uuid="urn-uuid-ccfbea72-3017-4aec-9582-a72e858b4de2">
+            <common:Representations>
+                <common:Representation id="3" uuid="urn-uuid-4fd4cf55-09d2-438e-b734-30699f0bf184">
+                    <common:Text>Continent</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>continent</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+        <location:NamedAreaLevel id="4" uuid="urn-uuid-185feacf-c3d8-4fd9-99f7-397b61d811d8">
+            <common:Representations>
+                <common:Representation id="4" uuid="urn-uuid-e0b86565-473c-40ed-b961-680d0e4e7d07">
+                    <common:Text>Region</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>region</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+        <location:NamedAreaLevel id="5" uuid="urn-uuid-035b83aa-014a-46e4-b2b5-a5465675cf07">
+            <common:Representations>
+                <common:Representation id="5" uuid="urn-uuid-2069da2a-978d-4ed0-9bd0-e19b49af7836">
+                    <common:Text>Botanical Country</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>country</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+        <location:NamedAreaLevel id="6" uuid="urn-uuid-2d9697a2-54ec-4775-9812-51f8dc27721c">
+            <common:Representations>
+                <common:Representation id="6" uuid="urn-uuid-6bc94029-b874-49b6-a131-0a9cea927023">
+                    <common:Text>Basic Recording Unit</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>b.r.u.</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+    </Terms>
+    <TermVocabularies>
+        <common:TermVocabulary id="1" uuid="urn-uuid-f9a943ed-a992-48ea-9df2-0b374d485b36">
+            <common:Representations>
+                <common:Representation id="7" uuid="urn-uuid-046c5b0f-62a9-4f3b-bb3a-c2cfc22cdbbe">
+                    <common:Text>ISO 639.2 Codes for the Representation of Names of Languages</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                </common:Representation>
+            </common:Representations>
+             <common:TermSourceURI>http://www.loc.gov/standards/iso639-2/</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+        <common:TermVocabulary id="2" uuid="urn-uuid-d4a16fe7-f8a6-44cc-a936-e91917cf39d4">
+            <common:Representations>
+                <common:Representation id="8" uuid="urn-uuid-7470d086-df97-4932-a557-03c2809a6acf">
+                    <common:Text>Floristic Regions of the World</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                </common:Representation>
+            </common:Representations>
+            <common:TermSourceURI>http://www.tdwg.org/standards/104/</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-dae3a746-ae81-40b0-8d4b-24cdd27ce4ae</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+        <common:TermVocabulary id="3" uuid="urn-uuid-4a7a836d-4606-4290-933a-96902249805f">
+            <common:Representations>
+                <common:Representation id="9" uuid="urn-uuid-b66c0fde-5d4d-4191-a843-84c31f75ec06">
+                    <common:Text>Floristic Regions of the World (Levels)</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                </common:Representation>
+            </common:Representations>
+            <common:TermSourceURI>http://www.tdwg.org/standards/104/</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-ccfbea72-3017-4aec-9582-a72e858b4de2</common:Term>
+                <common:Term>urn-uuid-185feacf-c3d8-4fd9-99f7-397b61d811d8</common:Term>
+                <common:Term>urn-uuid-035b83aa-014a-46e4-b2b5-a5465675cf07</common:Term>
+                <common:Term>urn-uuid-2d9697a2-54ec-4775-9812-51f8dc27721c</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+    </TermVocabularies>   
+</DataSet>

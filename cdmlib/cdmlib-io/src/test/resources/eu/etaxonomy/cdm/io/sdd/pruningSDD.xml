@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets xmlns="http://rs.tdwg.org/UBIF/2006/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd">
+    <TechnicalMetadata created="1970-01-01T05:24:00">
+        <Generator name="Xper2"
+            notes="This software is developed and distributed by LIS - Laboratoire Informatique et Systématique (LIS) - Université Pierre et Marie Curie - Paris VI - Copyright (c) 2004-2009" version="1.1"/>
+    </TechnicalMetadata>
+    <Dataset xml:lang="fr">
+        <Representation>
+            <Label>pruning</Label>
+        </Representation>
+        <RevisionData>
+            <Creators>
+                <Agent ref="a0" role="aut"/>
+            </Creators>
+            <DateCreated>1970-01-01T17:24:00</DateCreated>
+        </RevisionData>
+        <Characters>
+            <CategoricalCharacter id="c1">
+                <Representation>
+                    <Label>Descripteur1</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s1">
+                        <Representation>
+                            <Label>Etat 1</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s2">
+                        <Representation>
+                            <Label>Etat 2</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c2">
+                <Representation>
+                    <Label>Descripteur2</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s3">
+                        <Representation>
+                            <Label>Etat 1</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s4">
+                        <Representation>
+                            <Label>Etat 2</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s5">
+                        <Representation>
+                            <Label>Etat3</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c3">
+                <Representation>
+                    <Label>Descripteur3</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s6">
+                        <Representation>
+                            <Label>Etat 1</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s7">
+                        <Representation>
+                            <Label>Etat 2</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s8">
+                        <Representation>
+                            <Label>Etat3</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c4">
+                <Representation>
+                    <Label>Descripteur4</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s9">
+                        <Representation>
+                            <Label>Etat 1</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s10">
+                        <Representation>
+                            <Label>Etat 2</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+        </Characters>
+        <CharacterTrees>
+            <CharacterTree id="ct1">
+                <Representation>
+                    <Label>Ordre et dépendance entre caractères</Label>
+                </Representation>
+                <ShouldContainAllCharacters>true</ShouldContainAllCharacters>
+                <Nodes>
+                    <CharNode>
+                        <Character ref="c1"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c2"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c3"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c4"/>
+                    </CharNode>
+                </Nodes>
+            </CharacterTree>
+        </CharacterTrees>
+        <CodedDescriptions>
+            <CodedDescription id="D1">
+                <Representation>
+                    <Label>Item1</Label>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s9"/>
+                        <State ref="s10"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D2">
+                <Representation>
+                    <Label>Item2</Label>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s1"/>
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                        <State ref="s5"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s9"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D3">
+                <Representation>
+                    <Label>Item3</Label>
+                </Representation>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s3"/>
+                        <State ref="s4"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s6"/>
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s10"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+        </CodedDescriptions>
+        <Agents>
+            <Agent id="a0">
+                <Representation>
+                    <Label>Unknown</Label>
+                </Representation>
+            </Agent>
+        </Agents>
+        <MediaObjects/>
+    </Dataset>
+</Datasets>

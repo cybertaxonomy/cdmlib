@@ -1,0 +1,439 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- This example was developed by Florian Causse to show a Rating example:
+
+Varanus
+   Varanus spiny
+       Varanus acanthurus
+       Varanus baritji
+   Varanus indicus
+       Varanus caeruliviriens
+       Varanus doreanus
+
+The description (CodedDescriptions) is not corresponding to a biological reality but I think it's not a problem for adding weights.
+
+The weight for the characters c1 and c2 is global
+The weight for the character c3 and c4 should be high for Varanus spiny, low for Varanus indicus 
+The weight for the character c5 should concern only Varanus indicus
+
+Notes by Gregor Hagedorn:
+Note 1: The ratings rely on both the taxon hierarchy and characters, but not on the character  hierarchy. Ratings are inherited along the lines of the taxon hierarchy.
+     Putting ratings into the TaxonHierarchy elements would be slightly more direct and intuitive. In the design of SDD this was avoided, because the taxon hierarchy was seen as a more general datastructure (UBIF), eventually to be changed, that should not be made specific to SDD. Thus the ratings are in the SDD-specific CodedDescriptions.
+
+Note 2: Rating  that are "ideal for identification purposes of lay people" do not always have the same number, e.g. cost effectiveness and availability should be high, but required expertise low.
+
+Note 3: There is no separate mechanism in SDD to set global character ratings, if you need global ratings you must define a "root" taxon that includes all other taxa in the hierarchy. In retrospect, providing for DELTA-like global ratings that work in the absence of a taxon hierarchy may have been beneficial (but would have complicated the design of SDD).
+-->
+<Datasets xmlns="http://rs.tdwg.org/UBIF/2006/"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd">
+    <TechnicalMetadata created="1970-01-01T10:16:00">
+        <Generator name="Xper2"
+            notes="This software is developed and distributed by LIS - Laboratoire Informatique et Systématique (LIS) - Université Pierre et Marie Curie - Paris VI - Copyright (c) 2004-2009" version="1.1"/>
+    </TechnicalMetadata>
+    <Dataset xml:lang="en">
+        <Representation>
+            <Label>Varanus</Label>
+        </Representation>
+       	<TaxonNames>
+       	<TaxonName id="t1">
+				<Representation>
+					<Label>Varanus</Label>
+				</Representation>
+			</TaxonName>
+			<TaxonName id="t2">
+				<Representation>
+					<Label>Varanus spiny</Label>
+				</Representation>
+			</TaxonName>
+			<TaxonName id="t3">
+				<Representation>
+					<Label>Varanus indicus</Label>
+				</Representation>
+			</TaxonName>
+			<TaxonName id="t4">
+				<Representation>
+					<Label>Varanus acanthurus</Label>
+				</Representation>
+			</TaxonName>
+			<TaxonName id="t5">
+				<Representation>
+					<Label>Varanus baritji</Label>
+				</Representation>
+			</TaxonName>
+			<TaxonName id="t6">
+				<Representation>
+					<Label>Varanus caeruliviriens</Label>
+				</Representation>
+			</TaxonName>
+			<TaxonName id="t7">
+				<Representation>
+					<Label>Varanus doreanus</Label>
+				</Representation>
+			</TaxonName>
+		</TaxonNames>
+		<TaxonHierarchies>
+      <TaxonHierarchy id="th1">
+        <Representation>
+          <Label>Default Entity Tree</Label>
+        </Representation>
+        <TaxonHierarchyType>UnspecifiedTaxonomy</TaxonHierarchyType>
+        <Nodes>
+          <Node id="tn1">
+            <TaxonName ref="t1"/>
+          </Node>
+          <Node id="tn2">
+            <Parent ref="tn1"/>
+            <TaxonName ref="t2"/>
+          </Node>
+          <Node id="tn3">
+            <Parent ref="tn1"/>
+            <TaxonName ref="t3"/>
+          </Node>
+          <Node id="tn4">
+            <Parent ref="tn2"/>
+            <TaxonName ref="t4"/>
+          </Node>
+          <Node id="tn5">
+            <Parent ref="tn2"/>
+            <TaxonName ref="t5"/>
+          </Node>
+          <Node id="tn6">
+            <Parent ref="tn3"/>
+            <TaxonName ref="t6"/>
+          </Node>
+          <Node id="tn7">
+            <Parent ref="tn3"/>
+            <TaxonName ref="t7"/>
+          </Node>
+        </Nodes>
+      </TaxonHierarchy>
+    </TaxonHierarchies>
+        <Characters>
+            <CategoricalCharacter id="c1">
+                <Representation>
+                    <Label>dorsum pattern</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s1">
+                        <Representation>
+                            <Label>presence of ocelli pattern</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s2">
+                        <Representation>
+                            <Label>absence of ocelli pattern</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c2">
+                <Representation>
+                    <Label>body scale counts</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s3">
+                        <Representation>
+                            <Label>less than 60</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s4">
+                        <Representation>
+                            <Label>60 to 69</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s5">
+                        <Representation>
+                            <Label>70 to 79</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s6">
+                        <Representation>
+                            <Label>80 to 89</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s7">
+                        <Representation>
+                            <Label>90 and more</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c3">
+                <Representation>
+                    <Label>tail-body ratio</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s8">
+                        <Representation>
+                            <Label>tail less than 1.8 times as long as head+body</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s9">
+                        <Representation>
+                            <Label>tail more than 1.8 times as long as head+body</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c4">
+                <Representation>
+                    <Label>section of tail</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s10">
+                        <Representation>
+                            <Label>round</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s11">
+                        <Representation>
+                            <Label>triangular</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+            <CategoricalCharacter id="c5">
+                <Representation>
+                    <Label>facial stripe</Label>
+                </Representation>
+                <States>
+                    <StateDefinition id="s12">
+                        <Representation>
+                            <Label>presence</Label>
+                        </Representation>
+                    </StateDefinition>
+                    <StateDefinition id="s13">
+                        <Representation>
+                            <Label>absence</Label>
+                        </Representation>
+                    </StateDefinition>
+                </States>
+            </CategoricalCharacter>
+        </Characters>
+        <CharacterTrees>
+            <CharacterTree id="ct1">
+                <Representation>
+                    <Label>Dependency between characters</Label>
+                </Representation>
+                <ShouldContainAllCharacters>true</ShouldContainAllCharacters>
+                <Nodes>
+                    <CharNode>
+                        <Character ref="c1"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c2"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c3"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c4"/>
+                    </CharNode>
+                    <CharNode>
+                        <Character ref="c5"/>
+                    </CharNode>
+                </Nodes>
+            </CharacterTree>
+        </CharacterTrees>
+        <CodedDescriptions>
+            <CodedDescription id="D1">
+                <Representation>
+                    <Label>Varanus</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t1"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+						<Ratings><Rating context="CostEffectiveness" rating="Rating3of5"/><Rating context="RequiredExpertise" rating="Rating5of5"/></Ratings>
+                        <State ref="s1"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+						<Ratings><Rating context="CostEffectiveness" rating="Rating1of5"/><Rating context="RequiredExpertise" rating="Rating5of5"/></Ratings>
+                        <State ref="s4"/>
+                        <State ref="s5"/>
+                        <State ref="s6"/>
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                        <State ref="s9"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s12"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D2">
+                <Representation>
+                    <Label>Varanus spiny</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t2"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s5"/>
+                        <State ref="s6"/>
+                        <State ref="s7"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+						<Ratings><Rating context="CostEffectiveness" rating="Rating5of5"/><Rating context="RequiredExpertise" rating="Rating1of5"/></Ratings>
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+						<Ratings><Rating context="CostEffectiveness" rating="Rating5of5"/><Rating context="RequiredExpertise" rating="Rating1of5"/></Ratings>
+                        <State ref="s11"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s12"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D3">
+                <Representation>
+                    <Label>Varanus indicus</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t3"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s3"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+						<Ratings><Rating context="CostEffectiveness" rating="Rating1of5"/><Rating context="RequiredExpertise" rating="Rating5of5"/></Ratings>
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+						<Ratings><Rating context="CostEffectiveness" rating="Rating1of5"/><Rating context="RequiredExpertise" rating="Rating5of5"/></Ratings>
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s13"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+            <CodedDescription id="D4">
+                <Representation>
+                    <Label>Varanus acanthurus</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t4"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                        <State ref="s5"/>
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+                      <CodedDescription id="D5">
+                <Representation>
+                    <Label>Varanus baritji</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t5"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                        <State ref="s5"/>
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+                      <CodedDescription id="D6">
+                <Representation>
+                    <Label>Varanus caeruliviriens</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t6"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                        <State ref="s5"/>
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+                      <CodedDescription id="D7">
+                <Representation>
+                    <Label>Varanus doreanus</Label>
+                </Representation>
+                <Scope>
+					<TaxonName ref="t7"/>
+				</Scope>
+                <SummaryData>
+                    <Categorical ref="c1">
+                        <State ref="s2"/>
+                    </Categorical>
+                    <Categorical ref="c2">
+                        <State ref="s4"/>
+                        <State ref="s5"/>
+                        <State ref="s6"/>
+                    </Categorical>
+                    <Categorical ref="c3">
+                        <State ref="s8"/>
+                    </Categorical>
+                    <Categorical ref="c4">
+                        <State ref="s10"/>
+                    </Categorical>
+                    <Categorical ref="c5">
+                        <State ref="s12"/>
+                        <State ref="s13"/>
+                    </Categorical>
+                </SummaryData>
+            </CodedDescription>
+        </CodedDescriptions>
+    </Dataset>
+</Datasets>

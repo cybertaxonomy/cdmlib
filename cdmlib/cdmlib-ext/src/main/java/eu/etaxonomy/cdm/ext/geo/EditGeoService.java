@@ -1,0 +1,332 @@
+// $Id$
+/**
+ * Copyright (C) 2009 EDIT
+ * European Distributed Institute of Taxonomy
+ * http://www.e-taxonomy.eu
+ *
+ * The contents of this file are subject to the Mozilla Public License Version 1.1
+ * See LICENSE.TXT at the top of this package for the full license terms.
+ */
+package eu.etaxonomy.cdm.ext.geo;
+
+import java.awt.Color;
+import java.io.IOException;
+import java.io.Reader;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.EnumSet;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
+
+import org.apache.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
+import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
+import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.Distribution;
+import eu.etaxonomy.cdm.model.description.Feature;
+import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
+import eu.etaxonomy.cdm.persistence.dao.common.ITermVocabularyDao;
+import eu.etaxonomy.cdm.persistence.dao.description.IDescriptionDao;
+import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
+
+/**
+ * @author a.kohlbecker
+ * @date 18.06.2009
+ *
+ */
+@Service
+@Transactional(readOnly = true)
+public class EditGeoService implements IEditGeoService {
+    public static final Logger logger = Logger.getLogger(EditGeoService.class);
+
+    @Autowired
+    private IDescriptionDao dao;
+
+    @Autowired
+    private IGeoServiceAreaMapping areaMapping;
+
+    @Autowired
+    private IDescriptionService descriptionService;
+
+    @Autowired
+    private ITermVocabularyDao vocabDao;
+
+    private IDefinedTermDao termDao;
+    @Autowired
+    public void setTermDao(IDefinedTermDao termDao) {
+        this.termDao = termDao;
+        EditGeoServiceUtilities.setTermDao(termDao);
+    }
+
+    @Autowired
+    private IOccurrenceDao occurrenceDao;
+
+    private Set<Feature> getDistributionFeatures() {
+        Set<Feature> distributionFeature = new HashSet<Feature>();
+        Feature feature = (Feature) termDao.findByUuid(Feature.DISTRIBUTION().getUuid());
+        distributionFeature.add(feature);
+        return distributionFeature;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString
+     * (java.util.List, java.util.Map, int, int, java.lang.String,
+     * java.lang.String, java.util.List)
+     */
+    @Override
+    public String getDistributionServiceRequestParameterString(List<TaxonDescription> taxonDescriptions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
+
+        Set<Distribution> distributions = new HashSet<Distribution>();
+        for (TaxonDescription taxonDescription : taxonDescriptions) {
+            List<Distribution> result = (List) dao.getDescriptionElements(
+                    taxonDescription,
+                    null,
+                    getDistributionFeatures(),
+                    Distribution.class,
+                    null,
+                    null,
+                    null);
+            distributions.addAll(result);
+        }
+
+        String uriParams = getDistributionServiceRequestParameterString(distributions,
+                subAreaPreference,
+                statusOrderPreference,
+                hideMarkedAreas,
+                presenceAbsenceTermColors,
+                langs);
+
+        return uriParams;
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#getDistributionServiceRequestParameterString(java.util.Set, java.util.Map, int, int, java.lang.String, java.lang.String, java.util.List)
+     */
+    @Override
+    public String getDistributionServiceRequestParameterString(
+            Set<Distribution> distributions,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
+
+//        if (backLayer == null) {
+//            backLayer = DEFAULT_BACK_LAYER;
+//        }
+        String uriParams = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
+                subAreaPreference,
+                statusOrderPreference,
+                hideMarkedAreas,
+                areaMapping, presenceAbsenceTermColors, null, langs);
+        return uriParams;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * eu.etaxonomy.cdm.ext.IEditGeoService#getEditGeoServiceUrlParameterString
+     * (eu.etaxonomy.cdm.model.description.TaxonDescription, java.util.Map, int,
+     * int, java.lang.String, java.lang.String)
+     */
+    @Override
+    @Deprecated
+    public String getDistributionServiceRequestParameterString(TaxonDescription taxonDescription,
+            boolean subAreaPreference,
+            boolean statusOrderPreference,
+            Set<MarkerType> hideMarkedAreas,
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
+            List<Language> langs) {
+
+        List<TaxonDescription> taxonDescriptions = new ArrayList<TaxonDescription>();
+        taxonDescriptions.add(taxonDescription);
+
+        return getDistributionServiceRequestParameterString(taxonDescriptions,
+                subAreaPreference,
+                statusOrderPreference,
+                hideMarkedAreas, presenceAbsenceTermColors,
+                langs);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#
+     * getOccurrenceServiceRequestParameterString
+     * (eu.etaxonomy.cdm.model.description.TaxonDescription, java.util.Map, int,
+     * int, java.lang.String, java.lang.String)
+     */
+    @Override
+    public String getOccurrenceServiceRequestParameterString(List<SpecimenOrObservationBase> specimensOrObersvations,
+            Map<SpecimenOrObservationType, Color> specimenOrObservationTypeColors) {
+
+        List<Point> fieldUnitPoints = new ArrayList<Point>();
+        List<Point> derivedUnitPoints = new ArrayList<Point>();
+
+        IndividualsAssociation individualsAssociation;
+        DerivedUnit derivedUnit;
+
+        for (SpecimenOrObservationBase specimenOrObservationBase : specimensOrObersvations) {
+            SpecimenOrObservationBase<?> specimenOrObservation = occurrenceDao
+                    .load(specimenOrObservationBase.getUuid());
+
+            if (specimenOrObservation instanceof FieldUnit) {
+                fieldUnitPoints.add(((FieldUnit) specimenOrObservation).getGatheringEvent()
+                        .getExactLocation());
+            }
+            if (specimenOrObservation instanceof DerivedUnit) {
+                registerDerivedUnitLocations((DerivedUnit) specimenOrObservation, derivedUnitPoints);
+            }
+        }
+
+        return EditGeoServiceUtilities.getOccurrenceServiceRequestParameterString(fieldUnitPoints,
+                derivedUnitPoints, specimenOrObservationTypeColors);
+
+    }
+
+    /**
+     * @param derivedUnit
+     * @param derivedUnitPoints
+     */
+    private void registerDerivedUnitLocations(DerivedUnit derivedUnit, List<Point> derivedUnitPoints) {
+
+        Set<SpecimenOrObservationBase> originals = derivedUnit.getOriginals();
+        if (originals != null) {
+            for (SpecimenOrObservationBase original : originals) {
+                if (original instanceof FieldUnit) {
+                    if (((FieldUnit) original).getGatheringEvent() != null) {
+                        Point point = ((FieldUnit) original).getGatheringEvent().getExactLocation();
+                        if (point != null) {
+                            // points with no longitude or latitude should not exist
+                            // see  #4173 ([Rule] Longitude and Latitude in Point must not be null)
+                            if (point.getLatitude() == null || point.getLongitude() == null){
+                                continue;
+                            }
+                            // FIXME: remove next statement after
+                            // DerivedUnitFacade or ABCD import is fixed
+                            //
+                            if(point.getLatitude() == 0.0 || point.getLongitude() == 0.0) {
+                                continue;
+                            }
+                            derivedUnitPoints.add(point);
+                        }
+                    }
+                } else {
+                    registerDerivedUnitLocations((DerivedUnit) original, derivedUnitPoints);
+                }
+            }
+        }
+
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see
+     * eu.etaxonomy.cdm.ext.geo.IEditGeoService#setMapping(eu.etaxonomy.cdm.
+     * model.location.NamedArea, eu.etaxonomy.cdm.ext.geo.GeoServiceArea)
+     */
+    @Override
+    public void setMapping(NamedArea area, GeoServiceArea geoServiceArea) {
+        areaMapping.set(area, geoServiceArea);
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.ext.geo.IEditGeoService#mapShapeFileToNamedAreas(java.io.Reader, java.util.List, java.lang.String, eu.etaxonomy.cdm.model.common.TermVocabulary)
+     */
+    @Override
+    @Transactional(readOnly=false)
+    public Map<NamedArea, String> mapShapeFileToNamedAreas(Reader csvReader,
+            List<String> idSearchFields, String wmsLayerName, UUID areaVocabularyUuid,
+            Set<UUID> namedAreaUuids) throws IOException {
+
+        Set<NamedArea> areas = new HashSet<NamedArea>();
+
+        if(areaVocabularyUuid != null){
+            TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
+            areas.addAll(areaVocabulary.getTerms());
+        }
+        if(namedAreaUuids != null && !namedAreaUuids.isEmpty()){
+            for(DefinedTermBase dtb : termDao.list(namedAreaUuids, null, null, null, null)){
+                areas.add((NamedArea)dtb);
+            }
+        }
+
+        ShpAttributesToNamedAreaMapper mapper = new ShpAttributesToNamedAreaMapper(areas, areaMapping);
+        Map<NamedArea, String> resultMap = mapper.readCsv(csvReader, idSearchFields, wmsLayerName);
+        termDao.saveOrUpdateAll((Collection)areas);
+        return resultMap;
+    }
+
+
+    @Override
+    public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
+            boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
+            Set<NamedAreaLevel> omitLevels,
+            List<Language> languages,  List<String> propertyPaths){
+
+        DistributionInfoDTO dto = new DistributionInfoDTO();
+
+
+        List<Distribution> distributions = dao.getDescriptionElementForTaxon(taxonUUID, null, Distribution.class, null, null, propertyPaths);
+        Set<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
+
+        if(parts.contains(InfoPart.elements)) {
+            dto.setElements(filteredDistributions);
+        }
+
+        if(parts.contains(InfoPart.tree)) {
+            dto.setTree(DescriptionUtility.orderDistributions(omitLevels, filteredDistributions));
+        }
+
+        if (parts.contains(InfoPart.mapUriParams)) {
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+            dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
+                    subAreaPreference,
+                    statusOrderPreference,
+                    hideMarkedAreas,
+                    areaMapping, presenceAbsenceTermColors, null, languages));
+        }
+
+        if(parts.contains(InfoPart.condensedStatusString)) {
+            logger.error("condensedStatusString not yet supported:  #3907 (EuroMed: implement condensed status string of distribution information)");
+        }
+
+        return dto;
+    }
+
+
+}

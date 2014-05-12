@@ -1,0 +1,38 @@
+			------
+			What is the CDM Library?
+			------
+			------
+			2010-11-05
+			------
+		
+What is the CDM Library?
+			
+	The CDM Library is a collection of software algorithms and subroutines that forms the heart of the Platform software. It contains a set of software functions which draw on the {{{The_Common_Data_Model_-_CDM}Common Data Model}} and enable the individual Platform components to interact. 
+
+	The library enables programmers to access the data stored in the CDM using complex, tried and tested functions. They are thus able to restructure taxonomies, view scientific names and corresponding references, call up lists of synonyms etc. The software, which is available under an {{{./license.html}open source licence}}, is open for implementation with other specialised software.
+
+[./images/cdmlib_overview.png] Architectural layers and actors’ roles in the Platform for Cybertaxonomy
+
+
+
+* The Common Data Model - CDM
+
+	The CDM contains a description of all data which can be used and edited in the Platform, such as taxon names and concepts, literature references, specimens, distributions and structured descriptive data.
+The CDM complies with international data standards, such as conventional geographic and bibliographic data formats and established technical formats (e.g. XML, ODF). The standards specified by the {{{http://www.tdwg.org/} Taxonomic Database Working Group}} are applied to taxonomic data. 
+
+
+
+* Who uses the CDM Library?
+
+	There are various software tools that are built on top of the CDM Library
+	
+	* {{{http://www.cate-project.org/} CATE Project}}, a web application to create consensus taxonomies
+	
+	* {{{http://wp5.e-taxonomy.eu/taxeditor} EDIT Taxonomic Editor}}, a desktop application to edit CDM data
+	
+	* {{{http://wp5.e-taxonomy.eu/cdm-server} CDM Community Server}}, a central datastore to host versionable CDM data
+	
+	* {{{http://wp5.e-taxonomy.eu/portal} CDM Dataportal}}, web portal software to publish taxonomic data hosted on a CDM Community Server
+	
+	* {{{http://wp5.e-taxonomy.eu/printpublisher} CDM Print Publisher}}, a set of tools to generate printer ready documents out of the CDM Community Store
+	

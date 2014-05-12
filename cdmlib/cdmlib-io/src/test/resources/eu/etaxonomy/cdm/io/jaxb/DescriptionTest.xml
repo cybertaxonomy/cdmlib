@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<DataSet xmlns="http://etaxonomy.eu/cdm/model/1.0"
+    xmlns:common="http://etaxonomy.eu/cdm/model/common/1.0"
+    xmlns:description="http://etaxonomy.eu/cdm/model/description/1.0"
+    xmlns:taxon="http://etaxonomy.eu/cdm/model/taxon/1.0"
+    xmlns:name="http://etaxonomy.eu/cdm/model/name/1.0"
+    xmlns:media="http://etaxonomy.eu/cdm/model/media/1.0"
+    xmlns:location="http://etaxonomy.eu/cdm/model/location/1.0"
+    xmlns:reference="http://etaxonomy.eu/cdm/model/reference/1.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://etaxonomy.eu/cdm/model/1.0
+                        ../../../../../../classes/schema/cdm/cdm.xsd">
+    <Terms>
+        <common:Language id="1" uuid="urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d" iso639_1="en" iso639_2="eng"/>
+        <description:Feature id="2" uuid="urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c">
+            <common:Representations>
+                <common:Representation id="1" uuid="urn-uuid-00456f86-2e2f-47e2-a763-bd51094cd9c8">
+                    <common:Text>General</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>General</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:Generalizations>
+                <common:GeneralizationOf>urn-uuid-98cd50c9-3938-471b-b4d7-fe61b2f19efd</common:GeneralizationOf>
+                <common:GeneralizationOf>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</common:GeneralizationOf>
+                <common:GeneralizationOf>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</common:GeneralizationOf>
+                <common:GeneralizationOf>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</common:GeneralizationOf>
+            </common:Generalizations>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="3" uuid="urn-uuid-98cd50c9-3938-471b-b4d7-fe61b2f19efd">
+            <common:Representations>
+                <common:Representation id="2" uuid="urn-uuid-d7ea34b3-9bd8-4b9d-989e-40bedcb96896">
+                    <common:Text>Habitus</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Habitus</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="4" uuid="urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513">
+            <common:Representations>
+                <common:Representation id="3" uuid="urn-uuid-be42a8f1-be83-4117-8f4a-0300c13937fd">
+                    <common:Text>Body</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Body</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</common:KindOf>
+            <common:Generalizations>
+                <common:GeneralizationOf>urn-uuid-c015b086-f5a9-4132-afa8-e6de6ec8406d</common:GeneralizationOf>
+                <common:GeneralizationOf>urn-uuid-92534c0b-bb6c-415d-9ebf-96402ea2413a</common:GeneralizationOf>
+            </common:Generalizations>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="5" uuid="urn-uuid-c015b086-f5a9-4132-afa8-e6de6ec8406d">
+            <common:Representations>
+                <common:Representation id="4" uuid="urn-uuid-6c415cd7-af7b-4c17-a4f0-c14301dd1dc9">
+                    <common:Text>Body Upperside</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Body Upperside</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="7" uuid="urn-uuid-92534c0b-bb6c-415d-9ebf-96402ea2413a">
+            <common:Representations>
+                <common:Representation id="5" uuid="urn-uuid-3fb097e1-e0c7-4b68-bb99-a98edf51699c">
+                    <common:Text>Body Underside</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Body Underside</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="7" uuid="urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7">
+            <common:Representations>
+                <common:Representation id="6" uuid="urn-uuid-c3947d3a-67fb-4e6d-9aee-fb6784f6b872">
+                    <common:Text>Forewing</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Forewing</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</common:KindOf>
+            <common:Generalizations>
+                <common:GeneralizationOf>urn-uuid-3baf0225-619d-48d8-9017-bd673ca23dd3</common:GeneralizationOf>
+                <common:GeneralizationOf>urn-uuid-4d2c9e16-20b7-4a87-958f-57c9ffaa6c0a</common:GeneralizationOf>
+            </common:Generalizations>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="8" uuid="urn-uuid-3baf0225-619d-48d8-9017-bd673ca23dd3">
+            <common:Representations>
+                <common:Representation id="7" uuid="urn-uuid-bff6a2d8-c47b-4609-bc86-92ccfab43c58">
+                    <common:Text>Forewing Upperside</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Forewing Upperside</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="9" uuid="urn-uuid-4d2c9e16-20b7-4a87-958f-57c9ffaa6c0a">
+            <common:Representations>
+                <common:Representation id="8" uuid="urn-uuid-1a39da20-a3b5-4e25-a8bf-2a65a1b59059">
+                    <common:Text>Forewing Underside</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Forewing Underside</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="10" uuid="urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775">
+            <common:Representations>
+                <common:Representation id="9" uuid="urn-uuid-6b566114-0f20-4b34-8159-7af117cb2c50">
+                    <common:Text>Hindwing</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Hindwing</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</common:KindOf>
+            <common:Generalizations>
+                <common:GeneralizationOf>urn-uuid-4dab37e3-80a2-4c86-9b60-eba4d4578967</common:GeneralizationOf>
+                <common:GeneralizationOf>urn-uuid-1aeb4db9-0496-4632-9d6c-471f65d717e6</common:GeneralizationOf>
+            </common:Generalizations>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="11" uuid="urn-uuid-4dab37e3-80a2-4c86-9b60-eba4d4578967">
+            <common:Representations>
+                <common:Representation id="10" uuid="urn-uuid-1d8ca60d-6249-4d7d-82a0-7d0930220ece">
+                    <common:Text>Hindwing Upperside</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Hindwing Upperside</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:Feature id="12" uuid="urn-uuid-1aeb4db9-0496-4632-9d6c-471f65d717e6">
+            <common:Representations>
+                <common:Representation id="11" uuid="urn-uuid-6a6725b8-c7e9-4e1c-b73b-7a0b29843a17">
+                    <common:Text>Hindwing Underside</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>Hindwing Underside</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:KindOf>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</common:KindOf>
+            <common:TermVocabulary>urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d</common:TermVocabulary>
+            <description:SupportsTextData>false</description:SupportsTextData>
+            <description:SupportsQuantitativeData>false</description:SupportsQuantitativeData>
+            <description:SupportsDistribution>false</description:SupportsDistribution>
+            <description:SupportsIndividualAssociation>false</description:SupportsIndividualAssociation>
+            <description:SupportsTaxonInteraction>false</description:SupportsTaxonInteraction>
+            <description:SupportsCommonTaxonName>false</description:SupportsCommonTaxonName>
+        </description:Feature>
+        <description:TextFormat id="13" uuid="urn-uuid-4d7584d8-3ee3-4a85-bd31-d14cb5f7f9bc">
+            <common:TermVocabulary>urn-uuid-51cbd5dc-cedd-41ee-bd5a-070bc331a027</common:TermVocabulary>
+        </description:TextFormat>
+        <location:NamedArea id="14" uuid="urn-uuid-dae3a746-ae81-40b0-8d4b-24cdd27ce4ae">
+            <common:Representations>
+                <common:Representation id="12" uuid="urn-uuid-944d6336-88cb-4cf6-8d73-b2186c051a62">
+                    <common:Text>Europe</common:Text>
+                    <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                    <common:Label>eu</common:Label>
+                </common:Representation>
+            </common:Representations>
+            <common:TermVocabulary>urn-uuid-71e8e346-b63f-4f2b-a182-3c2912dd3356</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+            <location:NamedAreaLevel>urn-uuid-ccfbea72-3017-4aec-9582-a72e858b4de2</location:NamedAreaLevel>
+        </location:NamedArea>
+        <location:NamedAreaLevel id="15" uuid="urn-uuid-ccfbea72-3017-4aec-9582-a72e858b4de2">
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+        <location:NamedAreaLevel id="16" uuid="urn-uuid-185feacf-c3d8-4fd9-99f7-397b61d811d8">
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+        <location:NamedAreaLevel id="17" uuid="urn-uuid-035b83aa-014a-46e4-b2b5-a5465675cf07">
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+        <location:NamedAreaLevel id="18" uuid="urn-uuid-2d9697a2-54ec-4775-9812-51f8dc27721c">
+            <common:TermVocabulary>urn-uuid-4a7a836d-4606-4290-933a-96902249805f</common:TermVocabulary>
+            <common:OrderIndex>0</common:OrderIndex>
+        </location:NamedAreaLevel>
+    </Terms>
+    <TermVocabularies>
+        <common:TermVocabulary id="1" uuid="urn-uuid-93a570fd-631d-464d-9b0a-8698b5ae3b8d">
+            <common:TermSourceURI>http://www.cate-sphingidae.org</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</common:Term>
+                <common:Term>urn-uuid-98cd50c9-3938-471b-b4d7-fe61b2f19efd</common:Term>
+                <common:Term>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</common:Term>
+                <common:Term>urn-uuid-c015b086-f5a9-4132-afa8-e6de6ec8406d</common:Term>
+                <common:Term>urn-uuid-92534c0b-bb6c-415d-9ebf-96402ea2413a</common:Term>
+                <common:Term>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</common:Term>
+                <common:Term>urn-uuid-3baf0225-619d-48d8-9017-bd673ca23dd3</common:Term>
+                <common:Term>urn-uuid-4d2c9e16-20b7-4a87-958f-57c9ffaa6c0a</common:Term>
+                <common:Term>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</common:Term>
+                <common:Term>urn-uuid-4dab37e3-80a2-4c86-9b60-eba4d4578967</common:Term>
+                <common:Term>urn-uuid-1aeb4db9-0496-4632-9d6c-471f65d717e6</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+        <common:TermVocabulary id="2" uuid="urn-uuid-51cbd5dc-cedd-41ee-bd5a-070bc331a027">
+            <common:TermSourceURI></common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-4d7584d8-3ee3-4a85-bd31-d14cb5f7f9bc</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+        <common:TermVocabulary id="3" uuid="urn-uuid-71e8e346-b63f-4f2b-a182-3c2912dd3356">
+            <common:TermSourceURI>http://www.tdwg.org/standards/104/</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-dae3a746-ae81-40b0-8d4b-24cdd27ce4ae</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+        <common:TermVocabulary id="4" uuid="urn-uuid-4a7a836d-4606-4290-933a-96902249805f">
+            <common:TermSourceURI>http://www.tdwg.org/standards/104/</common:TermSourceURI>
+            <common:Terms>
+                <common:Term>urn-uuid-ccfbea72-3017-4aec-9582-a72e858b4de2</common:Term>
+                <common:Term>urn-uuid-185feacf-c3d8-4fd9-99f7-397b61d811d8</common:Term>
+                <common:Term>urn-uuid-035b83aa-014a-46e4-b2b5-a5465675cf07</common:Term>
+                <common:Term>urn-uuid-2d9697a2-54ec-4775-9812-51f8dc27721c</common:Term>
+            </common:Terms>
+        </common:TermVocabulary>
+    </TermVocabularies>
+    <References>
+        <reference:Generic id="1" uuid="urn-uuid-bb1c930a-f0cf-41de-9039-00b7f85fbd9a" hasProblem="false" problemStarts="-1" problemEnds="-1">
+            <common:TitleCache>Author, 2008</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <reference:IsNomenclaturallyRelevant>false</reference:IsNomenclaturallyRelevant>
+            <reference:Title>Test Publication</reference:Title>
+            <reference:DatePublished>
+                <common:Start>2008</common:Start>
+                <common:End>2008</common:End>
+            </reference:DatePublished>
+        </reference:Generic>
+    </References>
+    <FeatureTrees>
+      <description:FeatureTree id="1" uuid="urn-uuid-6509b4ca-a872-45cc-b743-a0fe50fc8bb7">
+            <description:Root id="1" uuid="urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc">
+              <description:Feature>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</description:Feature>
+              <description:Children>
+                <description:Child id="2" uuid="urn-uuid-38beaff6-00b9-4f32-8f70-d33153b8fe0f">
+                  <description:Feature>urn-uuid-98cd50c9-3938-471b-b4d7-fe61b2f19efd</description:Feature>
+                  <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
+                </description:Child>
+                <description:Child id="3" uuid="urn-uuid-a5700c2f-8630-46e7-a900-59c9a612fbaf">
+                  <description:Feature>urn-uuid-0a9af077-0927-4655-9892-3a4bb3233513</description:Feature>
+                  <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
+                  <description:Children>
+                    <description:Child id="4" uuid="urn-uuid-4438f658-8b78-4e33-af36-584e088703d2">
+                      <description:Feature>urn-uuid-c015b086-f5a9-4132-afa8-e6de6ec8406d</description:Feature>
+                      <description:Parent>urn-uuid-a5700c2f-8630-46e7-a900-59c9a612fbaf</description:Parent>
+                    </description:Child>
+                    <description:Child id="5" uuid="urn-uuid-d458aef3-40f2-47c3-bc64-0a8191428df0">
+                      <description:Feature>urn-uuid-92534c0b-bb6c-415d-9ebf-96402ea2413a</description:Feature>
+                      <description:Parent>urn-uuid-a5700c2f-8630-46e7-a900-59c9a612fbaf</description:Parent>
+                    </description:Child>
+                  </description:Children>
+                </description:Child>
+                <description:Child id="6" uuid="urn-uuid-20070dea-4455-444e-b7be-fd771370b85a">
+                  <description:Feature>urn-uuid-c64b38a9-e8a9-4e32-8aba-69f2c83496c7</description:Feature>
+                  <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
+                  <description:Children>
+                    <description:Child id="7" uuid="urn-uuid-588e66df-eba4-4c00-a05d-e604fa9994a5">
+                      <description:Feature>urn-uuid-3baf0225-619d-48d8-9017-bd673ca23dd3</description:Feature>
+                      <description:Parent>urn-uuid-20070dea-4455-444e-b7be-fd771370b85a</description:Parent>
+                    </description:Child>
+                    <description:Child id="8" uuid="urn-uuid-f3f4617c-0a02-47a4-92f9-4790ff1156ee">
+                      <description:Feature>urn-uuid-4d2c9e16-20b7-4a87-958f-57c9ffaa6c0a</description:Feature>
+                      <description:Parent>urn-uuid-20070dea-4455-444e-b7be-fd771370b85a</description:Parent>
+                    </description:Child>
+                  </description:Children>
+                </description:Child>
+                <description:Child id="9" uuid="urn-uuid-0ae5afe1-a0c4-4585-be09-d0cf295b671c">
+                  <description:Feature>urn-uuid-2d69a75b-7557-4c8d-b212-0bd8e59a2775</description:Feature>
+                  <description:Parent>urn-uuid-a137ed36-383f-49a9-8d84-976361188bcc</description:Parent>
+                  <description:Children>
+                    <description:Child id="10" uuid="urn-uuid-b92df49d-2a58-4684-b478-397d506aea18">
+                      <description:Feature>urn-uuid-4dab37e3-80a2-4c86-9b60-eba4d4578967</description:Feature>
+                      <description:Parent>urn-uuid-0ae5afe1-a0c4-4585-be09-d0cf295b671c</description:Parent>
+                    </description:Child>
+                    <description:Child id="11" uuid="urn-uuid-c9e61521-b474-4558-9a74-fd5731f52447">
+                      <description:Feature>urn-uuid-1aeb4db9-0496-4632-9d6c-471f65d717e6</description:Feature>
+                      <description:Parent>urn-uuid-0ae5afe1-a0c4-4585-be09-d0cf295b671c</description:Parent>
+                    </description:Child>
+                  </description:Children>
+                </description:Child>
+              </description:Children>
+            </description:Root>
+        </description:FeatureTree>
+    </FeatureTrees>
+    <TaxonomicNames>
+        <name:BotanicalName id="1" uuid="urn-uuid-a9036d14-7be1-42bc-bb74-87be966f3a01" hasProblem="false" problemStarts="-1" problemEnds="-1">
+          <common:TitleCache>Aus aus, L. 1758</common:TitleCache>
+          <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+          <name:ProtectedFullTitleCache>false</name:ProtectedFullTitleCache>
+          <name:NameCache>Aus aus</name:NameCache>
+          <name:AuthorshipCache>L. 1758</name:AuthorshipCache>
+          <name:ProtectedAuthorshipCache>false</name:ProtectedAuthorshipCache>
+          <name:ProtectedNameCache>false</name:ProtectedNameCache>
+          <name:IsHybridFormula>false</name:IsHybridFormula>
+          <name:IsMonomHybrid>false</name:IsMonomHybrid>
+          <name:IsBinomHybrid>false</name:IsBinomHybrid>
+          <name:IsTrinomHybrid>false</name:IsTrinomHybrid>
+          <name:IsAnamorphic>false</name:IsAnamorphic>  
+        </name:BotanicalName>
+    </TaxonomicNames>
+    <TaxonBases>
+        <taxon:Taxon id="1" uuid="urn-uuid-806212d3-7279-4e25-a38f-66986907331f" isDoubtful="false">
+            <common:TitleCache>Aus aus L.</common:TitleCache>
+            <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+            <taxon:Name>urn-uuid-a9036d14-7be1-42bc-bb74-87be966f3a01</taxon:Name>
+            <taxon:TaxonomicChildrenCount>0</taxon:TaxonomicChildrenCount>
+            <taxon:Descriptions>
+              <taxon:Description id="1" uuid="urn-uuid-9d5a5b8a-43a8-4967-8199-c6ee4df31671">
+                <common:TitleCache>Diagnosis of Aus aus L. in Europe</common:TitleCache>
+                <common:ProtectedTitleCache>false</common:ProtectedTitleCache>
+                <description:DescriptionElements>
+                  <description:TextData id="1" uuid="urn-uuid-37830680-fe77-11dd-87af-0800200c9a66">
+                    <!-- <common:Sources>
+                      <common:OriginalSource id="1" uuid="urn-uuid-2c8dc884-7d48-4215-b074-bcb323acf08f">
+                        <common:CitationMicroReference>p 12</common:CitationMicroReference>
+                        <common:Citation>urn-uuid-bb1c930a-f0cf-41de-9039-00b7f85fbd9a</common:Citation>
+                      </common:OriginalSource>
+                    </common:Sources>-->
+                    <description:Feature>urn-uuid-e40912a5-3e36-4d1e-aee9-dc57a83fa81c</description:Feature>
+                    <description:Media>
+                      <description:Medium>urn-uuid-5d210191-e783-472c-98f4-5da7bf488431</description:Medium>
+                    </description:Media>
+                    <description:InDescription>urn-uuid-9d5a5b8a-43a8-4967-8199-c6ee4df31671</description:InDescription>
+                    <description:MultiLanguageText>
+                      <common:LanguageString id="1" uuid="urn-uuid-733bf920-fe72-11dd-87af-0800200c9a66">
+                        <common:Text><p>Immediately distinguishable from all other <i>Hemaris</i> by the fully scaled forewings and uniformly orange hindwing uppersides.</p><p>Ventral lobes of pulvillus very small; arolium fully developed.</p><p>Forewing upperside lacking transparent areas; basal two-thirds uniformly green, distal third brown (corresponding to the marginal band of other <i>Hemaris</i>).</p><p>Hindwing upperside with no transparent spaces, uniformly orange with a small green area basally.</p></common:Text>
+                        <common:Language>urn-uuid-27024e60-a78a-4950-8fda-e43b4c58a01d</common:Language>
+                      </common:LanguageString>
+                    </description:MultiLanguageText>
+                    <description:Format>urn-uuid-4d7584d8-3ee3-4a85-bd31-d14cb5f7f9bc</description:Format>
+                 </description:TextData>
+               </description:DescriptionElements>
+               <description:GeoScopes>
+                 <description:GeoScope>urn-uuid-dae3a746-ae81-40b0-8d4b-24cdd27ce4ae</description:GeoScope>
+               </description:GeoScopes>       
+               <description:Taxon>urn-uuid-806212d3-7279-4e25-a38f-66986907331f</description:Taxon>
+              </taxon:Description>
+            </taxon:Descriptions>
+        </taxon:Taxon>
+    </TaxonBases>
+    <Media>
+        <media:Media id="1" uuid="urn-uuid-5d210191-e783-472c-98f4-5da7bf488431"/>
+    </Media>
+</DataSet>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<?xml-stylesheet type='text/xsl' href='/human.xsl'?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/"
+         xmlns:tn="http://rs.tdwg.org/ontology/voc/TaxonName#" 
+         xmlns:tt="http://rs.tdwg.org/ontology/voc/Team#" 
+         xmlns:tc="http://rs.tdwg.org/ontology/voc/TaxonConcept#"
+         xmlns:tp="http://rs.tdwg.org/ontology/voc/Person#" 
+         xmlns:owl="http://www.w3.org/2002/07/owl#" 
+         xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+         xmlns:spm="http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" 
+         xmlns:tcom="http://rs.tdwg.org/ontology/voc/Common#" 
+         xmlns:tpc="http://rs.tdwg.org/ontology/voc/PublicationCitation#" 
+         xmlns:dcterms="http://purl.org/dc/terms/">
+  <tc:TaxonConcept>
+    <dc:title>Lorem ipsum</dc:title>
+    <dc:identifier>urn:lsid:example.org:taxonconcepts:1</dc:identifier>
+    <dcterms:created>2004-12-25T12:00:00.000Z</dcterms:created>
+    <dc:relation rdf:resource="http://www.example.org/"/>
+    <tcom:publishedIn>Lorem ipsum dolor</tcom:publishedIn>
+    <tc:accordingTo>
+      <tt:Team>
+        <dc:title>team name</dc:title>
+      </tt:Team>
+    </tc:accordingTo>
+    <tc:hasName>
+      <tn:TaxonName>
+        <dc:identifier>urn:lsid:example.org:names:1</dc:identifier>
+        <tn:authorship>authorship</tn:authorship>
+        <tn:nameComplete>Aus aus</tn:nameComplete>
+      </tn:TaxonName>
+    </tc:hasName>
+    <tc:hasRelationship>
+      <tc:Relationship>
+        <tc:relationshipCategory>
+          <tc:TaxonRelationshipTerm>
+            <dc:identifier>http://rs.e-taxonomy.eu/voc/TaxonRelationshipTerm.rdf</dc:identifier>
+          </tc:TaxonRelationshipTerm>
+        </tc:relationshipCategory>
+        <tc:toTaxon>
+          <tc:TaxonConcept>
+            <dc:title>Dolor sic amet</dc:title>
+            <dc:identifier>urn:lsid:example.org:taxonconcepts:2</dc:identifier>
+          </tc:TaxonConcept>
+        </tc:toTaxon>
+      </tc:Relationship>
+    </tc:hasRelationship>
+    <tc:describedBy>
+      <spm:SpeciesProfileModel>
+        <dc:title>Description of Aus aus</dc:title>
+        <dc:identifier>urn:lsid:example.org:descriptions:1</dc:identifier>
+      </spm:SpeciesProfileModel>
+    </tc:describedBy>
+  </tc:TaxonConcept>
+</rdf:RDF>
+
+

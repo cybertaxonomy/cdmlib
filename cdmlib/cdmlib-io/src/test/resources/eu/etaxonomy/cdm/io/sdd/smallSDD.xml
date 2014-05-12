@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Datasets xmlns="http://rs.tdwg.org/UBIF/2006/" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://rs.tdwg.org/UBIF/2006/ http://rs.tdwg.org/UBIF/2006/Schema/1.1/SDD.xsd">
+	<TechnicalMetadata created="1970-01-01T05:25:00">
+		<Generator name="Xper2"
+			notes="This software is developed and distributed by LIS - Laboratoire Informatique et Systématique (LIS) - Université Pierre et Marie Curie - Paris VI - Copyright (c) 2004-2009"
+			version="1.1" />
+	</TechnicalMetadata>
+	<Dataset xml:lang="fr">
+		<Representation>
+			<Label>Feuilles des arbres</Label>
+			<Detail>Identification des arbres présents en France à partir des
+				feuilles.</Detail>
+		</Representation>
+		<RevisionData>
+			<Creators>
+				<Agent ref="a1" role="aut" />
+				<Agent ref="a2" role="aut" />
+				<Agent ref="a3" role="aut" />
+			</Creators>
+			<DateCreated>1970-01-01T11:02:00</DateCreated>
+			<DateModified>1970-01-01T17:08:00</DateModified>
+		</RevisionData>
+		<IPRStatements>
+			<IPRStatement role="Copyright">
+				<Label>Les illustrations ont été réalisées par Dominique Visset.</Label>
+			</IPRStatement>
+		</IPRStatements>
+		<Characters>
+			<CategoricalCharacter id="c1">
+				<Representation>
+					<Label>couleur des pattes</Label>
+					<MediaObject ref="m7" />
+				</Representation>
+				<States>
+					<StateDefinition id="s1">
+						<Representation>
+							<Label>rouge</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s2">
+						<Representation>
+							<Label>vert</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s3">
+						<Representation>
+							<Label>bleu</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s4">
+						<Representation>
+							<Label>jaune</Label>
+						</Representation>
+					</StateDefinition>
+				</States>
+			</CategoricalCharacter>
+			<CategoricalCharacter id="c2">
+				<Representation> 
+					<Label>couleur des pattes</Label>
+					<MediaObject ref="m8" />
+ 				</Representation>
+				<States>
+					<StateDefinition id="s5">
+						<Representation> 
+							<Label>oui</Label>
+					</Representation>
+					</StateDefinition> 
+					<StateDefinition id="s6"> 
+						<Representation>
+ 							<Label>non</Label>
+ 						</Representation> 
+ 					</StateDefinition> 
+ 				</States>
+ 			</CategoricalCharacter>
+			<CategoricalCharacter id="c3">
+				<Representation>
+					<Label>Taille du bras</Label>
+					<MediaObject ref="m9" />
+				</Representation>
+				<States>
+					<StateDefinition id="s7">
+						<Representation>
+							<Label>1 cm</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s8">
+						<Representation>
+							<Label>2 cm</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s9">
+						<Representation>
+							<Label>plus de 2 cm</Label>
+						</Representation>
+					</StateDefinition>
+				</States>
+			</CategoricalCharacter>
+			<CategoricalCharacter id="c4">
+				<Representation>
+					<Label>couleur des yeux</Label>
+					<MediaObject ref="m10" />
+				</Representation>
+				<States>
+					<StateDefinition id="s10">
+						<Representation>
+							<Label>marron</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s11">
+						<Representation>
+							<Label>violet</Label>
+						</Representation>
+					</StateDefinition>
+				</States>
+			</CategoricalCharacter>
+			<CategoricalCharacter id="c5">
+				<Representation>
+					<Label>taille des pattes</Label>
+					<MediaObject ref="m11" />
+				</Representation>
+				<States>
+					<StateDefinition id="s12">
+						<Representation>
+							<Label>petit</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s13">
+						<Representation>
+							<Label>grand</Label>
+						</Representation>
+					</StateDefinition>
+				</States>
+			</CategoricalCharacter>
+			<CategoricalCharacter id="c6">
+				<Representation>
+					<Label>nombre de pattes</Label>
+					<MediaObject ref="m12" />
+				</Representation>
+				<States>
+					<StateDefinition id="s14">
+						<Representation>
+							<Label>2</Label>
+						</Representation>
+					</StateDefinition>
+					<StateDefinition id="s15">
+						<Representation>
+							<Label>4</Label>
+						</Representation>
+					</StateDefinition>
+				</States>
+			</CategoricalCharacter>
+			<QuantitativeCharacter id="c7">
+				<Representation>
+					<Label>hauteur de la tête</Label>
+				</Representation>
+			</QuantitativeCharacter>
+		</Characters>
+		<CharacterTrees>
+			<CharacterTree id="ct1">
+				<Representation>
+					<Label>Ordre et dépendance entre caractères</Label>
+				</Representation>
+				<ShouldContainAllCharacters>true</ShouldContainAllCharacters>
+				<Nodes>
+					<CharNode>
+						<DependencyRules>
+							<InapplicableIf>
+								<State ref="s6" />
+							</InapplicableIf>
+						</DependencyRules>
+						<Character ref="c1" />
+					</CharNode>
+ 					<CharNode>
+						<Character ref="c2" />
+					</CharNode> 
+					<CharNode>
+						<Character ref="c3" />
+					</CharNode>
+					<CharNode>
+						<Character ref="c4" />
+					</CharNode>
+					<CharNode>
+						<DependencyRules>
+							<InapplicableIf>
+								<State ref="s6" />
+							</InapplicableIf>
+						</DependencyRules>
+						<Character ref="c5" />
+					</CharNode>
+					<CharNode>
+						<DependencyRules>
+							<InapplicableIf>
+								<State ref="s6" />
+							</InapplicableIf>
+						</DependencyRules>
+						<Character ref="c6" />
+					</CharNode>
+					<CharNode>
+						<Character ref="c7" />
+					</CharNode>
+				</Nodes>
+			</CharacterTree>
+		</CharacterTrees>
+		<CodedDescriptions>
+			<CodedDescription id="D1">
+				<Representation>
+					<Label>chien</Label>
+					<MediaObject ref="m1" />
+				</Representation>
+				<SummaryData>
+					<Categorical ref="c1">
+						<State ref="s3" />
+						<State ref="s2" />
+					</Categorical>
+					<Categorical ref="c2"> 
+ 						<State ref="s5" />
+ 					</Categorical> 
+					<Categorical ref="c3">
+						<State ref="s8" />
+						<State ref="s7" />
+					</Categorical>
+					<Categorical ref="c4">
+						<State ref="s10" />
+					</Categorical>
+					<Categorical ref="c5">
+						<State ref="s12" />
+						<State ref="s13" />
+					</Categorical>
+					<Categorical ref="c6">
+						<State ref="s14" />
+						<State ref="s15" />
+					</Categorical>
+					<Quantitative ref="c7">
+						<Measure type="Min" value="1.0" />
+						<Measure type="Max" value="2.0" />
+					</Quantitative>
+				</SummaryData>
+			</CodedDescription>
+			<CodedDescription id="D2">
+				<Representation>
+					<Label>chat</Label>
+					<MediaObject ref="m2" />
+				</Representation>
+				<SummaryData>
+					<Categorical ref="c1">
+						<State ref="s2" />
+					</Categorical>
+					<Categorical ref="c2">
+						<State ref="s5" />
+					</Categorical>
+					<Categorical ref="c3">
+						<State ref="s7" />
+					</Categorical>
+					<Categorical ref="c4">
+						<State ref="s11" />
+					</Categorical>
+					<Categorical ref="c5">
+						<State ref="s12" />
+					</Categorical>
+					<Categorical ref="c6">
+						<State ref="s15" />
+					</Categorical>
+					<Quantitative ref="c7">
+						<Measure type="Min" value="3.0" />
+						<Measure type="Max" value="4.0" />
+					</Quantitative>
+				</SummaryData>
+			</CodedDescription>
+			<CodedDescription id="D3">
+				<Representation>
+					<Label>ours</Label>
+					<MediaObject ref="m3" />
+				</Representation>
+				<SummaryData>
+					<Categorical ref="c1">
+						<State ref="s4" />
+						<State ref="s1" />
+						<State ref="s2" />
+					</Categorical>
+					<Categorical ref="c2"> 
+ 						<State ref="s5" />
+ 					</Categorical>
+					<Categorical ref="c3">
+						<State ref="s7" />
+					</Categorical>
+					<Categorical ref="c4">
+						<State ref="s10" />
+					</Categorical>
+					<Categorical ref="c5">
+						<State ref="s13" />
+					</Categorical>
+					<Categorical ref="c6">
+						<State ref="s14" />
+						<State ref="s15" />
+					</Categorical>
+					<Quantitative ref="c7">
+						<Measure type="Min" value="5.0" />
+						<Measure type="Max" value="6.0" />
+					</Quantitative>
+				</SummaryData>
+			</CodedDescription>
+			<CodedDescription id="D4">
+				<Representation>
+					<Label>vache</Label>
+					<MediaObject ref="m4" />
+				</Representation>
+				<SummaryData>
+					<Categorical ref="c1">
+						<State ref="s2" />
+					</Categorical>
+					<Categorical ref="c2"> 
+						<State ref="s6" />
+					</Categorical>
+					<Categorical ref="c3">
+						<State ref="s8" />
+						<State ref="s7" />
+					</Categorical>
+					<Categorical ref="c4">
+						<State ref="s10" />
+						<State ref="s11" />
+					</Categorical>
+					<Categorical ref="c5" />
+					<Categorical ref="c6" />
+					<Quantitative ref="c7">
+						<Measure type="Min" value="7.0" />
+						<Measure type="Max" value="8.0" />
+					</Quantitative>
+				</SummaryData>
+			</CodedDescription>
+			<CodedDescription id="D5">
+				<Representation>
+					<Label>mouton</Label>
+					<MediaObject ref="m5" />
+				</Representation>
+				<SummaryData>
+					<Categorical ref="c1">
+						<State ref="s4" />
+					</Categorical>
+ 					<Categorical ref="c2">
+ 						<State ref="s5" />
+ 					</Categorical>
+					<Categorical ref="c3">
+						<State ref="s9" />
+					</Categorical>
+					<Categorical ref="c4">
+						<State ref="s10" />
+						<State ref="s11" />
+					</Categorical>
+					<Categorical ref="c5">
+						<State ref="s13" />
+					</Categorical>
+					<Categorical ref="c6">
+						<State ref="s15" />
+					</Categorical>
+					<Quantitative ref="c7">
+						<Measure type="Min" value="9.0" />
+						<Measure type="Max" value="19.0" />
+					</Quantitative>
+				</SummaryData>
+			</CodedDescription>
+			<CodedDescription id="D6">
+				<Representation>
+					<Label>lezard</Label>
+					<MediaObject ref="m6" />
+				</Representation>
+				<SummaryData>
+					<Categorical ref="c1">
+						<State ref="s2" />
+					</Categorical>
+					<Categorical ref="c2">
+ 						<State ref="s5" /> 
+ 					</Categorical>
+					<Categorical ref="c3">
+						<State ref="s8" />
+						<State ref="s9" />
+					</Categorical>
+					<Categorical ref="c4">
+						<State ref="s10" />
+						<State ref="s11" />
+					</Categorical>
+					<Categorical ref="c5">
+						<State ref="s12" />
+						<State ref="s13" />
+					</Categorical>
+					<Categorical ref="c6">
+						<State ref="s15" />
+						<State ref="s14" />
+					</Categorical>
+					<Quantitative ref="c7">
+						<Measure type="Min" value="20.0" />
+						<Measure type="Max" value="21.0" />
+					</Quantitative>
+				</SummaryData>
+			</CodedDescription>
+		</CodedDescriptions>
+		<Agents>
+			<Agent id="a1">
+				<Representation>
+					<Label>Dominique Visset</Label>
+				</Representation>
+			</Agent>
+			<Agent id="a2">
+				<Representation>
+					<Label>Nathanaël Cao</Label>
+				</Representation>
+			</Agent>
+			<Agent id="a3">
+				<Representation>
+					<Label>Timothée Le Péchon</Label>
+				</Representation>
+			</Agent>
+		</Agents>
+		<MediaObjects>
+			<MediaObject id="m1">
+				<Representation>
+					<Label>Arbre de Judée - m1</Label>
+					<Detail role="Caption">Arbre de Judée</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/i1_arbredejudee.jpg" />
+			</MediaObject>
+			<MediaObject id="m2">
+				<Representation>
+					<Label>Aulne - m2</Label>
+					<Detail role="Caption">Aulne</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/i2_aulne.jpg" />
+			</MediaObject>
+			<MediaObject id="m3">
+				<Representation>
+					<Label>Bouleau - m3</Label>
+					<Detail role="Caption">Bouleau</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/i3_bouleau.jpg" />
+			</MediaObject>
+			<MediaObject id="m4">
+				<Representation>
+					<Label>Bourdaine - m4</Label>
+					<Detail role="Caption">Bourdaine</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/i4_bourdaine.jpg" />
+			</MediaObject>
+			<MediaObject id="m5">
+				<Representation>
+					<Label>Chataignier - m5</Label>
+					<Detail role="Caption">Chataignier</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/i5_chataigner.jpg" />
+			</MediaObject>
+			<MediaObject id="m6">
+				<Representation>
+					<Label>Chêne - m6</Label>
+					<Detail role="Caption">Chêne</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/i6_chene.jpg" />
+			</MediaObject>
+			<MediaObject id="m7">
+				<Representation>
+					<Label>Forme générale du limbe (des feuilles ou des folioles) - m7</Label>
+					<Detail role="Caption">Forme générale du limbe (des feuilles ou des
+						folioles)</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/characters\forme_general_limbe.gif" />
+			</MediaObject>
+			<MediaObject id="m8">
+				<Representation>
+					<Label>Feuille simple ou composée - m8</Label>
+					<Detail role="Caption">Feuille simple ou composée</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/characters\simple_composee.gif" />
+			</MediaObject>
+			<MediaObject id="m9">
+				<Representation>
+					<Label>Bord du limbe (des feuilles ou des folioles) - m9</Label>
+					<Detail role="Caption">Bord du limbe (des feuilles ou des folioles)</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/characters\bord_limbe.gif" />
+			</MediaObject>
+			<MediaObject id="m10">
+				<Representation>
+					<Label>Base du limbe (de la feuille ou des folioles) - m10</Label>
+					<Detail role="Caption">Base du limbe (de la feuille ou des folioles)</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/characters\base_limbe.gif" />
+			</MediaObject>
+			<MediaObject id="m11">
+				<Representation>
+					<Label>Nombre de folioles - m11</Label>
+					<Detail role="Caption">Nombre de folioles</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/characters\nombre_folioles.gif" />
+			</MediaObject>
+			<MediaObject id="m12">
+				<Representation>
+					<Label>Disposition des folioles - m12</Label>
+					<Detail role="Caption">Disposition des folioles</Detail>
+				</Representation>
+				<Type>Image</Type>
+				<Source href="images/characters\disposition_folioles.gif" />
+			</MediaObject>
+		</MediaObjects>
+	</Dataset>
+</Datasets>

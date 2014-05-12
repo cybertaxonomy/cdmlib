@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:tx="http://www.springframework.org/schema/tx"
+    xmlns:context="http://www.springframework.org/schema/context"
+    xsi:schemaLocation="http://www.springframework.org/schema/beans   http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context   http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx   http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+
+    <!--
+      DataSourceProperties allow configuring specific properties of the datasources
+
+       * cdmlib-remote.xslBasePath:
+            alternative base path for REST services to retrieve XSL style sheets from.
+            the base path must be on the same domain since cross domain xsl loading is
+            not permitted
+      -->
+      <bean id="dataSourceProperties" class="eu.etaxonomy.cdm.remote.config.DataSourceProperties">
+        <property name="propsMap">
+          <map>
+            <!--
+            <entry key="dataSourceBeanID">
+                <props>
+                    <prop key="cdmlib-remote.xslBasePath">/xsl</prop>
+                </props>
+            </entry>
+             -->
+            </map>
+        </property>
+      </bean>
+
+    <bean id="h2_cdmTest"  lazy-init="true" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="eu.etaxonomy.cdm.database.LocalH2"/>
+        <property name="user" value="sa" />
+        <property name="password" value="" />
+        <property name="jdbcUrl" value="jdbc:h2:file:${project.build.directory}/test-classes/h2/cdmTest"/>
+    </bean>
+</beans>

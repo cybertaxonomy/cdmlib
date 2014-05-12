@@ -1,0 +1,24 @@
+adbbbe15-c4d3-47b7-80a8-c7d104e53a05	http://rs.gbif.org/vocabulary/gbif/occurrence_status.xml	verbal
+cef81d25-501c-48d8-bbea-542ec50de2c2	present	present
+75a60279-a4c2-4f53-bc57-466028a4b3db	doubtful	doubtfully present
+ddeac4f2-d8fa-43b8-ad7e-ca13abdd32c7	present	native
+925662c1-bb10-459a-8c53-da5a738ac770	doubtful	native: presence questionable
+8ad9e9df-49cd-4b6a-880b-51ec4de4ce32	present	native: formerly native
+310373bf-7df4-4d02-8cb3-bcc7448805fc	present	native: doubtfully native
+9eb99fe6-59e2-4445-8e6a-478365bd0fa9	present	cultivated
+643cf9d1-a5f1-4622-9837-82ef961e880b	present	introduced
+83eb0aa0-1a45-495a-a3ca-bf6958b74366	doubtful	introduced: presence questionable
+2522c527-e488-45d4-87df-a5a5ef0fdbbd	present	introduced: formerly introduced
+0c54761e-4887-4788-9dfa-7190c88746e3	present	introduced: doubtfully introduced (perhaps cultivated only)
+da159544-b0dd-4599-a9c9-640826af8c17	present	introduced: uncertain degree of naturalisation
+42946bd6-9c22-45ad-a910-7427e8f60bfd	present	introduced: adventitious (casual)
+e191e89a-a751-4b0c-b883-7f1de70915c9	present	introduced: naturalized
+fac8c347-8262-44a1-b0a4-db4de451c021	present	introduced: cultivated
+c3ee7048-15b7-4be1-b687-9ce9c1a669d6	present	endemic
+4e04990a-66fe-4fdf-856c-f40772fbcf0a	present	naturalised
+dc536e3d-a753-4bbe-a386-dd8aff35c234	present	invasive
+59709861-f7d9-41f9-bb21-92559cedd598	absent	absent
+38604788-cf05-4607-b155-86db456f7680	absent	reported in error
+61cee840-801e-41d8-bead-015ad866c2f1	absent	native: reported in error
+aeec2947-2700-4623-8e32-9e3a430569d1	absent	introduced: reported in error
+9d4d3431-177a-4abe-8e4b-1558573169d6	absent	cultivated: reported in error

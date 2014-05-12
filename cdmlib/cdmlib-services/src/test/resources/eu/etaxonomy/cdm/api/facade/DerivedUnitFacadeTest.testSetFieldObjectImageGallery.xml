@@ -1,0 +1,11 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="dataset.xsd">
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="SpecimenOrObservationBase" NEXT_VAL="30"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="DerivationEvent" NEXT_VAL="30"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="DescriptionBase" NEXT_VAL="30"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="DescriptionElementBase" NEXT_VAL="30"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="Media" NEXT_VAL="30"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="MediaRepresentation" NEXT_VAL="30"/>
+  <HIBERNATE_SEQUENCES SEQUENCE_NAME="MediaRepresentationPart" NEXT_VAL="30"/>
+  DERIVATIONEVENT
+</dataset>

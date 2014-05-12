@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mappings PUBLIC "-//DOZER//DTD MAPPINGS//EN"
+    "http://dozer.sourceforge.net/dtd/dozerbeanmapping.dtd">
+    
+<mappings>       
+    <!-- description package -->
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.description.DescriptionBase</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel</class-b>
+        <field>
+            <a>elements</a>
+            <b>hasInformation</b>
+            <a-hint>eu.etaxonomy.cdm.model.description.Distribution,eu.etaxonomy.cdm.model.description.TextData</a-hint>
+            <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem,eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem</b-hint>
+        </field>
+    </mapping>
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.description.TaxonDescription</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.SpeciesProfileModel</class-b>
+        <field custom-converter-id="relatedPageConverter" custom-converter-param="description">
+            <a>uuid</a>
+            <b>relation</b>
+        </field>
+        <field>
+            <a>taxon</a>
+            <b>aboutTaxon</b>
+        </field>        
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.description.DescriptionElementBase</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem</class-b>
+        <field>
+            <a>feature</a>
+            <b>category</b>
+        </field>
+        <field>
+            <a>modifyingText</a>
+            <b key="lang">context</b>
+            <a-hint>eu.etaxonomy.cdm.model.common.LanguageString</a-hint>
+            <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType</b-hint>
+        </field>
+        <field>
+            <a>modifiers</a>
+            <b>contextValue</b>
+        </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.description.TextData</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem</class-b>
+        <field>
+            <a>multilanguageText</a>
+            <b key="lang">hasContent</b>
+            <a-hint>eu.etaxonomy.cdm.model.common.LanguageString</a-hint>
+            <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.StringType</b-hint>
+        </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.description.Distribution</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.InfoItem</class-b>
+        <field>
+            <a>status</a>
+            <b>singleContextValue</b>
+        </field>
+        <field>
+            <a>area</a>
+            <b>hasSingleValue</b>
+        </field>
+    </mapping>
+    <!-- taxon package -->
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonBase</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</class-b>
+        <field custom-converter-id="relatedPageConverter" custom-converter-param="taxon">
+            <a>uuid</a>
+            <b>relation</b>
+        </field>
+        <field>
+            <a>sec</a>
+            <b>publishedInCitation</b>
+        </field>
+        <field type="one-way" custom-converter-id="hibernateProxyDeepConverter" custom-converter-param="authorTeam">
+            <a>sec</a>
+            <b>accordingTo</b>
+        </field>
+        <field>
+            <a>name</a>
+            <b>hasName</b>
+        </field>
+    </mapping>
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.Synonym</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</class-b>  
+     </mapping>
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.Taxon</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.TaxonConcept</class-b>
+        <field>
+          <a>relationsToThisTaxon</a>
+          <b>hasRelationship</b>
+          <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</a-hint>
+          <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
+        </field>
+        <field>
+          <a>synonymRelations</a>
+          <b>hasRelationship</b>
+          <a-hint>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</a-hint>
+          <b-hint>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</b-hint>
+        </field>
+        <field>
+            <a>descriptions</a>
+            <b>describedBy</b>
+        </field>
+    </mapping>
+    
+    <mapping>
+        <class-a>eu.etaxonomy.cdm.model.common.RelationshipBase</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+        <field>
+            <a>type</a>
+            <b>relationshipCategory</b>
+        </field>
+    </mapping>
+    
+   <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.TaxonRelationship</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+       <field>
+           <a>fromTaxon</a>
+           <b>fromTaxon</b>
+       </field>
+       <field>
+         <a>toTaxon</a>
+         <b>toTaxon</b>
+       </field>
+       <field-exclude>
+           <a>createdBy.username</a>
+           <b>creator</b>
+       </field-exclude>
+       <field-exclude>
+           <a>updatedBy.username</a>
+           <b>contributor</b>
+       </field-exclude>
+    </mapping> 
+    
+    <mapping> 
+        <class-a>eu.etaxonomy.cdm.model.taxon.SynonymRelationship</class-a>
+        <class-b>eu.etaxonomy.cdm.remote.dto.tdwg.voc.Relationship</class-b>
+        <field>
+            <a>synonym</a>
+            <b>fromTaxon</b>
+        </field>
+        <field>
+            <a>acceptedTaxon</a>
+            <b>toTaxon</b>
+        </field>
+        <field-exclude>
+            <a>createdBy.username</a>
+            <b>creator</b>
+        </field-exclude>
+        <field-exclude>
+            <a>updatedBy.username</a>
+            <b>contributor</b>
+        </field-exclude>        
+    </mapping>
+    
+</mappings>

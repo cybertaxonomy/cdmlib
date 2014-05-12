@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rdf:RDF xmlns:dc="http://purl.org/dc/elements/1.1/" 
+	xmlns:tn="http://rs.tdwg.org/ontology/voc/TaxonName#" 
+	xmlns:dwcterms="http://rs.tdwg.org/dwc/terms/" 
+	xmlns:cdmni="http://cybertaxonomy.eu/cdm/ontology/voc/NameInformation#" 
+	xmlns:tp="http://rs.tdwg.org/ontology/voc/Person#" 
+	xmlns:spm="http://rs.tdwg.org/ontology/voc/SpeciesProfileModel#" 
+	xmlns:tcom="http://rs.tdwg.org/ontology/voc/Common#" 
+	xmlns:tpc="http://rs.tdwg.org/ontology/voc/PublicationCitation#" 
+	xmlns:dcterms="http://purl.org/dc/terms/" 
+	xmlns:tc="http://rs.tdwg.org/ontology/voc/TaxonConcept#" 
+	xmlns:tt="http://rs.tdwg.org/ontology/voc/Team#" 
+	xmlns:owl="http://www.w3.org/2002/07/owl#" 
+	xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" 
+	xmlns:gr="http://rs.tdwg.org/ontology/voc/GeographicRegion#">
+	<cdmni:NameInformation xsi:type="NameInformation" xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+		<dwcterms:scientificNameID>64cf8cf8-f56a-4411-8f49-c3dc95ea257a</dwcterms:scientificNameID>
+		<tn:nameComplete>Platalea leucorodia</tn:nameComplete>
+		<dc:title>Platalea leucorodia Linnaeus, 1758</dc:title>
+		<tn:rankString>Species</tn:rankString>
+		<tc:hasRelationship>
+			<tc:Relationship>
+				<tc:toTaxon>
+					<tc:TaxonConcept>
+						<dc:identifier>urn:uuid:1a5bcb42-146f-42e5-9136-1b21d170163e</dc:identifier>
+					</tc:TaxonConcept>
+				</tc:toTaxon>
+			</tc:Relationship>
+		</tc:hasRelationship>
+	</cdmni:NameInformation>
+</rdf:RDF>

@@ -1,0 +1,68 @@
+                                    --------------------
+                                    Checklist Export API
+                                    --------------------
+
+{CDM Taxonomic Checklist Export API}
+
+	This web service endpoint serves primarily as an export for scientific checklist-related taxonomic information.
+	
+	The request parameters are :	
+	
+	* '<<classification>>' [mandatory] : this string has to be a classification uuid, which can be retrieved, i.e. from the classification service.
+	
+						
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<classification>>> : classification uuid provided as input.
+			
+		* <<<response>>>
+
+			* <<<author>>> : author of accepted taxa.
+			
+			* <<<externalID>>>: ID retrieved by external provider.
+		
+			* <<<scientificName>>> : scientific name of taxa.
+			
+			* <<<lastUpdated>>> : date of latest changes.
+			
+			* <<<parentUuid>>> : Provides the UUID of parent taxa
+
+			* <<<rank>>> : rank of taxa
+
+			* <<<taxonConceptUuids>>> : list of uuids of all taxa corresponding to this name.	
+			
+	
+	Example Requests :
+		
+		* Base checklist request : 	
+				
+			* {{{classificationUUID} /checklist/export.json?classification=dab7f681-70de-4452-81e5-91cc68196c62}}
+			
+		
+			
+	Example Responses :
+		
+		* Base checklist : {classification=dab7f681-70de-4452-81e5-91cc68196c62} [{{{CDM Taxonomic Checklist Search API}back}}]
+										
+---
+
+[
+  {
+    "author": "(Savigny, 1826)",
+    "externalID": "",
+    "lastUpdated": "2014-01-22T17:25:10.000+01:00",
+    "parentUuid": "",
+    "rank": "Species",
+    "scientificName": "Allolobophora chlorotica",
+    "taxonConceptID": "ba8015da-8175-43fa-b8da-d01d34016707"
+  }
+]
+
+---		
+

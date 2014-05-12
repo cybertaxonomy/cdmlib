@@ -1,0 +1,286 @@
+                                    --------------
+                                    Statistics API
+                                    --------------
+                                   	--------------
+                                   	2013-01-29
+									--------------
+									
+CDM Taxonomic Statistics API
+
+
+	This web service endpoint provides statistic data about several different entities from CDM data.	
+
+	Request: 
+	
+	The parameters are:	
+	
+	* '<<part>>' [optional] : the two possible values are
+	
+	 	* <<<ALL>>> 						: for all data base
+	 	
+	 	* <<<CLASSIFICATION>>>  			: for statistics on every classification 
+	 	
+	- The two values could be combined as well. 
+	- Choosing no value for this parameter, gives statistics for all database (similar to <<<ALL>>>) .
+	
+	* '<<type>>' [optional] 	: this parameter could have the values	
+	
+		* <<<CLASSIFICATION>>>				: all classification are counted. This value effects a <null> result on <<<part=CLASSIFICATION>>> as classifications must not have nested classifications
+											
+		* <<<ALL_TAXA>>>					: to count all taxa, meaning accepted taxa and synonyms
+		
+		* <<<ACCEPTED_TAXA>>>				: to count the accepted taxa (class Taxon)
+				
+		* <<<SYNONYMS>>>					: to count the synonyms (class Synonym)
+				
+		* <<<TAXON_NAMES>>>					: to count all names (from taxa and synonyms)
+				
+		* <<<ALL_REFERENCES>>>				: to count all kinds of references
+				
+		* <<<NOMECLATURAL_REFERENCES>>>		: to count the references attached to names
+			
+		* <<<DESCRIPTIVE_SOURCE_REFERENCES>>>: to count the references attached to any description
+		
+	- Default: If no type is set all types are choosen.
+		
+[]
+
+	Response:
+	
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).	
+	    
+	The response is a list of objects. One for each part: one object for statistics over all data base and one for each classification. 
+	Each object has the following structure:
+
+	* <<<countMap>>> 		: It holds the computed response in a map list of short description of each type counted and the number of it's occurrency (e.g. "<Taxon_names: 36618>").
+
+	* <<<request>>>			: The filter mirrows the part parameter values of the request, whereas the type holds a list of the types to be count in each part.
+
+		* <<<filter>>>		: It holds a list of the path to the object that is observed - it holds <null> for the whole data base (<[null]>). For a classification it holds <null> and the classification object because the classification belongs to the data base; e.g.: <\[null, {"class": "Classification", "created": "2010-05-27T16:59:04.000+02:00",
+ "data": \[ \], "lsid": null, "microReference": "", "protectedTitleCache": false, "titleCache": "standard view", "updated": "2013-01-29T17:03:00.358+01:00", "uuid": "534e190f-3339-49ba-95d9-fa27d5493e3e"}\]>.
+		
+		* <<<type>>>		: It provides a list of of all the types to be counted, represented by an enum class. E.g.: <\["DESCRIPTIVE_SOURCE_REFERENCES", "TAXON_NAMES"\]>.
+		
+	[]
+	
+	Features: 
+	
+		With the two parameters iterating over several values in one query URL, you can make the request accurately fitting to the statistics you want.
+	
+	{Example Requests}:
+		
+		* request with no parameters: 	
+				
+			* {{{no parameters} /statistics.json}}
+			
+		- is similar to:
+			
+		* request for statistics of the whole data base for all available types: 
+		
+			* {{{no parameters} /statistics.json?part=ALL&type=CLASSIFICATION&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMECLATURAL_REFERENCES&type=DESCRIPTIVE_SOURCE_REFERENCES}}
+		
+		* request for types all taxa (including synonyms) and nomenclatural references in the classifications:
+		
+			* {{{nomenclatural references in the classifications} /statistics.json?part=CLASSIFICATION&type=ALL_TAXA&type=NOMECLATURAL_REFERENCES}}
+		
+		* request for the types accepted taxa and all references for all data base and classifications:
+		
+			* {{{accepted taxa and all references} /statistics.json?part=ALL&part=CLASSIFICATION&type=ACCEPTED_TAXA&type=ALL_REFERENCES}}
+		
+		
+	Example Responses:
+		
+		* request with {no parameters}: <<</statistics.json>>> 
+		
+		- similar to:
+		
+		*request for statistics of the whole data base for all available types:  <<</statistics.json?part=ALL&type=CLASSIFICATION&type=ALL_TAXA&type=ACCEPTED_TAXA&type=SYNONYMS&type=TAXON_NAMES&type=ALL_REFERENCES&type=NOMECLATURAL_REFERENCES&type=DESCRIPTIVE_SOURCE_REFERENCES>>>{{{Example Requests} (back to requests)}}
+
+---
+										
+[
+
+    {
+        "class": "Statistics",
+        "countMap": {
+            "Taxon_names": 36618,
+            "Synonyms": 30620,
+            "Accepted_taxa": 16254,
+            "Nomeclatural_references": 11969,
+            "Classifications": 2,
+            "Descriptive_source_references": 1304,
+            "References": 19443,
+            "All_taxa": 46874
+        },
+        "request": {
+            "class": "StatisticsConfigurator",
+            "filter": [
+                null
+            ],
+            "type": [
+                "CLASSIFICATION",
+                "ALL_TAXA",
+                "ACCEPTED_TAXA",
+                "SYNONYMS",
+                "TAXON_NAMES",
+                "ALL_REFERENCES",
+                "NOMECLATURAL_REFERENCES",
+                "DESCRIPTIVE_SOURCE_REFERENCES"
+            ]
+        }
+    }
+
+]
+	
+---	
+
+	*request for types all taxa (including synonyms) and {nomenclatural references in the classifications}: <<</statistics.json?part=CLASSIFICATION&type=ALL_TAXA&type=NOMECLATURAL_REFERENCES>>>{{{Example Requests} (back to requests)}}
+	
+---	
+[
+
+    {
+        "class": "Statistics",
+        "countMap": {
+            "Nomeclatural_references": 9293,
+            "All_taxa": 27563
+        },
+        "request": {
+            "class": "StatisticsConfigurator",
+            "filter": [
+                null,
+                {
+                    "class": "Classification",
+                    "created": "2010-05-27T16:59:04.000+02:00",
+                    "data": [ ],
+                    "lsid": null,
+                    "microReference": "",
+                    "protectedTitleCache": false,
+                    "titleCache": "standard view",
+                    "updated": "2013-01-29T19:18:50.857+01:00",
+                    "uuid": "534e190f-3339-49ba-95d9-fa27d5493e3e"
+                }
+            ],
+            "type": [
+                "ALL_TAXA",
+                "NOMECLATURAL_REFERENCES"
+            ]
+        }
+    },
+    {
+        "class": "Statistics",
+        "countMap": {
+            "Nomeclatural_references": 6375,
+            "All_taxa": 15900
+        },
+        "request": {
+            "class": "StatisticsConfigurator",
+            "filter": [
+                null,
+                {
+                    "class": "Classification",
+                    "created": "2010-06-03T15:15:22.000+02:00",
+                    "data": [ ],
+                    "lsid": null,
+                    "microReference": "",
+                    "protectedTitleCache": false,
+                    "titleCache": "ICN Alternative Classification",
+                    "updated": "2010-10-21T08:57:49.000+02:00",
+                    "uuid": "76b17487-3df4-41c7-8043-2bbb266eac00"
+                }
+            ],
+            "type": [
+                "ALL_TAXA",
+                "NOMECLATURAL_REFERENCES"
+            ]
+        }
+    }
+
+]
+---
+
+	*request for the types {accepted taxa and all references} for all data base and classifications:  <<</statistics.json?part=ALL&part=CLASSIFICATION&type=ACCEPTED_TAXA&type=ALL_REFERENCES>>>{{{Example Requests} (back to requests)}}
+	
+---
+
+[
+
+    {
+        "class": "Statistics",
+        "countMap": {
+            "Accepted_taxa": 16254,
+            "References": 19443
+        },
+        "request": {
+            "class": "StatisticsConfigurator",
+            "filter": [
+                null
+            ],
+            "type": [
+                "ACCEPTED_TAXA",
+                "ALL_REFERENCES"
+            ]
+        }
+    },
+    {
+        "class": "Statistics",
+        "countMap": {
+            "Accepted_taxa": 10776,
+            "References": null
+        },
+        "request": {
+            "class": "StatisticsConfigurator",
+            "filter": [
+                null,
+                {
+                    "class": "Classification",
+                    "created": "2010-05-27T16:59:04.000+02:00",
+                    "data": [ ],
+                    "lsid": null,
+                    "microReference": "",
+                    "protectedTitleCache": false,
+                    "titleCache": "standard view",
+                    "updated": "2013-01-29T18:48:50.690+01:00",
+                    "uuid": "534e190f-3339-49ba-95d9-fa27d5493e3e"
+                }
+            ],
+            "type": [
+                "ACCEPTED_TAXA",
+                "ALL_REFERENCES"
+            ]
+        }
+    },
+    {
+        "class": "Statistics",
+        "countMap": {
+            "Accepted_taxa": 4027,
+            "References": null
+        },
+        "request": {
+            "class": "StatisticsConfigurator",
+            "filter": [
+                null,
+                {
+                    "class": "Classification",
+                    "created": "2010-06-03T15:15:22.000+02:00",
+                    "data": [ ],
+                    "lsid": null,
+                    "microReference": "",
+                    "protectedTitleCache": false,
+                    "titleCache": "ICN Alternative Classification",
+                    "updated": "2010-10-21T08:57:49.000+02:00",
+                    "uuid": "76b17487-3df4-41c7-8043-2bbb266eac00"
+                }
+            ],
+            "type": [
+                "ACCEPTED_TAXA",
+                "ALL_REFERENCES"
+            ]
+        }
+    }
+
+]
+
+---	
+	
+	

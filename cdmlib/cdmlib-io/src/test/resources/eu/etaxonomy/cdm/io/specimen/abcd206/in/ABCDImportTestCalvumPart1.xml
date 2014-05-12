@@ -1,0 +1,737 @@
+<?xml version="1.0"?>
+<abcd:DataSets xmlns:abcd="http://www.tdwg.org/schemas/abcd/2.06" xmlns:biocase="http://www.biocase.org/schemas/protocol/1.3" xmlns:ns1="http://www.dnabank-network.org/test" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.biocase.org/schemas/protocol/1.3 http://www.bgbm.org/biodivinf/schema/protocol_1_31.xsd">
+      <abcd:DataSet>
+        <abcd:DatasetGUID>www.floraweb.de/florkart/atlas/2007</abcd:DatasetGUID>
+        <abcd:TechnicalContacts>
+          <abcd:TechnicalContact>
+            <abcd:Name>Rudolf May</abcd:Name>
+            <abcd:Email>rudolf.may@bfn.de</abcd:Email>
+            <abcd:Phone>+49-228-84911441</abcd:Phone>
+            <abcd:Address>BfN, Konstantinstr. 110, D-53179 Bonn</abcd:Address>
+          </abcd:TechnicalContact>
+        </abcd:TechnicalContacts>
+        <abcd:ContentContacts>
+          <abcd:ContentContact>
+            <abcd:Name>Rudolf May</abcd:Name>
+            <abcd:Email>rudolf.may@bfn.de</abcd:Email>
+            <abcd:Phone>+49-228-84911441</abcd:Phone>
+            <abcd:Address>BfN, Konstantinstr. 110, D-53179 Bonn</abcd:Address>
+          </abcd:ContentContact>
+        </abcd:ContentContacts>
+        <abcd:Metadata>
+          <abcd:Description>
+            <abcd:Representation abcd:language="GE German Deutsch">
+              <abcd:Title>FlorKart - FlorenKartierung Gefaesspflanzen</abcd:Title>
+              <abcd:Details>Verbreitung der Farn- und Bluetenpflanzen in Deutschland, Vorkommensnachweise aggregiert auf Rasterfelder der Topographischen Karte im Massstab 1 : 25000 (TK25 = MTB), Blattschnitt 6 x 10 Minuten, sowie in Zeitperioden 'vor 1950', '1950 - 1980', '1980 - 2000'</abcd:Details>
+              <abcd:Coverage>Deutschland</abcd:Coverage>
+              <abcd:URI>http://www.floraweb.de</abcd:URI>
+            </abcd:Representation>
+          </abcd:Description>
+          <abcd:IconURI>http://www.floraweb.de/images/floraweb.gif</abcd:IconURI>
+          <abcd:Version>
+            <abcd:Major>2007</abcd:Major>
+          </abcd:Version>
+          <abcd:RevisionData>
+            <abcd:Creators>Netzwerk Phytodiversitaet Deutschlands (NetPhyD) und Bundesamt f&#xFC;r Naturschutz (BfN)</abcd:Creators>
+            <abcd:Contributors>Alle ehrenamtlich an der Floristischen Kartierung Deutschlands beteiligten Mitarbeiter</abcd:Contributors>
+            <abcd:DateCreated>2007-01-01</abcd:DateCreated>
+            <abcd:DateModified>2010-01-01</abcd:DateModified>
+          </abcd:RevisionData>
+          <abcd:Owners>
+            <abcd:Owner>
+              <abcd:Organisation>
+                <abcd:Name>
+                  <abcd:Representation abcd:language="GE German Deutsch">
+                    <abcd:Text>Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversit&#xE4;t Deutschlands (NetPhyD)</abcd:Text>
+                    <abcd:Abbreviation>BfN/NetPhyD</abcd:Abbreviation>
+                  </abcd:Representation>
+                </abcd:Name>
+              </abcd:Organisation>
+              <abcd:Person>
+                <abcd:FullName>Rudolf May</abcd:FullName>
+              </abcd:Person>
+              <abcd:Roles>
+                <abcd:Role>Project Manager</abcd:Role>
+              </abcd:Roles>
+              <abcd:Addresses>
+                <abcd:Address>BfN, Konstantinstr. 110, D-53179 Bonn</abcd:Address>
+              </abcd:Addresses>
+              <abcd:TelephoneNumbers>
+                <abcd:TelephoneNumber>
+                  <abcd:Number>+49-228-84911441</abcd:Number>
+                  <abcd:Device>voice</abcd:Device>
+                </abcd:TelephoneNumber>
+              </abcd:TelephoneNumbers>
+              <abcd:EmailAddresses>
+                <abcd:EmailAddress>floraweb@bfn.de</abcd:EmailAddress>
+              </abcd:EmailAddresses>
+              <abcd:URIs>
+                <abcd:URL>http://www.bfn.de</abcd:URL>
+              </abcd:URIs>
+              <abcd:LogoURI>http://www.bfn.de/fileadmin/global/templates/images/logo_bfn.gif</abcd:LogoURI>
+            </abcd:Owner>
+          </abcd:Owners>
+          <abcd:IPRStatements>
+            <abcd:IPRDeclarations>
+              <abcd:IPRDeclaration abcd:language="GE German Deutsch">
+                <abcd:Text>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:Text>
+                <abcd:Details>Alle amtlich und ehrenamtlich an der Floristischen Kartierung Deutschlands beteiligten Mitarbeiter</abcd:Details>
+              </abcd:IPRDeclaration>
+            </abcd:IPRDeclarations>
+            <abcd:Copyrights>
+              <abcd:Copyright abcd:language="GE German Deutsch">
+                <abcd:Text>BfN/NetPhyD</abcd:Text>
+                <abcd:Details>Bundesamt fuer Naturschutz und Netzwerk Phytodiversitaet Deutschlands</abcd:Details>
+              </abcd:Copyright>
+            </abcd:Copyrights>
+            <abcd:TermsOfUseStatements>
+              <abcd:TermsOfUse abcd:language="GE German Deutsch">
+                <abcd:Text>Bei Verwendung in Publikationen bitte die Datenquelle vollstaendig zitieren.</abcd:Text>
+                <abcd:Details>Bei Verwendung in Publikationen bitte die Datenquelle vollstaendig zitieren.  Die Verwendung der Daten zu kommerziellen Zwecken wird untersagt.</abcd:Details>
+              </abcd:TermsOfUse>
+            </abcd:TermsOfUseStatements>
+            <abcd:Disclaimers>
+              <abcd:Disclaimer abcd:language="GE German Deutsch">
+                <abcd:Text>Fuer die Richtigkeit der Daten wird keine Gewaehrleistung uebernommen</abcd:Text>
+                <abcd:Details>Fuer die Richtigkeit der Daten wird keine Gewaehrleistung uebernommen</abcd:Details>
+              </abcd:Disclaimer>
+            </abcd:Disclaimers>
+            <abcd:Acknowledgements>
+              <abcd:Acknowledgement abcd:language="GE German Deutsch">
+                <abcd:Text>In Anerkennung der Leistungen der ehrenamtlichen Kartierer der Flora Deutschlands</abcd:Text>
+                <abcd:Details>Die Kompilation der Verbreitungsdaten beruht auf unentgeltlich erbrachten Kartierungsleistungen von &#xFC;ber 2000 ehrenamtlichen Mitarbeitern der Floristischen Kartierung Deutschlands, die in zahlreichen regionalen Kartierungsprojekten organisiert sind.</abcd:Details>
+                <abcd:URI>http://www.floraweb.de/pflanzenarten/hintergrundtexte_florkart_organisation.html</abcd:URI>
+              </abcd:Acknowledgement>
+            </abcd:Acknowledgements>
+            <abcd:Citations>
+              <abcd:Citation abcd:language="GE German Deutsch">
+                <abcd:Text>Datenbank FLORKART, BfN und NetPhyD</abcd:Text>
+                <abcd:Details>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:Details>
+              </abcd:Citation>
+            </abcd:Citations>
+          </abcd:IPRStatements>
+        </abcd:Metadata>
+        <abcd:Units>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003121</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 3915: Bockhorst</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>3915</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>8.25</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>52.06</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6363</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003122</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 3916: Halle  (Westfalen)</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>3916</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>8.42</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>52.06</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6363</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003123</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 5628: Bad K&#xF6;nigshofen im Grabfeld</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>5628</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>10.42</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>50.36</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6481</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003124</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 5634: Teuschnitz</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>5634</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>11.42</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>50.36</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6482</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003125</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 5635: Nordhalben</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>5635</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>11.58</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>50.36</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6483</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003126</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 5728: Oberlauringen</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>5728</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>10.42</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>50.26</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6487</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003127</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 6132: Buttenheim</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>6132</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>11.08</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>49.86</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6515</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003128</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 6232: Forchheim</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>6232</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>11.08</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>49.76</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6522</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003129</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 6235: Pegnitz</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>6235</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>11.58</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>49.76</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6523</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+          <abcd:Unit>
+            <abcd:SourceInstitutionID>BfN</abcd:SourceInstitutionID>
+            <abcd:SourceID>FlorKart_BfN</abcd:SourceID>
+            <abcd:UnitID>1003130</abcd:UnitID>
+            <abcd:UnitReferences>
+              <abcd:UnitReference>
+                <abcd:TitleCitation>Datenbank FLORKART, BfN und NetPhyD</abcd:TitleCitation>
+                <abcd:CitationDetail>Datenbank FLORKART der Floristischen Kartierung Deutschlands, Stand 2007, Bundesamt f&#xFC;r Naturschutz (BfN) und Netzwerk Phytodiversitaet Deutschland (NetPhyD)</abcd:CitationDetail>
+              </abcd:UnitReference>
+            </abcd:UnitReferences>
+            <abcd:Identifications>
+              <abcd:Identification>
+                <abcd:Result>
+                  <abcd:TaxonIdentified>
+                    <abcd:HigherTaxa>
+                      <abcd:HigherTaxon>
+                        <abcd:HigherTaxonName>Asteraceae</abcd:HigherTaxonName>
+                      </abcd:HigherTaxon>
+                    </abcd:HigherTaxa>
+                    <abcd:ScientificName>
+                      <abcd:FullScientificNameString>Cichorium calvum Asch.</abcd:FullScientificNameString>
+                      <abcd:NameAtomised>
+                        <abcd:Botanical>
+                          <abcd:GenusOrMonomial>Cichorium</abcd:GenusOrMonomial>
+                          <abcd:FirstEpithet>calvum</abcd:FirstEpithet>
+                          <abcd:Rank>SPE</abcd:Rank>
+                          <abcd:AuthorTeamParenthesis>Asch.</abcd:AuthorTeamParenthesis>
+                        </abcd:Botanical>
+                      </abcd:NameAtomised>
+                    </abcd:ScientificName>
+                  </abcd:TaxonIdentified>
+                </abcd:Result>
+              </abcd:Identification>
+            </abcd:Identifications>
+            <abcd:Gathering>
+              <abcd:DateTime>
+                <abcd:DateText>1950-1980</abcd:DateText>
+                <abcd:PeriodExplicit>false</abcd:PeriodExplicit>
+              </abcd:DateTime>
+              <abcd:Agents>
+                <abcd:GatheringAgentsText>Mitarbeiter der Floristischen Kartierung Deutschlands</abcd:GatheringAgentsText>
+              </abcd:Agents>
+              <abcd:LocalityText>MTB 7032: Bieswang</abcd:LocalityText>
+              <abcd:Country>
+                <abcd:Name language="German">Deutschland</abcd:Name>
+              </abcd:Country>
+              <abcd:SiteCoordinateSets>
+                <abcd:SiteCoordinates>
+                  <abcd:CoordinatesGrid>
+                    <abcd:GridCellSystem>German TK25</abcd:GridCellSystem>
+                    <abcd:GridCellCode>7032</abcd:GridCellCode>
+                  </abcd:CoordinatesGrid>
+                  <abcd:CoordinatesLatLong>
+                    <abcd:LongitudeDecimal>11.08</abcd:LongitudeDecimal>
+                    <abcd:LatitudeDecimal>48.96</abcd:LatitudeDecimal>
+                    <abcd:AccuracyStatement>Mittelpunkte von TK25-Rasterfeldern</abcd:AccuracyStatement>
+                    <abcd:CoordinateErrorDistanceInMeters>6575</abcd:CoordinateErrorDistanceInMeters>
+                  </abcd:CoordinatesLatLong>
+                </abcd:SiteCoordinates>
+              </abcd:SiteCoordinateSets>
+            </abcd:Gathering>
+          </abcd:Unit>
+        </abcd:Units>
+      </abcd:DataSet>
+    </abcd:DataSets>
