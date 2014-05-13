@@ -590,7 +590,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return
      */
-    protected Set<TaxonNode> getDescendants(){
+    public Set<TaxonNode> getDescendants(){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 
         nodeSet.add(this);
