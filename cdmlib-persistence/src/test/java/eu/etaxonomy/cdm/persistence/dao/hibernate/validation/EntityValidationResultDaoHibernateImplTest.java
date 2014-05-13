@@ -44,14 +44,13 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 	IEntityValidationResultDao dao;
 
 
-	//@Test
+	@Test
 	public void init()
 	{
 		assertNotNull("Expecting an instance of IEntityValidationResultDao", dao);
 	}
 
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testSaveValidationResult()
 	{
@@ -179,25 +178,6 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 
 
 	@Test
-	public void testGetConstraintViolations_String()
-	{
-		List<EntityConstraintViolation> results;
-
-		results = dao.getConstraintViolations(MEDIA);
-		assertEquals("Unexpected number of validation results", 1, results.size());
-
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP);
-		assertEquals("Unexpected number of validation results", 2, results.size());
-
-		results = dao.getConstraintViolations(GATHERING_EVENT);
-		assertEquals("Unexpected number of validation results", 4, results.size());
-
-		results = dao.getConstraintViolations("foo.bar");
-		assertEquals("Unexpected number of validation results", 0, results.size());
-	}
-
-
-	@Test
 	public void testGetEntityValidationResults_String_Severity()
 	{
 		List<EntityValidationResult> results;
@@ -226,37 +206,6 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 		assertEquals("Unexpected number of validation results", 2, results.size());
 
 		results = dao.getValidationResults("foo.bar", Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 0, results.size());
-	}
-
-
-	@Test
-	public void testGetConstraintViolations_String_Severity()
-	{
-		List<EntityConstraintViolation> results;
-
-		results = dao.getConstraintViolations(MEDIA, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getConstraintViolations(MEDIA, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getConstraintViolations(MEDIA, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 1, results.size());
-
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 0, results.size());
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getConstraintViolations(SYNONYM_RELATIONSHIP, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 1, results.size());
-
-		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.NOTICE);
-		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.WARNING);
-		assertEquals("Unexpected number of validation results", 1, results.size());
-		results = dao.getConstraintViolations(GATHERING_EVENT, Severity.ERROR);
-		assertEquals("Unexpected number of validation results", 2, results.size());
-
-		results = dao.getConstraintViolations("foo.bar", Severity.WARNING);
 		assertEquals("Unexpected number of validation results", 0, results.size());
 	}
 
