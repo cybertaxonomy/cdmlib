@@ -223,7 +223,7 @@ public class DefaultMergeStrategyTest {
 	 */
 	@Test
 	public void testInvokeReferences() throws MergeException {
-		INomenclaturalReferenceCacheStrategy<Reference> cacheStrategy1 = (INomenclaturalReferenceCacheStrategy<Reference>)book1.getCacheStrategy();
+		INomenclaturalReferenceCacheStrategy cacheStrategy1 = (INomenclaturalReferenceCacheStrategy)book1.getCacheStrategy();
 		int id = book1.getId();
 		UUID uuid = book1.getUuid();
 		try {

@@ -21,7 +21,7 @@ import eu.etaxonomy.cdm.model.reference.Reference;
  * @author a.mueller
  * @created 15.03.2012
  */
-public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends NomRefDefaultCacheStrategyBase<T> {
+public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheStrategyBase {
 
 	private static final long serialVersionUID = -8418443677312335864L;
 	private static final Logger logger = Logger.getLogger(InRefDefaultCacheStrategyBase.class);
@@ -33,18 +33,14 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 	
 	protected abstract String getInRefType();
 	
-	private String afterInRefAuthor = ", ";
+	protected String afterInRefAuthor = ", ";
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.reference.INomenclaturalReferenceCacheStrategy#getTokenizedNomenclaturalTitel(eu.etaxonomy.cdm.model.reference.INomenclaturalReference)
-	 */
 	@Override
-	public String getTokenizedNomenclaturalTitel(T generic) {
+	public String getTokenizedNomenclaturalTitel(Reference generic) {
 		return getTokenizedNomenclaturalTitel(generic, false);
 	}
 	
-	protected String getTokenizedNomenclaturalTitel(T thisRef, boolean inRefIsObligatory) {
+	protected String getTokenizedNomenclaturalTitel(Reference thisRef, boolean inRefIsObligatory) {
 		//generic == null
 		if (thisRef == null /* || generic.getInReference() == null */){
 			return null;
@@ -60,7 +56,7 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 		String result;
 		//use generics's publication date if it exists
 		if (inRef == null ||  (thisRef.hasDatePublished() ) ){
-			GenericDefaultCacheStrategy<Reference> inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
+			GenericDefaultCacheStrategy inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 			result =  inRef == null ? "" : inRefStrategy.getTitleWithoutYearAndAuthor(inRef, true);
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, thisRef, true);
@@ -92,17 +88,17 @@ public abstract class InRefDefaultCacheStrategyBase<T extends Reference> extends
 	
 
 	@Override
-	public String getTitleCache(T thisRef) {
+	public String getTitleCache(Reference thisRef) {
 		return getTitleCache(thisRef, false, false);
 	}
 	
 	@Override
-	public String getAbbrevTitleCache(T thisRef) {
+	public String getAbbrevTitleCache(Reference thisRef) {
 		return getTitleCache(thisRef, false, true);
 	}
 	
 	
-	protected String getTitleCache(T thisRef, boolean inRefIsObligatory, boolean isAbbrev) {
+	protected String getTitleCache(Reference thisRef, boolean inRefIsObligatory, boolean isAbbrev) {
 		String result;
 		
 		Reference<?> inRef = thisRef.getInReference();

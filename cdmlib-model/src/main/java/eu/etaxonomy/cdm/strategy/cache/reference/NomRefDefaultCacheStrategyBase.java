@@ -22,7 +22,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @author a.mueller
  * @created 29.06.2008
  */
-public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extends StrategyBase implements  INomenclaturalReferenceCacheStrategy<T>{
+public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
 	private static final long serialVersionUID = -725290113353165022L;
 
 	@SuppressWarnings("unused")
@@ -35,7 +35,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 	
 
 	@Override
-	public String getTokenizedNomenclaturalTitel(T ref) {
+	public String getTokenizedNomenclaturalTitel(Reference ref) {
 		String result =  getTitleWithoutYearAndAuthor(ref, true);
 		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 		result = addYear(result, ref, true);
@@ -43,16 +43,16 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 	}
 
 	@Override
-	public String getTitleCache(T nomenclaturalReference) {
+	public String getTitleCache(Reference nomenclaturalReference) {
 		return getTitleCache(nomenclaturalReference, false);
 	}
 
 	@Override
-	public String getAbbrevTitleCache(T nomenclaturalReference) {
+	public String getAbbrevTitleCache(Reference nomenclaturalReference) {
 		return getTitleCache(nomenclaturalReference, true);
 	}
 	
-	private String getTitleCache(T ref, boolean isAbbrev) {
+	private String getTitleCache(Reference ref, boolean isAbbrev) {
 		//TODO needed?
 		if (isAbbrev && ref.isProtectedAbbrevTitleCache()){
 			return ref.getAbbrevTitleCache();
@@ -74,11 +74,11 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		return result;
 	}
 	
-	protected abstract String getTitleWithoutYearAndAuthor(T reference, boolean isAbbrev);
+	protected abstract String getTitleWithoutYearAndAuthor(Reference reference, boolean isAbbrev);
 
 	
 	@Override
-	public String getCitation(T referenceBase) {
+	public String getCitation(Reference referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
 		
 		String nextConcat = "";
@@ -103,7 +103,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 		return beforeMicroReference;
 	}
 	
-	protected String addYear(String string, T nomRef, boolean useFullDatePublished){
+	protected String addYear(String string, Reference nomRef, boolean useFullDatePublished){
 		String result;
 		if (string == null){
 			return null;
@@ -119,7 +119,7 @@ public abstract class NomRefDefaultCacheStrategyBase<T extends Reference> extend
 	}
 	
 	@Override
-	public String getNomenclaturalCitation(T nomenclaturalReference, String microReference) {
+	public String getNomenclaturalCitation(Reference nomenclaturalReference, String microReference) {
 		if (nomenclaturalReference.isProtectedTitleCache()){
 			return nomenclaturalReference.getTitleCache();
 		}

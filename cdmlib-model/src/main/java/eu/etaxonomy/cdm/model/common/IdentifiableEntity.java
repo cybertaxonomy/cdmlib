@@ -57,7 +57,6 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
-import eu.etaxonomy.cdm.strategy.cache.name.BotanicNameDefaultCacheStrategy;
 import eu.etaxonomy.cdm.strategy.match.Match;
 import eu.etaxonomy.cdm.strategy.match.Match.ReplaceMode;
 import eu.etaxonomy.cdm.strategy.match.MatchMode;
@@ -561,11 +560,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
         @Override
         public String generateTitle() {
-            if (cacheStrategy == null){
+            if (getCacheStrategy() == null){
                 //logger.warn("No CacheStrategy defined for "+ this.getClass() + ": " + this.getUuid());
                 return this.getClass() + ": " + this.getUuid();
             }else{
-                return cacheStrategy.getTitleCache(this);
+                return getCacheStrategy().getTitleCache(this);
             }
         }
 

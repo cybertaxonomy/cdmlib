@@ -14,7 +14,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class BookSectionDefaultCacheStrategy <T extends Reference> extends InRefDefaultCacheStrategyBase<T>  implements  INomenclaturalReferenceCacheStrategy<T> {
+public class BookSectionDefaultCacheStrategy extends InRefDefaultCacheStrategyBase implements INomenclaturalReferenceCacheStrategy {
 	private static final long serialVersionUID = 7293886681984614996L;
 
 	private static final Logger logger = Logger.getLogger(BookSectionDefaultCacheStrategy.class);
@@ -50,24 +50,24 @@ public class BookSectionDefaultCacheStrategy <T extends Reference> extends InRef
 	}
 
 	@Override
-	protected String getTitleWithoutYearAndAuthor(T reference, boolean isAbbrev) {
+	protected String getTitleWithoutYearAndAuthor(Reference reference, boolean isAbbrev) {
 		// not needed in BookSection
 		logger.warn("Questionable procedure call. Procedure not implemented because not needed. ");
 		return null;
 	}
 
 	@Override
-	public String getTokenizedNomenclaturalTitel(T generic) {
+	public String getTokenizedNomenclaturalTitel(Reference generic) {
 		return super.getTokenizedNomenclaturalTitel(generic, inRefIsObligatory);
 	}
 
 	@Override
-	public String getTitleCache(T thisRef) {
+	public String getTitleCache(Reference thisRef) {
 		return super.getTitleCache(thisRef, inRefIsObligatory, false);
 	}
 	
 	@Override
-	public String getAbbrevTitleCache(T thisRef) {
+	public String getAbbrevTitleCache(Reference thisRef) {
 		return super.getTitleCache(thisRef, inRefIsObligatory, true);
 	}
 	

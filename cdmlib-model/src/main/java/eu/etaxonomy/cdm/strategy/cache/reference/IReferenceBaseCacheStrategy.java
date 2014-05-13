@@ -18,19 +18,19 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
  *
  * @param <T> The concrete Reference class this strategy applies for
  */
-public interface IReferenceBaseCacheStrategy<T extends Reference> extends IIdentifiableEntityCacheStrategy<T> {
+public interface IReferenceBaseCacheStrategy extends IIdentifiableEntityCacheStrategy<Reference> {
 	
 	/**
 	 * Returns a short version of the reference, suitable for citation (e.g. ${authorname}, ${year})
 	 * @return
 	 */
-	public String getCitation(T reference);
+	public String getCitation(Reference reference);
 	
 	/**
 	 * Returns the abbreviated title cache which is a title cache which uses the {@link Reference#getAbbrevTitle() abbrev title}
 	 * @return
 	 */
-	public String getAbbrevTitleCache(T reference);
+	public String getAbbrevTitleCache(Reference reference);
 	
 
 }

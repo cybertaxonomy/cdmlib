@@ -32,7 +32,7 @@ public class CdDvdDefaultCacheStrategyTest {
 	String publisher;
 	String place;
 	TimePeriod publicationDate;
-	CdDvdDefaultCacheStrategy<Reference> instance;
+	CdDvdDefaultCacheStrategy instance;
 	
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {

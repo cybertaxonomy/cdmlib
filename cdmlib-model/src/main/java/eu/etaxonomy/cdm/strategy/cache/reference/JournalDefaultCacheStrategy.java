@@ -24,7 +24,7 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @author a.mueller
  * @created 29.06.2008
  */
-public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBase implements IReferenceBaseCacheStrategy<T> {
+public class JournalDefaultCacheStrategy extends StrategyBase implements IReferenceBaseCacheStrategy {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JournalDefaultCacheStrategy.class);
 
@@ -53,7 +53,7 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 	 * @return
 	 */
 	public static JournalDefaultCacheStrategy NewInstance(){
-		return new JournalDefaultCacheStrategy<Reference>();
+		return new JournalDefaultCacheStrategy();
 	}
 	
 	/**
@@ -65,7 +65,7 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 	
 
 	@Override
-	public String getTitleCache(T journal) {
+	public String getTitleCache(Reference journal) {
 		return getTitleCache(journal, false);
 		
 
@@ -73,12 +73,12 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 	
 
 	@Override
-	public String getAbbrevTitleCache(T journal) {
+	public String getAbbrevTitleCache(Reference journal) {
 		return getTitleCache(journal, true);
 	}
 	
 	
-	private String getTitleCache(T journal, boolean isAbbrev){
+	private String getTitleCache(Reference journal, boolean isAbbrev){
 		if (journal == null){
 			return null;
 		}
@@ -106,7 +106,7 @@ public class JournalDefaultCacheStrategy<T extends Reference> extends StrategyBa
 	}
 
 	
-	public String getCitation(T referenceBase) {
+	public String getCitation(Reference referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
 		
 		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();

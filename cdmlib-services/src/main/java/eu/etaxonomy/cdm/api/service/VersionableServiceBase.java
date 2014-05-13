@@ -10,7 +10,9 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import org.hibernate.envers.query.criteria.AuditCriterion;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,9 +71,14 @@ public abstract class VersionableServiceBase<T extends VersionableEntity, DAO ex
     
     @Override
     public List<String> isDeletable(T base, DeleteConfiguratorBase config){
-    	List result = new ArrayList<String>();
-    	if (commonService.getReferencingObjects(base).size() > 0){
-    		//TODO
+    	List<String> result = new ArrayList<String>();
+    	Set<CdmBase> references = commonService.getReferencingObjects(base);
+    	Iterator<CdmBase> iterator = references.iterator();
+    	CdmBase ref;
+    	while (iterator.hasNext()){
+    		ref = iterator.next();
+    		String message = "An object of " + ref.getClass().getName() + " with ID " + ref.getId() + " is referencing the object" ;
+    		result.add(message);
     	}
     	return result;
     }

@@ -10,9 +10,8 @@
 package eu.etaxonomy.cdm.strategy.cache.reference;
 
 
-import org.junit.Assert;
-
 import org.apache.log4j.Logger;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class GenericDefaultCacheStrategyTest {
 	
 	private static IGeneric generic1;
 	private static Team team1;
-	private static GenericDefaultCacheStrategy<Reference> defaultStrategy;
+	private static GenericDefaultCacheStrategy defaultStrategy;
 	private static final String detail1 = "55";
 	
 	/**
