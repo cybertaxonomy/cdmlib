@@ -27,6 +27,7 @@ import org.apache.lucene.queryParser.ParseException;
 import org.apache.lucene.search.BooleanClause.Occur;
 import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.SortField;
+import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -36,6 +37,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
+import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.search.ILuceneIndexToolProvider;
@@ -92,6 +94,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private ISequenceService sequenceService;
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
@@ -483,6 +488,15 @@ type=null;
      */
     @Override
     public boolean moveSequence(DnaSample from, DnaSample to, Sequence sequence) {
+        //reload specimens to avoid session conflicts
+        from = (DnaSample) load(from.getUuid());
+        to = (DnaSample) load(to.getUuid());
+        sequence = sequenceService.load(sequence.getUuid());
+
+        if(from==null || to==null || sequence==null){
+            throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
+                    "Operation was move "+sequence+ " from "+from+" to "+to);
+        }
         from.removeSequence(sequence);
         saveOrUpdate(from);
         to.addSequence(sequence);
@@ -495,6 +509,16 @@ type=null;
      */
     @Override
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate) {
+        //reload specimens to avoid session conflicts
+        from = load(from.getUuid());
+        to = load(to.getUuid());
+        derivate = (DerivedUnit) load(derivate.getUuid());
+
+        if(from==null || to==null || derivate==null){
+            throw new TransientObjectException("One of the CDM entities has not been saved to the data base yet. Moving only works for persisted/saved CDM entities.\n" +
+            		"Operation was move "+derivate+ " from "+from+" to "+to);
+        }
+
         SpecimenOrObservationType derivateType = derivate.getRecordBasis();
         SpecimenOrObservationType toType = to.getRecordBasis();
         //check if type is a sub derivate type
