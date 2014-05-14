@@ -411,9 +411,12 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
             if(pager.getCount() == 0){
                 break;
             }
-            tmpAreaSet = (Set<NamedArea>) pager.getRecords();
-            areaSet.addAll(tmpAreaSet);
-
+            List<NamedArea> tmpAreaList = pager.getRecords();
+            //convert from Set to list
+            tmpAreaSet.clear();
+            tmpAreaSet.addAll(tmpAreaList);
+            areaSet.addAll(tmpAreaList);
+            
         }
     }
 
