@@ -11,7 +11,7 @@ import eu.etaxonomy.cdm.validation.Severity;
 
 @Service
 @Transactional(readOnly = true)
-public class EntityConstraintViolationService extends ServiceBase<EntityConstraintViolation, IEntityConstraintViolationDao> implements
+public class EntityConstraintViolationServiceImpl extends ServiceBase<EntityConstraintViolation, IEntityConstraintViolationDao> implements
 		IEntityConstraintViolationService {
 
 	IEntityConstraintViolationDao dao;

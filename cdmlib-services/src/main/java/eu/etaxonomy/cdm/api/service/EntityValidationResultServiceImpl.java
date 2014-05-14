@@ -3,13 +3,15 @@ package eu.etaxonomy.cdm.api.service;
 import java.util.List;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.validation.Severity;
 
 @Service
-public class EntityValidationResultService extends ServiceBase<EntityValidationResult, IEntityValidationResultDao> implements
+@Transactional(readOnly = true)
+public class EntityValidationResultServiceImpl extends ServiceBase<EntityValidationResult, IEntityValidationResultDao> implements
 		IEntityValidationResultService {
 
 	IEntityValidationResultDao dao;
