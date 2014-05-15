@@ -254,7 +254,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
-        try {
+        if (transientObject == null){
+        	logger.warn("Object to save should not be null. NOP");
+        	return null;
+        }
+    	try {
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
             if (logger.isDebugEnabled()){logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;}
             Session session = getSession();
@@ -287,13 +291,21 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public UUID save(T newInstance) throws DataAccessException {
-        getSession().save(newInstance);
+        if (newInstance == null){
+        	logger.warn("Object to save should not be null. NOP");
+        	return null;
+        }
+    	getSession().save(newInstance);
         return newInstance.getUuid();
     }
 
     @Override
     public UUID update(T transientObject) throws DataAccessException {
-        getSession().update(transientObject);
+        if (transientObject == null){
+        	logger.warn("Object to update should not be null. NOP");
+        	return null;
+        }
+    	getSession().update(transientObject);
         return transientObject.getUuid();
     }
 
