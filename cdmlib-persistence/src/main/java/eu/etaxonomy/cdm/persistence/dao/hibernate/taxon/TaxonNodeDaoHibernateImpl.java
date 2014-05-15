@@ -16,6 +16,9 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.Criteria;
+import org.hibernate.criterion.Projections;
+import org.hibernate.criterion.Restrictions;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
@@ -25,6 +28,7 @@ import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.AnnotatableDaoImpl;
+import eu.etaxonomy.cdm.persistence.dao.taxon.IClassificationDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonNodeDao;
 
@@ -41,6 +45,8 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
 
 	@Autowired
 	private ITaxonDao taxonDao;
+	@Autowired
+	private IClassificationDao classificationDao;
 
 	public TaxonNodeDaoHibernateImpl() {
 		super(TaxonNode.class);
@@ -103,7 +109,42 @@ public class TaxonNodeDaoHibernateImpl extends AnnotatableDaoImpl<TaxonNode>
          return result.get(0).intValue ();
     }
 
-
+    @Override
+    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive){
+    	if (recursive == true){
+    		Criteria crit = getSession().createCriteria(TaxonNode.class); 
+    		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+    		if(pageSize != null) {
+                crit.setMaxResults(pageSize);
+                if(pageIndex != null) {
+                    crit.setFirstResult(pageIndex * pageSize);
+                } else {
+                    crit.setFirstResult(0);
+                }
+            }
+    		List<TaxonNode> results = (List<TaxonNode>) crit.list();
+    		results.remove(node);
+    		defaultBeanInitializer.initializeAll(results, propertyPaths);
+    		return results;
+    	}else{
+    		return classificationDao.listChildrenOf(node.getTaxon(), node.getClassification(), pageSize, pageIndex, propertyPaths);
+    	}
+    	
+    }
+    
+    @Override
+	public Long countChildrenOf(TaxonNode node, Classification classification,
+			boolean recursive) {
+		
+		if (recursive == true){
+			Criteria crit = getSession().createCriteria(TaxonNode.class); 
+    		crit.add( Restrictions.like("treeIndex", node.treeIndex()+ "%") );
+    		crit.setProjection(Projections.rowCount());
+    		return ((Integer)crit.uniqueResult().hashCode()).longValue();
+		}else{
+			return classificationDao.countChildrenOf(node.getTaxon(), classification);
+		}
+	}
 
 
 }

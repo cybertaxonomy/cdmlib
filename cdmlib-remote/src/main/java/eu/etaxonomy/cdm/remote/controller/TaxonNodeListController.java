@@ -74,7 +74,7 @@ public class TaxonNodeListController extends BaseListController<TaxonNode, ITaxo
 		
 		TaxonNode taxonNode = service.getTaxonNodeByUuid(taxonNodeUuid);
 		
-		return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY);
+		return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false);
 	}
 
 

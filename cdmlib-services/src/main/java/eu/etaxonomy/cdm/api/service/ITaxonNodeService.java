@@ -45,7 +45,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @param propertyPaths
 	 * @return
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
+	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive);
 
 	/**
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.
