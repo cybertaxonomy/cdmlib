@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.HashSet;
 import java.util.List;
@@ -145,7 +146,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 	}
 
 	@Override
-	public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+	public <T extends DefinedTermBase> Pager<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countIncludes(definedTerms);
 		
 		List<T> results = new ArrayList<T>();

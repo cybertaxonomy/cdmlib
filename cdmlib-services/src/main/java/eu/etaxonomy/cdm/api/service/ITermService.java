@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -103,7 +104,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of DefinedTerms
      */
-    public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DefinedTermBase> Pager<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Return a paged list of terms which have representations that match the supplied string in the text (description)

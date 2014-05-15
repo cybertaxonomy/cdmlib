@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.persistence.dao.common;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -144,13 +145,13 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	/**
 	 * Return a List of terms which are part of the terms supplied
 	 *
-	 * @param definedTerms the set of terms which include the terms of interest
+	 * @param definedTerms the collection of terms which include the terms of interest
 	 * @param pageSize The maximum number of terms returned (can be null for all terms)
 	 * @param pageNumber The offset (in pageSize chunks) from the start of the result set (0 - based)
 	 * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
 	 * @return a List of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> List<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+	public <T extends DefinedTermBase> List<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
 	/**
 	 * Return a count of terms which are part of the terms supplied
@@ -158,7 +159,7 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 	 * @param definedTerms the set of terms which include the terms of interest
 	 * @return a count of DefinedTerms
 	 */
-	public <T extends DefinedTermBase> int countIncludes(Set<T> definedTerms);
+	public <T extends DefinedTermBase> int countIncludes(Collection<T> definedTerms);
 
 	public DefinedTermBase findByUri(URI uri);
 
