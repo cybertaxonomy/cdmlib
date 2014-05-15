@@ -173,7 +173,7 @@ public class DerivedUnitFacade {
 		}
 	}
 
-	private DerivedUnit getNewDerivedUnitInstance( SpecimenOrObservationType type) {
+	private DerivedUnit getNewDerivedUnitInstance(SpecimenOrObservationType type) {
 		if (type.isFieldUnit()){
 			return null;
 		}else if(type.isAnyDerivedUnit()){
