@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.List;
@@ -403,20 +404,17 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @param areaSet
      */
     static public void includeAllSubAreas(Set<NamedArea> areaSet, ITermService termService) {
-        Set<NamedArea> tmpAreaSet = areaSet;
+    	Collection<NamedArea> tmpAreas = new HashSet<NamedArea>(areaSet);
         // expand all areas to include also the sub areas
         Pager<NamedArea> pager = null;
         while(true){
-            pager = termService.getIncludes(tmpAreaSet, 1000, null, null);
+            pager = termService.getIncludes(tmpAreas, 1000, null, null);
             if(pager.getCount() == 0){
                 break;
             }
-            List<NamedArea> tmpAreaList = pager.getRecords();
-            //convert from Set to list
-            tmpAreaSet.clear();
-            tmpAreaSet.addAll(tmpAreaList);
-            areaSet.addAll(tmpAreaList);
-            
+            tmpAreas = pager.getRecords();
+            tmpAreas.removeAll(areaSet);
+            areaSet.addAll(tmpAreas);
         }
     }
 
