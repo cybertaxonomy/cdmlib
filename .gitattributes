@@ -1276,6 +1276,7 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UniqueIndexDro
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/UpdaterBase.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/VocabularyCreator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/permissions/PermissionsUpdater.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/test/ValidateForeignKeys.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/SchemaUpdater_24_25.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v24_25/TermUpdater_24_25.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/database/update/v25_30/FeatureNodeTreeColumnUpdater.java -text
