@@ -57,18 +57,20 @@ public class NomenclaturalSortOrderBrigde extends AbstractClassBridge {
      */
     @Override
     public void set(String name, Object value, Document document, LuceneOptions luceneOptions) {
-        NonViralName n = null;
+        NonViralName<?> n = null;
 
         if(value instanceof TaxonBase) {
             try {
                 n = HibernateProxyHelper.deproxy(((TaxonBase) value).getName(), NonViralName.class);
+                if (n == null){
+                	return;
+                }
             } catch (ClassCastException e) {
                 logger.info(e);
                 /* IGNORE */
             }
 
-        }
-        if(value instanceof TaxonNameBase){
+        }else if(value instanceof TaxonNameBase){
             n = (NonViralName)value;
         }
         if(n == null) {
