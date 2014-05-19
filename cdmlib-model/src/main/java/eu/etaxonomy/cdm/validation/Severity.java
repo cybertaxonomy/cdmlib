@@ -6,14 +6,14 @@ import javax.validation.ConstraintViolation;
 import javax.validation.Payload;
 
 /**
- * A class conveying the severity of a {@link ConstraintViolation}. Severity levels are in
- * fact extraneous to the javax.validation framework and can only be conveyed using
- * generic {@link Payload} objects. Unfortunately, only the class of those objects is
- * communicated back to clients of the javax.validation framework. The class <i>is</i> the
- * message. Concrete instances or {@code enum}s (an obvious choice for severity levels)
- * cannot function as {@code Payload} objects. The Severity class enables you to program
- * using true Severity instances (one for each level), while behind the scenes only the
- * class of those instances is taken into account.
+ * A class conveying the severity of a {@link ConstraintViolation}. Severity levels are
+ * extraneous to the javax.validation framework and can only be conveyed using generic
+ * {@link Payload} objects. Unfortunately, only the class of those objects is communicated
+ * back to the client. The class <i>is</i> the message. Concrete instances or {@code enum}
+ * s (an obvious choice for severity levels) cannot function as {@code Payload} objects.
+ * The Severity class enables you to program using true Severity instances (one for each
+ * level), while behind the scenes only the class of those instances is taken into
+ * account.
  */
 public abstract class Severity implements Payload {
 
