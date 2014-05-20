@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
@@ -807,16 +808,31 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public int countAllRelationships();
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
+    
     public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
+    
     public String getPhylumName(TaxonNameBase name);
 
     public long deleteSynonymRelationships(Synonym syn);
-
-
-
-
-
+    
     /**
+     * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or 
+     * {@link TaxonRelationshipType#INCLUDES() included} in the taxon represented by the given taxon uuid.
+     * The result also returns the path to these taxa represented by the uuids of 
+     * the {@link TaxonRelationshipType taxon relationships types} and doubtful information.
+     * If classificationUuids is set only taxa of classifications are returned which are included
+     * in the given {@link Classification classifications}. ALso the path to these taxa may not include
+     * taxa from other classifications.
+     * @param taxonUuid uuid of the original taxon
+     * @param classificationUuids List of uuids of classifications used as a filter
+     * @param includeDoubtful set to <code>true</code> if also doubtfully included taxa should be included in the result
+     * @return a DTO which includes a list of taxa with the pathes from the original taxon to the given taxon as well
+     * as doubtful and date information. The original taxon is included in the result.
+     */
+    public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, List<UUID> classificationFilter, boolean includeDoubtful, boolean onlyCongruent);
+
+
+   /**
      * Removes a synonym.<BR><BR>
      *
      * In detail it removes

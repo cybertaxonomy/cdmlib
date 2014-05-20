@@ -2234,6 +2234,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TaxonNodeDelet
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/config/TermDeletionConfigurator.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/description/TransmissionEngineDistribution.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/DistributionInfoDTO.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/dto/IncludedTaxaDTO.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/DataChangeNoRollbackException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/HomotypicalGroupChangeException.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/service/exception/ReferencedObjectUndeletableException.java -text

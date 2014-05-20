@@ -30,6 +30,7 @@ import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
+import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -59,6 +60,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -1636,6 +1638,61 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertNull(tax);
         assertNull(name);
 
+    }
+    
+    @Test
+    @DataSet(value="BlankDataSet.xml")
+    public final void testLlistIncludedTaxa(){
+    	Reference<?> citation = null;
+    	String microCitation = null;
+    	
+    	Classification cl1 = Classification.NewInstance("testClassification1");
+    	Classification cl2 = Classification.NewInstance("testClassification2");
+    	Classification cl3 = Classification.NewInstance("testClassification3");
+    	
+    	Taxon c1Genus = Taxon.NewInstance(null, null);c1Genus.setUuid(UUID.fromString("daa24f6f-7e38-4668-b385-10c789212e4e"));
+    	Taxon c1Species = Taxon.NewInstance(null, null);c1Species.setUuid(UUID.fromString("1c1d0566-67d0-4806-bf23-ecf55f4b9118"));
+    	Taxon c1SubSpecies1 = Taxon.NewInstance(null, null);c1SubSpecies1.setUuid(UUID.fromString("96ae2fad-76df-429f-b179-42e00838fea4"));
+    	Taxon c1SubSpecies2 = Taxon.NewInstance(null, null);c1SubSpecies2.setUuid(UUID.fromString("5d3f6147-ca72-40e0-be8a-6c835a09a579"));
+    	cl1.addParentChild(c1Genus, c1Species, null, null);
+    	cl1.addParentChild(c1Species, c1SubSpecies1, null, null);
+    	cl1.addParentChild(c1Species, c1SubSpecies2, null, null);
+    	
+    	Taxon c2Genus = Taxon.NewInstance(null, null);c2Genus.setUuid(UUID.fromString("ed0ec006-3ac8-4a12-ae13-fdf2a13dedbe"));
+    	Taxon c2Species = Taxon.NewInstance(null, null);c2Species.setUuid(UUID.fromString("1027eb18-1c26-450e-a299-981b775ebc3c"));
+    	Taxon c2SubSpecies1 = Taxon.NewInstance(null, null);c2SubSpecies1.setUuid(UUID.fromString("61f039c8-01f3-4f5d-8e16-1602139774e7"));
+    	Taxon c2SubSpecies2 = Taxon.NewInstance(null, null);c2SubSpecies2.setUuid(UUID.fromString("2ed6b6f8-05f9-459a-a075-2bca57e3013e"));
+    	cl2.addParentChild(c2Genus, c2Species, null, null);
+    	cl2.addParentChild(c2Species, c2SubSpecies1, null, null);
+    	cl2.addParentChild(c2Species, c2SubSpecies2, null, null);
+    	
+    	Taxon c3Genus = Taxon.NewInstance(null, null);c3Genus.setUuid(UUID.fromString("407dfc8d-7a4f-4370-ada4-76c1a8279d1f"));
+    	Taxon c3Species = Taxon.NewInstance(null, null);c3Species.setUuid(UUID.fromString("b6d34fc7-4aa7-41e5-b633-86f474edbbd5"));
+    	Taxon c3SubSpecies1 = Taxon.NewInstance(null, null);c3SubSpecies1.setUuid(UUID.fromString("01c07585-a422-40cd-9339-a74c56901d9f"));
+    	Taxon c3SubSpecies2 = Taxon.NewInstance(null, null);c3SubSpecies2.setUuid(UUID.fromString("390c8e23-e05f-4f89-b417-50cf080f4c91"));
+    	cl3.addParentChild(c3Genus, c3Species, null, null);
+    	cl3.addParentChild(c3Species, c3SubSpecies1, null, null);
+    	cl3.addParentChild(c3Species, c3SubSpecies2, null, null);
+    	
+    	classificationService.save(cl1);
+    	classificationService.save(cl2);
+    	classificationService.save(cl3);
+    	
+      	Taxon c4Genus = Taxon.NewInstance(null, null);c4Genus.setUuid(UUID.fromString("bfd6bbdd-0116-4ab2-a781-9316224aad78"));
+    	Taxon c4Species = Taxon.NewInstance(null, null);c4Species.setUuid(UUID.fromString("9347a3d9-5ece-4d64-9035-e8aaf5d3ee02"));
+    	Taxon c4SubSpecies = Taxon.NewInstance(null, null);c4SubSpecies.setUuid(UUID.fromString("777aabbe-4c3a-449c-ab99-a91f2fec9f07"));
+    	
+    	c1Species.addTaxonRelation(c2Species, TaxonRelationshipType.CONGRUENT_TO(), citation, microCitation);
+    	c1Species.addTaxonRelation(c4Species, TaxonRelationshipType.INCLUDES(), citation, microCitation);
+    	
+    	service.saveOrUpdate(c1Species);
+//    	service.saveOrUpdate(c)
+    	
+    	IncludedTaxaDTO dto = service.listIncludedTaxa(c1Species.getUuid(), null, false, false);
+    	Assert.assertNotNull("IncludedTaxaDTO", dto);
+    	Assert.assertEquals(7, dto.getIncludedTaxa().size());
+    	
+    	
     }
 
 
