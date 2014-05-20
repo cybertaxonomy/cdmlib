@@ -31,9 +31,11 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	/**
+	 *returns the cildnodes of the taxonNode, if recursive is true it returns all descendants
 	 *
 	 * @param taxonNode
 	 * @param propertyPaths
+	 * @param recursive
 	 * @return
 	 */
 	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive);
