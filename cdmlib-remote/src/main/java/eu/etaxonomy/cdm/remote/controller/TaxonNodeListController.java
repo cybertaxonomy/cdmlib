@@ -72,7 +72,7 @@ public class TaxonNodeListController extends BaseListController<TaxonNode, ITaxo
 			HttpServletResponse response
 			) throws IOException {
 		
-		TaxonNode taxonNode = service.getTaxonNodeByUuid(taxonNodeUuid);
+		TaxonNode taxonNode = service.find(taxonNodeUuid);
 		
 		return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false);
 	}
