@@ -39,6 +39,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -3112,13 +3113,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             }
 
- 	}
+    	}
     	
     	return result;
     }
 
 	@Override
-	public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, List<UUID> classificationFilter, boolean includeDoubtful, boolean onlyCongruent) {
+	public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, IncludedTaxonConfiguration config) {
 		IncludedTaxaDTO result = new IncludedTaxaDTO(taxonUuid);
 		
 		//preliminary implementation
@@ -3139,30 +3140,32 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			throw new IllegalArgumentException("Unhandled class " + taxonBase.getClass().getSimpleName());
 		}
 		
-		Set<Taxon> related = findRelated(taxa, result);
+		Set<Taxon> related = findRelated(taxa, result, config);
 		int i = 0;
 		while((! related.isEmpty()) && i++ < 100){  //to avoid 
-			 related = findRelated(related, result);
+			 related = findRelated(related, result, config);
 		}
 		
 		return result;
 	}
 
-	private Set<Taxon> findRelated(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa) {
+	private Set<Taxon> findRelated(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
 		Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
 		for (Taxon taxon: uncheckedTaxa){
 			taxonNodes.addAll(taxon.getTaxonNodes());
 		}
 
 		Set<Taxon> children = new HashSet<Taxon>();
-		for (TaxonNode node: taxonNodes){
-			List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true);
-			for (TaxonNode child : childNodes){
-				children.add(child.getTaxon());
+		if (! config.onlyCongruent){
+			for (TaxonNode node: taxonNodes){
+				List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true);
+				for (TaxonNode child : childNodes){
+					children.add(child.getTaxon());
+				}
 			}
+			children.remove(null);  // just to be on the save side		
 		}
-		children.remove(null);  // just to be on the save side		
-
+			
 		Iterator<Taxon> it = children.iterator();
 		while(it.hasNext()){
 			UUID uuid = it.next().getUuid();
@@ -3176,13 +3179,13 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Set<Taxon> uncheckedAndChildren = new HashSet<Taxon>(uncheckedTaxa);
 		uncheckedAndChildren.addAll(children);
 		
-		Set<Taxon> relatedTaxa = getConceptRelatedTaxa(uncheckedAndChildren, existingTaxa);
+		Set<Taxon> relatedTaxa = getConceptRelatedTaxa(uncheckedAndChildren, existingTaxa, config);
 		Set<Taxon> result = new HashSet<Taxon>(relatedTaxa);
-		result.addAll(children);
+//		result.addAll(children);
 		return result;
 	}
 
-	private Set<Taxon> getConceptRelatedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa) {
+	private Set<Taxon> getConceptRelatedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
 		Set<Taxon> result = new HashSet<Taxon>();
 		
 		for (Taxon taxon : unchecked){
@@ -3191,8 +3194,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			
 			for (TaxonRelationship fromRel : fromRelations){
 				if (fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO()) ||
-						fromRel.getType().equals(TaxonRelationshipType.INCLUDES()) ||
-						fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
+						!config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.INCLUDES()) ||
+						!config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
 						){
 					result.add(fromRel.getToTaxon());
 				}
@@ -3217,5 +3220,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		return result;
 	}
 
+	
 
-    }
+}

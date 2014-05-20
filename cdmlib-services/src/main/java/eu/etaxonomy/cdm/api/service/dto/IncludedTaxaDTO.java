@@ -26,13 +26,12 @@ public class IncludedTaxaDTO {
 		private UUID taxonUuid;
 		private List<UUID> pathToTaxon = new ArrayList<UUID>();
 		private boolean doubtful = false;
-		private DateTime date;		
+	
 		
 		public IncludedTaxon(UUID taxonUuid, List<UUID> pathToTaxon, boolean doubtful) {
 			this.taxonUuid = taxonUuid;
 			this.pathToTaxon = pathToTaxon;
 			this.doubtful = doubtful;
-			this.date = DateTime.now();
 		}
 		
 		
@@ -54,12 +53,7 @@ public class IncludedTaxaDTO {
 		public void setDoubtful(boolean doubtful) {
 			this.doubtful = doubtful;
 		}
-		public DateTime getDate() {
-			return date;
-		}
-		public void setDate(DateTime date) {
-			this.date = date;
-		}
+
 		
 		@Override
 		public String toString(){
@@ -70,6 +64,8 @@ public class IncludedTaxaDTO {
 	
 	private List<IncludedTaxon> includedTaxa = new ArrayList<IncludedTaxaDTO.IncludedTaxon>();
 
+	private DateTime date = DateTime.now();
+	
 	//** ******************* CONSTRUCTOR **************************/
 	
 	public IncludedTaxaDTO() {}
@@ -96,10 +92,17 @@ public class IncludedTaxaDTO {
 	public void addIncludedTaxon(UUID taxonUuid, List<UUID> uuidPath, boolean doubtful){
 		includedTaxa.add(new IncludedTaxon(taxonUuid, uuidPath, doubtful));
 	}
+	
+	public DateTime getDate() {
+		return date;
+	}
+	public void setDate(DateTime date) {
+		this.date = date;
+	}
 
-	public boolean contains(UUID uuid) {
+	public boolean contains(UUID taxonUuid) {
 		for (IncludedTaxon taxon: includedTaxa){
-			if (taxon.taxonUuid.equals(uuid)){
+			if (taxon.taxonUuid.equals(taxonUuid)){
 				return true;
 			}
 		}

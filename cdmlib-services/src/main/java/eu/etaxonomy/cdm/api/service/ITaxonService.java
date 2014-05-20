@@ -20,6 +20,7 @@ import org.apache.lucene.index.CorruptIndexException;
 import org.apache.lucene.queryParser.ParseException;
 
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.MatchingTaxonConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -829,8 +830,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @return a DTO which includes a list of taxa with the pathes from the original taxon to the given taxon as well
      * as doubtful and date information. The original taxon is included in the result.
      */
-    public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, List<UUID> classificationFilter, boolean includeDoubtful, boolean onlyCongruent);
-
+    public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, IncludedTaxonConfiguration configuration);
+    	
 
    /**
      * Removes a synonym.<BR><BR>

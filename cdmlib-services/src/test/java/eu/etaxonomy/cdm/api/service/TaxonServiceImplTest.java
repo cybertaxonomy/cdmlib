@@ -26,6 +26,7 @@ import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
@@ -1644,7 +1645,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     @DataSet(value="BlankDataSet.xml")
     public final void testLlistIncludedTaxa(){
     	Reference<?> citation = null;
-    	String microCitation = null;
+    	String microcitation = null;
     	
     	Classification cl1 = Classification.NewInstance("testClassification1");
     	Classification cl2 = Classification.NewInstance("testClassification2");
@@ -1682,15 +1683,26 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Taxon c4Species = Taxon.NewInstance(null, null);c4Species.setUuid(UUID.fromString("9347a3d9-5ece-4d64-9035-e8aaf5d3ee02"));
     	Taxon c4SubSpecies = Taxon.NewInstance(null, null);c4SubSpecies.setUuid(UUID.fromString("777aabbe-4c3a-449c-ab99-a91f2fec9f07"));
     	
-    	c1Species.addTaxonRelation(c2Species, TaxonRelationshipType.CONGRUENT_TO(), citation, microCitation);
-    	c1Species.addTaxonRelation(c4Species, TaxonRelationshipType.INCLUDES(), citation, microCitation);
+    	c1Species.addTaxonRelation(c2Species, TaxonRelationshipType.CONGRUENT_TO(), citation, microcitation);
+    	c1Species.addTaxonRelation(c4Species, TaxonRelationshipType.INCLUDES(), citation, microcitation);
+    	c2Species.addTaxonRelation(c1SubSpecies2, TaxonRelationshipType.INCLUDES(), citation, microcitation);
     	
     	service.saveOrUpdate(c1Species);
-//    	service.saveOrUpdate(c)
+       	service.saveOrUpdate(c2Species);
     	
-    	IncludedTaxaDTO dto = service.listIncludedTaxa(c1Species.getUuid(), null, false, false);
+    	IncludedTaxaDTO dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, false));
     	Assert.assertNotNull("IncludedTaxaDTO", dto);
     	Assert.assertEquals(7, dto.getIncludedTaxa().size());
+    	Assert.assertNotNull("date should not be null", dto.getDate());
+    	
+    	//only congruent
+    	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, true));
+    	Assert.assertNotNull("IncludedTaxaDTO", dto);
+    	Assert.assertEquals(2, dto.getIncludedTaxa().size());
+    	    	
+    	dto = service.listIncludedTaxa(c2Genus.getUuid(), new IncludedTaxonConfiguration(null, false, false));
+    	Assert.assertNotNull("IncludedTaxaDTO", dto);
+    	Assert.assertEquals(8, dto.getIncludedTaxa().size());
     	
     	
     }
