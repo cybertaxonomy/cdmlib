@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
@@ -31,13 +29,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @version 1.0
  */
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
-
-	/**
-	 *
-	 * @param uuid
-	 */
-	@Deprecated // use findByUuid() instead; TODO will be removed in the next version
-	public TaxonNode getTaxonNodeByUuid(UUID uuid);
 
 	/**
 	 *
