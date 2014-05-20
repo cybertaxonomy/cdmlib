@@ -94,7 +94,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 				continue;
 			}
 			String tcsElementName = "TaxonRelationship";
-			List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
+			List<Element> elTaxonRelationshipList = elTaxonRelationships == null ? new ArrayList<Element>() : elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
 			for (Element elTaxonRelationship : elTaxonRelationshipList){
 				
 				String relationshipType = elTaxonRelationship.getAttributeValue("type");

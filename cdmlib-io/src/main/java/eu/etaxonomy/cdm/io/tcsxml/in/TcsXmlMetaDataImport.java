@@ -75,6 +75,9 @@ public class TcsXmlMetaDataImport extends TcsXmlImportBase implements ICdmIO<Tcs
 		success &= doubleResult.getSecondResult();
 		Element elSimple = doubleResult.getFirstResult();
 		//TODO do simple MetaData
+		if (elSimple != null && (elSimple.getChildren().size() > 0 || elSimple.getAttributes().size() > 0 )){
+			logger.warn("Simple Metadata not handled yet");
+		}
 		
 		childName = "MetaDataDetailed";
 		obligatory = false;

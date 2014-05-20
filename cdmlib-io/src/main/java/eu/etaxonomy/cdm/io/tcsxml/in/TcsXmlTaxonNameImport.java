@@ -82,7 +82,7 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 		
 		String tcsElementName = "TaxonName";
-		List<Element> elTaxonNameList = (List<Element>)elTaxonNames.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : (List<Element>)elTaxonNames.getChildren(tcsElementName, tcsNamespace);
 				
 		int i = 0;
 		//for each taxonName
@@ -479,6 +479,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 			Reference<?> ref = makeReferenceType(elPublishedIn, clazz, referenceMap, success);
 			if (ref instanceof INomenclaturalReference){
 				name.setNomenclaturalReference(ref);
+			}else if (ref == null){
+				logger.warn("Nomecl. reference could not be created for '" + name.getTitleCache() + "'");
 			}else{
 				logger.warn("Reference is not of type INomenclaturalReference and could not be added to the name " + name.getTitleCache());
 			}

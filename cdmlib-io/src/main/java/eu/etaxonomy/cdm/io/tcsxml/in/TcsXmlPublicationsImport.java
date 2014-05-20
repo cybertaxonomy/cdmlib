@@ -9,6 +9,7 @@
  
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -89,7 +90,7 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 		
 		String tcsElementName = "Publication";
 		String idNamespace = "Publication";
-		List<Element> elPublicationList = elPublications.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elPublicationList = elPublications == null ? new ArrayList<Element>() : elPublications.getChildren(tcsElementName, tcsNamespace);
 		
 		int i = 0;
 		//for each taxonName
