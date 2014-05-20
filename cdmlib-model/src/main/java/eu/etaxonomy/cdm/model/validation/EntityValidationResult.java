@@ -19,6 +19,8 @@ import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CascadeType;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.annotations.Type;
 import org.hibernate.search.annotations.FieldBridge;
 
@@ -71,6 +73,7 @@ public class EntityValidationResult extends CdmBase {
 	@XmlElementWrapper(name = "EntityConstraintViolations")
 	@OneToMany(mappedBy = "entityValidationResult")
 	@Cascade({ CascadeType.ALL })
+	@Fetch(value = FetchMode.JOIN)
 	private Set<EntityConstraintViolation> entityConstraintViolations;
 
 
