@@ -167,7 +167,7 @@ public interface IService<T extends ICdmBase>{
      * @return
      */
     //TODO refactor to public <S extends T> List<T> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T>  List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Finds the cdm entity specified by the <code>uuid</code> parameter and
@@ -214,7 +214,7 @@ public interface IService<T extends ICdmBase>{
      * @param propertyPaths properties to be initialized
      * @return a pager of objects of type <T>
      */
-    public Pager<T> page(Class<? extends T> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Re-read the state of the given instance from the underlying database.

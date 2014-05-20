@@ -21,7 +21,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
-import org.hibernate.ObjectDeletedException;
 import org.junit.Assert;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -31,9 +30,7 @@ import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.SynonymDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
@@ -1009,7 +1006,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Classification tree = classificationService.find(classificationUuid);
         UUID taxonUuid = UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783");
         TaxonBase<?> taxonBase =  service.find(taxonUuid);
-        List <TaxonBase> synonyms = service.list(Synonym.class, null, null, null, null);
+        List <Synonym> synonyms = service.list(Synonym.class, null, null, null, null);
         assertEquals("Number of synonyms should be 2",2,synonyms.size());
         Taxon taxon = (Taxon)taxonBase;
 

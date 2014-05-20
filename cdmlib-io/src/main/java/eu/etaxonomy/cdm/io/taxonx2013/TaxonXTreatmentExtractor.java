@@ -37,7 +37,6 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.LSID;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -1400,12 +1399,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     @SuppressWarnings("rawtypes")
     private Feature getFeatureObjectFromString(String featureName) {
         logger.info("getFeatureObjectFromString");
-        List<DefinedTermBase> features = importer.getTermService().list(Feature.class, null,null,null,null);
+        List<Feature> features = importer.getTermService().list(Feature.class, null,null,null,null);
         Feature currentFeature=null;
-        for (DefinedTermBase feature: features){
-            String tmpF = ((Feature)feature).getTitleCache();
+        for (Feature feature: features){
+            String tmpF = feature.getTitleCache();
             if (tmpF.equalsIgnoreCase(featureName)) {
-                currentFeature=(Feature)feature;
+                currentFeature=feature;
                 //                System.out.println("currentFeatureFromList "+currentFeature.getUuid());
             }
         }
@@ -1864,12 +1863,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     @SuppressWarnings("rawtypes")
     private Feature getNotMarkedUpFeatureObject() {
         logger.info("getNotMarkedUpFeatureObject");
-        List<DefinedTermBase> features = importer.getTermService().list(Feature.class, null,null,null,null);
+        List<Feature> features = importer.getTermService().list(Feature.class, null,null,null,null);
         Feature currentFeature =null;
-        for (DefinedTermBase feat: features){
-            String tmpF = ((Feature)feat).getTitleCache();
+        for (Feature feat: features){
+            String tmpF = feat.getTitleCache();
             if (tmpF.equalsIgnoreCase(notMarkedUp)) {
-                currentFeature=(Feature)feat;
+                currentFeature=feat;
             }
         }
         if (currentFeature == null) {
@@ -4545,9 +4544,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
             }
             if (lsid !=null){
-                List<TaxonBase> taxons = importer.getTaxonService().list(Taxon.class, 0, 0, null, null);
+                List<Taxon> taxa = importer.getTaxonService().list(Taxon.class, 0, 0, null, null);
                 LSID currentlsid=null;
-                for (TaxonBase t:taxons){
+                for (Taxon t:taxa){
                     currentlsid = t.getLsid();
                     if (currentlsid !=null){
                         if (currentlsid.getLsid().equals(lsid.getLsid())){

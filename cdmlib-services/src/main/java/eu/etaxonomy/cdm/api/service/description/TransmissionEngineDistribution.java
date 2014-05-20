@@ -56,7 +56,6 @@ import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 
 /**
@@ -376,7 +375,7 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
         List<DefinedTermBase> superAreaList = termService.find(superAreaUuids);
 
         // visit all accepted taxa
-        Pager<TaxonBase> taxonPager = null;
+        Pager<Taxon> taxonPager = null;
         int pageIndex = 0;
         boolean isLastPage = false;
         while (!isLastPage) {
@@ -401,12 +400,11 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
             isLastPage = taxonPager.getRecords().size() < batchSize;
 
             // iterate over the taxa and accumulate areas
-            for(TaxonBase taxonBase : taxonPager.getRecords()) {
+            for(Taxon taxon : taxonPager.getRecords()) {
                 if(logger.isDebugEnabled()){
-                    logger.debug("accumulateByArea() - taxon :" + taxonBase.getTitleCache());
+                    logger.debug("accumulateByArea() - taxon :" + taxon.getTitleCache());
                 }
 
-                Taxon taxon = (Taxon)taxonBase;
                 TaxonDescription description = findComputedDescription(taxon, doClearDescriptions);
                 List<Distribution> distributions = distributionsFor(taxon);
 

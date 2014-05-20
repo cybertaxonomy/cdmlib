@@ -659,7 +659,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
         if(clazz == null) {
             criteria = getSession().createCriteria(type);
@@ -678,17 +678,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria,orderHints);
 
-        List<T> results = criteria.list();
+        List<S> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints) {
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type,limit,start,orderHints,null);
     }
 
     @Override
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) {
         return list(type,limit,start,null,null);
     }
 

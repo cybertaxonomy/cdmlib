@@ -414,8 +414,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
 
 
-            List<OriginalSourceBase> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
-            List<OriginalSourceBase> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
+            List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
+            List<DescriptionElementSource> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
 
             Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
             if(issTmp2!=null) {
@@ -530,7 +530,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     //    for our new source.
     private IdentifiableSource getIdentifiableSource(Reference<?> reference, String citationDetail) {
 
-        List<OriginalSourceBase> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
+        List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
 
 
         if (reference != null){
@@ -753,16 +753,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @SuppressWarnings("rawtypes")
     private Institution getInstitution(String institutionCode, Abcd206ImportState state) {
         Institution institution=null;
-        List<AgentBase> institutions;
+        List<Institution> institutions;
         try {
             institutions = getAgentService().list(Institution.class, null, null, null, null);
         } catch (Exception e) {
-            institutions = new ArrayList<AgentBase>();
+            institutions = new ArrayList<Institution>();
             logger.warn(e);
         }
         if (institutions.size() > 0 && state.getConfig().isReUseExistingMetadata()) {
-            for (AgentBase inst:institutions){
-                Institution institut = (Institution)inst;
+            for (Institution institut:institutions){
                 try{
                     if (institut.getCode().equalsIgnoreCase(institutionCode)) {
                         institution=institut;
@@ -779,7 +778,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // create institution
             institution = Institution.NewInstance();
             institution.setCode(institutionCode);
-            institution.setTitleCache(institutionCode);
+            institution.setTitleCache(institutionCode, true);
         }
         save(institution, state);
         return institution;
@@ -957,8 +956,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         Map<String,OriginalSourceBase<?>> sourceMap = new HashMap<String, OriginalSourceBase<?>>();
 
-        List<OriginalSourceBase> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
-        List<OriginalSourceBase> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
+        List<IdentifiableSource> issTmp = getCommonService().list(IdentifiableSource.class, null, null, null, null);
+        List<DescriptionElementSource> issTmp2 = getCommonService().list(DescriptionElementSource.class, null, null, null, null);
 
         Set<OriginalSourceBase> osbSet = new HashSet<OriginalSourceBase>();
         if(issTmp2!=null) {
@@ -1426,10 +1425,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     }
 
     private Feature getFeature(String featureName, Abcd206ImportState state){
-        List<DefinedTermBase> features = getTermService().list(Feature.class, null,null,null,null);
+        List<Feature> features = getTermService().list(Feature.class, null,null,null,null);
         Feature currentFeature=null;
-        for (DefinedTermBase feature: features){
-            String tmpF = ((Feature)feature).getTitleCache();
+        for (Feature feature: features){
+            String tmpF = feature.getTitleCache();
             if (tmpF.equalsIgnoreCase(featureName)) {
                 currentFeature=(Feature)feature;
             }

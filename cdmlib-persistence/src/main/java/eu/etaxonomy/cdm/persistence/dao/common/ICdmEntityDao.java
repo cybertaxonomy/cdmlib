@@ -164,7 +164,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Returns a sublist of CdmBase instances stored in the database. A maximum
@@ -198,7 +198,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @return
      * @throws DataAccessException
      */
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start) throws DataAccessException;
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) throws DataAccessException;
 
     /**
      * Returns a sublist of objects matching the grouping projections supplied using the groups parameter

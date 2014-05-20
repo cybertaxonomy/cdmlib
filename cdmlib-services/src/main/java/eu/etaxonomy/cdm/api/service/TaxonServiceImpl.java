@@ -191,28 +191,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
     /**
      * FIXME Candidate for harmonization
-     * list(Synonym.class, ...)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllSynonyms(int, int)
-     */
-    @Override
-    public List<Synonym> getAllSynonyms(int limit, int start) {
-        return dao.getAllSynonyms(limit, start);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
-     * list(Taxon.class, ...)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllTaxa(int, int)
-     */
-    @Override
-    public List<Taxon> getAllTaxa(int limit, int start) {
-        return dao.getAllTaxa(limit, start);
-    }
-
-    /**
-     * FIXME Candidate for harmonization
      * merge with getRootTaxa(Reference sec, ..., ...)
      *  (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.reference.Reference, boolean)
@@ -225,18 +203,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return dao.getRootTaxa(sec, cdmFetch, onlyWithChildren, false);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getRootTaxa(eu.etaxonomy.cdm.model.name.Rank, eu.etaxonomy.cdm.model.reference.Reference, boolean, boolean)
-     */
     @Override
     public List<Taxon> getRootTaxa(Rank rank, Reference sec, boolean onlyWithChildren,boolean withMisapplications, List<String> propertyPaths) {
         return dao.getRootTaxa(rank, sec, null, onlyWithChildren, withMisapplications, propertyPaths);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.ITaxonService#getAllRelationships(int, int)
-     */
     @Override
     public List<RelationshipBase> getAllRelationships(int limit, int start){
         return dao.getAllRelationships(limit, start);

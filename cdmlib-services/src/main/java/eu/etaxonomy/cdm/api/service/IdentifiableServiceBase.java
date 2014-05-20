@@ -222,7 +222,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 	}
 	
 	@Transactional(readOnly = false)  //TODO check transactional behaviour, e.g. what happens with the session if count is very large 
-	protected void updateTitleCacheImpl(Class<? extends T> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
+	protected <S extends T > void updateTitleCacheImpl(Class<S> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<T> cacheStrategy, IProgressMonitor monitor) {
 		if (stepSize == null){
 			stepSize = UPDATE_TITLE_CACHE_DEFAULT_STEP_SIZE;
 		}
@@ -240,7 +240,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			
 			
 			Map<Class<? extends CdmBase>, AutoPropertyInitializer<CdmBase>> oldAutoInit = switchOfAutoinitializer();
-			List<T> list = this.list(clazz, stepSize, i, orderHints, null);
+			List<S> list = this.list(clazz, stepSize, i, orderHints, null);
 			switchOnOldAutoInitializer(oldAutoInit);
 			
 			List<T> entitiesToUpdate = new ArrayList<T>();

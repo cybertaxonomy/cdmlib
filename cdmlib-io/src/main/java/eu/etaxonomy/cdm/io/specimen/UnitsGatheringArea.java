@@ -79,7 +79,7 @@ public class UnitsGatheringArea {
      */
     @SuppressWarnings("rawtypes")
     public void setAreaNames(List<String> namedAreas, ImportConfiguratorBase<?, ?> config, ITermService termService){
-        List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
+        List<NamedArea> termsList = termService.list(NamedArea.class,0,0,null,null);
         termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         if (DEBUG) {
@@ -163,10 +163,9 @@ public class UnitsGatheringArea {
      * @param fullName: the country's full name
      * @param app: the CDM application controller
      */
-    @SuppressWarnings("rawtypes")
     public void setCountry(String iso, String fullName, ImportConfiguratorBase<?, ?> config, ITermService termService,
             IOccurrenceService occurrenceService){
-        List<DefinedTermBase> termsList = termService.list(NamedArea.class,0,0,null,null);
+        List<NamedArea> termsList = termService.list(NamedArea.class,0,0,null,null);
         termsList.addAll(termService.list(Country.class, 0, 0, null, null));
 
         HashMap<String, UUID> matchingTerms = new HashMap<String, UUID>();

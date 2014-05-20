@@ -62,7 +62,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.remote.dto.redlist.RedlistDTO;
 import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.vaadin.components.TaxonTableDTO;
@@ -462,9 +461,8 @@ public class DashBoardView extends CustomComponent implements View{
 	 //------------------------------------Example Data Creation------------------------------------------//
 	//---------------------------------------------------------------------------------------------------//
 	private void createExampleData(){
-		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
-		for(TaxonBase taxonBase : listTaxa){
-			Taxon taxon = (Taxon) taxonBase;
+		List<Taxon> listTaxa = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
+		for(Taxon taxon : listTaxa){
 			TaxonDescription td = getTaxonDescription(taxon, false, true);
 			NamedArea na = NamedArea.NewInstance();//0a9727d2-8d1f-4a88-ad4c-d6ef4ebc112a
 			na = (NamedArea) termService.load(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
@@ -478,11 +476,10 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 	
 	private void deleteExampleData(){
-		List<TaxonBase> listTaxa = taxonService.list(Taxon.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-		Iterator<TaxonBase> taxonIterator = listTaxa.iterator();
+		List<Taxon> listTaxa = taxonService.list(Taxon.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+		Iterator<Taxon> taxonIterator = listTaxa.iterator();
 		while(taxonIterator.hasNext()){
-			TaxonBase taxonBase = taxonIterator.next();
-			Taxon taxon = (Taxon) taxonBase;
+			Taxon taxon =  taxonIterator.next();
 			TaxonDescription td = getTaxonDescription(taxon, false, false);
 			Iterator<DescriptionElementBase> descriptionIterator = td.getElements().iterator();
 			while(descriptionIterator.hasNext()){

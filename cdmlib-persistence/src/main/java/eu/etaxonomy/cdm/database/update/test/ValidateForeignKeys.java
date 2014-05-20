@@ -71,7 +71,7 @@ public class ValidateForeignKeys {
 	
 	
 	private String sql(String thisTable, String thisField, String foreignTable){
-		String sql = "SELECT * FROM %s WHERE %s.%s NOT IN (SELECT id FROM %s)";
+		String sql = "SELECT * FROM %s WHERE %s.%s_id NOT IN (SELECT id FROM %s)";
 		sql = String.format(sql, thisTable, thisTable, thisField, foreignTable);
 		return sql;
 	}

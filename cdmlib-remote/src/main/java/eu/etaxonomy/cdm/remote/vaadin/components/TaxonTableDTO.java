@@ -84,17 +84,15 @@ public class TaxonTableDTO extends Table{
 //		conversationHolder.bind();
 		final BeanItemContainer<RedlistDTO> redListContainer = new BeanItemContainer<RedlistDTO>(RedlistDTO.class);
 		//TODO: Make use of paging
-		Collection<TaxonBase> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
+		Collection<Taxon> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
 		
-		for(TaxonBase taxonBase:listTaxon){
+		for(Taxon taxonBase:listTaxon){
 			
-			if(taxonBase instanceof Taxon){
-				Taxon taxon = (Taxon) taxonBase;
-				List<PresenceAbsenceTermBase> termList = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
-				List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
-				RedlistDTO redlistDTO = new RedlistDTO(taxon, listTaxonDescription, termList);
-				redListContainer.addBean(redlistDTO);
-			}
+			Taxon taxon = (Taxon) taxonBase;
+			List<PresenceAbsenceTermBase> termList = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+			List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
+			RedlistDTO redlistDTO = new RedlistDTO(taxon, listTaxonDescription, termList);
+			redListContainer.addBean(redlistDTO);
 		}
 		
 		

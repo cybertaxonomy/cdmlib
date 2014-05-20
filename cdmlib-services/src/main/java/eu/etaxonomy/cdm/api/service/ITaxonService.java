@@ -61,26 +61,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     /**
-     * Computes all taxon bases.
-     * @param limit
-     * @param start
-     * @return
-     *
-     * FIXME could substitute with list(Synonym.class, limit, start)
-     */
-    public List<Synonym> getAllSynonyms(int limit, int start);
-
-    /**
-     * Computes all taxon bases.
-     * @param limit
-     * @param start
-     * @return
-     *
-     * FIXME could substitute with list(Taxon.class, limit,start)
-     */
-    public List<Taxon> getAllTaxa(int limit, int start);
-
-    /**
      * Computes all Taxon instances that do not have a taxonomic parent.
      * @param sec The concept reference that the taxon belongs to
      *
