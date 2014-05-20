@@ -7,6 +7,7 @@ import javax.validation.ConstraintViolation;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -18,6 +19,7 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Severity;
 
 @Repository
+@Qualifier("EntityValidationResultDaoHibernateImpl")
 public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<EntityValidationResult> implements IEntityValidationResultDao {
 
 	@SuppressWarnings("unused")

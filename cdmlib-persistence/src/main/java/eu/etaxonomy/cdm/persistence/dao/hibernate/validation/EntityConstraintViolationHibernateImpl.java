@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.hibernate.Query;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
@@ -12,6 +13,7 @@ import eu.etaxonomy.cdm.persistence.dao.validation.IEntityConstraintViolationDao
 import eu.etaxonomy.cdm.validation.Severity;
 
 @Repository
+@Qualifier("entityConstraintViolationHibernateImpl")
 public class EntityConstraintViolationHibernateImpl extends CdmEntityDaoBase<EntityConstraintViolation> implements IEntityConstraintViolationDao {
 
 	@SuppressWarnings("unused")
