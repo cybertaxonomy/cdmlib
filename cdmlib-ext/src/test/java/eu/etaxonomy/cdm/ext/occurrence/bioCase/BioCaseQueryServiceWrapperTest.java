@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.biocase;
+package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -22,6 +22,8 @@ import org.apache.log4j.Logger;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UriUtils;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
+import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 
 /**
  * @author pplitzner
@@ -38,8 +40,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
         if( UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
-                BioCaseQuery query = new BioCaseQuery();
-                query.taxonName = "Campanula*";
+                OccurenceQuery query = new OccurenceQuery("Campanula*", null, null, null, null, null, null, null);
                 InputStream response = queryService.query(query);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(response));
                 String line = null;

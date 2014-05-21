@@ -7,7 +7,7 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.biocase;
+package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,13 +26,14 @@ import org.jdom.output.XMLOutputter;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
  * This service provides access to BioCASe providers.<br>
- * It sends a {@link BioCaseQuery} via HTTP POST to a given provider
+ * It sends a {@link OccurenceQuery} via HTTP POST to a given provider
  * @author pplitzner
  * @date 13.09.2013
  *
@@ -59,24 +60,26 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         addSchemaAdapter(schemaAdapter);
     }
 
-    public InputStream query(BioCaseQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+    public InputStream query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
         //TODO: remove default herbar querying. Maybe make other query method public
         return query(query, "herbar");
     }
 
 
     /**
-     * Queries the BioCASE provider with the given {@link BioCaseQuery}.
+     * Queries the BioCASE provider with the given {@link OccurenceQuery}.
      * @return The response as an {@link InputStream}
      */
-    private InputStream query(BioCaseQuery query, String dsaName) throws ClientProtocolException, IOException, URISyntaxException{
+    private InputStream query(OccurenceQuery query, String dsaName) throws ClientProtocolException, IOException, URISyntaxException{
         Document doc = new BioCaseQueryGenerator().generateXMLQuery(query);
         String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
+        //POST
         List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
         queryParamsPOST.add(SUBMIT_PARAM);
         addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
         UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
+        //GET
         List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
         addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, dsaName);
         URI uri = createUri(SUB_PATH, queryParamsGET);

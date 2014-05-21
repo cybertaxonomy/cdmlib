@@ -7,11 +7,13 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.biocase;
+package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.Namespace;
+
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
 /**
  * Generates an XML query according to the BioCASe protocol.
@@ -62,10 +64,10 @@ public class BioCaseQueryGenerator {
 
     /**
      * Generates an XML query according to the BioCASe protocol.
-     * @param query the {@link BioCaseQuery} to transform to XML
+     * @param query the {@link OccurenceQuery} to transform to XML
      * @return the query XML {@link Document} according BioCASe protocol
      */
-    public Document generateXMLQuery(BioCaseQuery query){
+    public Document generateXMLQuery(OccurenceQuery query){
         Document document = new Document();
         Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
         Element elHeader = new Element(HEADER);

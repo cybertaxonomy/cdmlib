@@ -7,39 +7,25 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.biocase;
+package eu.etaxonomy.cdm.ext.occurrence;
 
 import java.util.Date;
 
 /**
- * Holds query parameters for a query to a BioCase provider.
+ * Holds query parameters for a query to an occurrence provider.
  * @author pplitzner
  * @date 17.09.2013
  *
  */
-public class BioCaseQuery {
-    public String taxonName;
-    public String collector;
-    public String collectorsNumber;
-    public String accessionNumber;
-    public String herbarium;
-    public String country;
-    public String locality;
-    public Date date;
-
-    /**
-     * Default constructor which initializes all parameters with <code>null</code>
-     */
-    public BioCaseQuery() {
-        taxonName = null;
-        collector = null;
-        collectorsNumber = null;
-        accessionNumber = null;
-        herbarium = null;
-        country = null;
-        locality = null;
-        date = null;
-    }
+public class OccurenceQuery {
+    public final String taxonName;
+    public final String collector;
+    public final String collectorsNumber;
+    public final String accessionNumber;
+    public final String herbarium;
+    public final String country;
+    public final String locality;
+    public final Date date;
 
     /**
      * Constructor to initially set the parameters
@@ -52,7 +38,7 @@ public class BioCaseQuery {
      * @param locality
      * @param date
      */
-    public BioCaseQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Date date) {
+    public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Date date) {
         this.taxonName = taxonName;
         this.collector = collector;
         this.collectorsNumber = collectorsNumber;
@@ -95,7 +81,7 @@ public class BioCaseQuery {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        BioCaseQuery other = (BioCaseQuery) obj;
+        OccurenceQuery other = (OccurenceQuery) obj;
         if (accessionNumber == null) {
             if (other.accessionNumber != null) {
                 return false;
@@ -187,8 +173,4 @@ public class BioCaseQuery {
         }
         return string;
     }
-
-
-
-
 }

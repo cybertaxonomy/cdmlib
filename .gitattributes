@@ -51,10 +51,6 @@ cdmlib-ext/pom.xml -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/BciServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/bci/IBciServiceWrapper.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQuery.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryGenerator.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryServiceWrapper.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/biocase/BioCaseResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/SchemaAdapterBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/common/ServiceWrapperBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/dc/DublinCoreSchemaAdapter.java -text
@@ -72,6 +68,12 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceAuthorConfigurator
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceConfiguratorBase.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceNamesConfigurator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServicePublicationConfigurator.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/OccurenceQuery.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryGenerator.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseResponseSchemaAdapter.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryGenerator.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlQuery.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper.java -text
@@ -80,10 +82,11 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/scratchpads/ScratchpadsService.jav
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapper.java -text
 cdmlib-ext/src/main/resources/eu/etaxonomy/cdm/ext/geo/mapServices_v10.xsd -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/bci/BciServiceTest.java -text
-cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/biocase/BioCaseQueryServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/EditGeoServiceTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/geo/GeoServiceAreaTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/ipni/IpniServiceTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryServiceWrapperTest.java -text
+cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/ext/sru/SruServiceWrapperTest.java -text
 cdmlib-ext/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text
