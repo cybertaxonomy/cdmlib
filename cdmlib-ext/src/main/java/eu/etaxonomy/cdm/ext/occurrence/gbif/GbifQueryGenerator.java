@@ -35,29 +35,29 @@ public class GbifQueryGenerator {
         List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
         // only look for preserved specimens
         ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "basisOfRecord", "PRESERVED_SPECIMEN");
-        if(query.accessionNumber!=null){
+        if(query.accessionNumber!=null || query.accessionNumber.isEmpty()){
 //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.accessionNumber);
         }
-        if(query.collector!=null){
+        if(query.collector!=null || query.collector.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "recordedBy", query.collector);
         }
-        if(query.collectorsNumber!=null){
+        if(query.collectorsNumber!=null || query.collectorsNumber.isEmpty()){
 //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.collectorsNumber);
         }
-        if(query.country!=null){
+        if(query.country!=null || query.country.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "country", query.country);
         }
         if(query.date!=null){
 //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.date);
         }
-        if(query.herbarium!=null){
+        if(query.herbarium!=null || query.herbarium.isEmpty()){
 //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.herbarium);
         }
-        if(query.locality!=null){
+        if(query.locality!=null || query.locality.isEmpty()){
             //TODO not yet available at GBIF
 //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, param, query.locality);
         }
-        if(query.taxonName!=null){
+        if(query.taxonName!=null || query.taxonName.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "scientificName", query.taxonName);
         }
         return queryParamsGET;
