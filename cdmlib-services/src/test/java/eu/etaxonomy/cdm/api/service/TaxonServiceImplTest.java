@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
+import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
@@ -1647,6 +1648,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Reference<?> citation = null;
     	String microcitation = null;
     	
+    	//Data
     	Classification cl1 = Classification.NewInstance("testClassification1");
     	Classification cl2 = Classification.NewInstance("testClassification2");
     	Classification cl3 = Classification.NewInstance("testClassification3");
@@ -1683,27 +1685,41 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
     	Taxon c4Species = Taxon.NewInstance(null, null);c4Species.setUuid(UUID.fromString("9347a3d9-5ece-4d64-9035-e8aaf5d3ee02"));
     	Taxon c4SubSpecies = Taxon.NewInstance(null, null);c4SubSpecies.setUuid(UUID.fromString("777aabbe-4c3a-449c-ab99-a91f2fec9f07"));
     	
-    	c1Species.addTaxonRelation(c2Species, TaxonRelationshipType.CONGRUENT_TO(), citation, microcitation);
+    	TaxonRelationship rel = c1Species.addTaxonRelation(c2Species, TaxonRelationshipType.CONGRUENT_TO(), citation, microcitation);
+    	rel.setDoubtful(true);
     	c1Species.addTaxonRelation(c4Species, TaxonRelationshipType.INCLUDES(), citation, microcitation);
     	c2Species.addTaxonRelation(c1SubSpecies2, TaxonRelationshipType.INCLUDES(), citation, microcitation);
     	
     	service.saveOrUpdate(c1Species);
        	service.saveOrUpdate(c2Species);
     	
-    	IncludedTaxaDTO dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, false));
+    	//Tests
+       	//default starting at species 1
+       	IncludedTaxaDTO dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, true, false));
     	Assert.assertNotNull("IncludedTaxaDTO", dto);
-    	Assert.assertEquals(7, dto.getIncludedTaxa().size());
+    	Assert.assertEquals("Result should contain 7 taxa: c1Species", 7, dto.getIncludedTaxa().size());
     	Assert.assertNotNull("date should not be null", dto.getDate());
-    	
-    	//only congruent
-    	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, true));
-    	Assert.assertNotNull("IncludedTaxaDTO", dto);
-    	Assert.assertEquals(2, dto.getIncludedTaxa().size());
-    	    	
-    	dto = service.listIncludedTaxa(c2Genus.getUuid(), new IncludedTaxonConfiguration(null, false, false));
-    	Assert.assertNotNull("IncludedTaxaDTO", dto);
+//    	Assert.assertTrue(dto.contains(taxonUuid));
+        //same without doubtful
+    	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, false));
+    	Assert.assertEquals(4, dto.getIncludedTaxa().size());
+
+    	//other example starting at Genus2
+    	dto = service.listIncludedTaxa(c2Genus.getUuid(), new IncludedTaxonConfiguration(null, true, false));
     	Assert.assertEquals(8, dto.getIncludedTaxa().size());
+    	//same without doubtful
+    	dto = service.listIncludedTaxa(c2Genus.getUuid(), new IncludedTaxonConfiguration(null, false, false));
+    	Assert.assertEquals(5, dto.getIncludedTaxa().size());
+   	
+    	//only congruent
+    	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, true, true));
+    	Assert.assertEquals(2, dto.getIncludedTaxa().size());
+    	//same without doubtful
+    	dto = service.listIncludedTaxa(c1Species.getUuid(), new IncludedTaxonConfiguration(null, false, true));
+    	Assert.assertEquals(1, dto.getIncludedTaxa().size());
+    	   	
     	
+
     	
     }
 
