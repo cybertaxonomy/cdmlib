@@ -128,6 +128,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
             HttpServletRequest request) throws IOException{
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
+        //TODO: Add parameter to this method so there are different resources for each service Endpoint available
         Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-default.apt");
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
@@ -225,51 +226,69 @@ public class ChecklistDemoController extends AbstractController implements Resou
 	     * progress monitor & new thread for export
 	     * ========================================
 	     */
-        ModelAndView mv = new ModelAndView();
-        String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
-        final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
-        final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
+	    try{
+	        ModelAndView mv = new ModelAndView();
+	        String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
+	        final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
+	        final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
 
-        Long result = null;
-        if(cacheFile.exists()){
-            result = System.currentTimeMillis() - cacheFile.lastModified();
-        }
-        //if file exists return file instantly
-        //timestamp older than one day?
-        if(clearCache == false && result != null && result < 7*(DAY_IN_MILLIS)){
-            logger.info("result of calculation: " + result);
-            Map<String, File> modelMap = new HashMap<String, File>();
-            modelMap.put("file", cacheFile);
-            mv.addAllObjects(modelMap);
-            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
-            mv.setView(fdv);
-            return mv;
-        }else{//trigger progress monitor and performExport()
-            String processLabel = "Exporting...";
-            final String frontbaseUrl = null;
-            ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
-            if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
-                indexMonitorUuid = progressUtil.registerNewMonitor();
-                Thread subThread = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            cacheFile.createNewFile();
-                        } catch (IOException e) {
-                            logger.info("Could not create file "+ e);
-                        }
-                        performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
-                    }
-                };
-                if (priority == null) {
-                    priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
-                }
-                subThread.setPriority(priority);
-                subThread.start();
-            }
-            mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
-        }
-        return mv;
+	        Long result = null;
+	        if(cacheFile.exists()){
+	            result = System.currentTimeMillis() - cacheFile.lastModified();
+	        }
+	        //if file exists return file instantly
+	        //timestamp older than one day?
+	        if(clearCache == false && result != null && result < 7*(DAY_IN_MILLIS)){
+	            logger.info("result of calculation: " + result);
+	            Map<String, File> modelMap = new HashMap<String, File>();
+	            modelMap.put("file", cacheFile);
+	            mv.addAllObjects(modelMap);
+	            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
+	            mv.setView(fdv);
+	            return mv;
+	        }else{//trigger progress monitor and performExport()
+	            String processLabel = "Exporting...";
+	            final String frontbaseUrl = null;
+	            ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
+	            if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+	                indexMonitorUuid = progressUtil.registerNewMonitor();
+	                Thread subThread = new Thread() {
+	                    @Override
+	                    public void run() {
+	                        try {
+	                            cacheFile.createNewFile();
+	                        } catch (IOException e) {
+	                            logger.info("Could not create file "+ e);
+	                        }
+	                        performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
+	                    }
+	                };
+	                if (priority == null) {
+	                    priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+	                }
+	                subThread.setPriority(priority);
+	                subThread.start();
+	            }
+	            mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
+	        }
+	        return mv;
+	    }catch(Exception e){
+	        //TODO: Write an specific documentation for this service endpoint
+	       return exportGetExplanation(response, request);
+	    }
+	}
+
+    @RequestMapping(value = { "flockSearch" }, method = { RequestMethod.GET })
+	public ModelAndView doFlockSearchOfIncludedTaxa(HttpServletResponse response,
+            HttpServletRequest request) throws IOException {
+	    try{
+	        //TODO write logic for
+	        //ITaxonService inlcudedTaxa
+
+	        return null;
+	    }catch(Exception e){
+           return exportGetExplanation(response, request);
+	    }
 	}
 
 
