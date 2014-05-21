@@ -18,6 +18,15 @@ import org.hibernate.annotations.Type;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.Severity;
 
+/**
+ * An {@code EntityConstraintViolation} represents a single error resulting from the
+ * validation of an entity. It basically is a database model for the
+ * {@link ConstraintValidator} class of the javax.validation framework.
+ * 
+ * @author admin.ayco.holleman
+ * 
+ */
+
 @XmlAccessorType(XmlAccessType.FIELD)
 //@formatter:off
 @XmlType(name = "EntityConstraintViolation", propOrder = {

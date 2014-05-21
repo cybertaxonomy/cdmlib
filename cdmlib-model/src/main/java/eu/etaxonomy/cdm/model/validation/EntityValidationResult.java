@@ -8,6 +8,7 @@ import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
 import javax.persistence.OneToMany;
+import javax.validation.Validator;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -28,6 +29,16 @@ import eu.etaxonomy.cdm.hibernate.search.UuidBridge;
 import eu.etaxonomy.cdm.jaxb.UUIDAdapter;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.validation.CRUDEventType;
+
+/**
+ * An {@code EntityValidationResult} models the result of validating one entity, that is,
+ * the outcome of calling {@link Validator#validate(Object, Class...)}. More than one
+ * constraint {@link EntityConstraintViolation} may be violated while validating the
+ * entity.
+ * 
+ * @author ayco_holleman
+ * 
+ */
 
 @XmlAccessorType(XmlAccessType.FIELD)
 //@formatter:off
