@@ -40,7 +40,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
+import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
@@ -78,6 +81,9 @@ public class ChecklistDemoController extends AbstractController implements Resou
 
 	@Autowired
 	private ITermService termService;
+
+	@Autowired
+	private ITaxonService taxonService;
 
 	@Autowired
 	private IClassificationService classificationService;
@@ -238,7 +244,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 	        }
 	        //if file exists return file instantly
 	        //timestamp older than one day?
-	        if(clearCache == false && result != null && result < 7*(DAY_IN_MILLIS)){
+	        if(clearCache == false && result != null){ //&& result < 7*(DAY_IN_MILLIS)
 	            logger.info("result of calculation: " + result);
 	            Map<String, File> modelMap = new HashMap<String, File>();
 	            modelMap.put("file", cacheFile);
@@ -279,17 +285,37 @@ public class ChecklistDemoController extends AbstractController implements Resou
 	}
 
     @RequestMapping(value = { "flockSearch" }, method = { RequestMethod.GET })
-	public ModelAndView doFlockSearchOfIncludedTaxa(HttpServletResponse response,
+	public ModelAndView doFlockSearchOfIncludedTaxa(
+	        @RequestParam(value="taxonUUID", required=true) final String taxonUUIDString,
+	        @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
+	        @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
+            @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
+	        HttpServletResponse response,
             HttpServletRequest request) throws IOException {
 	    try{
-	        //TODO write logic for
-	        //ITaxonService inlcudedTaxa
-
-	        return null;
+	        ModelAndView mv = new ModelAndView();
+	        UUID taxonUuid = UUID.fromString(taxonUUIDString);
+	        /**
+	         * List<UUID> classificationFilter,
+	         * boolean includeDoubtful,
+	         * boolean onlyCongruent)
+	         */
+	        List<UUID> classificationFilter = null;
+	        if( classificationStringList != null ){
+	            classificationFilter = new ArrayList<UUID>();
+	            for(String classString :classificationStringList){
+	                classificationFilter.add(UUID.fromString(classString));
+	            }
+	        }
+	        final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
+	        IncludedTaxaDTO listIncludedTaxa = taxonService.listIncludedTaxa(taxonUuid, configuration);
+	        mv.addObject(listIncludedTaxa);
+	        return mv;
 	    }catch(Exception e){
-           return exportGetExplanation(response, request);
-	    }
-	}
+           //TODO: Write an specific documentation for this service endpoint
+            return exportGetExplanation(response, request);
+        }
+    }
 
 
 
