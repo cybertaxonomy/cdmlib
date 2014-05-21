@@ -16,7 +16,7 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
 
 /**
  * Abstract base class for JPA entity validation tasks. Note that in the future non-entity
- * classes might also be decorated with constraint annotations. This base class, hoewever,
+ * classes might also be decorated with constraint annotations. This base class, however,
  * is specifically targeted at the validation of JPA entities (more specifically instances
  * of {@link CdmBase}.
  * 
