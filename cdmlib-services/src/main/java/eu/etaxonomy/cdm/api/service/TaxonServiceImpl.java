@@ -3140,16 +3140,29 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			throw new IllegalArgumentException("Unhandled class " + taxonBase.getClass().getSimpleName());
 		}
 		
-		Set<Taxon> related = findRelated(taxa, result, config);
+		Set<Taxon> related = makeRelatedIncluded(taxa, result, config);
 		int i = 0;
 		while((! related.isEmpty()) && i++ < 100){  //to avoid 
-			 related = findRelated(related, result, config);
+			 related = makeRelatedIncluded(related, result, config);
 		}
 		
 		return result;
 	}
 
-	private Set<Taxon> findRelated(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
+	/**
+	 * Computes all children and conceptually congruent and included taxa and adds them to the existingTaxa
+	 * data structure.
+	 * @return the set of conceptually related taxa for further use
+	 */
+	/**
+	 * @param uncheckedTaxa
+	 * @param existingTaxa
+	 * @param config
+	 * @return
+	 */
+	private Set<Taxon> makeRelatedIncluded(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
+		
+		//children
 		Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
 		for (Taxon taxon: uncheckedTaxa){
 			taxonNodes.addAll(taxon.getTaxonNodes());
@@ -3176,16 +3189,22 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 		}
 		
+		//concept relations
 		Set<Taxon> uncheckedAndChildren = new HashSet<Taxon>(uncheckedTaxa);
 		uncheckedAndChildren.addAll(children);
 		
-		Set<Taxon> relatedTaxa = getConceptRelatedTaxa(uncheckedAndChildren, existingTaxa, config);
+		Set<Taxon> relatedTaxa = makeConceptIncludedTaxa(uncheckedAndChildren, existingTaxa, config);
+		
+		
 		Set<Taxon> result = new HashSet<Taxon>(relatedTaxa);
-//		result.addAll(children);
 		return result;
 	}
 
-	private Set<Taxon> getConceptRelatedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
+	/**
+	 * Computes all conceptually congruent or included taxa and adds them to the existingTaxa data structure. 
+	 * @return the set of these computed taxa
+	 */
+	private Set<Taxon> makeConceptIncludedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
 		Set<Taxon> result = new HashSet<Taxon>();
 		
 		for (Taxon taxon : unchecked){
@@ -3193,6 +3212,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			Set<TaxonRelationship> toRelations = taxon.getRelationsToThisTaxon();
 			
 			for (TaxonRelationship fromRel : fromRelations){
+				if (config.includeDoubtful == false && fromRel.isDoubtful()){
+					continue;
+				}
 				if (fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO()) ||
 						!config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.INCLUDES()) ||
 						!config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
@@ -3202,6 +3224,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 			}
 			
 			for (TaxonRelationship toRel : toRelations){
+				if (config.includeDoubtful == false && toRel.isDoubtful()){
+					continue;
+				}
 				if (toRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO())){
 					result.add(toRel.getFromTaxon());
 				}
