@@ -16,9 +16,8 @@ import eu.etaxonomy.cdm.validation.Severity;
 public interface IEntityConstraintViolationService extends IService<EntityConstraintViolation> {
 
 	/**
-	 * Get all constraint violations for all validated entities of the specified type. The
-	 * constraint violations are sorted according to the type and id of the validated
-	 * entities.
+	 * Get all constraint violations for all validated entities. The constraint violations
+	 * are sorted according to the type and id of the validated entities.
 	 * 
 	 * @param validatedEntityClass
 	 *            The fully qualified class name of the entity class
