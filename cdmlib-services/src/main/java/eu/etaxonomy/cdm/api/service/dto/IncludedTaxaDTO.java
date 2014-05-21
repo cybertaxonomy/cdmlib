@@ -99,6 +99,10 @@ public class IncludedTaxaDTO {
 	public void setDate(DateTime date) {
 		this.date = date;
 	}
+	
+	public int getSize(){
+		return includedTaxa.size();
+	}
 
 	public boolean contains(UUID taxonUuid) {
 		for (IncludedTaxon taxon: includedTaxa){
