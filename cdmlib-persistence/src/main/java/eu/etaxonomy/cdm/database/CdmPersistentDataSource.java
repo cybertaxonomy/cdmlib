@@ -55,7 +55,6 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 
 		
 	private String beanName;
-	private String dbUrl;
 	
 	private String database;
 	
@@ -259,6 +258,8 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			//Attribute attribute = iterator.next();
 			//bd.setAttribute(attribute.getName(), attribute.getValue());
 		}
+		//update url string
+		cdmSourceProperties.put(CdmSourceProperties.URL.toString(), dbtype.getConnectionString(this));
 		
 		//properties
 		MutablePropertyValues props = new MutablePropertyValues();
@@ -275,6 +276,8 @@ public class CdmPersistentDataSource extends CdmDataSourceBase implements ICdmPe
 			}
 		}
 
+		
+		
 		bd.setPropertyValues(props);
 		return bd;
 	}
