@@ -5,6 +5,14 @@ import java.util.List;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.validation.Severity;
 
+/**
+ * A service that provides several retrieval methods for entity validation outcomes. The
+ * focus is on the constraints being violated rather than on the entities that violated
+ * them.
+ * 
+ * @author ayco_holleman
+ * 
+ */
 public interface IEntityConstraintViolationService extends IService<EntityConstraintViolation> {
 
 	/**
@@ -60,5 +68,5 @@ public interface IEntityConstraintViolationService extends IService<EntityConstr
 	 * @return The {@code EntityConstraintViolation}s
 	 */
 	List<EntityConstraintViolation> getConstraintViolations(Severity severity);
-	
+
 }
