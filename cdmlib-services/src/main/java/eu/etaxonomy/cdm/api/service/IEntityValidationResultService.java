@@ -6,9 +6,13 @@ import javax.validation.ConstraintValidator;
 
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
-import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.validation.Severity;
 
+/**
+ * A service that deals with errors
+ * @author ayco_holleman
+ *
+ */
 public interface IEntityValidationResultService extends IService<EntityValidationResult> {
 
 	/**
