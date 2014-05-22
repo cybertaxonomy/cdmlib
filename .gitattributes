@@ -1960,7 +1960,6 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/AbstractLi
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/LinkedPolytomousKeyNodeRowDto.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/PolytomousKeyNodeLinkDto.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/polytomouskey/TaxonLinkDto.java -text
-cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/redlist/RedlistDTO.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/Actor.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/BaseThing.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/dto/tdwg/Concept.java -text
