@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.ISelfDescriptive;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmEntityDaoBase;
@@ -44,6 +45,14 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		result.setValidatedEntityClass(entity.getClass().getName());
 		result.setValidatedEntityId(entity.getId());
 		result.setValidatedEntityUuid(entity.getUuid());
+		String description;
+		if(entity instanceof ISelfDescriptive) {
+			description = ((ISelfDescriptive) entity).getDescription();
+		}
+		else {
+			description = entity.toString();
+		}
+		result.setValidatedEntityDescription(description);
 		for (ConstraintViolation<CdmBase> error : errors) {
 			EntityConstraintViolation violation = EntityConstraintViolation.newInstance();
 			violation.setSeverity(Severity.getSeverity(error));
