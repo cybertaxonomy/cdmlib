@@ -35,23 +35,38 @@ public class GbifQueryGenerator {
         List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
         // only look for preserved specimens
         ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "basisOfRecord", "PRESERVED_SPECIMEN");
+
         if(query.accessionNumber!=null || query.accessionNumber.isEmpty()){
-//            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.accessionNumber);
+            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "CatalogNumber", query.accessionNumber);
         }
         if(query.collector!=null || query.collector.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "recordedBy", query.collector);
         }
         if(query.collectorsNumber!=null || query.collectorsNumber.isEmpty()){
-//            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.collectorsNumber);
+            // TODO refine parameter
+            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "fieldNumber", query.collectorsNumber);
+            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "recordNumber", query.collectorsNumber);
         }
         if(query.country!=null || query.country.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "country", query.country);
         }
-        if(query.date!=null){
+        if(query.dateFrom!=null){
+            /**
+               Date Range: January – June 1899
+               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&year=1899&month=1,6
+               Exact Date: june 20th 1901
+               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1901-6-20
+               Date range exact: Jan. 02.1899 to june 03. 1902
+               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1899-1-2,1902-6-3
+             */
+            if(query.dateTo!=null){
+
+            }
 //            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.date);
         }
         if(query.herbarium!=null || query.herbarium.isEmpty()){
-//            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.herbarium);
+            // TODO refine parameter
+            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "institutionCode", query.herbarium);
         }
         if(query.locality!=null || query.locality.isEmpty()){
             //TODO not yet available at GBIF

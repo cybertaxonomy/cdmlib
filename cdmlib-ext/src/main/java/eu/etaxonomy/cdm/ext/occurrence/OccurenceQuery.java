@@ -9,7 +9,7 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence;
 
-import java.util.Date;
+import java.util.Calendar;
 
 /**
  * Holds query parameters for a query to an occurrence provider.
@@ -25,7 +25,8 @@ public class OccurenceQuery {
     public final String herbarium;
     public final String country;
     public final String locality;
-    public final Date date;
+    public final Calendar dateFrom;
+    public final Calendar dateTo;
 
     /**
      * Constructor to initially set the parameters
@@ -38,7 +39,7 @@ public class OccurenceQuery {
      * @param locality
      * @param date
      */
-    public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Date date) {
+    public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
         this.taxonName = taxonName;
         this.collector = collector;
         this.collectorsNumber = collectorsNumber;
@@ -46,8 +47,10 @@ public class OccurenceQuery {
         this.herbarium = herbarium;
         this.country = country;
         this.locality = locality;
-        this.date = date;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
     }
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -60,12 +63,14 @@ public class OccurenceQuery {
         result = prime * result + ((collector == null) ? 0 : collector.hashCode());
         result = prime * result + ((collectorsNumber == null) ? 0 : collectorsNumber.hashCode());
         result = prime * result + ((country == null) ? 0 : country.hashCode());
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((dateFrom == null) ? 0 : dateFrom.hashCode());
+        result = prime * result + ((dateTo == null) ? 0 : dateTo.hashCode());
         result = prime * result + ((herbarium == null) ? 0 : herbarium.hashCode());
         result = prime * result + ((locality == null) ? 0 : locality.hashCode());
         result = prime * result + ((taxonName == null) ? 0 : taxonName.hashCode());
         return result;
     }
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
@@ -110,11 +115,18 @@ public class OccurenceQuery {
         } else if (!country.equals(other.country)) {
             return false;
         }
-        if (date == null) {
-            if (other.date != null) {
+        if (dateFrom == null) {
+            if (other.dateFrom != null) {
                 return false;
             }
-        } else if (!date.equals(other.date)) {
+        } else if (!dateFrom.equals(other.dateFrom)) {
+            return false;
+        }
+        if (dateTo == null) {
+            if (other.dateTo != null) {
+                return false;
+            }
+        } else if (!dateTo.equals(other.dateTo)) {
             return false;
         }
         if (herbarium == null) {
@@ -141,12 +153,13 @@ public class OccurenceQuery {
         return true;
     }
 
+
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        String string = "BioCaseQuery ";
+        String string = "";
         if(taxonName!=null && !taxonName.trim().isEmpty()){
             string += " taxonName=" + taxonName;
         }
@@ -168,8 +181,11 @@ public class OccurenceQuery {
         if(locality!=null && !locality.trim().isEmpty()){
             string += " locality=" + locality;
         }
-        if(date!=null){
-            string += " date=" + date;
+        if(dateFrom!=null){
+            string += " dateFrom=" + dateFrom;
+        }
+        if(dateTo!=null){
+            string += " dateTo=" + dateTo;
         }
         return string;
     }

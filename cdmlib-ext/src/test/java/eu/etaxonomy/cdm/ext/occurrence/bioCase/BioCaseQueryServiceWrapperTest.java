@@ -23,7 +23,6 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
-import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 
 /**
  * @author pplitzner
@@ -40,7 +39,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
         if( UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
-                OccurenceQuery query = new OccurenceQuery("Campanula*", null, null, null, null, null, null, null);
+                OccurenceQuery query = new OccurenceQuery("Campanula*", null, null, null, null, null, null, null, null);
                 InputStream response = queryService.query(query);
                 BufferedReader reader = new BufferedReader(new InputStreamReader(response));
                 String line = null;
