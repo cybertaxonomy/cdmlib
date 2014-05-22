@@ -10,8 +10,8 @@ import eu.etaxonomy.cdm.validation.Severity;
 
 /**
  * A service that provides several retrieval methods for entity validation outcomes. The
- * focus is on the entities that violating one or more constraints, rather than on the
- * constraint violations themselves.
+ * focus is on the entities rather than on the constraint violations being validated
+ * (irrespective of the entities that violated them).
  * 
  * @author ayco_holleman
  * 
