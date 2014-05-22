@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.remote.dto.redlist.RedlistDTO;
+import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 import eu.etaxonomy.cdm.remote.vaadin.components.DemoTaxonTable;
 import eu.etaxonomy.cdm.remote.vaadin.components.DetailWindow;
 import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
@@ -174,7 +174,7 @@ public class BfnView extends CustomComponent implements View{
 //					conversationHolder.startTransaction();
 //					conversationHolder.commit();
 //				}
-				Notification.show("Data saved", Notification.Type.HUMANIZED_MESSAGE);
+				Notification.show("Data saved", Notification.Type.HredlistDTOUMANIZED_MESSAGE);
 				taxonTable.setEditable(false);
 				toolbar.getSaveButton().setCaption("Save Data");
 			}
@@ -193,7 +193,7 @@ public class BfnView extends CustomComponent implements View{
 				}else{
 					taxonTable.setEditable(false);
 				}
-			}
+			}redlistDTO
 		});
 		
 		taxonTable.addItemClickListener(new ItemClickListener() {
@@ -201,8 +201,8 @@ public class BfnView extends CustomComponent implements View{
 			@Override
 			public void itemClick(ItemClickEvent event) {
 				Object taxonbean = ((BeanItem<?>)event.getItem()).getBean();
-				if(taxonbean instanceof RedlistDTO){
-					RedlistDTO red = (RedlistDTO) taxonbean;
+				if(taxonbean instanceof CdmTaxonTableCollection){
+					CdmTaxonTableCollection red = (CdmTaxonTableCollection) taxonbean;
 					currentTaxon = red.getTaxon();
 				}
 			}

@@ -62,7 +62,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
-import eu.etaxonomy.cdm.remote.dto.redlist.RedlistDTO;
+import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 import eu.etaxonomy.cdm.remote.vaadin.components.HorizontalToolbar;
 import eu.etaxonomy.cdm.remote.vaadin.components.TaxonTableDTO;
 import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
@@ -127,7 +127,7 @@ public class DashBoardView extends CustomComponent implements View{
 	
 	private Taxon currentTaxon;
 
-	private BeanItemContainer<RedlistDTO> taxonBaseContainer;
+	private BeanItemContainer<CdmTaxonTableCollection> taxonBaseContainer;
 
 	private VerticalLayout layout;
 
@@ -216,17 +216,17 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 	
 	private void clickHandler(Object taxonbean, final VerticalLayout detailViewLayout, final VerticalLayout descriptionViewLayout){
-		if(taxonbean instanceof RedlistDTO){
+		if(taxonbean instanceof CdmTaxonTableCollection){
 			detailViewLayout.removeAllComponents();
 			descriptionViewLayout.removeAllComponents();
-			RedlistDTO red = (RedlistDTO) taxonbean;
+			CdmTaxonTableCollection red = (CdmTaxonTableCollection) taxonbean;
 			currentTaxon = red.getTaxon();
 			detailViewLayout.addComponent(constructFormLayout(red));
 			descriptionViewLayout.addComponent(constructDetailPanel(red));
 		}
 	}
 	
-	private TabSheet constructFormLayout(RedlistDTO dto){
+	private TabSheet constructFormLayout(CdmTaxonTableCollection dto){
 		TabSheet tabsheet = new TabSheet();
 		VerticalLayout tab1 = new VerticalLayout();
 		Taxon taxon = dto.getTaxon();
@@ -242,8 +242,8 @@ public class DashBoardView extends CustomComponent implements View{
 
 	
 	private FormLayout constructForm(Taxon taxon, final Window window){
-		RedlistDTO redlistDTO = new RedlistDTO(taxon, listDescriptions, null);
-		final BeanFieldGroup<RedlistDTO> binder = new BeanFieldGroup<RedlistDTO>(RedlistDTO.class);
+		CdmTaxonTableCollection redlistDTO = new CdmTaxonTableCollection(taxon, listDescriptions, null);
+		final BeanFieldGroup<CdmTaxonTableCollection> binder = new BeanFieldGroup<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		binder.setItemDataSource(redlistDTO);
 		binder.setBuffered(true);
 		
@@ -266,8 +266,8 @@ public class DashBoardView extends CustomComponent implements View{
 		return form;
 	}
 	
-	private FormLayout constructTaxonDetailForm(final RedlistDTO red){
-		final BeanFieldGroup<RedlistDTO> binder = new BeanFieldGroup<RedlistDTO>(RedlistDTO.class);
+	private FormLayout constructTaxonDetailForm(final CdmTaxonTableCollection red){
+		final BeanFieldGroup<CdmTaxonTableCollection> binder = new BeanFieldGroup<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		binder.setItemDataSource(red);
 		binder.setBuffered(true);
 		
@@ -299,7 +299,7 @@ public class DashBoardView extends CustomComponent implements View{
 	}
 
 	@SuppressWarnings("rawtypes")
-	private ComboBox initComboBox(final RedlistDTO red) {
+	private ComboBox initComboBox(final CdmTaxonTableCollection red) {
 		List<PresenceAbsenceTermBase> listTerm = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 		BeanItemContainer<PresenceAbsenceTermBase> container = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
 		container.addAll(listTerm);
@@ -322,7 +322,7 @@ public class DashBoardView extends CustomComponent implements View{
 		return box;
 	}
 	
-	private TabSheet constructDetailPanel(RedlistDTO dto){
+	private TabSheet constructDetailPanel(CdmTaxonTableCollection dto){
 		Taxon taxon = dto.getTaxon();
 		TabSheet tabsheet = new TabSheet();
 		
@@ -397,7 +397,7 @@ public class DashBoardView extends CustomComponent implements View{
 
 	}
 	
-	private Button constructSaveButton(final Window window, final BeanFieldGroup<RedlistDTO> binder) {
+	private Button constructSaveButton(final Window window, final BeanFieldGroup<CdmTaxonTableCollection> binder) {
 		Button okButton = new Button("Save");
 		okButton.addClickListener(new ClickListener() {
 			private static final long serialVersionUID = 1L;
@@ -405,9 +405,9 @@ public class DashBoardView extends CustomComponent implements View{
 			public void buttonClick(ClickEvent event) {
 				try {
 					binder.commit();
-					BeanItem<RedlistDTO> beanItem = (BeanItem<RedlistDTO>) binder.getItemDataSource();
+					BeanItem<CdmTaxonTableCollection> beanItem = (BeanItem<CdmTaxonTableCollection>) binder.getItemDataSource();
 					binder.commit();
-					RedlistDTO redlist = beanItem.getBean();
+					CdmTaxonTableCollection redlist = beanItem.getBean();
 					logger.info("check das Taxon: "+ redlist.getTaxon());
 //					Taxon tnb = redlist.getTaxon();
 //					taxonService.saveOrUpdate(tnb);
