@@ -57,13 +57,13 @@ public class BfnView extends CustomComponent implements View{
 	private static final long serialVersionUID = 1L;
 
 	public static final String NAME = "bfn";
-	
+
 	@Autowired
 	private AuthenticationService authenticationController;
-	
+
 	@Autowired
 	private HorizontalToolbar toolbar;
-	
+
 	@Autowired
 	private DemoTaxonTable taxonTable;
 
@@ -74,10 +74,10 @@ public class BfnView extends CustomComponent implements View{
 	private ITaxonService taxonService;
 	@Autowired
 	private IDescriptionService descriptionService;
-	
+
 	private Taxon currentTaxon;
 
-	private Logger logger = Logger.getLogger(BfnView.class);
+	private final Logger logger = Logger.getLogger(BfnView.class);
 
 	@PostConstruct
 	public void PostConstruct(){
@@ -89,7 +89,7 @@ public class BfnView extends CustomComponent implements View{
 			layout.setHeight(100, Unit.PERCENTAGE);
 			taxonTable.setWidth(100,Unit.PERCENTAGE);
 			taxonTable.setHeight(VaadinSession.getCurrent().getBrowser().getScreenHeight()-(toolbar.getHeight()+150),Unit.PIXELS);
-			
+
 			DefaultFieldFactory fieldFactory = createDefaulfielFactory();
 			taxonTable.setTableFieldFactory(fieldFactory);
 			layout.setExpandRatio(toolbar, 1);
@@ -97,7 +97,7 @@ public class BfnView extends CustomComponent implements View{
 			layout.setSizeFull();
 
 			createEditClickListener();
-			
+
 			setCompositionRoot(layout);
 		}
 	}
@@ -135,12 +135,12 @@ public class BfnView extends CustomComponent implements View{
 		return fieldFactory;
 	}
 
-	
+
 	private void createEditClickListener(){
 		Button detailButton = toolbar.getDetailButton();
 		detailButton.setCaption("Detail View");
 		detailButton.addClickListener(new ClickListener() {
-			
+
 			@Override
 			public void buttonClick(ClickEvent event) {
 				if(currentTaxon != null){
@@ -153,8 +153,8 @@ public class BfnView extends CustomComponent implements View{
 				}
 			}
 		});
-		
-		
+
+
 		Button saveButton = toolbar.getSaveButton();
 		saveButton.setClickShortcut(KeyCode.S, ModifierKey.CTRL);
 		saveButton.setDescription("Shortcut: CTRL+S");
@@ -174,12 +174,12 @@ public class BfnView extends CustomComponent implements View{
 //					conversationHolder.startTransaction();
 //					conversationHolder.commit();
 //				}
-				Notification.show("Data saved", Notification.Type.HredlistDTOUMANIZED_MESSAGE);
+				Notification.show("Data saved", Notification.Type.HUMANIZED_MESSAGE);
 				taxonTable.setEditable(false);
 				toolbar.getSaveButton().setCaption("Save Data");
 			}
 		});
-		
+
 		Button editButton = toolbar.getEditButton();
 		editButton.setClickShortcut(KeyCode.E, ModifierKey.CTRL);
 		editButton.setDescription("Shortcut: CTRL+e");
@@ -193,11 +193,11 @@ public class BfnView extends CustomComponent implements View{
 				}else{
 					taxonTable.setEditable(false);
 				}
-			}redlistDTO
+			}
 		});
-		
+
 		taxonTable.addItemClickListener(new ItemClickListener() {
-			
+
 			@Override
 			public void itemClick(ItemClickEvent event) {
 				Object taxonbean = ((BeanItem<?>)event.getItem()).getBean();
@@ -212,7 +212,7 @@ public class BfnView extends CustomComponent implements View{
 	@Override
 	public void enter(ViewChangeEvent event) {
 		// TODO Auto-generated method stub
-		
+
 	}
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
