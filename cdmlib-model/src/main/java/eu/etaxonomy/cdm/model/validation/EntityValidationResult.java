@@ -36,6 +36,8 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
  * constraint {@link EntityConstraintViolation} may be violated while validating the
  * entity.
  * 
+ * @see EntityValidationResult
+ * 
  * @author ayco_holleman
  * 
  */
@@ -46,6 +48,7 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
 		"ValidatedEntityId",
 		"ValidatedEntityUuid",
 		"ValidatedEntityClass",
+		"ValidatedEntityDescription",
 		"CrudEventType",
 		"ConstraintViolations"
 })
@@ -76,6 +79,9 @@ public class EntityValidationResult extends CdmBase {
 
 	@XmlElement(name = "ValidatedEntityClass")
 	private String validatedEntityClass;
+
+	@XmlElement(name = "ValidatedEntityDescription")
+	private String validatedEntityDescription;
 
 	@XmlElement(name = "CrudEventType")
 	@Enumerated(EnumType.STRING)
@@ -139,6 +145,18 @@ public class EntityValidationResult extends CdmBase {
 	public void setCrudEventType(CRUDEventType crudEventType)
 	{
 		this.crudEventType = crudEventType;
+	}
+
+
+	public String getValidatedEntityDescription()
+	{
+		return validatedEntityDescription;
+	}
+
+
+	public void setValidatedEntityDescription(String validatedEntityDescription)
+	{
+		this.validatedEntityDescription = validatedEntityDescription;
 	}
 
 

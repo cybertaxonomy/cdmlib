@@ -731,6 +731,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IParsable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IPublishable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IReferencedEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IRelated.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISelfDescriptive.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISimpleTerm.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ISourceable.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ITreeNode.java -text
