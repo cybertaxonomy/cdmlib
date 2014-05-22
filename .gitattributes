@@ -2441,6 +2441,9 @@ src/site/apt/oai-pmh.apt -text
 src/site/apt/overview.apt -text
 src/site/apt/reference.apt -text
 src/site/apt/remote/checklist-catalogue-default.apt -text
+src/site/apt/remote/checklist-catalogue-export.apt -text
+src/site/apt/remote/checklist-catalogue-exportCSV.apt -text
+src/site/apt/remote/checklist-catalogue-flockSearch.apt -text
 src/site/apt/remote/name-catalogue-accepted.apt -text
 src/site/apt/remote/name-catalogue-default.apt -text
 src/site/apt/remote/name-catalogue-fuzzy.apt -text
