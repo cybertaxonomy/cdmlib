@@ -42,23 +42,37 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		}
 		EntityValidationResult result = EntityValidationResult.newInstance();
 		result.setCrudEventType(crudEventType);
-		result.setValidatedEntityClass(entity.getClass().getName());
 		result.setValidatedEntityId(entity.getId());
 		result.setValidatedEntityUuid(entity.getUuid());
-		String description;
-		if(entity instanceof ISelfDescriptive) {
-			description = ((ISelfDescriptive) entity).getDescription();
+		/*
+		 * Since CdmBase implements ISelfDescriptive, this is a redundant check. However,
+		 * until Andreas Mueller decides that it is actually useful and appropriate that
+		 * CdmBase should implement this interface, this check should be made, so that
+		 * nothing breaks if the "implements ISelfDescriptive" is removed from the class
+		 * declaration of CdmBase.
+		 */
+		if (entity instanceof ISelfDescriptive) {
+			ISelfDescriptive isd = (ISelfDescriptive) entity;
+			result.setValidatedEntityDescription(isd.getUserFriendlyDescription());
+			result.setValidatedEntityClass(isd.getUserFriendlyTypeName());
 		}
 		else {
-			description = entity.toString();
+			result.setValidatedEntityClass(entity.getClass().getSimpleName());
+			result.setValidatedEntityDescription(entity.toString());
 		}
-		result.setValidatedEntityDescription(description);
 		for (ConstraintViolation<CdmBase> error : errors) {
 			EntityConstraintViolation violation = EntityConstraintViolation.newInstance();
 			violation.setSeverity(Severity.getSeverity(error));
 			violation.setInvalidValue(error.getInvalidValue().toString());
 			violation.setMessage(error.getMessage());
-			violation.setPropertyPath(error.getPropertyPath().toString());
+			String field = error.getPropertyPath().toString();
+			if (entity instanceof ISelfDescriptive) {
+				ISelfDescriptive isd = (ISelfDescriptive) entity;
+				violation.setPropertyPath(isd.getUserFriendlyFieldName(field));
+			}
+			else {
+				violation.setPropertyPath(field);
+			}
 			violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
 			result.addEntityConstraintViolation(violation);
 			violation.setEntityValidationResult(result);
