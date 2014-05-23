@@ -48,7 +48,8 @@ import eu.etaxonomy.cdm.validation.CRUDEventType;
 		"ValidatedEntityId",
 		"ValidatedEntityUuid",
 		"ValidatedEntityClass",
-		"ValidatedEntityDescription",
+		"UserFriendlyDescription",
+		"UserFriendlyTypeName",
 		"CrudEventType",
 		"ConstraintViolations"
 })
@@ -80,8 +81,11 @@ public class EntityValidationResult extends CdmBase {
 	@XmlElement(name = "ValidatedEntityClass")
 	private String validatedEntityClass;
 
-	@XmlElement(name = "ValidatedEntityDescription")
-	private String validatedEntityDescription;
+	@XmlElement(name = "UserFriendlyDescription")
+	private String userFriendlyDescription;
+
+	@XmlElement(name = "UserFriendlyTypeName")
+	private String userFriendlyTypeName;
 
 	@XmlElement(name = "CrudEventType")
 	@Enumerated(EnumType.STRING)
@@ -136,6 +140,18 @@ public class EntityValidationResult extends CdmBase {
 	}
 
 
+	public String getUserFriendlyTypeName()
+	{
+		return userFriendlyTypeName;
+	}
+
+
+	public void setUserFriendlyTypeName(String userFriendlyTypeName)
+	{
+		this.userFriendlyTypeName = userFriendlyTypeName;
+	}
+
+
 	public CRUDEventType getCrudEventType()
 	{
 		return crudEventType;
@@ -148,15 +164,15 @@ public class EntityValidationResult extends CdmBase {
 	}
 
 
-	public String getValidatedEntityDescription()
+	public String getUserFriendlyDescription()
 	{
-		return validatedEntityDescription;
+		return userFriendlyDescription;
 	}
 
 
-	public void setValidatedEntityDescription(String validatedEntityDescription)
+	public void setUserFriendlyDescription(String userFriendlyDescription)
 	{
-		this.validatedEntityDescription = validatedEntityDescription;
+		this.userFriendlyDescription = userFriendlyDescription;
 	}
 
 
@@ -183,9 +199,4 @@ public class EntityValidationResult extends CdmBase {
 			getEntityConstraintViolations().remove(ecv);
 		}
 	}
-
-	/////////////////////////////////
-	// END PUBLIC INTERFACE
-	/////////////////////////////////
-
 }

@@ -31,6 +31,7 @@ import eu.etaxonomy.cdm.validation.Severity;
 //@formatter:off
 @XmlType(name = "EntityConstraintViolation", propOrder = {
 		"PropertyPath",
+		"UserFriendlyFieldName",
 		"InvalidValue",
 		"Severity",
 		"Message",
@@ -55,6 +56,9 @@ public class EntityConstraintViolation extends CdmBase {
 
 	@XmlElement(name = "PropertyPath")
 	private String propertyPath;
+
+	@XmlElement(name = "UserFriendlyFieldName")
+	private String userFriendlyFieldName;
 
 	@XmlElement(name = "InvalidValue")
 	private String invalidValue;
@@ -96,6 +100,21 @@ public class EntityConstraintViolation extends CdmBase {
 	public void setPropertyPath(String propertyPath)
 	{
 		this.propertyPath = propertyPath;
+	}
+
+
+	/**
+	 * A user-friendly name for the property path.
+	 */
+	public String getUserFriendlyFieldName()
+	{
+		return userFriendlyFieldName;
+	}
+
+
+	public void setUserFriendlyFieldName(String userFriendlyFieldName)
+	{
+		this.userFriendlyFieldName = userFriendlyFieldName;
 	}
 
 
