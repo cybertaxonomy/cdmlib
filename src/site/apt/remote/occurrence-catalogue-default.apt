@@ -1,0 +1,178 @@
+                                    ---------------
+                                    Occurrence Search API
+                                    ---------------
+
+{CDM Occurrence Search API}
+
+	This web service endpoint serves as a search engine for taxon UUID-related occurrences.
+	
+	The request parameters are :	
+	
+	* '<<query>>' [mandatory] : this has to be the taxon UUID.
+	
+	* '<<pageSize>>' [optional] : the number results per page to display - the default value is 50
+
+	* '<<pageNumber>>' [optional] : the number of the page to display
+						
+	[]
+									
+	The response format can be set by appending the format extension to the service endpoint. Currently this web service supports JSON (fully implemented) and XML (partially implemented).
+	
+	The response objects returned by this web service endpoint have the following structure:
+			  
+		* <<<request>>>
+		
+			* <<<query>>> : the taxon UUID as input.
+			
+		* <<<response>>>
+		
+			* <<<acceptedTaxon>>> : the name of the accepted taxa related to the taxonConceptUuid.
+			* <<<accessionNumber>>> : the accession number for the current occurrence
+			* <<<barcode>>> : the barcode number for the current occurrence
+			* <<<catalogNumber>>> : the catalog number (unitID) for the current occurrence
+			* <<<collection>>> : the collection identifier where the occurrence is stored
+			* <<<collector": the collector name
+			* <<<country>>> : the country where it was gathered or observed
+			* <<<dataResourceCitation>>> : IPR
+			* <<<dataResourceRights>>> : IPR
+			* <<<dateBegin": the gathering or observation date
+			* <<<dateEnd>>> : the gathering or observation date 
+			* <<<dateFromPublication": boolean - if set to True, means the date come from the publication date
+			* <<<depth>>> : the depth where it was gathered or observed  
+			* <<<elevation>>> : the elevation where it was gathered or observed  
+			* <<<errorRadius>>> : the error radius for the coordinates measurement
+			* <<<fieldNotes>>> : notes from the collector
+			* <<<fieldNumber>>> :  number assigned by the collection
+			* <<<institution>>> : the institution identifier where the occurrence is stored
+			* <<<kindOfUnit>>> : the kind of unit described by the collector
+			* <<<latitude>>> : the latitude where it was gathered or observed
+			* <<<locality": the locality where it was gathered or observed
+			* <<<longitude>>> : the longitude where it was gathered or observed
+			* <<<maxDepth>>> : 
+			* <<<maxElevation>>> : 
+			* <<<nameUUID": the taxonConceptUuid
+			* <<<referenceSystem>>> : the GPS reference system
+			* <<<sources>>>: listing of paper, publications, urls from where the occurrence was extracted from
+			* <<<specimenOrObservationType>>>
+			* <<<title>>>
+			* <<<unitCount>>> 						
+	
+	Features:
+	
+		* One query per web service call.
+		
+	
+	Example Requests :
+		
+		* Base UUID search : 	
+				
+			* {{{Chenopodium ambrosioides L.} /occurrence_catalogue.json?query=95402484-06cc-4284-a84c-193be51489ea}}
+			
+		* UUID search with paging : 
+		
+			* {{{Chenopodium ambrosioides L.} /occurrence_catalogue.json?query=95402484-06cc-4284-a84c-193be51489ea&pageNumber=0&pageSize=2}}
+			
+		
+			
+	Example Responses :
+		
+		* UUID search with paging : {query=95402484-06cc-4284-a84c-193be51489ea} [{{{CDM_Occurrence_Search_API}back}}]
+										
+---
+
+[
+    {
+
+    "count": 11,
+    "currentIndex": 0,
+    "firstRecord": 1,
+    "indices": [
+        0,
+        1,
+        2
+    ],
+    "lastRecord": 2,
+    "nextIndex": 1,
+    "pageSize": 2,
+    "pagesAvailable": 6,
+    "prevIndex": 0,
+    "records": [
+        {
+            "acceptedTaxon": "Chenopodium ambrosioides L.",
+            "accessionNumber>>> : 
+            "barcode>>> : 
+            "catalogNumber>>> : 
+            "collection>>> : 
+            "collector": "Bolle",
+            "country>>> : 
+            "dataResourceCitation>>> : 
+            "dataResourceRights>>> : 
+            "dateBegin": "1908",
+            "dateEnd>>> : 
+            "dateFromPublication": true,
+            "depth>>> : 
+            "elevation>>> : 
+            "errorRadius>>> : 
+            "fieldNotes>>> : 
+            "fieldNumber>>> : 
+            "institution>>> : 
+            "kindOfUnit>>> : 
+            "latitude>>> : 
+            "locality": "Bufadero",
+            "longitude>>> : 
+            "maxDepth>>> : 
+            "maxElevation>>> : 
+            "nameUUID": "95402484-06cc-4284-a84c-193be51489ea",
+            "referenceSystem>>> : 
+            "sources": [
+                "Charles Joseph Pitard and Louis Proust - Chenopodieae in Les îles Canaries. Flore de l'archipel. 1908",
+                "http://plazi.cs.umb.edu/GgServer/cdmSync/FE9CB87035C15D9328FF7CE6DEC573DD?cacheControl=force",
+                "PlaziCDMsync"
+            ],
+            "specimenOrObservationType": "DerivedUnit",
+            "title": "Tenerife : Bufadero ( Bolle )",
+            "unitCount": ""
+        },
+        {
+            "acceptedTaxon": "Chenopodium ambrosioides L.",
+            "accessionNumber>>> : 
+            "barcode>>> : 
+            "catalogNumber>>> : 
+            "collection>>> : 
+            "collector>>> : 
+            "country>>> : 
+            "dataResourceCitation>>> : 
+            "dataResourceRights>>> : 
+            "dateBegin": "1908",
+            "dateEnd>>> : 
+            "dateFromPublication": true,
+            "depth>>> : 
+            "elevation>>> : 
+            "errorRadius>>> : 
+            "fieldNotes>>> : 
+            "fieldNumber>>> : 
+            "institution>>> : 
+            "kindOfUnit>>> : 
+            "latitude>>> : 
+            "locality": "Guimar",
+            "longitude>>> : 
+            "maxDepth>>> : 
+            "maxElevation>>> : 
+            "nameUUID": "95402484-06cc-4284-a84c-193be51489ea",
+            "referenceSystem>>> : 
+            "sources": [
+                "http://plazi.cs.umb.edu/GgServer/cdmSync/FE9CB87035C15D9328FF7CE6DEC573DD?cacheControl=force",
+                "PlaziCDMsync",
+                "Charles Joseph Pitard and Louis Proust - Chenopodieae in Les îles Canaries. Flore de l'archipel. 1908"
+            ],
+            "specimenOrObservationType": "DerivedUnit",
+            "title": "Guimar ( 300 m )",
+            "unitCount": ""
+        }
+    ],
+    "suggestion": ""
+
+
+}]
+
+

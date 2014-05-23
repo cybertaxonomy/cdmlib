@@ -2449,6 +2449,7 @@ src/site/apt/remote/name-catalogue-default.apt -text
 src/site/apt/remote/name-catalogue-fuzzy.apt -text
 src/site/apt/remote/name-catalogue-name-info.apt -text
 src/site/apt/remote/name-catalogue-taxon-info.apt -text
+src/site/apt/remote/occurrence-catalogue-default.apt -text
 src/site/apt/remote/search-fulltext-info.apt -text
 src/site/apt/remote/search-name-default.apt -text
 src/site/apt/remote/search-taxon-info.apt -text

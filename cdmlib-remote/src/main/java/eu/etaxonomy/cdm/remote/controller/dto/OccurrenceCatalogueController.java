@@ -8,6 +8,7 @@
  */
 package eu.etaxonomy.cdm.remote.controller.dto;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -20,7 +21,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.poi.ss.formula.functions.T;
+import org.apache.tools.ant.taskdefs.condition.Os;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ResourceLoaderAware;
+import org.springframework.core.io.Resource;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,6 +33,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeConfigurator;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
@@ -39,6 +44,7 @@ import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -67,7 +73,7 @@ import eu.etaxonomy.cdm.remote.view.HtmlView;
 
 @Controller
 @RequestMapping(value = { "/occurrence_catalogue" })
-public class OccurrenceCatalogueController extends IdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> {
+public class OccurrenceCatalogueController extends IdentifiableListController<SpecimenOrObservationBase, IOccurrenceService> implements ResourceLoaderAware{
 
     private ResourceLoader resourceLoader;
 
@@ -114,39 +120,29 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
     private ITermService termService;
 
 
-    private static final List<String> OCCURRENCE_INIT_STRATEGY = Arrays.asList(new String []{
-            "$",
-            "elements.*",
-            "derivedFrom.*",
-            "derivedFrom.sources.*",
-            "derivedFrom.originals.*",
-            "collection.*",
-            "descriptions.*",
-            "sources.*",
-            "sources.citation.*"
+    private static final List<String> OCCURRENCE_INIT_STRATEGY = Arrays.asList(new String []{    		
+    		"sources"
     });
 
     private static final List<String> FACADE_INIT_STRATEGY = Arrays.asList(new String []{
-            "$",
-            "elements.*",
-            "derivedUnit.*",
-            "derivationEvent.*",
-            "derivationEvent.sources",
-            "derivationEvent.originals",
-            "gatheringEvent.*",
-            "collector.*",
-            "country.*",
-            "country.representation.*",
-            "localityText.*",
-            "exactLocation.*",
-            "exactLocation.referenceSystem.*",
-            "label.*",
-            "collection.*",
-            "collection.code.*",
-            "collection.institute.*",
-            "collection.superCollection.*",
-            "sources.*",
-            "sources.citation.*"
+    		"collector",
+    		"collection.institute.name",
+    		"fieldNotes",
+    		"type",
+    		"individualCount",
+    		"kindOfUnit.label",
+    		"absoluteElevation",
+    		"absoluteElevationMaximum",
+    		"distanceToGround",
+    		"distanceToGroundMax",
+    		"gatheringPeriod.start",
+    		"gatheringPeriod.end",
+    		"exactLocation.latitude",
+    		"exactLocation.longitude",
+    		"exactLocation.errorRadius",
+    		"exactLocation.referenceSystem",
+    		"country",
+    		"locality"
     });
 
 
@@ -157,7 +153,7 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
     }
 
     /**
-     * Returns a documentation page for the Name Search API.
+     * Returns a documentation page for the Occurrence Search API.
      * <p>
      * URI: <b>&#x002F;{datasource-name}&#x002F;occurrence_catalogue</b>
      *
@@ -167,20 +163,19 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
      * @throws IOException
      */
     @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {})
-    public ModelAndView doGetOccurrenceSearchDocumentation(
+    public ModelAndView doGetNameSearchDocumentation(
             HttpServletRequest request, HttpServletResponse response)
-                    throws IOException {
+            throws IOException {
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
-//        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/occurrence-catalogue-default.apt");
+        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/occurrence-catalogue-default.apt");
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
-//        InputStream aptInputStream = resource.getInputStream();
+        InputStream aptInputStream = resource.getInputStream();
         // Build Html View
         Map<String, String> modelMap = new HashMap<String, String>();
         // Convert Apt to Html
-//        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
-        modelMap.put("html", "");
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
         mv.addAllObjects(modelMap);
 
         HtmlView hv = new HtmlView();
@@ -208,8 +203,8 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
      * Redirect the query with the default page size and the default page number.
      * @throws IOException
      */
-    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query"})
-    public ModelAndView doGetOccurrenceSearch(@RequestParam(value = "query", required = true) String query,
+    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"taxonUuid"})
+    public ModelAndView doGetOccurrenceSearch(@RequestParam(value = "taxonUuid", required = true) String query,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         return doGetOccurrenceSearch(query, DEFAULT_PAGE_NUMBER, DEFAULT_PAGE_SIZE, request, response);
     }
@@ -241,13 +236,13 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
      * @throws IOException
      */
     @SuppressWarnings({ "rawtypes", "unchecked" })
-    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"query","pageNumber","pageSize"})
+    @RequestMapping(value = { "" }, method = RequestMethod.GET, params = {"taxonUuid","pageNumber","pageSize"})
     public ModelAndView doGetOccurrenceSearch(
-            @RequestParam(value = "query", required = true) String query,
+            @RequestParam(value = "taxonUuid", required = true) String taxonUuid,
             @RequestParam(value = "pageNumber", required = false, defaultValue = DEFAULT_PAGE_NUMBER) String pageNumber,
             @RequestParam(value = "pageSize", required = false, defaultValue = DEFAULT_PAGE_SIZE) String pageSize,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
-        logger.info("doGetOccurrenceSearch "+pageSize+", "+pageNumber);
+        logger.info("doGetOccurrenceSearch, " + "taxonUuid : " + taxonUuid + " - pageSize : " + pageSize + " - " + "pageNumber : " + pageNumber);
         ModelAndView mv = new ModelAndView();
         List nsList = new ArrayList<T>();
 
@@ -270,86 +265,122 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
         PagerParameters pagerParams = new PagerParameters(pS, pN);
         pagerParams.normalizeAndValidate(response);
 
-        List<Feature> features = new ArrayList<Feature>();
-        features.add(Feature.OBSERVATION());
-        features.add(Feature.OCCURRENCE());
-        features.add(Feature.INDIVIDUALS_ASSOCIATION());
-        features.add(Feature.MATERIALS_EXAMINED());
-        features.add(Feature.SPECIMEN());
+        //FIXME : Does not seem to be used ?
+//        List<Feature> features = new ArrayList<Feature>();
+//        features.add(Feature.OBSERVATION());
+//        features.add(Feature.OCCURRENCE());
+//        features.add(Feature.INDIVIDUALS_ASSOCIATION());
+//        features.add(Feature.MATERIALS_EXAMINED());
+//        features.add(Feature.SPECIMEN());
 
-        List<SpecimenOrObservationBase> records = new ArrayList<SpecimenOrObservationBase>();
+        List<DerivedUnit> records = new ArrayList<DerivedUnit>();
 
         OccurrenceSearch ns = new OccurrenceSearch();
-        ns.setRequest(query);
+        ns.setRequest(taxonUuid);
 
-        Pager<SpecimenOrObservationBase> specimenOrObs = null;
+        Pager<DerivedUnit> specimenOrObs = null;
         int total=0;
-
+        OccurrenceSearch os = new OccurrenceSearch();
         // search through each query
-        if(query.equals("") || !isValid(query)) {
+        if(taxonUuid.equals("") || !isValid(taxonUuid)) {
             ErrorResponse er = new ErrorResponse();
-            er.setErrorMessage("Empty query field");
+            er.setErrorMessage("Empty taxon uuid field");
             nsList.add(er);
-        }
-        else{
-            UUID taxonUUID = UUID.fromString(query);
+        } else {       
 
-            Taxon associatedTaxon = (Taxon) taxonService.find(taxonUUID);
+            Taxon taxon = (Taxon) taxonService.find(UUID.fromString(taxonUuid));
             pagerParams.normalizeAndValidate(response);
             List<OrderHint> orderHints = null;
-
-            //TODO load the full strategy once the method gets debuged
-            Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(null, null, termService);
-            specimenOrObs= service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
-                    null, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                    orderHints, getInitializationStrategy());
-
-            total = (service.listByAssociatedTaxon(null, includeRelationships, associatedTaxon,
-                    null, null, null, orderHints, null)).size();
+            
+            
+            // TODO load the full strategy once the method gets debuged
+//            Set<TaxonRelationshipEdge> includeRelationships = ControllerUtils.loadIncludeRelationships(null, null, termService);
+//            specimenOrObs= service.pageByAssociatedTaxon(null, includeRelationships, associatedTaxon,
+//                    null, pagerParams.getPageSize(), pagerParams.getPageIndex(),
+//                    orderHints, getInitializationStrategy());
+            
+          // Only derived units are requested in the pager method since we expect
+          // occurrences to be of type DerivedUnit
+          // The only possibility for an occurrence to be of type FieldUnit is the 
+          // describedSpecimenOrObservation in the DescriptionBase class, which ideally
+          // should not be used for storing occurrences
+          specimenOrObs= service.pageByAssociatedTaxon(DerivedUnit.class, 
+        		  null, 
+        		  taxon,
+        		  null, 
+        		  pagerParams.getPageSize(), 
+        		  pagerParams.getPageIndex(),
+        		  orderHints, 
+        		  OCCURRENCE_INIT_STRATEGY);            
+            
+          //FIXME We already have the list of occurrences in specimenOrObs pager
+//            total = (service.listByAssociatedTaxon(null, includeRelationships, associatedTaxon,
+//                    null, null, null, orderHints, null)).size();
 
             records = specimenOrObs.getRecords();
 
-
+            DerivedUnit derivedUnit=null;
+            List<DerivedUnitFacade> facades = new ArrayList<DerivedUnitFacade>();
             for (SpecimenOrObservationBase<?> specimen:records){
-                DerivedUnit derivedUnit=null;
-                List<DerivedUnitFacade> facades = new ArrayList<DerivedUnitFacade>();
-                specimen=occurrenceService.load(specimen.getUuid(), OCCURRENCE_INIT_STRATEGY);
-                if (specimen.isInstanceOf(GatheringEvent.class)){
-                    GatheringEvent gath = CdmBase.deproxy(specimen, GatheringEvent.class);
-                    nsList.add(ns.createOccurrence( query, specimen, gath,  associatedTaxon.getTitleCache() ));
-                }
-                if (specimen.isInstanceOf(DerivedUnit.class)){
+                
+                               
+                //FIXME SpecimenOrObservationBase is not an instanceof GatheringEvent ?
+//                if (specimen instanceof GatheringEvent){
+//                    GatheringEvent gath = CdmBase.deproxy(specimen, GatheringEvent.class);
+//                    nsList.add(ns.createOccurrence( query, specimen, gath,  associatedTaxon.getTitleCache() ));
+//                }
+                
+                //if (specimen.isInstanceOf(DerivedUnit.class)){
                     derivedUnit = CdmBase.deproxy(specimen, DerivedUnit.class);
                     DerivedUnitFacade derivedUnitFacade =null;
                     try {
-                        derivedUnitFacade = occurrenceService.getDerivedUnitFacade(derivedUnit, FACADE_INIT_STRATEGY);
+                    	//TODO : This is a potential performance hurdle (especially for large number
+                    	//       of derived units). 
+                    	//       A possible solution is to already initialise the required derived unit facade 
+                    	//       in the 'pageByAssociatedTaxon' call. This can be done either via the initialisation
+                    	//       strategy technique or by writing a new optimised hql query for this.
+                    	//       This will ensure that the DerivedUnits are loaded with required fields already
+                    	//       initialised and will not require the loading and initialisation of each DerivedUnit
+                    	//       object as is done in the 'getDerivedUnitFacade' method.
+                        derivedUnitFacade = occurrenceService.getDerivedUnitFacade(derivedUnit, FACADE_INIT_STRATEGY);                                            
+                        os.addToResponse(taxon.getTitleCache(), taxonUuid, derivedUnitFacade);
                     } catch (DerivedUnitFacadeNotSupportedException e) {
                        derivedUnitFacade=null;
                     }
-                    if (derivedUnitFacade !=null) {
-                        facades.add(derivedUnitFacade);
-                    }
+//                    if (derivedUnitFacade !=null) {
+//                        facades.add(derivedUnitFacade);
+//                    }
 
-                    Set<DescriptionBase> descriptions = specimen.getDescriptions();
-                    for (DescriptionBase<?> dbase:descriptions) {
-                        facades.addAll(occurrenceService.listDerivedUnitFacades(dbase, FACADE_INIT_STRATEGY));
-                    }
+                    //FIXME:Do we need this, isnt this already covered in pageByAssociatedTaxon
+//                    Set<DescriptionBase> descriptions = specimen.getDescriptions();
+//                    for (DescriptionBase<?> dbase:descriptions) {
+//                        facades.addAll(occurrenceService.listDerivedUnitFacades(dbase, FACADE_INIT_STRATEGY));
+//                    }
                 }
-
-                for (DerivedUnitFacade facade:facades) {
-                    // logger.info("facade: "+facade.getTitleCache());
-                    // update name search object
-                    nsList.add(ns.createOccurrence(query, derivedUnit, facade, specimen,associatedTaxon.getTitleCache() ));
-                }
-            }
+            //}
+            
+            // FIXME : Isn't it easier to just add each occurrence to the list when we 
+            //         loop over derived unit facade objects (above)
+//                for (DerivedUnitFacade facade:facades) {
+//                    nsList.add(ns.createOccurrence(taxonUuid, 
+//                    		derivedUnit, 
+//                    		facade, 
+//                    		specimen,
+//                    		associatedTaxon.getTitleCache()));
+//                }
+            
         }
 
-//        logger.info("nb of pages (total): "+total);
-        if (specimenOrObs !=null){
-            DefaultPagerImpl<OccurrenceSearchResponse> dpi = new DefaultPagerImpl<OccurrenceSearchResponse>(specimenOrObs.getCurrentIndex(), total, specimenOrObs.getPageSize(), nsList);
-            mv.addObject(dpi);
-        } else {
+
+        if (os.getResponse().isEmpty()){
             mv.addObject(nsList);
+        } else {
+            DefaultPagerImpl<OccurrenceSearchResponse> dpi = 
+            		new DefaultPagerImpl<OccurrenceSearchResponse>(specimenOrObs.getCurrentIndex(), 
+            					specimenOrObs.getCount(), 
+            					specimenOrObs.getPageSize(), 
+            					os.getResponse());
+            mv.addObject(dpi);
         }
 
         return mv;
@@ -383,4 +414,10 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
     public void setService(IOccurrenceService service) {
         this.service = service;
     }
+
+	@Override
+	public void setResourceLoader(ResourceLoader resourceLoader) {
+		 this.resourceLoader = resourceLoader;
+		
+	}
 }
