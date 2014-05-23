@@ -40,40 +40,9 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		if (old != null) {
 			getSession().delete(old);
 		}
-		EntityValidationResult result = EntityValidationResult.newInstance();
-		result.setCrudEventType(crudEventType);
-		result.setValidatedEntityId(entity.getId());
-		result.setValidatedEntityUuid(entity.getUuid());
-		/*
-		 * Since CdmBase implements ISelfDescriptive, this is a redundant check. However,
-		 * until Andreas Mueller decides that it is actually useful and appropriate that
-		 * CdmBase should implement this interface, this check should be made, so that
-		 * nothing breaks if the "implements ISelfDescriptive" is removed from the class
-		 * declaration of CdmBase.
-		 */
-		if (entity instanceof ISelfDescriptive) {
-			ISelfDescriptive isd = (ISelfDescriptive) entity;
-			result.setValidatedEntityDescription(isd.getUserFriendlyDescription());
-			result.setValidatedEntityClass(isd.getUserFriendlyTypeName());
-		}
-		else {
-			result.setValidatedEntityClass(entity.getClass().getSimpleName());
-			result.setValidatedEntityDescription(entity.toString());
-		}
+		EntityValidationResult result = createEntityValidationResult(entity, crudEventType);
 		for (ConstraintViolation<CdmBase> error : errors) {
-			EntityConstraintViolation violation = EntityConstraintViolation.newInstance();
-			violation.setSeverity(Severity.getSeverity(error));
-			violation.setInvalidValue(error.getInvalidValue().toString());
-			violation.setMessage(error.getMessage());
-			String field = error.getPropertyPath().toString();
-			if (entity instanceof ISelfDescriptive) {
-				ISelfDescriptive isd = (ISelfDescriptive) entity;
-				violation.setPropertyPath(isd.getUserFriendlyFieldName(field));
-			}
-			else {
-				violation.setPropertyPath(field);
-			}
-			violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
+			EntityConstraintViolation violation = createEntityConstraintViolation(entity, error);
 			result.addEntityConstraintViolation(violation);
 			violation.setEntityValidationResult(result);
 		}
@@ -204,4 +173,50 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		return result;
 	}
 
+
+	private EntityValidationResult createEntityValidationResult(CdmBase entity, CRUDEventType crudEventType)
+	{
+		EntityValidationResult result = EntityValidationResult.newInstance();
+		result.setCrudEventType(crudEventType);
+		result.setValidatedEntityClass(entity.getClass().getName());
+		result.setValidatedEntityId(entity.getId());
+		result.setValidatedEntityUuid(entity.getUuid());
+		/*
+		 * Since CdmBase implements ISelfDescriptive, this is a redundant check. However,
+		 * until Andreas Mueller decides that it is actually useful and appropriate that
+		 * CdmBase should implement this interface, this check should be made, so that
+		 * nothing breaks if the "implements ISelfDescriptive" is removed from the class
+		 * declaration of CdmBase.
+		 */
+		if (entity instanceof ISelfDescriptive) {
+			ISelfDescriptive isd = (ISelfDescriptive) entity;
+			result.setUserFriendlyTypeName(isd.getUserFriendlyTypeName());
+			result.setUserFriendlyDescription(isd.getUserFriendlyDescription());
+		}
+		else {
+			result.setUserFriendlyTypeName(entity.getClass().getSimpleName());
+			result.setUserFriendlyDescription(entity.toString());
+		}
+		return result;
+	}
+
+
+	private EntityConstraintViolation createEntityConstraintViolation(CdmBase entity, ConstraintViolation<CdmBase> error)
+	{
+		EntityConstraintViolation violation = EntityConstraintViolation.newInstance();
+		violation.setSeverity(Severity.getSeverity(error));
+		violation.setPropertyPath(error.getPropertyPath().toString());
+		violation.setInvalidValue(error.getInvalidValue().toString());
+		violation.setMessage(error.getMessage());
+		String field = error.getPropertyPath().toString();
+		if (entity instanceof ISelfDescriptive) {
+			ISelfDescriptive isd = (ISelfDescriptive) entity;
+			violation.setUserFriendlyFieldName(isd.getUserFriendlyFieldName(field));
+		}
+		else {
+			violation.setPropertyPath(field);
+		}
+		violation.setValidator(error.getConstraintDescriptor().getConstraintValidatorClasses().iterator().next().getName());
+		return violation;
+	}
 }
