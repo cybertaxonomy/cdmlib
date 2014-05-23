@@ -1,14 +1,17 @@
 package eu.etaxonomy.cdm.remote.dto.occurrencecatalogue;
 
-import java.beans.Transient;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.media.Rights;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.remote.controller.BaseListController;
 import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
@@ -80,8 +83,9 @@ public class OccurrenceSearch implements RemoteResponse {
     	}
     	
     	osr.setFieldNotes(duf.getFieldNotes());
-    	
-    	osr.setType(duf.getType().name());
+    	if(duf.getType() != null) {
+    		osr.setType(duf.getType().name());
+    	}
     	osr.setUnitCount(duf.getIndividualCount());
     	
     	if(duf.getKindOfUnit() != null) {
@@ -91,16 +95,16 @@ public class OccurrenceSearch implements RemoteResponse {
     	osr.setElevation(duf.getAbsoluteElevation());
     	osr.setMaxElevation(duf.getAbsoluteElevationMaximum());
     	
-    	//osr.setDepth(duf.getDistanceToGround());
+    	osr.setDepth(duf.getDistanceToGround());
     	osr.setMaxDepth(duf.getDistanceToGroundMax());
     	
     	if(duf.getGatheringPeriod() != null) {
     		TimePeriod tp = duf.getGatheringPeriod();
     		if(tp.getStart() != null) {
-    			osr.setGatheringStartDate(duf.getGatheringPeriod().getStart().toString());
+    			osr.setGatheringStartDate(tp.getStart().toString());
     		}
     		if(tp.getEnd() != null) {
-    			osr.setGatheringEndDate(duf.getGatheringPeriod().getEnd().toString());
+    			osr.setGatheringEndDate(tp.getEnd().toString());
     		}
     	}
     	
@@ -118,11 +122,53 @@ public class OccurrenceSearch implements RemoteResponse {
     		}
 
     	}
-    	loc.setCountry(duf.getCountry().getTitleCache());
-    	loc.setLocality(duf.getLocality().getText());    	    	  
+    	if(duf.getCountry() != null) {
+    		loc.setCountry(duf.getCountry().getTitleCache());
+    	}
     	
-    	response.add(osr);
+    	if(duf.getLocality() != null) {
+    		loc.setLocality(duf.getLocality().getText());
+    	}
+    	
+    	osr.setFieldNumber(duf.getFieldNumber());
+    	osr.setAccessionNumber(duf.getAccessionNumber());
+    	osr.setCatalogNumber(duf.getCatalogNumber());
+    	
+    	Set<IdentifiableSource> sources = duf.getSources();
+    	boolean dateFound = false;
+    	String datePublishedString = null;
+    	List<String> sourceTitleList = new ArrayList<String>();
+    	for (IdentifiableSource source:sources) {
+    		String citation = source.getCitation().getTitleCache();    
 
+    		datePublishedString = source.getCitation().getDatePublishedString();
+    		if (!dateFound && !StringUtils.isEmpty(datePublishedString)){
+    			osr.setPublicationDate(datePublishedString);
+    			dateFound=true;
+    		}
+    		String  micro = source.getCitationMicroReference();
+    		
+    		if(citation == null) {
+    			citation = "";
+    		}    		
+    		if(micro == null) {
+    			micro = "";
+    		}    		
+    		sourceTitleList.add(citation + " " + micro);
+    	}
+    	osr.setSources(sourceTitleList);
+    	
+    	osr.setPublicationDate(datePublishedString);
+    	
+    	List<String> rightsTextList = new ArrayList<String>();
+    	Set<Rights> rightsSet = duf.innerDerivedUnit().getRights();
+    	for(Rights rights : rightsSet) {
+    		if(rights.getAbbreviatedText() != null) {
+    			rightsTextList.add(rights.getAbbreviatedText());
+    		}
+    	}
+    	osr.setRights(rightsTextList);
+    	response.add(osr);
     }
 
     public List<OccurrenceSearchResponse> getResponse() {
@@ -164,23 +210,28 @@ public class OccurrenceSearch implements RemoteResponse {
         private String gatheringStartDate;
         private String gatheringEndDate;
               
-        private Location location;        
+        private Location location;        	
 
-		
+        private String fieldNumber;        
+        private String accessionNumber;
+        private String catalogNumber;
+        private String barcode;
+        private String publicationDate;
+
+
+		private List<String> rights;
+        private List<String> sources;
+        
         //FIXME: Ignoring the fields below for the moment
         //       Will come back to them when requested and
         //       when the model allows it properly
-//        private String fieldNumber;        
-//        private String accessionNumber;
-//        private String catalogNumber;
-//        private String barcode;
-//        private boolean dateFromPublication;
-//        private String citation;
-//        private String rights;
-//        private List<String> sources;
+        
+//      private String citation;
 
         public OccurrenceSearchResponse() {             	        	
         	location = new Location();
+        	rights = new ArrayList<String>();
+        	sources = new ArrayList<String>();
 
         }
         
@@ -248,49 +299,49 @@ public class OccurrenceSearch implements RemoteResponse {
         }
 
 
-//        /**
-//         * @return the accessionNumber
-//         */
-//
-//        public String getAccessionNumber() {
-//            return accessionNumber;
-//        }
-//
-//        /**
-//         * @param accessionNumber the accessionNumber to set
-//         */
-//   
-//        public void setAccessionNumber(String accessionNumber) {
-//            this.accessionNumber = accessionNumber;
-//        }
-//
-//        /**
-//         * @return the catalogNumber
-//         */
-//        public String getCatalogNumber() {
-//            return catalogNumber;
-//        }
-//
-//        /**
-//         * @param catalogNumber the catalogNumber to set
-//         */
-//        public void setCatalogNumber(String catalogNumber) {
-//            this.catalogNumber = catalogNumber;
-//        }
-//
-//        /**
-//         * @return the fieldNumber
-//         */
-//        public String getFieldNumber() {
-//            return fieldNumber;
-//        }
-//
-//        /**
-//         * @param fieldNumber the fieldNumber to set
-//         */
-//        public void setFieldNumber(String fieldNumber) {
-//            this.fieldNumber = fieldNumber;
-//        }
+        /**
+         * @return the accessionNumber
+         */
+
+        public String getAccessionNumber() {
+            return accessionNumber;
+        }
+
+        /**
+         * @param accessionNumber the accessionNumber to set
+         */
+   
+        public void setAccessionNumber(String accessionNumber) {
+            this.accessionNumber = accessionNumber;
+        }
+
+        /**
+         * @return the catalogNumber
+         */
+        public String getCatalogNumber() {
+            return catalogNumber;
+        }
+
+        /**
+         * @param catalogNumber the catalogNumber to set
+         */
+        public void setCatalogNumber(String catalogNumber) {
+            this.catalogNumber = catalogNumber;
+        }
+
+        /**
+         * @return the fieldNumber
+         */
+        public String getFieldNumber() {
+            return fieldNumber;
+        }
+
+        /**
+         * @param fieldNumber the fieldNumber to set
+         */
+        public void setFieldNumber(String fieldNumber) {
+            this.fieldNumber = fieldNumber;
+        }
 
         /**
          * @return the minElevation
@@ -348,20 +399,6 @@ public class OccurrenceSearch implements RemoteResponse {
             this.gatheringEndDate = dateEnd;
         }
 
-//        /**
-//         * @return the dateFromPublication
-//         */
-//        public boolean isDateFromPublication() {
-//            return dateFromPublication;
-//        }
-//
-//        /**
-//         * @param dateFromPublication the dateFromPublication to set
-//         */
-//        public void setDateFromPublication(boolean dateFromPublication) {
-//            this.dateFromPublication = dateFromPublication;
-//        }
-
         /**
          * @return the unitCount
          */
@@ -376,19 +413,28 @@ public class OccurrenceSearch implements RemoteResponse {
             this.unitCount = unitCount;
         }
 
-//        /**
-//         * @return the barcode
-//         */
-//        public String getBarcode() {
-//            return barcode;
-//        }
-//
-//        /**
-//         * @param barcode the barcode to set
-//         */
-//        public void setBarcode(String barcode) {
-//            this.barcode = barcode;
-//        }
+        /**
+         * @return the barcode
+         */
+        public String getBarcode() {
+            return barcode;
+        }
+
+        /**
+         * @param barcode the barcode to set
+         */
+        public void setBarcode(String barcode) {
+            this.barcode = barcode;
+        }
+
+        
+		public String getPublicationDate() {
+			return publicationDate;
+		}
+		
+		public void setPublicationDate(String publicationDate) {
+			this.publicationDate = publicationDate;
+		}
 
         /**
          * @return the kindOfUnit
@@ -404,19 +450,19 @@ public class OccurrenceSearch implements RemoteResponse {
             this.kindOfUnit = kindOfUnit;
         }
 
-//        /**
-//         * @return the sources
-//         */
-//        public List<String> getSources() {
-//            return sources;
-//        }
-//
-//        /**
-//         * @param sources the sources to set
-//         */
-//        public void setSources(List<String> sources) {
-//            this.sources = sources;
-//        }
+        /**
+         * @return the sources
+         */
+        public List<String> getSources() {
+            return sources;
+        }
+
+        /**
+         * @param sources the sources to set
+         */
+        public void setSources(List<String> sources) {
+            this.sources = sources;
+        }
 
         /**
          * @return the collection
@@ -502,19 +548,19 @@ public class OccurrenceSearch implements RemoteResponse {
 //            this.citation = citation;
 //        }
 
-//        /**
-//         * @return the dataResourceRights
-//         */
-//        public String getRights() {
-//            return rights;
-//        }
-//
-//        /**
-//         * @param dataResourceRights the dataResourceRights to set
-//         */
-//        public void setRights(String rights) {
-//            this.rights = rights;
-//        }
+        /**
+         * @return the dataResourceRights
+         */
+        public List<String> getRights() {
+            return rights;
+        }
+
+        /**
+         * @param dataResourceRights the dataResourceRights to set
+         */
+        public void setRights(List<String> rights) {
+            this.rights = rights;
+        }
 
         public Location getLocation() {
 			return location;

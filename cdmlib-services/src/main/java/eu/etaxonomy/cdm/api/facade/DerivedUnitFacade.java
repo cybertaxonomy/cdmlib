@@ -2231,6 +2231,11 @@ public class DerivedUnitFacade {
 		this.baseUnit().removeSource(source);
 	}
 
+	@Transient
+	public Set<Rights> getRights() {
+		return baseUnit().getRights();
+	}
+	
 	/**
 	 * @return the collection
 	 */
