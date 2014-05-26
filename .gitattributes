@@ -74,6 +74,7 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQuerySer
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryGenerator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryServiceWrapper.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/JsonGbifOccurrenceParser.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlQuery.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper.java -text

@@ -10,14 +10,15 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Collection;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
 
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -43,13 +44,13 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
 
     /**
      * Queries the GBIF API with the given {@link OccurenceQuery}.
-     * @return The response as an {@link InputStream}
+     * @return The response as a collection of {@link DerivedUnitFacade}
      */
-    public InputStream query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+    public Collection<DerivedUnitFacade> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
         List<NameValuePair> queryParamsGET = new GbifQueryGenerator().generateQueryParams(query);
         URI uri = createUri(SUB_PATH, queryParamsGET);
 
-        return executeHttpGet(uri, null);
+        return JsonGbifOccurrenceParser.parseJsonRecords(executeHttpGet(uri, null));
     }
 
 }
