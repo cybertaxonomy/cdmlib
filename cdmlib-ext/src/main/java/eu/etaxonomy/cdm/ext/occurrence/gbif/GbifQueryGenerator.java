@@ -35,6 +35,7 @@ public class GbifQueryGenerator {
         List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
         // only look for preserved specimens
         ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "basisOfRecord", "PRESERVED_SPECIMEN");
+        ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "limit", "100");
 
         if(query.accessionNumber!=null || query.accessionNumber.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "CatalogNumber", query.accessionNumber);
@@ -59,10 +60,11 @@ public class GbifQueryGenerator {
                Date range exact: Jan. 02.1899 to june 03. 1902
                http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1899-1-2,1902-6-3
              */
+            String eventDate = OccurenceQuery.DATE_FORMAT.format(query.dateFrom.getTime());
             if(query.dateTo!=null){
-
+                eventDate += "," + OccurenceQuery.DATE_FORMAT.format(query.dateTo.getTime());
             }
-//            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, query.date);
+            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "eventDate", eventDate);
         }
         if(query.herbarium!=null || query.herbarium.isEmpty()){
             // TODO refine parameter

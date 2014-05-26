@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -18,6 +19,8 @@ import java.util.Calendar;
  *
  */
 public class OccurenceQuery {
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+
     public final String taxonName;
     public final String collector;
     public final String collectorsNumber;
@@ -182,10 +185,10 @@ public class OccurenceQuery {
             string += " locality=" + locality;
         }
         if(dateFrom!=null){
-            string += " dateFrom=" + dateFrom;
+            string += " dateFrom=" + DATE_FORMAT.format(dateFrom.getTime());
         }
         if(dateTo!=null){
-            string += " dateTo=" + dateTo;
+            string += " dateTo=" + DATE_FORMAT.format(dateTo.getTime());
         }
         return string;
     }
