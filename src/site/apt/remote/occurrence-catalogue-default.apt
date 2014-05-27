@@ -4,7 +4,7 @@
 
 {CDM Occurrence Search API}
 
-	This web service endpoint serves as a search engine for taxon UUID-related occurrences.
+	This web service endpoint provides occurrence information corresponding to a specific (accepted) taxon uuid.
 	
 	The request parameters are :	
 	
@@ -93,7 +93,7 @@
 		
 		* Base UUID search : 	
 				
-			* {{{taxonUuid=aabef285-c8f7-4bee-a703-cfc7e4a70075} /occurrence_catalogue.json?query=95402484-06cc-4284-a84c-193be51489ea}}
+			* {{{taxonUuid=aabef285-c8f7-4bee-a703-cfc7e4a70075} /occurrence_catalogue.json?taxonUuid=95402484-06cc-4284-a84c-193be51489ea}}
 			
 		* UUID search with paging : 
 		

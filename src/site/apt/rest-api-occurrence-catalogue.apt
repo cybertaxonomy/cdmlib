@@ -1,0 +1,27 @@
+			-----------------------------
+			Occurrence Catalogue REST API
+			-----------------------------
+			------
+			2012-07-31
+			------
+
+
+Occurrence Catalogue REST API
+
+	This web service namespace is an add-on to the already existing CDM REST API and provides information relating to 
+	species occurrence, i.e. specimen records or field observations
+	
+	The services include,
+		
+		*** {{{./remote/occurrence-catalogue-default.html} occurrence search}}	: This web service endpoint provides occurrence information corresponding to a specific (accepted) taxon uuid.
+	
+	[]
+	
+	These web services have been developed within the pro-iBiosphere project ({{{http://www.pro-ibiosphere.eu/}www.pro-ibiosphere.eu}}) using a pilot datasource relating to the genus 
+	'Chenopodium'.
+	
+* CDM - Chenopodium
+		
+	The occurrence catalogue services (and related documentation) which correspond to the Chenopodium data can be found at,
+	
+	*** occurrence search 		: {{{http://dev.e-taxonomy.eu/cdmserver/chenopodiumPilot/occurrence_catalogue} http://dev.e-taxonomy.eu/cdmserver/chenopodiumPilot/occurrence_catalogue}} 
