@@ -101,10 +101,10 @@ public class OccurrenceSearch implements RemoteResponse {
     	if(duf.getGatheringPeriod() != null) {
     		TimePeriod tp = duf.getGatheringPeriod();
     		if(tp.getStart() != null) {
-    			osr.setGatheringStartDate(tp.getStart().toString());
+    			osr.setStartGatheringDate(tp.getStart().toString());
     		}
     		if(tp.getEnd() != null) {
-    			osr.setGatheringEndDate(tp.getEnd().toString());
+    			osr.setEndGatheringDate(tp.getEnd().toString());
     		}
     	}
     	
@@ -207,8 +207,8 @@ public class OccurrenceSearch implements RemoteResponse {
         private Object depth;
         private Object maxDepth;
 
-        private String gatheringStartDate;
-        private String gatheringEndDate;
+        private String startGatherinDate;
+        private String endGatheringDate;
               
         private Location location;        	
 
@@ -374,29 +374,29 @@ public class OccurrenceSearch implements RemoteResponse {
         /**
          * @return the dateBegin
          */
-        public String getGatheringStartDate() {
-            return gatheringStartDate;
+        public String getStartGatheringDate() {
+            return startGatherinDate;
         }
 
         /**
          * @param dateBegin the dateBegin to set
          */
-        public void setGatheringStartDate(String dateBegin) {
-            this.gatheringStartDate = dateBegin;
+        public void setStartGatheringDate(String dateBegin) {
+            this.startGatherinDate = dateBegin;
         }
 
         /**
          * @return the dateEnd
          */
-        public String getGatheringEndDate() {
-            return gatheringEndDate;
+        public String getEndGatheringDate() {
+            return endGatheringDate;
         }
 
         /**
          * @param dateEnd the dateEnd to set
          */
-        public void setGatheringEndDate(String dateEnd) {
-            this.gatheringEndDate = dateEnd;
+        public void setEndGatheringDate(String dateEnd) {
+            this.endGatheringDate = dateEnd;
         }
 
         /**

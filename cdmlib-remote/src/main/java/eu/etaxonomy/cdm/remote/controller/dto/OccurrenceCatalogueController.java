@@ -238,7 +238,15 @@ public class OccurrenceCatalogueController extends IdentifiableListController<Sp
         	mv.addObject(er);
         	return mv;
         } else {       
-        	Taxon taxon = (Taxon) taxonService.find(UUID.fromString(taxonUuid));
+        	Taxon taxon = null;        		
+        	try {
+        		taxon = (Taxon) taxonService.find(UUID.fromString(taxonUuid));
+        	} catch(ClassCastException cce) {
+            	ErrorResponse er = new ErrorResponse();
+            	er.setErrorMessage("Given UUID is not that of an accepted taxon");
+            	mv.addObject(er);
+            	return mv;
+        	}
         	if(taxon == null) {
         		ErrorResponse er = new ErrorResponse();
             	er.setErrorMessage("No Taxon for given UUID : " + taxonUuid);

@@ -1,6 +1,6 @@
-                                    ---------------
+                                    ---------------------
                                     Occurrence Search API
-                                    ---------------
+                                    ---------------------
 
 {CDM Occurrence Search API}
 
@@ -10,9 +10,9 @@
 	
 	* '<<query>>' [mandatory] : this has to be the taxon UUID.
 	
-	* '<<pageSize>>' [optional] : the number results per page to display - the default value is 50
+	* '<<pageSize>>' [optional, default value = 50] : number results per page to display.
 
-	* '<<pageNumber>>' [optional] : the number of the page to display
+	* '<<pageNumber>>' [optional, default value = 0] : number of the page to display.
 						
 	[]
 									
@@ -26,36 +26,63 @@
 			
 		* <<<response>>>
 		
-			* <<<acceptedTaxon>>> : the name of the accepted taxa related to the taxonConceptUuid.
-			* <<<accessionNumber>>> : the accession number for the current occurrence
-			* <<<barcode>>> : the barcode number for the current occurrence
-			* <<<catalogNumber>>> : the catalog number (unitID) for the current occurrence
-			* <<<collection>>> : the collection identifier where the occurrence is stored
-			* <<<collector": the collector name
-			* <<<country>>> : the country where it was gathered or observed
-			* <<<dataResourceCitation>>> : IPR
-			* <<<dataResourceRights>>> : IPR
-			* <<<dateBegin": the gathering or observation date
-			* <<<dateEnd>>> : the gathering or observation date 
-			* <<<dateFromPublication": boolean - if set to True, means the date come from the publication date
-			* <<<depth>>> : the depth where it was gathered or observed  
-			* <<<elevation>>> : the elevation where it was gathered or observed  
-			* <<<errorRadius>>> : the error radius for the coordinates measurement
-			* <<<fieldNotes>>> : notes from the collector
-			* <<<fieldNumber>>> :  number assigned by the collection
-			* <<<institution>>> : the institution identifier where the occurrence is stored
-			* <<<kindOfUnit>>> : the kind of unit described by the collector
-			* <<<latitude>>> : the latitude where it was gathered or observed
-			* <<<locality": the locality where it was gathered or observed
-			* <<<longitude>>> : the longitude where it was gathered or observed
-			* <<<maxDepth>>> : 
-			* <<<maxElevation>>> : 
-			* <<<nameUUID": the taxonConceptUuid
-			* <<<referenceSystem>>> : the GPS reference system
-			* <<<sources>>>: listing of paper, publications, urls from where the occurrence was extracted from
-			* <<<specimenOrObservationType>>>
-			* <<<title>>>
-			* <<<unitCount>>> 						
+			* <<<acceptedTaxon>>>  : name of the accepted taxa corresponding to the requested taxon uuid.
+			
+			* <<<acceptedTaxonUuid>>> : input taxon uuid.
+			
+			* <<<accessionNumber>>> : accession number for the current occurrence.
+			
+			* <<<barcode>>> : barcode number for the current occurrence.						
+			
+			* <<<catalogNumber>>> : catalog number (unitID) for the current occurrence.
+			
+			* <<<collection>>> : collection identifier where the occurrence is stored.
+			
+			* <<<collector>>>: collector name.					
+			
+			* <<<depth>>>: absolute depth value or minimum depth if <<<maxDepth>>> is not null.
+			
+			* <<<elevation>>>: absolute elevation value or minimum elevation if <<<maxElevation>>> is not null.			
+			
+			* <<<endGatheringDate>>> : end gathering or observation date.
+			
+			* <<<fieldNotes>>> : notes from the collector.
+			 
+			* <<<fieldNumber>>> :  number assigned by the collection.
+			
+			* <<<institution>>> : institution identifier where the occurrence is stored.			
+			
+			* <<<kindOfUnit>>> : Part(s) of organism or class of materials represented by this unit. (e.g. fruits, seeds, tissue, etc)
+									
+			* <<<location>>> : location information corresponding to the occurrence, which includes,
+			
+				* <<<country>>> : country where the occurrence was gathered or observed.
+				
+				* <<<decimalLatitude>>> : latitude (in decimal) where the occurrence was gathered or observed.
+				
+				* <<<decimalLongitude>>> : longitude (in decimal) where the occurrence was gathered or observed.
+				
+				* <<<errorRadius>>> : error radius for the coordinates measurement.
+				
+				* <<<locality>>>: locality where the occurrence was gathered or observed
+				
+				* <<<referenceSystem>>> : GPS reference system.
+								
+			* <<<maxDepth>>> : maximum depth.
+			
+			* <<<maxElevation>>> : maximum elevation.
+			
+			* <<<publicationDate>>> : occurrence publication date.
+			
+			* <<<rights>>> : list of property rights associated with the resource, including intellectual property rights.
+			
+			* <<<sources>>>: list of paper, publications, urls from where the occurrence was extracted from.
+			
+			* <<<startGatheringDate>>> : start gathering or observation date.
+			
+			* <<<type>>> : type of specimen or observation described by the collector.
+			
+			* <<<unitCount>>> : number of units associated with the occurrence 						
 	
 	Features:
 	
@@ -66,113 +93,169 @@
 		
 		* Base UUID search : 	
 				
-			* {{{Chenopodium ambrosioides L.} /occurrence_catalogue.json?query=95402484-06cc-4284-a84c-193be51489ea}}
+			* {{{taxonUuid=aabef285-c8f7-4bee-a703-cfc7e4a70075} /occurrence_catalogue.json?query=95402484-06cc-4284-a84c-193be51489ea}}
 			
 		* UUID search with paging : 
 		
-			* {{{Chenopodium ambrosioides L.} /occurrence_catalogue.json?query=95402484-06cc-4284-a84c-193be51489ea&pageNumber=0&pageSize=2}}
+			* {{{taxonUuid95402484-06cc-4284-a84c-193be51489eapageNumber1pageSize2} /occurrence_catalogue.json?taxonUuid=95402484-06cc-4284-a84c-193be51489ea&pageNumber=1&pageSize=5}}
 			
 		
 			
 	Example Responses :
 		
-		* UUID search with paging : {query=95402484-06cc-4284-a84c-193be51489ea} [{{{CDM_Occurrence_Search_API}back}}]
+		* Base UUID search : {taxonUuid=aabef285-c8f7-4bee-a703-cfc7e4a70075} [{{{CDM_Occurrence_Search_API}back}}]
 										
 ---
 
-[
-    {
+{
 
-    "count": 11,
+    "count": 1,
     "currentIndex": 0,
     "firstRecord": 1,
     "indices": [
+        0
+    ],
+    "lastRecord": 1,
+    "nextIndex": 0,
+    "pageSize": 50,
+    "pagesAvailable": 1,
+    "prevIndex": 0,
+    "records": [
+        {
+            "acceptedTaxon": "Chenopodium album L.",
+            "acceptedTaxonUuid": "aabef285-c8f7-4bee-a703-cfc7e4a70075",
+            "accessionNumber": "",
+            "barcode": "",
+            "catalogNumber": "",
+            "collection": "National Botanic Garden of Belgium",
+            "collector": "Quarré",
+            "depth": null,
+            "elevation": null,
+            "endGatheringDate": "",
+            "fieldNotes": "",
+            "fieldNumber": "3508",
+            "institution": "",
+            "kindOfUnit": "",
+            "location": {
+                "country": "Zaire",
+                "decimalLatitude": null,
+                "decimalLongitude": null,
+                "errorRadius": null,
+                "locality": "vallée de la Karavia",
+                "referenceSystem": ""
+            },
+            "maxDepth": null,
+            "maxElevation": null,
+            "publicationDate": "",
+            "rights": [ ],
+            "sources": [ ],
+            "startGatheringDate": "",
+            "type": "PreservedSpecimen",
+            "unitCount": null
+        }
+    ],
+    "suggestion": ""
+
+}
+
+---
+
+		* UUID search with paging : {taxonUuid=95402484-06cc-4284-a84c-193be51489ea&pageNumber=1&pageSize=2} [{{{CDM_Occurrence_Search_API}back}}]
+		
+---
+{
+
+    "count": 11,
+    "currentIndex": 1,
+    "firstRecord": 3,
+    "indices": [
         0,
         1,
-        2
+        2,
+        3
     ],
-    "lastRecord": 2,
-    "nextIndex": 1,
+    "lastRecord": 4,
+    "nextIndex": 2,
     "pageSize": 2,
     "pagesAvailable": 6,
     "prevIndex": 0,
     "records": [
         {
             "acceptedTaxon": "Chenopodium ambrosioides L.",
-            "accessionNumber>>> : 
-            "barcode>>> : 
-            "catalogNumber>>> : 
-            "collection>>> : 
-            "collector": "Bolle",
-            "country>>> : 
-            "dataResourceCitation>>> : 
-            "dataResourceRights>>> : 
-            "dateBegin": "1908",
-            "dateEnd>>> : 
-            "dateFromPublication": true,
-            "depth>>> : 
-            "elevation>>> : 
-            "errorRadius>>> : 
-            "fieldNotes>>> : 
-            "fieldNumber>>> : 
-            "institution>>> : 
-            "kindOfUnit>>> : 
-            "latitude>>> : 
-            "locality": "Bufadero",
-            "longitude>>> : 
-            "maxDepth>>> : 
-            "maxElevation>>> : 
-            "nameUUID": "95402484-06cc-4284-a84c-193be51489ea",
-            "referenceSystem>>> : 
+            "acceptedTaxonUuid": "95402484-06cc-4284-a84c-193be51489ea",
+            "accessionNumber": "",
+            "barcode": "",
+            "catalogNumber": "",
+            "collection": "",
+            "collector": "",
+            "depth": null,
+            "elevation": null,
+            "endGatheringDate": "",
+            "fieldNotes": "",
+            "fieldNumber": "",
+            "institution": "",
+            "kindOfUnit": "",
+            "location": {
+                "country": "",
+                "decimalLatitude": null,
+                "decimalLongitude": null,
+                "errorRadius": null,
+                "locality": "Barranco d'Anavigo",
+                "referenceSystem": ""
+            },
+            "maxDepth": null,
+            "maxElevation": null,
+            "publicationDate": "1908",
+            "rights": [ ],
             "sources": [
-                "Charles Joseph Pitard and Louis Proust - Chenopodieae in Les îles Canaries. Flore de l'archipel. 1908",
-                "http://plazi.cs.umb.edu/GgServer/cdmSync/FE9CB87035C15D9328FF7CE6DEC573DD?cacheControl=force",
-                "PlaziCDMsync"
+                "PlaziCDMsync ",
+                "http://plazi.cs.umb.edu/GgServer/cdmSync/FE9CB87035C15D9328FF7CE6DEC573DD?cacheControl=force ",
+                "Charles Joseph Pitard and Louis Proust - Chenopodieae in Les îles Canaries. Flore de l'archipel. 1908 "
             ],
-            "specimenOrObservationType": "DerivedUnit",
-            "title": "Tenerife : Bufadero ( Bolle )",
-            "unitCount": ""
+            "startGatheringDate": "",
+            "type": "DerivedUnit",
+            "unitCount": null
         },
         {
             "acceptedTaxon": "Chenopodium ambrosioides L.",
-            "accessionNumber>>> : 
-            "barcode>>> : 
-            "catalogNumber>>> : 
-            "collection>>> : 
-            "collector>>> : 
-            "country>>> : 
-            "dataResourceCitation>>> : 
-            "dataResourceRights>>> : 
-            "dateBegin": "1908",
-            "dateEnd>>> : 
-            "dateFromPublication": true,
-            "depth>>> : 
-            "elevation>>> : 
-            "errorRadius>>> : 
-            "fieldNotes>>> : 
-            "fieldNumber>>> : 
-            "institution>>> : 
-            "kindOfUnit>>> : 
-            "latitude>>> : 
-            "locality": "Guimar",
-            "longitude>>> : 
-            "maxDepth>>> : 
-            "maxElevation>>> : 
-            "nameUUID": "95402484-06cc-4284-a84c-193be51489ea",
-            "referenceSystem>>> : 
+            "acceptedTaxonUuid": "95402484-06cc-4284-a84c-193be51489ea",
+            "accessionNumber": "",
+            "barcode": "",
+            "catalogNumber": "",
+            "collection": "",
+            "collector": "",
+            "depth": null,
+            "elevation": null,
+            "endGatheringDate": "",
+            "fieldNotes": "",
+            "fieldNumber": "",
+            "institution": "",
+            "kindOfUnit": "",
+            "location": {
+                "country": "",
+                "decimalLatitude": null,
+                "decimalLongitude": null,
+                "errorRadius": null,
+                "locality": "Laguna",
+                "referenceSystem": ""
+            },
+            "maxDepth": null,
+            "maxElevation": null,
+            "publicationDate": "",
+            "rights": [ ],
             "sources": [
-                "http://plazi.cs.umb.edu/GgServer/cdmSync/FE9CB87035C15D9328FF7CE6DEC573DD?cacheControl=force",
-                "PlaziCDMsync",
-                "Charles Joseph Pitard and Louis Proust - Chenopodieae in Les îles Canaries. Flore de l'archipel. 1908"
+                "PlaziCDMsync ",
+                "Charles Joseph Pitard and Louis Proust - Chenopodieae in Les îles Canaries. Flore de l'archipel. 1908 ",
+                "http://plazi.cs.umb.edu/GgServer/cdmSync/FE9CB87035C15D9328FF7CE6DEC573DD?cacheControl=force "
             ],
-            "specimenOrObservationType": "DerivedUnit",
-            "title": "Guimar ( 300 m )",
-            "unitCount": ""
+            "startGatheringDate": "",
+            "type": "DerivedUnit",
+            "unitCount": null
         }
     ],
     "suggestion": ""
 
+}
 
-}]
-
-
+---		
+		
