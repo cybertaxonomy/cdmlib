@@ -37,7 +37,8 @@ public class TaxonXAddSources {
     private Reference<?> sourceUrlRef;
     private TaxonXImport importer;
     private TaxonXImportState configState;
-    private static final Logger logger = Logger.getLogger(TaxonXAddSources.class);
+    @SuppressWarnings("unused")
+	private static final Logger logger = Logger.getLogger(TaxonXAddSources.class);
 
     /**
      * @param importer

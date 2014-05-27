@@ -358,7 +358,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         poly.addSource(OriginalSourceType.Import, null,null,refMods,null);
         poly.addSource(OriginalSourceType.Import, null,null,sourceUrlRef,null);
         poly.addTaxonomicScope(acceptedTaxon);
-        poly.setTitleCache("bloup");
+        poly.setTitleCache("bloup", true);
         //        poly.addCoveredTaxon(acceptedTaxon);
         PolytomousKeyNode root = poly.getRoot();
         PolytomousKeyNode previous = null,tmpKey=null;
@@ -2497,8 +2497,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                     if (nomenclaturalCode.equals(NomenclaturalCode.ICNB)){
                         nameToBeFilled = BacterialName.NewInstance(null);
                     }
-                    nameToBeFilled.setTitleCache(s);
-                    nameToBeFilled.setRank(getRank(r));
+                    nameToBeFilled.setTitleCache(s, true);
+                    nameToBeFilled.setRank(getRank(r), true);
 
                     tax = Taxon.NewInstance(nameToBeFilled, ref);
                 }
@@ -4074,16 +4074,15 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }
 
                 if(rank.equals(Rank.UNKNOWN_RANK())){
-                    tnb.setTitleCache(fullname);
+                    tnb.setTitleCache(fullname, true);
                     //                    tnb.setGenusOrUninomial(fullname);
-                    tnb.setProtectedTitleCache(true);
                 }
                 if(rank.isHigher(Rank.GENUS())) {
                     tnb.setGenusOrUninomial(partialname);
                 }
 
                 if(rank.isHigher(Rank.SPECIES())) {
-                    tnb.setTitleCache(partialname);
+                    tnb.setTitleCache(partialname, true);
                 }
 
                 if (rank.equals(globalrank) && author != null) {

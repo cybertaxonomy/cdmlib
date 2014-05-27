@@ -141,7 +141,7 @@ public class TaxonXExtractor {
 
             //                        logger.info("Current reference :"+nbRef+", "+ref+", "+treatmentMainName+"--"+ref.indexOf(treatmentMainName));
             Reference<?> reference = ReferenceFactory.newGeneric();
-            reference.setTitleCache(ref);
+            reference.setTitleCache(ref, true);
 
             //only add the first one if there is no nomenclatural reference yet
             if (nbRef==0){
