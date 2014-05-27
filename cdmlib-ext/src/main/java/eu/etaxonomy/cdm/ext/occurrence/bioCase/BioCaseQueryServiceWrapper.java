@@ -84,6 +84,8 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, dsaName);
         URI uri = createUri(SUB_PATH, queryParamsGET);
 
+
+        logger.info("Querying BioCASE service with " + uri + ", POST: " + httpEntity);
         return executeHttpPost(uri, null, httpEntity);
 //        InputStream responseStream = executeHttpPost(new URI("http", "ww3.bgbm.org", "/biocase/pywrapper.cgi" , "dsa=Herbar", null), null, httpEntity);
 //        try {

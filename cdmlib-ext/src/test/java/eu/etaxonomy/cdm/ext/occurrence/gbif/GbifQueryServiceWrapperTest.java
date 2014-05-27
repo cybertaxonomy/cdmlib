@@ -9,13 +9,21 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Collection;
+import java.util.GregorianCalendar;
+import java.util.List;
 
 import junit.framework.TestCase;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.message.BasicNameValuePair;
 import org.junit.Test;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
 /**
  * @author pplitzner
@@ -70,6 +78,38 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         assertEquals("number of records found is incorrect", 1, records.size());
         DerivedUnitFacade facade = records.iterator().next();
         assertEquals("Locality is incorrect", LOCALITY_STRING, facade.getLocalityText());
+    }
+
+    @Test
+    public void testQueryParameterConversion(){
+        OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "T. Henning", "1234", "ACC-2", "BGBM", "DE", "pollen herbarium", new GregorianCalendar(2014, 05, 27), new GregorianCalendar(2014,05,28));
+        List<NameValuePair> queryParams = new GbifQueryGenerator().generateQueryParams(query);
+        NameValuePair pair = new BasicNameValuePair("scientificName", "Campanula persicifolia");
+        assertTrue("query parameter is missing", queryParams.contains(pair));
+        //FIXME this will currently always fail because of eventDate which is set in GbifServiceWrapper.query()
+        //"basisOfRecord" and "limit" is always set
+        // + 8 from query (collectorsNumber will be represented in the two parameters "recordNumber" and "fieldNumber";
+        // both dates are represented in one parameter "eventDate";
+        // locality can still not be queried on GBIF web service)
+        assertEquals("Number of generated URI parameters is incorrect", 10, queryParams.size());
+    }
+
+    public void testGbifWebService() {
+        OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
+        GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
+        try {
+            Collection<DerivedUnitFacade> facades = service.query(query);
+            assertEquals("Usually this query retrieves at least two units. " +
+            		"If this test fails may also be due to GBIF!" +
+            		"Check http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, facades.size());
+        } catch (ClientProtocolException e) {
+            fail(e.getMessage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        } catch (URISyntaxException e) {
+            fail(e.getMessage());
+        }
+
     }
 
 }

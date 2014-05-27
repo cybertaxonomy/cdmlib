@@ -17,6 +17,7 @@ import java.util.List;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.utils.URIBuilder;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
@@ -47,9 +48,19 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
      * @return The response as a collection of {@link DerivedUnitFacade}
      */
     public Collection<DerivedUnitFacade> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+        //TODO: workaround for special case for "eventDate" which can have comma separated values
+        String eventDateUri = "";
+        if(query.dateFrom!=null && query.dateTo!=null){
+            eventDateUri = OccurenceQuery.DATE_FORMAT.format(query.dateFrom.getTime());
+            eventDateUri += ","+OccurenceQuery.DATE_FORMAT.format(query.dateTo.getTime());
+        }
         List<NameValuePair> queryParamsGET = new GbifQueryGenerator().generateQueryParams(query);
         URI uri = createUri(SUB_PATH, queryParamsGET);
 
+        URIBuilder builder = new URIBuilder(uri);
+        builder.addParameter("eventDate", eventDateUri);
+
+        logger.info("Querying GBIF service with " + uri);
         return JsonGbifOccurrenceParser.parseJsonRecords(executeHttpGet(uri, null));
     }
 
