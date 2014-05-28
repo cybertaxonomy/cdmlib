@@ -12,6 +12,7 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.List;
 
@@ -49,19 +50,22 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
      */
     public Collection<GbifResponse> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
         //TODO: workaround for special case for "eventDate" which can have comma separated values
-        String eventDateUri = "";
-        if(query.dateFrom!=null && query.dateTo!=null){
-            eventDateUri = OccurenceQuery.DATE_FORMAT.format(query.dateFrom.getTime());
-            eventDateUri += ","+OccurenceQuery.DATE_FORMAT.format(query.dateTo.getTime());
+        String yearUri = "";
+        if(query.dateFrom!=null){
+            yearUri = "&year="+query.dateFrom.get(Calendar.YEAR);
+            if(query.dateTo!=null){
+                yearUri += ","+query.dateTo.get(Calendar.YEAR);
+            }
+            //TODO we skip month range query because it only checks for the month range ignoring the year range
+            //TODO date is not supported by GBIF
         }
         List<NameValuePair> queryParamsGET = new GbifQueryGenerator().generateQueryParams(query);
         URI uri = createUri(SUB_PATH, queryParamsGET);
 
-        URIBuilder builder = new URIBuilder(uri);
-        builder.addParameter("eventDate", eventDateUri);
+        URIBuilder builder = new URIBuilder(uri.toString()+yearUri);
 
-        logger.info("Querying GBIF service with " + uri);
-        return JsonGbifOccurrenceParser.parseJsonRecords(executeHttpGet(uri, null));
+        logger.info("Querying GBIF service with " + builder.build());
+        return JsonGbifOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
     }
 
 }

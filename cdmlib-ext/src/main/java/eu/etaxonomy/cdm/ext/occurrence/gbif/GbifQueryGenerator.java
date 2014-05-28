@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -51,23 +52,19 @@ public class GbifQueryGenerator {
         if(query.country!=null && !query.country.isEmpty()){
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "country", query.country);
         }
-        //FIXME workaround because commas are converted by UriUtils so this is done manually in
-        // GbifServiceWrapper
-//        if(query.dateFrom!=null){
-//            /**
-//               Date Range: January – June 1899
-//               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&year=1899&month=1,6
-//               Exact Date: june 20th 1901
-//               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1901-6-20
-//               Date range exact: Jan. 02.1899 to june 03. 1902
-//               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1899-1-2,1902-6-3
-//             */
-//            String eventDate = OccurenceQuery.DATE_FORMAT.format(query.dateFrom.getTime());
-//            if(query.dateTo!=null){
-//                eventDate += "," + OccurenceQuery.DATE_FORMAT.format(query.dateTo.getTime());
-//            }
-//            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "eventDate", eventDate);
-//        }
+        /**
+               Date Range: January – June 1899
+               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&year=1899&month=1,6
+               Exact Date: june 20th 1901
+               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1901-6-20
+               Date range exact: Jan. 02.1899 to june 03. 1902
+               http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1899-1-2,1902-6-3
+         */
+        // FIXME JUST parse month because year is handled in GbifServiceWrapper
+        if(query.dateFrom!=null){
+            int month = query.dateFrom.get(Calendar.MONTH);
+            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "month", month);
+        }
         if(query.herbarium!=null && !query.herbarium.isEmpty()){
             // TODO refine parameter
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "institutionCode", query.herbarium);
