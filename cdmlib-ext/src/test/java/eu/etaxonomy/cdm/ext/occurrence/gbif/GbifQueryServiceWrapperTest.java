@@ -73,7 +73,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
 
     @Test
     public void testJsonToCdmObject(){
-        Collection<GbifResponse> records = JsonGbifOccurrenceParser.parseJsonRecords(dummyJson);
+        Collection<GbifResponse> records = GbifJsonOccurrenceParser.parseJsonRecords(dummyJson);
         assertEquals("number of records found is incorrect", 1, records.size());
         GbifResponse gbifResponse = records.iterator().next();
         assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());

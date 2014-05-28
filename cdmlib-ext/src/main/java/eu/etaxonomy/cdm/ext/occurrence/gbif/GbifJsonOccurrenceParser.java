@@ -12,6 +12,10 @@ package eu.etaxonomy.cdm.ext.occurrence.gbif;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringWriter;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -20,8 +24,10 @@ import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
 import org.apache.commons.io.IOUtils;
+import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.location.Country;
@@ -36,9 +42,12 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @date 22.05.2014
  *
  */
-public class JsonGbifOccurrenceParser {
+public class GbifJsonOccurrenceParser {
+
+    private static final Logger logger = Logger.getLogger(GbifJsonOccurrenceParser.class);
 
     private static final String DATASET_KEY = "datasetKey";
+    private static final String DATASET_PROTOCOL = "protocol";
 
     private static final String COUNTRY_CODE = "countryCode";
     private static final String LOCALITY = "locality";
@@ -101,11 +110,15 @@ public class JsonGbifOccurrenceParser {
             //parse every record
             if(o instanceof JSONObject){
                 String dataSetKey = null;
+                GbifDataSetProtocol dataSetProtocol = null;
                 DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
                 JSONObject record = (JSONObject)o;
 
                 if(record.has(DATASET_KEY)){
-                    dataSetKey = record.getString(DATASET_KEY);
+                    dataSetProtocol = GbifDataSetProtocol.parseProtocol(record.getString(DATASET_KEY));
+                }
+                if(record.has(DATASET_PROTOCOL)){
+                    dataSetKey = record.getString(DATASET_PROTOCOL);
                 }
                 if(record.has(COUNTRY_CODE)){
                     String string = record.getString(COUNTRY_CODE);
@@ -132,8 +145,7 @@ public class JsonGbifOccurrenceParser {
                         location.setLongitudeByParsing(lon);
                     }
                 } catch (ParseException e) {
-                    // TODO Auto-generated catch block
-                    e.printStackTrace();
+                    logger.error("Could not parse GPS coordinates", e);
                 }
                 if(record.has(GEOREFERENCE_PROTOCOL)){
                     String geo = record.getString(GEOREFERENCE_PROTOCOL);
@@ -200,7 +212,16 @@ public class JsonGbifOccurrenceParser {
                 if(record.has(CATALOG_NUMBER)){
                     derivedUnitFacade.setAccessionNumber(record.getString(CATALOG_NUMBER));
                 }
-                results.add(new GbifResponse(derivedUnitFacade, dataSetKey));
+                // create dataset URL
+                URI uri = null;
+                try {
+                    uri = UriUtils.createUri(new URL(GbifQueryServiceWrapper.BASE_URL), "/v0.9/dataset/"+dataSetKey+"/endpoint", null, null);
+                } catch (MalformedURLException e) {
+                    logger.error("Endpoint URI could not be created!", e);
+                } catch (URISyntaxException e) {
+                    logger.error("Endpoint URI could not be created!", e);
+                }
+                results.add(new GbifResponse(derivedUnitFacade, uri, dataSetProtocol));
             }
         }
         return results;

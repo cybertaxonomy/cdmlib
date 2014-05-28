@@ -72,10 +72,11 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/OccurenceQuery.java -te
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryGenerator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseResponseSchemaAdapter.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifDataSetProtocol.java -text
+cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifJsonOccurrenceParser.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryGenerator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifQueryServiceWrapper.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifResponse.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/JsonGbifOccurrenceParser.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlQuery.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/openurl/MobotOpenUrlServiceWrapper.java -text

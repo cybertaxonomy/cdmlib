@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
 
 import org.apache.http.NameValuePair;
@@ -60,11 +59,7 @@ public class GbifQueryGenerator {
                Date range exact: Jan. 02.1899 to june 03. 1902
                http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=preserved_specimen&scientificName=Campanula%20persicifolia&eventDate=1899-1-2,1902-6-3
          */
-        // FIXME JUST parse month because year is handled in GbifServiceWrapper
-        if(query.dateFrom!=null){
-            int month = query.dateFrom.get(Calendar.MONTH);
-            ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "month", month);
-        }
+        // FIXME: currently ONLY year is handled by the query (see GbifServiceWrapper)
         if(query.herbarium!=null && !query.herbarium.isEmpty()){
             // TODO refine parameter
             ServiceWrapperBase.addNameValuePairTo(queryParamsGET, "institutionCode", query.herbarium);

@@ -35,6 +35,20 @@ public class BioCaseQueryGenerator {
       <count>false</count>
   </search>
 </request>
+
+
+<?xml version='1.0' encoding='UTF-8'?>
+<request xmlns='http://www.biocase.org/schemas/protocol/1.3'>
+  <header><type>search</type></header>
+  <search>
+    <requestFormat>http://www.tdwg.org/schemas/abcd/2.06</requestFormat>
+    <responseFormat start='0' limit='10'>http://www.tdwg.org/schemas/abcd/2.06</responseFormat>
+      <filter>
+<equals path='/DataSets/DataSet/Units/Unit/UnitID'>B -W 11422 -01 0</equals>
+      </filter>
+      <count>false</count>
+  </search>
+</request>
 */
 
     private static final String FALSE = "false";
@@ -44,6 +58,7 @@ public class BioCaseQueryGenerator {
     private static final String ABCD_SCHEMA_2_0 = "http://www.tdwg.org/schemas/abcd/2.06";
     private static final String COUNT = "count";
     private static final String LIKE = "like";
+    private static final String EQUALS = "equals";
     private static final String AND = "and";
     private static final String FILTER = "filter";
     private static final String RESPONSE_FORMAT = "responseFormat";
@@ -54,6 +69,7 @@ public class BioCaseQueryGenerator {
     private static final String REQUEST = "request";
     private static final String NAMESPACE = "http://www.biocase.org/schemas/protocol/1.3";
     private static final String UNIT_PATH = "/DataSets/DataSet/Units/Unit";
+    private static final String UNIT_ID = UNIT_PATH + "/UnitID";
     private static final String TAXON_NAME_PATH_ABCD_2_0 = UNIT_PATH + "/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
     private static final String LOCALITY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/LocalityText";
     private static final String HERBARIUM_PATH_ABCD_2_0 = UNIT_PATH + "/SourceID";
@@ -62,12 +78,45 @@ public class BioCaseQueryGenerator {
     private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgent";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
 
+    public static Document generateXMLQueryForUnitId(String unitId){
+        Document document = new Document();
+        Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
+        Element elHeader = new Element(HEADER);
+        Element elType = new Element(TYPE);
+        Element elSearch = new Element(SEARCH);
+        Element elRequestFormat = new Element(REQUEST_FORMAT);
+        Element elResponseFormat = new Element(RESPONSE_FORMAT);
+        Element elFilter = new Element(FILTER);
+        Element elEquals = new Element(EQUALS);
+
+        document.setRootElement(elRequest);
+        elRequest.addContent(elHeader);
+        elHeader.addContent(elType);
+        elType.addContent(SEARCH);
+
+        elRequest.addContent(elSearch);
+        elSearch.addContent(elRequestFormat);
+        elRequestFormat.addContent(ABCD_SCHEMA_2_0);
+
+        elSearch.addContent(elResponseFormat);
+        elResponseFormat.setAttribute(START, "0");
+        elResponseFormat.setAttribute(LIMIT, "100");
+        elResponseFormat.addContent(ABCD_SCHEMA_2_0);
+
+        elSearch.addContent(elFilter);
+        elFilter.addContent(elEquals);
+
+        elEquals.setAttribute(PATH, UNIT_ID);
+        elEquals.setText(unitId);
+        return document;
+    }
+
     /**
      * Generates an XML query according to the BioCASe protocol.
      * @param query the {@link OccurenceQuery} to transform to XML
      * @return the query XML {@link Document} according BioCASe protocol
      */
-    public Document generateXMLQuery(OccurenceQuery query){
+    public static Document generateXMLQuery(OccurenceQuery query){
         Document document = new Document();
         Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
         Element elHeader = new Element(HEADER);
@@ -128,7 +177,7 @@ public class BioCaseQueryGenerator {
         return document;
     }
 
-    private void addFilter(Element filterElement, String taxonName, String path){
+    private static void addFilter(Element filterElement, String taxonName, String path){
         Element elLike = new Element(LIKE);
         filterElement.addContent(elLike);
         elLike.setAttribute(PATH, path);

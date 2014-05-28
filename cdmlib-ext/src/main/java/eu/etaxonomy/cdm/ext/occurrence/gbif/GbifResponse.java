@@ -9,9 +9,14 @@
 */
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
+import java.net.URI;
+
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 
 /**
+ * Wrapper class which holds a {@link DerivedUnitFacade} which was parsed from a GBIF JSON response.
+ * Additionally it holds the {@link URI} to query the GBIF data set web service which
+ * holds the endpoint URL of the original record and the {@link GbifDataSetProtocol}
  * @author pplitzner
  * @date 27.05.2014
  *
@@ -19,27 +24,32 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 public class GbifResponse {
 
     private final DerivedUnitFacade derivedUnitFacade;
-    private final String endPoint;
+    private final URI dataSetUri;
+    private final GbifDataSetProtocol dataSetProtocol;
     /**
      * @param derivedUnitFacade
-     * @param endPoint
+     * @param dataSetUrl
      */
-    public GbifResponse(DerivedUnitFacade derivedUnitFacade, String endPoint) {
+    public GbifResponse(DerivedUnitFacade derivedUnitFacade, URI dataSetUrl, GbifDataSetProtocol dataSetProtocol) {
         super();
         this.derivedUnitFacade = derivedUnitFacade;
-        this.endPoint = endPoint;
+        this.dataSetUri = dataSetUrl;
+        this.dataSetProtocol = dataSetProtocol;
     }
-    /**
-     * @return the derivedUnitFacade
-     */
+
     public DerivedUnitFacade getDerivedUnitFacade() {
         return derivedUnitFacade;
     }
+
+    public URI getDataSetUri() {
+        return dataSetUri;
+    }
+
     /**
-     * @return the endPointQuery
+     * @return the dataSetProtocol
      */
-    public String getEndPoint() {
-        return endPoint;
+    public GbifDataSetProtocol getDataSetProtocol() {
+        return dataSetProtocol;
     }
 
 }

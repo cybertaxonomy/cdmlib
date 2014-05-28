@@ -34,7 +34,7 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
  */
 public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{
 
-    private static final String BASE_URL = "http://api.gbif.org";
+    protected static final String BASE_URL = "http://api.gbif.org";
     private static final String SUB_PATH = "/v0.9/occurrence/search";
 
     /**
@@ -65,7 +65,7 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
         URIBuilder builder = new URIBuilder(uri.toString()+yearUri);
 
         logger.info("Querying GBIF service with " + builder.build());
-        return JsonGbifOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
+        return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
     }
 
 }
