@@ -22,7 +22,6 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.message.BasicNameValuePair;
 import org.junit.Test;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 
 /**
@@ -74,10 +73,10 @@ public class GbifQueryServiceWrapperTest extends TestCase{
 
     @Test
     public void testJsonToCdmObject(){
-        Collection<DerivedUnitFacade> records = JsonGbifOccurrenceParser.parseJsonRecords(dummyJson);
+        Collection<GbifResponse> records = JsonGbifOccurrenceParser.parseJsonRecords(dummyJson);
         assertEquals("number of records found is incorrect", 1, records.size());
-        DerivedUnitFacade facade = records.iterator().next();
-        assertEquals("Locality is incorrect", LOCALITY_STRING, facade.getLocalityText());
+        GbifResponse gbifResponse = records.iterator().next();
+        assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
     }
 
     @Test
@@ -91,17 +90,17 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         // + 8 from query (collectorsNumber will be represented in the two parameters "recordNumber" and "fieldNumber";
         // both dates are represented in one parameter "eventDate";
         // locality can still not be queried on GBIF web service)
-//        assertEquals("Number of generated URI parameters is incorrect", 10, queryParams.size());
+        assertEquals("Number of generated URI parameters is incorrect", 10, queryParams.size());
     }
 
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
         try {
-            Collection<DerivedUnitFacade> facades = service.query(query);
+            Collection<GbifResponse> gbifResponse = service.query(query);
             assertEquals("Usually this query retrieves at least two units. " +
             		"If this test fails may also be due to GBIF!" +
-            		"Check http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, facades.size());
+            		"Check http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, gbifResponse.size());
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
         } catch (IOException e) {

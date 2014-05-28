@@ -38,6 +38,8 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 public class JsonGbifOccurrenceParser {
 
+    private static final String DATASET_KEY = "datasetKey";
+
     private static final String COUNTRY_CODE = "countryCode";
     private static final String LOCALITY = "locality";
     private static final String LONGITUDE = "decimalLongitude";
@@ -61,18 +63,18 @@ public class JsonGbifOccurrenceParser {
      * Parses the given {@link String} for occurrences.<br>
      * Note: The data structure of the GBIF response should not be changed.
      * @param jsonString JSON data as a String
-     * @return the found occurrences as a collection of {@link DerivedUnitFacade}
+     * @return the found occurrences as a collection of {@link GbifResponse}
      */
-    public static Collection<DerivedUnitFacade> parseJsonRecords(String jsonString) {
+    public static Collection<GbifResponse> parseJsonRecords(String jsonString) {
         return parseJsonRecords(JSONObject.fromObject(jsonString));
     }
 
     /**
      * Parses the given {@link InputStream} for occurrences.
      * @param jsonString JSON data as an InputStream
-     * @return the found occurrences as a collection of {@link DerivedUnitFacade}
+     * @return the found occurrences as a collection of {@link GbifResponse}
      */
-    public static Collection<DerivedUnitFacade> parseJsonRecords(InputStream inputStream) throws IOException{
+    public static Collection<GbifResponse> parseJsonRecords(InputStream inputStream) throws IOException{
         StringWriter stringWriter = new StringWriter();
         IOUtils.copy(inputStream, stringWriter);
         return parseJsonRecords(stringWriter.toString());
@@ -82,25 +84,29 @@ public class JsonGbifOccurrenceParser {
      * Parses the given {@link JSONObject} for occurrences.<br>
      * Note: The data structure of the GBIF response should not be changed.
      * @param jsonString JSON data as an JSONObject
-     * @return the found occurrences as a collection of {@link DerivedUnitFacade}
+     * @return the found occurrences as a collection of {@link GbifResponse}
      */
-    public static Collection<DerivedUnitFacade> parseJsonRecords(JSONObject jsonObject){
+    public static Collection<GbifResponse> parseJsonRecords(JSONObject jsonObject){
         return parseJsonRecords(jsonObject.getJSONArray("results"));
     }
 
     /**
      * Parses the given {@link JSONArray} for occurrences.
      * @param jsonString JSON data as an {@link JSONArray}
-     * @return the found occurrences as a collection of {@link DerivedUnitFacade}
+     * @return the found occurrences as a collection of {@link GbifResponse}
      */
-    private static Collection<DerivedUnitFacade> parseJsonRecords(JSONArray jsonArray) {
-        Collection<DerivedUnitFacade> results = new ArrayList<DerivedUnitFacade>();
+    private static Collection<GbifResponse> parseJsonRecords(JSONArray jsonArray) {
+        Collection<GbifResponse> results = new ArrayList<GbifResponse>();
         for(Object o:jsonArray){
             //parse every record
             if(o instanceof JSONObject){
+                String dataSetKey = null;
                 DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
                 JSONObject record = (JSONObject)o;
 
+                if(record.has(DATASET_KEY)){
+                    dataSetKey = record.getString(DATASET_KEY);
+                }
                 if(record.has(COUNTRY_CODE)){
                     String string = record.getString(COUNTRY_CODE);
                     Country country = Country.getCountryByIso3166A2(string);
@@ -194,7 +200,7 @@ public class JsonGbifOccurrenceParser {
                 if(record.has(CATALOG_NUMBER)){
                     derivedUnitFacade.setAccessionNumber(record.getString(CATALOG_NUMBER));
                 }
-                results.add(derivedUnitFacade);
+                results.add(new GbifResponse(derivedUnitFacade, dataSetKey));
             }
         }
         return results;

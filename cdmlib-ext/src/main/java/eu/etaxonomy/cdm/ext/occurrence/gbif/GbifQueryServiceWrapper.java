@@ -47,7 +47,7 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
      * Queries the GBIF API with the given {@link OccurenceQuery}.
      * @return The response as a collection of {@link DerivedUnitFacade}
      */
-    public Collection<DerivedUnitFacade> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
+    public Collection<GbifResponse> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
         //TODO: workaround for special case for "eventDate" which can have comma separated values
         String eventDateUri = "";
         if(query.dateFrom!=null && query.dateTo!=null){
