@@ -51,12 +51,15 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
         else if (o2 == null) {
             return -1;
         }
+        if (o1.equals(o2)){
+        	return 0;
+        }
 
         String titleCache1 = createSortableTitleCache(o1);
         String titleCache2 = createSortableTitleCache(o2);
 
         if(isIgnoreHybridSign()) {
-            logger.trace("ignoring Hybrid Signs: " + HYBRID_SIGN);
+            if (logger.isTraceEnabled()){logger.trace("ignoring Hybrid Signs: " + HYBRID_SIGN);}
             titleCache1 = titleCache1.replace(HYBRID_SIGN, "");
             titleCache2 = titleCache2.replace(HYBRID_SIGN, "");
         }
@@ -83,7 +86,12 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
             titleCache2 += s2.nextToken();
         }
 
-        return titleCache1.compareTo(titleCache2);
+        int result = titleCache1.compareTo(titleCache2);
+        if (result != 0){
+        	return result;
+        }else{
+        	return o1.getUuid().compareTo(o2.getUuid());
+        }
     }
 
 
