@@ -22,18 +22,30 @@ public class TaxonComparatorSearch implements Serializable, Comparator<TaxonBase
 
 	public int compare(TaxonBase taxon1, TaxonBase taxon2) {
 		
+		System.out.println(taxon1.getUuid() + ";" + taxon2.getUuid());
+		
+		if (taxon1.getUuid().equals(taxon2.getUuid())){
+			return 0;
+		}
+		
+		//TODO FIXME handle taxonX.getName() == null
+		
 		Rank rankTax1 = taxon1.getName().getRank();
 		Rank rankTax2 = taxon2.getName().getRank();
 		
-		if (rankTax1 == null) return 1;
-		if (rankTax2 == null) return -1;
-		if (rankTax1.isHigher(rankTax2)) return -1;
-		else if (rankTax1.equals(rankTax2)) {
+		if (rankTax1 == null && rankTax2 != null){
+			return 1;
+		}else if(rankTax2 == null && rankTax1 != null){
+			return -1;
+		}else if (rankTax1 != null && rankTax1.isHigher(rankTax2)){
+			return -1;
+		}else if (rankTax1 == null && rankTax2 == null || rankTax1.equals(rankTax2)) {
 			//same rank, order by name
 			return taxon1.getName().compareTo(taxon2.getName());
 			
+		}else{
+			return 1;
 		}
-		else return 1;
 	}
 
 }
