@@ -22,8 +22,6 @@ public class TaxonComparatorSearch implements Serializable, Comparator<TaxonBase
 
 	public int compare(TaxonBase taxon1, TaxonBase taxon2) {
 		
-		System.out.println(taxon1.getUuid() + ";" + taxon2.getUuid());
-		
 		if (taxon1.getUuid().equals(taxon2.getUuid())){
 			return 0;
 		}
