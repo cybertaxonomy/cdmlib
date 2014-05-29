@@ -71,7 +71,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
 
     @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
-            List<String> propertyPaths, boolean recursive) {
+            List<String> propertyPaths, boolean recursive, boolean sorted) {
         taxonNode = dao.load(taxonNode.getUuid());
         List<TaxonNode> childNodes;
         if (recursive == true){
@@ -79,7 +79,9 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         }else{
         	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
         }
-        Collections.sort(childNodes, taxonNodeComparator);
+        if (sorted){
+        	Collections.sort(childNodes, taxonNodeComparator);
+        }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }

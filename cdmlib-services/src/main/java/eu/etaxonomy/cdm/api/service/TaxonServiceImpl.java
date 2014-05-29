@@ -1195,7 +1195,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                     if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0) && name != null ){
                         taxon = (Taxon) HibernateProxyHelper.deproxy(taxon);
                         name.removeTaxonBase(taxon);
-                        nameService.save(name);
+                        nameService.merge(name);
                         String uuidString = nameService.delete(name, config.getNameDeletionConfig());
                         logger.debug(uuidString);
                     }
@@ -3171,7 +3171,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 		Set<Taxon> children = new HashSet<Taxon>();
 		if (! config.onlyCongruent){
 			for (TaxonNode node: taxonNodes){
-				List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true);
+				List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true, false);
 				for (TaxonNode child : childNodes){
 					children.add(child.getTaxon());
 				}
