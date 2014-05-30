@@ -8,7 +8,7 @@
 	
 	The request parameters are :	
 	
-	* '<<query>>' [mandatory] : this has to be the taxon UUID.
+	* '<<taxonUuid>>' [mandatory] : this has to be the taxon UUID.
 	
 	* '<<pageSize>>' [optional, default value = 50] : number results per page to display.
 
