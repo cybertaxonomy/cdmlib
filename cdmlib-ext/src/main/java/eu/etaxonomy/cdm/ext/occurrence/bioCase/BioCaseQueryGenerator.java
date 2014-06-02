@@ -69,7 +69,7 @@ public class BioCaseQueryGenerator {
     private static final String REQUEST = "request";
     private static final String NAMESPACE = "http://www.biocase.org/schemas/protocol/1.3";
     private static final String UNIT_PATH = "/DataSets/DataSet/Units/Unit";
-    private static final String UNIT_ID = UNIT_PATH + "/UnitID";
+    private static final String UNIT_ID_PATH_ABCD_2_0 = UNIT_PATH + "/UnitID";
     private static final String TAXON_NAME_PATH_ABCD_2_0 = UNIT_PATH + "/Identifications/Identification/Result/TaxonIdentified/ScientificName/FullScientificNameString";
     private static final String LOCALITY_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/LocalityText";
     private static final String HERBARIUM_PATH_ABCD_2_0 = UNIT_PATH + "/SourceID";
@@ -77,39 +77,6 @@ public class BioCaseQueryGenerator {
     private static final String COLLECTOR_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/CollectorsFieldNumber";
     private static final String COLLECTOR_PATH_ABCD_2_0 = UNIT_PATH + "/Gathering/Agents/GatheringAgent";
     private static final String ACCESSION_NUMBER_PATH_ABCD_2_0 = UNIT_PATH + "/SpecimenUnit/Accessions/AccessionNumber";
-
-    public static Document generateXMLQueryForUnitId(String unitId){
-        Document document = new Document();
-        Element elRequest = new Element(REQUEST, Namespace.getNamespace(NAMESPACE));
-        Element elHeader = new Element(HEADER);
-        Element elType = new Element(TYPE);
-        Element elSearch = new Element(SEARCH);
-        Element elRequestFormat = new Element(REQUEST_FORMAT);
-        Element elResponseFormat = new Element(RESPONSE_FORMAT);
-        Element elFilter = new Element(FILTER);
-        Element elEquals = new Element(EQUALS);
-
-        document.setRootElement(elRequest);
-        elRequest.addContent(elHeader);
-        elHeader.addContent(elType);
-        elType.addContent(SEARCH);
-
-        elRequest.addContent(elSearch);
-        elSearch.addContent(elRequestFormat);
-        elRequestFormat.addContent(ABCD_SCHEMA_2_0);
-
-        elSearch.addContent(elResponseFormat);
-        elResponseFormat.setAttribute(START, "0");
-        elResponseFormat.setAttribute(LIMIT, "100");
-        elResponseFormat.addContent(ABCD_SCHEMA_2_0);
-
-        elSearch.addContent(elFilter);
-        elFilter.addContent(elEquals);
-
-        elEquals.setAttribute(PATH, UNIT_ID);
-        elEquals.setText(unitId);
-        return document;
-    }
 
     /**
      * Generates an XML query according to the BioCASe protocol.
@@ -145,30 +112,33 @@ public class BioCaseQueryGenerator {
         elSearch.addContent(elFilter);
         elFilter.addContent(elAnd);
 
+        if(query.unitId!=null && !query.unitId.trim().isEmpty()){
+            addEqualsFilter(elAnd, query.unitId, UNIT_ID_PATH_ABCD_2_0);
+        }
         if(query.accessionNumber!=null && !query.accessionNumber.trim().isEmpty()){
-            addFilter(elAnd, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.accessionNumber, ACCESSION_NUMBER_PATH_ABCD_2_0);
         }
         if(query.collector!=null && !query.collector.trim().isEmpty()){
-            addFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.collector, COLLECTOR_PATH_ABCD_2_0);
         }
         if(query.collectorsNumber!=null && !query.collectorsNumber.trim().isEmpty()){
-            addFilter(elAnd, query.collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.collectorsNumber, COLLECTOR_NUMBER_PATH_ABCD_2_0);
         }
         if(query.country!=null && !query.country.trim().isEmpty()){
-            addFilter(elAnd, query.country, COUNTRY_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.country, COUNTRY_PATH_ABCD_2_0);
         }
         //TODO: implement
 //        if(query.date!=null){
 //            addFilter(elFilter, query.date);
 //        }
         if(query.herbarium!=null && !query.herbarium.trim().isEmpty()){
-            addFilter(elAnd, query.herbarium, HERBARIUM_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.herbarium, HERBARIUM_PATH_ABCD_2_0);
         }
         if(query.locality!=null && !query.locality.trim().isEmpty()){
-            addFilter(elAnd, query.locality, LOCALITY_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.locality, LOCALITY_PATH_ABCD_2_0);
         }
         if(query.taxonName!=null && !query.taxonName.trim().isEmpty()){
-            addFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
+            addLikeFilter(elAnd, query.taxonName, TAXON_NAME_PATH_ABCD_2_0);
         }
 
         elSearch.addContent(elCount);
@@ -177,10 +147,17 @@ public class BioCaseQueryGenerator {
         return document;
     }
 
-    private static void addFilter(Element filterElement, String taxonName, String path){
+    private static void addLikeFilter(Element filterElement, String taxonName, String path){
         Element elLike = new Element(LIKE);
         filterElement.addContent(elLike);
         elLike.setAttribute(PATH, path);
         elLike.addContent(taxonName);
+    }
+
+    private static void addEqualsFilter(Element filterElement, String taxonName, String path){
+        Element elEquals = new Element(EQUALS);
+        filterElement.addContent(elEquals);
+        elEquals.setAttribute(PATH, path);
+        elEquals.addContent(taxonName);
     }
 }

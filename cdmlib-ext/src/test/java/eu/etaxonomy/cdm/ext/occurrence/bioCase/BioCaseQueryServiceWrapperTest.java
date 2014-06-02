@@ -66,7 +66,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
     public void testQueryForUnitId(){
         BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
         try {
-            InputStream queryForSingleUnit = service.queryForSingleUnit("29596", new URIBuilder("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen").build());
+            InputStream queryForSingleUnit = service.query(new OccurenceQuery("29596"), new URIBuilder("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen").build());
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
         } catch (IOException e) {

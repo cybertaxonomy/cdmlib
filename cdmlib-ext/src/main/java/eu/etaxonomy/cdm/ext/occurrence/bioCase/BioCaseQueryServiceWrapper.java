@@ -39,35 +39,39 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  * @date 13.09.2013
  *
  */
-public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase>{
+public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObservationBase<?>>{
 
-    private final BioCaseResponseSchemaAdapter schemaAdapter;
-
-    private static final String BASE_URL = "http://ww3.bgbm.org";
-    private static final String SUB_PATH = "/biocase/pywrapper.cgi";
     //capability testing
-    //http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar&capabilities=1
     private static final BasicNameValuePair SUBMIT_PARAM = new BasicNameValuePair("Submit", "Submit");
     private static final String QUERY_PARAM_NAME = "query";
-    private static final String DSA_PARAM_NAME = "dsa";
+    //TODO http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar&capabilities=1
     private static final BasicNameValuePair CAPABILITY_TEST_PARAM = new BasicNameValuePair("capabilities", "1");
 
     /**
-     * Constructs a new BioCaseServiceWrapper with the baseUrl: <i>http://ww3.bgbm.org/biocase/pywrapper.cgi</i>
+     *
      */
-    public BioCaseQueryServiceWrapper() {
-        setBaseUrl(BASE_URL);
-        schemaAdapter = new BioCaseResponseSchemaAdapter();
-        addSchemaAdapter(schemaAdapter);
-    }
-
     public InputStream query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
         //TODO: remove default herbar querying. Maybe make other query method public
-        return query(query, "herbar");
+        return query(query, new URI("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
     }
 
-    public InputStream queryForSingleUnit(String unitId, URI endPoint) throws ClientProtocolException, IOException{
-        Document doc = BioCaseQueryGenerator.generateXMLQueryForUnitId(unitId);
+    /**
+     * Queries the BioCASE provider at the given endPoint with the given {@link OccurenceQuery}.<br>
+     * @param query
+     * @param endPoint If <code>null</code> then the default endPoint is used
+     *  (<i>http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar</i>)
+     * @return The response as an {@link InputStream}
+     */
+    public InputStream query(OccurenceQuery query, URI endPoint) throws ClientProtocolException, IOException{
+        if(endPoint==null){
+            try {
+                endPoint = new URI("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar");
+            } catch (URISyntaxException e) {
+                //Should never happen
+                logger.error("URI creation failed.", e);
+            }
+        }
+        Document doc = BioCaseQueryGenerator.generateXMLQuery(query);
         String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
         //POST
@@ -78,6 +82,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
 
         if(UriUtils.isServiceAvailable(endPoint, 10000)){
             logger.info("Querying BioCASE service with " + endPoint + ", POST: " + httpEntity);
+            //FIXME do the ABCD import here
             return executeHttpPost(endPoint, null, httpEntity);
         }
         else{
@@ -86,33 +91,8 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         }
     }
 
-
-    /**
-     * Queries the BioCASE provider with the given {@link OccurenceQuery}.
-     * @return The response as an {@link InputStream}
-     */
-    private InputStream query(OccurenceQuery query, String dsaName) throws ClientProtocolException, IOException, URISyntaxException{
-        Document doc = BioCaseQueryGenerator.generateXMLQuery(query);
-        String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
-
-        //POST
-        List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
-        queryParamsPOST.add(SUBMIT_PARAM);
-        addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
-        UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
-        //GET
-        List<NameValuePair> queryParamsGET = new ArrayList<NameValuePair>();
-        addNameValuePairTo(queryParamsGET, DSA_PARAM_NAME, dsaName);
-        URI uri = createUri(SUB_PATH, queryParamsGET);
-
-
-        logger.info("Querying BioCASE service with " + uri + ", POST: " + httpEntity);
-        //FIXME do the ABCD import here
-        return executeHttpPost(uri, null, httpEntity);
-    }
-
-    public List<SpecimenOrObservationBase> dummyData(){
-        List<SpecimenOrObservationBase> results = new ArrayList<SpecimenOrObservationBase>();
+    public List<SpecimenOrObservationBase<?>> dummyData(){
+        List<SpecimenOrObservationBase<?>> results = new ArrayList<SpecimenOrObservationBase<?>>();
         DerivedUnitFacade unit1 = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
 //        newInstance.setTitleCache("Test Specimen", true);
         unit1.setCollectingMethod("Collected from the ground");

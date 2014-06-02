@@ -42,7 +42,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
             		"\"datasetKey\": \"26a49731-9457-45b2-9105-1b96063deb26\"," +
             		"\"publishingOrgKey\": \"07f617d0-c688-11d8-bf62-b8a03c50a862\"," +
             		"\"publishingCountry\": \"GB\"," +
-            		"\"protocol\": \"DWC_ARCHIVE\"," +
+            		"\"protocol\": \"BIOCASE\"," +
             		"\"lastCrawled\": \"2013-09-07T07:08:17.000+0000\"," +
                     "\"identifiers\": [ ],"+
                     "\"media\": [ ],"+
@@ -95,17 +95,19 @@ public class GbifQueryServiceWrapperTest extends TestCase{
 "]";
 
     @Test
-    public void testJsonToCdmObject(){
+    public void testJsonToCdmObject() throws URISyntaxException{
         Collection<GbifResponse> records = GbifJsonOccurrenceParser.parseJsonRecords(dummyJsonRecords);
         assertEquals("number of records found is incorrect", 1, records.size());
         GbifResponse gbifResponse = records.iterator().next();
         assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
+        assertEquals("protocol is wrong", GbifDataSetProtocol.BIOCASE, gbifResponse.getDataSetProtocol());
+        assertEquals("protocol is wrong", new URI("http://api.gbif.org/v0.9/dataset/26a49731-9457-45b2-9105-1b96063deb26/endpoint"), gbifResponse.getDataSetUri());
     }
 
     @Test
     public void testJsonOriginalDataSetUriParsing(){
         DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(dummyJsonDataset);
-        assertEquals("Response key is incorrect!", "29596", response.getKey());
+        assertEquals("Response unitId is incorrect! (Should be equal to catalogNumber)", "70875196", response.getUnitId());
         assertEquals("Response protocol is incorrect!", GbifDataSetProtocol.BIOCASE, response.getProtocol());
         assertEquals("Response endpoint is incorrect!", URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint());
     }

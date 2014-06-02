@@ -118,11 +118,11 @@ public class GbifJsonOccurrenceParser {
                 DerivedUnitFacade derivedUnitFacade = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
                 JSONObject record = (JSONObject)o;
 
-                if(record.has(DATASET_KEY)){
-                    dataSetProtocol = GbifDataSetProtocol.parseProtocol(record.getString(DATASET_KEY));
-                }
                 if(record.has(DATASET_PROTOCOL)){
-                    dataSetKey = record.getString(DATASET_PROTOCOL);
+                    dataSetProtocol = GbifDataSetProtocol.parseProtocol(record.getString(DATASET_PROTOCOL));
+                }
+                if(record.has(DATASET_KEY)){
+                    dataSetKey = record.getString(DATASET_KEY);
                 }
                 if(record.has(COUNTRY_CODE)){
                     String string = record.getString(COUNTRY_CODE);
@@ -243,9 +243,6 @@ public class GbifJsonOccurrenceParser {
         Object next = jsonArray.iterator().next();
         if(next instanceof JSONObject){
             JSONObject jsonObject = (JSONObject)next;
-            if(jsonObject.has(KEY)){
-                response.setKey(jsonObject.getString(KEY));
-            }
             if(jsonObject.has(URL)){
                 response.setEndpoint(URI.create(jsonObject.getString(URL)));
             }

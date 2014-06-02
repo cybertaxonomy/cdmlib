@@ -35,6 +35,10 @@ public class OccurenceQuery {
 
 
 
+    public OccurenceQuery(String unitId) {
+        this(unitId, null, null, null, null, null, null, null, null, null);
+    }
+
     /**
      * @param taxonName
      * @param collector
@@ -54,7 +58,7 @@ public class OccurenceQuery {
     /**
      * Constructor to initially set the parameters
      */
-    public OccurenceQuery(String unitId, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+    private OccurenceQuery(String unitId, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
         this.unitId = unitId;
         this.taxonName = taxonName;
         this.collector = collector;

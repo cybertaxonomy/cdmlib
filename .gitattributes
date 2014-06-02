@@ -71,7 +71,6 @@ cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/ipni/IpniServicePublicationConfigu
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/OccurenceQuery.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryGenerator.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseQueryServiceWrapper.java -text
-cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/bioCase/BioCaseResponseSchemaAdapter.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/DataSetResponse.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifDataSetProtocol.java -text
 cdmlib-ext/src/main/java/eu/etaxonomy/cdm/ext/occurrence/gbif/GbifJsonOccurrenceParser.java -text

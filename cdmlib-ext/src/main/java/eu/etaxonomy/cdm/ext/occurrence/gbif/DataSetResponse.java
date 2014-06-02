@@ -21,7 +21,7 @@ public class DataSetResponse {
 
     private GbifDataSetProtocol protocol;
     private URI endpoint;
-    private String key;
+    private String unitId;
     private String abcdSchema;
 
     /**
@@ -49,16 +49,16 @@ public class DataSetResponse {
         this.endpoint = endpoint;
     }
     /**
-     * @return the key
+     * @return the unitId
      */
-    public String getKey() {
-        return key;
+    public String getUnitId() {
+        return unitId;
     }
     /**
-     * @param key the key to set
+     * @param unitId the unitId to set
      */
-    public void setKey(String key) {
-        this.key = key;
+    public void setUnitId(String unitId) {
+        this.unitId = unitId;
     }
     /**
      * @return the abcdSchema

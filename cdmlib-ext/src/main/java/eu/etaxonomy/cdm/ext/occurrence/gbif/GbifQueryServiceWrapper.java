@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
@@ -25,7 +24,6 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
-import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -79,20 +77,20 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
     }
 
     /**
-     * Queries the provider of the original data record<br>
-     * <b>Note:</b> Currently only BioCASE is supported
-     * @param gbifResponse
-     * @return
+     * Queries GBIF for the original data set<br>
+     * @param gbifResponse the GbifResponse holds the link to the dataset webservice
+     * @return a {@link DataSetResponse} holding all relevant information to query the original provider
      * @throws IOException
      * @throws ClientProtocolException
      */
-    public InputStream queryForOriginalRecord(GbifResponse gbifResponse) throws ClientProtocolException, IOException{
+    public DataSetResponse queryOriginalDataSet(GbifResponse gbifResponse) throws ClientProtocolException, IOException{
         //FIXME move ABCD import here and change return type to DerivedUnitFacade/SpecimenOrObservationBase
         GbifDataSetProtocol dataSetProtocol = gbifResponse.getDataSetProtocol();
         if(dataSetProtocol == GbifDataSetProtocol.BIOCASE){
-            //FIXME move to cdmlib
             DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(executeHttpGet(gbifResponse.getDataSetUri(), null));
-            return new BioCaseQueryServiceWrapper().queryForSingleUnit(response.getKey(), response.getEndpoint());
+            //the unitID is delivered in the "catalogNumber" parameter which is set as the accessionNumber of the facade
+            response.setUnitId(gbifResponse.getDerivedUnitFacade().getAccessionNumber());
+            return response;
         }
         return null;
     }
