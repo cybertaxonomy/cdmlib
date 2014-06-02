@@ -54,8 +54,8 @@ public class TaxonComparatorSearch implements Serializable, Comparator<TaxonBase
 				return taxon1.getTitleCache().compareTo(taxon2.getTitleCache());
 			}
 		}else{
-			//probably this will never be reached
-			return taxon1.getUuid().compareTo(taxon2.getUuid());
+			//rankTax2.isHigher(rankTax1)
+			return 1;
 		}
 	}
 
