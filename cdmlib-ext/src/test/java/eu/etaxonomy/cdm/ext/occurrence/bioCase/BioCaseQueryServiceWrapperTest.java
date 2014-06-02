@@ -18,6 +18,7 @@ import java.net.URISyntaxException;
 import junit.framework.TestCase;
 
 import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.utils.URIBuilder;
 import org.apache.log4j.Logger;
 import org.junit.Test;
 
@@ -36,7 +37,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
     @Test
     public void testQuery() {
 
-        if( UriUtils.isInternetAvailable(null)){
+        if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
                 OccurenceQuery query = new OccurenceQuery("Campanula*", null, null, null, null, null, null, null, null);
@@ -58,6 +59,20 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
             }
         } else {
             logger.warn("SKIPPING TEST: no internet connectivity available");
+        }
+    }
+
+    @Test
+    public void testQueryForUnitId(){
+        BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
+        try {
+            InputStream queryForSingleUnit = service.queryForSingleUnit("29596", new URIBuilder("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen").build());
+        } catch (ClientProtocolException e) {
+            fail(e.getMessage());
+        } catch (IOException e) {
+            fail(e.getMessage());
+        } catch (URISyntaxException e) {
+            fail(e.getMessage());
         }
     }
 }

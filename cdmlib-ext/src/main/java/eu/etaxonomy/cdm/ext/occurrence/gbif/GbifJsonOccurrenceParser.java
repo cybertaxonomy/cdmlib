@@ -49,6 +49,10 @@ public class GbifJsonOccurrenceParser {
     private static final String DATASET_KEY = "datasetKey";
     private static final String DATASET_PROTOCOL = "protocol";
 
+    private static final String KEY = "key";
+    private static final String URL = "url";
+    private static final String TYPE = "type";
+
     private static final String COUNTRY_CODE = "countryCode";
     private static final String LOCALITY = "locality";
     private static final String LONGITUDE = "decimalLongitude";
@@ -225,6 +229,31 @@ public class GbifJsonOccurrenceParser {
             }
         }
         return results;
+    }
+
+    public static DataSetResponse parseOriginalDataSetUri(InputStream inputStream) throws IOException {
+        StringWriter stringWriter = new StringWriter();
+        IOUtils.copy(inputStream, stringWriter);
+        return parseOriginalDataSetUri(stringWriter.toString());
+    }
+
+    public static DataSetResponse parseOriginalDataSetUri(String jsonString) {
+        DataSetResponse response = new DataSetResponse();
+        JSONArray jsonArray = JSONArray.fromObject(jsonString);
+        Object next = jsonArray.iterator().next();
+        if(next instanceof JSONObject){
+            JSONObject jsonObject = (JSONObject)next;
+            if(jsonObject.has(KEY)){
+                response.setKey(jsonObject.getString(KEY));
+            }
+            if(jsonObject.has(URL)){
+                response.setEndpoint(URI.create(jsonObject.getString(URL)));
+            }
+            if(jsonObject.has(TYPE)){
+                response.setProtocol(GbifDataSetProtocol.parseProtocol(jsonObject.getString(TYPE)));
+            }
+        }
+        return response;
     }
 
 }

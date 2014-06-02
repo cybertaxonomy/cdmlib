@@ -25,6 +25,7 @@ import org.jdom.output.Format;
 import org.jdom.output.XMLOutputter;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
 import eu.etaxonomy.cdm.model.location.NamedArea;
@@ -65,13 +66,33 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         return query(query, "herbar");
     }
 
+    public InputStream queryForSingleUnit(String unitId, URI endPoint) throws ClientProtocolException, IOException{
+        Document doc = BioCaseQueryGenerator.generateXMLQueryForUnitId(unitId);
+        String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
+
+        //POST
+        List<NameValuePair> queryParamsPOST = new ArrayList<NameValuePair>();
+        queryParamsPOST.add(SUBMIT_PARAM);
+        addNameValuePairTo(queryParamsPOST, QUERY_PARAM_NAME, xmlOutputString);
+        UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
+
+        if(UriUtils.isServiceAvailable(endPoint, 10000)){
+            logger.info("Querying BioCASE service with " + endPoint + ", POST: " + httpEntity);
+            return executeHttpPost(endPoint, null, httpEntity);
+        }
+        else{
+            logger.error("Querying " + endPoint + " got a timeout!");
+            return null;
+        }
+    }
+
 
     /**
      * Queries the BioCASE provider with the given {@link OccurenceQuery}.
      * @return The response as an {@link InputStream}
      */
     private InputStream query(OccurenceQuery query, String dsaName) throws ClientProtocolException, IOException, URISyntaxException{
-        Document doc = new BioCaseQueryGenerator().generateXMLQuery(query);
+        Document doc = BioCaseQueryGenerator.generateXMLQuery(query);
         String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);
 
         //POST
@@ -86,16 +107,8 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
 
 
         logger.info("Querying BioCASE service with " + uri + ", POST: " + httpEntity);
+        //FIXME do the ABCD import here
         return executeHttpPost(uri, null, httpEntity);
-//        InputStream responseStream = executeHttpPost(new URI("http", "ww3.bgbm.org", "/biocase/pywrapper.cgi" , "dsa=Herbar", null), null, httpEntity);
-//        try {
-//            results = schemaAdapter.getCmdEntities(responseStream);
-//        } catch (ClientProtocolException e) {
-//            logger.error(e);
-//        } catch (IOException e) {
-//            logger.error(e);
-//        }
-//        return results;
     }
 
     public List<SpecimenOrObservationBase> dummyData(){

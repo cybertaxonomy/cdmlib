@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Calendar;
@@ -21,8 +22,10 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.utils.URIBuilder;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
+import eu.etaxonomy.cdm.common.UriUtils;
 import eu.etaxonomy.cdm.ext.common.ServiceWrapperBase;
 import eu.etaxonomy.cdm.ext.occurrence.OccurenceQuery;
+import eu.etaxonomy.cdm.ext.occurrence.bioCase.BioCaseQueryServiceWrapper;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -46,7 +49,8 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
 
     /**
      * Queries the GBIF API with the given {@link OccurenceQuery}.
-     * @return The response as a collection of {@link DerivedUnitFacade}
+     * @return The response as a collection of {@link DerivedUnitFacade} or <code>null</code>
+     * if no connection could be established
      */
     public Collection<GbifResponse> query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
         //TODO: workaround for special case for "eventDate" which can have comma separated values
@@ -64,8 +68,33 @@ public class GbifQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObserv
 
         URIBuilder builder = new URIBuilder(uri.toString()+yearUri);
 
-        logger.info("Querying GBIF service with " + builder.build());
-        return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
+        if(UriUtils.isServiceAvailable(uri, 10000)){
+            logger.info("Querying GBIF service with " + builder.build());
+            return GbifJsonOccurrenceParser.parseJsonRecords(executeHttpGet(builder.build(), null));
+        }
+        else{
+            logger.error("Querying " + uri + " got a timeout!");
+            return null;
+        }
+    }
+
+    /**
+     * Queries the provider of the original data record<br>
+     * <b>Note:</b> Currently only BioCASE is supported
+     * @param gbifResponse
+     * @return
+     * @throws IOException
+     * @throws ClientProtocolException
+     */
+    public InputStream queryForOriginalRecord(GbifResponse gbifResponse) throws ClientProtocolException, IOException{
+        //FIXME move ABCD import here and change return type to DerivedUnitFacade/SpecimenOrObservationBase
+        GbifDataSetProtocol dataSetProtocol = gbifResponse.getDataSetProtocol();
+        if(dataSetProtocol == GbifDataSetProtocol.BIOCASE){
+            //FIXME move to cdmlib
+            DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(executeHttpGet(gbifResponse.getDataSetUri(), null));
+            return new BioCaseQueryServiceWrapper().queryForSingleUnit(response.getKey(), response.getEndpoint());
+        }
+        return null;
     }
 
 }

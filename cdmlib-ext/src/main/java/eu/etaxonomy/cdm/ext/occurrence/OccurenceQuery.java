@@ -21,6 +21,8 @@ import java.util.Calendar;
 public class OccurenceQuery {
     public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
+    public final String unitId;
+
     public final String taxonName;
     public final String collector;
     public final String collectorsNumber;
@@ -31,8 +33,9 @@ public class OccurenceQuery {
     public final Calendar dateFrom;
     public final Calendar dateTo;
 
+
+
     /**
-     * Constructor to initially set the parameters
      * @param taxonName
      * @param collector
      * @param collectorsNumber
@@ -40,9 +43,19 @@ public class OccurenceQuery {
      * @param herbarium
      * @param country
      * @param locality
-     * @param date
+     * @param dateFrom
+     * @param dateTo
      */
-    public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+    public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber,
+            String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+        this(null, taxonName, collector, collectorsNumber, accessionNumber, herbarium, country, locality, dateFrom, dateTo);
+    }
+
+    /**
+     * Constructor to initially set the parameters
+     */
+    public OccurenceQuery(String unitId, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+        this.unitId = unitId;
         this.taxonName = taxonName;
         this.collector = collector;
         this.collectorsNumber = collectorsNumber;
@@ -53,7 +66,6 @@ public class OccurenceQuery {
         this.dateFrom = dateFrom;
         this.dateTo = dateTo;
     }
-
 
     /* (non-Javadoc)
      * @see java.lang.Object#hashCode()
@@ -71,8 +83,11 @@ public class OccurenceQuery {
         result = prime * result + ((herbarium == null) ? 0 : herbarium.hashCode());
         result = prime * result + ((locality == null) ? 0 : locality.hashCode());
         result = prime * result + ((taxonName == null) ? 0 : taxonName.hashCode());
+        result = prime * result + ((unitId == null) ? 0 : unitId.hashCode());
         return result;
     }
+
+
 
 
     /* (non-Javadoc)
@@ -153,8 +168,17 @@ public class OccurenceQuery {
         } else if (!taxonName.equals(other.taxonName)) {
             return false;
         }
+        if (unitId == null) {
+            if (other.unitId != null) {
+                return false;
+            }
+        } else if (!unitId.equals(other.unitId)) {
+            return false;
+        }
         return true;
     }
+
+
 
 
     /* (non-Javadoc)
@@ -163,6 +187,9 @@ public class OccurenceQuery {
     @Override
     public String toString() {
         String string = "";
+        if(unitId!=null && !unitId.trim().isEmpty()){
+            string += " unitId=" + unitId;
+        }
         if(taxonName!=null && !taxonName.trim().isEmpty()){
             string += " taxonName=" + taxonName;
         }

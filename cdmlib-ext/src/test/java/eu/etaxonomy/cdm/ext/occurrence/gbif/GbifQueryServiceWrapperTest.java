@@ -10,6 +10,7 @@
 package eu.etaxonomy.cdm.ext.occurrence.gbif;
 
 import java.io.IOException;
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Collection;
 import java.util.GregorianCalendar;
@@ -33,7 +34,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
 
     private static final String LOCALITY_STRING = "Saddington Reservoir, Saddington Reservoir";
 
-    private final String dummyJson = "{" +
+    private final String dummyJsonRecords = "{" +
     		"\"results\":" +
     		    "[" +
         		    "{" +
@@ -71,12 +72,42 @@ public class GbifQueryServiceWrapperTest extends TestCase{
                 "]" +
             "}";
 
+    private final String dummyJsonDataset = "[" +
+    		"{"+
+        "\"key\": 29596,"+
+        "\"type\": \"BIOCASE\","+
+        "\"url\": \"http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen\","+
+        "\"createdBy\": \"crawler.gbif.org\","+
+        "\"modifiedBy\": \"crawler.gbif.org\","+
+        "\"created\": \"2014-01-13T10:32:05.170+0000\","+
+        "\"modified\": \"2014-01-13T10:32:05.170+0000\","+
+        "\"machineTags\": ["+
+         "   {"+
+         "       \"key\": 59486,"+
+         "      \"namespace\": \"metasync.gbif.org\","+
+         "       \"name\": \"conceptualSchema\","+
+         "       \"value\": \"http://www.tdwg.org/schemas/abcd/2.06\","+
+         "       \"createdBy\": \"crawler.gbif.org\","+
+         "       \"created\": \"2014-01-13T10:32:05.172+0000\""+
+         "   }"+
+        "]"+
+    "}"+
+"]";
+
     @Test
     public void testJsonToCdmObject(){
-        Collection<GbifResponse> records = GbifJsonOccurrenceParser.parseJsonRecords(dummyJson);
+        Collection<GbifResponse> records = GbifJsonOccurrenceParser.parseJsonRecords(dummyJsonRecords);
         assertEquals("number of records found is incorrect", 1, records.size());
         GbifResponse gbifResponse = records.iterator().next();
         assertEquals("Locality is incorrect", LOCALITY_STRING, gbifResponse.getDerivedUnitFacade().getLocalityText());
+    }
+
+    @Test
+    public void testJsonOriginalDataSetUriParsing(){
+        DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(dummyJsonDataset);
+        assertEquals("Response key is incorrect!", "29596", response.getKey());
+        assertEquals("Response protocol is incorrect!", GbifDataSetProtocol.BIOCASE, response.getProtocol());
+        assertEquals("Response endpoint is incorrect!", URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint());
     }
 
     @Test
@@ -93,6 +124,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
 //        assertEquals("Number of generated URI parameters is incorrect", 10, queryParams.size());
     }
 
+    @Test
     public void testGbifWebService() {
         OccurenceQuery query = new OccurenceQuery("Campanula persicifolia", "E. J. Palmer", null, null, null, null, null, null, null);
         GbifQueryServiceWrapper service = new GbifQueryServiceWrapper();
