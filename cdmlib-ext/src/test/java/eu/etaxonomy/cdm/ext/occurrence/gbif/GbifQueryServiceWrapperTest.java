@@ -107,7 +107,6 @@ public class GbifQueryServiceWrapperTest extends TestCase{
     @Test
     public void testJsonOriginalDataSetUriParsing(){
         DataSetResponse response = GbifJsonOccurrenceParser.parseOriginalDataSetUri(dummyJsonDataset);
-        assertEquals("Response unitId is incorrect! (Should be equal to catalogNumber)", "70875196", response.getUnitId());
         assertEquals("Response protocol is incorrect!", GbifDataSetProtocol.BIOCASE, response.getProtocol());
         assertEquals("Response endpoint is incorrect!", URI.create("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen"), response.getEndpoint());
     }
