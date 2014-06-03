@@ -1860,21 +1860,17 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     /**
      * @return the feature object for the category "not marked up"
      */
-    @SuppressWarnings("rawtypes")
     private Feature getNotMarkedUpFeatureObject() {
+    	// FIXME use getFeature(uuid ....)
         logger.info("getNotMarkedUpFeatureObject");
-        List<Feature> features = importer.getTermService().list(Feature.class, null,null,null,null);
-        Feature currentFeature =null;
-        for (Feature feat: features){
-            String tmpF = feat.getTitleCache();
-            if (tmpF.equalsIgnoreCase(notMarkedUp)) {
-                currentFeature=feat;
-            }
-        }
+        Feature currentFeature = (Feature)importer.getTermService().find(NotMarkedUpUUID);
         if (currentFeature == null) {
             currentFeature=Feature.NewInstance(notMarkedUp, notMarkedUp, notMarkedUp);
             currentFeature.setUuid(NotMarkedUpUUID);
-            importer.getTermService().saveOrUpdate(currentFeature);
+            //TODO use userDefined Feature Vocabulary
+            Feature.DISTRIBUTION().getVocabulary().addTerm(currentFeature);
+//            importer.getTermService().saveOrUpdate(currentFeature);
+            importer.getVocabularyService().saveOrUpdate(currentFeature.getVocabulary());
         }
         return currentFeature;
     }
@@ -2327,7 +2323,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
                         nameToBeFilled=currentMyName.getTaxonNameBase();
 
-                        //                        acceptedTaxon = importer.getTaxonService().findBestMatchingTaxon(treatmentMainName);
+                        //   acceptedTaxon = importer.getTaxonService().findBestMatchingTaxon(treatmentMainName);
                         acceptedTaxon=currentMyName.getTaxon();
                         //System.out.println("TreatmentName "+treatmentMainName+" - "+acceptedTaxon);
 
@@ -2426,7 +2422,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 extractReferences(children.item(i),nametosave,acceptedTaxon,refMods);
             }
             if(!stringIsEmpty(freetext.trim())) {
-                setParticularDescription(freetext.trim(),acceptedTaxon,acceptedTaxon, refMods,getNotMarkedUpFeatureObject());
+                setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());
             }
 
         }

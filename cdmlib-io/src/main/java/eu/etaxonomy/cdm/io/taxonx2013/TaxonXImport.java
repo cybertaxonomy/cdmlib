@@ -114,7 +114,8 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         if (nodeList.indexOf(classificationName)<0) {
             nodeList.add(classificationName);
         }
-        nodeList.add("Other classification - add a new one");
+        final String other = "Other classification - add a new one";
+        nodeList.add(other);
 
         String s="";
         if (defaultClassificatioName != null && nodeList.indexOf(defaultClassificatioName)>-1) {
@@ -139,7 +140,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         ref=getReferenceService().find(ref.getUuid());
         if (!classifDic.containsKey(s)){
             //System.out.println("Classif inconnue ?? "+s+", "+classifDic);
-            if (s.equalsIgnoreCase("Other classification - add a new one")){
+            if (s.equalsIgnoreCase(other)){
                 classificationName = askForValue("classification name ?",classificationName);
             }
             //new classification
@@ -217,12 +218,11 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             taxonXstate.getConfig().setSecundum(secundum);
         } else {
             this.getReferenceService().saveOrUpdate(secundum);
-            secundum = CdmBase.deproxy(secundum, Reference.class);
             taxonXstate.getConfig().setSecundum(secundum);
         }
 
 
-        Reference urlRef = taxonXstate.getConfig().getOriginalSourceURL();
+        Reference<?> urlRef = taxonXstate.getConfig().getOriginalSourceURL();
         for (Reference<?> re:references){
             if (re.getCitation().equalsIgnoreCase(urlRef.getCitation())){
                 urlRef=re;
@@ -261,26 +261,12 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             ref = taxonXFieldGetter.parseMods();
             //            logger.info("REF : "+ref.getCitation());
             //            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
-            setClassification(taxonXstate.getConfig().getClassificationName(),taxonXstate.getConfig().getImportClassificationName());
+            setClassification(taxonXstate.getConfig().getClassificationName(), taxonXstate.getConfig().getImportClassificationName());
             taxonXFieldGetter.updateClassification(classification);
             //            logger.info("classif :"+classification);
             taxonXFieldGetter.parseTreatment(ref,sourceName);
             featuresMap = taxonXFieldGetter.getFeaturesUsed();
-//            System.out.println("featuresMap after: "+featuresMap.toString());
 
-            //        } catch (MalformedURLException e) {
-            //            // TODO Auto-generated catch block
-            //            e.printStackTrace();
-            //        } catch (SAXException e) {
-            //            // TODO Auto-generated catch block
-            //            e.printStackTrace();
-            //        } catch (IOException e) {
-            //            // TODO Auto-generated catch block
-            //            e.printStackTrace();
-            //        } catch (ParserConfigurationException e) {
-            //            // TODO Auto-generated catch block
-            //            e.printStackTrace();
-            //        }
         }catch(Exception e){
             e.printStackTrace();
             logger.warn(e);

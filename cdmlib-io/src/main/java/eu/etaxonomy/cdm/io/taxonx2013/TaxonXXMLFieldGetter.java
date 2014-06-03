@@ -94,7 +94,7 @@ public class TaxonXXMLFieldGetter {
         //taxonHeader, taxonBody
         NodeList nodes = root.getChildNodes();
 
-        for (int i=0; i< nodes.getLength();i++) {
+        for ( int i=0; i< nodes.getLength();i++) {
             //            System.out.println(nodes.item(i).getNodeName());
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxBody")){
                 NodeList nodes2 = nodes.item(i).getChildNodes();
