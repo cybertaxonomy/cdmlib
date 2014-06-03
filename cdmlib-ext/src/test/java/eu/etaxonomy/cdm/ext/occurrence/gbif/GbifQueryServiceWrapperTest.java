@@ -117,7 +117,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         List<NameValuePair> queryParams = new GbifQueryGenerator().generateQueryParams(query);
         NameValuePair pair = new BasicNameValuePair("scientificName", "Campanula persicifolia");
         assertTrue("query parameter is missing", queryParams.contains(pair));
-        //FIXME this will currently always fail because of eventDate which is set in GbifServiceWrapper.query()
+        //FIXME this will currently always fail because eventDate is still not supported by GBIF
         //"basisOfRecord" and "limit" is always set
         // + 8 from query (collectorsNumber will be represented in the two parameters "recordNumber" and "fieldNumber";
         // both dates are represented in one parameter "eventDate";
@@ -132,7 +132,7 @@ public class GbifQueryServiceWrapperTest extends TestCase{
         try {
             Collection<GbifResponse> gbifResponse = service.query(query);
             assertEquals("Usually this query retrieves at least two units. " +
-            		"If this test fails may also be due to GBIF!" +
+            		"Test failure may also be due to GBIF!" +
             		"Check http://api.gbif.org/v0.9/occurrence/search?basisOfRecord=PRESERVED_SPECIMEN&limit=100&recordedBy=E.+J.+Palmer&scientificName=Campanula+persicifolia", 2, gbifResponse.size());
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
