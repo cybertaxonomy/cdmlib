@@ -235,7 +235,7 @@ public class NonViralNameParserImplTest {
 		assertEquals("Andre", basionymTeam3.getNomenclaturalTitle());
 		INomenclaturalAuthor exBasionymTeam3 = nameBasionymExAuthor2.getExBasionymAuthorTeam();
 		assertEquals("Linden", exBasionymTeam3.getNomenclaturalTitle());
-		String title = nameBasionymExAuthor2.generateTitle();
+		String title = nameBasionymExAuthor2.getTitleCache();
 		assertEquals("Washingtonia filifera (Linden ex Andre) H.Wendl. ex de Bary", title);
 	
 	}
