@@ -27,6 +27,7 @@ import javax.swing.JTextArea;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
@@ -41,6 +42,7 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
@@ -83,33 +85,35 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
      * @param classificationName : the name of the classification we are looking for
      * @set the global classification object
      */
-    private void setClassification(String classificationName, String defaultClassificatioName) {
+    private void setClassification() {
         logger.info("SET CLASSIFICATION "+classification);
-
+        String classificationName = taxonXstate.getConfig().getClassificationName();
+        String defaultClassificatioName = taxonXstate.getConfig().getImportClassificationName();
+        
         List<Classification> classifList = getClassificationService().list(Classification.class, null, null, null, null);
-        Map<String,Classification> classifDic = new HashMap<String,Classification>();
+        Map<String,Classification> classificationMap = new HashMap<String,Classification>();
         ArrayList<String> nodeList = new ArrayList<String>();
         String citation ="";
         String title ="";
         for (Classification cla:classifList){
             try{
-                citation = cla.getCitation().toString();
+//                citation = cla.getCitation().toString();
             }catch(Exception e){
                 citation="";
             }
-            try{
-                title=cla.getTitleCache().toString();
-            }catch(Exception e){
-                title="no name";
-            }
+            title=StringUtils.isBlank(cla.getTitleCache()) ? "no name" : cla.getTitleCache();
             if (citation.length()>title.length()){
                 nodeList.add(citation);
-                classifDic.put(citation, cla);
+                classificationMap.put(citation, cla);
             }
             else{
                 nodeList.add(title);
-                classifDic.put(title, cla);
+                classificationMap.put(title, cla);
             }
+        }
+        boolean defaultClassificationExists = nodeList.indexOf(defaultClassificatioName)>-1;
+        if (! defaultClassificationExists ) {
+            nodeList.add(defaultClassificatioName);
         }
         if (nodeList.indexOf(classificationName)<0) {
             nodeList.add(classificationName);
@@ -117,12 +121,11 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         final String other = "Other classification - add a new one";
         nodeList.add(other);
 
-        String s="";
-        if (defaultClassificatioName != null && nodeList.indexOf(defaultClassificatioName)>-1) {
+        String s;
+        if (defaultClassificatioName != null && defaultClassificationExists  && taxonXstate.getConfig().isAlwaysUseDefaultClassification()) {
             s=defaultClassificatioName;
-            //System.out.println("classifdic: "+classifDic);
         } else{
-            JTextArea textArea = new JTextArea("Which classification do you want to use ? \nThe current value is "+classificationName);
+            JTextArea textArea = new JTextArea("Which classification do you want to use ? \nThe current reference is " + classificationName);
             JScrollPane scrollPane = new JScrollPane(textArea);
             textArea.setLineWrap(true);
             textArea.setWrapStyleWord(true);
@@ -138,18 +141,26 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
                     defaultClassificatioName);
         }
         ref=getReferenceService().find(ref.getUuid());
-        if (!classifDic.containsKey(s)){
+        if (!classificationMap.containsKey(s)){
             //System.out.println("Classif inconnue ?? "+s+", "+classifDic);
-            if (s.equalsIgnoreCase(other)){
-                classificationName = askForValue("classification name ?",classificationName);
+        	Reference<?> classificationReference = null;
+        	        
+        	if (s.equalsIgnoreCase(other)){
+                classificationName = askForValue("classification name ?", classificationName);
+            	classificationReference = ReferenceFactory.newDatabase();
+            	classificationReference.setTitle(classificationName);
+            }else if (s.equalsIgnoreCase(defaultClassificatioName)){
+            	classificationName = defaultClassificatioName;
+            	classificationReference = ReferenceFactory.newDatabase();
+            	classificationReference.setTitle(classificationName);
             }
             //new classification
-            classification = Classification.NewInstance(classificationName, null,   Language.DEFAULT());
+            classification = Classification.NewInstance(classificationName, classificationReference,   Language.DEFAULT());
             getClassificationService().saveOrUpdate(classification);
             refreshTransaction();
         }
         else{
-            classification = classifDic.get(s);
+            classification = classificationMap.get(s);
         }
         if (classification == null) {
             String name = taxonXstate.getConfig().getClassificationName();
@@ -206,11 +217,11 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
 
         Reference<?> secundum = taxonXstate.getConfig().getSecundum();
         List<Reference> references = this.getReferenceService().list(Reference.class, null, null, null, null);
-        boolean refFound=false;
+        boolean refFound = false;
         for (Reference<?> re:references){
             if (re.getCitation().equalsIgnoreCase(secundum.getCitation())){
-                refFound=true;
-                secundum =re;
+                refFound = true;
+                secundum = re;
             }
         }
         if (refFound) {
@@ -254,14 +265,13 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             InputStream is = (InputStream) o;
             Document document = builder.parse(is);
 
-            taxonXFieldGetter = new TaxonXXMLFieldGetter(dataHolder, prefix,document, this,taxonXstate,classification,featuresMap);
+            taxonXFieldGetter = new TaxonXXMLFieldGetter(dataHolder, prefix, document, this, taxonXstate, classification, featuresMap);
             /*parse the Mods from the TaxonX file
              *create the appropriate Reference object
              */
             ref = taxonXFieldGetter.parseMods();
-            //            logger.info("REF : "+ref.getCitation());
             //            logger.info("CLASSNAME :" +taxonXstate.getConfig().getClassificationName());
-            setClassification(taxonXstate.getConfig().getClassificationName(), taxonXstate.getConfig().getImportClassificationName());
+            setClassification();
             taxonXFieldGetter.updateClassification(classification);
             //            logger.info("classif :"+classification);
             taxonXFieldGetter.parseTreatment(ref,sourceName);
@@ -279,8 +289,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
                 writer.flush();
                 writer.close();
             } catch (IOException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                logger.error(e1.getMessage());
             }
 
             logger.warn(sourceName);
@@ -301,16 +310,6 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         //System.out.println("DEDUP END");
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IoStateBase)
-     */
-    @Override
-    protected boolean isIgnore(TaxonXImportState state) {
-        // TODO Auto-generated method stub
-        return false;
-    }
 
     private void refreshTransaction(){
         commitTransaction(tx);
@@ -335,7 +334,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
         scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
 
         List<Rank> rankList = new ArrayList<Rank>();
-        rankList = getTermService().listByTermClass(Rank.class, null, null, null, null);
+        rankList = getTermService().list(Rank.class, null, null, null, null);
 
         List<String> rankListStr = new ArrayList<String>();
         for (Rank r:rankList) {
@@ -358,6 +357,12 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             logger.warn(e);
         }
         return cR;
+    }
+    
+
+    @Override
+    protected boolean isIgnore(TaxonXImportState state) {
+    	return false;
     }
 
 

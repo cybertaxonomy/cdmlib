@@ -1,8 +1,6 @@
 package eu.etaxonomy.cdm.io.taxonx2013;
 
 import java.net.URI;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -26,8 +24,8 @@ public class TaxonXXMLFieldGetter {
     private Classification classification;
     private final TaxonXImport importer;
     private final TaxonXImportState taxonXstate;
-    TaxonXModsExtractor modsextractor;
-    TaxonXTreatmentExtractor treatmentextractor ;
+    private TaxonXModsExtractor modsextractor;
+    private TaxonXTreatmentExtractor treatmentextractor ;
 
     public TaxonXXMLFieldGetter(TaxonXDataHolder dataholder, String prefix,Document document, TaxonXImport taxonXImport,
             TaxonXImportState taxonXstate, Classification classif, Map<String,Feature> featuresMap){
@@ -62,12 +60,9 @@ public class TaxonXXMLFieldGetter {
             if (nodes.item(i).getNodeName().equalsIgnoreCase("tax:taxonxheader")){
                 NodeList nodes2 = nodes.item(i).getChildNodes();
                 for (int j=0; j< nodes2.getLength();j++){
-                    //                    System.out.println("nodes2 : "+nodes2.item(j).getNodeName());
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("mods:mods")){
                         ref = modsextractor.extractMods(nodes2.item(j));
-                        //                        System.out.println("reference: "+ref.getTitleCache());
                         importer.getReferenceService().saveOrUpdate(ref);
-                        ref=CdmBase.deproxy(ref, Reference.class);
                     }
                 }
             }
@@ -75,7 +70,7 @@ public class TaxonXXMLFieldGetter {
         if (ref!=null) {
             taxonXstate.getConfig().setClassificationName(ref.getCitation());
         } else {
-            taxonXstate.getConfig().setClassificationName( "no reference title");
+            taxonXstate.getConfig().setClassificationName("no reference title");
         }
         ref=CdmBase.deproxy(ref, Reference.class);
         return ref;
@@ -100,8 +95,12 @@ public class TaxonXXMLFieldGetter {
                 NodeList nodes2 = nodes.item(i).getChildNodes();
                 for (int j=0; j< nodes2.getLength();j++){
                     if (nodes2.item(j).getNodeName().equalsIgnoreCase("tax:treatment")){
-                        List<Object> tosave = new ArrayList<Object>();
-                        treatmentextractor.extractTreatment(nodes2.item(j),tosave,ref,sourceName);
+                        try {
+							treatmentextractor.extractTreatment(nodes2.item(j), ref,sourceName);
+						} catch (Exception e) {
+							logger.error("Unhandled exception occurred in treatment. Treatment not fully imported.");
+							e.printStackTrace();
+						}
                     }
                 }
             }

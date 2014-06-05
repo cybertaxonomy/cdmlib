@@ -37,6 +37,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     private boolean doMods = true;
     private boolean doFacts = true;
     private boolean doTypes = true;
+    private boolean alwaysUseDefaultClassification = false;
 
 
     //TODO
@@ -100,20 +101,12 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
         setDestination(destination);
     }
 
-
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-     */
     @SuppressWarnings("unchecked")
     @Override
     public TaxonXImportState getNewState() {
         return new TaxonXImportState(this);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-     */
     @SuppressWarnings("rawtypes")
     @Override
     public Reference getSourceReference() {
@@ -130,10 +123,6 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
         return sourceReference;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-     */
     @Override
     public String getSourceNameString() {
         if (this.getSource() == null){
@@ -341,5 +330,14 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     public boolean getLastImport(){
         return  lastImport;
     }
+
+	public boolean isAlwaysUseDefaultClassification() {
+		return alwaysUseDefaultClassification;
+	}
+
+	public void setAlwaysUseDefaultClassification(
+			boolean alwaysUseDefaultClassification) {
+		this.alwaysUseDefaultClassification = alwaysUseDefaultClassification;
+	}
 
 }

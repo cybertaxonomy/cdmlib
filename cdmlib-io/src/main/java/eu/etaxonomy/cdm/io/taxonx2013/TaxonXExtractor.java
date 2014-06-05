@@ -121,7 +121,6 @@ public class TaxonXExtractor {
          * @param ref
          * @param refMods
          */
-        @SuppressWarnings({ "unused" })
         public void builReference(String mref, String treatmentMainName, NomenclaturalCode nomenclaturalCode,
                 Taxon acceptedTaxon, Reference<?> refMods) {
             // System.out.println("builReference "+mref);
@@ -268,6 +267,8 @@ public class TaxonXExtractor {
                         try{latitude=Double.valueOf(tmp);}catch(Exception e){logger.warn("latitude is not a number");}
                     }else if(eventContent.item(j).getNodeName().equalsIgnoreCase("dwc:TypeStatus")){
                         type = eventContent.item(j).getTextContent().trim();
+                    }else if(eventContent.item(j).getNodeName().equalsIgnoreCase("#text") && StringUtils.isBlank(eventContent.item(j).getTextContent())){
+                        //do nothing
                     }
                     else {
                         logger.info("UNEXTRACTED FIELD FOR SPECIMEN "+eventContent.item(j).getNodeName()+", "+eventContent.item(j).getTextContent()) ;
@@ -505,7 +506,7 @@ public class TaxonXExtractor {
      * @param reftype
      * @return
      */
-    protected Reference<?> getReferenceType(int reftype) {
+    protected Reference<?> getReferenceWithType(int reftype) {
         Reference<?> ref = null;
         switch (reftype) {
         case 1:
