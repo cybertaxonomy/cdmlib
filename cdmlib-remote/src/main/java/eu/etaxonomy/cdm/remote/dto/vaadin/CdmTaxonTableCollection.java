@@ -25,8 +25,6 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  *
  */
 public class CdmTaxonTableCollection{
-
-	private static final long serialVersionUID = 1L;
 	
 	Logger logger = Logger.getLogger(CdmTaxonTableCollection.class);
 
