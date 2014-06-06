@@ -300,7 +300,7 @@ public class DashBoardView extends CustomComponent implements View{
 
 	@SuppressWarnings("rawtypes")
 	private ComboBox initComboBox(final CdmTaxonTableCollection red) {
-		List<PresenceAbsenceTermBase> listTerm = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+		List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 		BeanItemContainer<PresenceAbsenceTermBase> container = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
 		container.addAll(listTerm);
 		

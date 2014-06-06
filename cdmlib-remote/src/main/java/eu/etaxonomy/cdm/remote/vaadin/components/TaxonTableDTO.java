@@ -88,7 +88,7 @@ public class TaxonTableDTO extends Table{
 		for(Taxon taxonBase:listTaxon){
 
 			Taxon taxon = taxonBase;
-			List<PresenceAbsenceTermBase> termList = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+			List<PresenceAbsenceTermBase> termList = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 			List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
 			CdmTaxonTableCollection tableCollection = new CdmTaxonTableCollection(taxon, listTaxonDescription, termList);
 			redListContainer.addBean(tableCollection);

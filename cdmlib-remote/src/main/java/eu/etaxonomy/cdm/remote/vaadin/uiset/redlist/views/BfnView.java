@@ -119,7 +119,7 @@ public class BfnView extends CustomComponent implements View{
 					return null;
 				}
 				if ("distributionStatus".equals(propertyId)) {
-					List<PresenceAbsenceTermBase> listTerm = termService.listByTermClass(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
+					List<PresenceAbsenceTermBase> listTerm = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 					BeanItemContainer<PresenceAbsenceTermBase> termContainer = new BeanItemContainer<PresenceAbsenceTermBase>(PresenceAbsenceTermBase.class);
 					termContainer.addAll(listTerm);
 					final ComboBox box = new ComboBox("Occurrence Status: ", termContainer);
