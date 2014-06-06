@@ -81,12 +81,6 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 		this.dao = dao;
 	}
 
-	
-	@Override
-	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
-		return dao.listByTermClass(clazz, limit, start, orderHints, propertyPaths);
-	}	
-	
 	@Override
 	public DefinedTermBase getByUri(URI uri) {
 		return dao.findByUri(uri);

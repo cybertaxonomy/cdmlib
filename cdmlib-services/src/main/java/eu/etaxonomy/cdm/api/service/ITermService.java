@@ -126,25 +126,6 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber);
 
-
-    /**
-     *
-     *
-     *
-     * @param <TERM>
-     * @param clazz
-     * @param limit
-     * @param start
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     *
-     * @deprecated candidate for harmonization!!! will be replaced by {@link IService#list(Class, Integer, Integer, List, List)}:
-     * once it is refactored to <public <S extends T> List<T> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-     */
-    @Deprecated
-    public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
-
     /**
      * Delete the given term according to the given delete configuration.
      * In case a problem occurrs while deleting the term the result will reflect this
