@@ -2715,8 +2715,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             potentialCombination.addSource(originalSource);
         }
 
-        inferredSynName.generateTitle();
-
         return potentialCombination;
     }
 
@@ -2794,9 +2792,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
 
         taxon.addSynonym(inferredGenus, SynonymRelationshipType.INFERRED_GENUS_OF());
-
-        inferredSynName.generateTitle();
-
 
         return inferredGenus;
     }
@@ -2892,7 +2887,6 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         taxon.addSynonym(inferredEpithet, SynonymRelationshipType.INFERRED_EPITHET_OF());
 
-        inferredSynName.generateTitle();
         return inferredEpithet;
     }
 
