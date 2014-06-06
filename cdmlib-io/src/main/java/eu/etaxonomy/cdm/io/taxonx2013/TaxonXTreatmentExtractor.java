@@ -197,7 +197,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 		    extractReferences(child, namesToSave ,acceptedTaxon,refMods);
 		}else if (nodeName.equalsIgnoreCase("tax:div") &&
 				child.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("multiple") && maxRankRespected){
-		    File file = new File("/home/pkelbert/Bureau/multipleTaxonX.txt");
+		    File file = new File(TaxonXImport.LOG_FOLDER + "multipleTaxonX.txt");
 		    FileWriter writer;
 		    try {
 		        writer = new FileWriter(file ,true);
@@ -3544,15 +3544,15 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 	                if(statusType != null) {
 	                    tnb.addStatus(NomenclaturalStatus.NewInstance(statusType));
 	                }
-	                if(getStatus()!=null) {
+	                if(StringUtils.isNotBlank(getStatus())) {
 	                    tnb.setAppendedPhrase(getStatus());
 	                }
-            	}else{
+	                tnb.setTitleCache(newName2,true);
+	                tmpTaxonBase = findMatchingTaxon(tnb,refMods);
+	            }else{
             		tnb = identicName;
             	}
-	                
-                tnb.setTitleCache(newName2,true);
-                tmpTaxonBase = findMatchingTaxon(tnb,refMods);
+
                 if(tmpTaxonBase==null){
                     tmpTaxonBase = isSynonym ? Synonym.NewInstance(tnb, refMods) : Taxon.NewInstance(tnb, refMods);
                     if(!configState.getConfig().doKeepOriginalSecundum()) {
@@ -4729,7 +4729,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void addProblematicStatusToFile(String status) {
         try{
-            FileWriter fstream = new FileWriter("/home/pkelbert/Bureau/StatusUnknown_"+classification.getTitleCache()+".txt",true);
+            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "StatusUnknown_"+classification.getTitleCache()+".txt",true);
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(status+"\n");
             //Close the output stream
@@ -4854,6 +4854,10 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     @SuppressWarnings("rawtypes")
     private List<Taxon> getMatchingTaxa(TaxonNameBase tnb) {
         //logger.info("getMatchingTaxon");
+    	if (tnb.getTitleCache() == null){
+    		tnb.setTitleCache(tnb.toString(), tnb.isProtectedTitleCache());
+    	}
+    	
         Pager<TaxonBase> pager=importer.getTaxonService().findByTitle(TaxonBase.class, tnb.getTitleCache().split("sec.")[0].trim(), MatchMode.BEGINNING, null, null, null, null, null);
         List<TaxonBase>records = pager.getRecords();
 
@@ -5473,7 +5477,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
     private void addNameDifferenceToFile(String originalname, String atomisedname){
         try{
-            FileWriter fstream = new FileWriter("/home/pkelbert/Bureau/NamesDifferent_"+classification.getTitleCache()+".txt",true);
+            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "NamesDifferent_"+classification.getTitleCache()+".txt",true);
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(originalname+" (original) versus "+replaceNull(atomisedname)+" (atomised) \n");
             //Close the output stream
@@ -5490,7 +5494,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void addProblemNameToFile(String name, String author, NomenclaturalCode nomenclaturalCode2, Rank rank) {
         try{
-            FileWriter fstream = new FileWriter("/home/pkelbert/Bureau/NameNotParsed.txt",true);
+            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "NameNotParsed.txt",true);
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(name+"\t"+replaceNull(author)+"\t"+replaceNull(nomenclaturalCode2)+"\t"+replaceNull(rank)+"\n");
             //Close the output stream
@@ -5509,7 +5513,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void logDecision(NonViralName<?> tnb, Taxon bestMatchingTaxon, boolean insertAsExisting, Reference refMods) {
         try{
-            FileWriter fstream = new FileWriter("/home/pkelbert/Bureau/Decisions_"+classification.toString()+".txt",true);
+            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "Decisions_"+classification.toString()+".txt",true);
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(tnb.getTitleCache()+" sec. "+refMods+"\t"+bestMatchingTaxon.getTitleCache()+"\t"+insertAsExisting+"\n");
             //Close the output stream
@@ -5538,7 +5542,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      */
     private void addProblemNameToFile(String type, String name, NomenclaturalCode nomenclaturalCode2, Rank rank, String problems) {
         try{
-            FileWriter fstream = new FileWriter("/home/pkelbert/Bureau/NameNotParsed_"+classification.getTitleCache()+".txt",true);
+            FileWriter fstream = new FileWriter(TaxonXImport.LOG_FOLDER + "NameNotParsed_"+classification.getTitleCache()+".txt",true);
             BufferedWriter out = new BufferedWriter(fstream);
             out.write(type+"\t"+name+"\t"+replaceNull(nomenclaturalCode2)+"\t"+replaceNull(rank)+"\t"+problems+"\n");
             //Close the output stream

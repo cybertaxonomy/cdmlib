@@ -17,8 +17,6 @@ import org.w3c.dom.NodeList;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
-import eu.etaxonomy.cdm.model.reference.IBook;
-import eu.etaxonomy.cdm.model.reference.IReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.reference.ReferenceType;
@@ -28,7 +26,11 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
     private final Map<String,UUID> personMap = new HashMap<String, UUID>();
 
-    Logger logger = Logger.getLogger(getClass());
+    private final Logger logger = Logger.getLogger(getClass());
+    
+
+	private final String AUTHOR = "author";
+    private final String EDITOR = "editor";
 
     /**
      * @param agentService
@@ -54,10 +56,13 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 	        
 	        ref = getReferenceWithType(reftype);
         }
+        handleModsNames(children, ref);
+        
         for (int i=0; i<children.getLength();i++){
-
-            if (children.item(i).getNodeName().equalsIgnoreCase("mods:titleinfo")){
-                NodeList tmp = children.item(i).getChildNodes();
+        	Node modsChildNode = children.item(i);
+        	String modsChildNodeName = modsChildNode.getNodeName();
+            if (modsChildNodeName.equalsIgnoreCase("mods:titleinfo")){
+                NodeList tmp = modsChildNode.getChildNodes();
                 for (int j=0;j<tmp.getLength();j++){
                     if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:title")) {
                         content=tmp.item(j).getTextContent().trim();
@@ -69,33 +74,24 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         }
                     }
                 }
-            }
-
-            if (children.item(i).getNodeName().equalsIgnoreCase("mods:name")){
-                Map<String,String> nameMap = getModsNames(children.item(i), ref);
-                if (!nameMap.isEmpty()) {
-                    //FIXME
-                	roleList.add(nameMap.toString());
-                }
-            }
-
-            else if (children.item(i).getNodeName().equalsIgnoreCase("mods:typeofresource")){
-                content = children.item(i).getTextContent().trim();
+            }else if (modsChildNodeName.equalsIgnoreCase("mods:name")){
+               //handled separately
+            }else if (modsChildNodeName.equalsIgnoreCase("mods:typeofresource")){
+                content = modsChildNode.getTextContent().trim();
                 if (!content.isEmpty()) {
                     modsMap.put("typeofresource",content);
                 }
-            }
-            else if (children.item(i).getNodeName().equalsIgnoreCase("mods:identifier")){
-                content = children.item(i).getTextContent().trim();
+            }else if (modsChildNodeName.equalsIgnoreCase("mods:identifier")){
+                content = modsChildNode.getTextContent().trim();
                 if (!content.isEmpty()) {
-                    modsMap.put(children.item(i).getAttributes().getNamedItem("type").getNodeValue(),content);
-                    if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("isbn")) {
+                    modsMap.put(modsChildNode.getAttributes().getNamedItem("type").getNodeValue(),content);
+                    if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("isbn")) {
                         ref.setIsbn(content);
                     }
-                    if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("issn")) {
+                    if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("issn")) {
                         ref.setIssn(content);
                     }
-                    if (children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
+                    if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
                         ref.setIssn("GenericHash: "+content);
                         try {
                             ref.setUri(new URI("http://plazi.cs.umb.edu/GgServer/search?MODS.ModsDocID="+content));
@@ -105,9 +101,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         }
                     }
                 }
-            }
-            else if (children.item(i).getNodeName().equalsIgnoreCase("mods:location")){
-                NodeList tmp = children.item(i).getChildNodes();
+            }else if (modsChildNodeName.equalsIgnoreCase("mods:location")){
+                NodeList tmp = modsChildNode.getChildNodes();
                 for (int j=0;j<tmp.getLength();j++){
                     //                    System.out.println("Child of mods:location: "+tmp.item(j).getNodeName());
                     if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:url")) {
@@ -119,14 +114,14 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                 }
             }
-            else if (children.item(i).getNodeName().equalsIgnoreCase("mods:relatedItem")){
-                addRelatedMods(children.item(i), modsMap, ref);
-            }else if (children.item(i).getNodeName().equalsIgnoreCase("mods:classification")){
+            else if (modsChildNodeName.equalsIgnoreCase("mods:relatedItem")){
+                addRelatedMods(modsChildNode, modsMap, ref);
+            }else if (modsChildNodeName.equalsIgnoreCase("mods:classification")){
                     //already handled before
-            }else if (children.item(i).getNodeName().equalsIgnoreCase("#text") && StringUtils.isBlank(children.item(i).getTextContent())){
+            }else if (modsChildNodeName.equalsIgnoreCase("#text") && StringUtils.isBlank(modsChildNode.getTextContent())){
                 //already handled before
             }else{
-            	logger.warn("mods item not recognized yet: " + children.item(i).getNodeName());
+            	logger.warn("mods item not recognized yet: " + modsChildNodeName);
             }
 
 
@@ -147,7 +142,59 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         return ref;
     }
 
-    /**
+    private void handleModsNames(NodeList children, Reference<?> ref) {
+    	 
+        List<String> roleList = new ArrayList<String>();
+        
+        List<Person> persons = new ArrayList<Person>();
+        List<String> editors= new ArrayList<String>();
+
+    	
+    	//handle all mods:name
+        for ( int i = 0; i<children.getLength(); i++){
+    		if (children.item(i).getNodeName().equalsIgnoreCase("mods:name")){
+    			NamedNodeMap attributeMap = children.item(i).getAttributes();
+    			if ((attributeMap.getNamedItem("type") != null) && attributeMap.getNamedItem("type").getNodeValue().equalsIgnoreCase("personal")) {
+    				handleNameTypePersonal(children.item(i), roleList, persons, editors);
+    			} else if (attributeMap.getNamedItem("type") == null){
+    				logger.warn("mods:name attribute 'type' is missing. Name not handled");
+    			}else {
+    				logger.warn("mods:name 'type' " + attributeMap.getNamedItem("type").getNodeValue() + " not yet supported"); 
+    			}
+    		}
+    	}
+        //evaluate authors and editors
+       	if (persons.size()>0){
+       		if (ref == null){
+       			logger.warn("mods:name exists but reference is null");
+       		}else if (persons.size()==1){
+                ref.setAuthorTeam(persons.get(0));
+            }
+            else{
+                Team authorTeam = Team.NewInstance();
+                for (Person pers:persons){
+                    authorTeam.addTeamMember(pers);
+                }
+
+                if (!personMap.containsKey(authorTeam.getTitleCache()) && (authorTeam.getTeamMembers().size()>0)){
+                    UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
+                    personMap.put(authorTeam.getTitleCache(),uuid);
+                }else{
+                    if(authorTeam.getTeamMembers().size()>1) {
+                    	UUID uuid = personMap.get(authorTeam.getTitleCache());
+                        authorTeam =  (Team) importer.getAgentService().find(uuid);
+                    }
+                }
+
+                ref.setAuthorTeam(authorTeam);
+            }
+            if (editors.size()>0) {
+                ref.setEditor(StringUtils.join(editors,", "));
+            }
+        }
+	}
+
+	/**
      * Extracts the reference with correct type from mods:classification.
      * Incomplete implementation. Will be filled whenever new cases show up
      * @param children list of all children of mods:mods
@@ -175,108 +222,71 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 		return null;
 	}
 
-	private final String AUTHOR = "author";
-    private final String EDITOR = "editor";
-    /**
-     * @param item
-     * @return
-     */
-    private Map<String, String> getModsNames(Node node, Reference<?> ref) {
-        NamedNodeMap attributeMap = node.getAttributes();
-        Map<String,String> mapmap = new HashMap<String, String>();
-        List<String> roleList = new ArrayList<String>();
-        boolean newRole=false;
+
+    private void handleNameTypePersonal(Node node, List<String> roleList, List<Person> persons, List<String> editors) {
+    	boolean newRole=false;
         String content="";
         String role =null;
-        List<Person> persons = new ArrayList<Person>();
-        List<String> editors= new ArrayList<String>();
+        
+        List<String> nameParts = new ArrayList<String>();
+        
+    	NodeList tmp = node.getChildNodes();
+        for (int j=0;j<tmp.getLength();j++){
 
-        if ((attributeMap.getNamedItem("type") != null) && attributeMap.getNamedItem("type").getNodeValue().equalsIgnoreCase("personal")) {
-
-            NodeList tmp = node.getChildNodes();
-            for (int j=0;j<tmp.getLength();j++){
-
-                //                System.out.println("Child of modsnametype: "+tmp.item(j).getNodeName());
-                Person p=null;
-                if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:namePart")) {
-                    content=tmp.item(j).getTextContent().trim();
-                    if (!content.isEmpty()) {
-                        mapmap.put("namePart",content);
-                        p = Person.NewInstance();
-                        p.setTitleCache(content, true);
-                    }
+            if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:namePart")) {
+                content=tmp.item(j).getTextContent().trim();
+                if (! content.isEmpty()) {
+                	nameParts.add(content);
                 }
-                if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:role")) {
-                    NodeList tmp2 = tmp.item(j).getChildNodes();
-                    for (int k=0; k< tmp2.getLength();k++){
-                        if (tmp2.item(k).getNodeName().equalsIgnoreCase("mods:roleTerm")){
-                            content = tmp2.item(k).getTextContent().trim();
-                            //                            System.out.println("ROLETERM!" +content);
-                            if (!content.isEmpty()) {
-                                roleList.add(content);
-                                //                                p.setNomenclaturalTitle(content);
-                                if (content.equalsIgnoreCase(EDITOR)) {
-                                    role=EDITOR;
-                                }
-                                if (content.equalsIgnoreCase(AUTHOR)) {
-                                    role=AUTHOR;
-                                }
-                                newRole=true;
+            } else if (tmp.item(j).getNodeName().equalsIgnoreCase("mods:role")) {
+                NodeList roleChildren = tmp.item(j).getChildNodes();
+                for (int k=0; k< roleChildren.getLength();k++){
+                    if (roleChildren.item(k).getNodeName().equalsIgnoreCase("mods:roleTerm")){
+                        content = roleChildren.item(k).getTextContent().trim();
+                        if (!content.isEmpty()) {
+                            roleList.add(content);
+                            //                                p.setNomenclaturalTitle(content);
+                            if (content.equalsIgnoreCase(EDITOR)) {
+                                role=EDITOR;
                             }
+                            else if (content.equalsIgnoreCase(AUTHOR)) {
+                                role=AUTHOR;
+                            }
+                            newRole=true;
                         }
                     }
                 }
-                if (newRole){
-                    if ((p!=null) && role.equals(AUTHOR)) {
-                        UUID uuid = null;
-                        if (!personMap.containsKey(p.getTitleCache())){
-                            uuid = importer.getAgentService().saveOrUpdate(p);
-                            p = (Person) importer.getAgentService().find(uuid);
-                            personMap.put(p.getTitleCache(),uuid);
-                        }else{
-                            uuid = personMap.get(p.getTitleCache());
-                            p = (Person) importer.getAgentService().find(uuid);
-                        }
-                        //                        logger.info("ADD PERSON "+p);
-                        persons.add(p);
-                    }
-                    if ((p!=null) && role.equals(EDITOR)) {
-                        editors.add(p.getTitleCache());
-                    }
-                }
-            }
-        }
-        if (persons.size()>0){
-            if (persons.size()==1){
-                ref.setAuthorTeam(persons.get(0));
-            }
-            else{
-                Team authorTeam = Team.NewInstance();
-                for (Person pers:persons){
-                    authorTeam.addTeamMember(pers);
-                }
+            }                    
 
-                if (!personMap.containsKey(authorTeam.getTitleCache()) && (authorTeam.getTeamMembers().size()>0)){
-                    UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
-                    personMap.put(authorTeam.getTitleCache(),uuid);
+        }
+        
+        Person p=null;
+        if (! nameParts.isEmpty()){
+            p = Person.NewInstance();
+            p.setTitleCache(StringUtils.join(nameParts.toArray(), " "), true);
+        }
+        
+        if (newRole){
+            if ((p!=null) && role.equals(AUTHOR)) {
+                UUID uuid = null;
+                if (!personMap.containsKey(p.getTitleCache())){
+                    uuid = importer.getAgentService().saveOrUpdate(p);
+                    p = (Person) importer.getAgentService().find(uuid);
+                    personMap.put(p.getTitleCache(),uuid);
                 }else{
-                    if(authorTeam.getTeamMembers().size()>1) {
-                        authorTeam =  (Team) importer.getAgentService().find(personMap.get(authorTeam.getTitleCache()));
-                    }
+                    uuid = personMap.get(p.getTitleCache());
+                    p = (Person) importer.getAgentService().find(uuid);
                 }
-
-                ref.setAuthorTeam(authorTeam);
+                //                        logger.info("ADD PERSON "+p);
+                persons.add(p);
             }
-        }
-        if (editors.size()>0) {
-            ref.setEditor(StringUtils.join(editors,", "));
-        }
-        mapmap.put("role",StringUtils.join(roleList.toArray(),SPLITTER));
-        return mapmap;
-    }
+            else if ((p!=null) && role.equals(EDITOR)) {
+                editors.add(p.getTitleCache());
+            }
+        }		
+	}
 
-
-    /**
+	/**
      * @param item
      * @param modsMap
      */
@@ -303,6 +313,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
 
         relatedInfoMap.put("type",node.getAttributes().getNamedItem("type").getNodeValue());
 
+        
+        Reference<?> inRef = null;
         for (int j=0;j<tmp.getLength();j++){
         	Node childNode = tmp.item(j);
         	String childNodeName = childNode.getNodeName();
@@ -313,7 +325,6 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     if (node.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("host")){
                         List<Reference> references = importer.getReferenceService().list(Reference.class, 0, 0, null, null);
                         boolean refFound = false;
-                        Reference<?> inRef = null;
                         for (Reference<?> tmpRef:references){
                             if(tmpRef.getTitleCache().equalsIgnoreCase(content)){
                                 refFound = true;
@@ -371,10 +382,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 relatedInfoMap.put("originInfo", StringUtils.join(originInfo.toArray(),SPLITTER));
             }
             else if (childNodeName.equalsIgnoreCase("mods:name")){
-                mapmap = getModsNames(childNode,ref);
-                if (!mapmap.isEmpty()) {
-                    roleList.add(mapmap.toString());
-                }
+            	//handled later
             }
             else if (childNodeName.equalsIgnoreCase("mods:part")){
                 children = childNode.getChildNodes();
@@ -436,6 +444,10 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
             	logger.warn("relatedItem child not yet supported: " + childNodeName);
             }
         }
+        
+        
+        handleModsNames(children, inRef);
+        
         relatedInfoMap.put("relatedRoles", StringUtils.join(roleList.toArray(),SPLITTER));
         modsMap.put("relatedInfo",relatedInfoMap.toString());
     }

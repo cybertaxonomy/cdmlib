@@ -196,7 +196,7 @@ public class TaxonXExtractor {
      * @param item
      * @return
      */
-    @SuppressWarnings({ "unused", "null", "rawtypes" })
+    @SuppressWarnings({ "unused", "rawtypes" })
     protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnit derivedUnitBase,
             SpecimenOrObservationType defaultAssociation) {
         String country=null;
@@ -923,7 +923,7 @@ public class TaxonXExtractor {
                 scrollPane.setPreferredSize( new Dimension( 600, 50 ) );
 
                 List<Rank> rankList = new ArrayList<Rank>();
-                rankList = importer.getTermService().listByTermClass(Rank.class, null, null, null, null);
+                rankList = importer.getTermService().list(Rank.class, null, null, null, null);
 
                 List<String> rankListStr = new ArrayList<String>();
                 for (Rank r:rankList) {
@@ -1063,53 +1063,56 @@ public class TaxonXExtractor {
         if (r.equalsIgnoreCase("Superfamily")) {
             rank=Rank.SUPERFAMILY();
         }
-        if (r.equalsIgnoreCase("Family")) {
+        else if (r.equalsIgnoreCase("Family")) {
             rank=Rank.FAMILY();
         }
-        if (r.equalsIgnoreCase("Subfamily")) {
+        else if (r.equalsIgnoreCase("Subfamily")) {
             rank=Rank.SUBFAMILY();
         }
-        if (r.equalsIgnoreCase("Tribe")) {
+        else if (r.equalsIgnoreCase("Tribe")) {
             rank=Rank.TRIBE();
         }
-        if (r.equalsIgnoreCase("Subtribe")) {
+        else if (r.equalsIgnoreCase("Subtribe")) {
             rank=Rank.SUBTRIBE();
         }
-        if (r.equalsIgnoreCase("Genus")) {
+        else if (r.equalsIgnoreCase("Genus")) {
             rank=Rank.GENUS();
         }
-        if (r.equalsIgnoreCase("Subgenus")) {
+        else if (r.equalsIgnoreCase("Subgenus")) {
             rank=Rank.SUBGENUS();
         }
-        if (r.equalsIgnoreCase("Section")) {
+        else if (r.equalsIgnoreCase("Section")) {
             rank=Rank.SECTION_BOTANY();
         }
-        if (r.equalsIgnoreCase("Subsection")) {
+        else if (r.equalsIgnoreCase("Subsection")) {
             rank=Rank.SUBSECTION_BOTANY();
         }
-        if (r.equalsIgnoreCase("Series")) {
+        else if (r.equalsIgnoreCase("Series")) {
             rank=Rank.SERIES();
         }
-        if (r.equalsIgnoreCase("Subseries")) {
+        else if (r.equalsIgnoreCase("Subseries")) {
             rank=Rank.SUBSERIES();
         }
-        if (r.equalsIgnoreCase("Species")) {
+        else if (r.equalsIgnoreCase("Species")) {
             rank=Rank.SPECIES();
         }
-        if (r.equalsIgnoreCase("Subspecies")) {
+        else if (r.equalsIgnoreCase("Subspecies")) {
             rank=Rank.SUBSPECIES();
         }
-        if (r.equalsIgnoreCase("Variety") || r.equalsIgnoreCase("varietyEpithet")) {
+        else if (r.equalsIgnoreCase("Variety") || r.equalsIgnoreCase("varietyEpithet")) {
             rank=Rank.VARIETY();
         }
-        if (r.equalsIgnoreCase("Subvariety")) {
+        else if (r.equalsIgnoreCase("Subvariety")) {
             rank=Rank.SUBVARIETY();
         }
-        if (r.equalsIgnoreCase("Form")) {
+        else if (r.equalsIgnoreCase("Form")) {
             rank=Rank.FORM();
         }
-        if (r.equalsIgnoreCase("Subform")) {
+        else if (r.equalsIgnoreCase("Subform")) {
             rank=Rank.SUBFORM();
+        }else if (r.equalsIgnoreCase("higher")) {
+//            rank=Rank.SUPRAGENERICTAXON();
+        	logger.warn("handling of 'higher' rank still unclear");
         }
 
         return rank;

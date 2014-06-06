@@ -54,6 +54,8 @@ import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, TaxonXImportState> implements ICdmIO<TaxonXImportState> {
     private static final Logger logger = Logger.getLogger(TaxonXImport.class);
     private static String prefix = "";
+    
+    public static String LOG_FOLDER = "C:\\Users\\pesiimport\\.cdmLibrary\\log\\taxonX\\";
 
     private Classification classification = null;
     private Reference<?> ref = null;
@@ -201,7 +203,6 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
 
     @Override
     public void doInvoke(TaxonXImportState state) {
-        System.out.println("INVOKE?");
         taxonXstate = state;
         tx = startTransaction();
 
@@ -281,7 +282,7 @@ public class TaxonXImport extends SpecimenImportBase<TaxonXImportConfigurator, T
             e.printStackTrace();
             logger.warn(e);
 
-            File file = new File("/home/pkelbert/Bureau/urlTaxonX.txt");
+            File file = new File(LOG_FOLDER + "urlTaxonX.txt");
             FileWriter writer;
             try {
                 writer = new FileWriter(file ,true);
