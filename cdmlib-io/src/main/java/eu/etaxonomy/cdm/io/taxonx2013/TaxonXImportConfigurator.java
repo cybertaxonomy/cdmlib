@@ -43,7 +43,12 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
     //TODO
     private static IInputTransformer defaultTransformer = null;
 
-
+    //the original TaxonXImport extracted Synonyms by creating acc Taxa with partial names
+    //I (AM) do not understand this but don't want to destroy code which maybe works in some cases) there
+    //I created this switch for old
+    //for Spiders the new version is preferred
+    private boolean isUseOldUnparsedSynonymExtraction = true;
+    
     //if false references in this rdf file are not published in the bibliography list
     private boolean isPublishReferences = true;
 
@@ -52,6 +57,7 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 
     private Map<String, Person> titleCachePerson;
     private Map<String,UUID> namedAreaDecisions = new HashMap<String,UUID>();
+    
 
 
     private static Reference<?> sourceRef = null;
@@ -339,5 +345,16 @@ public class TaxonXImportConfigurator extends ImportConfiguratorBase<TaxonXImpor
 			boolean alwaysUseDefaultClassification) {
 		this.alwaysUseDefaultClassification = alwaysUseDefaultClassification;
 	}
+
+
+	public boolean isUseOldUnparsedSynonymExtraction() {
+		return isUseOldUnparsedSynonymExtraction;
+	}
+
+	public void setUseOldUnparsedSynonymExtraction(boolean isUseOldUnparsedSynonymExtraction) {
+		this.isUseOldUnparsedSynonymExtraction = isUseOldUnparsedSynonymExtraction;
+	}
+	
+	
 
 }

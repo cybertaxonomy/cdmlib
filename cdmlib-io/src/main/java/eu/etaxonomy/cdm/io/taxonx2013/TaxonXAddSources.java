@@ -123,7 +123,7 @@ public class TaxonXAddSources {
     protected void addSource(Reference<?> refMods, Synonym synonym) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
-        Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
+        Reference<?> sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
         IdentifiableSource id = getIdentifiableSource(sourceUrlRef,synonym.getSources(), false);
         IdentifiableSource id2 = getIdentifiableSource(refMods,synonym.getSources(), true);
         IdentifiableSource id3 = getIdentifiableSource(sec,synonym.getSources(), false);
@@ -170,7 +170,7 @@ public class TaxonXAddSources {
     protected void addSource(Reference<?> refMods, Taxon acceptedTaxon) {
         //logger.info("addSource");
         sourceUrlRef=CdmBase.deproxy(sourceUrlRef, Reference.class);
-        Reference sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
+        Reference<?> sec = CdmBase.deproxy(configState.getConfig().getSecundum(), Reference.class);
         IdentifiableSource id = getIdentifiableSource(sourceUrlRef, acceptedTaxon.getSources(), false);
         IdentifiableSource id2 = getIdentifiableSource(refMods, acceptedTaxon.getSources(), true);
         IdentifiableSource id3 = getIdentifiableSource(sec, acceptedTaxon.getSources(), false);

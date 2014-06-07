@@ -14,6 +14,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import eu.etaxonomy.cdm.common.DOI;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -87,11 +88,15 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     modsMap.put(modsChildNode.getAttributes().getNamedItem("type").getNodeValue(),content);
                     if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("isbn")) {
                         ref.setIsbn(content);
-                    }
-                    if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("issn")) {
+                    }else if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("issn")) {
                         ref.setIssn(content);
-                    }
-                    if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
+                    }else if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("DOI")) {
+                        try {
+							ref.setDoi(DOI.fromString(content));
+						} catch (IllegalArgumentException e) {
+							logger.warn(content + " is not a vaild DOI");
+						}
+                    }else if (modsChildNode.getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("GenericHash")) {
                         ref.setIssn("GenericHash: "+content);
                         try {
                             ref.setUri(new URI("http://plazi.cs.umb.edu/GgServer/search?MODS.ModsDocID="+content));
@@ -99,6 +104,8 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                             // TODO Auto-generated catch block
                             e.printStackTrace();
                         }
+                    }else{
+                    	logger.info("identifier " + modsChildNode.getAttributes().getNamedItem("type").getNodeValue() + " not yet handled.");
                     }
                 }
             }else if (modsChildNodeName.equalsIgnoreCase("mods:location")){
@@ -118,7 +125,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 addRelatedMods(modsChildNode, modsMap, ref);
             }else if (modsChildNodeName.equalsIgnoreCase("mods:classification")){
                     //already handled before
-            }else if (modsChildNodeName.equalsIgnoreCase("#text") && StringUtils.isBlank(modsChildNode.getTextContent())){
+            }else if (modsChildNodeName.equalsIgnoreCase("#text") && modsChildNode.getTextContent().matches("\\s*")){
                 //already handled before
             }else{
             	logger.warn("mods item not recognized yet: " + modsChildNodeName);
@@ -318,7 +325,9 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
         for (int j=0;j<tmp.getLength();j++){
         	Node childNode = tmp.item(j);
         	String childNodeName = childNode.getNodeName();
-            if (childNodeName.equalsIgnoreCase("mods:titleInfo")) {
+	        if (childNodeName.equalsIgnoreCase("#text")  && childNode.getTextContent().matches("\\s*")){
+	        	//do nothing
+	        } else if (childNodeName.equalsIgnoreCase("mods:titleInfo")) {
                 content=childNode.getTextContent().trim();
                 if (!content.isEmpty()) {
                     relatedInfoMap.put("titleInfo",content);
@@ -347,7 +356,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                         }
                     }
                 }
-            }else if (childNodeName.equalsIgnoreCase("mods:originInfo")) {
+            } else if (childNodeName.equalsIgnoreCase("mods:originInfo")) {
                 children = childNode.getChildNodes();
                 originInfo = new ArrayList<String>();
                 for (int i=0;i<children.getLength();i++){
@@ -380,26 +389,25 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                 }
                 relatedInfoMap.put("originInfo", StringUtils.join(originInfo.toArray(),SPLITTER));
-            }
-            else if (childNodeName.equalsIgnoreCase("mods:name")){
+            } else if (childNodeName.equalsIgnoreCase("mods:name")){
             	//handled later
-            }
-            else if (childNodeName.equalsIgnoreCase("mods:part")){
+            } else if (childNodeName.equalsIgnoreCase("mods:part")){
                 children = childNode.getChildNodes();
                 partList = new ArrayList<String>();
                 for (int i=0;i<children.getLength();i++){
                     mapmap = new HashMap<String, String>();
                     //                    System.out.println(children.item(i).getNodeName());
 
-                    if (children.item(i).getNodeName().equalsIgnoreCase("mods:date")){
+                    if (children.item(i).getNodeName().equalsIgnoreCase("#text")  && children.item(i).getTextContent().matches("\\s*")){
+        	        	//do nothing
+        	        } else if (children.item(i).getNodeName().equalsIgnoreCase("mods:date")){
                         content = children.item(i).getTextContent().trim();
                         if (!content.isEmpty()){
                             date = TimePeriodParser.parseString(content);
                             //TODO need to check if date belongs to ref or inref
                             ref.setDatePublished(date);
                         }
-                    }
-                    else if (children.item(i).getNodeName().equalsIgnoreCase("mods:detail") &&
+                    } else if (children.item(i).getNodeName().equalsIgnoreCase("mods:detail") &&
                             children.item(i).getAttributes().getNamedItem("type").getNodeValue().equalsIgnoreCase("volume")){
                         partNodes = children.item(i).getChildNodes();
                         for (int k=0; k<partNodes.getLength();k++){
@@ -410,8 +418,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                                 }
                             }
                         }
-                    }
-                    else if (children.item(i).getNodeName().equalsIgnoreCase("mods:extent")) {
+                    } else if (children.item(i).getNodeName().equalsIgnoreCase("mods:extent")) {
                         mapmap.put("unit", children.item(i).getAttributes().getNamedItem("unit").getNodeValue());
                         partNodes = children.item(i).getChildNodes();
                         pstart="";

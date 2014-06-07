@@ -61,6 +61,7 @@ import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -84,7 +85,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 public class TaxonXExtractor {
 
     protected TaxonXImport importer;
-    protected TaxonXImportState configState;
+    protected TaxonXImportState state2;
     private final Map<String,String> namesAsked = new HashMap<String, String>();
     private final Map<String,Rank>ranksAsked = new HashMap<String, Rank>();
 
@@ -198,7 +199,7 @@ public class TaxonXExtractor {
      */
     @SuppressWarnings({ "unused", "rawtypes" })
     protected MySpecimenOrObservation extractSpecimenOrObservation(Node specimenObservationNode, DerivedUnit derivedUnitBase,
-            SpecimenOrObservationType defaultAssociation) {
+            SpecimenOrObservationType defaultAssociation, TaxonNameBase<?,?> typifiableName) {
         String country=null;
         String locality=null;
         String stateprov=null;
@@ -315,6 +316,12 @@ public class TaxonXExtractor {
             }
             derivedUnitFacade = getFacade(type.replaceAll(";",""), defaultAssociation);
             SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
+            
+            if (typifiableName != null){
+            	typifiableName.addTypeDesignation(designation, true);
+            }else{
+            	logger.warn("No typifiable name available");
+            }
             SpecimenTypeDesignationStatus stds= getSpecimenTypeDesignationStatusByKey(type);
             if (stds !=null) {
                 stds = (SpecimenTypeDesignationStatus) importer.getTermService().find(stds.getUuid());
@@ -339,7 +346,7 @@ public class TaxonXExtractor {
         }
 
         unitsGatheringEvent = new UnitsGatheringEvent(importer.getTermService(), locality,collector,longitude, latitude,
-                configState.getConfig(),importer.getAgentService());
+                state2.getConfig(),importer.getAgentService());
 
         if(tp!=null) {
             unitsGatheringEvent.setGatheringDate(tp);
@@ -347,8 +354,14 @@ public class TaxonXExtractor {
 
         // country
         unitsGatheringArea = new UnitsGatheringArea();
-        unitsGatheringArea.setParams(null, country, configState.getConfig(), importer.getTermService(), importer.getOccurrenceService());
-
+        unitsGatheringArea.setParams(null, country, state2.getConfig(), importer.getTermService(), importer.getOccurrenceService());
+        //TODO other areas
+        if (StringUtils.isNotBlank(stateprov)){
+        	ArrayList<String> namedAreas = new ArrayList<String>();
+        	namedAreas.add(stateprov);
+            unitsGatheringArea.setAreaNames(namedAreas, state2.getConfig(), importer.getTermService());
+        }
+        
         areaCountry =  unitsGatheringArea.getCountry();
 
         //                         // other areas
@@ -360,18 +373,16 @@ public class TaxonXExtractor {
 
         // copy gathering event to facade
         GatheringEvent gatheringEvent = unitsGatheringEvent.getGatheringEvent();
+        derivedUnitFacade.setGatheringEvent(gatheringEvent);
         derivedUnitFacade.setLocality(gatheringEvent.getLocality());
         derivedUnitFacade.setExactLocation(gatheringEvent.getExactLocation());
         derivedUnitFacade.setCollector(gatheringEvent.getCollector());
         derivedUnitFacade.setCountry((NamedArea)areaCountry);
-        derivedUnitFacade.setGatheringEvent(gatheringEvent);
-
+        
         for(DefinedTermBase<?> area:unitsGatheringArea.getAreas()){
             derivedUnitFacade.addCollectingArea((NamedArea) area);
         }
         //                         derivedUnitFacade.addCollectingAreas(unitsGatheringArea.getAreas());
-
-        // TODO exsiccatum
 
         // add fieldNumber
         if (fieldNumber != null) {
@@ -1182,6 +1193,26 @@ public class TaxonXExtractor {
             return false;
         }
     }
+    
+    /**
+     * Tries to match the status string against any new name status
+     * and returns the status if it matches. Returns <code>null</code> otherwise.
+     * @param status
+     * @return
+     */
+    protected String newNameStatus(String status){
+    	String pattern = "(" + "((sp|spec|gen|comb|)\\.\\s*nov.)" +
+    				"|(new\\s*(species|combination))" + 
+    				"|(n\\.\\s*sp\\.)" +
+    				"|(sp\\.\\s*n\\.)" +
+    				")";
+    	if (status.trim().matches(pattern)){
+    		return status;
+    	}else{
+    		return null;
+    	}
+    }
+    
 
     /** Creates an cdm-NomenclaturalCode by the tcs NomenclaturalCode
      */
