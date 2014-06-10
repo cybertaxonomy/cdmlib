@@ -145,8 +145,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @param sourceName: the URI of the document
      */
     @SuppressWarnings({ "rawtypes", "unused" })
-    protected void extractTreatment(Node treatmentnode, Reference<?> refMods, URI sourceName) {
-        logger.info("extractTreatment");
+
+    protected void extractTreatment(Node treatmentnode, Reference<?> refMods, URI sourceName) {        logger.info("extractTreatment");
         List<TaxonNameBase> namesToSave = new ArrayList<TaxonNameBase>();
         NodeList children = treatmentnode.getChildNodes();
         Taxon acceptedTaxon =null;
@@ -1163,7 +1163,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
      * @return
      */
     private boolean stringIsEmpty(String blaStr) {
-        if (blaStr.matches("(\\.|,|;)?")){
+        if (blaStr.matches("(\\.|,|;|\\.-)?")){
         	return true;
         }else{
         	return false;
@@ -1552,6 +1552,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         for(MyName name:names){
         	TaxonNameBase nameToBeFilled = name.getTaxonNameBase();
             Synonym synonym = name.getSyno();
+            addFollowingTextToName(nameToBeFilled, followingText);
+            
             /* INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
             nameToBeFilled = parser.parseFullName(name.getName(), nomenclaturalCode, name.getRank());
             if (nameToBeFilled.hasProblem() &&
@@ -1585,7 +1587,22 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
     }
 
 
-    /**
+    private boolean addFollowingTextToName(TaxonNameBase nameToBeFilled, String followingText) {
+    	if (nameToBeFilled != null && StringUtils.isNotBlank(followingText)){
+    		if (! followingText.matches("\\d\\.?")){
+    		
+	    		if (followingText.startsWith(",")){
+	    			followingText = followingText.substring(1).trim();
+	    		}
+	    		nameToBeFilled.setFullTitleCache(nameToBeFilled.getFullTitleCache()+ "," +followingText , true);
+    		}
+    		return true;
+    	}
+    	return false;
+		
+	}
+
+	/**
      * @param refgroup: the XML nodes
      * @param nametosave: the list of objects to save into the CDM
      * @param acceptedTaxon: the current acceptedTaxon
@@ -2048,6 +2065,7 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
         }
 
         boolean containsSynonyms=false;
+        boolean wasSynonym = false;
         usedFollowingTextPrefix = null;  //reset
     	
         for (int i=0; i<children.getLength(); i++){
@@ -2078,7 +2096,9 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
             	NonViralName<?> nameToBeFilled;
                 //System.out.println("HANDLE FIRST NAME OF THE LIST");
                 if(!containsSynonyms){
-                    //System.out.println("I : "+i);
+                	wasSynonym = false;
+                    
+                	//System.out.println("I : "+i);
                     currentMyName = new MyName(false);
                     try {
                         currentMyName = extractScientificName(childNode, refMods, followingText);
@@ -2186,6 +2206,8 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 }else{
                     try{
                         extractSynonyms(childNode, acceptedTaxon, refMods, followingText);
+                        wasSynonym = true;
+                        
                     }catch(NullPointerException e){
                         logger.warn("null pointer exception, the accepted taxon might be null");
                     }
@@ -2195,9 +2217,30 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
                 reloadClassification();
                 //extract the References within the document
                 extractReferences(childNode,nametosave,acceptedTaxon,refMods);
+            }else if (childName.equalsIgnoreCase("tax:bibref")){
+            	logger.warn(childName + " still preliminary");
+            	
+            	NonViralName<?> currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
+            	boolean handled = addFollowingTextToName (currentName, childNode.getTextContent() );
+            	if (! handled){
+            		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());	
+            	}
+            }else{
+            	logger.warn(childName + " not yet handled");
             }
             if(!stringIsEmpty(freetext.trim())) {;
-                setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());
+                if (! freetext.matches("\\d\\.?")){
+                	NonViralName<?> currentName = currentMyName == null ? null : currentMyName.getTaxonNameBase();
+                	boolean handled = false;
+                	if (currentName != null && !wasSynonym){
+                		handled = addFollowingTextToName (currentName, childNode.getTextContent() );
+                	}
+                	if (! handled){
+                		setParticularDescription(freetext.trim(), acceptedTaxon,acceptedTaxon, refMods, getNotMarkedUpFeatureObject());	
+                	}
+                }
+            
+                 freetext = "";
             }
 
         }
@@ -3933,15 +3976,12 @@ public class TaxonXTreatmentExtractor extends TaxonXExtractor{
 
             boolean foundIdentic=false;
             Taxon tmp=null;
-            //            Taxon tmpPartial=null;
             for (TaxonBase tmpb:tmpListFiltered){
                 if(tmpb !=null){
                     TaxonNameBase tnb =  tmpb.getName();
                     Rank crank=null;
                     if (tnb != null){
-                        //                        //System.out.println(tnb.getTitleCache());
-                        //                        if (tnb.getTitleCache().split("sec.")[0].equals(partialname) ||tnb.getTitleCache().split("sec.")[0].equals(fullname) ){
-                        if(globalrank.equals(rank) || (globalrank.isLower(Rank.SPECIES()) && rank.equals(Rank.SPECIES()))){
+                         if(globalrank.equals(rank) || (globalrank.isLower(Rank.SPECIES()) && rank.equals(Rank.SPECIES()))){
                             if (tnb.getTitleCache().split("sec.")[0].trim().equalsIgnoreCase(fullname) ){
                                 crank =tnb.getRank();
                                 if (crank !=null && rank !=null){

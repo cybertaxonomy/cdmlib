@@ -1207,7 +1207,9 @@ public class TaxonXExtractor {
     				"|(sp\\.\\s*n\\.)" +
     				")";
     	if (status.trim().matches(pattern)){
-    		return status;
+    		//FIXME 
+    		return null; 
+//    		return status;
     	}else{
     		return null;
     	}
