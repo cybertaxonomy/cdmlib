@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -125,6 +126,17 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @return a Pager of DefinedTerms
      */
     public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber);
+
+    /**
+     * Retrieves all {@link DefinedTermBase}s with the given {@link TermType}
+     * @param termType the term type to filter the terms
+     * @param limit
+     * @param start
+     * @param orderHints
+     * @param propertyPaths
+     * @return a list containing the terms
+     */
+    public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Delete the given term according to the given delete configuration.

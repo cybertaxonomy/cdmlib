@@ -19,10 +19,11 @@ import java.util.UUID;
 
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -163,10 +164,21 @@ public interface IDefinedTermDao extends IIdentifiableDao<DefinedTermBase>, ITit
 
 	public DefinedTermBase findByUri(URI uri);
 
+	/**
+	 * Retrieves all {@link DefinedTermBase}s with the given {@link TermType}
+	 * @param termType the term type to filter the terms
+	 * @param limit
+	 * @param start
+	 * @param orderHints
+	 * @param propertyPaths
+	 * @return a list containing the terms
+	 */
+	public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 	public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
 	/**
-	 * Returns a term or a list of terms depending of the label/id used in its vocabulary. 
+	 * Returns a term or a list of terms depending of the label/id used in its vocabulary.
 	 * @param idInVoc
 	 * @param vocUuid
 	 * @param clazz

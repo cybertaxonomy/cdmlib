@@ -13,7 +13,6 @@ import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Set;
@@ -38,6 +37,7 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -290,7 +290,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			return null;
 		}
 		boolean isIso639_1 = iso639.length() == 2;
-		
+
 		String queryStr;
 		if (isIso639_1){
 			queryStr = "from Language where iso639_1 = :isoCode";
@@ -313,7 +313,7 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 				query.add(AuditEntity.property("iso639_2").eq(iso639));
 				query.add(AuditEntity.property("vocabulary.uuid").eq(Language.uuidLanguageVocabulary));
 			}
-			
+
 			return (Language)query.getSingleResult();
 		}
 	}
@@ -644,6 +644,22 @@ public class DefinedTermDaoImpl extends IdentifiableDaoBase<DefinedTermBase> imp
 			query.add(AuditEntity.property("uri").eq(uri));
 		    return (DefinedTermBase)query.getSingleResult();
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+	 */
+	@Override
+	public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start,
+	        List<OrderHint> orderHints, List<String> propertyPaths) {
+	    Query query = getSession().createQuery("select term from DefinedTermBase term where term.termType = :termType");
+	    query.setParameter("termType", termType);
+
+	    List result = query.list();
+
+	    defaultBeanInitializer.initializeAll(result, propertyPaths);
+
+        return result;
 	}
 
 	@Override
