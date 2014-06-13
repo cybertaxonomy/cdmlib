@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.persistence.query;
 
 import org.hibernate.Criteria;
 import org.hibernate.criterion.Order;
-import org.hibernate.criterion.Projection;
 import org.hibernate.criterion.ProjectionList;
 import org.hibernate.criterion.Property;
 
