@@ -167,6 +167,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         return new DefaultPagerImpl<DerivationEvent>(pageNumber, numberOfResults, pageSize, results);
     }
 
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.IOccurrenceService#countDeterminations(eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase, eu.etaxonomy.cdm.model.taxon.TaxonBase)
+     */
+    @Override
+    public int countDeterminations(SpecimenOrObservationBase occurence, TaxonBase taxonbase) {
+        return dao.countDeterminations(occurence, taxonbase);
+    }
+
     @Override
     public Pager<DeterminationEvent> getDeterminations(SpecimenOrObservationBase occurrence, TaxonBase taxonBase, Integer pageSize,Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countDeterminations(occurrence, taxonBase);

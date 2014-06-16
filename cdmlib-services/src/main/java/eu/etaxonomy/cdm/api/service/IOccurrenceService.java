@@ -102,6 +102,15 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public Pager<Media> getMedia(SpecimenOrObservationBase occurence, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
+     * Returns a count of determinations that have been made for a given occurence and for a given taxon concept
+     *
+     * @param occurence the occurence associated with these determinations (can be null for all occurrences)
+     * @param taxonbase the taxon concept associated with these determinations (can be null for all taxon concepts)
+     * @return a count of determination events
+     */
+    public int countDeterminations(SpecimenOrObservationBase occurence,TaxonBase taxonbase);
+
+    /**
      * Returns a List of determinations that have been made for a given occurence
      *
      * @param occurence the occurence associated with these determinations (can be null for all occurrences)
