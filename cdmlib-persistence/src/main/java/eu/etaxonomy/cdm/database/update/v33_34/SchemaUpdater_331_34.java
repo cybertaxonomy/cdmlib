@@ -60,8 +60,12 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
+		stepName = "Add label column to derived unit";
+		
+		
 			
-		//set default value to false where adaquate
+		//TODO test
+		//set default value to true where required
 		stepName = "Set publish to true if null";
 		String query = " UPDATE @@TaxonBase@@ " +
 					" SET publish = @TRUE@ " + 
