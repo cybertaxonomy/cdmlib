@@ -37,6 +37,7 @@ import org.hibernate.search.annotations.Store;
 
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
 import eu.etaxonomy.cdm.hibernate.search.ClassInfoBridge;
+import eu.etaxonomy.cdm.model.common.IPublishable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -69,7 +70,8 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
     "sec",
     "doubtful",
     "appendedPhrase",
-    "useNameCache"
+    "useNameCache",
+    "publish"
 })
 @Entity
 @Audited
@@ -87,7 +89,7 @@ import eu.etaxonomy.cdm.validation.annotation.TaxonNameCannotBeAcceptedAndSynony
             impl = AcceptedTaxonBridge.class),
     @ClassBridge(impl = eu.etaxonomy.cdm.hibernate.search.NomenclaturalSortOrderBrigde.class)
 })
-public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements Cloneable {
+public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> extends IdentifiableEntity<S> implements  IPublishable, Cloneable {
     private static final long serialVersionUID = -3589185949928938529L;
     private static final Logger logger = Logger.getLogger(TaxonBase.class);
 
@@ -135,6 +137,9 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
 
     @XmlAttribute(name= "UseNameCache")
     private boolean useNameCache = false;
+    
+    @XmlAttribute(name = "publish")
+    private boolean publish = true;
 
 
 // ************* CONSTRUCTORS *************/
@@ -244,6 +249,24 @@ public abstract class TaxonBase<S extends IIdentifiableEntityCacheStrategy> exte
      */
     public void setDoubtful(boolean doubtful){
         this.doubtful = doubtful;
+    }
+    
+
+    /**
+     * Returns the boolean value indicating if this taxon should be withheld (<code>publish=false</code>) or not
+     * (<code>publish=true</code>) during any publication process to the general public.
+     * This publish flag implementation is preliminary and may be replaced by a more general
+     * implementation of READ rights in future.<BR>
+     * The default value is <code>true</code>.
+     */
+    @Override
+    public boolean isPublish() {
+        return publish;
+    }
+
+    @Override
+    public void setPublish(boolean publish) {
+        this.publish = publish;
     }
 
     /**
