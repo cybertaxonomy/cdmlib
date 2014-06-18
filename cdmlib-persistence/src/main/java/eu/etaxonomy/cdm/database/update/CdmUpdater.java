@@ -19,6 +19,7 @@ import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_331_34;
 import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
+import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
  * This class launches CDM model updates.
@@ -41,7 +42,22 @@ import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
  * to a table in a SQL database can not be handled in a transaction. Therefore failures in
  * certain steps may not lead to a complete rollback of all steps covered by a {@link ISchemaUpdater}.
  * This may lead to a situation where the database becomes inconsistent.
- *    
+ * <BR><BR>   
+ * <u>HOW TO ADD A NEW UPDATER?</u><BR>
+ * Adding a new updater currently still needs adjustment at multiple places.
+ * <BR>
+ * <BR>1.) Increment {@link CdmMetaData} schema version number and term version number.
+ * <BR>2.) Create a new class instance of {@link SchemaUpdaterBase} (e.g. by copying an old one). 
+ * <BR>3.) Update startSchemaVersion and endSchemaVersion in this new class, where startSchemaVersion
+ * is the old schema version and endSchemaVersion is the new schema version.
+ * <BR>4.) Implement {@link ISchemaUpdater#getPreviousUpdater()} and {@link ISchemaUpdater#getNextUpdater()}
+ * in a way that the former returns an instance of the previous schema updater and the later returns null (for now).
+ * <BR>5.) Go to the previous schema updater class and adjust {@link ISchemaUpdater#getNextUpdater()}
+ * in a way that it returns an instance of the newly created updater.
+ * <BR>6.) Repeat steps 2.-5. for {@link ITermUpdater}
+ * <BR>7.) Adjust {@link #getCurrentSchemaUpdater()} and {@link #getCurrentTermUpdater()} to return
+ * instances of the newly created updaters.
+ *  
  *  
  * @author a.mueller
  * @date 10.09.2010
