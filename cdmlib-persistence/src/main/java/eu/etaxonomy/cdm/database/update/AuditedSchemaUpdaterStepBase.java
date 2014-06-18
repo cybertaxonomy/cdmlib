@@ -14,6 +14,12 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 
 /**
+ * Base class for a {@link ISchemaUpdaterStep schema update step} which supports automated handling 
+ * of auditing tables.
+ * 
+ * @see CdmUpdater
+ * @see ISchemaUpdater
+ * 
  * @author a.mueller
  *
  * @param <T>

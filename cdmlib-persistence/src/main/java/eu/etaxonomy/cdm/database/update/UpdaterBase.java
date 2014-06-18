@@ -21,6 +21,11 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
 
 /**
  * Common updater base class for updating schema or terms.
+ * 
+ * @see CdmUpdater
+ * @see ISchemaUpdater
+ * @see ITermUpdater
+ * 
  * @author a.mueller
  * @date 16.11.2010
  *

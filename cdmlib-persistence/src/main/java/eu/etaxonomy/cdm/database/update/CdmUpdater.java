@@ -17,11 +17,32 @@ import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_31_33;
-import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
-import eu.etaxonomy.cdm.database.update.v31_33.TermUpdater_31_33;
+import eu.etaxonomy.cdm.database.update.v33_34.SchemaUpdater_331_34;
+import eu.etaxonomy.cdm.database.update.v33_34.TermUpdater_33_34;
 
 /**
+ * This class launches CDM model updates.
+ * Currently it splits the update in model updates and defined term related updates by
+ * using a {@link ISchemaUpdater schema updater} and a {@link ITermUpdater}. However, this 
+ * architecture often results in problems and therefore will be replaced by only 1 schema updater.
+ * Term updates will be handled differently or also by using the schema updater.
+ * <BR>
+ * For each new schema version number there usually exists 1 {@link ISchemaUpdater} which is 
+ * represents a list of schema update steps. {@link ISchemaUpdater schema updaters} are linked
+ * to previous updaters which are called, if relevant, previous to the latest updater.
+ * So it is possible to upgrade multiple schema version steps in one call.
+ * <BR><BR>
+ * As said before each {@link ISchemaUpdater schema updater} creates a list of 
+ * {@link ISchemaUpdaterStep update steps}.
+ * <BR><BR>
+ * {@link ISchemaUpdater} support progression monitoring with each update step being one task.
+ * <BR><BR>
+ * ATTENTION: Some steps in the schema update are not transactional by nature. E.g. adding or removing a column
+ * to a table in a SQL database can not be handled in a transaction. Therefore failures in
+ * certain steps may not lead to a complete rollback of all steps covered by a {@link ISchemaUpdater}.
+ * This may lead to a situation where the database becomes inconsistent.
+ *    
+ *  
  * @author a.mueller
  * @date 10.09.2010
  *
@@ -172,7 +193,7 @@ public class CdmUpdater {
 
 
     private ITermUpdater getCurrentTermUpdater() {
-        return TermUpdater_31_33.NewInstance();
+        return TermUpdater_33_34.NewInstance();
     }
 
     /**
@@ -180,7 +201,7 @@ public class CdmUpdater {
      * @return
      */
     private ISchemaUpdater getCurrentSchemaUpdater() {
-        return SchemaUpdater_33_331.NewInstance();
+        return SchemaUpdater_331_34.NewInstance();
     }
 
     /**
@@ -206,7 +227,7 @@ public class CdmUpdater {
             }
         }
 
-        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, 3306, username, password, null);
+        ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance(server, database, port, username, password, null);
         boolean success = myUpdater.updateToCurrentVersion(dataSource, null);
         System.out.println("DONE " + (success ? "successfully" : "with ERRORS"));
     }
