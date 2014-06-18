@@ -58,7 +58,11 @@ import eu.etaxonomy.cdm.model.metadata.CdmMetaData;
  * <BR>7.) Adjust {@link #getCurrentSchemaUpdater()} and {@link #getCurrentTermUpdater()} to return
  * instances of the newly created updaters.
  *  
- *  
+ * @see ISchemaUpdater
+ * @see ITermUpdater
+ * @see ISchemaUpdaterStep
+ * @see ITermUpdaterStep
+ * 
  * @author a.mueller
  * @date 10.09.2010
  *
