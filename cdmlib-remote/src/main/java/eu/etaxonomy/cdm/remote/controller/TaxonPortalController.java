@@ -820,7 +820,7 @@ public class TaxonPortalController extends TaxonController
 
             }
         } catch (ClassNotFoundException e) {
-            HttpStatusMessage.fromString(e.getLocalizedMessage()).send(response);
+            HttpStatusMessage.create(e.getLocalizedMessage(), 400).send(response);
         }
         if(doCount){
             mv.addObject(count);

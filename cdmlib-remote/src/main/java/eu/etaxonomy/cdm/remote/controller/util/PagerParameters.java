@@ -88,10 +88,10 @@ public class PagerParameters {
             pageSize = DEFAULT_PAGESIZE;
         }
         if(pageIndex < 0){
-            HttpStatusMessage.fromString("The query parameter 'pageIndex' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
+            HttpStatusMessage.create("The query parameter 'pageIndex' must not be a negative number", 400).setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
         if(pageSize < 0){
-            HttpStatusMessage.fromString("The query parameter 'pageSize' must not be a negative number").setStatusCode(HTTP_BAD_REQUEST).send(response);
+            HttpStatusMessage.create("The query parameter 'pageSize' must not be a negative number", 400).setStatusCode(HTTP_BAD_REQUEST).send(response);
         }
     }
 
