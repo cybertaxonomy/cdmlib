@@ -185,9 +185,6 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		setDbSchemaValidation(DbSchemaValidation.CREATE);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#getSourceReference()
-	 */
 	@Override
 	public Reference getSourceReference() {
 		//TODO
@@ -200,9 +197,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getSourceNameString()
-	 */
+	@Override
 	public String getSourceNameString() {
 		if (this.getSource() == null){
 			return null;
@@ -210,6 +205,8 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 			return this.getSource().toString();
 		}
 	}
+	
+//******************** GETTER / SETTER ***************************************/	
 	
 	public boolean isDoTypeDesignations() {
 		return doTypeDesignations;
@@ -269,25 +266,17 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 		this.doTaxa = doTaxa;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.ImportConfiguratorBase#isOmitTermLoading()
-	 */
+
 	@Override
 	public boolean isOmitTermLoading() {
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#isCreateNew()
-	 */
 	@Override
 	public boolean isCreateNew(){
 		return true;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IoConfiguratorBase#getDbSchemaValidation()
-	 */
 	@Override
 	public DbSchemaValidation getDbSchemaValidation() {
 		if (isCreateNew()){
