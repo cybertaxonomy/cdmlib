@@ -58,11 +58,9 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
      * @param config
      * @param stores (not used)
      */
-//	@Override
-//	protected boolean doInvoke(IImportConfigurator config,
-//			Map<String, MapWrapper<? extends CdmBase>> stores) {
-		@Override
-		protected void doInvoke(JaxbImportState state) {
+
+	@Override
+	protected void doInvoke(JaxbImportState state) {
 			
 		state.getConfig();
 		URI uri = null;

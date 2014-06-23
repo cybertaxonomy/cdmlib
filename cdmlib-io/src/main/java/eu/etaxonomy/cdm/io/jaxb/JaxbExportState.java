@@ -24,16 +24,7 @@ public class JaxbExportState<CONFIG extends JaxbExportConfigurator> extends Expo
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JaxbExportState.class);
 	
-	
-//	/* (non-Javadoc)
-//	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)
-//	 */
-//	@Override
-//	public void initialize(JaxbExportConfigurator config) {
-//				
-//	}
 
-	
 	public JaxbExportState(CONFIG config) {
 		super(config);
 	}

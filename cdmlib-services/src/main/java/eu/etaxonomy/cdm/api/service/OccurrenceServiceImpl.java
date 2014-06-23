@@ -479,6 +479,7 @@ type=null;
         SpecimenOrObservationType toType = to.getRecordBasis();
         //check if type is a sub derivate type
         if(toType==SpecimenOrObservationType.FieldUnit //moving to FieldUnit always works
+                || derivateType==SpecimenOrObservationType.Media //moving media always works
                 || (derivateType.isKindOf(toType) && toType!=derivateType)){ //moving only to parent derivate type
             //remove derivation event from parent specimen of dragged object
             DerivationEvent eventToRemove = null;
