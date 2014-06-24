@@ -62,16 +62,13 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 	@Override
 	protected void doInvoke(JaxbImportState state) {
 			
-		state.getConfig();
-		URI uri = null;
 		JaxbImportConfigurator jaxbImpConfig = (JaxbImportConfigurator)state.getConfig();
     	
+		URI uri;
     	String urlFileName = jaxbImpConfig.getSource().toString();
-		logger.debug("urlFileName: " + urlFileName);
-    	try {
+		try {
     		uri = new URI(urlFileName);
-			logger.debug("uri: " + uri.toString());
-    	} catch (URISyntaxException ex) {
+		} catch (URISyntaxException ex) {
 			logger.error("File not found");
 			state.setUnsuccessfull();
 			return;

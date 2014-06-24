@@ -181,27 +181,18 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
 
 //********************** GETTER /SETTER *************************************
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getIdInVocabulary()
-       */
       @Override
       public String getIdInVocabulary() {
           return idInVocabulary;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#setIdInVocabulary(java.lang.String)
-       */
       @Override
       public void setIdInVocabulary(String idInVocabulary) {
           this.idInVocabulary = idInVocabulary;
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#getKindOf()
-       */
       @Override
-    public T getKindOf(){
+      public T getKindOf(){
 
           if (this instanceof HibernateProxy) {
               HibernateProxy proxy = (HibernateProxy) this;
@@ -231,9 +222,7 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
           this.generalizationOf.add(generalization);
       }
 
-      /* (non-Javadoc)
-       * @see eu.etaxonomy.cdm.model.common.IDefinedTerm#removeGeneralization(T)
-       */
+
       public void removeGeneralization(T generalization) {
           if(generalizationOf.contains(generalization)){
               generalization.setKindOf(null);

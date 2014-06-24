@@ -22,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.http.HttpException;
+import org.mortbay.log.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -86,7 +87,9 @@ public class MediaController extends BaseController<Media, IMediaService>
                     }
                 }
             } catch (HttpException e) {
-                HttpStatusMessage.fromString("Reading media file from " + uri.toString() + " failed").setStatusCode(400).send(response);
+                Log.info(e.getMessage());
+                HttpStatusMessage.create("Reading media file from " + uri.toString() + " failed due to (" + e.getMessage() + ")", 400).send(response);
+                return null;
             }
         } catch (NoRecordsMatchException e){
            /* IGNORE */
