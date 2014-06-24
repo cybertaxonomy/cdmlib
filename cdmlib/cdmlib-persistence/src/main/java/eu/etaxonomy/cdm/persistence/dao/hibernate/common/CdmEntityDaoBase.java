@@ -254,7 +254,11 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public UUID saveOrUpdate(T transientObject) throws DataAccessException  {
-        try {
+        if (transientObject == null){
+        	logger.warn("Object to save should not be null. NOP");
+        	return null;
+        }
+    	try {
             if (logger.isDebugEnabled()){logger.debug("dao saveOrUpdate start...");}
             if (logger.isDebugEnabled()){logger.debug("transientObject(" + transientObject.getClass().getSimpleName() + ") ID:" + transientObject.getId() + ", UUID: " + transientObject.getUuid()) ;}
             Session session = getSession();
@@ -287,13 +291,21 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public UUID save(T newInstance) throws DataAccessException {
-        getSession().save(newInstance);
+        if (newInstance == null){
+        	logger.warn("Object to save should not be null. NOP");
+        	return null;
+        }
+    	getSession().save(newInstance);
         return newInstance.getUuid();
     }
 
     @Override
     public UUID update(T transientObject) throws DataAccessException {
-        getSession().update(transientObject);
+        if (transientObject == null){
+        	logger.warn("Object to update should not be null. NOP");
+        	return null;
+        }
+    	getSession().update(transientObject);
         return transientObject.getUuid();
     }
 
@@ -647,7 +659,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
     }
 
     @Override
-    public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+    public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
         Criteria criteria = null;
         if(clazz == null) {
             criteria = getSession().createCriteria(type);
@@ -666,17 +678,17 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
         addOrder(criteria,orderHints);
 
-        List<T> results = criteria.list();
+        List<S> results = criteria.list();
         defaultBeanInitializer.initializeAll(results, propertyPaths);
         return results;
     }
 
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints) {
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints) {
         return list(type,limit,start,orderHints,null);
     }
 
     @Override
-    public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) {
         return list(type,limit,start,null,null);
     }
 

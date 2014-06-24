@@ -740,7 +740,7 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     @Test
     @DataSet
     public void testListAllTaxa() {
-        List<TaxonBase> taxa = taxonDao.list(Taxon.class,100, 0);
+        List<Taxon> taxa = taxonDao.list(Taxon.class,100, 0);
         assertNotNull("list should return a List",taxa);
         assertEquals("list should return 33 taxa",33, taxa.size());
     }

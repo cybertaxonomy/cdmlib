@@ -155,7 +155,7 @@ public abstract class TermBase extends IdentifiableEntity<IIdentifiableEntityCac
             repr = getRepresentation(Language.DEFAULT());
         }
         if(repr == null){
-            repr = getRepresentations().iterator().next();
+            repr = getRepresentations().isEmpty() ? null : getRepresentations().iterator().next();
         }
         return repr;
     }

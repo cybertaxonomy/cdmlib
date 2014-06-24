@@ -137,7 +137,10 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         List<TaxonNode> children = classificationDao.listChildrenOf(t_acherontia, classification, null, null, null);
         assertNotNull(children);
         assertEquals(2, children.size());
-
+        TaxonNode t_acherontia_node = taxonNodeDao.load(NODE_ACHERONTIA_UUID);
+        children =taxonNodeDao.listChildrenOf(t_acherontia_node, null, null, null, true);
+        assertNotNull(children);
+        assertEquals(3, children.size());
     }
 
     @Test
@@ -160,16 +163,16 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
         taxNode3.addChildTaxon(taxon2, null, null);
 
         List<TaxonNode> taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, null, null);
-        assertEquals("there should be 6 taxa left", 6, taxas.size());
+        assertEquals("there should be 7 taxa left", 7, taxas.size());
 
 
         taxas = taxonNodeDao.getTaxonOfAcceptedTaxaByClassification(classification, 0, 10);
         logger.info(taxas.size());
-        assertEquals("there should be 6 taxa left", 6, taxas.size());
+        assertEquals("there should be 7 taxa left", 7, taxas.size());
 
         int countTaxa = taxonNodeDao.countTaxonOfAcceptedTaxaByClassification(classification);
         logger.info(countTaxa);
-        assertEquals("there should be 6 taxa left", 6, countTaxa);
+        assertEquals("there should be 7 taxa left", 7, countTaxa);
 
 
     }

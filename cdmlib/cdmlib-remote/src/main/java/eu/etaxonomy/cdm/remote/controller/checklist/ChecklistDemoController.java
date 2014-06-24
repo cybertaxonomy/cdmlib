@@ -40,7 +40,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IService;
+import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
+import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.DocUtils;
 import eu.etaxonomy.cdm.common.monitor.IRestServiceProgressMonitor;
@@ -80,6 +83,9 @@ public class ChecklistDemoController extends AbstractController implements Resou
 	private ITermService termService;
 
 	@Autowired
+	private ITaxonService taxonService;
+
+	@Autowired
 	private IClassificationService classificationService;
 
 	@Autowired
@@ -113,6 +119,29 @@ public class ChecklistDemoController extends AbstractController implements Resou
         binder.registerCustomEditor(UUID.class, new UUIDEditor());
     }
 
+
+
+
+    @RequestMapping(value = {""}, method = { RequestMethod.GET})
+    public ModelAndView exportGetExplanation(HttpServletResponse response,
+            HttpServletRequest request) throws IOException{
+        ModelAndView mv = new ModelAndView();
+        // Read apt documentation file.
+        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-default.apt");
+        // using input stream as this works for both files in the classes directory
+        // as well as files inside jars
+        InputStream aptInputStream = resource.getInputStream();
+        // Build Html View
+        Map<String, String> modelMap = new HashMap<String, String>();
+        // Convert Apt to Html
+        modelMap.put("html", DocUtils.convertAptToHtml(aptInputStream));
+        mv.addAllObjects(modelMap);
+
+        HtmlView hv = new HtmlView();
+        mv.setView(hv);
+        return mv;
+    }
+
     /**
      * This service endpoint is for generating the documentation site.
      * If any request of the other endpoint below is incomplete or false
@@ -123,12 +152,11 @@ public class ChecklistDemoController extends AbstractController implements Resou
      * @return
      * @throws IOException
      */
-    @RequestMapping(value = {""}, method = { RequestMethod.GET })
     public ModelAndView exportGetExplanation(HttpServletResponse response,
-            HttpServletRequest request) throws IOException{
+            HttpServletRequest request, Resource res) throws IOException{
         ModelAndView mv = new ModelAndView();
         // Read apt documentation file.
-        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-default.apt");
+        Resource resource = (res!= null) ? res : resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-default.apt");
         // using input stream as this works for both files in the classes directory
         // as well as files inside jars
         InputStream aptInputStream = resource.getInputStream();
@@ -191,7 +219,8 @@ public class ChecklistDemoController extends AbstractController implements Resou
             mv.addObject(dpi);
             return mv;
         }catch(Exception e){
-            return exportGetExplanation(response, request);
+            Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-export.apt");
+            return exportGetExplanation(response, request, resource);
         }
 
     }
@@ -214,7 +243,7 @@ public class ChecklistDemoController extends AbstractController implements Resou
 			@RequestParam(value = "clearCache", required = false) final boolean clearCache,
 			@RequestParam(value = "demoExport", required = false) boolean demoExport,
 			@RequestParam(value = "conceptExport", required = false) boolean conceptExport,
-			@RequestParam(value = "classification", required = true) final String classificationUUID,
+			@RequestParam(value = "classification", required = false) final String classificationUUID,
             @RequestParam(value = "area", required = false) final UuidList areas,
 			@RequestParam(value = "downloadTokenValueId", required = false) final String downloadTokenValueId,
 			@RequestParam(value = "priority", required = false) Integer priority,
@@ -225,54 +254,110 @@ public class ChecklistDemoController extends AbstractController implements Resou
 	     * progress monitor & new thread for export
 	     * ========================================
 	     */
-        ModelAndView mv = new ModelAndView();
-        String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
-        final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
-        final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
+	    try{
+	        ModelAndView mv = new ModelAndView();
+	        String fileName = classificationService.find(UUID.fromString(classificationUUID)).getTitleCache();
+	        final File cacheFile = new File(new File(System.getProperty("java.io.tmpdir")), classificationUUID);
+	        final String origin = request.getRequestURL().append('?').append(request.getQueryString()).toString();
 
-        Long result = null;
-        if(cacheFile.exists()){
-            result = System.currentTimeMillis() - cacheFile.lastModified();
-        }
-        //if file exists return file instantly
-        //timestamp older than one day?
-        if(clearCache == false && result != null && result < 7*(DAY_IN_MILLIS)){
-            logger.info("result of calculation: " + result);
-            Map<String, File> modelMap = new HashMap<String, File>();
-            modelMap.put("file", cacheFile);
-            mv.addAllObjects(modelMap);
-            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
-            mv.setView(fdv);
-            return mv;
-        }else{//trigger progress monitor and performExport()
-            String processLabel = "Exporting...";
-            final String frontbaseUrl = null;
-            ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
-            if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
-                indexMonitorUuid = progressUtil.registerNewMonitor();
-                Thread subThread = new Thread() {
-                    @Override
-                    public void run() {
-                        try {
-                            cacheFile.createNewFile();
-                        } catch (IOException e) {
-                            logger.info("Could not create file "+ e);
-                        }
-                        performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
-                    }
-                };
-                if (priority == null) {
-                    priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
-                }
-                subThread.setPriority(priority);
-                subThread.start();
-            }
-            mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
-        }
-        return mv;
+	        Long result = null;
+	        if(cacheFile.exists()){
+	            result = System.currentTimeMillis() - cacheFile.lastModified();
+	        }
+	        //if file exists return file instantly
+	        //timestamp older than one day?
+	        if(clearCache == false && result != null){ //&& result < 7*(DAY_IN_MILLIS)
+	            logger.info("result of calculation: " + result);
+	            Map<String, File> modelMap = new HashMap<String, File>();
+	            modelMap.put("file", cacheFile);
+	            mv.addAllObjects(modelMap);
+	            FileDownloadView fdv = new FileDownloadView("text/csv", fileName, "txt", "UTF-8");
+	            mv.setView(fdv);
+	            return mv;
+	        }else{//trigger progress monitor and performExport()
+	            String processLabel = "Exporting...";
+	            final String frontbaseUrl = null;
+	            ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(progressMonitorController);
+	            if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+	                indexMonitorUuid = progressUtil.registerNewMonitor();
+	                Thread subThread = new Thread() {
+	                    @Override
+	                    public void run() {
+	                        try {
+	                            cacheFile.createNewFile();
+	                        } catch (IOException e) {
+	                            logger.info("Could not create file "+ e);
+	                        }
+	                        performExport(cacheFile, featureUuids, classificationUUID, areas, downloadTokenValueId, origin, response, progressMonitorController.getMonitor(indexMonitorUuid));
+	                    }
+	                };
+	                if (priority == null) {
+	                    priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
+	                }
+	                subThread.setPriority(priority);
+	                subThread.start();
+	            }
+	            mv = progressUtil.respondWithMonitorOrDownload(frontbaseUrl, origin, request, response, processLabel, indexMonitorUuid);
+	        }
+	        return mv;
+	    }catch(Exception e){
+	        //TODO: Write an specific documentation for this service endpoint
+	       Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-exportCSV.apt");
+	       return exportGetExplanation(response, request, resource);
+	    }
 	}
 
+	/**
+	 * This webservice endpoint returns all taxa which are congruent or included in the taxon represented by the given taxon uuid.
+	 * The result also returns the path to these taxa represented by the uuids of the taxon relationships types and doubtful information.
+	 * If classificationUuids is set only taxa of classifications are returned which are included in the given classifications.
+	 * Also the path to these taxa may not include taxa from other classifications.
+	 *
+	 * @param taxonUUIDString
+	 * @param classificationStringList
+	 * @param includeDoubtful
+	 * @param onlyCongruent
+	 * @param response
+	 * @param request
+	 * @return
+	 * @throws IOException
+	 */
 
+    @RequestMapping(value = { "flockSearch" }, method = { RequestMethod.GET })
+	public ModelAndView doFlockSearchOfIncludedTaxa(
+	        @RequestParam(value="taxonUUID", required=false) final String taxonUUIDString,
+	        @RequestParam(value="classificationFilter", required=false) final List<String> classificationStringList,
+	        @RequestParam(value="includeDoubtful", required=false) final boolean includeDoubtful,
+            @RequestParam(value="onlyCongruent", required=false) final boolean onlyCongruent,
+	        HttpServletResponse response,
+            HttpServletRequest request) throws IOException {
+	    try{
+	        ModelAndView mv = new ModelAndView();
+	        UUID taxonUuid = UUID.fromString(taxonUUIDString);
+	        /**
+	         * List<UUID> classificationFilter,
+	         * boolean includeDoubtful,
+	         * boolean onlyCongruent)
+	         */
+	        List<UUID> classificationFilter = null;
+	        if( classificationStringList != null ){
+	            classificationFilter = new ArrayList<UUID>();
+	            for(String classString :classificationStringList){
+	                classificationFilter.add(UUID.fromString(classString));
+	            }
+	        }
+	        final IncludedTaxonConfiguration configuration = new IncludedTaxonConfiguration(classificationFilter, includeDoubtful, onlyCongruent);
+	        IncludedTaxaDTO listIncludedTaxa = taxonService.listIncludedTaxa(taxonUuid, configuration);
+	        mv.addObject(listIncludedTaxa);
+	        return mv;
+	    }catch(Exception e){
+           //TODO: Write an specific documentation for this service endpoint
+	        Resource resource = resourceLoader.getResource("classpath:eu/etaxonomy/cdm/doc/remote/apt/checklist-catalogue-flockSearch.apt");
+            return exportGetExplanation(response, request, resource);
+        }
+    }
+
+    //=========== Helper Methods ===============//
 
     /**
      *

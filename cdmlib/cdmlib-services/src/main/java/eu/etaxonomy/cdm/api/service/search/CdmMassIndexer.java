@@ -387,7 +387,6 @@ public class CdmMassIndexer implements ICdmMassIndexer {
     /**
      * @return
      */
-    @SuppressWarnings("unchecked")
     @Override
     public Set<Class<? extends CdmBase>> indexedClasses() {
         // if no indexed classes have been 'manually' set then

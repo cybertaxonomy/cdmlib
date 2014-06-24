@@ -104,6 +104,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 	public static final UUID uuidUserDefinedRankVocabulary = UUID.fromString("4dc57931-38e2-46c3-974d-413b087646ba");
 	
 	public static final UUID uuidUserDefinedModifierVocabulary = UUID.fromString("2a8b3838-3a95-49ea-9ab2-3049614b5884");
+	public static final UUID uuidUserDefinedKindOfUnitVocabulary = UUID.fromString("e7c5deb2-f485-4a66-9104-0c5398efd481");
 	
 	
 	
@@ -616,6 +617,28 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 			state.putFeature(feature);
 		}
 		return feature;
+	}
+	
+	protected DefinedTerm getKindOfUnit(STATE state, UUID uuid, String label, String description, String labelAbbrev, TermVocabulary<DefinedTerm> voc){
+		if (uuid == null){
+			return null;
+		}
+		DefinedTerm unit = state.getKindOfUnit(uuid);
+		if (unit == null){
+			unit = (DefinedTerm)getTermService().find(uuid);
+			if (unit == null && ! hasNoLabel(label, description, labelAbbrev)){
+				unit = DefinedTerm.NewKindOfUnitInstance(description, label, labelAbbrev);
+				unit.setUuid(uuid);
+				if (voc == null){
+					boolean isOrdered = false;
+					voc = getVocabulary(TermType.KindOfUnit, uuidUserDefinedKindOfUnitVocabulary, "User defined vocabulary for kind-of-units", "User Defined Measurement kind-of-units", null, null, isOrdered, unit);
+				}
+				voc.addTerm(unit);
+				getTermService().save(unit);
+			}
+			state.putKindOfUnit(unit);
+		}
+		return unit;
 	}
 	
 	/**

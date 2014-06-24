@@ -25,6 +25,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -206,6 +207,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if (fieldType == String.class ){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
+				}else if (fieldType == Integer.class ){
+					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(isUserType(fieldType)){
 					result &= matchPrimitiveField(matchFirst, matchSecond, fieldMatcher, replaceModeList);
 				}else if(fieldType == UUID.class){
@@ -263,8 +266,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	private <T extends IMatchable> boolean matchCollectionField(T matchFirst, T matchSecond, FieldMatcher fieldMatcher, List<MatchMode> replaceModeList) throws Exception {
 		boolean result;
 		Field field = fieldMatcher.getField();
-		Collection value1 = (Collection)field.get(matchFirst);
-		Collection value2 = (Collection)field.get(matchSecond);
+		Collection<?> value1 = (Collection)field.get(matchFirst);
+		Collection<?> value2 = (Collection)field.get(matchSecond);
 		MatchMode matchMode = fieldMatcher.getMatchMode();
 		Class<?> fieldType = fieldMatcher.getField().getType();
 		IMatchStrategy matchStrategy = fieldMatcher.getMatchStrategy();
@@ -305,7 +308,7 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 	 */
 	private Object checkEmpty(Object object) {
 		if (object instanceof String){
-			if (CdmUtils.isEmpty((String)object)){
+			if (StringUtils.isBlank((String)object)){
 				return null;
 			}
 		}
@@ -369,14 +372,14 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		return result;
 	}
 	
-	private Class getTypeOfSet(Field field) throws MatchException{
+	private Class<?> getTypeOfSet(Field field) throws MatchException{
 		Type genericType = (ParameterizedType)field.getGenericType();
 		if (genericType instanceof ParameterizedType/*Impl*/){
 			ParameterizedType paraType = (ParameterizedType)genericType;
 			paraType.getRawType();
 			Type[] arguments = paraType.getActualTypeArguments();
 			if (arguments.length == 1){
-				Class collectionClass;
+				Class<?> collectionClass;
 				try {
 					if (arguments[0] instanceof Class){
 						return (Class)arguments[0];
@@ -469,9 +472,8 @@ public class DefaultMatchStrategy extends StrategyBase implements IMatchStrategy
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.match.IMatchStrategy#getMatchFields()
-	 */
+
+	@Override
 	public Set<String> getMatchFieldPropertyNames() {
 		return matchFields.keySet();
 	}

@@ -241,22 +241,17 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         child.setParentTreeNode(this, index);
 
-        //TODO workaround (see sortIndex doc) => not really required anymore here, as it is done in child.setParentTreeNode already
+        //TODO workaround (see sortIndex doc) => not really required anymore here, 
+        //     as it is done in child.setParentTreeNode already
         for(int i = 0; i < childNodes.size(); i++){
         	if (childNodes.get(i) != null){
         		childNodes.get(i).sortIndex = i;
         	}else{
-        		logger.warn("ChildNode is null for index " + i);
+        		throw new IllegalStateException("A node in a taxon tree must never be null but is (ParentId: " + getId() + "; sort index: " + sortIndex);
         	}
         }
         child.sortIndex = index;
 
-        /*//TODO workaround (see sortIndex doc)
-        for(int i = 0; i < childNodes.size(); i++){
-            childNodes.get(i).sortIndex = i;
-        }
-        child.sortIndex = index;
-         */
         child.setReference(reference);
         child.setMicroReference(microReference);
 
@@ -311,9 +306,6 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         return result;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.taxon.ITreeNode#removeChildNode(eu.etaxonomy.cdm.model.taxon.TaxonNode)
-     */
     public boolean deleteChildNode(TaxonNode node, boolean deleteChildren) {
         boolean result = removeChildNode(node);
         Taxon taxon = node.getTaxon();
@@ -508,7 +500,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      * @see setParentTreeNode(ITreeNode)
      */
     protected void setParent(TaxonNode parent) {
-        this.parent = (TaxonNode) parent;
+        this.parent = parent;
     }
 
     /**
@@ -523,6 +515,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         TaxonNode formerParent = this.getParent();
 
         //special case, child already exists for same parent
+        //FIXME document / check for correctness
         if (formerParent != null){
         	if (formerParent.equals(parent)){
                 int currentIndex = formerParent.getChildNodes().indexOf(this);
@@ -540,6 +533,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 
         // set the classification to the parents classification
         Classification classification = parent.getClassification();
+        //FIXME also set the tree index here for performance reasons
         setClassificationRecursively(classification);
 
         // add this node to the parent child nodes
@@ -560,6 +554,9 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
         for(int i = 0; i < parentChildren.size(); i++){
         	if (parentChildren.get(i) != null){
         		parentChildren.get(i).sortIndex = i;
+        	}else{
+        		String message = "A node in a taxon tree muss never be null but is (ParentId: %d; sort index: %d)";
+        		throw new IllegalStateException(String.format(message, getId(), sortIndex));
         	}
         }
 //		this.sortIndex = index;
@@ -590,6 +587,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      *
      * @return
      */
+    
     protected Set<TaxonNode> getDescendants(){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
 
@@ -804,7 +802,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 		return (taxon!= null);
 	}
 
-	public void setChildNodes(List<TaxonNode> childNodes) {
+	protected void setChildNodes(List<TaxonNode> childNodes) {
 		this.childNodes = childNodes;
 		
 	}

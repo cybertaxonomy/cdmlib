@@ -70,6 +70,7 @@ public class TaxonRelationshipClassBridge extends AbstractClassBridge {
             Set<TaxonRelationship> relations) {
         Taxon relTaxon;
 
+        
         for(TaxonRelationship rel : relations){
 
             if(directionName.equals(FROM)){

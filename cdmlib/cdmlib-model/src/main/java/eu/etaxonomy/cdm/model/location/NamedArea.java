@@ -798,15 +798,19 @@ public class NamedArea extends OrderedTermBase<NamedArea> implements Cloneable {
             String areaString = getPreferredAreaLabel(namedArea, representation);
 
             title.append(areaString);
-            if (area.getLevel() == null){
-                title.append(" - ");
-                title.append(area.getClass().getSimpleName());
-            }else{
-                title.append(" - ");
-                Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
-                String levelString = getPreferredAreaLabel(area.getLevel(), levelRepresentation);
-                title.append(levelString);
-            }
+        }else if (area.isProtectedTitleCache()){
+        	title.append(area.getTitleCache());
+        }else if (StringUtils.isNotBlank(area.getIdInVocabulary())){
+        	title.append(area.getIdInVocabulary());
+        }
+        if (area.getLevel() == null){
+        	title.append(" - ");
+        	title.append(area.getClass().getSimpleName());
+        }else{
+        	title.append(" - ");
+        	Representation levelRepresentation = area.getLevel().getPreferredRepresentation(language);
+        	String levelString = getPreferredAreaLabel(area.getLevel(), levelRepresentation);
+        	title.append(levelString);
         }
         return title.toString();
     }

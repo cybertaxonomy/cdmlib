@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -91,7 +92,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		Element elTaxonConcepts = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 		
 		childName = "TaxonConcept";
-		List<Element> elTaxonConceptList = elTaxonConcepts.getChildren(childName, tcsNamespace);
+		List<Element> elTaxonConceptList =  elTaxonConcepts == null ? new ArrayList<Element>() : elTaxonConcepts.getChildren(childName, tcsNamespace);
 		
 		int i = 0;
 		int taxonRelCount = 0;

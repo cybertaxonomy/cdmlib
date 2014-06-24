@@ -40,7 +40,7 @@ public abstract class NonViralNameParserImplRegExBase  {
     protected static String oWs = "\\s+"; //obligatory whitespaces
     protected static String fWs = "\\s*"; //facultative whitespcace
     
-    protected static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
+    public static String capitalWord = "\\p{javaUpperCase}\\p{javaLowerCase}*";
     protected static String nonCapitalWord = "\\p{javaLowerCase}+";
     protected static String word = "(" + capitalWord + "|" + nonCapitalWord + ")"; //word (capital or non-capital) with no '.' at the end
     protected static String uppercaseWord = "\\p{javaUpperCase}{2,}";
@@ -98,7 +98,7 @@ public abstract class NonViralNameParserImplRegExBase  {
         
     //Zoo. Author
     //TODO does zoo author have ex-Author?
-    protected static String zooAuthorYearSeperator = ",";
+    protected static String zooAuthorYearSeperator = "(,|\\s)";
     protected static String zooAuthorAddidtion = fWs + zooAuthorYearSeperator + fWs + singleYear;
     protected static String zooAuthorTeam = authorTeam + zooAuthorAddidtion;
     protected static String zooBasionymAuthor = basStart + "(" + zooAuthorTeam + ")" + basEnd;

@@ -204,7 +204,7 @@ public class DefinedTermDaoImplTest extends CdmIntegrationTest {
 		 List<String> propertyPaths = new ArrayList<String>();
 		 propertyPaths.add("representations");
 		 propertyPaths.add("representations.language");
-		 List<DefinedTermBase> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
+		 List<ExtensionType> extensionTypes = dao.list(ExtensionType.class,null, null, orderHints, propertyPaths);
 
 
 		 assertTrue(Hibernate.isInitialized(extensionTypes.get(0).getRepresentations()));

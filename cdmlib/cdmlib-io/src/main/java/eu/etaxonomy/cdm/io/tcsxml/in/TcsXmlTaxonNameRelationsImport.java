@@ -9,9 +9,9 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
@@ -19,14 +19,11 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
-import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -76,7 +73,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
 		
 		String tcsElementName = "TaxonName";
-		List<Element> elTaxonNameList = elTaxonNames.getChildren(tcsElementName, tcsNamespace);
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : elTaxonNames.getChildren(tcsElementName, tcsNamespace);
 
 //		Element source = tcsConfig.getSourceRoot();
 		
@@ -262,9 +259,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		return true;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoRelNames();
 	}

@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.remote.dto.redlist;
+package eu.etaxonomy.cdm.remote.dto.vaadin;
 
 import java.util.Collection;
 import java.util.List;
@@ -24,11 +24,9 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @author a.oppermann
  *
  */
-public class RedlistDTO{
-
-	private static final long serialVersionUID = 1L;
+public class CdmTaxonTableCollection{
 	
-	Logger logger = Logger.getLogger(RedlistDTO.class);
+	Logger logger = Logger.getLogger(CdmTaxonTableCollection.class);
 
     private Taxon taxon;
 
@@ -41,7 +39,7 @@ public class RedlistDTO{
 	private Rank rank;
 
     
-    public RedlistDTO(Taxon taxon, Collection<DescriptionElementBase> listTaxonDescription, List<PresenceAbsenceTermBase> termList){
+    public CdmTaxonTableCollection(Taxon taxon, Collection<DescriptionElementBase> listTaxonDescription, List<PresenceAbsenceTermBase> termList){
     	this.taxon = taxon;
     	this.listTaxonDescription = listTaxonDescription;
     	this.termList = termList;

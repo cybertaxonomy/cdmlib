@@ -116,7 +116,7 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public  List<T> list(Class<? extends T> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
+    public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths){
         return dao.list(type,limit, start, orderHints,propertyPaths);
     }
 
@@ -140,15 +140,15 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public  Pager<T> page(Class<? extends T> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
+    public  <S extends T> Pager<S> page(Class<S> type, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths){
         Integer numberOfResults = dao.count(type);
-        List<T> results = new ArrayList<T>();
+        List<S> results = new ArrayList<S>();
         pageNumber = pageNumber == null ? 0 : pageNumber;
         if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
             Integer start = pageSize == null ? 0 : pageSize * pageNumber;
             results = dao.list(type, pageSize, start, orderHints,propertyPaths);
         }
-        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+        return new DefaultPagerImpl<S>(pageNumber, numberOfResults, pageSize, results);
     }
 
     @Override

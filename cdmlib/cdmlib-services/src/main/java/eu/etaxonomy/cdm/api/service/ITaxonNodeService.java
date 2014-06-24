@@ -15,8 +15,6 @@ import java.util.Set;
 import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.ITaxonTreeNode;
@@ -33,19 +31,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 
 	/**
-	 *
-	 * @param uuid
-	 */
-	@Deprecated // use findByUuid() instead; TODO will be removed in the next version
-	public TaxonNode getTaxonNodeByUuid(UUID uuid);
-
-	/**
+	 *returns the childnodes of the taxonNode, if recursive is true it returns all descendants
 	 *
 	 * @param taxonNode
 	 * @param propertyPaths
+	 * @param recursive
 	 * @return
 	 */
-	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths);
+	public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode, List<String> propertyPaths, boolean recursive, boolean sort);
 
 	/**
 	 * Changes the taxon associated with the given taxon node into a synonym of the new accepted taxon node.

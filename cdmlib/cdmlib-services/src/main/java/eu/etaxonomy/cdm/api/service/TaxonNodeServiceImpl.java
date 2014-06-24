@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator;
 import eu.etaxonomy.cdm.api.service.config.TaxonNodeDeletionConfigurator.ChildHandling;
-import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -71,16 +70,18 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     }
 
     @Override
-    public TaxonNode getTaxonNodeByUuid(UUID uuid) {
-        return dao.findByUuid(uuid);
-    }
-
-    @Override
     public List<TaxonNode> loadChildNodesOfTaxonNode(TaxonNode taxonNode,
-            List<String> propertyPaths) {
+            List<String> propertyPaths, boolean recursive, boolean sorted) {
         taxonNode = dao.load(taxonNode.getUuid());
-        List<TaxonNode> childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
-        Collections.sort(childNodes, taxonNodeComparator);
+        List<TaxonNode> childNodes;
+        if (recursive == true){
+        	childNodes  = dao.listChildrenOf(taxonNode, null, null, null, recursive);
+        }else{
+        	childNodes = new ArrayList<TaxonNode>(taxonNode.getChildNodes());
+        }
+        if (sorted){
+        	Collections.sort(childNodes, taxonNodeComparator);
+        }
         defaultBeanInitializer.initializeAll(childNodes, propertyPaths);
         return childNodes;
     }

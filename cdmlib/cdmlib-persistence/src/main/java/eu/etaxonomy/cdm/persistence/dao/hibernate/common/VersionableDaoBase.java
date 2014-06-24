@@ -164,7 +164,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	public List<T> list(Class<? extends T> type, Integer limit, Integer start) {
+	public <S extends T> List<S> list(Class<S> type, Integer limit, Integer start) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(type,limit, start);
@@ -174,7 +174,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 	}
 
 	@Override
-	public List<T> list(Class<? extends T> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
+	public <S extends T> List<S> list(Class<S> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths) {
 		AuditEvent auditEvent = getAuditEventFromContext();
 		if(auditEvent.equals(AuditEvent.CURRENT_VIEW)) {
 			return super.list(clazz, limit, start, orderHints, propertyPaths);
@@ -194,7 +194,7 @@ public abstract class VersionableDaoBase<T extends VersionableEntity> extends Cd
 			  query.setFirstResult(start);
 			}
 
-			List<T> result = (List<T>)query.getResultList();
+			List<S> result = query.getResultList();
 			defaultBeanInitializer.initializeAll(result, propertyPaths);
 		    return result;
 		}

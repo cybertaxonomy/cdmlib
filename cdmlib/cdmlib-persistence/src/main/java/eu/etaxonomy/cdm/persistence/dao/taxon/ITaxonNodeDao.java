@@ -36,5 +36,7 @@ public interface ITaxonNodeDao extends IAnnotatableDao<TaxonNode> {
      */
     public int countTaxonOfAcceptedTaxaByClassification(Classification classification);
 
+    public List<TaxonNode> listChildrenOf(TaxonNode node, Integer pageSize, Integer pageIndex, List<String> propertyPaths, boolean recursive);
 
+    public abstract Long countChildrenOf(TaxonNode node, Classification classification, boolean recursive);
 }

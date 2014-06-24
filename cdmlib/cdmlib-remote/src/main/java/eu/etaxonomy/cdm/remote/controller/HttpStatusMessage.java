@@ -10,7 +10,6 @@
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.Hashtable;
 
 import javax.servlet.http.HttpServletResponse;
 
@@ -38,18 +37,21 @@ public class HttpStatusMessage {
 
     private final String message;
 
-    private final  String statusMessage;
-
-    private static Hashtable<String , HttpStatusMessage> cache;
 
     private HttpStatusMessage(int statusCode, String message) {
         this.statusCode = statusCode;
         this.message = message;
-        this.statusMessage = StringUtils.leftPad(Integer.toString(statusCode), 3, "0") + message;
-        if(cache == null) {
-             cache = new Hashtable<String , HttpStatusMessage>();
-        }
-        HttpStatusMessage.cache.put(statusMessage, this);
+    }
+
+    /**
+     * create a new HttpStatusMessage
+     *
+     * @param statusMessage
+     * @param statusCode
+     * @return
+     */
+    public static HttpStatusMessage create(String statusMessage, int statusCode) {
+        return new HttpStatusMessage(statusCode, statusMessage);
     }
 
     public int getStatusCode() {
@@ -67,12 +69,9 @@ public class HttpStatusMessage {
 
     @Override
     public String toString() {
-        return statusMessage;
+        return StringUtils.leftPad(Integer.toString(statusCode), 3, "0") + message;
     }
 
-    public static HttpStatusMessage fromString(String statusMessage) {
-        return cache.get(statusMessage);
-    }
 
     public void send(HttpServletResponse response) throws IOException{
         response.sendError(getStatusCode(), getMessage());

@@ -7,42 +7,39 @@
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
-package eu.etaxonomy.cdm.ext.biocase;
+package eu.etaxonomy.cdm.ext.occurrence;
 
-import java.util.Date;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 
 /**
- * Holds query parameters for a query to a BioCase provider.
+ * Holds query parameters for a query to an occurrence provider.
  * @author pplitzner
  * @date 17.09.2013
  *
  */
-public class BioCaseQuery {
-    public String taxonName;
-    public String collector;
-    public String collectorsNumber;
-    public String accessionNumber;
-    public String herbarium;
-    public String country;
-    public String locality;
-    public Date date;
+public class OccurenceQuery {
+    public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
 
-    /**
-     * Default constructor which initializes all parameters with <code>null</code>
-     */
-    public BioCaseQuery() {
-        taxonName = null;
-        collector = null;
-        collectorsNumber = null;
-        accessionNumber = null;
-        herbarium = null;
-        country = null;
-        locality = null;
-        date = null;
+    public final String unitId;
+
+    public final String taxonName;
+    public final String collector;
+    public final String collectorsNumber;
+    public final String accessionNumber;
+    public final String herbarium;
+    public final String country;
+    public final String locality;
+    public final Calendar dateFrom;
+    public final Calendar dateTo;
+
+
+
+    public OccurenceQuery(String unitId) {
+        this(unitId, null, null, null, null, null, null, null, null, null);
     }
 
     /**
-     * Constructor to initially set the parameters
      * @param taxonName
      * @param collector
      * @param collectorsNumber
@@ -50,9 +47,19 @@ public class BioCaseQuery {
      * @param herbarium
      * @param country
      * @param locality
-     * @param date
+     * @param dateFrom
+     * @param dateTo
      */
-    public BioCaseQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Date date) {
+    public OccurenceQuery(String taxonName, String collector, String collectorsNumber, String accessionNumber,
+            String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+        this(null, taxonName, collector, collectorsNumber, accessionNumber, herbarium, country, locality, dateFrom, dateTo);
+    }
+
+    /**
+     * Constructor to initially set the parameters
+     */
+    private OccurenceQuery(String unitId, String taxonName, String collector, String collectorsNumber, String accessionNumber, String herbarium, String country, String locality, Calendar dateFrom, Calendar dateTo) {
+        this.unitId = unitId;
         this.taxonName = taxonName;
         this.collector = collector;
         this.collectorsNumber = collectorsNumber;
@@ -60,7 +67,8 @@ public class BioCaseQuery {
         this.herbarium = herbarium;
         this.country = country;
         this.locality = locality;
-        this.date = date;
+        this.dateFrom = dateFrom;
+        this.dateTo = dateTo;
     }
 
     /* (non-Javadoc)
@@ -74,12 +82,17 @@ public class BioCaseQuery {
         result = prime * result + ((collector == null) ? 0 : collector.hashCode());
         result = prime * result + ((collectorsNumber == null) ? 0 : collectorsNumber.hashCode());
         result = prime * result + ((country == null) ? 0 : country.hashCode());
-        result = prime * result + ((date == null) ? 0 : date.hashCode());
+        result = prime * result + ((dateFrom == null) ? 0 : dateFrom.hashCode());
+        result = prime * result + ((dateTo == null) ? 0 : dateTo.hashCode());
         result = prime * result + ((herbarium == null) ? 0 : herbarium.hashCode());
         result = prime * result + ((locality == null) ? 0 : locality.hashCode());
         result = prime * result + ((taxonName == null) ? 0 : taxonName.hashCode());
+        result = prime * result + ((unitId == null) ? 0 : unitId.hashCode());
         return result;
     }
+
+
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#equals(java.lang.Object)
@@ -95,7 +108,7 @@ public class BioCaseQuery {
         if (getClass() != obj.getClass()) {
             return false;
         }
-        BioCaseQuery other = (BioCaseQuery) obj;
+        OccurenceQuery other = (OccurenceQuery) obj;
         if (accessionNumber == null) {
             if (other.accessionNumber != null) {
                 return false;
@@ -124,11 +137,18 @@ public class BioCaseQuery {
         } else if (!country.equals(other.country)) {
             return false;
         }
-        if (date == null) {
-            if (other.date != null) {
+        if (dateFrom == null) {
+            if (other.dateFrom != null) {
                 return false;
             }
-        } else if (!date.equals(other.date)) {
+        } else if (!dateFrom.equals(other.dateFrom)) {
+            return false;
+        }
+        if (dateTo == null) {
+            if (other.dateTo != null) {
+                return false;
+            }
+        } else if (!dateTo.equals(other.dateTo)) {
             return false;
         }
         if (herbarium == null) {
@@ -152,15 +172,28 @@ public class BioCaseQuery {
         } else if (!taxonName.equals(other.taxonName)) {
             return false;
         }
+        if (unitId == null) {
+            if (other.unitId != null) {
+                return false;
+            }
+        } else if (!unitId.equals(other.unitId)) {
+            return false;
+        }
         return true;
     }
+
+
+
 
     /* (non-Javadoc)
      * @see java.lang.Object#toString()
      */
     @Override
     public String toString() {
-        String string = "BioCaseQuery ";
+        String string = "";
+        if(unitId!=null && !unitId.trim().isEmpty()){
+            string += " unitId=" + unitId;
+        }
         if(taxonName!=null && !taxonName.trim().isEmpty()){
             string += " taxonName=" + taxonName;
         }
@@ -182,13 +215,12 @@ public class BioCaseQuery {
         if(locality!=null && !locality.trim().isEmpty()){
             string += " locality=" + locality;
         }
-        if(date!=null){
-            string += " date=" + date;
+        if(dateFrom!=null){
+            string += " dateFrom=" + DATE_FORMAT.format(dateFrom.getTime());
+        }
+        if(dateTo!=null){
+            string += " dateTo=" + DATE_FORMAT.format(dateTo.getTime());
         }
         return string;
     }
-
-
-
-
 }

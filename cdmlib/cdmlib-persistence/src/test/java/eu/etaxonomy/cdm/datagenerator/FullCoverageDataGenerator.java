@@ -445,11 +445,11 @@ public class FullCoverageDataGenerator {
 
 
 	private void createTaxon(List<CdmBase> cdmBases) {
-		Reference sec = getReference();
-		TaxonNameBase name = BotanicalName.NewInstance(Rank.GENUS());
+		Reference<?> sec = getReference();
+		TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
 		Taxon taxon = Taxon.NewInstance(name, sec);
 		
-		TaxonNameBase synName = BotanicalName.NewInstance(Rank.GENUS());
+		TaxonNameBase<?,?> synName = BotanicalName.NewInstance(Rank.GENUS());
 		Synonym syn = Synonym.NewInstance(synName, sec);
 		taxon.addSynonym(syn, SynonymRelationshipType.HETEROTYPIC_SYNONYM_OF(), 
 				getReference(), "123");
@@ -481,7 +481,7 @@ public class FullCoverageDataGenerator {
 
 
 	private void createReference(List<CdmBase> cdmBases) {
-		Reference reference = ReferenceFactory.newArticle();
+		Reference<?> reference = ReferenceFactory.newArticle();
 		Person author = Person.NewTitledInstance("Author team");
 		reference.setAuthorTeam(author);
 		reference.setTitle("ref title");
@@ -506,7 +506,7 @@ public class FullCoverageDataGenerator {
 		reference.setVolume("vol. 3");
 		reference.setUri(URI.create("http:\\rer.abc.de"));
 		
-		Reference journal = ReferenceFactory.newJournal();
+		Reference<?> journal = ReferenceFactory.newJournal();
 		reference.setInJournal(journal);
 		
 		cdmBases.add(reference);
@@ -562,7 +562,7 @@ public class FullCoverageDataGenerator {
 		mediaSpecimen.setCollection(collection);
 		mediaSpecimen.setCatalogNumber("catalogNumber");
 		mediaSpecimen.setAccessionNumber("accessionNumber");
-		mediaSpecimen.setCollectorsNumber("collectorsNumber");
+//		mediaSpecimen.setCollectorsNumber("collectorsNumber");
 		mediaSpecimen.setBarcode("barcode");
 		BotanicalName storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
 		storedUnder.setTitleCache("Stored under", true);

@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.net.URI;
+import java.util.Collection;
 import java.util.Enumeration;
 import java.util.List;
 import java.util.Locale;
@@ -24,6 +25,7 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.common.LanguageStringBase;
 import eu.etaxonomy.cdm.model.common.Representation;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
@@ -103,7 +105,7 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      * @param propertyPaths properties to initialize - see {@link IBeanInitializer#initialize(Object, List)}
      * @return a Pager of DefinedTerms
      */
-    public <T extends DefinedTermBase> Pager<T> getIncludes(Set<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
+    public <T extends DefinedTermBase> Pager<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths);
 
     /**
      * Return a paged list of terms which have representations that match the supplied string in the text (description)
@@ -125,24 +127,16 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
      */
     public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber);
 
-
     /**
-     *
-     *
-     *
-     * @param <TERM>
-     * @param clazz
+     * Retrieves all {@link DefinedTermBase}s with the given {@link TermType}
+     * @param termType the term type to filter the terms
      * @param limit
      * @param start
      * @param orderHints
      * @param propertyPaths
-     * @return
-     *
-     * @deprecated candidate for harmonization!!! will be replaced by {@link IService#list(Class, Integer, Integer, List, List)}:
-     * once it is refactored to <public <S extends T> List<T> list(Class<S> type, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+     * @return a list containing the terms
      */
-    @Deprecated
-    public <TERM extends DefinedTermBase> List<TERM> listByTermClass(Class<TERM> clazz, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+    public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
      * Delete the given term according to the given delete configuration.

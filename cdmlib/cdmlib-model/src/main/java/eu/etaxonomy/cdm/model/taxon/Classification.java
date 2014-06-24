@@ -465,10 +465,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
         return rootNode.getChildNodes();
     }
 
-    private void setRootNodes(List<TaxonNode> rootNodes) {
-        this.rootNode.setChildNodes(rootNodes);
-    }
-
     @Override
     public Reference getReference() {
         return reference;

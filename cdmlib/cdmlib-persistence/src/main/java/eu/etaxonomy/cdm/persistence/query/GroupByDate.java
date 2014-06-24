@@ -20,6 +20,9 @@ import org.hibernate.type.Type;
 
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
 
+/**
+ * @author ben.clark
+ */
 public class GroupByDate extends Grouping {
 	
 	private Resolution resolution;
