@@ -67,6 +67,8 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	
 	private CdmApplicationController application;
 	
+
+	
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.api.service.IDatabaseService#setApplicationController(eu.etaxonomy.cdm.api.application.CdmApplicationController)
@@ -183,9 +185,6 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
 	
     /**
      * Execute a SQL query which returns a single value
-     * FIXME:Remoting maybe not a smart idea to have this method here 
-     * since private methods can also be accessed via reflection, which
-     * could be problematic specially for the case of remoting.
      * 
      * @param query , which returns a single value
      * @return
@@ -193,49 +192,38 @@ public class DatabaseServiceHibernateImpl  implements IDatabaseService, Applicat
      */
     private Object getSingleValue(String query) throws SQLException {
         String queryString = query == null? "(null)": query;
-        ResultSet resultSet = executeQuery(query);
-        if (resultSet == null || resultSet.next() == false){
-            logger.info("No record returned for query " +  queryString);
-            return null;
-        }
-        if (resultSet.getMetaData().getColumnCount() != 1){
-            logger.info("More than one column selected in query" +  queryString);
-            //first value will be taken
-        }
-        Object object = resultSet.getObject(1);
-        if (resultSet.next()){
-            logger.info("Multiple results for query " +  queryString);
-            //first row will be taken
-        }
-        return object;
-    }
-    
-    /**
-     * Executes a query and returns the ResultSet.
-     * FIXME:Remoting maybe not a smart idea to have this method here 
-     * since private methods can also be accessed via reflection, which
-     * could be problematic specially for the case of remoting.
-     *      
-     * @return ResultSet for the query.
-     * @throws SQLException
-     */
-    
-    private ResultSet executeQuery (String query) throws SQLException {
-
-        ResultSet resultSet;
-
-        if (query == null){
-            return null;
-        }
+        //ResultSet resultSet = executeQuery(query);
+        ResultSet resultSet = null;
         
         Connection connection = SessionFactoryUtils.getDataSource(factory).getConnection();
         if (connection != null){
+        	             	
             Statement statement = connection.createStatement();
-            resultSet = statement.executeQuery(query);
+            resultSet = statement.executeQuery(query);         
+            
+            if (resultSet == null || resultSet.next() == false){
+                logger.info("No record returned for query " +  queryString);
+                return null;
+            }
+            if (resultSet.getMetaData().getColumnCount() != 1){
+                logger.info("More than one column selected in query" +  queryString);
+                //first value will be taken
+            }
+            Object object = resultSet.getObject(1);
+            if (resultSet.next()){
+                logger.info("Multiple results for query " +  queryString);
+                //first row will be taken
+            }
+            // making sure we close all resources so we don't run out of
+            // connections in the connection pool
+            resultSet.close();
+            statement.close();
+            connection.close();
+            
+            return object;
         }else{
             throw new RuntimeException("Could not establish connection to database");
         }
-        return resultSet;
 
     }
 
