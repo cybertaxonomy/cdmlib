@@ -79,8 +79,8 @@ public class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
 	    .timeToIdleSeconds(60*60*2)
-	    .diskExpiryThreadIntervalSeconds(0)
-	    .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
+	    .diskExpiryThreadIntervalSeconds(0);
+	    //.persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
 	}
 	
 	/**
@@ -99,7 +99,7 @@ public class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @param uuid
 	 * @param cdmEntity
 	 */
-	private void put(UUID uuid, T cdmEntity) {
+	public void put(UUID uuid, T cdmEntity) {
 		getDefaultCache().put(new Element(uuid, cdmEntity));
 	}
 	
@@ -133,7 +133,7 @@ public class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 		if (e == null) {
 
 		    // nothing in the cache for "key" (or expired) ... re-load the entity
-			cdmEntity = (T)termService.find(uuid);
+			cdmEntity = (T)termService.load(uuid);
 			put(uuid, cdmEntity);
 		} else {
 		    // there is a valid element in the cache, however getObjectValue() may be null
