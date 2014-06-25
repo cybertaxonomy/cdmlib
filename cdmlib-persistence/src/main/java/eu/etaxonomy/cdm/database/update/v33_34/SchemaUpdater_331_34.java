@@ -20,8 +20,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.TableDroper;
-import eu.etaxonomy.cdm.database.update.TreeIndexUpdater;
+import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 
 /**
@@ -60,8 +59,17 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
-		stepName = "Add label column to derived unit";
+		//TODO test
+		stepName = "Remove (username,uuid) - unique index";
+		step = UsernameConstraintUpdater.NewInstance(stepName);
+		stepList.add(step);
 		
+		//TODO test
+		stepName = "Add label column to derived unit";
+		tableName = "SpecimenOrObservationBase";
+		columnName = "originalLabelInfo";
+		step = ColumnAdder.NewClobInstance(stepName, tableName, columnName, INCLUDE_AUDIT);
+		stepList.add(step);
 		
 			
 		//TODO test
