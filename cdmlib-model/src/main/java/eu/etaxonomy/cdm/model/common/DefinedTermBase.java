@@ -48,6 +48,7 @@ import org.hibernate.validator.constraints.Length;
 
 import au.com.bytecode.opencsv.CSVWriter;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
+import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
@@ -164,10 +165,14 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
     private String idInVocabulary;  //the unique tabel this term uses in its given vocabulary #3479
+    
+
 
 //***************************** CONSTRUCTOR *******************************************/
 
-    //for javassit only
+
+
+	//for javassit only
     @Deprecated
     protected DefinedTermBase(){};
 
@@ -461,4 +466,24 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
         return result;
     }
 
+    // Currently the CDM Caching mechanism is only used for caching terms
+    private static ICdmCacher cacher;
+    
+    /**
+     * Gets the CDM cacher object
+     *      
+     * @return the CDM cacher object
+     */
+    public static ICdmCacher getCacher() {
+		return cacher;
+	}
+
+	/**
+	 * Sets the CDM cacher object
+	 * 
+	 * @param cacher the CDM cacher object
+	 */
+	public static void setCacher(ICdmCacher cacher) {
+		DefinedTermBase.cacher = cacher;
+	}
 }

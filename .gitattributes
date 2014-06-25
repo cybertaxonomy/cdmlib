@@ -697,6 +697,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
@@ -2136,6 +2137,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/FirstDataInserter
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmCacher.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolderMock.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
