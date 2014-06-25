@@ -290,17 +290,17 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     }
 
     @Override
-    public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
+    public List<Taxon> getTaxaByCommonName(String queryString, Classification classification,
                MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
                Integer pageNumber, List<String> propertyPaths) {
         boolean doCount = false;
         Query query = prepareTaxaByCommonName(queryString, classification, matchMode, namedAreas, pageSize, pageNumber, doCount);
         if (query != null){
-            List<Object[]> results = query.list();
+            List<Taxon> results = query.list();
             defaultBeanInitializer.initializeAll(results, propertyPaths);
             return results;
         }
-        return new ArrayList<Object[]>();
+        return new ArrayList<Taxon>();
 
     }
 
@@ -810,7 +810,13 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
     private Query prepareTaxaByCommonName(String queryString, Classification classification,
             MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize, Integer pageNumber, boolean doCount){
 
-        String hql= "from Taxon t " +
+        String what;
+        if(doCount){
+            what = "select  count(t)";
+        } else {
+            what = "select  t";
+        }
+        String hql= what + " from Taxon t " +
         "join t.descriptions d "+
         "join d.descriptionElements e " +
         "join e.feature f " +

@@ -1094,13 +1094,13 @@ public class TaxonDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
     public void testGetCommonName(){
 
 
-        List<Object[]> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
+        List<Taxon> commonNameResults = taxonDao.getTaxaByCommonName("common%", null,
                 MatchMode.BEGINNING, null, null, null, null);
 
         assertNotNull("getTaxaByCommonName should return a list", commonNameResults);
         assertFalse("the list should not be empty", commonNameResults.isEmpty());
         assertEquals("There should be one Taxon with common name", 1,commonNameResults.size());
-        assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)[0]).getTitleCache());
+        assertEquals(" sec. ???", ((TaxonBase)commonNameResults.get(0)).getTitleCache());
 
     }
 

@@ -791,10 +791,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 numberTaxaResults = dao.countTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas());
             }
             if(configurator.getPageSize() == null || numberTaxaResults > configurator.getPageSize() * configurator.getPageNumber()){
-                List<Object[]> commonNameResults = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
-                for( Object[] entry : commonNameResults ) {
-                    taxa.add((TaxonBase) entry[0]);
-                }
+                List<Taxon> commonNameResults = dao.getTaxaByCommonName(configurator.getTitleSearchStringSqlized(), configurator.getClassification(), configurator.getMatchMode(), configurator.getNamedAreas(), configurator.getPageSize(), configurator.getPageNumber(), configurator.getTaxonPropertyPath());
+                taxa.addAll(commonNameResults);
             }
             if(taxa != null){
                 results.addAll(taxa);
@@ -1012,9 +1010,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (config == null){
             config = new TaxonDeletionConfigurator();
         }
-        
+
         List<String> referencedObjects = isDeletable(taxon, config);
-        
+
         if (referencedObjects.isEmpty()){
             // --- DeleteSynonymRelations
             if (config.isDeleteSynonymRelations()){
@@ -1187,7 +1185,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
              boolean usedInPolytomousKey = checkForPolytomousKeys(taxon);
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
-                
+
 
                     //TaxonNameBase name = nameService.find(taxon.getName().getUuid());
                     TaxonNameBase name = (TaxonNameBase)HibernateProxyHelper.deproxy(taxon.getName());
@@ -1199,7 +1197,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         String uuidString = nameService.delete(name, config.getNameDeletionConfig());
                         logger.debug(uuidString);
                     }
-                
+
             }
 
 //        	TaxonDescription
@@ -1219,15 +1217,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
                     }
                 }*/
-        
+
             if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  ){
                 UUID uuid = dao.delete(taxon);
                 return uuid.toString();
             } else {
-            	return "The Taxon can't be deleted.";
+                return "The Taxon can't be deleted.";
             }
         }else {
-        	 return referencedObjects.toString();
+             return referencedObjects.toString();
         }
 
 
@@ -1304,53 +1302,53 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         if (synonym == null){
             return null;
         }
-        
+
         if (config == null){
             config = new SynonymDeletionConfigurator();
         }
         List<String> messages = isDeletable(synonym, config);
         if (messages.isEmpty()){
-	        synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
-	
-	        //remove synonymRelationship
-	        Set<Taxon> taxonSet = new HashSet<Taxon>();
-	        if (taxon != null){
-	            taxonSet.add(taxon);
-	        }else{
-	            taxonSet.addAll(synonym.getAcceptedTaxa());
-	        }
-	        for (Taxon relatedTaxon : taxonSet){
-	//			dao.deleteSynonymRelationships(synonym, relatedTaxon);
-	            relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
-	        }
-	        this.saveOrUpdate(synonym);
-	
-	        //TODO remove name from homotypical group?
-	
-	        //remove synonym (if necessary)
-	
-	        UUID uuid = null;
-	        if (synonym.getSynonymRelations().isEmpty()){
-	            TaxonNameBase<?,?> name = synonym.getName();
-	            synonym.setName(null);
-	            uuid = dao.delete(synonym);
-	
-	            //remove name if possible (and required)
-	            if (name != null && config.isDeleteNameIfPossible()){
-	                
-	                    nameService.delete(name, config.getNameDeletionConfig());
-	                
-	            }
-	            
-	        }else {
-	        	return null;
-	        }
-	        return uuid.toString();
+            synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
+
+            //remove synonymRelationship
+            Set<Taxon> taxonSet = new HashSet<Taxon>();
+            if (taxon != null){
+                taxonSet.add(taxon);
+            }else{
+                taxonSet.addAll(synonym.getAcceptedTaxa());
+            }
+            for (Taxon relatedTaxon : taxonSet){
+    //			dao.deleteSynonymRelationships(synonym, relatedTaxon);
+                relatedTaxon.removeSynonym(synonym, config.isNewHomotypicGroupIfNeeded());
+            }
+            this.saveOrUpdate(synonym);
+
+            //TODO remove name from homotypical group?
+
+            //remove synonym (if necessary)
+
+            UUID uuid = null;
+            if (synonym.getSynonymRelations().isEmpty()){
+                TaxonNameBase<?,?> name = synonym.getName();
+                synonym.setName(null);
+                uuid = dao.delete(synonym);
+
+                //remove name if possible (and required)
+                if (name != null && config.isDeleteNameIfPossible()){
+
+                        nameService.delete(name, config.getNameDeletionConfig());
+
+                }
+
+            }else {
+                return null;
+            }
+            return uuid.toString();
         }else{
-        	return messages.toString();
+            return messages.toString();
         }
-        
-     
+
+
     }
 
 
@@ -3024,66 +3022,66 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     }
     @Override
     public List<String> isDeletable(TaxonBase taxonBase, DeleteConfiguratorBase config){
-    	List<String> result = new ArrayList<String>();
-    	Set<CdmBase> references = commonService.getReferencingObjects(taxonBase);
-    	if (taxonBase instanceof Taxon){
-    		TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
-    		result = isDeletableForTaxon(references, taxonConfig);
-    	}else{
-    		SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
-    		result = isDeletableForSynonym(references, synonymConfig);
-    	}
-    	return result;
+        List<String> result = new ArrayList<String>();
+        Set<CdmBase> references = commonService.getReferencingObjects(taxonBase);
+        if (taxonBase instanceof Taxon){
+            TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
+            result = isDeletableForTaxon(references, taxonConfig);
+        }else{
+            SynonymDeletionConfigurator synonymConfig = (SynonymDeletionConfigurator) config;
+            result = isDeletableForSynonym(references, synonymConfig);
+        }
+        return result;
     }
-    
+
     private List<String> isDeletableForSynonym(Set<CdmBase> references, SynonymDeletionConfigurator config){
-    	String message;
-    	List<String> result = new ArrayList<String>();
-    	for (CdmBase ref: references){
-    		if (!(ref instanceof SynonymRelationship || ref instanceof Taxon || ref instanceof TaxonNameBase)){
-    			message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
-    			result.add(message);
-    		}
-    	}
-    	
-    	return result;
+        String message;
+        List<String> result = new ArrayList<String>();
+        for (CdmBase ref: references){
+            if (!(ref instanceof SynonymRelationship || ref instanceof Taxon || ref instanceof TaxonNameBase)){
+                message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
+                result.add(message);
+            }
+        }
+
+        return result;
     }
     private List<String> isDeletableForTaxon(Set<CdmBase> references, TaxonDeletionConfigurator config){
-    	String message;
-    	List<String> result = new ArrayList<String>();
-    	for (CdmBase ref: references){
-    		if (!(ref instanceof TaxonNameBase)){
-    			if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
-    				message = "The Taxon can't be deleted as long as it has synonyms.";
-    				result.add(message);
-    			}
-    			if (!config.isDeleteDescriptions() && (ref instanceof DescriptionBase)){
-    				message = "The Taxon can't be deleted as long as it has factual data.";
-    				result.add(message);
-    			}
-    			
-    			if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
-    				message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
-    				result.add(message);
-    			}
-    			if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
-    				if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
-        				message = "The Taxon can't be deleted as long as it has misapplied names or invalid designations.";
-        				result.add(message);
-        			} else{
-        				message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
-        				result.add(message);
-        			}
-    			}
-    			if (ref instanceof PolytomousKeyNode){
-    				message = "The Taxon can't be deleted as long as it is referenced by a polytomous key node.";
-    				result.add(message);
-    			}
-    			
-    			if (HibernateProxyHelper.isInstanceOf(ref, IIdentificationKey.class)){
+        String message;
+        List<String> result = new ArrayList<String>();
+        for (CdmBase ref: references){
+            if (!(ref instanceof TaxonNameBase)){
+                if (!config.isDeleteSynonymRelations() && (ref instanceof SynonymRelationship)){
+                    message = "The Taxon can't be deleted as long as it has synonyms.";
+                    result.add(message);
+                }
+                if (!config.isDeleteDescriptions() && (ref instanceof DescriptionBase)){
+                    message = "The Taxon can't be deleted as long as it has factual data.";
+                    result.add(message);
+                }
+
+                if (!config.isDeleteTaxonNodes() && (ref instanceof TaxonNode)){
+                    message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
+                    result.add(message);
+                }
+                if (!config.isDeleteTaxonRelationships() && (ref instanceof TaxonNode)){
+                    if (!config.isDeleteMisappliedNamesAndInvalidDesignations() && (((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.MISAPPLIED_NAME_FOR())|| ((TaxonRelationship)ref).getType().equals(TaxonRelationshipType.INVALID_DESIGNATION_FOR()))){
+                        message = "The Taxon can't be deleted as long as it has misapplied names or invalid designations.";
+                        result.add(message);
+                    } else{
+                        message = "The Taxon can't be deleted as long as it belongs to a taxon node.";
+                        result.add(message);
+                    }
+                }
+                if (ref instanceof PolytomousKeyNode){
+                    message = "The Taxon can't be deleted as long as it is referenced by a polytomous key node.";
+                    result.add(message);
+                }
+
+                if (HibernateProxyHelper.isInstanceOf(ref, IIdentificationKey.class)){
                    message = "Taxon can't be deleted as it is used in an identification key. Remove from identification key prior to deleting this name";
                    result.add(message);
-                   
+
                 }
 
 
@@ -3107,138 +3105,138 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
             }
 
-    	}
-    	
-    	return result;
+        }
+
+        return result;
     }
 
-	@Override
-	public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, IncludedTaxonConfiguration config) {
-		IncludedTaxaDTO result = new IncludedTaxaDTO(taxonUuid);
-		
-		//preliminary implementation
-		
-		Set<Taxon> taxa = new HashSet<Taxon>();
-		TaxonBase taxonBase = find(taxonUuid);
-		if (taxonBase == null){
-			return new IncludedTaxaDTO();
-		}else if (taxonBase.isInstanceOf(Taxon.class)){
-			Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-			taxa.add(taxon);
-		}else if (taxonBase.isInstanceOf(Synonym.class)){
-			//TODO partial synonyms ??
-			//TODO synonyms in general
-			Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
-			taxa.addAll(syn.getAcceptedTaxa());
-		}else{
-			throw new IllegalArgumentException("Unhandled class " + taxonBase.getClass().getSimpleName());
-		}
-		
-		Set<Taxon> related = makeRelatedIncluded(taxa, result, config);
-		int i = 0;
-		while((! related.isEmpty()) && i++ < 100){  //to avoid 
-			 related = makeRelatedIncluded(related, result, config);
-		}
-		
-		return result;
-	}
+    @Override
+    public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, IncludedTaxonConfiguration config) {
+        IncludedTaxaDTO result = new IncludedTaxaDTO(taxonUuid);
 
-	/**
-	 * Computes all children and conceptually congruent and included taxa and adds them to the existingTaxa
-	 * data structure.
-	 * @return the set of conceptually related taxa for further use
-	 */
-	/**
-	 * @param uncheckedTaxa
-	 * @param existingTaxa
-	 * @param config
-	 * @return
-	 */
-	private Set<Taxon> makeRelatedIncluded(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
-		
-		//children
-		Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
-		for (Taxon taxon: uncheckedTaxa){
-			taxonNodes.addAll(taxon.getTaxonNodes());
-		}
+        //preliminary implementation
 
-		Set<Taxon> children = new HashSet<Taxon>();
-		if (! config.onlyCongruent){
-			for (TaxonNode node: taxonNodes){
-				List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true, false);
-				for (TaxonNode child : childNodes){
-					children.add(child.getTaxon());
-				}
-			}
-			children.remove(null);  // just to be on the save side		
-		}
-			
-		Iterator<Taxon> it = children.iterator();
-		while(it.hasNext()){
-			UUID uuid = it.next().getUuid();
-			if (existingTaxa.contains(uuid)){
-				it.remove();
-			}else{
-				existingTaxa.addIncludedTaxon(uuid, new ArrayList<UUID>(), false);
-			}
-		}
-		
-		//concept relations
-		Set<Taxon> uncheckedAndChildren = new HashSet<Taxon>(uncheckedTaxa);
-		uncheckedAndChildren.addAll(children);
-		
-		Set<Taxon> relatedTaxa = makeConceptIncludedTaxa(uncheckedAndChildren, existingTaxa, config);
-		
-		
-		Set<Taxon> result = new HashSet<Taxon>(relatedTaxa);
-		return result;
-	}
+        Set<Taxon> taxa = new HashSet<Taxon>();
+        TaxonBase taxonBase = find(taxonUuid);
+        if (taxonBase == null){
+            return new IncludedTaxaDTO();
+        }else if (taxonBase.isInstanceOf(Taxon.class)){
+            Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
+            taxa.add(taxon);
+        }else if (taxonBase.isInstanceOf(Synonym.class)){
+            //TODO partial synonyms ??
+            //TODO synonyms in general
+            Synonym syn = CdmBase.deproxy(taxonBase, Synonym.class);
+            taxa.addAll(syn.getAcceptedTaxa());
+        }else{
+            throw new IllegalArgumentException("Unhandled class " + taxonBase.getClass().getSimpleName());
+        }
 
-	/**
-	 * Computes all conceptually congruent or included taxa and adds them to the existingTaxa data structure. 
-	 * @return the set of these computed taxa
-	 */
-	private Set<Taxon> makeConceptIncludedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
-		Set<Taxon> result = new HashSet<Taxon>();
-		
-		for (Taxon taxon : unchecked){
-			Set<TaxonRelationship> fromRelations = taxon.getRelationsFromThisTaxon();
-			Set<TaxonRelationship> toRelations = taxon.getRelationsToThisTaxon();
-			
-			for (TaxonRelationship fromRel : fromRelations){
-				if (config.includeDoubtful == false && fromRel.isDoubtful()){
-					continue;
-				}
-				if (fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO()) ||
-						!config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.INCLUDES()) ||
-						!config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
-						){
-					result.add(fromRel.getToTaxon());
-				}
-			}
-			
-			for (TaxonRelationship toRel : toRelations){
-				if (config.includeDoubtful == false && toRel.isDoubtful()){
-					continue;
-				}
-				if (toRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO())){
-					result.add(toRel.getFromTaxon());
-				}
-			}
-		}
-		
-		Iterator<Taxon> it = result.iterator();
-		while(it.hasNext()){
-			UUID uuid = it.next().getUuid();
-			if (existingTaxa.contains(uuid)){
-				it.remove();
-			}else{
-				existingTaxa.addIncludedTaxon(uuid, new ArrayList<UUID>(), false);
-			}
-		}
-		return result;
-	}
+        Set<Taxon> related = makeRelatedIncluded(taxa, result, config);
+        int i = 0;
+        while((! related.isEmpty()) && i++ < 100){  //to avoid
+             related = makeRelatedIncluded(related, result, config);
+        }
 
-	
+        return result;
+    }
+
+    /**
+     * Computes all children and conceptually congruent and included taxa and adds them to the existingTaxa
+     * data structure.
+     * @return the set of conceptually related taxa for further use
+     */
+    /**
+     * @param uncheckedTaxa
+     * @param existingTaxa
+     * @param config
+     * @return
+     */
+    private Set<Taxon> makeRelatedIncluded(Set<Taxon> uncheckedTaxa, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
+
+        //children
+        Set<TaxonNode> taxonNodes = new HashSet<TaxonNode>();
+        for (Taxon taxon: uncheckedTaxa){
+            taxonNodes.addAll(taxon.getTaxonNodes());
+        }
+
+        Set<Taxon> children = new HashSet<Taxon>();
+        if (! config.onlyCongruent){
+            for (TaxonNode node: taxonNodes){
+                List<TaxonNode> childNodes = nodeService.loadChildNodesOfTaxonNode(node, null, true, false);
+                for (TaxonNode child : childNodes){
+                    children.add(child.getTaxon());
+                }
+            }
+            children.remove(null);  // just to be on the save side
+        }
+
+        Iterator<Taxon> it = children.iterator();
+        while(it.hasNext()){
+            UUID uuid = it.next().getUuid();
+            if (existingTaxa.contains(uuid)){
+                it.remove();
+            }else{
+                existingTaxa.addIncludedTaxon(uuid, new ArrayList<UUID>(), false);
+            }
+        }
+
+        //concept relations
+        Set<Taxon> uncheckedAndChildren = new HashSet<Taxon>(uncheckedTaxa);
+        uncheckedAndChildren.addAll(children);
+
+        Set<Taxon> relatedTaxa = makeConceptIncludedTaxa(uncheckedAndChildren, existingTaxa, config);
+
+
+        Set<Taxon> result = new HashSet<Taxon>(relatedTaxa);
+        return result;
+    }
+
+    /**
+     * Computes all conceptually congruent or included taxa and adds them to the existingTaxa data structure.
+     * @return the set of these computed taxa
+     */
+    private Set<Taxon> makeConceptIncludedTaxa(Set<Taxon> unchecked, IncludedTaxaDTO existingTaxa, IncludedTaxonConfiguration config) {
+        Set<Taxon> result = new HashSet<Taxon>();
+
+        for (Taxon taxon : unchecked){
+            Set<TaxonRelationship> fromRelations = taxon.getRelationsFromThisTaxon();
+            Set<TaxonRelationship> toRelations = taxon.getRelationsToThisTaxon();
+
+            for (TaxonRelationship fromRel : fromRelations){
+                if (config.includeDoubtful == false && fromRel.isDoubtful()){
+                    continue;
+                }
+                if (fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO()) ||
+                        !config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.INCLUDES()) ||
+                        !config.onlyCongruent && fromRel.getType().equals(TaxonRelationshipType.CONGRUENT_OR_INCLUDES())
+                        ){
+                    result.add(fromRel.getToTaxon());
+                }
+            }
+
+            for (TaxonRelationship toRel : toRelations){
+                if (config.includeDoubtful == false && toRel.isDoubtful()){
+                    continue;
+                }
+                if (toRel.getType().equals(TaxonRelationshipType.CONGRUENT_TO())){
+                    result.add(toRel.getFromTaxon());
+                }
+            }
+        }
+
+        Iterator<Taxon> it = result.iterator();
+        while(it.hasNext()){
+            UUID uuid = it.next().getUuid();
+            if (existingTaxa.contains(uuid)){
+                it.remove();
+            }else{
+                existingTaxa.addIncludedTaxon(uuid, new ArrayList<UUID>(), false);
+            }
+        }
+        return result;
+    }
+
+
 
 }
