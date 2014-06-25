@@ -20,6 +20,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.TransactionStatus;
 
+import eu.etaxonomy.cdm.config.Configuration;
 import eu.etaxonomy.cdm.io.common.CdmIoBase;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
@@ -121,32 +122,40 @@ public class JaxbImport extends CdmIoBase<JaxbImportState> implements ICdmIO<Jax
 		List<TermVocabulary<DefinedTermBase>> termVocabularies;
 		List<HomotypicalGroup> homotypicalGroups;
 
-		// Get an app controller that omits term loading
-		// CdmApplicationController.getCdmAppController(boolean createNew, boolean omitTermLoading){
-		//CdmApplicationController appCtr = jaxbImpConfig.getCdmAppController(false, true);
 		TransactionStatus txStatus = startTransaction();
 		//TransactionStatus txStatus = null;
 
 		// Have single transactions per service save call. Otherwise, getting
 		// H2 HYT00 error (timeout locking table DEFINEDTERMBASE) when running from editor.
 
-		// If data of a certain type, such as terms, are not saved here explicitly, 
-		// then only those data of this type that are referenced by other objects are saved implicitly.
-		// For example, if taxa are saved all other data referenced by those taxa, such as synonyms, 
-		// are automatically saved as well.
-
-	
-		
 		try {
 			if (jaxbImpConfig.isDoUser() == true) {
-				if ((users = dataSet.getUsers()).size() > 0) {
-					logger.info("Users: " + users.size());
-					getUserService().save(users);
+				/* 
+				 * this is a crucial call, otherwise the password will not be set correctly
+				 * and the whole authentication will not work
+				 * 
+				 *  a bit preliminary, should be used only if the complete database is replaced
+				 */
+				authenticate(Configuration.adminLogin, Configuration.adminPassword);
+				
+				logger.info("Users: " + (users = dataSet.getUsers()).size());
+				for (User user : users) {
 					
+					List<User> usersList = getUserService().listByUsername(user.getUsername(),null, null, null, null, null, null);
+					if (usersList.isEmpty()){
+						getUserService().save(user);
+					}else{
+//						User existingUser = usersList.get(0);
+//						user.setId(existingUser.getId());
+//						getUserService().merge(user);
+						//merging does not yet work because of #4102
+						
+					}
 				}
 			}
 		} catch (Exception ex) {
 			logger.error("Error saving users");
+			ex.printStackTrace();
 			success = false;
 		}
 		
