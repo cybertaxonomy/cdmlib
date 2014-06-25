@@ -1429,6 +1429,9 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/statistics/ISt
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/IClassificationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonNodeDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/LogicFilter.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/TaxonNodeFilter.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/TaxonNodeFilterDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeEvent.java -text
@@ -1544,6 +1547,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/stat
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplBenchmark.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/tmp/TaxonNodeFilterDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmAuthorityTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmPermissionClassTest.java -text
