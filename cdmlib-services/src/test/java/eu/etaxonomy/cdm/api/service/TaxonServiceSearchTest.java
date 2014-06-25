@@ -338,6 +338,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
     @SuppressWarnings("rawtypes")
     @Test
     @DataSet
+    @Ignore
     public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
         Reference sec = ReferenceFactory.newDatabase();
