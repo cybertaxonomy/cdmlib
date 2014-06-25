@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.common;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -17,7 +18,6 @@ import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlType;
 
 import org.apache.log4j.Logger;
-import org.hibernate.annotations.NaturalId;
 import org.springframework.security.core.GrantedAuthority;
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -31,7 +31,7 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
             .getLogger(GrantedAuthority.class);
 
     @XmlElement(name = "Authority")
-    @NaturalId
+    @Column(unique = true)
     private String authority;
 
     protected GrantedAuthorityImpl() {

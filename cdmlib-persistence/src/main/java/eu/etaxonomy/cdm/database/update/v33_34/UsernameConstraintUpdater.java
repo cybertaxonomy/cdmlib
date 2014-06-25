@@ -28,13 +28,19 @@ import eu.etaxonomy.cdm.database.update.SchemaUpdaterStepBase;
 public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameConstraintUpdater> implements ISchemaUpdaterStep {
 	private static final Logger logger = Logger.getLogger(UsernameConstraintUpdater.class);
 	
-	public static final UsernameConstraintUpdater NewInstance(String stepName){
-		return new UsernameConstraintUpdater(stepName);
+	private String tableName;
+	
+	private String columnName;
+	
+	public static final UsernameConstraintUpdater NewInstance(String stepName, String tableName, String columnName){
+		return new UsernameConstraintUpdater(stepName, tableName, columnName);
 	}
 
 	
-	protected UsernameConstraintUpdater(String stepName) {
+	protected UsernameConstraintUpdater(String stepName, String tableName, String columnName) {
 		super(stepName);
+		this.tableName = tableName;
+		this.columnName = columnName;
 	}
 	
 
@@ -42,25 +48,24 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 	public Integer invoke(ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		//remove 2-fold constraint
 		removeExistingConstraint(datasource, caseType);
-		createUsernameConstraint(datasource, caseType);
+		createColumnConstraint(datasource, caseType);
 		createUuidConstraint(datasource, caseType);
 		return null;
 	}
 	
-	private void createUuidConstraint(ICdmDataSource datasource,
-			CaseType caseType) {
+	private void createUuidConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
-			String updateQuery = getCreateQuery(datasource, caseType, "@@UserAccount@@", "username_", "username");
+			String updateQuery = getCreateQuery(datasource, caseType, tableName, "_UniqueKey", columnName);
 			datasource.executeUpdate(updateQuery);
 		} catch (SQLException e) {
 			logger.warn("Unique index for UserAccount.uuid could not be created");
 		}
 	}
 	
-	private void createUsernameConstraint(ICdmDataSource datasource,
+	private void createColumnConstraint(ICdmDataSource datasource,
 			CaseType caseType) {
 		try {
-			String updateQuery = getCreateQuery(datasource, caseType, "@@UserAccount@@", "username_", "username");
+			String updateQuery = getCreateQuery(datasource, caseType, tableName, columnName + "_", columnName);
 			datasource.executeUpdate(updateQuery);
 		} catch (SQLException e) {
 			logger.warn("Unique index for username could not be created");
@@ -72,6 +77,7 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 			String indexName = "_UniqueKey";
 			String updateQuery;
 			if (type.equals(DatabaseTypeEnum.MySQL)){
+				//Maybe MySQL also works with the below syntax. Did not check yet.
 				updateQuery = "ALTER TABLE @@"+ tableName + "@@ ADD UNIQUE INDEX " + constraintName + " ("+columnName+");";
 			}else if (type.equals(DatabaseTypeEnum.H2) || type.equals(DatabaseTypeEnum.PostgreSQL) || type.equals(DatabaseTypeEnum.SqlServer2005)){
 				updateQuery = "CREATE UNIQUE INDEX " + constraintName + " ON "+tableName+"(" + columnName + ")";

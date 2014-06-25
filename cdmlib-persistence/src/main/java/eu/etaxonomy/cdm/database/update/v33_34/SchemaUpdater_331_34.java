@@ -20,7 +20,6 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
-import eu.etaxonomy.cdm.database.update.UniqueIndexDropper;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 
 /**
@@ -59,9 +58,28 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 
 		List<ISchemaUpdaterStep> stepList = new ArrayList<ISchemaUpdaterStep>();
 
-		//TODO test
-		stepName = "Remove (username,uuid) - unique index";
-		step = UsernameConstraintUpdater.NewInstance(stepName);
+		//TODO test and PostGreSQL / SQL Server
+		//UserAccount unique
+		stepName = "Update User unique indexes";
+		tableName = "UserAccount";
+		columnName = "username";
+		step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
+		stepList.add(step);
+		
+		//TODO test and PostGreSQL / SQL Server
+		//PermissionGroup unique
+		stepName = "Update Group unique indexes";
+		tableName = "PermissionGroup";
+		columnName = "name";
+		step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
+		stepList.add(step);
+		
+		//TODO test and PostGreSQL / SQL Server
+		//GrantedAuthority unique
+		stepName = "Update User unique indexes";
+		tableName = "GrantedAuthorityImpl";
+		columnName = "authority";
+		step = UsernameConstraintUpdater.NewInstance(stepName, tableName, columnName);
 		stepList.add(step);
 		
 		//TODO test
