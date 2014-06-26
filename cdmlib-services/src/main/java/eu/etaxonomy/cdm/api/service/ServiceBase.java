@@ -95,6 +95,12 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
     public T find(UUID uuid) {
         return dao.findByUuid(uuid);
     }
+    
+    @Override
+    @Transactional(readOnly = true)
+    public T findWithoutFlush(UUID uuid) {
+        return dao.findByUuidWithoutFlush(uuid);
+    }
 
     @Override
     @Transactional(readOnly = true)

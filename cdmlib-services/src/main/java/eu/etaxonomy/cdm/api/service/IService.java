@@ -113,6 +113,9 @@ public interface IService<T extends ICdmBase>{
      * @return an entity of type <T>, or null if the entity does not exist
      */
     public T find(UUID uuid);
+    
+
+	public T findWithoutFlush(UUID uuid);
 
     /**
      * Return a persisted entity that matches the database identifier
@@ -298,5 +301,6 @@ public interface IService<T extends ICdmBase>{
      * @return a list of matching objects
      */
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }

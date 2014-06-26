@@ -2139,6 +2139,7 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationCo
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmCacher.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmDaoCacher.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolderMock.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
@@ -2320,6 +2321,7 @@ cdmlib-services/src/main/resources/wsdl/LSIDDataServiceSOAPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDPortTypes.wsdl -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/application/FirstDataInserterTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/cache/CdmCacherTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/cache/MockCdmCacher.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeFieldUnitCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text

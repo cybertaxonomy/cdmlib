@@ -10,35 +10,28 @@ import net.sf.ehcache.config.PersistenceConfiguration;
 import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl;
+import eu.etaxonomy.cdm.model.common.Language;
 
 /**
- * CDM Entity Cacher class based on EhCache.
+ * Since cdmlib-model cannot access CdmCacher we need to create a mock class
+ * for the tests
  * 
  * @author cmathew
  *
- * @param <T>
  */
+public class MockCdmCacher implements ICdmCacher {
 
-public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
-			
-
+	private static final String DEFAULT_CACHE_NAME = "defaultCache";
 	
-	private static final String DEFAULT_CACHE_NAME = "defaultCache";	
-	
+	private static final String DEFAULT_CACHE_MGR_NAME = "defaultCacheManager";
 	/**
 	 * Constructor which initialises a singleton {@link net.sf.ehcache.CacheManager}
 	 * 
 	 */
-	public CdmCacher() {
+	public MockCdmCacher() {
 		init();
 	}
 	
@@ -52,6 +45,7 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 		getDefaultCacheManager().removalAll();
 		// Create default cache
 		getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
+		put(Language.DEFAULT().getUuid(),Language.DEFAULT());
 		// We start first only with DefinedTermBase
 		DefinedTermBase.setCacher(this);
 		
@@ -79,8 +73,8 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
 	    .timeToIdleSeconds(60*60*2)
-	    .diskExpiryThreadIntervalSeconds(0);
-	    //.persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
+	    .diskExpiryThreadIntervalSeconds(0)
+	    .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
 	}
 	
 	/**
@@ -99,7 +93,7 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @param uuid
 	 * @param cdmEntity
 	 */
-	public void put(UUID uuid, T cdmEntity) {
+	public void put(UUID uuid, CdmBase cdmEntity) {
 		getDefaultCache().put(new Element(uuid, cdmEntity));
 	}
 	
@@ -119,40 +113,35 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @param uuid
 	 * @return
 	 */
-	private T getCdmEntity(UUID uuid) {
-		return  (T)getDefaultCache().get(uuid).getObjectValue();				
+	private CdmBase getCdmEntity(UUID uuid) {
+		return  (CdmBase)getDefaultCache().get(uuid).getObjectValue();				
 	}
 	
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.remote.cache.ICdmCacher#load(java.util.UUID)
 	 */
 	
-	public T load(UUID uuid) {
+	public CdmBase load(UUID uuid) {
 		Element e = getCacheElement(uuid);			
-		T cdmEntity;
+		CdmBase cdmEntity;
 		if (e == null) {
-
-		    // nothing in the cache for "key" (or expired) ... re-load the entity
-			cdmEntity = findByUuid(uuid);
-			put(uuid, cdmEntity);
+			return null;
 		} else {
-		    // there is a valid element in the cache, however getObjectValue() may be null
-		    cdmEntity = (T)e.getObjectValue();
-		}
-		return cdmEntity;
+		    return (CdmBase)e.getObjectValue();
+		}		
 	}
 	
 
 	/* (non-Javadoc)
 	 * @see eu.etaxonomy.cdm.model.ICdmCacher#getFromCache(java.util.UUID)
 	 */
-	public T getFromCache(UUID uuid) {
+	public CdmBase getFromCache(UUID uuid) {
 		Element e = getCacheElement(uuid);			
-		T cdmEntity;
+		CdmBase cdmEntity;
 		if (e == null) {
 			return null;
 		} else {
-		    return(T)e.getObjectValue();
+		    return(CdmBase)e.getObjectValue();
 		}
 	}
 	
@@ -170,21 +159,11 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 */
 	public boolean existsAndIsNotNull(UUID uuid) {
 		Element e = getCacheElement(uuid);			
-		T cdmEntity;
+		CdmBase cdmEntity;
 		if (e != null) {
-			return (T)e.getObjectValue() != null;		   
+			return (CdmBase)e.getObjectValue() != null;		   
 		} 
 		return false;
 	}
 	
-	/**
-	 * Finds CDM Entity by uuid
-	 * 
-	 * @param uuid
-	 * @return
-	 */
-	protected abstract T findByUuid(UUID uuid);
-	
-
-
 }

@@ -46,6 +46,7 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
+import eu.etaxonomy.cdm.api.cache.MockCdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -148,6 +149,13 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
         france = Country.FRANCEFRENCHREPUBLIC();
         russia = Country.RUSSIANFEDERATION();
         canada = Country.CANADA();
+        
+		// Have to add a mock cdm cacher since the disabling of transactions
+		// results in the default CdmCacher object not working due to the fact that 
+		// the current session for the CdmGenericDaoImpl.findByUuidWithoutFlush in
+		// the autowired CdmDaoCacher is null
+		// Comment out the line below to see the error.
+        MockCdmCacher cdmCacher = new MockCdmCacher();
 
     }
 
@@ -337,8 +345,7 @@ public class TaxonServiceSearchTest extends CdmTransactionalIntegrationTest {
      */
     @SuppressWarnings("rawtypes")
     @Test
-    @DataSet
-    @Ignore
+    @DataSet    
     public final void testFullText_Paging() throws CorruptIndexException, IOException, ParseException {
 
         Reference sec = ReferenceFactory.newDatabase();
