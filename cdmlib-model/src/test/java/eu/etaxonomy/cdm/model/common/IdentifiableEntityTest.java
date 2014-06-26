@@ -59,6 +59,8 @@ public class IdentifiableEntityTest {
 		DefaultTermInitializer vocabularyStore = new DefaultTermInitializer();
 		vocabularyStore.initialize();
 		
+		// Have to add a mock cdm cacher since the model project has no 
+		// access to the persistence layer
 		MockCdmCacher cdmCacher = new MockCdmCacher();
 	}
 	/**
