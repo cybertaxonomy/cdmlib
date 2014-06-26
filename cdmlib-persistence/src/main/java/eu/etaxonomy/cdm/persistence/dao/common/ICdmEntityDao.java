@@ -256,6 +256,17 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @throws DataAccessException
      */
     public T findByUuid(UUID Uuid) throws DataAccessException;
+    
+    /**
+     * Method to find CDM Entity by Uuid, by making sure that the underlying
+     * hibernate session is not flushed (Session.FLUSH_MODE set to MANUAL temporarily)
+     * when performing the read query.
+     * 
+     * @param Uuid
+     * @return
+     * @throws DataAccessException
+     */
+    public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException;
 
 
     /**

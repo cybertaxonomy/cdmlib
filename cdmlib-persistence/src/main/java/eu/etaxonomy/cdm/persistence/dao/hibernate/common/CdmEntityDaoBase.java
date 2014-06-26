@@ -24,6 +24,7 @@ import org.apache.lucene.search.Sort;
 import org.apache.lucene.search.SortField;
 import org.apache.lucene.util.Version;
 import org.hibernate.Criteria;
+import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
 import org.hibernate.NonUniqueObjectException;
@@ -353,6 +354,34 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
             }
             return results.get(0);
         }
+    }
+    
+    @Override
+    public T findByUuidWithoutFlush(UUID uuid) throws DataAccessException{
+    	Session session = getSession();    	
+    	FlushMode currentFlushMode = session.getFlushMode();
+    	try {    		
+    		// set flush mode to manual so that the session does not flush
+    		// when before performing the query
+    		session.setFlushMode(FlushMode.MANUAL);
+    		Criteria crit = session.createCriteria(type);
+    		crit.add(Restrictions.eq("uuid", uuid));
+    		crit.addOrder(Order.desc("created"));
+    		List<T> results = crit.list();
+    		if (results.isEmpty()){
+    			return null;
+    		}else{
+    			if(results.size() > 1){
+    				logger.error("findByUuid() delivers more than one result for UUID: " + uuid);
+    			}
+    			return results.get(0);
+    		}
+    	} finally {
+    		// set back the session flush mode 
+    		if(currentFlushMode != null) {
+    			session.setFlushMode(currentFlushMode);
+    		}
+    	}
     }
 
     @Override
