@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl;
 
 /**
  * CDM Entity Cacher class based on EhCache.
+ * The cacher allows null values to be cached.
  * 
  * @author cmathew
  *
