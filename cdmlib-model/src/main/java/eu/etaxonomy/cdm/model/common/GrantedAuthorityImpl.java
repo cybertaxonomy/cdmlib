@@ -27,8 +27,7 @@ import org.springframework.security.core.GrantedAuthority;
 public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 
     private static final long serialVersionUID = 2651969425860655040L;
-    private static final Logger logger = Logger
-            .getLogger(GrantedAuthority.class);
+    private static final Logger logger = Logger.getLogger(GrantedAuthority.class);
 
     @XmlElement(name = "Authority")
     @Column(unique = true)
