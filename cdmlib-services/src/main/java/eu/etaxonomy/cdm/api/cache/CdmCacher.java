@@ -6,19 +6,10 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
-
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Component;
-
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.persistence.dao.common.ICdmGenericDao;
-import eu.etaxonomy.cdm.persistence.dao.hibernate.common.CdmGenericDaoImpl;
 
 /**
  * CDM Entity Cacher class based on EhCache.
@@ -74,13 +65,16 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	 * @return
 	 */
 	private CacheConfiguration getDefaultCacheConfiguration() {
-		return new CacheConfiguration(DEFAULT_CACHE_NAME, 50)
+		// For a better understanding on how to size caches, refer to
+		// http://ehcache.org/documentation/configuration/cache-size
+		return new CacheConfiguration(DEFAULT_CACHE_NAME, 500)
 	    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
 	    .eternal(false)
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
-	    .timeToIdleSeconds(60*60*2)
-	    .diskExpiryThreadIntervalSeconds(0);
+	    .timeToIdleSeconds(60*60*2)	    
+		.maxEntriesLocalDisk(1000);
+		// This is 2.6.9 API
 	    //.persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
 	}
 	
