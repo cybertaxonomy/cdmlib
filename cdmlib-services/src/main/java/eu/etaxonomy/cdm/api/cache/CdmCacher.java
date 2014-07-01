@@ -72,9 +72,9 @@ public abstract class CdmCacher<T extends CdmBase> implements ICdmCacher<T> {
 	    .eternal(false)
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
-	    .timeToIdleSeconds(60*60*2)	    
-		.maxEntriesLocalDisk(1000);
-		// This is 2.6.9 API
+	    .timeToIdleSeconds(60*60*2);	   
+	    // This is 2.6.9 API
+		//.maxEntriesLocalDisk(1000);		
 	    //.persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
 	}
 	
