@@ -76,12 +76,6 @@ public class SecurityTest extends AbstractSecurityTestBase{
 
     private static final Logger logger = Logger.getLogger(SecurityTest.class);
 
-    /**
-     * The transaction manager to use
-     */
-    @SpringBeanByType
-    PlatformTransactionManager transactionManager;
-
     @SpringBeanByType
     private ITaxonService taxonService;
 

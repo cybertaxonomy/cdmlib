@@ -697,6 +697,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Contact.java -text
@@ -1106,6 +1107,7 @@ cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/MockCdmCacher.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/TeamTest.java -text
@@ -1432,6 +1434,9 @@ cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/statistics/ISt
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/IClassificationDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonDao.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/ITaxonNodeDao.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/LogicFilter.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/TaxonNodeFilter.java -text
+cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/dao/taxon/tmp/TaxonNodeFilterDaoHibernateImpl.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/fetch/CdmFetch.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGenerator.java -text
 cdmlib-persistence/src/main/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDataChangeEvent.java -text
@@ -1547,6 +1552,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/stat
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplBenchmark.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/tmp/TaxonNodeFilterDaoHibernateImplTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmAuthorityTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permission/CdmPermissionClassTest.java -text
@@ -2135,6 +2141,8 @@ cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/FirstDataInserter
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/ICdmApplicationConfiguration.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredGenericApplicationContext.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/application/MonitoredListableBeanFactory.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmCacher.java -text
+cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/cache/CdmDaoCacher.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolder.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/ConversationHolderMock.java -text
 cdmlib-services/src/main/java/eu/etaxonomy/cdm/api/conversation/IConversationEnabled.java -text
@@ -2315,6 +2323,8 @@ cdmlib-services/src/main/resources/wsdl/LSIDDataServiceHTTPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDDataServiceSOAPBindings.wsdl -text
 cdmlib-services/src/main/resources/wsdl/LSIDPortTypes.wsdl -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/application/FirstDataInserterTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/cache/CdmCacherTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/cache/MockCdmCacher.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeFieldUnitCacheStrategyTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/facade/DerivedUnitFacadeTest.java -text

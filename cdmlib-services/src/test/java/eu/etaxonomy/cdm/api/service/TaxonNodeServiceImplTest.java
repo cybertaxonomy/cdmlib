@@ -53,7 +53,7 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author n.hoffmann
  * @created Dec 16, 2010
  */
-@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
+//@SpringApplicationContext("file:./target/test-classes/eu/etaxonomy/cdm/applicationContext-test.xml")
 public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 
 	

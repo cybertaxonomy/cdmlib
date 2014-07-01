@@ -900,7 +900,7 @@ public class Rank extends OrderedTermBase<Rank> {
      * @return	the abbreviation string for <i>this</i> rank
      */
     public String getAbbreviation(){
-        Language language = Language.ENGLISH();
+        Language language = Language.getLanguageFromUuid(Language.uuidEnglish);
         String result = this.getRepresentation(language).getAbbreviatedLabel();
         if (result== null) {
             logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");

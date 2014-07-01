@@ -46,9 +46,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
 
     protected ApplicationContext applicationContext;
 
-    /* (non-Javadoc)
-     * @see org.springframework.context.ApplicationContextAware#setApplicationContext(org.springframework.context.ApplicationContext)
-     */
+
+    @Override
     public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
         this.applicationContext = applicationContext;
     }
@@ -74,9 +73,7 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
         stores.put(ICdmIO.SPECIMEN_STORE, new MapWrapper<DerivedUnit>(service));
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.io.common.ICdmImporter#invoke(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-     */
+
     @Override
     public boolean invoke(IImportConfigurator config){
         if (config.getCheck().equals(IImportConfigurator.CHECK.CHECK_ONLY)){
@@ -247,6 +244,8 @@ public class CdmApplicationAwareDefaultImport<T extends IImportConfigurator> imp
             AuthenticationManager authenticationManager = applicationContext.getBean("authenticationManager", AuthenticationManager.class);;
             Authentication authentication = authenticationManager.authenticate(token);
             context.setAuthentication(authentication);
+        }else{
+        	logger.warn("No authentication token available");
         }
         
     }

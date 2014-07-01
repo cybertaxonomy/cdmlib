@@ -113,6 +113,34 @@ public interface IService<T extends ICdmBase>{
      * @return an entity of type <T>, or null if the entity does not exist
      */
     public T find(UUID uuid);
+    
+
+    
+	/**
+	 * Return a persisted entity that matches the unique identifier
+     * supplied as an argument, or null if the entity does not exist.
+     * <p>
+     * The difference between this method and {@link #find(UUID) find} is
+     * that this method makes the hibernate read query with the 
+     * {@link org.hibernate.FlushMode FlushMode} for the session set to 'MANUAL'
+     * <p>
+     * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely 
+     * necessary to ensure that the hibernate session is not flushed before a read
+     * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmCacher CdmCacher},
+     * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID) load} 
+     * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion 
+     * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session 
+     * flush which eventually could call {@link eu.etaxonomy.cdm.model.name.NonViralName#getNameCache getNameCache},
+	 * which in turn (in the event that name cahce is null) eventually calls the 
+	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID uuid) load} again. 
+	 * Apart from these kind of exceptional circumstances, the standard {@link #find(UUID) find}
+	 * method should always be used to ensure that the persistence layer is always in sync with the 
+	 * underlying database.
+	 * 
+	 * @param uuid
+	 * @return an entity of type <T>, or null if the entity does not exist
+	 */
+	public T findWithoutFlush(UUID uuid);
 
     /**
      * Return a persisted entity that matches the database identifier
@@ -298,5 +326,6 @@ public interface IService<T extends ICdmBase>{
      * @return a list of matching objects
      */
     public List<T> list(T example, Set<String> includeProperties, Integer limit, Integer start, List<OrderHint> orderHints, List<String> propertyPaths);
+
 
 }

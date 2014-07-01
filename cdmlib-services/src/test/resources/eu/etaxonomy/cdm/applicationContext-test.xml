@@ -16,6 +16,7 @@
 
     <import resource="classpath:/eu/etaxonomy/cdm/services.xml"/>
 
+	<context:component-scan base-package="eu/etaxonomy/cdm/api/cache"/>
     <!-- enable the configuration of transactional behavior based on annotations -->
     <tx:annotation-driven transaction-manager="transactionManager"/>
 

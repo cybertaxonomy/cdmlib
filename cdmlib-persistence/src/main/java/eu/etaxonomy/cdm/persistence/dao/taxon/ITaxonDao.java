@@ -217,9 +217,9 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      * @param pageSize
      * @param pageNumber
      * @param propertyPaths
-     * @return A List of arrays. Each entry array holds the following entities: Taxon, CommonName, Description, Feature
+     * @return A List matching Taxa
      */
-    public List<Object[]> getTaxaByCommonName(String queryString, Classification classification,
+    public List<Taxon> getTaxaByCommonName(String queryString, Classification classification,
     MatchMode matchMode, Set<NamedArea> namedAreas, Integer pageSize,
     Integer pageNumber, List<String> propertyPaths);
 

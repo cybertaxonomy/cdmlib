@@ -58,13 +58,7 @@ public class JaxbImportConfigurator extends ImportConfiguratorBase<JaxbImportSta
 	//taxa
 	private boolean doTaxa = true;
 
-	
-	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IImportConfigurator#getNewState()
-	 */
+	@Override
 	public JaxbImportState getNewState() {
 		return new JaxbImportState(this);
 	}

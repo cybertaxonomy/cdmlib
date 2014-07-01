@@ -1282,11 +1282,31 @@ public class Language extends DefinedTermBase<Language> {
         for (Language term : termVocabulary.getTerms()){
             termMap.put(term.getUuid(), (Language)term);
         }
-        defaultLanguage = ENGLISH();
+        defaultLanguage = ENGLISH();        
         csvLanguage = ENGLISH();
         addLanguageForVocabularyRepresentation(termVocabulary);
     }
 
+    //FIXME: Following two methods are temporary and should be moved to more 
+    //       generic methods in the super classes
+    /**
+     * Gets the default language using the cache
+     * 
+     * @return
+     */
+    public static Language getDefaultLanguage() {
+    	return (Language)getCacher().load(uuidEnglish);
+    }
+    
+    /**
+     * 
+     * 
+     * @param uuid
+     * @return
+     */
+    public static Language getLanguageFromUuid(UUID uuid) {
+    	return (Language)getCacher().load(uuid);
+    }
 
     /**
      * During vocabulary initialization the default language is not yet set to ENGLISH but is still null.
