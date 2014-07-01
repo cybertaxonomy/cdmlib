@@ -75,7 +75,6 @@ import eu.etaxonomy.cdm.persistence.query.OrderHint;
 /**
  * @author a.mueller
  * @created 24.11.2008
- * @version 1.0
  */
 @Repository
 @Qualifier("taxonDaoHibernateImpl")
