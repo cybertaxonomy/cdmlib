@@ -261,7 +261,6 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             throw new IllegalArgumentException("root node and other node must not be the same");
         }
         otherNode.addChildNode(topmostNode, ref, microReference);
-        //getRootNodes().remove(root);
     }
 
 
