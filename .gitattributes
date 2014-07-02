@@ -1070,6 +1070,7 @@ cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/MeasurementUnit.csv -text
+cdmlib-model/src/main/resources/terms/MediaSpecimenKindOfUnit.csv -text
 cdmlib-model/src/main/resources/terms/Modifier.csv -text
 cdmlib-model/src/main/resources/terms/NameFeature.csv -text
 cdmlib-model/src/main/resources/terms/NameRelationshipType.csv -text
