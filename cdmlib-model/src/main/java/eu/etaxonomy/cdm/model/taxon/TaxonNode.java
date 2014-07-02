@@ -177,13 +177,15 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
 	}
     /**
      * SortIndex shall be handled only internally, therefore not public.
-     * However, as javaassist only supports protected methods it needs to be protected, not private
+     * However, as javaassist only supports protected methods it needs to be protected, not private.
+     * Alternatively we could use deproxy on every call of this method (see commented code)
      * @param i
      * @return
      * @deprecated for internal use only
      */
-     protected Integer setSortIndex(Integer i) { 										 // 
-		return sortIndex = i;
+     protected void setSortIndex(Integer i) { 
+//    	 CdmBase.deproxy(this, TaxonNode.class).sortIndex = i;  //alternative solution for private, DON'T remove
+    	 sortIndex = i;
 	}
     
 
