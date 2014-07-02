@@ -187,6 +187,5 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
     	classification.addParentChild(newParentTaxon, firstTopLevelChildTaxon, null, null);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
-    	
     }
 }
