@@ -273,7 +273,7 @@ public class Datasource {
 		try {
 			CdmPersistentDataSource ds = CdmPersistentDataSource.NewLocalHsqlInstance();
 			appCtr = CdmApplicationController.NewInstance(ds);
-			List<?> l = appCtr.getNameService().list(null,5, 1,null,null);
+			List l = appCtr.getNameService().list(null,5, 1,null,null);
 			System.out.println(l);
 			//Agent agent = new Agent();
 			//appCtr.getAgentService().saveAgent(agent);
