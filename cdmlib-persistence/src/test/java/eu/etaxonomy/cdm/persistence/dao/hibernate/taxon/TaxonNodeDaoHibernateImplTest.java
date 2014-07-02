@@ -16,7 +16,10 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javassist.util.proxy.Proxy;
+
 import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
@@ -181,11 +184,29 @@ public class TaxonNodeDaoHibernateImplTest extends CdmTransactionalIntegrationTe
     @Test
     @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
     @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml")
+    //test if TaxonNode.remove(index) works correctly with proxies
     public void testSortindexForJavassist(){
-    	Taxon newParentTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
-    	Taxon firstTopLevelChildTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
+    	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+    	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Taxon firstTopLevelTaxon = (Taxon)taxonDao.findByUuid(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
     	Classification classification = classificationDao.findByUuid(ClassificationUuid);
-    	classification.addParentChild(newParentTaxon, firstTopLevelChildTaxon, null, null);
+    	classification.addParentChild(taxonWithLazyLoadedParentNodeOnTopLevel, firstTopLevelTaxon, null, null);
     	commitAndStartNewTransaction( new String[]{"TaxonNode"});
     }
+    
+    @Test
+    @DataSet(value="TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml")
+    @ExpectedDataSet("TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml")
+    //test if TaxonNode.addNode(node) works correctly with proxies
+    public void testSortindexForJavassist2(){
+    	Taxon taxonWithLazyLoadedParentNodeOnTopLevel = (Taxon)taxonDao.findByUuid(UUID.fromString("bc09aca6-06fd-4905-b1e7-cbf7cc65d783"));
+    	TaxonNode parent = taxonWithLazyLoadedParentNodeOnTopLevel.getTaxonNodes().iterator().next().getParent();
+    	Assert.assertTrue("Parent node must be proxy, otherwise test does not work", parent instanceof Proxy);
+    	Taxon newTaxon = Taxon.NewInstance(null, null);
+    	Classification classification = classificationDao.findByUuid(ClassificationUuid);
+    	classification.addChildTaxon(newTaxon, 0, null, null);
+    	commitAndStartNewTransaction( new String[]{"TaxonNode"});
+    }
+
 }
