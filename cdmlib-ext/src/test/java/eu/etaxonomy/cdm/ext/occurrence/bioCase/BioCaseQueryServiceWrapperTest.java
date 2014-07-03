@@ -13,6 +13,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.net.URI;
 import java.net.URISyntaxException;
 
 import junit.framework.TestCase;
@@ -41,7 +42,7 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
                 OccurenceQuery query = new OccurenceQuery("Campanula*", null, null, null, null, null, null, null, null);
-                InputStream response = queryService.query(query);
+                InputStream response = queryService.query(query, URI.create("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(response));
                 String line = null;
                 do {
@@ -53,8 +54,6 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
             } catch (ClientProtocolException e) {
                 fail(e.getMessage());
             } catch (IOException e) {
-                fail(e.getMessage());
-            } catch (URISyntaxException e) {
                 fail(e.getMessage());
             }
         } else {

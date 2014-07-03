@@ -231,8 +231,11 @@ public class EditGeoServiceUtilities {
         /**
          * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
          * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
+         *
+         * a.kohlbecker 2014-07-02 :This bug in the map service has been
+         * fixed now so reusing styles is now possible setting this flag to false.
          */
-        boolean doNotReuseStyles = true;
+        boolean doNotReuseStyles = false;
 
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
@@ -582,7 +585,7 @@ public class EditGeoServiceUtilities {
             return null;
 
         }else if (voc.getUuid().equals(Country.uuidCountryVocabulary)){
-        	return "country_earth:gmi_cntry";
+            return "country_earth:gmi_cntry";
         }
 
         GeoServiceArea areas = mapping.valueOf(area);

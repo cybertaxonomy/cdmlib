@@ -1070,6 +1070,7 @@ cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
 cdmlib-model/src/main/resources/terms/MeasurementUnit.csv -text
+cdmlib-model/src/main/resources/terms/MediaSpecimenKindOfUnit.csv -text
 cdmlib-model/src/main/resources/terms/Modifier.csv -text
 cdmlib-model/src/main/resources/terms/NameFeature.csv -text
 cdmlib-model/src/main/resources/terms/NameRelationshipType.csv -text
@@ -1647,6 +1648,9 @@ cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testFindDeleted.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.testGetTaxaByNameAndArea.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonDaoHibernateImplTest.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist-result.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist.xml -text
+cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.testSortindexForJavassist2-result.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/taxon/TaxonNodeDaoHibernateImplTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/dao/hibernate/view/AuditEventDaoTest.xml -text
 cdmlib-persistence/src/test/resources/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.testOnSaveOrUpdateAgents-result.xml -text

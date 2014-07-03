@@ -248,12 +248,7 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
     @Cascade({ CascadeType.SAVE_UPDATE, CascadeType.MERGE })
 	private Map<Language, LanguageString> modifyingText = new HashMap<Language, LanguageString>();
 
-	/**
-	 * Class constructor: creates a new empty feature node instance.
-	 */
-	protected PolytomousKeyNode() {
-		super();
-	}
+// ************************** FACTORY ********************************/	
 
 	/**
 	 * Creates a new empty polytomous key node instance.
@@ -285,9 +280,24 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		result.setFeature(feature);
 		return result;
 	}
+	
+// ************************** CONSTRUCTOR *****************************/	
+		
+	/**
+	 * Class constructor: creates a new empty feature node instance.
+	 */
+	protected PolytomousKeyNode() {
+		super();
+	}
 
-	// ** ********************** CHILDREN ******************************/
+// ** ********************** GETTER / SETTER  ******************************/
 
+
+	//see #4278 and #4200, alternatively can be private and use deproxy(this, PolytomousKeyNode.class)
+	protected void setSortIndex(Integer sortIndex) {
+		this.sortIndex = sortIndex;
+	}
+	
 	/**
 	 * @return
 	 */
@@ -315,6 +325,78 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	 */
 	public void setNodeNumber(Integer nodeNumber) {
 		this.nodeNumber = nodeNumber;
+	}
+
+	/**
+	 * Returns the taxon this node links to. This is usually the case when this
+	 * node is a leaf.
+	 * 
+	 * @return
+	 * @see #setTaxon(Taxon)
+	 * @see #getSubkey()
+	 * @see #getChildren()
+	 * @see #getOtherNode()
+	 */
+	public Taxon getTaxon() {
+		return taxon;
+	}
+
+	/**
+	 * Sets the taxon this node links to. <BR>
+	 * If a tax
+	 * 
+	 * @param taxon
+	 * @see #getTaxon()
+	 */
+	public void setTaxon(Taxon taxon) {
+		this.taxon = taxon;
+	}
+
+	/**
+	 * @return
+	 * @see #setSubkey(PolytomousKey)
+	 * @see #getTaxon()
+	 * @see #getChildren()
+	 * @see #getOtherNode()
+	 */
+	public PolytomousKey getSubkey() {
+		return subkey;
+	}
+
+	/**
+	 * @param subkey
+	 * @see #getSubkey()
+	 */
+	public void setSubkey(PolytomousKey subkey) {
+		this.subkey = subkey;
+	}
+
+	/**
+	 * @return
+	 * @see #setOtherNode(PolytomousKeyNode)
+	 * @see #getTaxon()
+	 * @see #getChildren()
+	 * @see #getSubkey()
+	 */
+	public PolytomousKeyNode getOtherNode() {
+		return otherNode;
+	}
+
+	/**
+	 * @param otherNode
+	 * @see #getOtherNode()
+	 */
+	public void setOtherNode(PolytomousKeyNode otherNode) {
+		this.otherNode = otherNode;
+	}
+
+	// TODO
+	public void setFeature(Feature feature) {
+		this.feature = feature;
+	}
+
+	public Feature getFeature() {
+		return feature;
 	}
 
 	/**
@@ -389,11 +471,62 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		
 		// TODO workaround (see sortIndex doc)
 		for (int i = 0; i < children.size(); i++) {
-			children.get(i).sortIndex = i;			
+			children.get(i).setSortIndex(i);			
 		}
-		child.sortIndex = index;		
+		child.setSortIndex(index);		
 		child.setParent(this);
 	}
+	
+
+
+	/**
+	 * Removes the given polytomous key node from the list of
+	 * {@link #getChildren() children} of <i>this</i> polytomous key node.
+	 * 
+	 * @param child
+	 *            the feature node which should be removed
+	 * @see #getChildren()
+	 * @see #addChild(PolytomousKeyNode, int)
+	 * @see #addChild(PolytomousKeyNode)
+	 * @see #removeChild(int)
+	 */
+	public void removeChild(PolytomousKeyNode child) {
+		int index = children.indexOf(child);
+		if (index >= 0) {
+			removeChild(index);
+		}
+	}
+
+	/**
+	 * Removes the feature node placed at the given (index + 1) position from
+	 * the list of {@link #getChildren() children} of <i>this</i> feature node.
+	 * If the given index is out of bounds no child will be removed.
+	 * 
+	 * @param index
+	 *            the integer indicating the position of the feature node to be
+	 *            removed
+	 * @see #getChildren()
+	 * @see #addChild(PolytomousKeyNode, int)
+	 * @see #addChild(PolytomousKeyNode)
+	 * @see #removeChild(PolytomousKeyNode)
+	 */
+	public void removeChild(int index) {
+		PolytomousKeyNode child = children.get(index);
+		if (child != null) {
+			children.remove(index);
+			child.setParent(null);
+			// TODO workaround (see sortIndex doc)
+			for (int i = 0; i < children.size(); i++) {
+				PolytomousKeyNode childAt = children.get(i);
+				childAt.setSortIndex(i);
+			}
+			child.setSortIndex(null);
+			child.setNodeNumber(null);
+		}
+		refreshNodeNumbering();
+	}
+	
+// **************************** METHODS ************************************/	
 
 	/**
 	 * Returns the current maximum value of the node number in the entire key
@@ -460,53 +593,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 	}
 	
 
-
-	/**
-	 * Removes the given polytomous key node from the list of
-	 * {@link #getChildren() children} of <i>this</i> polytomous key node.
-	 * 
-	 * @param child
-	 *            the feature node which should be removed
-	 * @see #getChildren()
-	 * @see #addChild(PolytomousKeyNode, int)
-	 * @see #addChild(PolytomousKeyNode)
-	 * @see #removeChild(int)
-	 */
-	public void removeChild(PolytomousKeyNode child) {
-		int index = children.indexOf(child);
-		if (index >= 0) {
-			removeChild(index);
-		}
-	}
-
-	/**
-	 * Removes the feature node placed at the given (index + 1) position from
-	 * the list of {@link #getChildren() children} of <i>this</i> feature node.
-	 * If the given index is out of bounds no child will be removed.
-	 * 
-	 * @param index
-	 *            the integer indicating the position of the feature node to be
-	 *            removed
-	 * @see #getChildren()
-	 * @see #addChild(PolytomousKeyNode, int)
-	 * @see #addChild(PolytomousKeyNode)
-	 * @see #removeChild(PolytomousKeyNode)
-	 */
-	public void removeChild(int index) {
-		PolytomousKeyNode child = children.get(index);
-		if (child != null) {
-			children.remove(index);
-			child.setParent(null);
-			// TODO workaround (see sortIndex doc)
-			for (int i = 0; i < children.size(); i++) {
-				PolytomousKeyNode childAt = children.get(i);
-				childAt.sortIndex = i;
-			}
-			child.sortIndex = null;
-			child.setNodeNumber(null);
-		}
-		refreshNodeNumbering();
-	}
 	
 
 	/**
@@ -748,80 +834,8 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 		return this.modifyingText.remove(language);
 	}
 
-	/**
-	 * Returns the taxon this node links to. This is usually the case when this
-	 * node is a leaf.
-	 * 
-	 * @return
-	 * @see #setTaxon(Taxon)
-	 * @see #getSubkey()
-	 * @see #getChildren()
-	 * @see #getOtherNode()
-	 */
-	public Taxon getTaxon() {
-		return taxon;
-	}
 
-	/**
-	 * Sets the taxon this node links to. <BR>
-	 * If a tax
-	 * 
-	 * @param taxon
-	 * @see #getTaxon()
-	 */
-	public void setTaxon(Taxon taxon) {
-		this.taxon = taxon;
-	}
-
-	/**
-	 * @return
-	 * @see #setSubkey(PolytomousKey)
-	 * @see #getTaxon()
-	 * @see #getChildren()
-	 * @see #getOtherNode()
-	 */
-	public PolytomousKey getSubkey() {
-		return subkey;
-	}
-
-	/**
-	 * @param subkey
-	 * @see #getSubkey()
-	 */
-	public void setSubkey(PolytomousKey subkey) {
-		this.subkey = subkey;
-	}
-
-	/**
-	 * @return
-	 * @see #setOtherNode(PolytomousKeyNode)
-	 * @see #getTaxon()
-	 * @see #getChildren()
-	 * @see #getSubkey()
-	 */
-	public PolytomousKeyNode getOtherNode() {
-		return otherNode;
-	}
-
-	/**
-	 * @param otherNode
-	 * @see #getOtherNode()
-	 */
-	public void setOtherNode(PolytomousKeyNode otherNode) {
-		this.otherNode = otherNode;
-	}
-
-	// TODO
-	public void setFeature(Feature feature) {
-		this.feature = feature;
-	}
-
-	public Feature getFeature() {
-		return feature;
-	}
-
-	// *********************** CLONE
-	// ********************************************************/
+	// *********************** CLONE ********************************************************/
 
 	/**
 	 * Clones <i>this</i> PolytomousKeyNode. This is a shortcut that enables to
@@ -853,5 +867,6 @@ public class PolytomousKeyNode extends VersionableEntity implements IMultiLangua
 			return null;
 		}
 	}
+
 
 }

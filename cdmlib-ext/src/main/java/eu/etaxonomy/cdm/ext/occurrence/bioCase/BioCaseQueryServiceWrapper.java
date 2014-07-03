@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.ext.occurrence.bioCase;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,14 +47,6 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
     private static final BasicNameValuePair CAPABILITY_TEST_PARAM = new BasicNameValuePair("capabilities", "1");
 
     /**
-     *
-     */
-    public InputStream query(OccurenceQuery query) throws ClientProtocolException, IOException, URISyntaxException{
-        //TODO: remove default herbar querying. Maybe make other query method public
-        return query(query, new URI("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
-    }
-
-    /**
      * Queries the BioCASE provider at the given endPoint with the given {@link OccurenceQuery}.<br>
      * @param query
      * @param endPoint If <code>null</code> then the default endPoint is used
@@ -64,12 +55,8 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
      */
     public InputStream query(OccurenceQuery query, URI endPoint) throws ClientProtocolException, IOException{
         if(endPoint==null){
-            try {
-                endPoint = new URI("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar");
-            } catch (URISyntaxException e) {
-                //Should never happen
-                logger.error("URI creation failed.", e);
-            }
+            logger.warn("URI for querying was null.");
+            return null;
         }
         Document doc = BioCaseQueryGenerator.generateXMLQuery(query);
         String xmlOutputString = new XMLOutputter(Format.getPrettyFormat()).outputString(doc);

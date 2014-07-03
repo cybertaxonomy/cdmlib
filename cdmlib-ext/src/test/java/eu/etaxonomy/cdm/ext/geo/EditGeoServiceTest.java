@@ -102,16 +102,16 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
 
 
 //******************************************** TESTS**************
-    
+
     @Test
     public void testGetWebServiceUrlCountry() throws MalformedURLException, IOException {
-    	Set<Distribution> distributions = new HashSet<Distribution>();
-    	Country germany = termService.getDefinedTermByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class, null, null);
+        Set<Distribution> distributions = new HashSet<Distribution>();
+        Country germany = termService.getDefinedTermByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class, null, null);
 //        germany = (Country)termService.find(665);
 //        germany = (Country)termService.find(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
-        
+
 //        germany = Country.GERMANY();
-        
+
         distributions.add(Distribution.NewInstance(germany, PresenceTerm.PRESENT()));
         distributions.add(Distribution.NewInstance(termService.getDefinedTermByIdInVocabulary("DE", Country.uuidCountryVocabulary, Country.class, null, null), PresenceTerm.INTRODUCED()));
         Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
@@ -122,13 +122,13 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         boolean subAreaPreference = false;
         boolean statusOrderPreference = false;
         String result = EditGeoServiceUtilities.getDistributionServiceRequestParameterString(distributions,
-                subAreaPreference, statusOrderPreference, null, mapping, 
+                subAreaPreference, statusOrderPreference, null, mapping,
                 presenceAbsenceColorMap, null, languages );
         logger.warn(result);
         Assert.assertTrue("WebServiceUrl must contain country part for Germany", result.matches(".*ad=country_earth(%3A|:)gmi_cntry:a:DEU.*"));
-        
+
     }
-    
+
     @Test
     public void testGetWebServiceUrlTdwg() throws MalformedURLException, IOException {
         //String webServiceUrl = "http://www.test.de/webservice";
@@ -164,8 +164,7 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
         assertTrue(result.matches(".*[a-d]:FRA,BGM[\\|&].*") || result.matches(".*[a-d]:BGM,FRA[\\|&].*") );
         assertTrue(result.matches(".*[a-d]:GER[\\|&].*") );
         assertTrue(result.matches(".*[a-d]:SPA[\\|&].*") );
-//        assertTrue(result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
-        assertTrue(result.matches(".*tdwg4:[a-i]:INDAP[\\|&].*") );
+        assertTrue(result.matches(".*tdwg4:[a-d]:INDAP[\\|&].*") );
         //assertTrue(result.matches("0000ff"));
         //TODO continue
 
