@@ -122,6 +122,12 @@
         <entry key="eu.etaxonomy.cdm.model.reference.Reference">
             <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.ReferenceBaseBeanProcessor"/>
         </entry>
+        <entry key="eu.etaxonomy.cdm.model.name.TaxonNameBase">
+          <bean
+            class="eu.etaxonomy.cdm.remote.json.processor.bean.TaxonNameBaseBeanProcessor">
+            <property name="skipTaggedName" value="true" />
+          </bean>
+        </entry>
         <entry key="eu.etaxonomy.cdm.model.name.TypeDesignationBase">
           <bean class="eu.etaxonomy.cdm.remote.json.processor.bean.TypeDesignationBaseBeanProcessor"/>
         </entry>
@@ -492,7 +498,7 @@
       </list>
     </property>
   </bean>
-  
+
   <bean name="occurrenceCatalogueJsonConfig" class="eu.etaxonomy.cdm.remote.json.JsonConfigFactoryBean"
     init-method="init">
     <property name="jsonPropertyFilter">
@@ -548,6 +554,6 @@
       </list>
     </property>
   </bean>
-  
+
 
 </beans>
