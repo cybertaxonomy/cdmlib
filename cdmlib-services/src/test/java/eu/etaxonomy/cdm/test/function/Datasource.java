@@ -63,7 +63,7 @@ public class Datasource {
 	
 	private void testNewConfigControler(){
 		List<CdmPersistentDataSource> lsDataSources = CdmPersistentDataSource.getAllDataSources();
-		DbSchemaValidation schema = DbSchemaValidation.VALIDATE;
+		DbSchemaValidation schema = DbSchemaValidation.CREATE;
 		System.out.println(lsDataSources);
 		ICdmDataSource dataSource;
 		
@@ -71,7 +71,7 @@ public class Datasource {
 //		DatabaseTypeEnum dbType = DatabaseTypeEnum.MySQL;
 		
 		String server = "localhost";
-		String database = "cdm_test";
+		String database = "cdm34";
 //		String database = "test";
 		String username = "edit";
 		dataSource = CdmDataSource.NewMySqlInstance(server, database, username, AccountStore.readOrStorePassword(server, database, username, null));
@@ -120,12 +120,12 @@ public class Datasource {
 		
     	
 		
-		try {
-			CdmUpdater updater = new CdmUpdater();
-			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
-		} catch (Exception e) {
-//			xx;
-		}
+//		try {
+//			CdmUpdater updater = new CdmUpdater();
+//			updater.updateToCurrentVersion(dataSource, DefaultProgressMonitor.NewInstance());
+//		} catch (Exception e) {
+////			xx;
+//		}
 		
 		//CdmPersistentDataSource.save(dataSource.getName(), dataSource);
 		CdmApplicationController appCtr;
