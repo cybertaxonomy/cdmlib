@@ -175,6 +175,10 @@ public class DescriptionListPortalController extends IdentifiableListController<
        PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
        pagerParams.normalizeAndValidate(response);
 
+       if(features == null){
+           features = new DefinedTermBaseList<Feature>();
+       }
+
        Pager<DescriptionElementBase> pager = service.pageDescriptionElements(null, descriptionType, features.asSet(),
                type, pagerParams.getPageSize(), pagerParams.getPageIndex(), DESCRIPTION_ELEMENT_INIT_STRATEGY);
 
