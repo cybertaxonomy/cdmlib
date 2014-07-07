@@ -60,9 +60,6 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 		this.exclude = exclude;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		//TODO implement also for Identifiable sources
@@ -113,9 +110,6 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		if (isCache){
@@ -125,10 +119,6 @@ public class DbSingleSourceMapper extends DbSingleAttributeExportMapperBase<DbEx
 		}
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		if (isCache){
