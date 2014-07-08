@@ -106,14 +106,14 @@ public class EditGeoServiceTest extends CdmTransactionalIntegrationTest {
     @Test
     public void testGetWebServiceUrlCountry() throws MalformedURLException, IOException {
         Set<Distribution> distributions = new HashSet<Distribution>();
-        Country germany = termService.getDefinedTermByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class, null, null);
+        Country germany = termService.getDefinedTermByIdInVocabulary("DEU", Country.uuidCountryVocabulary, Country.class);
 //        germany = (Country)termService.find(665);
 //        germany = (Country)termService.find(UUID.fromString("cbe7ce69-2952-4309-85dd-0d7d4a4830a1"));
 
 //        germany = Country.GERMANY();
 
         distributions.add(Distribution.NewInstance(germany, PresenceTerm.PRESENT()));
-        distributions.add(Distribution.NewInstance(termService.getDefinedTermByIdInVocabulary("DE", Country.uuidCountryVocabulary, Country.class, null, null), PresenceTerm.INTRODUCED()));
+        distributions.add(Distribution.NewInstance(termService.getDefinedTermByIdInVocabulary("DE", Country.uuidCountryVocabulary, Country.class), PresenceTerm.INTRODUCED()));
         Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceColorMap = new HashMap<PresenceAbsenceTermBase<?>, Color>();
         presenceAbsenceColorMap.put(PresenceTerm.PRESENT(), Color.BLUE);
         presenceAbsenceColorMap.put(PresenceTerm.INTRODUCED(), Color.BLACK);

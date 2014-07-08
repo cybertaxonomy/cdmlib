@@ -10,18 +10,26 @@
 
 package eu.etaxonomy.cdm.remote.controller;
 
+import java.awt.Color;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import org.apache.commons.lang.StringUtils;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -44,8 +52,11 @@ import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
@@ -212,6 +223,9 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
      * @param request
      * @param response
      * @return
+     * @throws IOException
+     * @throws JsonMappingException
+     * @throws JsonParseException
      */
     @RequestMapping(value = "/portal/description/distributionInfoFor/{uuid}", method = RequestMethod.GET)
     public ModelAndView doGetDistributionInfo(
@@ -221,8 +235,9 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             @RequestParam(value = "statusOrderPreference", required = false) boolean statusOrderPreference,
             @RequestParam(value = "hideMarkedAreas", required = false) DefinedTermBaseList<MarkerType> hideMarkedAreasList,
             @RequestParam(value = "omitLevels", required = false) Set<NamedAreaLevel> omitLevels,
+            @RequestParam(value = "statusColors", required = false) String statusColorsString,
             HttpServletRequest request,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
 
             logger.debug("doGetDistributionInfo() - " + requestPathAndQuery(request));
 
@@ -235,12 +250,53 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
 
             EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = buildStatusColorMap(statusColorsString);
+
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
-                    hideMarkedAreas, omitLevels, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY);
+                    hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY);
 
             mv.addObject(dto);
 
             return mv;
+    }
+
+    /**
+     * @param statusColorsString
+     * @return
+     * @throws IOException
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     */
+    private Map<PresenceAbsenceTermBase<?>, Color> buildStatusColorMap(String statusColorsString) throws IOException, JsonParseException,
+            JsonMappingException {
+
+        Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+        if(StringUtils.isNotEmpty(statusColorsString)){
+
+            ObjectMapper mapper = new ObjectMapper();
+            // TODO cache the color maps to speed this up?
+
+            Map<String,String> statusColorMap = mapper.readValue(statusColorsString, new TypeReference<Map<String,String>>() { });
+            UUID presenceTermVocabUuid = PresenceTerm.NATIVE().getVocabulary().getUuid();
+            UUID absenceTermVocabUuid = AbsenceTerm.ABSENT().getVocabulary().getUuid();
+            presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+            PresenceAbsenceTermBase<?> paTerm = null;
+            for(String statusId : statusColorMap.keySet()){
+                try {
+                    Color color = Color.decode(statusColorMap.get(statusId));
+                    paTerm = termService.getDefinedTermByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceTerm.class);
+                    if(paTerm != null){
+                        paTerm = termService.getDefinedTermByIdInVocabulary(statusId, absenceTermVocabUuid, AbsenceTerm.class);
+                    }
+                    if(paTerm != null){
+                        presenceAbsenceTermColors.put(paTerm, color);
+                    }
+                } catch (NumberFormatException e){
+                    logger.error("Cannot decode color", e);
+                }
+            }
+        }
+        return presenceAbsenceTermColors;
     }
 
 

@@ -55,268 +55,268 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 @Service
 @Transactional(readOnly = true)
 public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDefinedTermDao> implements ITermService{
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(TermServiceImpl.class);
 
-	private ILanguageStringDao languageStringDao;
+    private ILanguageStringDao languageStringDao;
 
-	@Autowired
-	@Qualifier("langStrBaseDao")
-	private ILanguageStringBaseDao languageStringBaseDao;
-	private IRepresentationDao representationDao;
-
-	@Autowired
-	public void setLanguageStringDao(ILanguageStringDao languageStringDao) {
-		this.languageStringDao = languageStringDao;
-	}
-
-	@Autowired
-	public void setRepresentationDao(IRepresentationDao representationDao) {
-		this.representationDao = representationDao;
-	}
-
-	@Override
     @Autowired
-	protected void setDao(IDefinedTermDao dao) {
-		this.dao = dao;
-	}
+    @Qualifier("langStrBaseDao")
+    private ILanguageStringBaseDao languageStringBaseDao;
+    private IRepresentationDao representationDao;
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ITermService#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-	 */
-	@Override
-	public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start,
-	        List<OrderHint> orderHints, List<String> propertyPaths) {
-	    return dao.listByTermType(termType, limit, start, orderHints, propertyPaths);
-	}
+    @Autowired
+    public void setLanguageStringDao(ILanguageStringDao languageStringDao) {
+        this.languageStringDao = languageStringDao;
+    }
 
-	@Override
-	public DefinedTermBase getByUri(URI uri) {
-		return dao.findByUri(uri);
-	}
+    @Autowired
+    public void setRepresentationDao(IRepresentationDao representationDao) {
+        this.representationDao = representationDao;
+    }
 
-	@Override
-	public Language getLanguageByIso(String iso639) {
-		return dao.getLanguageByIso(iso639);
-	}
+    @Override
+    @Autowired
+    protected void setDao(IDefinedTermDao dao) {
+        this.dao = dao;
+    }
 
-	@Override
-	public List<Language> getLanguagesByLocale(Enumeration<Locale> locales){
-		return dao.getLanguagesByLocale(locales);
-	}
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ITermService#listByTermType(eu.etaxonomy.cdm.model.common.TermType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
+     */
+    @Override
+    public List<DefinedTermBase<?>> listByTermType(TermType termType, Integer limit, Integer start,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        return dao.listByTermType(termType, limit, start, orderHints, propertyPaths);
+    }
 
-	@Override
-	public <TERM extends DefinedTermBase> TERM getDefinedTermByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz, Integer pageSize, Integer pageNumber) {
-		List<TERM> list = dao.getDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, pageSize, pageNumber);
-		if (list.isEmpty()){
-			return null;
-		}else if (list.size() == 1){
-			return list.get(0);
-		}else{
-			String message = "There is more then 1 (%d) term with the same id in vocabulary. This is forbidden. Check the state of your database.";
-			throw new IllegalStateException(String.format(message, list.size()));
-		}
-	}
+    @Override
+    public DefinedTermBase getByUri(URI uri) {
+        return dao.findByUri(uri);
+    }
+
+    @Override
+    public Language getLanguageByIso(String iso639) {
+        return dao.getLanguageByIso(iso639);
+    }
+
+    @Override
+    public List<Language> getLanguagesByLocale(Enumeration<Locale> locales){
+        return dao.getLanguagesByLocale(locales);
+    }
+
+    @Override
+    public <TERM extends DefinedTermBase> TERM getDefinedTermByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) {
+        List<TERM> list = dao.getDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, null, null);
+        if (list.isEmpty()){
+            return null;
+        }else if (list.size() == 1){
+            return list.get(0);
+        }else{
+            String message = "There is more then 1 (%d) term with the same id in vocabulary. This is forbidden. Check the state of your database.";
+            throw new IllegalStateException(String.format(message, list.size()));
+        }
+    }
 
 
-	@Override
-	public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {
-		if (StringUtils.isBlank(tdwgAbbreviation)){ //TDWG areas should always have a label
-			return null;
-		}
-		List<NamedArea> list = dao.getDefinedTermByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class, null, null);
-		if (list.isEmpty()){
-			return null;
-		}else if (list.size() == 1){
-			return list.get(0);
-		}else{
-			String message = "There is more then 1 (%d) TDWG area with the same abbreviated label. This is forbidden. Check the state of your database.";
-			throw new IllegalStateException(String.format(message, list.size()));
-		}
+    @Override
+    public NamedArea getAreaByTdwgAbbreviation(String tdwgAbbreviation) {
+        if (StringUtils.isBlank(tdwgAbbreviation)){ //TDWG areas should always have a label
+            return null;
+        }
+        List<NamedArea> list = dao.getDefinedTermByIdInVocabulary(tdwgAbbreviation, NamedArea.uuidTdwgAreaVocabulary, NamedArea.class, null, null);
+        if (list.isEmpty()){
+            return null;
+        }else if (list.size() == 1){
+            return list.get(0);
+        }else{
+            String message = "There is more then 1 (%d) TDWG area with the same abbreviated label. This is forbidden. Check the state of your database.";
+            throw new IllegalStateException(String.format(message, list.size()));
+        }
 
-	}
+    }
 
-	@Override
-	public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
+    @Override
+    public <T extends DefinedTermBase> Pager<T> getGeneralizationOf(T definedTerm, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countGeneralizationOf(definedTerm);
 
-		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getGeneralizationOf(definedTerm, pageSize, pageNumber);
-		}
+        List<T> results = new ArrayList<T>();
+        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.getGeneralizationOf(definedTerm, pageSize, pageNumber);
+        }
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public <T extends DefinedTermBase> Pager<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    @Override
+    public <T extends DefinedTermBase> Pager<T> getIncludes(Collection<T> definedTerms, Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countIncludes(definedTerms);
 
-		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getIncludes(definedTerms, pageSize, pageNumber,propertyPaths);
-		}
+        List<T> results = new ArrayList<T>();
+        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.getIncludes(definedTerms, pageSize, pageNumber,propertyPaths);
+        }
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public Pager<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
+    @Override
+    public Pager<Media> getMedia(DefinedTermBase definedTerm, Integer pageSize,	Integer pageNumber) {
         Integer numberOfResults = dao.countMedia(definedTerm);
 
-		List<Media> results = new ArrayList<Media>();
-		if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getMedia(definedTerm, pageSize, pageNumber);
-		}
+        List<Media> results = new ArrayList<Media>();
+        if(numberOfResults > 0) { // no point checking again  //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.getMedia(definedTerm, pageSize, pageNumber);
+        }
 
-		return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<Media>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
+    @Override
+    public <T extends DefinedTermBase> Pager<T> getPartOf(Set<T> definedTerms,Integer pageSize, Integer pageNumber, List<String> propertyPaths) {
         Integer numberOfResults = dao.countPartOf(definedTerms);
 
-		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getPartOf(definedTerms, pageSize, pageNumber, propertyPaths);
-		}
+        List<T> results = new ArrayList<T>();
+        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.getPartOf(definedTerms, pageSize, pageNumber, propertyPaths);
+        }
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
-			List<OrderHint> orderHints, List<String> propertyPaths) {
-		Integer numberOfResults = dao.count(level, type);
+    @Override
+    public Pager<NamedArea> list(NamedAreaLevel level, NamedAreaType type, Integer pageSize, Integer pageNumber,
+            List<OrderHint> orderHints, List<String> propertyPaths) {
+        Integer numberOfResults = dao.count(level, type);
 
-		List<NamedArea> results = new ArrayList<NamedArea>();
-		if (numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.list(level, type, pageSize, pageNumber, orderHints, propertyPaths);
-		}
+        List<NamedArea> results = new ArrayList<NamedArea>();
+        if (numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.list(level, type, pageSize, pageNumber, orderHints, propertyPaths);
+        }
 
-		return new DefaultPagerImpl<NamedArea>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<NamedArea>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+    @Override
+    public <T extends DefinedTermBase> Pager<T> findByRepresentationText(String label, Class<T> clazz, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countDefinedTermByRepresentationText(label,clazz);
 
-		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
-		}
+        List<T> results = new ArrayList<T>();
+        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.getDefinedTermByRepresentationText(label, clazz, pageSize, pageNumber);
+        }
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
+    @Override
+    public <T extends DefinedTermBase> Pager<T> findByRepresentationAbbreviation(String abbrev, Class<T> clazz, Integer pageSize, Integer pageNumber) {
         Integer numberOfResults = dao.countDefinedTermByRepresentationAbbrev(abbrev,clazz);
 
-		List<T> results = new ArrayList<T>();
-		if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
-			results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
-		}
+        List<T> results = new ArrayList<T>();
+        if(numberOfResults > 0) { // no point checking again //TODO use AbstractPagerImpl.hasResultsInRange(numberOfResults, pageNumber, pageSize)
+            results = dao.getDefinedTermByRepresentationAbbrev(abbrev, clazz, pageSize, pageNumber);
+        }
 
-		return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
-	}
+        return new DefaultPagerImpl<T>(pageNumber, numberOfResults, pageSize, results);
+    }
 
-	@Override
-	public List<LanguageString> getAllLanguageStrings(int limit, int start) {
-		return languageStringDao.list(limit, start);
-	}
+    @Override
+    public List<LanguageString> getAllLanguageStrings(int limit, int start) {
+        return languageStringDao.list(limit, start);
+    }
 
-	@Override
-	public List<Representation> getAllRepresentations(int limit, int start) {
-		return representationDao.list(limit,start);
-	}
+    @Override
+    public List<Representation> getAllRepresentations(int limit, int start) {
+        return representationDao.list(limit,start);
+    }
 
-	@Override
-	public UUID saveLanguageData(LanguageStringBase languageData) {
-		return languageStringBaseDao.save(languageData);
-	}
+    @Override
+    public UUID saveLanguageData(LanguageStringBase languageData) {
+        return languageStringBaseDao.save(languageData);
+    }
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
-	/** @deprecated use {@link #delete(DefinedTermBase, TermDeletionConfigurator)} instead
-	 * to allow DeleteResult return type*/
-	@Override
-	@Deprecated
-	public String delete(DefinedTermBase term){
-		String result = term.getUuid().toString();
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
+     */
+    /** @deprecated use {@link #delete(DefinedTermBase, TermDeletionConfigurator)} instead
+     * to allow DeleteResult return type*/
+    @Override
+    @Deprecated
+    public String delete(DefinedTermBase term){
+        String result = term.getUuid().toString();
 
-		TermDeletionConfigurator defaultConfig = new TermDeletionConfigurator();
-		delete(term, defaultConfig);
-		return result;
-	}
+        TermDeletionConfigurator defaultConfig = new TermDeletionConfigurator();
+        delete(term, defaultConfig);
+        return result;
+    }
 
-	@Override
-	public DeleteResult delete(DefinedTermBase term, TermDeletionConfigurator config){
-		if (config == null){
-			config = new TermDeletionConfigurator();
-		}
+    @Override
+    public DeleteResult delete(DefinedTermBase term, TermDeletionConfigurator config){
+        if (config == null){
+            config = new TermDeletionConfigurator();
+        }
 //		boolean isInternal = config.isInternal();
-		DeleteResult result = new DeleteResult();
-		Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
-		CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
+        DeleteResult result = new DeleteResult();
+        Set<DefinedTermBase> termsToSave = new HashSet<DefinedTermBase>();
+        CdmBase.deproxy(dao.merge(term), DefinedTermBase.class);
 
-		try {
-			//generalization of
-			Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
-			if (specificTerms.size()>0){
-				if (config.isDeleteGeneralizationOfRelations()){
-					DefinedTermBase generalTerm = term.getKindOf();
-					for (DefinedTermBase specificTerm: specificTerms){
-						term.removeGeneralization(specificTerm);
-						if (generalTerm != null){
-							generalTerm.addGeneralizationOf(specificTerm);
-							termsToSave.add(generalTerm);
-						}
-					}
-				}else{
-					//TODO Exception type
-					String message = "This term has specifing terms. Move or delete specifiing terms prior to delete or change delete configuration.";
-					result.addRelatedObjects(specificTerms);
-					result.setAbort();
-					Exception ex = new DataChangeNoRollbackException(message);
-					result.addException(ex);
-				}
-			}
+        try {
+            //generalization of
+            Set<DefinedTermBase> specificTerms = term.getGeneralizationOf();
+            if (specificTerms.size()>0){
+                if (config.isDeleteGeneralizationOfRelations()){
+                    DefinedTermBase generalTerm = term.getKindOf();
+                    for (DefinedTermBase specificTerm: specificTerms){
+                        term.removeGeneralization(specificTerm);
+                        if (generalTerm != null){
+                            generalTerm.addGeneralizationOf(specificTerm);
+                            termsToSave.add(generalTerm);
+                        }
+                    }
+                }else{
+                    //TODO Exception type
+                    String message = "This term has specifing terms. Move or delete specifiing terms prior to delete or change delete configuration.";
+                    result.addRelatedObjects(specificTerms);
+                    result.setAbort();
+                    Exception ex = new DataChangeNoRollbackException(message);
+                    result.addException(ex);
+                }
+            }
 
-			//kind of
-			DefinedTermBase generalTerm = term.getKindOf();
-			if (generalTerm != null){
-				if (config.isDeleteKindOfRelations()){
-					generalTerm.removeGeneralization(term);
-				}else{
-					//TODO Exception type
-					String message = "This term is kind of another term. Move or delete kind of relationship prior to delete or change delete configuration.";
-					result.addRelatedObject(generalTerm);
-					result.setAbort();
-					DataChangeNoRollbackException ex = new DataChangeNoRollbackException(message);
-					result.addException(ex);
-					throw ex;
-				}
-			}
+            //kind of
+            DefinedTermBase generalTerm = term.getKindOf();
+            if (generalTerm != null){
+                if (config.isDeleteKindOfRelations()){
+                    generalTerm.removeGeneralization(term);
+                }else{
+                    //TODO Exception type
+                    String message = "This term is kind of another term. Move or delete kind of relationship prior to delete or change delete configuration.";
+                    result.addRelatedObject(generalTerm);
+                    result.setAbort();
+                    DataChangeNoRollbackException ex = new DataChangeNoRollbackException(message);
+                    result.addException(ex);
+                    throw ex;
+                }
+            }
 
-			//part of
-			DefinedTermBase parentTerm = term.getPartOf();
-			if (parentTerm != null){
-				if (! config.isDeletePartOfRelations()){
-					//TODO Exception type
-					String message = "This term is included in another term. Remove from parent term prior to delete or change delete configuration.";
-					result.addRelatedObject(parentTerm);
-					result.setAbort();
-					DataChangeNoRollbackException ex = new DataChangeNoRollbackException(message);
-					result.addException(ex);
-				}
-			}
+            //part of
+            DefinedTermBase parentTerm = term.getPartOf();
+            if (parentTerm != null){
+                if (! config.isDeletePartOfRelations()){
+                    //TODO Exception type
+                    String message = "This term is included in another term. Remove from parent term prior to delete or change delete configuration.";
+                    result.addRelatedObject(parentTerm);
+                    result.setAbort();
+                    DataChangeNoRollbackException ex = new DataChangeNoRollbackException(message);
+                    result.addException(ex);
+                }
+            }
 
 
-			//included in
-			Set<DefinedTermBase> includedTerms = term.getIncludes();
-			if (includedTerms.size()> 0){
+            //included in
+            Set<DefinedTermBase> includedTerms = term.getIncludes();
+            if (includedTerms.size()> 0){
 //				if (config.isDeleteIncludedTerms()){
 //					for (DefinedTermBase includedTerm: includedTerms){
 //						config.setCheck(true);
@@ -325,70 +325,70 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
 //						result.includeResult(includedResult);
 //					}
 //				}else
-					if (config.isDeleteIncludedRelations()){
-					DefinedTermBase parent = term.getPartOf();
-					for (DefinedTermBase includedTerm: includedTerms){
-						term.removeIncludes(includedTerm);
-						if (parent != null){
-							parent.addIncludes(includedTerm);
-							termsToSave.add(parent);
-						}
-					}
-				}else{
-					//TODO Exception type
-					String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
-					result.addRelatedObjects(includedTerms);
-					result.setAbort();
-					Exception ex = new DataChangeNoRollbackException(message);
-					result.addException(ex);
-				}
-			}
+                    if (config.isDeleteIncludedRelations()){
+                    DefinedTermBase parent = term.getPartOf();
+                    for (DefinedTermBase includedTerm: includedTerms){
+                        term.removeIncludes(includedTerm);
+                        if (parent != null){
+                            parent.addIncludes(includedTerm);
+                            termsToSave.add(parent);
+                        }
+                    }
+                }else{
+                    //TODO Exception type
+                    String message = "This term includes other terms. Move or delete included terms prior to delete or change delete configuration.";
+                    result.addRelatedObjects(includedTerms);
+                    result.setAbort();
+                    Exception ex = new DataChangeNoRollbackException(message);
+                    result.addException(ex);
+                }
+            }
 
-			//part of
-			if (parentTerm != null){
-				if (config.isDeletePartOfRelations()){
-					parentTerm.removeIncludes(term);
-					termsToSave.add(parentTerm);
-				}else{
-					//handelede before "included in"
-				}
-			}
+            //part of
+            if (parentTerm != null){
+                if (config.isDeletePartOfRelations()){
+                    parentTerm.removeIncludes(term);
+                    termsToSave.add(parentTerm);
+                }else{
+                    //handelede before "included in"
+                }
+            }
 
 //			relatedObjects;
 
 
-			if (result.isOk()){
-				TermVocabulary voc = term.getVocabulary();
-				if (voc!= null){
-					voc.removeTerm(term);
-				}
-				//TODO save voc
-				if (true /*!config.isInternal()*/){
-					dao.delete(term);
-					dao.saveOrUpdateAll(termsToSave);
-					for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
-						persistPair.dao.delete(persistPair.objectToPersist);
-					}
-					for (DeleteResult.PersistPair persistPair : result.getObjectsToSave()){
-						persistPair.dao.saveOrUpdate(persistPair.objectToPersist);
-					}
+            if (result.isOk()){
+                TermVocabulary voc = term.getVocabulary();
+                if (voc!= null){
+                    voc.removeTerm(term);
+                }
+                //TODO save voc
+                if (true /*!config.isInternal()*/){
+                    dao.delete(term);
+                    dao.saveOrUpdateAll(termsToSave);
+                    for (DeleteResult.PersistPair persistPair : result.getObjectsToDelete()){
+                        persistPair.dao.delete(persistPair.objectToPersist);
+                    }
+                    for (DeleteResult.PersistPair persistPair : result.getObjectsToSave()){
+                        persistPair.dao.saveOrUpdate(persistPair.objectToPersist);
+                    }
 
-				}
-			}
-		} catch (DataChangeNoRollbackException e) {
-			result.setStatus(DeleteStatus.ERROR);
-		}
-		return result;
-	}
+                }
+            }
+        } catch (DataChangeNoRollbackException e) {
+            result.setStatus(DeleteStatus.ERROR);
+        }
+        return result;
+    }
 
-	@Override
-	@Transactional(readOnly = false)
+    @Override
+    @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends DefinedTermBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<DefinedTermBase> cacheStrategy, IProgressMonitor monitor) {
-		//TODO shouldnt this be TermBase instead of DefinedTermBase
-		if (clazz == null){
-			clazz = DefinedTermBase.class;
-		}
-		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
-	}
+        //TODO shouldnt this be TermBase instead of DefinedTermBase
+        if (clazz == null){
+            clazz = DefinedTermBase.class;
+        }
+        super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
+    }
 
 }

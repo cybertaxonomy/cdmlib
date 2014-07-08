@@ -194,13 +194,14 @@ public interface IEditGeoService {
     * @param statusOrderPreference see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param hideMarkedAreas see {@link DescriptionUtility#filterDistributions(Collection, boolean, boolean, Set)}
     * @param omitLevels see {@link DescriptionUtility#orderDistributions(Set, Collection)}
+    * @param presenceAbsenceTermColors
     * @param languages
      * @param propertyPaths
     * @return
     */
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            Set<NamedAreaLevel> omitLevels,
+            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
             List<Language> languages, List<String> propertyPaths);
 
 }
