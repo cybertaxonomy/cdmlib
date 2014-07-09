@@ -722,6 +722,9 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
         if (rank != null){
             try {
                 infraGenericMarker = rank.getInfraGenericMarker();
+                if (rank.equals(Rank.SECTION_BOTANY()) || rank.equals(Rank.SUBSECTION_BOTANY())){
+                	infraGenericMarker = infraGenericMarker.replace("(bot.)", "");
+                }
             } catch (UnknownCdmTypeException e) {
                 infraGenericMarker = "'unhandled infrageneric rank'";
             }

@@ -169,7 +169,22 @@ public class NonViralNameDefaultCacheStrategyTest extends NameCacheStrategyTestB
         unrankedCache = strategy.getNameCache(unrankedName);
         Assert.assertEquals("Correct unranked cache expected", "Genus [infragen.] Infrageneric", unrankedCache);
 
-
+        //bot. specific ranks
+        botName = BotanicalName.NewInstance(Rank.SECTION_BOTANY());
+        botName.setGenusOrUninomial("Genus");
+        botName.setInfraGenericEpithet("Infragenus");
+        Assert.assertEquals("", "Genus sect. Infragenus", botName.getNameCache());
+        botName.setRank(Rank.SUBSECTION_BOTANY());
+        Assert.assertEquals("", "Genus subsect. Infragenus", botName.getNameCache());
+        
+        //zool. specific ranks (we don't have markers here therefore no problem should exist
+        ZoologicalName zooName = ZoologicalName.NewInstance(Rank.SECTION_ZOOLOGY());
+        zooName.setGenusOrUninomial("Genus");
+        zooName.setInfraGenericEpithet("Infragenus");
+        Assert.assertEquals("", "Genus", zooName.getNameCache());
+        zooName.setRank(Rank.SUBSECTION_ZOOLOGY());
+        Assert.assertEquals("", "Genus", zooName.getNameCache());
+        
     }
 
     /**
