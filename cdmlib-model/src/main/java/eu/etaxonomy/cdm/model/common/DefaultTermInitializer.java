@@ -15,9 +15,9 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.model.MockCdmCacher;
 import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
 import eu.etaxonomy.cdm.model.common.init.ITermLoader;
+import eu.etaxonomy.cdm.model.common.init.MockCdmCacher;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 /**

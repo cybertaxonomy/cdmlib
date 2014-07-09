@@ -1,4 +1,4 @@
-package eu.etaxonomy.cdm.model;
+package eu.etaxonomy.cdm.model.common.init;
 
 import java.util.Set;
 import java.util.UUID;
@@ -11,6 +11,7 @@ import net.sf.ehcache.config.PersistenceConfiguration;
 import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
+import eu.etaxonomy.cdm.model.ICdmCacher;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
