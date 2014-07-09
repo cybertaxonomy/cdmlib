@@ -16,7 +16,13 @@ import eu.etaxonomy.cdm.model.common.Language;
 
 /**
  * Since cdmlib-model cannot access CdmCacher we need to create a mock class
- * for the tests
+ * for the tests.
+ * 
+ * NOTES:
+ *      - All terms are put into the cache in the constructor
+ *      - The number of elements allowed in the cache is set to a big number - 10000
+ *      
+ * FIXME : Once the CDMCacher is externalised this class should just subclass it.
  * 
  * @author cmathew
  *
@@ -69,7 +75,7 @@ public class MockCdmCacher implements ICdmCacher {
 	 * @return
 	 */
 	private CacheConfiguration getDefaultCacheConfiguration() {
-		return new CacheConfiguration(DEFAULT_CACHE_NAME, 50)
+		return new CacheConfiguration(DEFAULT_CACHE_NAME, 10000)
 	    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
 	    .eternal(false)
 	    // default ttl and tti set to 2 hours
