@@ -7,8 +7,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import eu.etaxonomy.cdm.model.ICdmCacher;
@@ -76,9 +74,8 @@ public class MockCdmCacher implements ICdmCacher {
 	    .eternal(false)
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
-	    .timeToIdleSeconds(60*60*2)
-	    .diskExpiryThreadIntervalSeconds(0)
-	    .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
+	    .timeToIdleSeconds(60*60*2);
+	    
 	}
 	
 	/**
