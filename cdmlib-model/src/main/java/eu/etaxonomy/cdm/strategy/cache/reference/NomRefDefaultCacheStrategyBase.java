@@ -129,6 +129,9 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 			microReference = getBeforeMicroReference() + microReference;
 		}
 		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
+		if (result.startsWith(". ")){
+			result = result.substring(2);
+		}
 		return result;
 	}
 
