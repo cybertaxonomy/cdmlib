@@ -150,11 +150,14 @@ public interface ITermService extends IIdentifiableEntityService<DefinedTermBase
 
     /**
      * Returns the term with the given idInVocabulary for the given vocabulary.
+     * If the same idInVocabulary exists with same vocabulary for multiple terms (though this is against the general
+     * contract of idInVocabulary) always the same term should be returned.
      * @param id idInVocabulary
      * @param vocabularyUuid uuid of vocabulary
-     * @param clazz term clazz
+     * @param clazz term clazz filter on certain term classes. May be <code>null</code> for no filter.
      * @return the term
+     * @throws IllegalArgumentException if id or vocabularyUuid is <code>null</code>
      */
-    public <TERM extends DefinedTermBase> TERM getDefinedTermByIdInVocabulary(String id, UUID vocabularyUuid,
-            Class<TERM> clazz);
+    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) 
+    	throws IllegalArgumentException;
 }

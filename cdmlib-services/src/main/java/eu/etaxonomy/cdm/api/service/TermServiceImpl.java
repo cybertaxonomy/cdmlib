@@ -106,7 +106,7 @@ public class TermServiceImpl extends IdentifiableServiceBase<DefinedTermBase,IDe
     }
 
     @Override
-    public <TERM extends DefinedTermBase> TERM getDefinedTermByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) {
+    public <TERM extends DefinedTermBase> TERM findByIdInVocabulary(String id, UUID vocabularyUuid, Class<TERM> clazz) throws IllegalArgumentException {
         List<TERM> list = dao.getDefinedTermByIdInVocabulary(id, vocabularyUuid, clazz, null, null);
         if (list.isEmpty()){
             return null;
