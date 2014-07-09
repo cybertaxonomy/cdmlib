@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.model;
 
+import java.util.Set;
 import java.util.UUID;
 
 import net.sf.ehcache.Cache;
@@ -44,7 +45,10 @@ public class MockCdmCacher implements ICdmCacher {
 		getDefaultCacheManager().removalAll();
 		// Create default cache
 		getDefaultCacheManager().addCache(new Cache(getDefaultCacheConfiguration()));
-		put(Language.DEFAULT().getUuid(),Language.DEFAULT());
+		Set<Language> langList = Language.DEFAULT().getVocabulary().getTerms();
+		for (Language lang : langList){
+			put(lang.getUuid(),lang);
+		}
 		// We start first only with DefinedTermBase
 		DefinedTermBase.setCacher(this);
 		
