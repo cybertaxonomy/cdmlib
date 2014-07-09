@@ -284,9 +284,9 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             for(String statusId : statusColorMap.keySet()){
                 try {
                     Color color = Color.decode(statusColorMap.get(statusId));
-                    paTerm = termService.getDefinedTermByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceTerm.class);
+                    paTerm = termService.findByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceTerm.class);
                     if(paTerm != null){
-                        paTerm = termService.getDefinedTermByIdInVocabulary(statusId, absenceTermVocabUuid, AbsenceTerm.class);
+                        paTerm = termService.findByIdInVocabulary(statusId, absenceTermVocabUuid, AbsenceTerm.class);
                     }
                     if(paTerm != null){
                         presenceAbsenceTermColors.put(paTerm, color);
