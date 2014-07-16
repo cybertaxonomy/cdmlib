@@ -20,6 +20,10 @@
 
 	* '<<onlyCongruent>>' [optional] : this string can be set to true, if only congruent taxa should be included in the result.
 	
+	* '<<pageSize>>' [optional, default value = 20] : number results per page to display.
+
+	* '<<pageNumber>>' [optional, default value = 0] : number of the page to display.
+			
 						
 	[]
 									

@@ -10,6 +10,10 @@
 	
 	* '<<classification>>' [mandatory] : this string has to be a classification uuid, which can be retrieved, i.e. from the classification service.
 	
+	* '<<pageSize>>' [optional, default value = 20] : number results per page to display.
+
+	* '<<pageNumber>>' [optional, default value = 0] : number of the page to display.
+			
 						
 	[]
 
