@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.ext.geo;
 
 import java.awt.Color;
+import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
@@ -27,7 +28,13 @@ import javax.persistence.Transient;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.map.JsonMappingException;
+import org.codehaus.jackson.map.ObjectMapper;
+import org.codehaus.jackson.map.type.MapType;
+import org.codehaus.jackson.map.type.TypeFactory;
 
+import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -35,6 +42,7 @@ import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
 import eu.etaxonomy.cdm.model.common.Representation;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
+import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.Distribution;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
 import eu.etaxonomy.cdm.model.description.PresenceTerm;
@@ -69,6 +77,7 @@ public class EditGeoServiceUtilities {
     public static void setTermDao(IDefinedTermDao termDao) {
         EditGeoServiceUtilities.termDao= termDao;
     }
+
 
     private static HashMap<SpecimenOrObservationType, Color> defaultSpecimenOrObservationTypeColors = null;
 
@@ -714,6 +723,48 @@ public class EditGeoServiceUtilities {
             ascii = 64 + i;
         }
         return (char)ascii;
+    }
+
+    /**
+     * @param statusColorJson for example: {@code {"n":"#ff0000","p":"#ffff00"}}
+     * @return
+     * @throws IOException
+     * @throws JsonParseException
+     * @throws JsonMappingException
+     */
+    public static Map<PresenceAbsenceTermBase<?>, Color> buildStatusColorMap(String statusColorJson, ITermService termService) throws IOException, JsonParseException,
+            JsonMappingException {
+
+        Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
+        if(StringUtils.isNotEmpty(statusColorJson)){
+
+            ObjectMapper mapper = new ObjectMapper();
+            // TODO cache the color maps to speed this up?
+
+            TypeFactory typeFactory = mapper.getTypeFactory();
+            MapType mapType = typeFactory.constructMapType(HashMap.class, String.class, String.class);
+
+            Map<String,String> statusColorMap = mapper.readValue(statusColorJson, mapType);
+            UUID presenceTermVocabUuid = PresenceTerm.NATIVE().getVocabulary().getUuid();
+            UUID absenceTermVocabUuid = AbsenceTerm.ABSENT().getVocabulary().getUuid();
+            presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
+            PresenceAbsenceTermBase<?> paTerm = null;
+            for(String statusId : statusColorMap.keySet()){
+                try {
+                    Color color = Color.decode(statusColorMap.get(statusId));
+                    paTerm = termService.getDefinedTermByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceTerm.class);
+                    if(paTerm == null){
+                        paTerm = termService.getDefinedTermByIdInVocabulary(statusId, absenceTermVocabUuid, AbsenceTerm.class);
+                    }
+                    if(paTerm != null){
+                        presenceAbsenceTermColors.put(paTerm, color);
+                    }
+                } catch (NumberFormatException e){
+                    logger.error("Cannot decode color", e);
+                }
+            }
+        }
+        return presenceAbsenceTermColors;
     }
 
 }

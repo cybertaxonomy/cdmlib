@@ -15,7 +15,6 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.EnumSet;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -25,11 +24,8 @@ import java.util.UUID;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.lang.StringUtils;
 import org.codehaus.jackson.JsonParseException;
 import org.codehaus.jackson.map.JsonMappingException;
-import org.codehaus.jackson.map.ObjectMapper;
-import org.codehaus.jackson.type.TypeReference;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,15 +44,14 @@ import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO;
 import eu.etaxonomy.cdm.api.service.dto.DistributionInfoDTO.InfoPart;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.utility.DescriptionUtility;
+import eu.etaxonomy.cdm.ext.geo.EditGeoServiceUtilities;
 import eu.etaxonomy.cdm.ext.geo.IEditGeoService;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
-import eu.etaxonomy.cdm.model.description.PresenceTerm;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.remote.editor.DefinedTermBaseList;
@@ -250,7 +245,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
 
             EnumSet<InfoPart> parts = EnumSet.copyOf(partSet);
 
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = buildStatusColorMap(statusColorsString);
+            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = EditGeoServiceUtilities.buildStatusColorMap(statusColorsString, termService);
 
             DistributionInfoDTO dto = geoService.composeDistributionInfoFor(parts, taxonUuid, subAreaPreference, statusOrderPreference,
                     hideMarkedAreas, omitLevels, presenceAbsenceTermColors, LocaleContext.getLanguages(), DISTRIBUTION_INFO_INIT_STRATEGY);
@@ -258,45 +253,6 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             mv.addObject(dto);
 
             return mv;
-    }
-
-    /**
-     * @param statusColorsString
-     * @return
-     * @throws IOException
-     * @throws JsonParseException
-     * @throws JsonMappingException
-     */
-    private Map<PresenceAbsenceTermBase<?>, Color> buildStatusColorMap(String statusColorsString) throws IOException, JsonParseException,
-            JsonMappingException {
-
-        Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
-        if(StringUtils.isNotEmpty(statusColorsString)){
-
-            ObjectMapper mapper = new ObjectMapper();
-            // TODO cache the color maps to speed this up?
-
-            Map<String,String> statusColorMap = mapper.readValue(statusColorsString, new TypeReference<Map<String,String>>() { });
-            UUID presenceTermVocabUuid = PresenceTerm.NATIVE().getVocabulary().getUuid();
-            UUID absenceTermVocabUuid = AbsenceTerm.ABSENT().getVocabulary().getUuid();
-            presenceAbsenceTermColors = new HashMap<PresenceAbsenceTermBase<?>, Color>();
-            PresenceAbsenceTermBase<?> paTerm = null;
-            for(String statusId : statusColorMap.keySet()){
-                try {
-                    Color color = Color.decode(statusColorMap.get(statusId));
-                    paTerm = termService.findByIdInVocabulary(statusId, presenceTermVocabUuid, PresenceTerm.class);
-                    if(paTerm != null){
-                        paTerm = termService.findByIdInVocabulary(statusId, absenceTermVocabUuid, AbsenceTerm.class);
-                    }
-                    if(paTerm != null){
-                        presenceAbsenceTermColors.put(paTerm, color);
-                    }
-                } catch (NumberFormatException e){
-                    logger.error("Cannot decode color", e);
-                }
-            }
-        }
-        return presenceAbsenceTermColors;
     }
 
 
