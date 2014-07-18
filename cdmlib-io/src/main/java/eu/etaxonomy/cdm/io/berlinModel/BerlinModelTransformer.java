@@ -257,17 +257,9 @@ public class BerlinModelTransformer {
 	public static UUID uuidTcs = UUID.fromString("904C3980-B98D-422E-A195-95F4F41FC734");
 
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+		
 	//language areas
-	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
+//	public static final UUID uuidUkraineAndCrimea = UUID.fromString("99d4d1c2-09f6-416e-86a3-bdde5cae52af");
 	public static final UUID uuidAzerbaijanNakhichevan = UUID.fromString("232fbef0-9f4a-4cab-8ac1-e14c717e9de6");
 	
 	//Marker Types
