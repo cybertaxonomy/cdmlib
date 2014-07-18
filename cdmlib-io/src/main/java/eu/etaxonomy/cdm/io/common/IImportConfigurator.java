@@ -41,8 +41,24 @@ public interface IImportConfigurator extends IIoConfigurator {
         NONE,
         NOMENCLATURAL,
         CONCEPT_REFERENCES,
-        ALL
+        ALL;
+        
+        public DO_REFERENCES invers(){
+        	if (this == DO_REFERENCES.NONE){
+        		return ALL;
+        	}else if (this == ALL){
+        		return NONE;
+        	}else if (this == NOMENCLATURAL){  //don't change
+        		return NOMENCLATURAL;
+        	}else if (this == CONCEPT_REFERENCES){  //don't change
+        		return CONCEPT_REFERENCES;
+        	}else{
+        		throw new RuntimeException("inverse for DO_REFERENCE type: " + this + " not yet handled");
+        	}
+        }
     }
+    
+
 
     public boolean isValid();
 
