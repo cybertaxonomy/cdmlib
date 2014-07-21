@@ -6,8 +6,6 @@ import net.sf.ehcache.Cache;
 import net.sf.ehcache.CacheManager;
 import net.sf.ehcache.Element;
 import net.sf.ehcache.config.CacheConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration;
-import net.sf.ehcache.config.PersistenceConfiguration.Strategy;
 import net.sf.ehcache.store.MemoryStoreEvictionPolicy;
 
 import eu.etaxonomy.cdm.model.ICdmCacher;
@@ -16,8 +14,16 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 
 /**
- * Since cdmlib-model cannot access CdmCacher we need to create a mock class
- * for the tests
+ * Since cdmlib-services cannot access CdmCacher we need to create a mock class
+ * for the tests.
+ * See comment in {@link eu.etaxonomy.cdm.api.service.TaxonServiceSearchTest} for 
+ * why we need a mock cdm cacher class
+ * 
+ * NOTES:
+ *      - All terms are put into the cache in the constructor
+ *      - The number of elements allowed in the cache is set to a big number - 10000
+ *      
+ * FIXME : Once the CDMCacher is externalised this class should just subclass it.
  * 
  * @author cmathew
  *
@@ -67,14 +73,13 @@ public class MockCdmCacher implements ICdmCacher {
 	 * @return
 	 */
 	private CacheConfiguration getDefaultCacheConfiguration() {
-		return new CacheConfiguration(DEFAULT_CACHE_NAME, 50)
+		// setting
+		return new CacheConfiguration(DEFAULT_CACHE_NAME, 10000)
 	    .memoryStoreEvictionPolicy(MemoryStoreEvictionPolicy.LFU)
 	    .eternal(false)
 	    // default ttl and tti set to 2 hours
 	    .timeToLiveSeconds(60*60*2)
-	    .timeToIdleSeconds(60*60*2)
-	    .diskExpiryThreadIntervalSeconds(0)
-	    .persistence(new PersistenceConfiguration().strategy(Strategy.LOCALTEMPSWAP));
+	    .timeToIdleSeconds(60*60*2);
 	}
 	
 	/**

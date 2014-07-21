@@ -127,8 +127,14 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 		microReference = CdmUtils.Nz(microReference);
 		if (StringUtils.isNotBlank(microReference)){
 			microReference = getBeforeMicroReference() + microReference;
+			if (microReference.endsWith(".")  && result.contains(INomenclaturalReference.MICRO_REFERENCE_TOKEN + ".") ){
+				microReference = microReference.substring(0, microReference.length() - 1);
+			}
 		}
 		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
+		if (result.startsWith(". ")){  //only year available, remove '. '
+			result = result.substring(2);
+		}
 		return result;
 	}
 

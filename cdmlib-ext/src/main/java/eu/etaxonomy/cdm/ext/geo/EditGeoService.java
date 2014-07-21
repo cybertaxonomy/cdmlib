@@ -295,7 +295,7 @@ public class EditGeoService implements IEditGeoService {
     @Override
     public DistributionInfoDTO composeDistributionInfoFor(EnumSet<DistributionInfoDTO.InfoPart> parts, UUID taxonUUID,
             boolean subAreaPreference, boolean statusOrderPreference, Set<MarkerType> hideMarkedAreas,
-            Set<NamedAreaLevel> omitLevels,
+            Set<NamedAreaLevel> omitLevels, Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors,
             List<Language> languages,  List<String> propertyPaths){
 
         DistributionInfoDTO dto = new DistributionInfoDTO();
@@ -313,7 +313,6 @@ public class EditGeoService implements IEditGeoService {
         }
 
         if (parts.contains(InfoPart.mapUriParams)) {
-            Map<PresenceAbsenceTermBase<?>, Color> presenceAbsenceTermColors = null;
             dto.setMapUriParams(EditGeoServiceUtilities.getDistributionServiceRequestParameterString(filteredDistributions,
                     subAreaPreference,
                     statusOrderPreference,

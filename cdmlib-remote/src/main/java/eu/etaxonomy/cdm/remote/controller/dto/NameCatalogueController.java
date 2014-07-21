@@ -8,29 +8,24 @@
 */
 package eu.etaxonomy.cdm.remote.controller.dto;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import java.util.Hashtable;
-
-import org.apache.log4j.Level;
 import org.apache.lucene.document.Document;
 import org.apache.lucene.queryParser.ParseException;
 import org.joda.time.DateTime;
@@ -50,28 +45,12 @@ import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
-import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.common.DocUtils;
-import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.AcceptedTaxonBridge;
-
-import eu.etaxonomy.cdm.remote.controller.BaseController;
-import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
-import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.AcceptedNameSearch;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
-import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
-import eu.etaxonomy.cdm.remote.view.HtmlView;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Representation;
-import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
-import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -85,6 +64,14 @@ import eu.etaxonomy.cdm.model.taxon.TaxonRelationship;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.persistence.query.OrderHint.SortOrder;
+import eu.etaxonomy.cdm.remote.controller.BaseController;
+import eu.etaxonomy.cdm.remote.dto.common.ErrorResponse;
+import eu.etaxonomy.cdm.remote.dto.common.RemoteResponse;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.AcceptedNameSearch;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameInformation;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.NameSearch;
+import eu.etaxonomy.cdm.remote.dto.namecatalogue.TaxonInformation;
+import eu.etaxonomy.cdm.remote.view.HtmlView;
 
 /**
  * The controller class for the namespace 'name_catalogue'. This web service namespace
@@ -128,6 +115,9 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
 
     /** Classifcation 'all' key */
     public static final String CLASSIFICATION_ALL = "all";
+    
+    /** Classification to include uuids key */
+    public static final String INCLUDE_CLUUIDS = "cluuids";    
     
     /** Fuzzy Name Cache search */
     public static final String FUZZY_NAME_CACHE = "name";
@@ -772,12 +762,12 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET,params = {"taxonUuid"})
-    public ModelAndView doGetTaxonInformation(
-            @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
-            HttpServletRequest request, HttpServletResponse response) throws IOException {
-        return doGetTaxonInformation(taxonUuids,CLASSIFICATION_DEFAULT, request, response);
-    }
+//    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET,params = {"taxonUuid"})
+//    public ModelAndView doGetTaxonInformation(
+//            @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
+//            HttpServletRequest request, HttpServletResponse response) throws IOException {
+//        return doGetTaxonInformation(taxonUuids,CLASSIFICATION_DEFAULT, new String[]{},request, response);
+//    }
 
     /**
      * Returns information related to the taxon matching the given
@@ -794,6 +784,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *                 [Optional] String representing the taxonomic classification to use for
      *                 building the classification tree. Defaults to the first in the alphabetically
      *                 sorted list of classifications currently available in the database.
+     * @param include
+     *                 Array of data types to be included in addition to the normal response 
      *
      * @param request Http servlet request.
      * @param response Http servlet response.
@@ -802,10 +794,11 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
      *         in turn initialized using the {@link #TAXON_INFORMATION_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET, params = {"taxonUuid", "classification"})
+    @RequestMapping(value = { "taxon" }, method = RequestMethod.GET, params = {"taxonUuid"})
     public ModelAndView doGetTaxonInformation(
             @RequestParam(value = "taxonUuid", required = true) String[] taxonUuids,
             @RequestParam(value = "classification", required = false, defaultValue = CLASSIFICATION_DEFAULT) String classificationType,
+            @RequestParam(value = "include", required = false, defaultValue = "") String[] includes,
             HttpServletRequest request, HttpServletResponse response) throws IOException {
         ModelAndView mv = new ModelAndView();
         List<RemoteResponse> tiList = new ArrayList<RemoteResponse>();
@@ -825,7 +818,8 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                 if (tb.isInstanceOf(Taxon.class)) {
                     Taxon taxon = (Taxon) tb;
                     // build classification map
-                    Map classificationMap = getClassification(taxon, classificationType);
+                    boolean includeUuids = Arrays.asList(includes).contains(INCLUDE_CLUUIDS);
+                    Map classificationMap = getClassification(taxon, classificationType, includeUuids);
 
                     logger.info("taxon uuid " + taxon.getUuid().toString() + " original hash code : " + System.identityHashCode(taxon) + ", name class " + taxon.getName().getClass().getName());
                     // update taxon information object with taxon related data
@@ -1184,7 +1178,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                             for (SynonymRelationship sr : synRelationships) {
                                 Taxon accTaxon = sr.getAcceptedTaxon();
                                 NonViralName accNvn = CdmBase.deproxy(accTaxon.getName(),NonViralName.class);
-                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT);
+                                Map classificationMap = getClassification(accTaxon, CLASSIFICATION_DEFAULT, false);
                                 ans.addToResponseList(accNvn.getNameCache(),accNvn.getAuthorshipCache(), accNvn.getRank().getTitleCache(),classificationMap);
                             }
                         } else {
@@ -1202,7 +1196,7 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
                         		}
                         	}
                             if(isConceptRelationship) {
-                            	Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT);
+                            	Map classificationMap = getClassification(taxon, CLASSIFICATION_DEFAULT, false);
                             	ans.addToResponseList(nvn.getNameCache(), nvn.getAuthorshipCache(),nvn.getRank().getTitleCache(), classificationMap);
                             }
                         	
@@ -1361,10 +1355,10 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /**
      * Build classification map.
      */
-    private Map<String, Map> getClassification(Taxon taxon, String classificationType) {
+    private Map<String, Map> getClassification(Taxon taxon, String classificationType, boolean includeUuids) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
-        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon);
+        TreeMap<String, Map> sourceClassificationMap = buildClassificationMap(taxon, includeUuids);
 
         // if classification key is 'default' then return the default element of the map
         if(classificationType.equals(CLASSIFICATION_DEFAULT) && !sourceClassificationMap.isEmpty()) {
@@ -1385,19 +1379,27 @@ public class NameCatalogueController extends BaseController<TaxonNameBase, IName
     /**
      * Build classification map.
      */
-    private TreeMap<String, Map> buildClassificationMap(Taxon taxon) {
+    private TreeMap<String, Map> buildClassificationMap(Taxon taxon, boolean includeUuid) {
         // Using TreeMap is important, because we need the sorting of the classification keys
         // in the map to be stable.
         TreeMap<String, Map> sourceClassificationMap = new TreeMap<String, Map>();
         Set<TaxonNode> taxonNodes = taxon.getTaxonNodes();
         //loop through taxon nodes and build classification map for each classification key
         for (TaxonNode tn : taxonNodes) {
-            Map<String, String> classificationMap = new LinkedHashMap<String, String>();
+            Map<String, Object> classificationMap = new LinkedHashMap<String, Object>();
             List<TaxonNode> tnList = classificationService.loadTreeBranchToTaxon(taxon,
                     tn.getClassification(), null, TAXON_NODE_INIT_STRATEGY);
             for (TaxonNode classificationtn : tnList) {
-                classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(),
-                        classificationtn.getTaxon().getName().getTitleCache());
+            	if(includeUuid) {
+            		// creating map object with <name, uuid> elements
+            		Map<String, String> clMap = new HashMap<String, String>();
+            		clMap.put("name",classificationtn.getTaxon().getName().getTitleCache());
+            		clMap.put("uuid",classificationtn.getTaxon().getUuid().toString());
+            		classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(), clMap);
+            	} else {
+            		classificationMap.put(classificationtn.getTaxon().getName().getRank().getTitleCache(), 
+            				classificationtn.getTaxon().getName().getTitleCache());
+            	}
             }
             String cname = removeInternalWhitespace(tn.getClassification().getTitleCache());
             logger.info("Building classification map " + cname);

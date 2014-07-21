@@ -66,14 +66,11 @@ public class DbAreaMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		cdmClass =  clazz;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		if (cdmBase.isInstanceOf(cdmClass)){ 
 			try {
-				NamedArea area = (NamedArea)method.invoke(cdmBase, null);
+				NamedArea area = (NamedArea)method.invoke(cdmBase, (Object[])null);
 				IExportTransformer transformer = getState().getTransformer();
 				if (isCache){
 					return transformer.getCacheByNamedArea(area);
@@ -90,9 +87,6 @@ public class DbAreaMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 		}			
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		if (isCache){
@@ -103,9 +97,6 @@ public class DbAreaMapper extends DbSingleAttributeExportMapperBase<DbExportStat
 	}
 
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		if (isCache){

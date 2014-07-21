@@ -159,12 +159,12 @@ public abstract class DefinedTermBase<T extends DefinedTermBase> extends TermBas
     @Cascade(CascadeType.SAVE_UPDATE)
     protected TermVocabulary<T> vocabulary;
 
-  //the unique tabel this term uses in its given vocabulary #3479
+  //the unique iedentifier/name this term uses in its given vocabulary #3479
    //open issues: is null allowed? If not, implement unique constraint
 
     @XmlElement(name = "idInVocabulary")
     @Length(max=255)
-    private String idInVocabulary;  //the unique tabel this term uses in its given vocabulary #3479
+    private String idInVocabulary;  //the unique identifier/name this term uses in its given vocabulary #3479
     
 
 

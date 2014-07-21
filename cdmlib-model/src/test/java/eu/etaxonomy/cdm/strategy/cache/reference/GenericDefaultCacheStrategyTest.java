@@ -110,6 +110,7 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setAuthorTeam(team1);
 		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
+		Assert.assertEquals("", generic1.getNomenclaturalCitation(null));
 	}
 	
 	@Test
@@ -117,7 +118,20 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setAuthorTeam(team1);
 		generic1.setDatePublished(TimePeriodParser.parseString("1792"));
 		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
-		Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());
+		Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());	
+		Assert.assertEquals("1792", generic1.getNomenclaturalCitation(null));
+	}
+	
+	@Test
+	public void testDoubleDotBeforeYear(){
+		generic1.setAuthorTeam(team1);
+		String detail = "sine no.";
+		generic1.setAbbrevTitle("My title");
+		generic1.setDatePublished(TimePeriodParser.parseString("1883-1884"));
+		generic1.setTitleCache(null);  //reset cache in case aspectJ is not enabled
+		Assert.assertEquals("My title: sine no. 1883-1884", generic1.getNomenclaturalCitation(detail));
+		
+		
 	}
 
 

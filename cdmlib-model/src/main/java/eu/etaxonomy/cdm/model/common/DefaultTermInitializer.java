@@ -17,6 +17,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.model.common.init.ITermInitializer;
 import eu.etaxonomy.cdm.model.common.init.ITermLoader;
+import eu.etaxonomy.cdm.model.common.init.MockCdmCacher;
 import eu.etaxonomy.cdm.model.common.init.TermLoader;
 
 /**
@@ -41,7 +42,10 @@ public class DefaultTermInitializer implements ITermInitializer {
 //			Class<? extends DefinedTermBase<?>> clazz = vocabularyEnum.getClazz();
 			TermVocabulary<?> voc  = termLoader.loadTerms(vocabularyEnum, terms);
 			setDefinedTerms(vocabularyEnum.getClazz(),voc);
-		}				
+		}
+		//preliminary to make cdmlib-model test running until we completely moved to CdmCacher 
+		new MockCdmCacher();
+		
 	}
 	
 	protected void setDefinedTerms(Class<? extends DefinedTermBase<?>> clazz, TermVocabulary<?> vocabulary) {

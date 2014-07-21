@@ -777,6 +777,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/VocabularyEnum.java -te
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/WrongTermTypeException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/ITermInitializer.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/ITermLoader.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/MockCdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermLoader.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/init/TermNotFoundException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/package-info.java -text
@@ -1108,7 +1109,6 @@ cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/MockCdmCacher.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/TeamTest.java -text

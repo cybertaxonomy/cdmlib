@@ -882,7 +882,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 	
     public String generateAbbrevTitle() {
-		rectifyCacheStrategy();
+		rectifyCacheStrategy(); //TODO needed, is called by getCacheStrategy already
 		return getCacheStrategy().getAbbrevTitleCache(this);
 	}
 
@@ -1024,7 +1024,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 			return null;
 		}else{
 			if (getCacheStrategy() instanceof INomenclaturalReferenceCacheStrategy){
-				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this,microReference);
+				return ((INomenclaturalReferenceCacheStrategy)cacheStrategy).getNomenclaturalCitation(this, microReference);
 			}else {
 				logger.warn("No INomenclaturalReferenceCacheStrategy defined for "+ typeName + ": " + this.getUuid());
 				return null;
