@@ -22,6 +22,7 @@ import org.hibernate.search.spatial.impl.Rectangle;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
@@ -202,6 +203,58 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
+     * Lists all instances of {@link FieldUnit} which are
+     * associated <b>directly or indirectly</b>with the <code>taxon</code> specified
+     * as parameter. "Indirectly" means that a sub derivate of the FieldUnit is
+     * directly associated with the given taxon.
+     * SpecimenOrObservationBase instances can be associated to taxa in multiple
+     * ways, all these possible relations are taken into account:
+     * <ul>
+     * <li>The {@link IndividualsAssociation} elements in a
+     * {@link TaxonDescription} contain {@link DerivedUnit}s</li>
+     * <li>{@link SpecimenTypeDesignation}s may be associated with any
+     * {@link HomotypicalGroup} related to the specific {@link Taxon}.</li>
+     * <li>A {@link Taxon} may be referenced by the {@link DeterminationEvent}
+     * of the {@link SpecimenOrObservationBase}</li>
+     * </ul>
+     * Further more there also can be taxa which are associated with the taxon
+     * in question (parameter associatedTaxon) by {@link TaxonRelationship}s. If
+     * the parameter <code>includeRelationships</code> is containing elements,
+     * these according {@TaxonRelationshipType}s and
+     * directional information will be used to collect further
+     * {@link SpecimenOrObservationBase} instances found this way.
+     *
+     * @param <T>
+     * @param type
+     * @param associatedTaxon
+     * @param Set<TaxonRelationshipVector> includeRelationships. TaxonRelationships will not be taken into account if this is <code>NULL</code>.
+     * @param maxDepth TODO
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
+     * Assembles a {@link DerivateHierarchyDTO} for each "associated" {@link FieldUnit} found for the given {@link Taxon}.<br>
+     * <br>
+     * See also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
+     * @param includeRelationships
+     * @param associatedTaxon
+     * @param maxDepth
+     * @param pageSize
+     * @param pageNumber
+     * @param orderHints
+     * @param propertyPaths
+     * @return
+     */
+    public Collection<DerivateHierarchyDTO> listDerivateHierarchyDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
+            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
+
+    /**
      * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
      *
      * @param type
@@ -218,11 +271,12 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Retrieves all {@link FieldUnit}s for the {@link DerivedUnit} with the given {@link UUID}.<br>
-     * @param derivedUnitUuid the UUID of the derived unit
-     * @return a collection of FieldUnits this DerivedUnit was derived from or an empty collection if no FieldUnits were found
+     * Retrieves all {@link FieldUnit}s for the {@link SpecimenOrObservationBase} with the given {@link UUID}.<br>
+     * @param specimenUuid the UUID of the specimen
+     * @return either a collection of FieldUnits this specimen was derived from, the FieldUnit itself
+     * if this was a FieldUnit or an empty collection if no FieldUnits were found
      */
-    public Collection<FieldUnit> getFieldUnits(UUID derivedUnitUuid);
+    public Collection<FieldUnit> getFieldUnits(UUID specimenUuid);
 
     /**
      * @param clazz

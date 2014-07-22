@@ -13,6 +13,7 @@ package eu.etaxonomy.cdm.remote.controller;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -33,6 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -195,6 +197,33 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         if(tb instanceof Taxon){
             List<SpecimenOrObservationBase> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
             mv.addObject(specimensOrObersvations);
+        } else {
+            HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
+            return null;
+        }
+
+        return mv;
+    }
+
+    @RequestMapping(value = "derivateHierarchy", method = RequestMethod.GET)
+    public ModelAndView doGetDerivateHierarchy(
+            @PathVariable("uuid") UUID uuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+        logger.info("doGetDerivateHierarchy() - " + request.getRequestURI());
+
+        ModelAndView mv = new ModelAndView();
+
+        TaxonBase tb = service.load(uuid);
+
+        List<OrderHint> orderHints = new ArrayList<OrderHint>();
+        orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
+
+        List<String> propertyPath = Arrays.asList(new String[] { "fieldUnit" });
+
+        if(tb instanceof Taxon){
+            Collection<DerivateHierarchyDTO> derivateHierarchyDTOs = occurrenceService.listDerivateHierarchyDTOsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, propertyPath);
+            mv.addObject(derivateHierarchyDTOs);
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
