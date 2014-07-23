@@ -27,7 +27,7 @@ public class JsonpRedirect {
     }
 
     public JsonpRedirect(HttpServletRequest request, String path){
-        this.redirectURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + "/" + request.getContextPath() + path;
+        this.redirectURL = request.getScheme() + "://" + request.getServerName() + ":" + request.getServerPort() + request.getContextPath() + path;
     }
 
     public JsonpRedirect(String frontendBaseUrl, String path){
