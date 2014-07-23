@@ -65,6 +65,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -304,19 +305,34 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         Collection<DerivateHierarchyDTO> derivateHierarchyDTOs = new ArrayList<DerivateHierarchyDTO>();
         for(FieldUnit fieldUnit:fieldUnits){
-            derivateHierarchyDTOs.add(assembleDerivateHierarchyDTO(fieldUnit));
+            derivateHierarchyDTOs.add(assembleDerivateHierarchyDTO(fieldUnit, associatedTaxon));
         }
         return derivateHierarchyDTOs;
     }
 
-    private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit){
+    private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, Taxon associatedTaxon){
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
-
+//        TaxonNameBase name = associatedTaxon.getName();
+//        name = HibernateProxyHelper.deproxy(name, TaxonNameBase.class);
+//        dto.setType(!name.getTypeDesignations().isEmpty());
         dto.setFieldUnit(fieldUnit);
+
+        if(fieldUnit.getGatheringEvent()!=null){
+            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+            dto.setCountry(gatheringEvent.getCountry()!=null?gatheringEvent.getCountry().getDescription():"");
+            dto.setDate(gatheringEvent.getGatheringDate()!=null?gatheringEvent.getGatheringDate().toString("yyyy-MM-dd"):"");
+            dto.setCollection((gatheringEvent.getActor()!=null?gatheringEvent.getActor():"") + fieldUnit.getFieldNumber()!=null?fieldUnit.getFieldNumber():"");
+        }
 
         //get derivatives
         Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
         getDerivedUnitsFor(fieldUnit, derivedUnits);
+        for (DerivedUnit derivedUnit : derivedUnits) {
+            if(derivedUnit.getKindOfUnit()!=null && derivedUnit.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
+                dto.setHasSpecimenScan(true);
+                break;
+            }
+        }
 
         dto.setNumberOfDerivates(derivedUnits.size());
 
