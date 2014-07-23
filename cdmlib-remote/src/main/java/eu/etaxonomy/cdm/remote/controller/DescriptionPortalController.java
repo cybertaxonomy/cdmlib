@@ -234,7 +234,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
             HttpServletRequest request,
             HttpServletResponse response) throws JsonParseException, JsonMappingException, IOException {
 
-            logger.debug("doGetDistributionInfo() - " + requestPathAndQuery(request));
+            logger.info("doGetDistributionInfo() - " + requestPathAndQuery(request));
 
             ModelAndView mv = new ModelAndView();
 
