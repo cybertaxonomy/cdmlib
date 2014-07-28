@@ -18,7 +18,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 /**
  * @author a.mueller
  * @created 10.06.2009
- * @version 1.0
  */
 public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
 	private static final Logger logger = Logger.getLogger(DbIntegerAnnotationMapper.class);
@@ -41,9 +40,6 @@ public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
 		super("annotations", dbAttributeString, defaultValue, null);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbAnnotationMapper#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String strValue = (String)super.getValue(cdmBase);
@@ -57,17 +53,11 @@ public class DbIntegerAnnotationMapper extends DbAnnotationMapper {
 		return intValue;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbAnnotationMapper#getSqlType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.INTEGER;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbAnnotationMapper#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return Integer.class;
