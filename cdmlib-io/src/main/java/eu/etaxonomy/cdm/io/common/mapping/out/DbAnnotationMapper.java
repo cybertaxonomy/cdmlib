@@ -48,10 +48,6 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = null;
@@ -70,18 +66,11 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;
