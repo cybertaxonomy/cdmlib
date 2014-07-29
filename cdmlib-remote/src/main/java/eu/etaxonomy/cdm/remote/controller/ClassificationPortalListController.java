@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.remote.editor.RankPropertyEditor;
  * @date 20.03.2009
  */
 @Controller
+@RequestMapping(value="/portal/classification")
 public class ClassificationPortalListController extends IdentifiableListController<Classification,IClassificationService> {
 
 
@@ -63,6 +64,10 @@ public class ClassificationPortalListController extends IdentifiableListControll
     private IClassificationService service;
 
     private ITermService termService;
+
+    public ClassificationPortalListController() {
+        setInitializationStrategy(CLASSIFICATION_INIT_STRATEGY);
+    }
 
     @Override
     @Autowired
@@ -90,32 +95,13 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
 
     /**
-     * Lists all available {@link Classification}s.
-     * <p>
-     * URI: <b>&#x002F;{datasource-name}&#x002F;portal&#x002F;classification</b>
-     *
-     * @param request
-     * @param response
-     * @return a list of {@link Classification}s initialized by
-     *         the {@link #CLASSIFICATION_INIT_STRATEGY}
-     * @throws IOException
-     */
-    @RequestMapping(value = { "/portal/classification" }, method = RequestMethod.GET)
-    public List<Classification> getClassifications(HttpServletRequest request, HttpServletResponse response)
-            throws IOException {
-        logger.info("getClassification() " + requestPathAndQuery(request));
-        return service.list(null, null, null,null, CLASSIFICATION_INIT_STRATEGY);
-    }
-
-
-    /**
      * @param treeUuid
      * @param response
      * @return
      * @throws IOException
      */
     @RequestMapping(
-            value = {"/portal/classification/{treeUuid}/childNodes"},
+            value = {"{treeUuid}/childNodes"},
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodes(
             @PathVariable("treeUuid") UUID treeUuid,
@@ -128,7 +114,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
 
     @RequestMapping(
-            value = {"/portal/classification/{treeUuid}/childNodesAt/{rankUuid}"},
+            value = {"{treeUuid}/childNodesAt/{rankUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodesAtRank(
             @PathVariable("treeUuid") UUID treeUuid,
@@ -175,7 +161,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
      *         the {@link #NODE_INIT_STRATEGY}
      */
     @RequestMapping(
-            value = {"/portal/classification/{treeUuid}/childNodesOf/{taxonUuid}"},
+            value = {"{treeUuid}/childNodesOf/{taxonUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getChildNodesOfTaxon(
             @PathVariable("treeUuid") UUID treeUuid,
@@ -208,7 +194,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
      *         the {@link #NODE_INIT_STRATEGY}
      */
     @RequestMapping(
-            value = {"/portal/classification/{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"},
+            value = {"{treeUuid}/pathFrom/{taxonUuid}/toRank/{rankUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getPathFromTaxonToRank(
             @PathVariable("treeUuid") UUID treeUuid,
@@ -242,7 +228,7 @@ public class ClassificationPortalListController extends IdentifiableListControll
      *         the {@link #NODE_INIT_STRATEGY}
      */
     @RequestMapping(
-            value = {"/portal/classification/{treeUuid}/pathFrom/{taxonUuid}"},
+            value = {"{treeUuid}/pathFrom/{taxonUuid}"},
             method = RequestMethod.GET)
     public List<TaxonNode> getPathFromTaxon(
             @PathVariable("treeUuid") UUID treeUuid,
