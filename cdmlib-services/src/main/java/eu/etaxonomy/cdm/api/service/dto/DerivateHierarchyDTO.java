@@ -1,5 +1,6 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
@@ -251,6 +252,13 @@ public class DerivateHierarchyDTO {
     public void setTypes(List<String> types) {
         this.types = types;
     }
+
+    public void addTypes(String uri){
+        if(types==null){
+            types = new ArrayList<String>();
+        }
+        types.add(uri);
+    }
     /**
      * @return the specimenScans
      */
@@ -262,6 +270,13 @@ public class DerivateHierarchyDTO {
      */
     public void setSpecimenScans(List<String> specimenScans) {
         this.specimenScans = specimenScans;
+    }
+
+    public void addSpecimenScan(String uri){
+        if(specimenScans==null){
+            specimenScans = new ArrayList<String>();
+        }
+        specimenScans.add(uri);
     }
     /**
      * @return the molecularData
@@ -275,6 +290,14 @@ public class DerivateHierarchyDTO {
     public void setMolecularData(List<String> molecularData) {
         this.molecularData = molecularData;
     }
+
+    public void addMolecularData(String uri){
+        if(molecularData==null){
+            molecularData = new ArrayList<String>();
+        }
+        molecularData.add(uri);
+    }
+
     /**
      * @return the detailImages
      */
@@ -286,6 +309,13 @@ public class DerivateHierarchyDTO {
      */
     public void setDetailImages(List<String> detailImages) {
         this.detailImages = detailImages;
+    }
+
+    public void addDetailImage(String uri){
+        if(detailImages==null){
+            detailImages = new ArrayList<String>();
+        }
+        detailImages.add(uri);
     }
 
 

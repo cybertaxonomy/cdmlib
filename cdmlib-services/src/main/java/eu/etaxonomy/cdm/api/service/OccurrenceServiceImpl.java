@@ -63,6 +63,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -292,6 +293,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<FieldUnit> listFieldUnitsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        if(!getSession().contains(associatedTaxon)){
+            associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+        }
+
         Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
 
         List<SpecimenOrObservationBase> records = pageByAssociatedTaxon(null, includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths).getRecords();
@@ -304,6 +310,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     @Override
     public Collection<DerivateHierarchyDTO> listDerivateHierarchyDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
+
+        if(!getSession().contains(associatedTaxon)){
+            associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+        }
+
         Collection<FieldUnit> fieldUnits = listFieldUnitsByAssociatedTaxon(includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
 
         Collection<DerivateHierarchyDTO> derivateHierarchyDTOs = new ArrayList<DerivateHierarchyDTO>();
@@ -314,6 +325,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, Taxon associatedTaxon){
+
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
         //        TaxonNameBase name = associatedTaxon.getName();
         //        name = HibernateProxyHelper.deproxy(name, TaxonNameBase.class);
@@ -405,7 +417,9 @@ private String getMediaUriString(MediaSpecimen mediaSpecimen){
 //        Integer limit = PagerUtils.limitFor(pageSize);
 //        Integer start = PagerUtils.startFor(pageSize, pageNumber);
 
-        associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+        if(!getSession().contains(associatedTaxon)){
+            associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+        }
 
         if(includeRelationships != null) {
             taxa = taxonService.listRelatedTaxa(associatedTaxon, includeRelationships, maxDepth, null, null, propertyPaths);
