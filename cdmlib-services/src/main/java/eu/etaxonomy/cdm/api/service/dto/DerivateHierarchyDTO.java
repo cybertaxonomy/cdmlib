@@ -7,21 +7,35 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 
 public class DerivateHierarchyDTO {
+
 	private DerivedUnit typeUnit;
 	private List<DnaSample> dnaSamples;
 	private List<DerivedUnit> preservedSpecimensWithSpecimenScan;
 	private int numberOfDerivates;
+	private List<String> herbaria;
 	private FieldUnit fieldUnit;
 
+	//Filter Flags
+	private boolean hasDna;
+	private boolean hasDetailImage;
+
+	//Row Attributes
 	private String country;
 	private String collection;
 	private String date;
-	private List<String> herbaria;
-	private boolean isType;
+	private String herbarium;
+	private boolean hasType;
 	private boolean hasSpecimenScan;
 
-
-	/**
+	//Detail pop-down
+	private String taxonName;
+	private String protologue;
+	private String citation;
+	private List<String> types;
+	private List<String> specimenScans;
+	private List<String> molecularData;
+	private List<String> detailImages;
+    /**
      * @return the typeUnit
      */
     public DerivedUnit getTypeUnit() {
@@ -56,6 +70,66 @@ public class DerivateHierarchyDTO {
      */
     public void setPreservedSpecimensWithSpecimenScan(List<DerivedUnit> preservedSpecimensWithSpecimenScan) {
         this.preservedSpecimensWithSpecimenScan = preservedSpecimensWithSpecimenScan;
+    }
+    /**
+     * @return the numberOfDerivates
+     */
+    public int getNumberOfDerivates() {
+        return numberOfDerivates;
+    }
+    /**
+     * @param numberOfDerivates the numberOfDerivates to set
+     */
+    public void setNumberOfDerivates(int numberOfDerivates) {
+        this.numberOfDerivates = numberOfDerivates;
+    }
+    /**
+     * @return the herbaria
+     */
+    public List<String> getHerbaria() {
+        return herbaria;
+    }
+    /**
+     * @param herbaria the herbaria to set
+     */
+    public void setHerbaria(List<String> herbaria) {
+        this.herbaria = herbaria;
+    }
+    /**
+     * @return the fieldUnit
+     */
+    public FieldUnit getFieldUnit() {
+        return fieldUnit;
+    }
+    /**
+     * @param fieldUnit the fieldUnit to set
+     */
+    public void setFieldUnit(FieldUnit fieldUnit) {
+        this.fieldUnit = fieldUnit;
+    }
+    /**
+     * @return the hasDna
+     */
+    public boolean isHasDna() {
+        return hasDna;
+    }
+    /**
+     * @param hasDna the hasDna to set
+     */
+    public void setHasDna(boolean hasDna) {
+        this.hasDna = hasDna;
+    }
+    /**
+     * @return the hasDetailImage
+     */
+    public boolean isHasDetailImage() {
+        return hasDetailImage;
+    }
+    /**
+     * @param hasDetailImage the hasDetailImage to set
+     */
+    public void setHasDetailImage(boolean hasDetailImage) {
+        this.hasDetailImage = hasDetailImage;
     }
     /**
      * @return the country
@@ -94,16 +168,28 @@ public class DerivateHierarchyDTO {
         this.date = date;
     }
     /**
-     * @return the isType
+     * @return the herbarium
      */
-    public boolean isType() {
-        return isType;
+    public String getHerbarium() {
+        return herbarium;
     }
     /**
-     * @param isType the isType to set
+     * @param herbarium the herbarium to set
      */
-    public void setType(boolean isType) {
-        this.isType = isType;
+    public void setHerbarium(String herbarium) {
+        this.herbarium = herbarium;
+    }
+    /**
+     * @return the hasType
+     */
+    public boolean isHasType() {
+        return hasType;
+    }
+    /**
+     * @param hasType the hasType to set
+     */
+    public void setHasType(boolean hasType) {
+        this.hasType = hasType;
     }
     /**
      * @return the hasSpecimenScan
@@ -118,40 +204,89 @@ public class DerivateHierarchyDTO {
         this.hasSpecimenScan = hasSpecimenScan;
     }
     /**
-     * @return the numberOfDerivates
+     * @return the taxonName
      */
-    public int getNumberOfDerivates() {
-        return numberOfDerivates;
+    public String getTaxonName() {
+        return taxonName;
     }
     /**
-     * @param numberOfDerivates the numberOfDerivates to set
+     * @param taxonName the taxonName to set
      */
-    public void setNumberOfDerivates(int numberOfDerivates) {
-        this.numberOfDerivates = numberOfDerivates;
+    public void setTaxonName(String taxonName) {
+        this.taxonName = taxonName;
     }
     /**
-     * @return the herbaria
+     * @return the protologue
      */
-    public List<String> getHerbaria() {
-        return herbaria;
+    public String getProtologue() {
+        return protologue;
     }
     /**
-     * @param herbaria the herbaria to set
+     * @param protologue the protologue to set
      */
-    public void setHerbaria(List<String> herbaria) {
-        this.herbaria = herbaria;
+    public void setProtologue(String protologue) {
+        this.protologue = protologue;
     }
     /**
-     * @return the fieldUnit
+     * @return the citation
      */
-    public FieldUnit getFieldUnit() {
-        return fieldUnit;
+    public String getCitation() {
+        return citation;
     }
     /**
-     * @param fieldUnit the fieldUnit to set
+     * @param citation the citation to set
      */
-    public void setFieldUnit(FieldUnit fieldUnit) {
-        this.fieldUnit = fieldUnit;
+    public void setCitation(String citation) {
+        this.citation = citation;
     }
+    /**
+     * @return the types
+     */
+    public List<String> getTypes() {
+        return types;
+    }
+    /**
+     * @param types the types to set
+     */
+    public void setTypes(List<String> types) {
+        this.types = types;
+    }
+    /**
+     * @return the specimenScans
+     */
+    public List<String> getSpecimenScans() {
+        return specimenScans;
+    }
+    /**
+     * @param specimenScans the specimenScans to set
+     */
+    public void setSpecimenScans(List<String> specimenScans) {
+        this.specimenScans = specimenScans;
+    }
+    /**
+     * @return the molecularData
+     */
+    public List<String> getMolecularData() {
+        return molecularData;
+    }
+    /**
+     * @param molecularData the molecularData to set
+     */
+    public void setMolecularData(List<String> molecularData) {
+        this.molecularData = molecularData;
+    }
+    /**
+     * @return the detailImages
+     */
+    public List<String> getDetailImages() {
+        return detailImages;
+    }
+    /**
+     * @param detailImages the detailImages to set
+     */
+    public void setDetailImages(List<String> detailImages) {
+        this.detailImages = detailImages;
+    }
+
 
 }

@@ -59,6 +59,8 @@ import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.media.Media;
+import eu.etaxonomy.cdm.model.media.MediaRepresentation;
+import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
@@ -66,6 +68,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -312,9 +315,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, Taxon associatedTaxon){
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
-//        TaxonNameBase name = associatedTaxon.getName();
-//        name = HibernateProxyHelper.deproxy(name, TaxonNameBase.class);
-//        dto.setType(!name.getTypeDesignations().isEmpty());
+        //        TaxonNameBase name = associatedTaxon.getName();
+        //        name = HibernateProxyHelper.deproxy(name, TaxonNameBase.class);
+        //        dto.setType(!name.getTypeDesignations().isEmpty());
         dto.setFieldUnit(fieldUnit);
 
         if(fieldUnit.getGatheringEvent()!=null){
@@ -324,20 +327,58 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             dto.setCollection((gatheringEvent.getActor()!=null?gatheringEvent.getActor():"") + fieldUnit.getFieldNumber()!=null?fieldUnit.getFieldNumber():"");
         }
 
+        dto.setTaxonName(associatedTaxon.getName().getFullTitleCache());
         //get derivatives
         Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
         getDerivedUnitsFor(fieldUnit, derivedUnits);
+
         for (DerivedUnit derivedUnit : derivedUnits) {
-            if(derivedUnit.getKindOfUnit()!=null && derivedUnit.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
-                dto.setHasSpecimenScan(true);
-                break;
+            if(derivedUnit instanceof DnaSample){//.getRecordBasis()==SpecimenOrObservationType.DnaSample){
+                dto.setHasDna(true);
+
+                DnaSample dna = (DnaSample)derivedUnit;
+                if(dna.getBankNumber()!=null){
+                    dto.getMolecularData().add(dna.getBankNumber());
+                }
+            }
+            if(derivedUnit instanceof MediaSpecimen){
+                dto.setHasDna(true);
+
+                MediaSpecimen media = (MediaSpecimen)derivedUnit;
+                String mediaUriString = getMediaUriString(media);
+                if(media.getKindOfUnit()!=null){
+                    if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
+                        dto.setHasSpecimenScan(true);
+                        if(mediaUriString!=null){
+                            dto.getSpecimenScans().add(mediaUriString);
+                        }
+                    }
+                    if(media.getKindOfUnit().getUuid().equals(UUID.fromString("detailImageUUid"))){
+                        dto.setHasDetailImage(true);
+                        if(mediaUriString!=null){
+                            dto.getDetailImages().add(mediaUriString);
+                        }
+                    }
+                }
             }
         }
-
-        dto.setNumberOfDerivates(derivedUnits.size());
-
         return dto;
     }
+
+private String getMediaUriString(MediaSpecimen mediaSpecimen){
+	String mediaUri = null;
+	Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
+	if(mediaRepresentations!=null && !mediaRepresentations.isEmpty()){
+		Collection<MediaRepresentationPart> mediaRepresentationParts = mediaRepresentations.iterator().next().getParts();
+		if(mediaRepresentationParts!=null && !mediaRepresentationParts.isEmpty()){
+			MediaRepresentationPart part = mediaRepresentationParts.iterator().next();
+			if(part.getUri()!=null){
+				mediaUri = part.getUri().toASCIIString();
+			}
+		}
+	}
+	return mediaUri;
+}
 
     private void getDerivedUnitsFor(SpecimenOrObservationBase<?> specimen, Collection<DerivedUnit> derivedUnits){
         for(DerivationEvent derivationEvent:specimen.getDerivationEvents()){
