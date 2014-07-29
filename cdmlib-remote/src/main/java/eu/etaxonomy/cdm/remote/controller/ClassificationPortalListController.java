@@ -61,8 +61,6 @@ public class ClassificationPortalListController extends IdentifiableListControll
 
     private ITaxonService taxonService;
 
-    private IClassificationService service;
-
     private ITermService termService;
 
     public ClassificationPortalListController() {
