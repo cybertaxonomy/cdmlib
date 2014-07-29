@@ -596,7 +596,10 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	        tags = getSpeciesTaggedNameCache(nonViralName);
 	
 	        //author
-	       
+	        String authorCache = getAuthorshipCache(nonViralName);
+	        if (StringUtils.isNotBlank(authorCache)){
+	            tags.add(new TaggedText(TagEnum.authors, authorCache));
+	        }
 	
 	
 	        //infra species marker
@@ -615,10 +618,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	        if (StringUtils.isNotBlank(infraSpeciesPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
 	        }
-	        String authorCache = getAuthorshipCache(nonViralName);
-	        if (StringUtils.isNotBlank(authorCache)){
-	            tags.add(new TaggedText(TagEnum.authors, authorCache));
-	        }
+	        
         } else if (nonViralName.isInfraGeneric()){
         	//genus part
 	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
