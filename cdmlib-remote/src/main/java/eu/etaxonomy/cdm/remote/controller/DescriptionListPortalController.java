@@ -126,7 +126,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
     * @return
     * @throws IOException
     */
-   @RequestMapping(value = "/portal/descriptionElement/find", method = RequestMethod.GET)
+   @RequestMapping(value = "//portal/descriptionElement/find", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
    public Pager<DescriptionElementBase> doFindDescriptionElements(
            @RequestParam(value = "query", required = true) String queryString,
            @RequestParam(value = "type", required = false) Class<? extends DescriptionElementBase> type,
@@ -161,7 +161,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
     * @return
     * @throws IOException
     */
-   @RequestMapping(value = "/portal/descriptionElement/byFeature", method = {RequestMethod.GET, RequestMethod.POST})
+   @RequestMapping(value = "//portal/descriptionElement/byFeature", method = {RequestMethod.GET, RequestMethod.POST}) // mapped as absolute path, see CdmAntPathMatcher
    public Pager<DescriptionElementBase> doPageDescriptionElementsByFeature(
            @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,
            @RequestParam(value = "descriptionType", required = true) Class<? extends DescriptionBase> descriptionType,
@@ -198,7 +198,7 @@ public class DescriptionListPortalController extends IdentifiableListController<
     * @return
     * @throws IOException
     */
-   @RequestMapping(value = "/portal/descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST})
+   @RequestMapping(value = "//portal/descriptionElement/byTaxon", method = {RequestMethod.GET, RequestMethod.POST}) // mapped as absolute path, see CdmAntPathMatcher
    public <T extends DescriptionElementBase> Pager<T> getDescriptionElementsForTaxon(
            @RequestParam(value = "taxon", required = true) UUID taxon_uuid,
            @RequestParam(value = "features", required = false) DefinedTermBaseList<Feature> features,

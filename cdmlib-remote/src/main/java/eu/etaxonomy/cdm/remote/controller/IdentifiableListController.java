@@ -1,18 +1,15 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.remote.controller;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.List;
-import java.util.UUID;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -24,10 +21,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import eu.etaxonomy.cdm.api.service.IIdentifiableEntityService;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
-import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.taxon.Classification;
-import eu.etaxonomy.cdm.model.taxon.Synonym;
-import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
 
@@ -37,9 +30,9 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  *
  */
 public abstract class IdentifiableListController <T extends IdentifiableEntity, SERVICE extends IIdentifiableEntityService<T>> extends BaseListController<T,SERVICE>  {
-	
-	
-	/**
+
+
+    /**
      * Find IdentifiableEntity objects by name
      * <p>
      *
@@ -56,7 +49,7 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
      *            to return all entities in a single page) - <i>optional parameter</i>
      * @param matchMode
      *           valid values are "EXACT", "BEGINNING", "ANYWHERE", "END" (case sensitive !!!)
-     * @return a Pager on a list of {@link IdentifiableEntity}s 
+     * @return a Pager on a list of {@link IdentifiableEntity}s
      * @throws IOException
      */
     @RequestMapping(method = RequestMethod.GET, value={"findByTitle"})
@@ -69,18 +62,18 @@ public abstract class IdentifiableListController <T extends IdentifiableEntity, 
             HttpServletResponse response
             )
              throws IOException {
-    	
-    	 
+
+
 
         logger.info("doFind : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
-        
+
         matchMode = matchMode != null ? matchMode : MatchMode.BEGINNING;
 
-        return (Pager<T>) service.findByTitle(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
-        
+        return service.findByTitle(null, query, matchMode, null, pagerParams.getPageSize(), pagerParams.getPageIndex(), null, initializationStrategy);
+
     }
 
 
