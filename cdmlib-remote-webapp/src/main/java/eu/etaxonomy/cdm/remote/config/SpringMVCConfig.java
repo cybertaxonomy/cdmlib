@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  * @date Jul 1, 2014
  *
  */
-//@EnableWebMvc do not add this since we are overriding WebMvcConfigurationSupport directly
+//@EnableWebMvc do not add this since we are overriding WebMvcConfigurationSupport directly, see requestMappingHandlerMapping()
 @Configuration
 @Import(value={PreloadedBeans.class})
 @ComponentScan(basePackages = {
@@ -106,6 +106,12 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
     @Override
     @Bean
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
+        /* NOTE: this override is the only reason why this class
+         * needs to extends WebMvcConfigurationSupport. We may be able to
+         * remove this method once we no longer need
+         * CdmAntPathMatcher. this is only needed  since the contollers need
+         * absolute method level RequestMapping values in some few cases.
+         */
         RequestMappingHandlerMapping handlerMapping = super.requestMappingHandlerMapping();
         handlerMapping.setPathMatcher(pathMatcher());
         return handlerMapping;
