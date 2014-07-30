@@ -166,8 +166,8 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     protected void initListener(){
         PropertyChangeListener listener = new PropertyChangeListener() {
             @Override
-            public void propertyChange(PropertyChangeEvent e) {
-                if (!e.getPropertyName().equals("titleCache") && !e.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
+            public void propertyChange(PropertyChangeEvent ev) {
+                if (!ev.getPropertyName().equals("titleCache") && !ev.getPropertyName().equals("cacheStrategy") && ! isProtectedTitleCache()){
                     titleCache = null;
                 }
             }
@@ -188,10 +188,6 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
 //******************************** CACHE *****************************************************/
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.IIdentifiableEntity#getTitleCache()
-     */
     // @Transient  - must not be transient, since this property needs to to be included in all serializations produced by the remote layer
     @Override
     public String getTitleCache(){
