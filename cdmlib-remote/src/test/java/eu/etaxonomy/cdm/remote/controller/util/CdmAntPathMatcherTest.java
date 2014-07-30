@@ -46,11 +46,11 @@ public class CdmAntPathMatcherTest {
     private final String[][] cdmAntPathMatcherExpectations  = new String[][]{
             new String[]{"/hotels",null,"/hotels"},
             new String[]{null,"/hotels","/hotels"},
-            new String[]{"/hotels","/bookings","/bookings"},                // special for CdmAntPathMatcher
+            new String[]{"/hotels","//bookings","/bookings"},                // special for CdmAntPathMatcher
             new String[]{"/hotels","bookings","/hotels/bookings"},
             new String[]{"/hotels/*","bookings","/hotels/bookings"},
-            new String[]{"/hotels/*","/bookings","/bookings"},              // special for CdmAntPathMatcher
-            new String[]{"/hotels/**","/bookings","/bookings"},             // special for CdmAntPathMatcher
+            new String[]{"/hotels/*","//bookings","/bookings"},              // special for CdmAntPathMatcher
+            new String[]{"/hotels/**","//bookings","/bookings"},             // special for CdmAntPathMatcher
             new String[]{"/hotels/**","bookings","/hotels/**/bookings"},
             new String[]{"/hotels","{hotel}","/hotels/{hotel}"},
             new String[]{"/hotels/*","{hotel}","/hotels/{hotel}"},
@@ -58,8 +58,8 @@ public class CdmAntPathMatcherTest {
             new String[]{"/*.html","hotels.html","hotels.html"},
             new String[]{"/*.html","/hotels.html","/hotels.html"},
             new String[]{"/*.html","hotels","hotels.html"},
-            new String[]{"/*.html","/hotels","/hotels"},                   // special for CdmAntPathMatcher, the original returns /hotels.html
-            new String[]{"/*.html","/*.txt","/*.txt"},                     // special for CdmAntPathMatcher, the original returns /hotels.html
+            new String[]{"/*.html","//hotels","/hotels"},                   // special for CdmAntPathMatcher, the original returns /hotels.html
+            new String[]{"/*.html","//*.txt","/*.txt"},                     // special for CdmAntPathMatcher, the original returns /hotels.html
     };
 
 

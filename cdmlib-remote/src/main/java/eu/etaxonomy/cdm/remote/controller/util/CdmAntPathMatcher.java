@@ -23,29 +23,32 @@ public class CdmAntPathMatcher extends AntPathMatcher {
      * {@link AntPathMatcher#combine(String, String)} only a little but quite
      * useful bit:
      * <p>
-     * If the <code>pattern2</code> is an absolute path, that is it starts with
-     * an slash character, the <code>pattern2</code> overrules pattern1 and no
-     * combined at all is performed. I such case the method just returns
-     * <code>pattern2</code>
+     * If the <code>pattern2</code> starts with a double slash it is treated as an absolute
+     * path. In this case <code>pattern1</code> will ignored completely, that is
+     * the pattern will not be combined and <code>pattern2</code> is returned unmodified.
      *
-     * <p>For example: <table>
+     * <p>For example (lines in string letters are special to the <code>CdmAntPathMatcher</code>): <table>
      * <tr><th>Pattern 1</th><th>Pattern 2</th><th>Result</th></tr>
      * <tr><td>/hotels</td><td>{@code null}</td><td>/hotels</td></tr>
      * <tr><td>{@code null}</td><td>/hotels</td><td>/hotels</td></tr>
-     * <tr><td>/hotels</td><td>/bookings</td><td>/bookings</td></tr>
+     * <tr><td><b>{@code null}</b></td><td><b>//hotels</b></td><td>/hotels</td></tr>
+     * <tr><td>/hotels</td><td><b>//bookings</b></td><td>/bookings</td></tr>
      * <tr><td>/hotels</td><td>bookings</td><td>/hotels/bookings</td></tr>
      * <tr><td>/hotels/*</td><td>bookings</td><td>/hotels/bookings</td></tr>
-     * <tr><td>/hotels/*</td><td>/bookings</td><td>/bookings</td></tr>
-     * <tr><td>/hotels/&#42;&#42;</td><td>/bookings</td><td>/bookings</td></tr>
+     * <tr><td>/hotels/*</td><td><b>//bookings</b></td><td>/bookings</td></tr>
+     * <tr><td>/hotels/&#42;&#42;</td><td><b>//bookings</b></td><td>/bookings</td></tr>
      * <tr><td>/hotels/&#42;&#42;</td><td>bookings</td><td>/hotels/&#42;&#42;/bookings</td></tr>
      * <tr><td>/hotels</td><td>{hotel}</td><td>/hotels/{hotel}</td></tr>
      * <tr><td>/hotels/*</td><td>{hotel}</td><td>/hotels/{hotel}</td></tr>
-     * <tr><td>/hotels/&#42;&#42;</td><td>{hotel}</td><td>/hotels/&#42;&#42;/{hotel}</td></tr>
-     * <tr><td>/*.html</td><td>hotels.html</td><td>/hotels.html</td></tr>
+     * <tr><td>/hotels/**;</td><td>{hotel}</td><td>/hotels/&#42;&#42;/{hotel}</td></tr>
+     * <tr><td>/*.html</td><td>hotels.html</td><td>hotels.html</td></tr>
+     * <tr><td>/*.html</td><td><b>//hotels.html</b></td><td>/hotels.html</td></tr>
      * <tr><td>/*.html</td><td>/hotels.html</td><td>/hotels.html</td></tr>
-     * <tr><td>/*.html</td><td>hotels</td><td>/hotels.html</td></tr>
      * <tr><td>/*.html</td><td>/hotels</td><td>/hotels</td></tr>
-     * <tr><td>/*.html</td><td>/*.txt</td><td>IllegalArgumentException</td></tr> </table>
+     * <tr><td>/*.html</td><td>hotels</td><td>/hotels</td></tr>
+     * <tr><td>/*.html</td><td>hotels</td><td>hotels.html</td></tr>
+     * <tr><td>/*.html</td><td><b>//hotels</b></td><td>/hotels</td></tr>
+     * <tr><td>/*.html</td><td><b>//*.txt</b></td><td>/*.txt</td></tr> </table>
      *
      *
      * @param pattern1
@@ -53,10 +56,11 @@ public class CdmAntPathMatcher extends AntPathMatcher {
      */
     @Override
     public String combine(String pattern1, String pattern2) {
-        if(pattern2 != null && pattern2.startsWith("/")){
-            return pattern2;
+        if(pattern2 != null && pattern2.startsWith("//")){
+            return pattern2.substring(1);
         } else {
-            return super.combine(pattern1, pattern2);
+                return super.combine(pattern1, pattern2);
+
         }
     }
 
