@@ -384,14 +384,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             //assemble preserved specimen data
             else if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.PreservedSpecimen){
                 eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
-                Integer count = collectionToCountMap.get(collection);
-                if(count==null){
-                    count = 1;
+                if(collection!=null){
+                    Integer count = collectionToCountMap.get(collection);
+                    if(count==null){
+                        count = 1;
+                    }
+                    else{
+                        count++;
+                    }
+                    collectionToCountMap.put(collection, count);
                 }
-                else{
-                    count++;
-                }
-                collectionToCountMap.put(collection, count);
             }
         }
         //assemble herbaria string
@@ -399,7 +401,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         final String herbariaSeparator = ", ";
         for(Entry<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> e:collectionToCountMap.entrySet()){
             eu.etaxonomy.cdm.model.occurrence.Collection collection = e.getKey();
-            herbariaString += collection.getCode();
+            if(collection.getCode()!=null){
+                herbariaString += collection.getCode();
+            }
             if(e.getValue()>1){
                 herbariaString += "("+e.getValue()+")";
             }
