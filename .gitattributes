@@ -1783,6 +1783,8 @@ cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/images/table-header-b
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/styles.css -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/applicationContext.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmlib-remote-servlet-javaconfig.xml -text
+cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmlib-remote-servlet-xmlconfig.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/cdmlib-remote-servlet.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/configurable.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/datasources-local.xml -text

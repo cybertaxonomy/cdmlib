@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:context="http://www.springframework.org/schema/context"
+  xmlns:tx="http://www.springframework.org/schema/tx"
+  xsi:schemaLocation="http://www.springframework.org/schema/beans
+    http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+    http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-2.5.xsd
+    http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
+    ">
+
+    <!--
+        component scan to help find the SpringMVCConfig.class which
+        actually is the primary spring configuration
+        further component scans are defined in this class
+     -->
+    <context:component-scan base-package="eu/etaxonomy/cdm/remote/configuration" />
+
+    <!-- can be removed once everything has moved into SpringMVCConfig -->
+    <context:component-scan base-package="eu/etaxonomy/cdm/remote/l10n" />
+
+
+      <!--
+    ======= HandlerMappings =======
+    -->
+  <!--
+    first we try to find the controller using the simpleurlmapping, then
+    the classname this follows the principal of "convention over
+    configuration"
+  -->
+  <bean
+    class="org.springframework.web.servlet.mvc.annotation.DefaultAnnotationHandlerMapping">
+    <property name="order" value="1" />
+    <property name="interceptors">
+      <list>
+        <!--<ref bean="contentNegociationHandlerInterceptor" /> -->
+        <ref bean="localeContextHandlerInterceptor" />
+      </list>
+    </property>
+    <property name="pathMatcher">
+      <!--  must match the pathMatcher as set in AnnotationMethodHandlerAdapter -->
+      <bean class="eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher" />
+    </property>
+  </bean>
+
+    <!--
+   -->
+  <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+    <property name="order" value="0" />
+    <property name="mappings">
+      <props>
+        <prop key="/index.do">urlFilenameViewController</prop>
+        <prop key="/">welcomeFileViewController</prop>
+      </props>
+    </property>
+  </bean>
+
+  <!--
+  ======= HandlerAdapters =======
+  -->
+  <bean class="org.springframework.web.servlet.mvc.annotation.AnnotationMethodHandlerAdapter">
+     <property name="pathMatcher">
+          <!--  must match the pathMatcher as set in DefaultAnnotationHandlerMapping -->
+            <bean class="eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher" />
+       </property>
+  </bean>
+
+  <!-- needed when using SimpleUrlHandlerMapping    -->
+  <bean
+    class="org.springframework.web.servlet.mvc.SimpleControllerHandlerAdapter" />
+
+
+  <!--
+  ======= HandlerInterceptors =======
+  -->
+  <!--
+  <bean id="datasourceContextHandlerInterceptor"
+    class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" /> -->
+  <bean id="localeContextHandlerInterceptor"
+    class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor" />
+
+  <!--
+   ======= ViewControllers =======
+   -->
+  <bean id="urlFilenameViewController" class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+  </bean>
+  <!--
+    The welcome-file-list in the web.xml will is ignored since the
+    cdmserver servlet is mapped to the root path [/] So the welcome file
+    list is being replaced by a SimpleUrlHandlerMapping on the root path
+    [/] which is mapped via this ViewController to the [index] view
+  -->
+  <bean id="welcomeFileViewController"
+    class="org.springframework.web.servlet.mvc.UrlFilenameViewController">
+    <property name="suffix">
+      <value>index</value>
+    </property>
+  </bean>
+
+
+    <!--
+    ======= Exception Handling =======
+    -->
+    <bean id="exceptionResolver" class="eu.etaxonomy.cdm.remote.exception.CdmExceptionResolver">
+    </bean>
+
+</beans>
