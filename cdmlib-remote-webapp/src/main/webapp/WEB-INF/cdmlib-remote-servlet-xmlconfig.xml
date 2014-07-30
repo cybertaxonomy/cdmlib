@@ -74,7 +74,7 @@
   <bean id="datasourceContextHandlerInterceptor"
     class="eu.etaxonomy.cdm.remote.controller.interceptor.DatasourceContextHandlerInterceptor" /> -->
   <bean id="localeContextHandlerInterceptor"
-    class="eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor" />
+    class="eu.etaxonomy.cdm.remote.controller.interceptor.localeContextHandlerInterceptor" />
 
   <!--
    ======= ViewControllers =======

@@ -55,13 +55,13 @@
      <servlet>
            <servlet-name>Vaadin Application Servlet</servlet-name>
         <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
-<!-- better use -Dru.xpoft.vaadin.beanName=vaaditorUI 
+<!-- better use -Dru.xpoft.vaadin.beanName=vaaditorUI
   <init-param>
-      	<description>Vaaditor</description>
-      	<param-name>beanName</param-name>
-      	<param-value>vaaditorUI</param-value>
+        <description>Vaaditor</description>
+        <param-name>beanName</param-name>
+        <param-value>vaaditorUI</param-value>
       </init-param> -->
-      <init-param> 
+      <init-param>
         <description>Application widgetset</description>
         <param-name>widgetset</param-name>
         <param-value>eu.etaxonomy.cdm.remote.vaadin.widgetset.AppWidgetSet</param-value>
@@ -75,13 +75,17 @@
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/edit/*</url-pattern>
     </servlet-mapping>
- 
 
-<!-- DO NOT USE, this will block all other services and apps      
+
+<!-- DO NOT USE, this will block all other services and apps
 <servlet-mapping>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/*</url-pattern>
     </servlet-mapping> -->
+
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
     <servlet-mapping>
         <servlet-name>cdmlib-remote</servlet-name>
@@ -111,19 +115,19 @@
     <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.css</url-pattern>
-    </servlet-mapping> 
+    </servlet-mapping>
      <servlet-mapping>
         <servlet-name>default</servlet-name>
         <url-pattern>*.js</url-pattern>
     </servlet-mapping>
-    
+
 
     <!--
         The welcome-file-list will be ignored since the cdmlib-remote servlet is mapped to the root path
     <welcome-file-list>
     </welcome-file-list>
      -->
-    
+
   <filter>
     <filter-name>charsetFilter</filter-name>
     <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
@@ -144,7 +148,7 @@
   <!--
     Security
   -->
-<!-- 
+<!--
     <filter>
        <filter-name>springSecurityFilterChain</filter-name>
        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>

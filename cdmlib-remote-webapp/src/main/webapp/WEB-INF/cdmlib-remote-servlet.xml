@@ -8,7 +8,17 @@
     http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-2.5.xsd
     ">
 
-  <import resource="cdmlib-remote-servlet-javaconfig.xml" />
+    <context:component-scan base-package="eu/etaxonomy/cdm/remote/config" />
+
+    <!-- vaadin is excluded from the component scan in the the SpringMVCConfig.class  -->
+    <!--
+       <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin/" />
+    -->
+
+<!--     <context:component-scan base-package="eu/etaxonomy/cdm/remote" /> -->
+
+<!--   <import resource="cdmlib-remote-servlet-javaconfig.xml" /> -->
+
   <!-- <import resource="cdmlib-remote-servlet-xmlconfig.xml"/> -->
 
 </beans>

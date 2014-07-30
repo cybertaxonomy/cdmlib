@@ -15,8 +15,6 @@
     </bean>
    <context:component-scan base-package="eu/etaxonomy/cdm/ext" />
    <!-- <context:component-scan base-package="eu/etaxonomy/cdm/remote/webapp/view" /> -->
-   <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin/" />
-
 
    <!--
     <import resource="classpath:/eu/etaxonomy/cdm/remote.xml"/>
