@@ -1816,6 +1816,7 @@ cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-icons_888888_256x24
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/images/ui-icons_cd0a0a_256x240.png -text
 cdmlib-remote-webapp/src/main/webapp/css/jquery-ui/jquery-ui-1.8.23.custom.css -text
 cdmlib-remote-webapp/src/main/webapp/csv/csvExport.jsp -text
+cdmlib-remote-webapp/src/main/webapp/index.html -text
 cdmlib-remote-webapp/src/main/webapp/js/cdm_ws_progress.js -text
 cdmlib-remote-webapp/src/main/webapp/js/csv_export.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery-1.7.2.min.js -text

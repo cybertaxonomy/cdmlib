@@ -41,16 +41,25 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
         if(UriUtils.isInternetAvailable(null)){
             BioCaseQueryServiceWrapper queryService = new BioCaseQueryServiceWrapper();
             try {
-                OccurenceQuery query = new OccurenceQuery("Campanula*", null, null, null, null, null, null, null, null);
+                OccurenceQuery query = new OccurenceQuery("Campanula patula*", "L. Adamovic", null, null, null, null, null, null, null);
                 InputStream response = queryService.query(query, URI.create("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(response));
                 String line = null;
                 do {
                     if(line!=null){
                         System.out.println(line);
+                        String recordAttr = "recordCount=\"";
+                        int index = line.indexOf(recordAttr);
+                        if(index<-1){
+                            String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
+                            assertEquals("Incorrect number of occurrences", 2, Integer.parseInt(recordCount));
+                            break;
+                        }
                     }
                     line = reader.readLine();
                 } while (line!=null);
+            } catch (NumberFormatException e) {
+                fail(e.getMessage());
             } catch (ClientProtocolException e) {
                 fail(e.getMessage());
             } catch (IOException e) {
@@ -66,11 +75,33 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
         BioCaseQueryServiceWrapper service = new BioCaseQueryServiceWrapper();
         try {
             InputStream queryForSingleUnit = service.query(new OccurenceQuery("29596"), new URIBuilder("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen").build());
+            BufferedReader reader = new BufferedReader(new InputStreamReader(queryForSingleUnit));
+            String line = null;
+            do {
+                if(line!=null){
+                    System.out.println(line);
+                    String recordAttr = "recordCount=\"";
+                    int index = line.indexOf(recordAttr);
+                    if(index<-1){
+                        String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
+                        assertEquals("Incorrect number of occurrences", 1, Integer.parseInt(recordCount));
+                    }
+                    String unitId = "<abcd:UnitID>";
+                    int indexId = line.indexOf(unitId);
+                    if(indexId<-1){
+                        String id = line.substring(indexId+unitId.length(), indexId+unitId.length()+5);
+                        assertEquals("Incorrect UnitId", 29596, Integer.parseInt(id));
+                    }
+                }
+                line = reader.readLine();
+            } while (line!=null);
+        } catch (NumberFormatException e) {
+            fail(e.getMessage());
         } catch (ClientProtocolException e) {
             fail(e.getMessage());
         } catch (IOException e) {
             fail(e.getMessage());
-        } catch (URISyntaxException e) {
+        }catch (URISyntaxException e) {
             fail(e.getMessage());
         }
     }

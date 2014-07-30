@@ -142,7 +142,7 @@ public class ProgressMonitorController {
     }
 
     /**
-     * provides the relative path to the ProgressMonitor speified by its uuid.
+     * provides the relative path to the ProgressMonitor specified by its uuid.
      * File extensions like .xml, .json used during the initial request will be
      * preserved in order to not to break the content type negotiation.
      *
@@ -156,7 +156,7 @@ public class ProgressMonitorController {
      */
     public String pathFor(HttpServletRequest request, UUID uuid){
         String fileExtension = FilenameUtils.getExtension(request.getServletPath());
-        return request.getContextPath() + "/progress/" + uuid.toString() + (fileExtension.length() > 0 ? '.': "") + fileExtension;
+        return "/progress/" + uuid.toString() + (fileExtension.length() > 0 ? '.': "") + fileExtension;
     }
 
     @RequestMapping(value = "{uuid}", method = RequestMethod.GET)

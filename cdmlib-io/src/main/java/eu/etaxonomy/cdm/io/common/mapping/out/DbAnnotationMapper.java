@@ -20,38 +20,38 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 
 /**
+ * Maps all Annotations belonging to an AnnotatableEntity to a DB field, using <code>separator</code>
+ * as separator. If annotationPrefix is not <code>null</code>, only Annotations with the given prefix are used.
  * @author a.mueller
  * @created 12.05.2009
- * @version 1.0
  */
 public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExportStateBase<?, IExportTransformer>> implements IDbExportMapper<DbExportStateBase<?, IExportTransformer>, IExportTransformer>{
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(DbAnnotationMapper.class);
 	
 	private String annotationPrefix;
+	private String separator = ";";
 	
 	public static DbAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString){
-		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, null);
+		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, null, null);
 	}
 
 	public static DbAnnotationMapper NewInstance(String annotationPrefix, String dbAttributeString, String defaultValue){
-		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, defaultValue);
+		return new DbAnnotationMapper(annotationPrefix, dbAttributeString, defaultValue, null);
 	}
 
 	/**
 	 * @param dbAttributeString
 	 * @param cdmAttributeString
 	 */
-	protected DbAnnotationMapper(String annotationPrefix, String dbAttributeString, Object defaultValue) {
+	protected DbAnnotationMapper(String annotationPrefix, String dbAttributeString, Object defaultValue, String separator) {
 		super("annotations", dbAttributeString, defaultValue);
 		this.annotationPrefix  = annotationPrefix;
-		
+		if (separator != null){
+			this.separator = separator;
+		}
 	}
 	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValue(eu.etaxonomy.cdm.model.common.CdmBase)
-	 */
 	@Override
 	protected Object getValue(CdmBase cdmBase) {
 		String result = null;
@@ -59,9 +59,15 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 			AnnotatableEntity annotatableEntity = (AnnotatableEntity)cdmBase;
 			for (Annotation annotation : annotatableEntity.getAnnotations()){
 				String text = annotation.getText();
-				if (this.annotationPrefix != null && text != null && text.startsWith(this.annotationPrefix) ){
-					text = text.substring(annotationPrefix.length()).trim();
-					return CdmUtils.concat(";", result, text);
+				if (text != null){
+					if (this.annotationPrefix != null && text.startsWith(this.annotationPrefix) ){
+						if (text.startsWith(this.annotationPrefix)){
+							text = text.substring(annotationPrefix.length()).trim();
+							result = CdmUtils.concat(separator, result, text);
+						}
+					}else{
+						result = CdmUtils.concat(separator, result, text);
+					}
 				}
 			}
 		}else{
@@ -70,18 +76,11 @@ public class DbAnnotationMapper extends DbSingleAttributeExportMapperBase<DbExpo
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.out.mapper.DbSingleAttributeExportMapperBase#getValueType()
-	 */
 	@Override
 	protected int getSqlType() {
 		return Types.VARCHAR;
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmSingleAttributeMapperBase#getTypeClass()
-	 */
 	@Override
 	public Class<?> getTypeClass() {
 		return String.class;

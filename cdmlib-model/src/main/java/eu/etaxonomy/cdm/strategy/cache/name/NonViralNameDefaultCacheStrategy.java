@@ -618,6 +618,7 @@ public class NonViralNameDefaultCacheStrategy<T extends NonViralName> extends Na
 	        if (StringUtils.isNotBlank(infraSpeciesPart)){
 	            tags.add(new TaggedText(TagEnum.name, infraSpeciesPart));
 	        }
+	        
         } else if (nonViralName.isInfraGeneric()){
         	//genus part
 	       tags =getGenusOrUninomialTaggedNameCache(nonViralName);
