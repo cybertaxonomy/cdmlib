@@ -59,7 +59,7 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 * @param config
 	 * 
 	 */
-	public String delete(TaxonNameBase name, NameDeletionConfigurator config);
+	public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config);
 
 	/**
 	 * Removes the given type designation from the given taxon name and deletes it from

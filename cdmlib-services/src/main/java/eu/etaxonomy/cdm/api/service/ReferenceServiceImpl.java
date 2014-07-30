@@ -15,6 +15,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import org.apache.log4j.Logger;
+import org.hibernate.ObjectDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -89,19 +90,21 @@ private ICdmGenericDao genericDao;
 	}
 	
 	@Override
-	public String delete(Reference reference) {
+	public DeleteResult delete(Reference reference) {
 		//check whether the reference is used somewhere
 		List<String> messages = isDeletable(reference, null);
-		StringBuffer result = new StringBuffer();
+		DeleteResult result = new DeleteResult();
 		if (messages.size()>0){
+			Exception ex;
 			for (String message:messages){
-				result.append(message);
-				result.append(" - ");
+				ex = new ReferencedObjectUndeletableException(message);
+				result.addException(ex);
 			}
 			
-			return result.toString();
+			return result;
 		}
-		
-		return dao.delete(reference).toString();
+		dao.delete(reference);
+		result.isOk();
+		return result;
 	}
 }

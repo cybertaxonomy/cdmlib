@@ -72,7 +72,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 *
 	 */
-	public String deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config);
+	public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config);
 	/**
 	 * Returns a List of all TaxonNodes of a given Classification.
 	 *

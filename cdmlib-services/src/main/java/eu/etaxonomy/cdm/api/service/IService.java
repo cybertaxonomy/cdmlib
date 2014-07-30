@@ -81,9 +81,9 @@ public interface IService<T extends ICdmBase>{
      *
      * @param persistentObject the object to be deleted
      * @return the unique identifier of the deleted entity
-     * 
+     * @return deleteResult
      */
-    public String delete(T persistentObject) ;
+    public DeleteResult delete(T persistentObject) ;
 
 	
     

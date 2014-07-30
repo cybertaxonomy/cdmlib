@@ -30,6 +30,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByName;
 
+import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
@@ -96,15 +97,13 @@ public class SecurityWithTransaction extends CdmTransactionalIntegrationTestWith
         Taxon actualTaxon = (Taxon)taxonService.find(UUID.fromString("7b8b5cb3-37ba-4dba-91ac-4c6ffd6ac331"));
 
         //try {
-		String uuidString = taxonService.deleteTaxon(actualTaxon, null, null);
+		DeleteResult result = taxonService.deleteTaxon(actualTaxon, null, null);
 		/*} catch (DataChangeNoRollbackException e) {
 			Assert.fail();
 		}*/
-			 try{
-		        UUID uuid = UUID.fromString(uuidString);
-		        }catch(IllegalArgumentException e){
-		        	Assert.fail();
-		        }
+		if (!result.isOk()){
+			Assert.fail();
+		}
     }
 
 

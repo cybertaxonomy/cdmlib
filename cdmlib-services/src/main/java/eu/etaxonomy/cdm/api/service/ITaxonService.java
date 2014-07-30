@@ -235,7 +235,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param config
      * 
      */
-    public String deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
+    public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
 
     /**
      * Changes the homotypic group of a synonym into the new homotypic group.
@@ -851,9 +851,10 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param synonym
      * @param removeNameIfPossible
+     * @return deleteResult
      * 
      */
-    public String deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
+    public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
 
     /**
@@ -927,9 +928,9 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param taxon
      * @param synonym
      * @param config
-     * 
+     * @return deleteResult
      */
-    String deleteSynonym(Synonym synonym, Taxon taxon,
+    DeleteResult deleteSynonym(Synonym synonym, Taxon taxon,
             SynonymDeletionConfigurator config);
 
     public Pager<Taxon> pageAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,

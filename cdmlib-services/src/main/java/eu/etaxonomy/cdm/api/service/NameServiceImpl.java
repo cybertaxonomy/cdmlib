@@ -33,11 +33,13 @@ import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
+import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.AbstractPagerImpl;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -49,6 +51,7 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -125,9 +128,9 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.ServiceBase#delete(eu.etaxonomy.cdm.model.common.CdmBase)
      */
     @Override
-    public String delete(TaxonNameBase name){
+    public DeleteResult delete(TaxonNameBase name){
         NameDeletionConfigurator config = new NameDeletionConfigurator();
-        String result = delete(name, config);
+        DeleteResult result = delete(name, config);
        
       
         return result;
@@ -138,13 +141,21 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
      * @see eu.etaxonomy.cdm.api.service.INameService#delete(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.api.service.NameDeletionConfigurator)
      */
     @Override
-    public String delete(TaxonNameBase name, NameDeletionConfigurator config) {
-        if (name == null){
-            return null;
+    public DeleteResult delete(TaxonNameBase name, NameDeletionConfigurator config) {
+    	DeleteResult result = new DeleteResult();
+    	
+    	if (name == null){
+    		result.setAbort();
+            return result;
         }
-        
-        List<String> messages = this.isDeletable(name, config);
-       
+    	List<String> messages = new ArrayList<String>();
+    	try{
+    		messages = this.isDeletable(name, config);
+        }catch(Exception e){
+        	result.addException(e);
+        	result.setError();
+        	return result;
+        }
         if (messages.isEmpty()){
         //remove references to this name
         	// if (config.isRemoveAllNameRelationships()){
@@ -245,16 +256,20 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	        }
 	
 	         */
-	        
+	        try{
 	        UUID nameUuid = dao.delete(name);
-	        return name.getUuid().toString();
+	        }catch(Exception e){
+	        	result.addException(e);
+	        	result.setError();
+	        }
+	        return result;
         } 
-        StringBuffer result = new StringBuffer();
+               
         for (String message: messages){
-        	result.append(message);
-        	result.append("/n");
+        	result.addException(new ReferencedObjectUndeletableException(message));
         }
-        return result.toString();
+        result.setError();
+        return result;
     }
 
     /* (non-Javadoc)

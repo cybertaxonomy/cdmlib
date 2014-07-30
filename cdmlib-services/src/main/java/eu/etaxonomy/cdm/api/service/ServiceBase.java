@@ -22,6 +22,7 @@ import org.hibernate.LockMode;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
+import org.springframework.dao.DataAccessException;
 import org.springframework.transaction.annotation.Transactional;
 
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
@@ -68,8 +69,15 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = false)
-    public String delete(T persistentObject) {
-        return dao.delete(persistentObject).toString();
+    public DeleteResult delete(T persistentObject) {
+    	DeleteResult result = new DeleteResult();
+    	try{
+    		dao.delete(persistentObject);
+    	} catch(DataAccessException e){
+    		result.setError();
+    		result.addException(e);
+    	}
+        return result;
     }
 
     @Override
