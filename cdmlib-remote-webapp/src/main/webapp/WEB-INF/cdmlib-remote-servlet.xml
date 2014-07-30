@@ -17,6 +17,6 @@
 
     <!-- vaadin is excluded from the component scan in the the SpringMVCConfig.class  -->
     <!--
-       <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin/" />
+    <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin" />
     -->
 </beans>

@@ -16,16 +16,15 @@
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
-    <!-- TODO was this ever needed?
+    <!-- needed for the third party SpringVaadinServlet -->
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
-     -->
 
     <servlet>
         <description>CDM Remote API</description>
         <servlet-name>cdmlib-remote</servlet-name>
-        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>>
+        <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
         <load-on-startup>1</load-on-startup>
     </servlet>
 
@@ -35,25 +34,32 @@
     </servlet-mapping>
 
 
-    <!-- =====================================
+    <!-- ========================================
                         VAADIN
-         =====================================-->
-<!-- better use -Dru.xpoft.vaadin.beanName=vaaditorUI
-  <init-param>
+
+         VAADIN is disabled by default.
+         To enable vVaadin add the jvm argument
+         -Dru.xpoft.vaadin.beanName=vaadinUI
+
+         ======================================= -->
+    <!-- optional vaading can also activated by the
+         init-param element below (not recommendet) -->
+      <!--
+      <init-param>
         <description>Vaaditor</description>
         <param-name>beanName</param-name>
         <param-value>vaaditorUI</param-value>
-      </init-param> -->
-      <!--
-     <servlet>
-           <servlet-name>Vaadin Application Servlet</servlet-name>
-     <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
+      </init-param>
+      -->
+    <servlet>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
       <init-param>
         <description>Application widgetset</description>
         <param-name>widgetset</param-name>
         <param-value>eu.etaxonomy.cdm.remote.vaadin.widgetset.AppWidgetSet</param-value>
       </init-param>
-   </servlet>
+    </servlet>
     <servlet-mapping>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/VAADIN/*</url-pattern>
@@ -62,37 +68,35 @@
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/edit/*</url-pattern>
     </servlet-mapping>
-       -->
 
-  <filter>
-    <filter-name>charsetFilter</filter-name>
-    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>UTF-8</param-value>
-    </init-param>
-    <init-param>
-      <param-name>forceEncoding</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>charsetFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <!--
-    Security
-  -->
-<!--
     <filter>
-       <filter-name>springSecurityFilterChain</filter-name>
-       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-   </filter>
-   <filter-mapping>
-     <filter-name>springSecurityFilterChain</filter-name>
-     <url-pattern>/*</url-pattern>
-   </filter-mapping>
- -->
+      <filter-name>charsetFilter</filter-name>
+      <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+      <init-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+      </init-param>
+      <init-param>
+        <param-name>forceEncoding</param-name>
+        <param-value>true</param-value>
+      </init-param>
+    </filter>
+    <filter-mapping>
+      <filter-name>charsetFilter</filter-name>
+      <url-pattern>/*</url-pattern>
+    </filter-mapping>
 
+    <!--
+      Security
+    -->
+    <!--
+      <filter>
+         <filter-name>springSecurityFilterChain</filter-name>
+         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+     </filter>
+     <filter-mapping>
+       <filter-name>springSecurityFilterChain</filter-name>
+       <url-pattern>/*</url-pattern>
+     </filter-mapping>
+    -->
 </web-app>

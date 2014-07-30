@@ -18,9 +18,7 @@ import javax.servlet.ServletContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.context.annotation.ComponentScan.Filter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.FilterType;
 import org.springframework.context.annotation.Import;
 import org.springframework.http.MediaType;
 import org.springframework.util.PathMatcher;
@@ -48,12 +46,13 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
 @Configuration
 @Import(value={PreloadedBeans.class})
 @ComponentScan(basePackages = {
-        "eu.etaxonomy.cdm.remote"
+        "eu.etaxonomy.cdm.remote.l10n",
+        "eu.etaxonomy.cdm.remote.controller",
+        "eu.etaxonomy.cdm.remote.service",
+        "eu.etaxonomy.cdm.remote.config"
+        //"eu.etaxonomy.cdm.remote.vaadin MUST NOT BE SCANNED HERE
 //        "com.mangofactory.swagger.configuration.SpringSwaggerConfig",
 //        "com.mangofactory.swagger.controllers"
-        },
-        excludeFilters={
-            @Filter(type=FilterType.CUSTOM, value=VaadinPackageFilter.class) //  eu\.etaxonomy\.cdm\.remote\.vaadin\..*
         }
 )
 //@EnableSwagger
@@ -65,11 +64,6 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
      */
     private static final boolean XML_VIEW_CACHING = true;
 
-    public static final String[] WEB_JAR_RESOURCE_PATTERNS = {"css/", "images/", "lib/", "swagger-ui.js"};
-    public static final String WEB_JAR_RESOURCE_LOCATION = "classpath:META-INF/resources/";
-
-    public static final String WEB_JAR_VIEW_RESOLVER_PREFIX = "/WEB-INF/jsp/";
-    public static final String WEB_JAR_VIEW_RESOLVER_SUFFIX = ".jsp";
 
     @Autowired
     protected ServletContext servletContext;
@@ -80,6 +74,12 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
 
 //    private SpringSwaggerConfig springSwaggerConfig;
 
+//    ========================== JSP =================================
+//    public static final String[] WEB_JAR_RESOURCE_PATTERNS = {"css/", "images/", "lib/", "swagger-ui.js"};
+//    public static final String WEB_JAR_RESOURCE_LOCATION = "classpath:META-INF/resources/";
+//
+//    public static final String WEB_JAR_VIEW_RESOLVER_PREFIX = "/WEB-INF/jsp/";
+//    public static final String WEB_JAR_VIEW_RESOLVER_SUFFIX = ".jsp";
 //    @Override
 //    public void addResourceHandlers(ResourceHandlerRegistry registry) {
 //      registry.addResourceHandler(WEB_JAR_RESOURCE_PATTERNS)
@@ -97,6 +97,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
 //    resolver.setViewNames(new String[]{...});
 //    return resolver;
 //  }
+//  ======================================================================
 
     @Bean
     public PathMatcher pathMatcher(){
@@ -139,8 +140,9 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
 
     @Override
     protected void configureDefaultServletHandling(DefaultServletHandlerConfigurer configurer) {
-      // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to the Servlet container's "default"
-      // servlet, since the DispatcherServlet is mapped to "/"
+      // DefaultServletHandlerConfigurer: delegates unhandled requests by forwarding to
+      // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
+      // so static content ad welcome files are handled by the default servlet
       configurer.enable();
     }
 
@@ -184,6 +186,11 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
        resolver.setCache(XML_VIEW_CACHING);
        return resolver;
    }
+
+//   @Bean
+//   public VaadinUI vaadinUI(){
+//       return new VaadinUI();
+//   }
 
     // -------- Swagger configuration ------------ //
 
