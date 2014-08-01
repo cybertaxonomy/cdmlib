@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import java.util.List;
@@ -25,64 +33,48 @@ public class Employee extends CdmBase {
 	@Valid
 	private Company company;
 	@Valid
-	List<Address> addresses;
+	private List<Address> addresses;
 
 
-	public Employee()
-	{
+	public Employee(){
 	}
 
 
-	public String getFirstName()
-	{
+	public String getFirstName(){
 		return firstName;
 	}
 
 
-	public void setFirstName(String firstName)
-	{
+	public void setFirstName(String firstName){
 		this.firstName = firstName;
 	}
 
 
-	public String getLastName()
-	{
+	public String getLastName(){
 		return lastName;
 	}
-
-
-	public void setLastName(String lastName)
-	{
+	public void setLastName(String lastName){
 		this.lastName = lastName;
 	}
 
 
-	public Company getCompany()
-	{
+	public Company getCompany(){
 		return company;
 	}
-
-
-	public void setCompany(Company company)
-	{
+	public void setCompany(Company company){
 		this.company = company;
 	}
 
 
-	public List<Address> getAddresses()
-	{
+	public List<Address> getAddresses(){
 		return addresses;
 	}
-
-
-	public void setAddresses(List<Address> addresses)
-	{
+	public void setAddresses(List<Address> addresses){
 		this.addresses = addresses;
 	}
 
 
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj){
 		if (this == obj) {
 			return true;
 		}
@@ -94,8 +86,7 @@ public class Employee extends CdmBase {
 	}
 
 
-	public int hashCode()
-	{
+	public int hashCode(){
 		int hash = 17;
 		hash = (hash * 31) + firstName.hashCode();
 		hash = (hash * 31) + lastName.hashCode();

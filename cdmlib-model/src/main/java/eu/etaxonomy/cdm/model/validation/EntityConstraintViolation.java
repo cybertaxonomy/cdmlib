@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/ 
 package eu.etaxonomy.cdm.model.validation;
 
 import javax.persistence.Entity;
@@ -42,15 +50,13 @@ import eu.etaxonomy.cdm.validation.Severity;
 @XmlRootElement(name = "EntityConstraintViolation")
 @Entity
 public class EntityConstraintViolation extends CdmBase {
-
 	private static final long serialVersionUID = 6685798691716413950L;
 
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(EntityConstraintViolation.class);
 
 
-	public static EntityConstraintViolation newInstance()
-	{
+	public static EntityConstraintViolation NewInstance(){
 		return new EntityConstraintViolation();
 	}
 
@@ -79,8 +85,7 @@ public class EntityConstraintViolation extends CdmBase {
 	private EntityValidationResult entityValidationResult;
 
 
-	protected EntityConstraintViolation()
-	{
+	protected EntityConstraintViolation(){
 	}
 
 
@@ -91,14 +96,10 @@ public class EntityConstraintViolation extends CdmBase {
 	 * annotations, and the error was in a parent or child entity, will this be a
 	 * dot-separated path (e.g. "addresses[0].street" or "company.name").
 	 */
-	public String getPropertyPath()
-	{
+	public String getPropertyPath(){
 		return propertyPath;
 	}
-
-
-	public void setPropertyPath(String propertyPath)
-	{
+	public void setPropertyPath(String propertyPath){
 		this.propertyPath = propertyPath;
 	}
 
@@ -106,14 +107,10 @@ public class EntityConstraintViolation extends CdmBase {
 	/**
 	 * A user-friendly name for the property path.
 	 */
-	public String getUserFriendlyFieldName()
-	{
+	public String getUserFriendlyFieldName(){
 		return userFriendlyFieldName;
 	}
-
-
-	public void setUserFriendlyFieldName(String userFriendlyFieldName)
-	{
+	public void setUserFriendlyFieldName(String userFriendlyFieldName){
 		this.userFriendlyFieldName = userFriendlyFieldName;
 	}
 
@@ -123,14 +120,11 @@ public class EntityConstraintViolation extends CdmBase {
 	 * 
 	 * @return
 	 */
-	public String getInvalidValue()
-	{
+	public String getInvalidValue(){
 		return invalidValue;
 	}
 
-
-	public void setInvalidValue(String invalidValue)
-	{
+	public void setInvalidValue(String invalidValue){
 		this.invalidValue = invalidValue;
 	}
 
@@ -140,14 +134,10 @@ public class EntityConstraintViolation extends CdmBase {
 	 * 
 	 * @return
 	 */
-	public Severity getSeverity()
-	{
+	public Severity getSeverity(){
 		return severity;
 	}
-
-
-	public void setSeverity(Severity severity)
-	{
+	public void setSeverity(Severity severity){
 		this.severity = severity;
 	}
 
@@ -157,14 +147,10 @@ public class EntityConstraintViolation extends CdmBase {
 	 * 
 	 * @return The error message
 	 */
-	public String getMessage()
-	{
+	public String getMessage(){
 		return message;
 	}
-
-
-	public void setMessage(String message)
-	{
+	public void setMessage(String message){
 		this.message = message;
 	}
 
@@ -175,26 +161,18 @@ public class EntityConstraintViolation extends CdmBase {
 	 * 
 	 * @param validator
 	 */
-	public String getValidator()
-	{
+	public String getValidator(){
 		return validator;
 	}
-
-
-	public void setValidator(String validator)
-	{
+	public void setValidator(String validator){
 		this.validator = validator;
 	}
 
 
-	public EntityValidationResult getEntityValidationResult()
-	{
+	public EntityValidationResult getEntityValidationResult(){
 		return entityValidationResult;
 	}
-
-
-	public void setEntityValidationResult(EntityValidationResult entityValidationResult)
-	{
+	public void setEntityValidationResult(EntityValidationResult entityValidationResult){
 		this.entityValidationResult = entityValidationResult;
 	}
 

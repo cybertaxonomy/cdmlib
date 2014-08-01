@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import java.util.concurrent.ThreadFactory;
@@ -25,8 +33,7 @@ class ValidationThreadFactory implements ThreadFactory {
 	private final ThreadGroup threadGroup;
 
 
-	public ValidationThreadFactory()
-	{
+	public ValidationThreadFactory(){
 		HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
 		factory = config.buildValidatorFactory();
 		threadGroup = new ThreadGroup(THREAD_GROUP_NAME);
@@ -34,8 +41,7 @@ class ValidationThreadFactory implements ThreadFactory {
 
 
 	@Override
-	public Thread newThread(Runnable runnable)
-	{
+	public Thread newThread(Runnable runnable){
 		return new EntityValidationThread(threadGroup, runnable, DEFAULT_THREAD_NAME, factory.getValidator());
 	}
 

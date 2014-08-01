@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -13,14 +21,12 @@ public class EmployeeWithLongRunningValidation extends CdmBase {
 	private String firstName;
 
 
-	public String getFirstName()
-	{
+	public String getFirstName(){
 		return firstName;
 	}
 
 
-	public void setFirstName(String firstName)
-	{
+	public void setFirstName(String firstName){
 		this.firstName = firstName;
 	}
 
@@ -32,8 +38,7 @@ public class EmployeeWithLongRunningValidation extends CdmBase {
 	 * to accomplish this is to just let the equals() method simply return false. See
 	 * {@link EntityValidationTask#equals(Object)}.
 	 */
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj){
 		return false;
 	}
 

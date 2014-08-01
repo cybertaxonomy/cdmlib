@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.model.name.Rank;
  * @author ben.clark
  *
  */
-//@Ignore //FIXME ignoring only for merging 8.6.2010 a.kohlbecker
 public class MustHaveAuthorityTest  {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(MustHaveAuthorityTest.class);
 	
 	private Validator validator;

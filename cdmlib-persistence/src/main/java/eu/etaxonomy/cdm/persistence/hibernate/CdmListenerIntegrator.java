@@ -31,8 +31,7 @@ public class CdmListenerIntegrator implements Integrator {
 	 * org.hibernate.service.spi.SessionFactoryServiceRegistry)
 	 */
 	@Override
-	public void integrate(Configuration configuration, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry)
-	{
+	public void integrate(Configuration configuration, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry){
 		if (logger.isInfoEnabled()) {
 			logger.info("Registering event listeners");
 		}
@@ -72,8 +71,7 @@ public class CdmListenerIntegrator implements Integrator {
 	 * org.hibernate.service.spi.SessionFactoryServiceRegistry)
 	 */
 	@Override
-	public void integrate(MetadataImplementor metadata, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry)
-	{
+	public void integrate(MetadataImplementor metadata, SessionFactoryImplementor sessionFactory, SessionFactoryServiceRegistry serviceRegistry){
 		//nothing to do for now
 		logger.warn("Metadata integrate not yet implemented");
 	}

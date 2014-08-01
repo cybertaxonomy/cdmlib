@@ -34,14 +34,13 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 
 
 	@Override
-	public void saveValidationResult(Set<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType)
-	{
+	public <T extends CdmBase> void saveValidationResult(Set<ConstraintViolation<T>> errors, T entity, CRUDEventType crudEventType){
 		EntityValidationResult old = getValidationResult(entity.getClass().getName(), entity.getId());
 		if (old != null) {
 			getSession().delete(old);
 		}
 		EntityValidationResult result = createEntityValidationResult(entity, crudEventType);
-		for (ConstraintViolation<CdmBase> error : errors) {
+		for (ConstraintViolation<T> error : errors) {
 			EntityConstraintViolation violation = createEntityConstraintViolation(entity, error);
 			result.addEntityConstraintViolation(violation);
 			violation.setEntityValidationResult(result);
@@ -51,8 +50,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 
 
 	@Override
-	public void deleteValidationResult(String validatedEntityClass, int validatedEntityId)
-	{
+	public void deleteValidationResult(String validatedEntityClass, int validatedEntityId){
 		//@formatter:off
 		Query query = getSession().createQuery(
 				"DELETE FROM EntityValidationResult vr "
@@ -62,7 +60,10 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		//@formatter:on
 		query.setString("cls", validatedEntityClass);
 		query.setInteger("id", validatedEntityId);
-		query.executeUpdate();
+		int n = query.executeUpdate();
+		if (logger.isDebugEnabled()){
+			logger.debug("Deleted " + n + " EntityValidationResults");
+		}
 	}
 
 
@@ -82,8 +83,9 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 		List<EntityValidationResult> result = (List<EntityValidationResult>) query.list();
 		if (result.size() == 0) {
 			return null;
+		}else{
+			return result.iterator().next();
 		}
-		return result.iterator().next();
 	}
 
 
@@ -174,8 +176,7 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 	}
 
 
-	private EntityValidationResult createEntityValidationResult(CdmBase entity, CRUDEventType crudEventType)
-	{
+	private EntityValidationResult createEntityValidationResult(CdmBase entity, CRUDEventType crudEventType){
 		EntityValidationResult result = EntityValidationResult.newInstance();
 		result.setCrudEventType(crudEventType);
 		result.setValidatedEntityClass(entity.getClass().getName());
@@ -201,9 +202,8 @@ public class EntityValidationResultDaoHibernateImpl extends CdmEntityDaoBase<Ent
 	}
 
 
-	private EntityConstraintViolation createEntityConstraintViolation(CdmBase entity, ConstraintViolation<CdmBase> error)
-	{
-		EntityConstraintViolation violation = EntityConstraintViolation.newInstance();
+	private <T extends CdmBase>  EntityConstraintViolation createEntityConstraintViolation(T entity, ConstraintViolation<T> error){
+		EntityConstraintViolation violation = EntityConstraintViolation.NewInstance();
 		violation.setSeverity(Severity.getSeverity(error));
 		violation.setPropertyPath(error.getPropertyPath().toString());
 		violation.setInvalidValue(error.getInvalidValue().toString());

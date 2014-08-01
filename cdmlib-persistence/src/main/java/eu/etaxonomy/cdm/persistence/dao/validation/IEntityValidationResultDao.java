@@ -45,7 +45,7 @@ public interface IEntityValidationResultDao extends ICdmEntityDao<EntityValidati
 	 * @param crudEventType
 	 *            The CRUD operation triggering the validation
 	 */
-	void saveValidationResult(Set<ConstraintViolation<CdmBase>> errors, CdmBase entity, CRUDEventType crudEventType);
+	<T extends CdmBase> void  saveValidationResult(Set<ConstraintViolation<T>> errors, T entity, CRUDEventType crudEventType);
 
 
 	/**

@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import javax.validation.ConstraintValidator;
@@ -14,13 +22,11 @@ public class LongRunningCheckCaseValidator implements ConstraintValidator<LongRu
 	
 	private CaseMode caseMode;
 
-	public void initialize(LongRunningCheckCase constraintAnnotation)
-	{
+	public void initialize(LongRunningCheckCase constraintAnnotation){
 		this.caseMode = constraintAnnotation.value();
 	}
 
-	public boolean isValid(String object, ConstraintValidatorContext constraintContext)
-	{
+	public boolean isValid(String object, ConstraintValidatorContext constraintContext){
 		try {
 			Thread.sleep(1000);
 		}

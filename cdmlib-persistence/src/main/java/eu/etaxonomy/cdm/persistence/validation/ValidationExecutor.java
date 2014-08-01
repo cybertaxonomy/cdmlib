@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import java.lang.ref.WeakReference;
@@ -13,7 +21,7 @@ import javax.validation.ConstraintValidator;
 import org.apache.log4j.Logger;
 
 /**
- * A {@code ThreadPoolExecutor} specialised in dealing with {@link EntityValidationThread}s and
+ * A {@code ThreadPoolExecutor} specialized in dealing with {@link EntityValidationThread}s and
  * validation tasks (see {@link EntityValidationTask}). This implementation creates a thread
  * pool containing just one thread, meaning all validation tasks are run one after another on
  * that one thread. Especially for Level-3 validation tasks this is probably exactly what you
@@ -89,8 +97,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * at most 1000 pending validations. Thereafter newly submitted validation tasks will
 	 * simply be discarded. See {@link #rejectedExecution(Runnable, ThreadPoolExecutor)}.
 	 */
-	public ValidationExecutor()
-	{
+	public ValidationExecutor(){
 		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS, new EntityValidationTaskQueue(TASK_QUEUE_SIZE));
 		setThreadFactory(new ValidationThreadFactory());
 		setRejectedExecutionHandler(this);
@@ -101,8 +108,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * Creates a {@code ValidationExecutor} with a custom task queue size.
 	 * @param taskQueueSize
 	 */
-	public ValidationExecutor(int taskQueueSize)
-	{
+	public ValidationExecutor(int taskQueueSize){
 		super(CORE_POOL_SIZE, MAX_POOL_SIZE, KEEP_ALIFE_TIME, TimeUnit.SECONDS, new EntityValidationTaskQueue(taskQueueSize));
 		setThreadFactory(new ValidationThreadFactory());
 		setRejectedExecutionHandler(this);
@@ -119,8 +125,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * and Level-3 constraint violations every once in a while.
 	 */
 	@Override
-	public void rejectedExecution(Runnable r, ThreadPoolExecutor executor)
-	{
+	public void rejectedExecution(Runnable r, ThreadPoolExecutor executor){
 		EntityValidationTask task = (EntityValidationTask) r;
 		logger.error(String.format("Validation of %s cancelled. Too many validation tasks waiting to be executed.", task.getEntity().toString()));
 	}
@@ -133,15 +138,13 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * constitutes no problem and may solve performance problems.
 	 */
 	@Override
-	public void setMaximumPoolSize(int maximumPoolSize)
-	{
+	public void setMaximumPoolSize(int maximumPoolSize){
 		throw new RuntimeException("Altering maximum pool size for ValidationExecutor instances currently not allowed");
 	}
 
 
 	@Override
-	protected void beforeExecute(Thread thread, Runnable runnable)
-	{
+	protected void beforeExecute(Thread thread, Runnable runnable){
 		EntityValidationThread validationThread = (EntityValidationThread) thread;
 		EntityValidationTask task = (EntityValidationTask) runnable;
 		validationThread.setTerminationRequested(false);
@@ -163,8 +166,7 @@ public class ValidationExecutor extends ThreadPoolExecutor implements RejectedEx
 	 * only allow one thread in the thread pool. However, we want to be prepared for a future
 	 * with truely concurrent validation.
 	 */
-	private void checkPool(EntityValidationThread pendingThread, EntityValidationTask pendingTask)
-	{
+	private void checkPool(EntityValidationThread pendingThread, EntityValidationTask pendingTask){
 		boolean found = false;
 		Iterator<WeakReference<EntityValidationThread>> iterator = threads.iterator();
 		while (iterator.hasNext()) {

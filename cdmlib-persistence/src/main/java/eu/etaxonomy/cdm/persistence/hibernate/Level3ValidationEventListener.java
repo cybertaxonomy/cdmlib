@@ -1,3 +1,12 @@
+// $Id$
+/**
+* Copyright (C) 2007 EDIT
+* European Distributed Institute of Taxonomy 
+* http://www.e-taxonomy.eu
+* 
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.hibernate;
 
 import java.util.HashMap;
@@ -24,46 +33,39 @@ public class Level3ValidationEventListener implements PostInsertEventListener, P
 	private ValidationExecutor validationExecutor;
 
 
-	public Level3ValidationEventListener()
-	{
+	public Level3ValidationEventListener(){
 	}
 
 
-	public ValidationExecutor getValidationExecutor()
-	{
+	public ValidationExecutor getValidationExecutor(){
 		return validationExecutor;
 	}
 
 
-	public void setValidationExecutor(ValidationExecutor validationExecutor)
-	{
+	public void setValidationExecutor(ValidationExecutor validationExecutor){
 		this.validationExecutor = validationExecutor;
 	}
 
 
 	@Override
-	public void onPostInsert(PostInsertEvent event)
-	{
+	public void onPostInsert(PostInsertEvent event){
 		validate(event.getEntity(), CRUDEventType.INSERT);
 	}
 
 
 	@Override
-	public void onPostUpdate(PostUpdateEvent event)
-	{
+	public void onPostUpdate(PostUpdateEvent event){
 		validate(event.getEntity(), CRUDEventType.UPDATE);
 	}
 
 
 	@Override
-	public void onPostDelete(PostDeleteEvent event)
-	{
+	public void onPostDelete(PostDeleteEvent event){
 		validate(event.getEntity(), CRUDEventType.DELETE);
 	}
 
 
-	private void validate(Object object, CRUDEventType trigger)
-	{
+	private void validate(Object object, CRUDEventType trigger){
 		try {
 			if (object == null) {
 				logger.warn("Nothing to validate (entity is null)");

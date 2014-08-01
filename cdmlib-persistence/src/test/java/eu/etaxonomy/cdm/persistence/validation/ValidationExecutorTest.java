@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import static org.junit.Assert.fail;
@@ -14,14 +22,12 @@ public class ValidationExecutorTest {
 
 
 	@Before
-	public void setUp() throws Exception
-	{
+	public void setUp() throws Exception{
 	}
 
 
 	@Test
-	public void testSetMaximumPoolSize()
-	{
+	public void testSetMaximumPoolSize(){
 		try {
 			// Test that an exception is thrown when trying to change
 			// the thread pool size
@@ -37,8 +43,7 @@ public class ValidationExecutorTest {
 
 
 	@Test
-	public void testValidationExecutor()
-	{
+	public void testValidationExecutor(){
 		// Constructor test  not implemented
 	}
 
@@ -49,8 +54,7 @@ public class ValidationExecutorTest {
 	 * that we know will take some time to complete. See {@link LongRunningCheckCaseValidator}.
 	 */
 	@Test
-	public void testRejectedExecution()
-	{
+	public void testRejectedExecution(){
 		try {
 			// Bit awkward, but since unit tests themselves also run in a separate thread,
 			// we allow the previous test case some time to complete, otherwise the output
@@ -84,8 +88,7 @@ public class ValidationExecutorTest {
 
 
 	@Test
-	public void testBeforeExecute()
-	{
+	public void testBeforeExecute(){
 
 	}
 

@@ -1,10 +1,18 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.Validator;
 
 /**
- * A subclass of {@code Thread} specialised in running validation tasks. Each
+ * A subclass of {@code Thread} specialized in running validation tasks. Each
  * {@code ValidationThread} has its own {@link Validator} instance. In addition it allows
  * a flag to be set (by the main thread) that the currently running
  * {@link ConstraintValidator} may query to see if there is a termination request. See

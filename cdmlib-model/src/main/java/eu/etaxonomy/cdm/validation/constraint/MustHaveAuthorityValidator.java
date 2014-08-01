@@ -12,9 +12,9 @@ package eu.etaxonomy.cdm.validation.constraint;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NonViralName;
-import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
 
 public class MustHaveAuthorityValidator implements
@@ -22,28 +22,29 @@ public class MustHaveAuthorityValidator implements
 
 	public void initialize(MustHaveAuthority mustHaveAuthority) { }
 
-	public boolean isValid(NonViralName name, ConstraintValidatorContext constraintContext) {
+	public boolean isValid(NonViralName nvn, ConstraintValidatorContext constraintContext) {
 		boolean valid = true;
 		
+		NonViralName<?> name = CdmBase.deproxy(nvn, NonViralName.class);
 		if(name.getBasionymAuthorTeam() == null && name.getAuthorshipCache() == null) {
 		    valid = false;
-		    if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
-			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
+		    if(name instanceof BotanicalName && name.isInfraSpecific()) {
+			    if(name.isAutonym()) {
 				    valid = true; // is AUTONYM
 			    } 
 		    } 
 		    if(name.getRank().isSpeciesAggregate()) { // Species aggregates don't have authorities
 		    	valid = true;
-			    }
+			}
 		    
-		    } else {
+		} else {
 			valid = true;
-			if(name instanceof BotanicalName && name.getRank().isInfraSpecific()) {
-			    if(name.getSpecificEpithet() != null && name.getInfraSpecificEpithet() != null && name.getInfraSpecificEpithet().equals(name.getSpecificEpithet())) {
+			if(name instanceof BotanicalName && name.isInfraSpecific()) {
+			    if(name.isAutonym()) {
 				    valid = false; // is AUTONYM
-			    } 
-		    } 
-		    if(name.getRank().isSpeciesAggregate()) { // Species aggregates don't have authorities
+			    }
+		    }
+		    if(name.isSpeciesAggregate()) { // Species aggregates don't have authorities
 			    valid = false;
 		    }
 		}

@@ -71,6 +71,7 @@ import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
 import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
+import eu.etaxonomy.cdm.validation.annotation.NamePartsCase;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
@@ -119,6 +120,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Configurable
 @CorrectEpithetsForRank(groups = Level2.class)
 @MustHaveAuthority(groups = Level2.class)
+//@NamePartsCase(groups = Level2.class)  duplicate for allowedCharactersForEpithet field level pattern checks
 @NoDuplicateNames(groups = Level3.class)
 public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonViralNameCacheStrategy> implements Cloneable{
     private static final long serialVersionUID = 4441110073881088033L;

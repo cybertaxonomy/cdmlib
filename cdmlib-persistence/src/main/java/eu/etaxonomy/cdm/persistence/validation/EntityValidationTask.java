@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import java.lang.ref.WeakReference;
@@ -45,8 +53,7 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups)
-	{
+	public EntityValidationTask(CdmBase entity, Class<?>... validationGroups){
 		this(entity, CRUDEventType.NONE, validationGroups);
 	}
 
@@ -62,29 +69,23 @@ public abstract class EntityValidationTask implements Runnable {
 	 * @param validationGroups
 	 *            The validation groups to apply
 	 */
-	public EntityValidationTask(CdmBase entity, CRUDEventType crudEventType, Class<?>... validationGroups)
-	{
+	public EntityValidationTask(CdmBase entity, CRUDEventType crudEventType, Class<?>... validationGroups){
 		this.entity = entity;
 		this.crudEventType = crudEventType;
 		this.validationGroups = validationGroups;
 	}
 
-
-	public void setValidator(Validator validator)
-	{
+	public void setValidator(Validator validator){
 		this.validator = validator;
 	}
 
 
-	public void setDao(IEntityValidationResultDao dao)
-	{
+	public void setDao(IEntityValidationResultDao dao){
 		this.dao = dao;
 	}
 
-
 	@Override
-	public void run()
-	{
+	public void run(){
 		try {
 			if (waitForThread != null && waitForThread.get() != null) {
 				waitForThread.get().join();
@@ -115,47 +116,9 @@ public abstract class EntityValidationTask implements Runnable {
 	}
 
 
-	/**
-	 * Two entity validation tasks are considered equal if (1) they validate the same
-	 * entity and (2) they apply the same constraints, i.e. constraints belonging to the
-	 * same validation group(s).
-	 */
-	@Override
-	public boolean equals(Object obj)
-	{
-		if (this == obj) {
-			return true;
-		}
-		if (obj == null || !(obj instanceof EntityValidationTask)) {
-			return false;
-		}
-		EntityValidationTask other = (EntityValidationTask) obj;
-		if (!Arrays.deepEquals(validationGroups, other.validationGroups)) {
-			return false;
-		}
-		return entity.getId() == other.getEntity().getId();
-	}
 
 
-	@Override
-	public int hashCode()
-	{
-		int hash = 17;
-		hash = (hash * 31) + entity.getId();
-		hash = (hash * 31) + Arrays.deepHashCode(validationGroups);
-		return hash;
-	}
-
-
-	@Override
-	public String toString()
-	{
-		return EntityValidationTask.class.getName() + ':' + entity.toString() + Arrays.deepToString(validationGroups);
-	}
-
-
-	protected Set<ConstraintViolation<CdmBase>> validate()
-	{
+	protected Set<ConstraintViolation<CdmBase>> validate(){
 		assert (validator != null);
 		return validator.validate(entity, validationGroups);
 	}
@@ -164,8 +127,7 @@ public abstract class EntityValidationTask implements Runnable {
 	/**
 	 * Get the JPA entity validated in this task
 	 */
-	CdmBase getEntity()
-	{
+	CdmBase getEntity(){
 		return entity;
 	}
 
@@ -185,9 +147,44 @@ public abstract class EntityValidationTask implements Runnable {
 	 * little as possible with what's going on within the java concurrency framework (i.e.
 	 * the {@link ThreadPoolExecutor}).
 	 */
-	void waitFor(EntityValidationThread thread)
-	{
+	void waitFor(EntityValidationThread thread){
 		this.waitForThread = new WeakReference<EntityValidationThread>(thread);
+	}
+	
+
+	/**
+	 * Two entity validation tasks are considered equal if (1) they validate the same
+	 * entity and (2) they apply the same constraints, i.e. constraints belonging to the
+	 * same validation group(s).
+	 */
+	@Override
+	public boolean equals(Object obj){
+		if (this == obj) {
+			return true;
+		}
+		if (obj == null || !(obj instanceof EntityValidationTask)) {
+			return false;
+		}
+		EntityValidationTask other = (EntityValidationTask) obj;
+		if (!Arrays.deepEquals(validationGroups, other.validationGroups)) {
+			return false;
+		}
+		return entity.getId() == other.getEntity().getId();
+	}
+
+
+	@Override
+	public int hashCode(){
+		int hash = 17;
+		hash = (hash * 31) + entity.getId();
+		hash = (hash * 31) + Arrays.deepHashCode(validationGroups);
+		return hash;
+	}
+
+
+	@Override
+	public String toString(){
+		return EntityValidationTask.class.getName() + ':' + entity.toString() + Arrays.deepToString(validationGroups);
 	}
 
 }

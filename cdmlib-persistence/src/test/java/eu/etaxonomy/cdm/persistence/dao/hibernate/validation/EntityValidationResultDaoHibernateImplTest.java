@@ -17,52 +17,50 @@ import javax.validation.ValidatorFactory;
 
 import org.hibernate.validator.HibernateValidator;
 import org.hibernate.validator.HibernateValidatorConfiguration;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.dbunit.annotation.ExpectedDataSet;
 import org.unitils.spring.annotation.SpringBeanByType;
 
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.validation.EntityConstraintViolation;
 import eu.etaxonomy.cdm.model.validation.EntityValidationResult;
 import eu.etaxonomy.cdm.persistence.dao.validation.IEntityValidationResultDao;
 import eu.etaxonomy.cdm.persistence.validation.Company;
 import eu.etaxonomy.cdm.persistence.validation.Employee;
 import eu.etaxonomy.cdm.test.integration.CdmIntegrationTest;
+import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.validation.CRUDEventType;
 import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Severity;
 
 @DataSet
-public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTest {
+public class EntityValidationResultDaoHibernateImplTest extends CdmTransactionalIntegrationTest {
 
 	private static final String MEDIA = "eu.etaxonomy.cdm.model.media.Media";
 	private static final String SYNONYM_RELATIONSHIP = "eu.etaxonomy.cdm.model.taxon.SynonymRelationship";
 	private static final String GATHERING_EVENT = "eu.etaxonomy.cdm.model.occurrence.GatheringEvent";
 
 	@SpringBeanByType
-	IEntityValidationResultDao dao;
+	private IEntityValidationResultDao dao;
 
 
 	@Test
-	public void init()
-	{
+	public void init(){
 		assertNotNull("Expecting an instance of IEntityValidationResultDao", dao);
 	}
 
 
 	@Test
-	public void testSaveValidationResult()
-	{
+	public void testSaveValidationResult(){
 
 		HibernateValidatorConfiguration config = Validation.byProvider(HibernateValidator.class).configure();
 		ValidatorFactory factory = config.buildValidatorFactory();
 
-		// This is the bean that is bean that is going to be tested
+		// This is the bean that is going to be tested
 		Employee emp = new Employee();
-		UUID uuid = UUID.randomUUID();
 		emp.setId(1);
-		emp.setUuid(uuid);
+		UUID uuid = emp.getUuid();
 		// ERROR 1 (should be JOHN)
 		emp.setFirstName("john");
 		// This is an error (should be SMITH), but it is a Level-3
@@ -77,12 +75,10 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 		comp.setName("Google");
 		emp.setCompany(comp);
 
-		Set<ConstraintViolation<CdmBase>> errors = factory.getValidator().validate((CdmBase) emp, Level2.class);
+		Set<ConstraintViolation<Employee>> errors = factory.getValidator().validate(emp, Level2.class);
 		dao.saveValidationResult(errors, emp, CRUDEventType.NONE);
 
-		EntityValidationResult result;
-
-		result = dao.getValidationResult(Employee.class.getName(), 1);
+		EntityValidationResult result = dao.getValidationResult(Employee.class.getName(), 1);
 		assertNotNull(result);
 		assertEquals("Unexpected UUID", result.getValidatedEntityUuid(), uuid);
 		assertEquals("Unexpected number of constraint violations", 2, result.getEntityConstraintViolations().size());
@@ -102,15 +98,18 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 
 	@Test
 	@ExpectedDataSet
-	public void testDeleteValidationResult()
-	{
+	public void testDeleteValidationResult(){
 		dao.deleteValidationResult(SYNONYM_RELATIONSHIP, 2);
+		
+		commitAndStartNewTransaction(null);
+		
+		List<EntityValidationResult> results = dao.getEntityValidationResults(SYNONYM_RELATIONSHIP);
+		assertEquals("Unexpected number of validation results", 0, results.size());
 	}
 
 
 	@Test
-	public void testGetEntityValidationResult()
-	{
+	public void testGetEntityValidationResult(){
 		EntityValidationResult result;
 
 		result = dao.getValidationResult(MEDIA, 100);
@@ -140,8 +139,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 
 
 	@Test
-	public void testGetEntityValidationResults_String()
-	{
+	public void testGetEntityValidationResults_String(){
 		List<EntityValidationResult> results;
 
 		results = dao.getEntityValidationResults(MEDIA);
@@ -159,8 +157,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 
 
 	@Test
-	public void testGetEntitiesViolatingConstraint_String()
-	{
+	public void testGetEntitiesViolatingConstraint_String(){
 		List<EntityValidationResult> results;
 
 		results = dao.getEntitiesViolatingConstraint("com.example.NameValidator");
@@ -178,8 +175,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 
 
 	@Test
-	public void testGetEntityValidationResults_String_Severity()
-	{
+	public void testGetEntityValidationResults_String_Severity(){
 		List<EntityValidationResult> results;
 
 		results = dao.getValidationResults(MEDIA, Severity.NOTICE);
@@ -211,8 +207,7 @@ public class EntityValidationResultDaoHibernateImplTest extends CdmIntegrationTe
 
 
 	@Test
-	public void testGetEntityValidationResults_Severity()
-	{
+	public void testGetEntityValidationResults_Severity(){
 		List<EntityValidationResult> results;
 		results = dao.getValidationResults(Severity.NOTICE);
 		assertEquals("Unexpected number of validation results", 1, results.size());

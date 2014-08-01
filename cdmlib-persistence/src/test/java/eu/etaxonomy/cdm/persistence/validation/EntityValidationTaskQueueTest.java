@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import org.junit.Assert;
@@ -6,9 +14,9 @@ import org.junit.Test;
 
 public class EntityValidationTaskQueueTest {
 
-	EntityValidationTask evt1;
-	EntityValidationTask evt2;
-	EntityValidationTask evt3;
+	private EntityValidationTask evt1;
+	private EntityValidationTask evt2;
+	private EntityValidationTask evt3;
 
 
 	/*
@@ -19,8 +27,7 @@ public class EntityValidationTaskQueueTest {
 	 * belonging to the "Level2" validation group.
 	 */
 	@Before
-	public void setUp()
-	{
+	public void setUp(){
 
 		Employee emp1 = new Employee();
 		emp1.setFirstName("John");
@@ -42,8 +49,7 @@ public class EntityValidationTaskQueueTest {
 	 * EntityValidationTask that has driven out the two previously added tasks
 	 */
 	@Test
-	public void testOffer()
-	{
+	public void testOffer(){
 		EntityValidationTaskQueue queue = new EntityValidationTaskQueue(10);
 		queue.offer(evt1);
 		queue.offer(evt2);
@@ -58,8 +64,7 @@ public class EntityValidationTaskQueueTest {
 	 * EntityValidationTask that was last added will be in the queue.
 	 */
 	@Test
-	public void testAdd()
-	{
+	public void testAdd(){
 		EntityValidationTaskQueue queue = new EntityValidationTaskQueue(10);
 		queue.add(evt1);
 		queue.add(evt2);
@@ -73,8 +78,7 @@ public class EntityValidationTaskQueueTest {
 	 * EntityValidationTask that was last added will be in the queue.
 	 */
 	@Test
-	public void testPut() throws InterruptedException
-	{
+	public void testPut() throws InterruptedException{
 		EntityValidationTaskQueue queue = new EntityValidationTaskQueue(10);
 		queue.put(evt1);
 		queue.put(evt2);

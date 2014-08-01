@@ -1,3 +1,11 @@
+/**
+* Copyright (C) 2009 EDIT
+* European Distributed Institute of Taxonomy
+* http://www.e-taxonomy.eu
+*
+* The contents of this file are subject to the Mozilla Public License Version 1.1
+* See LICENSE.TXT at the top of this package for the full license terms.
+*/
 package eu.etaxonomy.cdm.persistence.validation;
 
 import javax.validation.constraints.NotNull;
@@ -19,21 +27,16 @@ public class Company extends CdmBase {
 	@CheckCase(value = CaseMode.UPPER, groups = { Level2.class })
 	private String name;
 
-
-	public String getName()
-	{
+	public String getName(){
 		return name;
 	}
 
-
-	public void setName(String name)
-	{
+	public void setName(String name){
 		this.name = name;
 	}
 
 
-	public boolean equals(Object obj)
-	{
+	public boolean equals(Object obj){
 		if (this == obj) {
 			return true;
 		}
@@ -45,8 +48,7 @@ public class Company extends CdmBase {
 	}
 
 
-	public int hashCode()
-	{
+	public int hashCode(){
 		return name.hashCode();
 	}
 
