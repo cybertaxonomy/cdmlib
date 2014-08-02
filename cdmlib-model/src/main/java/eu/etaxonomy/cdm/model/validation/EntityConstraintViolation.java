@@ -117,7 +117,6 @@ public class EntityConstraintViolation extends CdmBase {
 
 	/**
 	 * Get the value that violated the constraint.
-	 * 
 	 * @return
 	 */
 	public String getInvalidValue(){
