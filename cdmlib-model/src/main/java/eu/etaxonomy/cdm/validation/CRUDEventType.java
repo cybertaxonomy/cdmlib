@@ -21,7 +21,6 @@ package eu.etaxonomy.cdm.validation;
  * @author ayco holleman
  * 
  */
-public enum CRUDEventType
-{
+public enum CRUDEventType{
 	NONE, INSERT, UPDATE, DELETE
 }
