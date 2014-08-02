@@ -105,86 +105,72 @@ public class EntityValidationResult extends CdmBase {
 	private Set<EntityConstraintViolation> entityConstraintViolations;
 
 
-	protected EntityValidationResult()
-	{
+	protected EntityValidationResult(){
 		super();
 	}
 
 
-	public int getValidatedEntityId()
-	{
+	public int getValidatedEntityId(){
 		return validatedEntityId;
 	}
 
 
-	public void setValidatedEntityId(int validatedEntityId)
-	{
+	public void setValidatedEntityId(int validatedEntityId){
 		this.validatedEntityId = validatedEntityId;
 	}
 
 
-	public UUID getValidatedEntityUuid()
-	{
+	public UUID getValidatedEntityUuid(){
 		return validatedEntityUuid;
 	}
 
 
-	public void setValidatedEntityUuid(UUID validatedEntityUuid)
-	{
+	public void setValidatedEntityUuid(UUID validatedEntityUuid){
 		this.validatedEntityUuid = validatedEntityUuid;
 	}
 
 
-	public String getValidatedEntityClass()
-	{
+	public String getValidatedEntityClass(){
 		return validatedEntityClass;
 	}
 
 
-	public void setValidatedEntityClass(String validatedEntityClass)
-	{
+	public void setValidatedEntityClass(String validatedEntityClass){
 		this.validatedEntityClass = validatedEntityClass;
 	}
 
 
-	public String getUserFriendlyTypeName()
-	{
+	public String getUserFriendlyTypeName(){
 		return userFriendlyTypeName;
 	}
 
 
-	public void setUserFriendlyTypeName(String userFriendlyTypeName)
-	{
+	public void setUserFriendlyTypeName(String userFriendlyTypeName){
 		this.userFriendlyTypeName = userFriendlyTypeName;
 	}
 
 
-	public CRUDEventType getCrudEventType()
-	{
+	public CRUDEventType getCrudEventType(){
 		return crudEventType;
 	}
 
 
-	public void setCrudEventType(CRUDEventType crudEventType)
-	{
+	public void setCrudEventType(CRUDEventType crudEventType){
 		this.crudEventType = crudEventType;
 	}
 
 
-	public String getUserFriendlyDescription()
-	{
+	public String getUserFriendlyDescription(){
 		return userFriendlyDescription;
 	}
 
 
-	public void setUserFriendlyDescription(String userFriendlyDescription)
-	{
+	public void setUserFriendlyDescription(String userFriendlyDescription){
 		this.userFriendlyDescription = userFriendlyDescription;
 	}
 
 
-	public Set<EntityConstraintViolation> getEntityConstraintViolations()
-	{
+	public Set<EntityConstraintViolation> getEntityConstraintViolations(){
 		if (entityConstraintViolations == null) {
 			entityConstraintViolations = new HashSet<EntityConstraintViolation>();
 		}
@@ -192,16 +178,14 @@ public class EntityValidationResult extends CdmBase {
 	}
 
 
-	public void addEntityConstraintViolation(EntityConstraintViolation ecv)
-	{
+	public void addEntityConstraintViolation(EntityConstraintViolation ecv){
 		if (ecv != null) {
 			getEntityConstraintViolations().add(ecv);
 		}
 	}
 
 
-	public void removeEntityConstraintViolation(EntityConstraintViolation ecv)
-	{
+	public void removeEntityConstraintViolation(EntityConstraintViolation ecv){
 		if (ecv != null) {
 			getEntityConstraintViolations().remove(ecv);
 		}

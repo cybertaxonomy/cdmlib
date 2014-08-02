@@ -39,6 +39,7 @@ public class SeverityType implements UserType {
 	@Override
 	public Class returnedClass(){
 		return Severity.class;
+		
 	}
 
 

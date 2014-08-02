@@ -71,7 +71,6 @@ import eu.etaxonomy.cdm.validation.Level2;
 import eu.etaxonomy.cdm.validation.Level3;
 import eu.etaxonomy.cdm.validation.annotation.CorrectEpithetsForRank;
 import eu.etaxonomy.cdm.validation.annotation.MustHaveAuthority;
-import eu.etaxonomy.cdm.validation.annotation.NamePartsCase;
 import eu.etaxonomy.cdm.validation.annotation.NoDuplicateNames;
 import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 
