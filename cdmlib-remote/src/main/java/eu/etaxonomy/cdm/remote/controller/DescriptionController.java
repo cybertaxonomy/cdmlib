@@ -132,7 +132,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return mv;
     }
 
-    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "//descriptionElement/{descriptionelement_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGetDescriptionElement(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
@@ -148,7 +148,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return mv;
     }
 
-    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET)
+    @RequestMapping(value = "//descriptionElement/{descriptionelement_uuid}/annotations", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<Annotation> doGetDescriptionElementAnnotations(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
@@ -165,7 +165,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
         return annotations;
     }
 
-    @RequestMapping(value = "/descriptionElement/{descriptionelement_uuid}/states", method = RequestMethod.GET)
+    @RequestMapping(value = "//descriptionElement/{descriptionelement_uuid}/states", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGetDescriptionElementStates(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
@@ -213,7 +213,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     }
     */
 
-    @RequestMapping(value = "/description/{uuid}/naturalLanguageDescription/{featuretree_uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "//description/{uuid}/naturalLanguageDescription/{featuretree_uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGenerateNaturalLanguageDescription(
             @PathVariable("uuid") UUID uuid,
             @PathVariable("featuretree_uuid") UUID featureTreeUuid,
@@ -265,7 +265,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
      * @throws JsonMappingException
      * @throws JsonParseException
      */
-    @RequestMapping(value = "/description/distributionInfoFor/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "//description/distributionInfoFor/{uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGetDistributionInfo(
             @PathVariable("uuid") UUID taxonUuid,
             @RequestParam("part") Set<InfoPart> partSet,

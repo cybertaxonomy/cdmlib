@@ -223,14 +223,14 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
         conf.setDeleteSynonymsIfPossible(false);
         List<String> deleteMessages = taxonService.isDeletable(oldTaxon, conf);
 //        conf.setDeleteNameIfPossible(false);
+        DeleteResult result;
         if (deleteMessages.isEmpty()){
-        	String uuidString = taxonService.deleteTaxon(oldTaxon, conf, null);
-        	 logger.debug(uuidString);
+        	 result = taxonService.deleteTaxon(oldTaxon, conf, null);
         }else{
         	TaxonNodeDeletionConfigurator config = new TaxonNodeDeletionConfigurator();
         	config.setDeleteTaxon(false);
         	conf.setTaxonNodeConfig(config);
-        	deleteTaxonNode(oldTaxonNode, conf);
+        	result = deleteTaxonNode(oldTaxonNode, conf);
         }
        
         //oldTaxonNode.delete();
@@ -338,7 +338,7 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
      */
     @Override
     @Transactional(readOnly = false)
-    public String deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
+    public DeleteResult deleteTaxonNode(TaxonNode node, TaxonDeletionConfigurator config) {
     	Taxon taxon = (Taxon)HibernateProxyHelper.deproxy(node.getTaxon());
     	if (config == null){
     		config = new TaxonDeletionConfigurator();
@@ -346,9 +346,21 @@ public class TaxonNodeServiceImpl extends AnnotatableServiceBase<TaxonNode, ITax
     	if (config.getTaxonNodeConfig().isDeleteTaxon()){
     		return taxonService.deleteTaxon(taxon, config, node.getClassification());
     	} else{
-    		taxon.removeTaxonNode(node);
-    		dao.delete(node);
-    		return node.getUuid().toString();
+    		DeleteResult result = new DeleteResult();
+    		boolean success = taxon.removeTaxonNode(node);
+    		if (success){
+    			if (!dao.delete(node).equals(null)){
+    				return result;
+    			} else {
+    				result.setError();
+    				return result;
+    			}
+    		}else{
+    			result.setError();
+    			result.addException(new Exception("The node can not be removed from the taxon."));
+    			return result;
+    		}
+    		
     	}
     	
     }

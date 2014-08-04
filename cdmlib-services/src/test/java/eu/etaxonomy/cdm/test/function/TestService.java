@@ -21,6 +21,7 @@ import org.junit.Ignore;
 import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.service.DeleteResult;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
@@ -158,16 +159,12 @@ public class TestService {
 		logger.info("  UUID: " + uuidTaxon2);
 		logger.info("Remove taxon ...");
 		UUID uuid = null;
-		//try {
-		String uuidString = taxonService.deleteTaxon(taxon1, null, null);
-		/*} catch (DataChangeNoRollbackException e) {
-			logger.info(e.getMessage());
-		}*/
-		 try{
-	        	uuid = UUID.fromString(uuidString);
-	     }catch(IllegalArgumentException e){
-	        	Assert.fail();
-	     }
+		
+		DeleteResult result = taxonService.deleteTaxon(taxon1, null, null);
+		
+		if(!result.isOk()){ 
+         	Assert.fail();
+       	}
 		logger.info("  UUID: " + uuid);
 	}
 

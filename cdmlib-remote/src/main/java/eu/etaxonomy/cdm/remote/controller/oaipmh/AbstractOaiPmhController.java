@@ -56,17 +56,17 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     protected IAuditEventService auditEventService;
 
-	private String repositoryName;
+    private String repositoryName;
 
-	private String baseURL;
+    private String baseURL;
 
-	private String protocolVersion;
+    private String protocolVersion;
 
-	private String adminEmail;
+    private String adminEmail;
 
-	private String description;
+    private String description;
 
-	private Integer pageSize;
+    private Integer pageSize;
 
     public abstract void setService(SERVICE service);
 
@@ -74,28 +74,28 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     private CachingModel cachingModel;
 
-	private boolean onlyItemsWithLsid = false;
+    private boolean onlyItemsWithLsid = false;
 
     public boolean isRestrictToLsid() {
-		return onlyItemsWithLsid;
-	}
+        return onlyItemsWithLsid;
+    }
 
-	public void setRestrictToLsid(boolean restrictToLsid) {
-		this.onlyItemsWithLsid = restrictToLsid;
-	}
+    public void setRestrictToLsid(boolean restrictToLsid) {
+        this.onlyItemsWithLsid = restrictToLsid;
+    }
 
-	/**
+    /**
      * sets cache name to be used
      */
     @Autowired
-	public void setCacheProviderFacade(CacheProviderFacade cacheProviderFacade) {
-		this.cacheProviderFacade = cacheProviderFacade;
-	}
+    public void setCacheProviderFacade(CacheProviderFacade cacheProviderFacade) {
+        this.cacheProviderFacade = cacheProviderFacade;
+    }
 
     @Autowired
-	public void setCachingModel(CachingModel cachingModel) {
-		this.cachingModel = cachingModel;
-	}
+    public void setCachingModel(CachingModel cachingModel) {
+        this.cachingModel = cachingModel;
+    }
 
     /**
      * Subclasses should override this method to return a list of property
@@ -103,7 +103,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
      * @return
      */
     protected List<String> getPropertyPaths() {
-    	return new ArrayList<String>();
+        return new ArrayList<String>();
     }
 
     /**
@@ -113,7 +113,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
      * @param modelAndView
      */
     protected void addSets(ModelAndView modelAndView) {
-    	modelAndView.addObject("sets",new HashSet<SetSpec>());
+        modelAndView.addObject("sets",new HashSet<SetSpec>());
     }
 
     @Autowired
@@ -122,30 +122,30 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     }
 
     public void setRepositoryName(String repositoryName) {
-		this.repositoryName = repositoryName;
-	}
+        this.repositoryName = repositoryName;
+    }
 
-	public void setBaseURL(String baseURL) {
-		this.baseURL = baseURL;
-	}
+    public void setBaseURL(String baseURL) {
+        this.baseURL = baseURL;
+    }
 
-	public void setProtocolVersion(String protocolVersion) {
-		this.protocolVersion = protocolVersion;
-	}
+    public void setProtocolVersion(String protocolVersion) {
+        this.protocolVersion = protocolVersion;
+    }
 
-	public void setAdminEmail(String adminEmail) {
-		this.adminEmail = adminEmail;
-	}
+    public void setAdminEmail(String adminEmail) {
+        this.adminEmail = adminEmail;
+    }
 
-	public void setDescription(String description) {
-		this.description = description;
-	}
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-	public void setPageSize(Integer pageSize) {
-		this.pageSize = pageSize;
-	}
+    public void setPageSize(Integer pageSize) {
+        this.pageSize = pageSize;
+    }
 
-	@InitBinder
+    @InitBinder
     public void initBinder(WebDataBinder binder) {
         binder.registerCustomEditor(DateTime.class, new IsoDateTimeEditor());
         binder.registerCustomEditor(LSID.class, new LSIDPropertyEditor());
@@ -155,81 +155,80 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
     }
 
 
-	/**
-	 * CannotDisseminateFormatException thrown by MetadataPrefixEditor
-	 *
-	 * @throws IdDoesNotExistException
-	 */
-	@RequestMapping(method = RequestMethod.GET, params = "verb=GetRecord")
-	public ModelAndView getRecord(
-			@RequestParam(value = "identifier", required = true) LSID identifier,
-			@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix)
-			throws IdDoesNotExistException {
+    /**
+     * CannotDisseminateFormatException thrown by MetadataPrefixEditor
+     *
+     * @throws IdDoesNotExistException
+     */
+// FIXME has same mapping as the other getRecord method: do we really need to support LSIDs or shall we skip this
+//    @RequestMapping(method = RequestMethod.GET, params = "verb=GetRecord")
+//    public ModelAndView getRecord(
+//            @RequestParam(value = "identifier", required = true) LSID identifier,
+//            @RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix)
+//            throws IdDoesNotExistException {
+//
+//        ModelAndView modelAndView = new ModelAndView();
+//        modelAndView.addObject("metadataPrefix", metadataPrefix);
+//
+//        finishModelAndView(identifier, metadataPrefix, modelAndView);
+//
+//        return modelAndView;
+//    }
 
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("metadataPrefix", metadataPrefix);
+    @RequestMapping(method = RequestMethod.GET, params = "verb=GetRecord")
+    public ModelAndView getRecord(
+            @RequestParam(value = "identifier", required = true) UUID identifier,
+            @RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix)
+            throws IdDoesNotExistException {
 
-		finishModelAndView(identifier, metadataPrefix, modelAndView);
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.addObject("metadataPrefix", metadataPrefix);
 
-		return modelAndView;
-	}
+        return modelAndView;
+    }
 
-	@RequestMapping(method = RequestMethod.GET, params = "verb=GetRecord")
-	public ModelAndView getRecord(
-			@RequestParam(value = "identifier", required = true) UUID identifier,
-			@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix)
-			throws IdDoesNotExistException {
+    /**
+     * @param identifier
+     * @param metadataPrefix
+     * @param modelAndView
+     * @throws IdDoesNotExistException
+     */
+    protected void finishModelAndView(LSID identifier,
+            MetadataPrefix metadataPrefix, ModelAndView modelAndView)
+            throws IdDoesNotExistException {
 
-		ModelAndView modelAndView = new ModelAndView();
-		modelAndView.addObject("metadataPrefix", metadataPrefix);
+        switch (metadataPrefix) {
+            case RDF:
+                modelAndView.addObject("object", obtainCdmEntity(identifier));
+                modelAndView.setViewName("oai/getRecord.rdf");
+                break;
+            case OAI_DC:
+            default:
+                modelAndView.addObject("object", obtainCdmEntity(identifier));
+                modelAndView.setViewName("oai/getRecord.dc");
+        }
+    }
 
-		System.err.println("############");
+    /**
+     * @param identifier
+     * @return
+     * @throws IdDoesNotExistException
+     */
+    protected AuditEventRecord<T> obtainCdmEntity(LSID identifier)
+            throws IdDoesNotExistException {
+        T object = service.find(identifier);
+        if(object == null){
+            throw new IdDoesNotExistException(identifier);
+        }
 
-		return modelAndView;
-	}
+        Pager<AuditEventRecord<T>> results = service.pageAuditEvents(object, 1,
+                0, AuditEventSort.BACKWARDS, getPropertyPaths());
 
-	/**
-	 * @param identifier
-	 * @param metadataPrefix
-	 * @param modelAndView
-	 * @throws IdDoesNotExistException
-	 */
-	protected void finishModelAndView(LSID identifier,
-			MetadataPrefix metadataPrefix, ModelAndView modelAndView)
-			throws IdDoesNotExistException {
-
-		switch (metadataPrefix) {
-			case RDF:
-				modelAndView.addObject("object", obtainCdmEntity(identifier));
-				modelAndView.setViewName("oai/getRecord.rdf");
-				break;
-			case OAI_DC:
-			default:
-				modelAndView.addObject("object", obtainCdmEntity(identifier));
-				modelAndView.setViewName("oai/getRecord.dc");
-		}
-	}
-
-	/**
-	 * @param identifier
-	 * @return
-	 * @throws IdDoesNotExistException
-	 */
-	protected AuditEventRecord<T> obtainCdmEntity(LSID identifier)
-			throws IdDoesNotExistException {
-		T object = service.find(identifier);
-		if(object == null){
-			throw new IdDoesNotExistException(identifier);
-		}
-
-		Pager<AuditEventRecord<T>> results = service.pageAuditEvents(object, 1,
-				0, AuditEventSort.BACKWARDS, getPropertyPaths());
-
-		if (results.getCount() == 0) {
-			throw new IdDoesNotExistException(identifier);
-		}
-		return results.getRecords().get(0);
-	}
+        if (results.getCount() == 0) {
+            throw new IdDoesNotExistException(identifier);
+        }
+        return results.getRecords().get(0);
+    }
 
 
     /**
@@ -242,11 +241,11 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         ModelAndView modelAndView = new ModelAndView("oai/listMetadataFormats");
 
         if(identifier != null) {
-        	T  object = service.find(identifier);
-	        if(object == null) {
-		        throw new IdDoesNotExistException(identifier);
-	        }
-    	}
+            T  object = service.find(identifier);
+            if(object == null) {
+                throw new IdDoesNotExistException(identifier);
+            }
+        }
 
         return modelAndView;
     }
@@ -264,7 +263,7 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         return modelAndView;
     }
 
-	@RequestMapping(method = RequestMethod.GET,params = "verb=Identify")
+    @RequestMapping(method = RequestMethod.GET,params = "verb=Identify")
     public ModelAndView identify() {
         ModelAndView modelAndView = new ModelAndView("oai/identify");
         modelAndView.addObject("repositoryName", repositoryName);
@@ -283,10 +282,10 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "!resumptionToken"})
     public ModelAndView listIdentifiers(
-    		@RequestParam(value = "from", required = false) DateTime from,
-    		@RequestParam(value = "until", required = false) DateTime until,
-    		@RequestParam(value = "metadataPrefix",required = true) MetadataPrefix metadataPrefix,
-    		@RequestParam(value = "set", required = false) SetSpec set) {
+            @RequestParam(value = "from", required = false) DateTime from,
+            @RequestParam(value = "until", required = false) DateTime until,
+            @RequestParam(value = "metadataPrefix",required = true) MetadataPrefix metadataPrefix,
+            @RequestParam(value = "set", required = false) SetSpec set) {
 
         ModelAndView modelAndView = new ModelAndView("oai/listIdentifiers");
         modelAndView.addObject("metadataPrefix",metadataPrefix);
@@ -305,26 +304,26 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
         Class clazz = null;
         if(set != null) {
-        	modelAndView.addObject("set",set);
-        	clazz = set.getSetClass();
+            modelAndView.addObject("set",set);
+            clazz = set.getSetClass();
         }
 
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
         if(onlyItemsWithLsid){
-	        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
-	        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-	        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
         }
         Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz, fromAuditEvent, untilAuditEvent, criteria, pageSize, 0, AuditEventSort.FORWARDS, null);
 
         if(results.getCount() == 0) {
-        	throw new NoRecordsMatchException("No records match");
+            throw new NoRecordsMatchException("No records match");
         }
 
         modelAndView.addObject("pager",results);
 
         if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
-	        ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
+            ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
             cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
         }
@@ -334,9 +333,9 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListIdentifiers", "resumptionToken"})
     public ModelAndView listIdentifiers(@RequestParam(value = "resumptionToken",required = true) String rToken) {
-    	ResumptionToken resumptionToken;
-    	if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken, cachingModel) != null) {
-    	    resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken, cachingModel);
+        ResumptionToken resumptionToken;
+        if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken, cachingModel) != null) {
+            resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken, cachingModel);
             ModelAndView modelAndView = new ModelAndView("oai/listIdentifiers");
             modelAndView.addObject("metadataPrefix",resumptionToken.getMetadataPrefix());
 
@@ -354,26 +353,26 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
             Class clazz = null;
             if(resumptionToken.getSet() != null) {
-            	modelAndView.addObject("set",resumptionToken.getSet());
-            	clazz = resumptionToken.getSet().getSetClass();
+                modelAndView.addObject("set",resumptionToken.getSet());
+                clazz = resumptionToken.getSet().getSetClass();
             }
 
             List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
             if(onlyItemsWithLsid){
-	            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
-	            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-	            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+                //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+                //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+                criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
             }
             Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, (resumptionToken.getCursor().intValue() / pageSize) + 1, AuditEventSort.FORWARDS,null);
 
             if(results.getCount() == 0) {
-            	throw new NoRecordsMatchException("No records match");
+                throw new NoRecordsMatchException("No records match");
             }
 
             modelAndView.addObject("pager",results);
 
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
-	            resumptionToken.updateResults(results);
+                resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken",resumptionToken);
                 cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel, resumptionToken);
             } else {
@@ -383,16 +382,16 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             }
 
             return modelAndView;
-    	} else {
-    		throw new BadResumptionTokenException();
-    	}
+        } else {
+            throw new BadResumptionTokenException();
+        }
     }
 
     @RequestMapping(method = RequestMethod.GET, params = {"verb=ListRecords", "!resumptionToken"})
     public ModelAndView listRecords(@RequestParam(value = "from", required = false) DateTime from,
-    		@RequestParam(value = "until", required = false) DateTime until,
-    		@RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix,
-    		@RequestParam(value = "set", required = false) SetSpec set) {
+            @RequestParam(value = "until", required = false) DateTime until,
+            @RequestParam(value = "metadataPrefix", required = true) MetadataPrefix metadataPrefix,
+            @RequestParam(value = "set", required = false) SetSpec set) {
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("metadataPrefix",metadataPrefix);
@@ -401,9 +400,9 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         case RDF:
             modelAndView.setViewName("oai/listRecords.rdf");
             break;
-	    case OAI_DC:
+        case OAI_DC:
             default:
-		    modelAndView.setViewName("oai/listRecords.dc");
+            modelAndView.setViewName("oai/listRecords.dc");
         }
 
         AuditEvent fromAuditEvent = null;
@@ -426,20 +425,20 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
 
         List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
         if(onlyItemsWithLsid){
-	        //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
-	        //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-	        criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+            //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+            //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+            criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
         }
         Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz, fromAuditEvent, untilAuditEvent, criteria, pageSize, 0, AuditEventSort.FORWARDS, getPropertyPaths());
 
         if(results.getCount() == 0) {
-        	throw new NoRecordsMatchException("No records match");
+            throw new NoRecordsMatchException("No records match");
         }
 
         modelAndView.addObject("pager",results);
 
         if(results.getCount() > results.getRecords().size() && cacheProviderFacade != null) {
-	        ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
+            ResumptionToken resumptionToken = new ResumptionToken(results, from, until, metadataPrefix, set);
             modelAndView.addObject("resumptionToken",resumptionToken);
             cacheProviderFacade.putInCache(resumptionToken.getValue(), cachingModel, resumptionToken);
         }
@@ -447,12 +446,12 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
         return modelAndView;
     }
 
-	@RequestMapping(method = RequestMethod.GET, params = {"verb=ListRecords", "resumptionToken"})
+    @RequestMapping(method = RequestMethod.GET, params = {"verb=ListRecords", "resumptionToken"})
     public ModelAndView listRecords(@RequestParam("resumptionToken") String rToken) {
 
-	   ResumptionToken resumptionToken;
-	   if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken,cachingModel) != null) {
-   	        resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken,cachingModel);
+       ResumptionToken resumptionToken;
+       if(cacheProviderFacade != null && cacheProviderFacade.getFromCache(rToken,cachingModel) != null) {
+               resumptionToken = (ResumptionToken) cacheProviderFacade.getFromCache(rToken,cachingModel);
             ModelAndView modelAndView = new ModelAndView();
             modelAndView.addObject("metadataPrefix",resumptionToken.getMetadataPrefix());
 
@@ -460,9 +459,9 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             case RDF:
                 modelAndView.setViewName("oai/listRecords.rdf");
                 break;
-	        case OAI_DC:
+            case OAI_DC:
                 default:
-		        modelAndView.setViewName("oai/listRecords.dc");
+                modelAndView.setViewName("oai/listRecords.dc");
             }
 
             AuditEvent fromAuditEvent = null;
@@ -484,20 +483,20 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             }
             List<AuditCriterion> criteria = new ArrayList<AuditCriterion>();
             if(onlyItemsWithLsid){
-            	//criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
-            	//TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
-            	criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
+                //criteria.add(AuditEntity.property("lsid_lsid").isNotNull());
+                //TODO this isNotNull criterion did not work with mysql, so using a like statement as interim solution
+                criteria.add(AuditEntity.property("lsid_lsid").like("urn:lsid:%"));
             }
             Pager<AuditEventRecord<T>> results = service.pageAuditEvents(clazz,fromAuditEvent,untilAuditEvent,criteria, pageSize, (resumptionToken.getCursor().intValue()  / pageSize) + 1, AuditEventSort.FORWARDS,getPropertyPaths());
 
             if(results.getCount() == 0) {
-            	throw new NoRecordsMatchException("No records match");
+                throw new NoRecordsMatchException("No records match");
             }
 
             modelAndView.addObject("pager",results);
 
             if(results.getCount() > ((results.getPageSize() * results.getCurrentIndex()) + results.getRecords().size())) {
-	            resumptionToken.updateResults(results);
+                resumptionToken.updateResults(results);
                 modelAndView.addObject("resumptionToken",resumptionToken);
                 cacheProviderFacade.putInCache(resumptionToken.getValue(),cachingModel,resumptionToken);
             } else {
@@ -507,52 +506,52 @@ public abstract class AbstractOaiPmhController<T extends IdentifiableEntity, SER
             }
 
             return modelAndView;
-	   } else {
-		   throw new BadResumptionTokenException();
-	   }
+       } else {
+           throw new BadResumptionTokenException();
+       }
     }
 
-	private ModelAndView doException(Exception ex, HttpServletRequest request, ErrorCode code) {
-		ModelAndView modelAndView = new ModelAndView("oai/exception");
-    	modelAndView.addObject("message", ex.getMessage());
-    	if(request.getParameter("verb") != null) {
-    		try {
-    		  modelAndView.addObject("verb", Verb.fromValue(request.getParameter("verb")));
-    		} catch(Exception e) {// prevent endless recursion
+    private ModelAndView doException(Exception ex, HttpServletRequest request, ErrorCode code) {
+        ModelAndView modelAndView = new ModelAndView("oai/exception");
+        modelAndView.addObject("message", ex.getMessage());
+        if(request.getParameter("verb") != null) {
+            try {
+              modelAndView.addObject("verb", Verb.fromValue(request.getParameter("verb")));
+            } catch(Exception e) {// prevent endless recursion
 
-    		}
-    	}
-    	modelAndView.addObject("code",code);
-    	return modelAndView;
-	}
+            }
+        }
+        modelAndView.addObject("code",code);
+        return modelAndView;
+    }
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler({IllegalArgumentException.class,TypeMismatchException.class,MissingServletRequestParameterException.class})
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler({IllegalArgumentException.class,TypeMismatchException.class,MissingServletRequestParameterException.class})
     public ModelAndView handleBadArgument(Exception ex, HttpServletRequest request) {
-		return doException(ex,request,ErrorCode.BAD_ARGUMENT);
+        return doException(ex,request,ErrorCode.BAD_ARGUMENT);
     }
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(CannotDisseminateFormatException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(CannotDisseminateFormatException.class)
     public ModelAndView handleCannotDisseminateFormat(Exception ex, HttpServletRequest request) {
-		return doException(ex,request,ErrorCode.CANNOT_DISSEMINATE_FORMAT);
+        return doException(ex,request,ErrorCode.CANNOT_DISSEMINATE_FORMAT);
     }
 
-	@ResponseStatus(HttpStatus.BAD_REQUEST)
-	@ExceptionHandler(BadResumptionTokenException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(BadResumptionTokenException.class)
     public ModelAndView handleBadResumptionToken(Exception ex, HttpServletRequest request) {
-		return doException(ex,request,ErrorCode.BAD_RESUMPTION_TOKEN);
+        return doException(ex,request,ErrorCode.BAD_RESUMPTION_TOKEN);
     }
 
-	@ExceptionHandler(NoRecordsMatchException.class)
+    @ExceptionHandler(NoRecordsMatchException.class)
     public ModelAndView handleNoRecordsMatch(Exception ex, HttpServletRequest request) {
-		return doException(ex,request,ErrorCode.NO_RECORDS_MATCH);
+        return doException(ex,request,ErrorCode.NO_RECORDS_MATCH);
     }
 
-	@ResponseStatus(HttpStatus.NOT_FOUND)
-	@ExceptionHandler(IdDoesNotExistException.class)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
+    @ExceptionHandler(IdDoesNotExistException.class)
     public ModelAndView handleIdDoesNotExist(Exception ex, HttpServletRequest request) {
-		return doException(ex,request,ErrorCode.ID_DOES_NOT_EXIST);
+        return doException(ex,request,ErrorCode.ID_DOES_NOT_EXIST);
     }
 
 

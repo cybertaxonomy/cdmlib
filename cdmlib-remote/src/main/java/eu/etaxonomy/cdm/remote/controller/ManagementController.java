@@ -37,10 +37,10 @@ import eu.etaxonomy.cdm.remote.editor.CdmTypePropertyEditor;
 @Controller
 @RequestMapping(value = { "/manage" })
 public class ManagementController {
-	public static final Logger logger = Logger
-			.getLogger(ManagementController.class);
+    public static final Logger logger = Logger
+            .getLogger(ManagementController.class);
 
-	// @Autowired
+    // @Autowired
     private DataSourceReloader datasoucrceLoader;
 
     @Autowired
@@ -51,34 +51,34 @@ public class ManagementController {
 
     /**
      * There should only be one processes operating on the lucene index
-	 * therefore the according progress monitor uuid is stored in this static
-	 * field.
+     * therefore the according progress monitor uuid is stored in this static
+     * field.
      */
     private static UUID indexMonitorUuid = null;
 
-	@InitBinder
-	public void initIndexClassBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
-	}
+    @InitBinder
+    public void initIndexClassBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Class.class, new CdmTypePropertyEditor());
+    }
 
-	@InitBinder
-	public void initIndexArrayBinder(WebDataBinder binder) {
-		binder.registerCustomEditor(Class[].class, new CdmTypePropertyEditor());
-	}
+    @InitBinder
+    public void initIndexArrayBinder(WebDataBinder binder) {
+        binder.registerCustomEditor(Class[].class, new CdmTypePropertyEditor());
+    }
 
     /*
      * return page not found http error (404) for unknown or incorrect UUIDs
      * (non-Javadoc)
      *
-	 * @see
-	 * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
-	 * (javax.servlet.http.HttpServletRequest,
-	 * javax.servlet.http.HttpServletResponse)
+     * @see
+     * org.springframework.web.servlet.mvc.AbstractController#handleRequestInternal
+     * (javax.servlet.http.HttpServletRequest,
+     * javax.servlet.http.HttpServletResponse)
      */
-	// @RequestMapping(value = { "/manager/datasources/list" }, method =
-	// RequestMethod.GET)
-	protected ModelAndView doList(HttpServletRequest request,
-			HttpServletResponse respone) throws Exception {
+    // @RequestMapping(value = { "//manager/datasources/list" }, method =
+    // RequestMethod.GET)
+    protected ModelAndView doList(HttpServletRequest request,
+            HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
         Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader.test();
@@ -87,14 +87,14 @@ public class ManagementController {
         return mv;
     }
 
-	// @RequestMapping(value = { "/manager/datasources/reload" }, method =
-	// RequestMethod.GET)
-	public ModelAndView doReload(HttpServletRequest request,
-			HttpServletResponse respone) throws Exception {
+    // @RequestMapping(value = { "//manager/datasources/reload" }, method =
+    // RequestMethod.GET)
+    public ModelAndView doReload(HttpServletRequest request,
+            HttpServletResponse respone) throws Exception {
 
         ModelAndView mv = new ModelAndView();
-		Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader
-				.reload();
+        Map<String, DataSourceInfo> dataSourceInfos = datasoucrceLoader
+                .reload();
         mv.addObject(dataSourceInfos);
 
         return mv;
@@ -102,12 +102,12 @@ public class ManagementController {
 
     /**
      *
-	 * Reindex all cdm entities listed in
-	 * {@link ICdmMassIndexer#indexedClasses()}. Re-indexing will not purge the
-	 * index.
+     * Reindex all cdm entities listed in
+     * {@link ICdmMassIndexer#indexedClasses()}. Re-indexing will not purge the
+     * index.
      *
-	 * @param frontendBaseUrl
-	 *            if the CDM server is running behind a reverse proxy you need
+     * @param frontendBaseUrl
+     *            if the CDM server is running behind a reverse proxy you need
      *            to supply the base URL of web service front-end which is
      *            provided by the proxy server.
      * @param request
@@ -118,34 +118,34 @@ public class ManagementController {
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
     public synchronized ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
-			@RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
+            @RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
              @RequestParam(value = "priority", required = false) Integer priority,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
         final Set<Class<? extends CdmBase>> typeSet = asList(types);
 
         String processLabel = "Re-indexing";
-		ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
-				progressMonitorController);
+        ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
+                progressMonitorController);
 
-		if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+        if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
             indexMonitorUuid = progressUtil.registerNewMonitor();
-			Thread subThread = new Thread() {
+            Thread subThread = new Thread() {
                 @Override
-				public void run() {
+                public void run() {
                     indexer.reindex(typeSet, progressMonitorController.getMonitor(indexMonitorUuid));
                 }
             };
-			if (priority == null) {
+            if (priority == null) {
                 priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
             }
             subThread.setPriority(priority);
             subThread.start();
         }
         // send redirect "see other"
-		return progressUtil.respondWithMonitor(frontendBaseUrl, request,
-				response, processLabel, indexMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, request,
+                response, processLabel, indexMonitorUuid);
     }
 
     /**
@@ -166,12 +166,12 @@ public class ManagementController {
 
     /**
      *
-	 * Create dictionaries for all cdm entities listed in
-	 * {@link ICdmMassIndexer#dictionaryClasses()}. Re-dicting will not purge
-	 * the dictionaries.
+     * Create dictionaries for all cdm entities listed in
+     * {@link ICdmMassIndexer#dictionaryClasses()}. Re-dicting will not purge
+     * the dictionaries.
      *
-	 * @param frontendBaseUrl
-	 *            if the CDM server is running behind a reverse proxy you need
+     * @param frontendBaseUrl
+     *            if the CDM server is running behind a reverse proxy you need
     *            to supply the base URL of web service front-end which is
     *            provided by the proxy server.
     * @param request
@@ -183,31 +183,31 @@ public class ManagementController {
     public synchronized ModelAndView doRedict(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
        String processLabel = "Re-Dicting";
-		ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
-				progressMonitorController);
+        ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
+                progressMonitorController);
 
-		if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+        if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
            indexMonitorUuid = progressUtil.registerNewMonitor();
-			Thread subThread = new Thread() {
+            Thread subThread = new Thread() {
                @Override
-				public void run() {
-					indexer.createDictionary(progressMonitorController
-							.getMonitor(indexMonitorUuid));
+                public void run() {
+                    indexer.createDictionary(progressMonitorController
+                            .getMonitor(indexMonitorUuid));
                }
            };
-			if (priority == null) {
+            if (priority == null) {
                priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
            }
            subThread.setPriority(priority);
            subThread.start();
        }
        // send redirect "see other"
-		return progressUtil.respondWithMonitor(frontendBaseUrl, request,
-				response, processLabel, indexMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, request,
+                response, processLabel, indexMonitorUuid);
    }
 
     /**
@@ -222,24 +222,24 @@ public class ManagementController {
     public synchronized ModelAndView doPurge(
             @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
             @RequestParam(value = "priority", required = false) Integer priority,
-			HttpServletRequest request, HttpServletResponse response)
-			throws Exception {
+            HttpServletRequest request, HttpServletResponse response)
+            throws Exception {
 
         String processLabel = "Purging";
 
-		ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
-				progressMonitorController);
+        ProgressMonitorUtil progressUtil = new ProgressMonitorUtil(
+                progressMonitorController);
 
-		if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
+        if (!progressMonitorController.isMonitorRunning(indexMonitorUuid)) {
             indexMonitorUuid = progressUtil.registerNewMonitor();
-			Thread subThread = new Thread() {
+            Thread subThread = new Thread() {
                 @Override
-				public void run() {
-					indexer.purge(progressMonitorController
-							.getMonitor(indexMonitorUuid));
+                public void run() {
+                    indexer.purge(progressMonitorController
+                            .getMonitor(indexMonitorUuid));
                 }
             };
-			if (priority == null) {
+            if (priority == null) {
                 priority = AbstractController.DEFAULT_BATCH_THREAD_PRIORITY;
             }
             subThread.setPriority(priority);
@@ -247,8 +247,8 @@ public class ManagementController {
         }
 
         // send redirect "see other"
-		return progressUtil.respondWithMonitor(frontendBaseUrl, request,
-				response, processLabel, indexMonitorUuid);
+        return progressUtil.respondWithMonitor(frontendBaseUrl, request,
+                response, processLabel, indexMonitorUuid);
     }
 
 

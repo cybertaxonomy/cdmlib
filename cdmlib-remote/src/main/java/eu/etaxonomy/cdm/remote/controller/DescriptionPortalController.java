@@ -143,7 +143,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
         this.service = service;
     }
 
-    @RequestMapping(value = "/portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET)
+    @RequestMapping(value = "//portal/descriptionElement/{descriptionelement_uuid}/annotation", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<Annotation> getAnnotations(
             @PathVariable("descriptionelement_uuid") UUID uuid,
             HttpServletRequest request,
@@ -174,7 +174,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
      * @param response
      * @return
      */
-    @RequestMapping(value = "/portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET)
+    @RequestMapping(value = "//portal/description/{uuid_list}/DistributionTree", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public DistributionTree doGetOrderedDistributionsB(
             @PathVariable("uuid_list") UuidList descriptionUuidList,
             @RequestParam(value = "subAreaPreference", required = false) boolean subAreaPreference,
@@ -222,7 +222,7 @@ public class DescriptionPortalController extends BaseController<DescriptionBase,
      * @throws JsonMappingException
      * @throws JsonParseException
      */
-    @RequestMapping(value = "/portal/description/distributionInfoFor/{uuid}", method = RequestMethod.GET)
+    @RequestMapping(value = "//portal/description/distributionInfoFor/{uuid}", method = RequestMethod.GET) // mapped as absolute path, see CdmAntPathMatcher
     public ModelAndView doGetDistributionInfo(
             @PathVariable("uuid") UUID taxonUuid,
             @RequestParam("part") Set<InfoPart> partSet,

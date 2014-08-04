@@ -1724,6 +1724,9 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/PreloadedBeans.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/SpringMVCConfig.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/wigetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/favicon.ico -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/icons/32/Thumbs.db -text
@@ -1793,7 +1796,6 @@ cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/empty-default-datasourc
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/p6spy.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/datasources/routing-datasource.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/json-views.xml -text
-cdmlib-remote-webapp/src/main/webapp/WEB-INF/jsp/index.jsp -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/oai-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/rdf-views.xml -text
 cdmlib-remote-webapp/src/main/webapp/WEB-INF/web.xml -text
@@ -2118,6 +2120,7 @@ cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/dto/tdwg/mappings.xml -
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/ehcache.xml -text
 cdmlib-remote/src/main/resources/eu/etaxonomy/cdm/remote/json/jsonConfigurations.xml -text
 cdmlib-remote/src/main/resources/log4j.properties -text
+cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/controller/util/CdmAntPathMatcherTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/dto/assembler/lsid/AssemblerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/AuthorityControllerTest.java -text
 cdmlib-remote/src/test/java/eu/etaxonomy/cdm/remote/service/DataControllerTest.java -text

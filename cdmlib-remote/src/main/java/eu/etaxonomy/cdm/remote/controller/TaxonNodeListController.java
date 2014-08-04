@@ -1,9 +1,9 @@
 // $Id$
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -32,46 +32,46 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
  * @created Apr 8, 2010
  */
 @Controller
-public class TaxonNodeListController extends BaseListController<TaxonNode, ITaxonNodeService> {
-	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(TaxonNodeListController.class);
+public class TaxonNodeListController extends AbstractController<TaxonNode, ITaxonNodeService> {
+    @SuppressWarnings("unused")
+    private static final Logger logger = Logger.getLogger(TaxonNodeListController.class);
 
 
-	private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
-			"taxon.sec", 
-			"taxon.name"
-	});
-	
-	
-	private ITaxonNodeService service;
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)
-	 */
-	@Override
-	@Autowired
-	public void setService(ITaxonNodeService service) {
-		this.service = service;
-	}
-	
-	/**
-	 * @param treeUuid
-	 * @param response
-	 * @return
-	 * @throws IOException
-	 */
-	@RequestMapping(
-			value = {"/taxonNode/{taxonNodeUuid}/childNodes"},
-			method = RequestMethod.GET)
-	public List<TaxonNode> getChildNodes(
-			@PathVariable("taxonNodeUuid") UUID taxonNodeUuid,
-			HttpServletResponse response
-			) throws IOException {
-		
-		TaxonNode taxonNode = service.find(taxonNodeUuid);
-		
-		return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false, false);
-	}
+    private static final List<String> NODE_INIT_STRATEGY = Arrays.asList(new String[]{
+            "taxon.sec",
+            "taxon.name"
+    });
+
+
+    private ITaxonNodeService service;
+
+    /* (non-Javadoc)
+     * @see eu.etaxonomy.cdm.remote.controller.AbstractListController#setService(eu.etaxonomy.cdm.api.service.IService)
+     */
+    @Override
+    @Autowired
+    public void setService(ITaxonNodeService service) {
+        this.service = service;
+    }
+
+    /**
+     * @param treeUuid
+     * @param response
+     * @return
+     * @throws IOException
+     */
+    @RequestMapping(
+            value = {"//taxonNode/{taxonNodeUuid}/childNodes"},
+            method = RequestMethod.GET)
+    public List<TaxonNode> getChildNodes(
+            @PathVariable("taxonNodeUuid") UUID taxonNodeUuid,
+            HttpServletResponse response
+            ) throws IOException {
+
+        TaxonNode taxonNode = service.find(taxonNodeUuid);
+
+        return service.loadChildNodesOfTaxonNode(taxonNode, NODE_INIT_STRATEGY, false, false);
+    }
 
 
 }

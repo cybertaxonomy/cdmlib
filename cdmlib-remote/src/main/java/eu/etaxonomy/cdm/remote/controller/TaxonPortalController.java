@@ -348,7 +348,7 @@ public class TaxonPortalController extends TaxonController
      */
 
     @RequestMapping(method = RequestMethod.GET,
-            value = {"/portal/taxon/find"}) //TODO map to path /*/portal/taxon/
+            value = {"//portal/taxon/find"}) //TODO map to path /*/portal/taxon/ -  mapped as absolute path, see CdmAntPathMatcher
     public Pager<IdentifiableEntity> doFind(
             @RequestParam(value = "query", required = false) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -427,7 +427,7 @@ public class TaxonPortalController extends TaxonController
      * @throws LuceneMultiSearchException
      * @throws ParseException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/search"})
+    @RequestMapping(method = RequestMethod.GET, value={"//portal/taxon/search"}) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<SearchResult<TaxonBase>> doSearch(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
@@ -498,7 +498,7 @@ public class TaxonPortalController extends TaxonController
      * @throws ParseException
      */
     @SuppressWarnings("rawtypes")
-    @RequestMapping(method = RequestMethod.GET, value={"/portal/taxon/findByDescriptionElementFullText"})
+    @RequestMapping(method = RequestMethod.GET, value={"//portal/taxon/findByDescriptionElementFullText"}) // mapped as absolute path, see CdmAntPathMatcher
     public Pager<SearchResult<TaxonBase>> dofindByDescriptionElementFullText(
             @RequestParam(value = "clazz", required = false) Class clazz,
             @RequestParam(value = "query", required = true) String queryString,
@@ -1004,7 +1004,7 @@ public class TaxonPortalController extends TaxonController
 
 // ---------------------- code snippet preserved for possible later use --------------------
 //	@RequestMapping(
-//			value = {"/*/portal/taxon/*/descriptions"},
+//			value = {"//*/portal/taxon/*/descriptions"}, // mapped as absolute path, see CdmAntPathMatcher
 //			method = RequestMethod.GET)
 //	public List<TaxonDescription> doGetDescriptionsbyFeatureTree(HttpServletRequest request, HttpServletResponse response)throws IOException {
 //		TaxonBase tb = getCdmBase(request, response, null, Taxon.class);

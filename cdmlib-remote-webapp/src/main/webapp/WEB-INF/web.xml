@@ -5,68 +5,61 @@
     <description>cdmlib-remote web-application instance</description>
     <display-name>cdmlib-remote-webapp</display-name>
 
-  <!-- ==================================================================
-         load /WEB-INF/applicationContext.xml
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
 
-         org.springframework.web.context.ContextLoaderListener defaults
-         to /WEB-INF/applicationContext.xml if contextConfigLocation
-         not set
-       ================================================================== -->
-    <!--
-     -->
     <listener>
+        <!-- loads /WEB-INF/applicationContext.xml -->
+        <!-- TODO check spring mvc 3.0 for a other ways to configure this -->
         <listener-class>
             org.springframework.web.context.ContextLoaderListener
         </listener-class>
     </listener>
+    <!-- needed for the third party SpringVaadinServlet -->
     <listener>
         <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
     </listener>
-  <context-param>
-      <param-name>contextConfigLocation</param-name>
-      <param-value>/WEB-INF/applicationContext.xml</param-value>
-  </context-param>
-
-  <!-- ==================================================================
-         load other log4j.properties than that found in WEB-INF/classes/
-       ================================================================== -->
-    <!--
-      <listener>
-      <listener-class>org.springframework.web.util.Log4jConfigListener</listener-class>
-  </listener>
-  <context-param>
-      <param-name>log4jConfigLocation</param-name>
-      <param-value>/WEB-INF/classes/eu/etaxonomy/cdm/remote/log4j.properties</param-value>
-    </context-param>
-     -->
 
     <servlet>
         <description>CDM Remote API</description>
         <servlet-name>cdmlib-remote</servlet-name>
         <servlet-class>org.springframework.web.servlet.DispatcherServlet</servlet-class>
-        <!--
-        <init-param>
-            <param-name>logVerbosityLevel</param-name>
-            <param-value>DEBUG</param-value>
-        </init-param>
-        -->
         <load-on-startup>1</load-on-startup>
     </servlet>
-     <servlet>
-           <servlet-name>Vaadin Application Servlet</servlet-name>
-        <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
-<!-- better use -Dru.xpoft.vaadin.beanName=vaaditorUI 
-  <init-param>
-      	<description>Vaaditor</description>
-      	<param-name>beanName</param-name>
-      	<param-value>vaaditorUI</param-value>
-      </init-param> -->
-      <init-param> 
+
+    <servlet-mapping>
+        <servlet-name>cdmlib-remote</servlet-name>
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>
+
+
+    <!-- ========================================
+                        VAADIN
+
+         VAADIN is disabled by default.
+         To enable vVaadin add the jvm argument
+         -Dru.xpoft.vaadin.beanName=vaadinUI
+
+         ======================================= -->
+    <!-- optional vaading can also activated by the
+         init-param element below (not recommendet) -->
+      <!--
+      <init-param>
+        <description>Vaaditor</description>
+        <param-name>beanName</param-name>
+        <param-value>vaaditorUI</param-value>
+      </init-param>
+      -->
+    <servlet>
+      <servlet-name>Vaadin Application Servlet</servlet-name>
+      <servlet-class>ru.xpoft.vaadin.SpringVaadinServlet</servlet-class>
+      <init-param>
         <description>Application widgetset</description>
         <param-name>widgetset</param-name>
         <param-value>eu.etaxonomy.cdm.remote.vaadin.widgetset.AppWidgetSet</param-value>
       </init-param>
-   </servlet>
+    </servlet>
     <servlet-mapping>
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/VAADIN/*</url-pattern>
@@ -75,84 +68,35 @@
       <servlet-name>Vaadin Application Servlet</servlet-name>
       <url-pattern>/edit/*</url-pattern>
     </servlet-mapping>
- 
 
-<!-- DO NOT USE, this will block all other services and apps      
-<servlet-mapping>
-      <servlet-name>Vaadin Application Servlet</servlet-name>
+    <filter>
+      <filter-name>charsetFilter</filter-name>
+      <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
+      <init-param>
+        <param-name>encoding</param-name>
+        <param-value>UTF-8</param-value>
+      </init-param>
+      <init-param>
+        <param-name>forceEncoding</param-name>
+        <param-value>true</param-value>
+      </init-param>
+    </filter>
+    <filter-mapping>
+      <filter-name>charsetFilter</filter-name>
       <url-pattern>/*</url-pattern>
-    </servlet-mapping> -->
-
-    <servlet-mapping>
-        <servlet-name>cdmlib-remote</servlet-name>
-        <url-pattern>/</url-pattern>
-    </servlet-mapping>
-
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.xsl</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.ico</url-pattern>
-    </servlet-mapping>
-        <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.html</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.png</url-pattern>
-    </servlet-mapping>
-     <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.jpg</url-pattern>
-    </servlet-mapping>
-    <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.css</url-pattern>
-    </servlet-mapping> 
-     <servlet-mapping>
-        <servlet-name>default</servlet-name>
-        <url-pattern>*.js</url-pattern>
-    </servlet-mapping>
-    
+    </filter-mapping>
 
     <!--
-        The welcome-file-list will be ignored since the cdmlib-remote servlet is mapped to the root path
-    <welcome-file-list>
-    </welcome-file-list>
-     -->
-    
-  <filter>
-    <filter-name>charsetFilter</filter-name>
-    <filter-class>org.springframework.web.filter.CharacterEncodingFilter</filter-class>
-    <init-param>
-      <param-name>encoding</param-name>
-      <param-value>UTF-8</param-value>
-    </init-param>
-    <init-param>
-      <param-name>forceEncoding</param-name>
-      <param-value>true</param-value>
-    </init-param>
-  </filter>
-  <filter-mapping>
-    <filter-name>charsetFilter</filter-name>
-    <url-pattern>/*</url-pattern>
-  </filter-mapping>
-
-  <!--
-    Security
-  -->
-<!-- 
-    <filter>
+      Security
+    -->
+    <!--
+      <filter>
+         <filter-name>springSecurityFilterChain</filter-name>
+         <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+     </filter>
+     <filter-mapping>
        <filter-name>springSecurityFilterChain</filter-name>
-       <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
-   </filter>
-   <filter-mapping>
-     <filter-name>springSecurityFilterChain</filter-name>
-     <url-pattern>/*</url-pattern>
-   </filter-mapping>
- -->
-
+       <url-pattern>/*</url-pattern>
+     </filter-mapping>
+    -->
 </web-app>

@@ -695,22 +695,18 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
        // taxon2 = (Taxon)service.load(uuidTaxon2);
         synonym1 = (Synonym)service.load(uuidSynonym1);
 
-        String result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
-        try {
-        	UUID uuid = UUID.fromString(result);
-        }catch(IllegalArgumentException e){
-        	
+        DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
+        if (!result.isError()){
+        	Assert.fail();
         }
         commitAndStartNewTransaction(tableNames);
         synonym1.removeMarker(marker1);
         synonym1.removeMarker(marker2);
         service.update(synonym1);
+        
         result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
-        try {
-        	UUID uuid = UUID.fromString(result);
-        }catch(IllegalArgumentException e){
-        	Assert.fail();
-        }
+       
+        
         commitAndStartNewTransaction(tableNames);
         nSynonyms = service.count(Synonym.class);
         Assert.assertEquals("There should be 1 synonym left in the database", 1, nSynonyms);
@@ -899,7 +895,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         nameDeletionConfig.setIgnoreIsBasionymFor(true);
         config.setNameDeletionConfig(nameDeletionConfig);
 
-        String result =service.deleteSynonym(synonym1, config);
+        DeleteResult result =service.deleteSynonym(synonym1, config);
+        if (!result.isOk()){
+        	Assert.fail();
+        }
+        
+        
         logger.debug(result);
         this.commitAndStartNewTransaction(tableNames);
 
@@ -1070,17 +1071,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //try {
             //commitAndStartNewTransaction(tableNames);
 
-            service.deleteTaxon(child1, config, null);
-            
-            //Assert.fail("Delete should throw an error as long as name is used in classification.");
-        /*} catch (DataChangeNoRollbackException e) {
-            if (e.getMessage().contains("Taxon can't be deleted as it is used in a classification node")){
-                //ok
-                commitAndStartNewTransaction(tableNames);
-            }else{
-                Assert.fail("Unexpected error occurred when trying to delete taxon: " + e.getMessage());
-            }
-        }*/
+        DeleteResult result = service.deleteTaxon(child1, config, null);
+        if (!result.isError()){    
+            Assert.fail("Delete should throw an error as long as name is used in classification.");
+        } 
 
         nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 4 taxa in the database", 4, nTaxa);
@@ -1105,18 +1099,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
        // try {
 
-            String uuidString = service.deleteTaxon(child1, config, null);
-            try{
-            	UUID uuid = UUID.fromString(uuidString);
-            	 Assert.fail("Delete should throw an exception because of the determination event");
-            }catch(IllegalArgumentException e){
-            	logger.debug(uuidString);
-            }
+       result = service.deleteTaxon(child1, config, null);
+       if (!result.isError()){
+           	Assert.fail("Delete should throw an exception because of the determination event");
+       }
             
-           // Assert.fail("Delete should throw an exception because of the determination event");
-        /*} catch (DataChangeNoRollbackException e) {
-        	commitAndStartNewTransaction(tableNames);
-        }*/
+           
        
         //determinationEvent = (DeterminationEvent)eventService.load(eventUUID);
         commitAndStartNewTransaction(tableNames);
@@ -1130,16 +1118,12 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         assertEquals(0, child1.getTaxonNodes().size());
        // try {
 
-         uuidString = service.deleteTaxon(child1, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
+         result = service.deleteTaxon(child1, config, null);
+         
+         if (!result.isOk()){
             Assert.fail("Delete should not throw an exception anymore");
-        }*/
-        try{
-        	UUID uuid = UUID.fromString(uuidString);
-        	 
-        }catch(IllegalArgumentException e){
-        	 Assert.fail("Delete should not throw an exception anymore");
-        }
+         }
+        
         nTaxa = service.count(Taxon.class);
         Assert.assertEquals("There should be 3 taxa in the database", 3, nTaxa);
 
@@ -1147,15 +1131,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon child2 =(Taxon) service.find(TaxonGenerator.SPECIES2_UUID);
 
        // try {
-        uuidString = service.deleteTaxon(child2, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
+        result = service.deleteTaxon(child2, config, null);
+        if (!result.isOk()){
             Assert.fail("Delete should not throw an exception");
-        }*/
-        try{
-        	UUID uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
-        	Assert.fail("Delete should not throw an exception");
         }
+        
         
         //service.find(uuid);
 
@@ -1195,16 +1175,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         
 
        // try {
-       String uuidString = service.deleteTaxon(speciesTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            e.printStackTrace();
-            Assert.fail();
-
-        }*/
-            
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch (IllegalArgumentException e){
+        DeleteResult result = service.deleteTaxon(speciesTaxon, config, null);
+        if (!result.isOk()){
         	Assert.fail();
         }
         commitAndStartNewTransaction(null);
@@ -1247,16 +1219,9 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteSynonymsIfPossible(false);
 
-       // try {
-       String uuidString = service.deleteTaxon(speciesTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            e.printStackTrace();
-            Assert.fail();
-
-        }*/
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
+      
+       DeleteResult result = service.deleteTaxon(speciesTaxon, config, null);
+        if (!result.isOk()){
         	Assert.fail();
         }
         commitAndStartNewTransaction(null);
@@ -1292,17 +1257,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
         config.setDeleteNameIfPossible(true);
-        //try {
-        String uuidString = service.deleteTaxon(speciesTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-
-            Assert.fail();
-            e.printStackTrace();
-        }*/
-        
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
+        DeleteResult result = service.deleteTaxon(speciesTaxon, config, null);
+        if (!result.isOk()){
         	Assert.fail();
         }
         commitAndStartNewTransaction(null);
@@ -1335,14 +1291,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         secondClassification.addChildTaxon(testTaxon, null, null);
         //delete the taxon in all classifications
         //try {
-        String uuidString = service.deleteTaxon(testTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            Assert.fail();
-        }*/
-        
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
+       DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+       if (!result.isOk()){
         	Assert.fail();
         }
         commitAndStartNewTransaction(null);
@@ -1376,18 +1326,15 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteInAllClassifications(false);
        //     try {
-       String uuidString = service.deleteTaxon(testTaxon, config, secondClassification);
+       DeleteResult result = service.deleteTaxon(testTaxon, config, secondClassification);
 /*                Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
             } catch (DataChangeNoRollbackException e) {
                 logger.debug(e.getMessage());
             }
   */          
             
-        try{
-           	uuid = UUID.fromString(uuidString);
+       if (!result.isError()){
            	Assert.fail("The taxon should not be deletable because it is used in a second classification and the configuration is set to deleteInAllClassifications = false");
-        }catch(IllegalArgumentException e){
-            	logger.debug(uuidString);
         }
 
         //commitAndStartNewTransaction(null);
@@ -1408,7 +1355,7 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
 
         Taxon topMost = Taxon.NewInstance(BotanicalName.NewInstance(Rank.FAMILY()), null);
 
-    Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
+        Iterator<TaxonNode> nodes = testTaxon.getTaxonNodes().iterator();
         TaxonNode node =nodes.next();
         Classification classification = node.getClassification();
         classification.addParentChild(topMost, testTaxon, null, null);
@@ -1417,17 +1364,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.MOVE_TO_PARENT);
 
-      //  try {
-        String uuidString = service.deleteTaxon(testTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            Assert.fail();
-        }*/
-            
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch (IllegalArgumentException e){
-        	Assert.fail();
-        }
+      
+        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        if(!result.isOk()){ 
+         	Assert.fail();
+       	}
         
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);
@@ -1463,15 +1404,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
 
        // try {
-        String uuidString = service.deleteTaxon(testTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            Assert.fail();
-        }*/
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
-        	Assert.fail();
-        }
+        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        if(!result.isOk()){ 
+         	Assert.fail();
+       	}
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);
         assertNull(tax);
@@ -1507,17 +1443,11 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.getTaxonNodeConfig().setChildHandling(ChildHandling.DELETE);
 
-     //   try {
-        String uuidString = service.deleteTaxon(testTaxon, config, null);
-       /* } catch (DataChangeNoRollbackException e) {
-            Assert.fail();
-        }*/
-
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
-        	Assert.fail();
-        }
+        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+       
+        if(!result.isOk()){ 
+         	Assert.fail();
+       	}
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);
         assertNull(tax);
@@ -1550,17 +1480,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(true);
 
-       // try {
-       String uuidString = service.deleteTaxon(testTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            Assert.fail();
-        }*/
-
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
-        	Assert.fail();
-        }
+        DeleteResult result  = service.deleteTaxon(testTaxon, config, null);
+        if(!result.isOk()){ 
+         	Assert.fail();
+       	}
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);
         assertNull(tax);
@@ -1586,16 +1509,10 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         TaxonDeletionConfigurator config = new TaxonDeletionConfigurator() ;
         config.setDeleteMisappliedNamesAndInvalidDesignations(false);
 
-        //try {
-        String uuidString = service.deleteTaxon(testTaxon, config, null);
-        /*} catch (DataChangeNoRollbackException e) {
-            Assert.fail();
-        }*/
-        try{
-        	uuid = UUID.fromString(uuidString);
-        }catch(IllegalArgumentException e){
-        	Assert.fail();
-        }
+        DeleteResult result = service.deleteTaxon(testTaxon, config, null);
+        if(!result.isOk()){ 
+         	Assert.fail();
+       	}
         commitAndStartNewTransaction(null);
         Taxon tax = (Taxon)service.find(uuid);
         assertNull(tax);

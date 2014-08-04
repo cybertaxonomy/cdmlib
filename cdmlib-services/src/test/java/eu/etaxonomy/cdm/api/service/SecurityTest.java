@@ -41,6 +41,7 @@ import org.unitils.spring.annotation.SpringBean;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import sun.security.provider.PolicyParser.ParsingException;
+import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.database.PermissionDeniedException;
@@ -789,15 +790,13 @@ public class SecurityTest extends AbstractSecurityTestBase{
         Taxon taxon = (Taxon)taxonService.load(UUID_ACHERONTINII);
         try{
            // try {
-        	String uuidString = taxonService.deleteTaxon(taxon, null, null);
+        	DeleteResult result = taxonService.deleteTaxon(taxon, null, null);
             /*} catch (DataChangeNoRollbackException e) {
                 Assert.fail();
             }*/
-                try{
-                	UUID uuid = UUID.fromString(uuidString);
-                }catch(IllegalArgumentException e){
-                	Assert.fail();
-                }
+            if (!result.isOk()){
+            	Assert.fail();
+            }
             commitAndStartNewTransaction(null);
         } catch (RuntimeException e){
             securityException  = findSecurityRuntimeException(e);
@@ -828,23 +827,21 @@ public class SecurityTest extends AbstractSecurityTestBase{
         authentication = authenticationManager.authenticate(tokenForDescriptionEditor);
         context.setAuthentication(authentication);
 
-        TaxonBase<?> taxon = taxonService.load(UUID_LACTUCA);
-       try{
-    	   String result = taxonService.delete(taxon);
-      
-    	   UUID uuid = UUID.fromString(result);
-    	   Assert.fail();
-       }catch(PermissionDeniedException e){
-    	   securityException = e;
-       }
+        Taxon taxon = (Taxon)taxonService.load(UUID_LACTUCA);
+        DeleteResult result = taxonService.deleteTaxon(taxon, null, null);
+        if (!result.isError()) {
+        	Assert.fail();
+        }
        endTransaction();
        startNewTransaction();
        
 
-        Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
+        //Assert.assertNotNull("evaluation must fail since the user is not permitted", securityException);
         // reload taxon
-        taxon = taxonService.load(UUID_LACTUCA);
+        taxon = (Taxon)taxonService.load(UUID_LACTUCA);
+        
         Assert.assertNotNull("The change must still exist", taxon);
+        Assert.assertNotNull("The name must still exist",taxon.getName());
     }
 
 

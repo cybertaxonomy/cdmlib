@@ -28,6 +28,7 @@ import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringApplicationContext;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
 import eu.etaxonomy.cdm.api.service.exception.DataChangeNoRollbackException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
@@ -380,8 +381,10 @@ public class TaxonNodeServiceImplTest extends CdmTransactionalIntegrationTest{
 		newNode = taxonNodeService.load(uuidNewNode);
 		UUID taxUUID = newNode.getTaxon().getUuid();
 		
-		String result = taxonNodeService.deleteTaxonNode(node1, null);
-		
+		DeleteResult result = taxonNodeService.deleteTaxonNode(node1, null);
+		if (!result.isOk()){
+			Assert.fail();
+		}
 		newNode = taxonNodeService.load(uuidNewNode);
 		node1 = taxonNodeService.load(node1Uuid);
 		assertNull(newNode);
