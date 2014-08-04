@@ -17,13 +17,10 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
-import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.Grouping;
@@ -47,8 +44,10 @@ public interface IService<T extends ICdmBase>{
 
     /**
      * Obtain the specified lock mode on the given object t
+     * <BR>
+     * NOTE: with hibernate 4 we changed parameter lockMode to lockOptions. LockOptions can be created from LockMode.
      */
-    public void lock(T t, LockMode lockMode);
+    public void lock(T t, LockOptions lockOptions);
 
     /**
      * Refreshes a given object t using the specified lockmode
@@ -61,11 +60,13 @@ public interface IService<T extends ICdmBase>{
      * NOTE: in the case of lockmodes that hit the database (e.g. LockMode.READ), you will need to re-initialize
      * child propertiesto avoid a HibernateLazyInitializationException (even if the properties of the child
      * were initialized prior to the refresh).
+     * 
+     * NOTE: with hibernate 4 we changed parameter lockMode to lockOptions. LockOptions can be created from LockMode.
      *
      * @param t
-     * @param lockMode
+     * @param lockOptions
      */
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths);
+    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths);
 
     /**
      * Returns a count of all entities of type <T>  optionally restricted

@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import org.apache.log4j.Logger;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -45,14 +46,14 @@ public abstract class ServiceBase<T extends CdmBase, DAO extends ICdmEntityDao<T
 
     @Override
     @Transactional(readOnly = true)
-    public void lock(T t, LockMode lockMode) {
-        dao.lock(t, lockMode);
+    public void lock(T t, LockOptions lockOptions) {
+        dao.lock(t, lockOptions);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths) {
-        dao.refresh(t, lockMode, propertyPaths);
+    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) {
+        dao.refresh(t, lockOptions, propertyPaths);
     }
 
     @Override

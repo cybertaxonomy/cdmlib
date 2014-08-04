@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
-import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.Session;
 import org.springframework.dao.DataAccessException;
 
@@ -52,10 +52,10 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * Obtains the specified LockMode on the supplied object
      *
      * @param t
-     * @param lockMode
+     * @param lockOptions
      * @throws DataAccessException
      */
-    public void lock(T t, LockMode lockMode) throws DataAccessException;
+    public void lock(T t, LockOptions lockOptions) throws DataAccessException;
 
     /**
      * Globally replace all references to instance t1 with t2 (including
@@ -89,7 +89,7 @@ public interface ICdmEntityDao<T extends CdmBase> {
      * @param propertyPaths
      * @throws DataAccessException
      */
-    public void refresh(T t, LockMode lockMode, List<String> propertyPaths) throws DataAccessException;
+    public void refresh(T t, LockOptions lockOptions, List<String> propertyPaths) throws DataAccessException;
 
     public void clear() throws DataAccessException;
 
