@@ -11,15 +11,21 @@ package eu.etaxonomy.cdm.remote.config;
 
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.Entity;
 import javax.servlet.ServletContext;
 
+import org.apache.log4j.Logger;
+import org.hibernate.Session;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.DependsOn;
 import org.springframework.context.annotation.Import;
+import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.http.MediaType;
 import org.springframework.util.PathMatcher;
 import org.springframework.web.accept.ContentNegotiationManager;
@@ -33,6 +39,16 @@ import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandl
 import org.springframework.web.servlet.view.ContentNegotiatingViewResolver;
 import org.springframework.web.servlet.view.XmlViewResolver;
 
+import com.mangofactory.swagger.configuration.SpringSwaggerConfig;
+import com.mangofactory.swagger.plugin.EnableSwagger;
+import com.mangofactory.swagger.plugin.SwaggerSpringMvcPlugin;
+import com.wordnik.swagger.converter.ModelConverters;
+import com.wordnik.swagger.converter.OverrideConverter;
+import com.wordnik.swagger.model.ApiInfo;
+
+import eu.etaxonomy.cdm.model.CdmAssignableTypeFilter;
+import eu.etaxonomy.cdm.model.CdmTypeScanner;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.remote.controller.interceptor.LocaleContextHandlerInterceptor;
 import eu.etaxonomy.cdm.remote.controller.util.CdmAntPathMatcher;
 import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
@@ -43,26 +59,25 @@ import eu.etaxonomy.cdm.remote.view.PatternViewResolver;
  *
  */
 //@EnableWebMvc do not add this since we are overriding WebMvcConfigurationSupport directly, see requestMappingHandlerMapping()
+@EnableSwagger
 @Configuration
 @Import(value={PreloadedBeans.class})
 @ComponentScan(basePackages = {
         "eu.etaxonomy.cdm.remote.l10n",
         "eu.etaxonomy.cdm.remote.controller",
         "eu.etaxonomy.cdm.remote.service",
-        "eu.etaxonomy.cdm.remote.config"
+        "eu.etaxonomy.cdm.remote.config",
         //"eu.etaxonomy.cdm.remote.vaadin MUST NOT BE SCANNED HERE
-//        "com.mangofactory.swagger.configuration.SpringSwaggerConfig",
-//        "com.mangofactory.swagger.controllers"
         }
 )
-//@EnableSwagger
-public class SpringMVCConfig extends WebMvcConfigurationSupport {
-
+public class CdmSpringMVCConfig extends WebMvcConfigurationSupport {
 
     /**
      * turn caching off FOR DEBUGING ONLY !!!!
      */
     private static final boolean XML_VIEW_CACHING = true;
+
+    public static final Logger logger = Logger.getLogger(CdmSpringMVCConfig.class);
 
 
     @Autowired
@@ -72,7 +87,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
     private LocaleContextHandlerInterceptor localeContextHandlerInterceptor;
 
 
-//    private SpringSwaggerConfig springSwaggerConfig;
+    private SpringSwaggerConfig springSwaggerConfig;
 
 //    ========================== JSP =================================
 //    public static final String[] WEB_JAR_RESOURCE_PATTERNS = {"css/", "images/", "lib/", "swagger-ui.js"};
@@ -99,6 +114,12 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
 //  }
 //  ======================================================================
 
+    public CdmSpringMVCConfig() {
+        super();
+        logger.debug("contructor");
+
+    }
+
     @Bean
     public PathMatcher pathMatcher(){
         return new CdmAntPathMatcher();
@@ -106,6 +127,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
 
     @Override
     @Bean
+    @DependsOn({"swaggerSpringMvcPlugin"})
     public RequestMappingHandlerMapping requestMappingHandlerMapping() {
         /* NOTE: this override is the only reason why this class
          * needs to extends WebMvcConfigurationSupport. We may be able to
@@ -115,10 +137,13 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
          */
         RequestMappingHandlerMapping handlerMapping = super.requestMappingHandlerMapping();
         handlerMapping.setPathMatcher(pathMatcher());
+
+        logger.debug("requestMappingHandlerMapping");
         return handlerMapping;
     }
 
     @Bean
+    @DependsOn({"swaggerSpringMvcPlugin"}) // swaggerSpringMvcPlugin and swaggerGlobalSettings must be loaded earlier
     public XmlViewResolver getOaiXmlViewResolver() {
         XmlViewResolver resolver = new XmlViewResolver();
       resolver.setOrder(1);
@@ -135,6 +160,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
     protected void addInterceptors(InterceptorRegistry registry) {
         // TODO does it work?
         registry.addInterceptor(localeContextHandlerInterceptor);
+        logger.debug("addInterceptors");
     }
 
 
@@ -144,6 +170,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
       // the Servlet container's "default" servlet, since the DispatcherServlet is mapped to "/"
       // so static content ad welcome files are handled by the default servlet
       configurer.enable();
+      logger.debug("configureDefaultServletHandling");
     }
 
     @Override
@@ -157,6 +184,8 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
         .mediaType("rdf", MediaType.APPLICATION_XML)
         .mediaType("rdfxml", MediaType.APPLICATION_XML)
         .mediaType("json", MediaType.APPLICATION_JSON);
+
+        logger.debug("configureContentNegotiation");
     }
 
     /**
@@ -164,6 +193,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
      * the ContentNegotiationManager created by the configurer (see previous method).
      */
    @Bean
+   @DependsOn({"swaggerSpringMvcPlugin"})
    public ViewResolver contentNegotiatingViewResolver(ContentNegotiationManager manager) {
 
        List<ViewResolver> resolvers = new ArrayList<ViewResolver>();
@@ -176,6 +206,7 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
        resolver.setOrder(2);
        resolver.setContentNegotiationManager(manager);
        resolver.setViewResolvers(resolvers);
+       logger.debug("contentNegotiatingViewResolver");
        return resolver;
        }
 
@@ -187,46 +218,70 @@ public class SpringMVCConfig extends WebMvcConfigurationSupport {
        return resolver;
    }
 
-//   @Bean
-//   public VaadinUI vaadinUI(){
-//       return new VaadinUI();
-//   }
-
     // -------- Swagger configuration ------------ //
 
    /**
     * Required to autowire SpringSwaggerConfig
-    * /
+    */
    @Autowired
    public void setSpringSwaggerConfig(SpringSwaggerConfig springSwaggerConfig) {
       this.springSwaggerConfig = springSwaggerConfig;
+      logger.debug("setSpringSwaggerConfig");
    }
 
    /**
     * Every SwaggerSpringMvcPlugin bean is picked up by the swagger-mvc framework - allowing for multiple
     * swagger groups i.e. same code base multiple swagger resource listings.
-    * /
-   @Bean
-   public SwaggerSpringMvcPlugin customImplementation(){
-       // includePatterns: If not supplied a single pattern ".*?" is used by SwaggerSpringMvcPlugin
-       // which matches anything and hence all RequestMappings. Here we define it explicitly
-      return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
-              .apiInfo(apiInfo()).
-              includePatterns(".*?");
+    */
+   @Bean(name="swaggerSpringMvcPlugin")
+   public SwaggerSpringMvcPlugin swaggerSpringMvcPlugin(){
+       // fully skip the creation of cdm model documentation
+       // since it will be too excessive to scan the huge cdm model
+       // which in fact has cycles.
+
+       String emptyJSON = "{}";
+       OverrideConverter sessionConverter = new OverrideConverter();
+       sessionConverter.add(Session.class.getName(), emptyJSON);
+       ModelConverters.addConverter(sessionConverter, true);
+
+       logger.debug("swaggerSpringMvcPlugin");
+       Collection<Class<? extends Object>> allCdmTypes = allCdmTypes();
+       allCdmTypes.add(eu.etaxonomy.cdm.api.service.pager.Pager.class);
+       allCdmTypes.add(eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.class);
+
+       return new SwaggerSpringMvcPlugin(this.springSwaggerConfig)
+              .apiInfo(apiInfo())
+              .includePatterns(".*?") // matches all RequestMappings
+              .ignoredParameterTypes(allCdmTypes.toArray(new Class[allCdmTypes.size()])); // is internally merged with the defaultIgnorableParameterTypes of the
    }
+
+/**
+ * @return
+ */
+private Collection<Class<? extends Object>> allCdmTypes() {
+    boolean includeAbstract = true;
+    boolean includeInterfaces = false;
+    Collection<Class<? extends Object>> classes = null;
+
+    CdmTypeScanner<Object> scanner = new CdmTypeScanner<Object>(includeAbstract, includeInterfaces);
+    scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
+    scanner.addIncludeFilter(new CdmAssignableTypeFilter(CdmBase.class, includeAbstract, includeInterfaces));
+    classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");
+
+    return classes;
+}
 
    private ApiInfo apiInfo() {
        ApiInfo apiInfo = new ApiInfo(
-               "EU-BON Utis",
-               "The Unified Taxonomic Information Service (UTIS) is the taxonomic backbone for the EU-BON project",
-               "UTIS API terms of service",
+               "CDM Remote REST services",
+               "",
+               "CDM API terms of service",
                "EditSupport@bgbm.org",
                "Mozilla Public License 2.0",
                "http://www.mozilla.org/MPL/2.0/"
          );
        return apiInfo;
      }
-   */
 
 
 }
