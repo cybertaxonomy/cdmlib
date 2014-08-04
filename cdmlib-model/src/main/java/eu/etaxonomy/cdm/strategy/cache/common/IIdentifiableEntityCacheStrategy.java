@@ -10,19 +10,20 @@
 package eu.etaxonomy.cdm.strategy.cache.common;
 
 import eu.etaxonomy.cdm.model.common.IIdentifiableEntity;
+import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.strategy.IStrategy;
 
 /**
- * @author AM
- *
+ * Base interface for formatting of {@link IdentifiableEntity identifiable entities}. 
+ * @author a.mueller
  */
 public interface IIdentifiableEntityCacheStrategy<T extends IIdentifiableEntity> extends IStrategy {
 
 
 	/**
-	 * 
-	 * @param object
-	 * @return
+	 * Returns the computed {@link IdentifiableEntity#getTitleCache() title cache}.
+	 * @param identifiableEntity the identifiable entity
+	 * @return title cache
 	 */
-	public String getTitleCache(T object);
+	public String getTitleCache(T identifiableEntity);
 }
