@@ -27,6 +27,7 @@ import org.hibernate.Criteria;
 import org.hibernate.FlushMode;
 import org.hibernate.HibernateException;
 import org.hibernate.LockMode;
+import org.hibernate.LockOptions;
 import org.hibernate.NonUniqueObjectException;
 import org.hibernate.Query;
 import org.hibernate.Session;
@@ -97,7 +98,7 @@ public abstract class CdmEntityDaoBase<T extends CdmBase> extends DaoBase implem
 
     @Override
     public void lock(T t, LockMode lockMode) {
-        getSession().lock(t, lockMode);
+        getSession().buildLockRequest(new LockOptions(lockMode)).lock(t);
     }
 
     @Override
