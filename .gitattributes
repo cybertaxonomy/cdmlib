@@ -696,7 +696,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesElement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmAssignableTypeFilter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmTypeScanner.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
@@ -1108,6 +1110,7 @@ cdmlib-model/src/main/resources/update/update_r2.1.2.2_r2.4.1.2.mysql.sql -text
 cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/CdmTypeScannerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
