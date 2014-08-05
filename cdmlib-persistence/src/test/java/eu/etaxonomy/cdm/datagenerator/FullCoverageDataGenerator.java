@@ -501,7 +501,7 @@ public class FullCoverageDataGenerator {
 		reference.setPublisher("publisher");
 		Institution school = Institution.NewInstance();
 		reference.setSchool(school);
-		reference.setSeries("series");
+//		reference.setSeriesPart("series");
 		reference.setSeriesPart("seriesPart");
 		reference.setVolume("vol. 3");
 		reference.setUri(URI.create("http:\\rer.abc.de"));

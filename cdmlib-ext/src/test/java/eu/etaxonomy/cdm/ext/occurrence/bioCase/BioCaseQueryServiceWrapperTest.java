@@ -35,6 +35,8 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
 
     public static final Logger logger = Logger.getLogger(BioCaseQueryServiceWrapperTest.class);
 
+    private static int MAX_LINES_TO_READ = 1000;
+
     @Test
     public void testQuery() {
 
@@ -45,18 +47,24 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
                 InputStream response = queryService.query(query, URI.create("http://ww3.bgbm.org/biocase/pywrapper.cgi?dsa=Herbar"));
                 BufferedReader reader = new BufferedReader(new InputStreamReader(response));
                 String line = null;
+                int count = 0;
                 do {
+                    if(count>MAX_LINES_TO_READ){
+                        fail("Service response did not include parameter to test.");
+                        break;
+                    }
                     if(line!=null){
                         System.out.println(line);
                         String recordAttr = "recordCount=\"";
                         int index = line.indexOf(recordAttr);
-                        if(index<-1){
+                        if(index>-1){
                             String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
                             assertEquals("Incorrect number of occurrences", 2, Integer.parseInt(recordCount));
                             break;
                         }
                     }
                     line = reader.readLine();
+                    count++;
                 } while (line!=null);
             } catch (NumberFormatException e) {
                 fail(e.getMessage());
@@ -77,23 +85,29 @@ public class BioCaseQueryServiceWrapperTest extends TestCase{
             InputStream queryForSingleUnit = service.query(new OccurenceQuery("29596"), new URIBuilder("http://www.flora-mv.de/biocase/pywrapper.cgi?dsa=hoeherePflanzen").build());
             BufferedReader reader = new BufferedReader(new InputStreamReader(queryForSingleUnit));
             String line = null;
+            int count = 0;
             do {
+                if(count>MAX_LINES_TO_READ){
+                    fail("Service response did not include parameter to test.");
+                    break;
+                }
                 if(line!=null){
                     System.out.println(line);
                     String recordAttr = "recordCount=\"";
                     int index = line.indexOf(recordAttr);
-                    if(index<-1){
+                    if(index>-1){
                         String recordCount = line.substring(index+recordAttr.length(), index+recordAttr.length()+1);
                         assertEquals("Incorrect number of occurrences", 1, Integer.parseInt(recordCount));
                     }
                     String unitId = "<abcd:UnitID>";
                     int indexId = line.indexOf(unitId);
-                    if(indexId<-1){
+                    if(indexId>-1){
                         String id = line.substring(indexId+unitId.length(), indexId+unitId.length()+5);
                         assertEquals("Incorrect UnitId", 29596, Integer.parseInt(id));
                     }
                 }
                 line = reader.readLine();
+                count++;
             } while (line!=null);
         } catch (NumberFormatException e) {
             fail(e.getMessage());

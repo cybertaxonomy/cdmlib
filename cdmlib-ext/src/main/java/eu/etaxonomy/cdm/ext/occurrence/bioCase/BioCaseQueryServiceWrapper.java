@@ -68,7 +68,7 @@ public class BioCaseQueryServiceWrapper extends ServiceWrapperBase<SpecimenOrObs
         UrlEncodedFormEntity httpEntity = new UrlEncodedFormEntity(queryParamsPOST);
 
         if(UriUtils.isServiceAvailable(endPoint, 10000)){
-            logger.info("Querying BioCASE service with " + endPoint + ", POST: " + httpEntity);
+            logger.info("Querying BioCASE service with " + endPoint + ", POST: " + queryParamsPOST);
             //FIXME do the ABCD import here
             return executeHttpPost(endPoint, null, httpEntity);
         }
