@@ -64,6 +64,8 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
+import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -326,12 +328,21 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, Taxon associatedTaxon){
+        final String separator = ", ";
 
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
+        Map<UUID, SpecimenTypeDesignation> typeSpecimenUUIDtoTypeDesignation = new HashMap<UUID, SpecimenTypeDesignation>();
 
         //types
-        TaxonNameBase name = associatedTaxon.getName();
-        dto.setHasType(!name.getTypeDesignations().isEmpty());
+        TaxonNameBase<?,?> name = associatedTaxon.getName();
+        Set<?> typeDesignations = name.getSpecimenTypeDesignations();
+        for (Object object : typeDesignations) {
+            if(object instanceof SpecimenTypeDesignation){
+                SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)object;
+                DerivedUnit typeSpecimen = specimenTypeDesignation.getTypeSpecimen();
+                typeSpecimenUUIDtoTypeDesignation.put(typeSpecimen.getUuid(), specimenTypeDesignation);
+            }
+        }
 
         if(fieldUnit.getGatheringEvent()!=null){
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
@@ -351,6 +362,8 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         getDerivedUnitsFor(fieldUnit, derivedUnits);
         //Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
+        //Type map
+        Map<String, List<String>> typeStatusToAccessionNumber = new HashMap<String, List<String>>();
 
         //iterate over sub derivates
         for (DerivedUnit derivedUnit : derivedUnits) {
@@ -370,6 +383,14 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     count++;
                 }
                 collectionToCountMap.put(collection, count);
+            }
+            //check if derived unit is a type
+            if(typeSpecimenUUIDtoTypeDesignation.keySet().contains(derivedUnit.getUuid())){
+                dto.setHasType(true);
+                SpecimenTypeDesignation specimenTypeDesignation = typeSpecimenUUIDtoTypeDesignation.get(derivedUnit.getUuid());
+                SpecimenTypeDesignationStatus specimenTypeDesignationStatus = specimenTypeDesignation.getTypeStatus();
+                String typeStatus = specimenTypeDesignationStatus.getLabel(Language.DEFAULT());
+                dto.addTypes(typeStatus, currentAccessionNumber);
             }
             //assemble molecular data
             if(derivedUnit instanceof DnaSample){//.getRecordBasis()==SpecimenOrObservationType.DnaSample){
@@ -410,25 +431,31 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
         }
 
-        //citation
+        //assemble citation
         String citation = "";
         citation += dto.getCountry();
+        citation += separator;
         if(fieldUnit.getGatheringEvent()!=null){
             if(fieldUnit.getGatheringEvent().getLocality()!=null){
                 citation += fieldUnit.getGatheringEvent().getLocality().getText();
+                citation += separator;
             }
             if(fieldUnit.getGatheringEvent().getExactLocation()!=null
                     && fieldUnit.getGatheringEvent().getExactLocation().getLatitude()!=null
                     && fieldUnit.getGatheringEvent().getExactLocation().getLongitude()!=null){
                 citation += fieldUnit.getGatheringEvent().getExactLocation().getLatitude().toString();
-                citation += ", ";
+                citation += separator;
                 citation += fieldUnit.getGatheringEvent().getExactLocation().getLongitude().toString();
+                citation += separator;
             }
         }
+        if(citation.endsWith(separator)){
+            citation = citation.substring(0, citation.length()-separator.length());
+        }
+        dto.setCitation(citation);
 
         //assemble herbaria string
         String herbariaString = "";
-        final String herbariaSeparator = ", ";
         for(Entry<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> e:collectionToCountMap.entrySet()){
             eu.etaxonomy.cdm.model.occurrence.Collection collection = e.getKey();
             if(collection.getCode()!=null){
@@ -437,13 +464,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             if(e.getValue()>1){
                 herbariaString += "("+e.getValue()+")";
             }
-            herbariaString += herbariaSeparator;
+            herbariaString += separator;
         }
-        if(herbariaString.endsWith(herbariaSeparator)){
-            herbariaString = herbariaString.substring(0, herbariaString.length()-herbariaSeparator.length());
+        if(herbariaString.endsWith(separator)){
+            herbariaString = herbariaString.substring(0, herbariaString.length()-separator.length());
         }
         dto.setHerbarium(herbariaString);
-        dto.setCitation(citation);
         return dto;
     }
 

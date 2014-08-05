@@ -23,7 +23,7 @@ public class DerivateHierarchyDTO {
 	private String taxonName;
 	private String protologue;
 	private String citation;
-	private List<String> types;
+	private Map<String, List<String>> types;
 	private Map<String, String> specimenScans;
 	private Map<String, String> molecularData;
 	private Map<String, String> detailImages;
@@ -159,24 +159,28 @@ public class DerivateHierarchyDTO {
     public void setCitation(String citation) {
         this.citation = citation;
     }
-    /**
-     * @return the types
-     */
-    public List<String> getTypes() {
-        return types;
-    }
+
     /**
      * @param types the types to set
      */
-    public void setTypes(List<String> types) {
+    public void setTypes(Map<String, List<String>> types) {
         this.types = types;
     }
-
-    public void addTypes(String uri){
+    /**
+     * @return the types
+     */
+    public Map<String, List<String>> getTypes() {
+        return types;
+    }
+    public void addTypes(String typeStatus, String accessionNumber){
         if(types==null){
-            types = new ArrayList<String>();
+            types = new HashMap<String, List<String>>();
         }
-        types.add(uri);
+        List<String> list = types.get(typeStatus);
+        if(list==null){
+            list = new ArrayList<String>();
+        }
+        list.add(accessionNumber);
     }
     /**
      * @return the specimenScans
