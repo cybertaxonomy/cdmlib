@@ -1,7 +1,9 @@
 package eu.etaxonomy.cdm.api.service.dto;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class DerivateHierarchyDTO {
 
@@ -22,9 +24,9 @@ public class DerivateHierarchyDTO {
 	private String protologue;
 	private String citation;
 	private List<String> types;
-	private List<String> specimenScans;
-	private List<String> molecularData;
-	private List<String> detailImages;
+	private Map<String, String> specimenScans;
+	private Map<String, String> molecularData;
+	private Map<String, String> detailImages;
     /**
      * @return the hasDna
      */
@@ -179,60 +181,60 @@ public class DerivateHierarchyDTO {
     /**
      * @return the specimenScans
      */
-    public List<String> getSpecimenScans() {
+    public Map<String, String> getSpecimenScans() {
         return specimenScans;
     }
     /**
      * @param specimenScans the specimenScans to set
      */
-    public void setSpecimenScans(List<String> specimenScans) {
+    public void setSpecimenScans(Map<String, String> specimenScans) {
         this.specimenScans = specimenScans;
     }
 
-    public void addSpecimenScan(String uri){
+    public void addSpecimenScan(String uri, String herbarium){
         if(specimenScans==null){
-            specimenScans = new ArrayList<String>();
+            specimenScans = new HashMap<String, String>();
         }
-        specimenScans.add(uri);
+        specimenScans.put(uri, herbarium);
     }
     /**
      * @return the molecularData
      */
-    public List<String> getMolecularData() {
+    public Map<String, String> getMolecularData() {
         return molecularData;
     }
     /**
      * @param molecularData the molecularData to set
      */
-    public void setMolecularData(List<String> molecularData) {
+    public void setMolecularData(Map<String, String> molecularData) {
         this.molecularData = molecularData;
     }
 
-    public void addMolecularData(String uri){
+    public void addMolecularData(String uri, String marker){
         if(molecularData==null){
-            molecularData = new ArrayList<String>();
+            molecularData = new HashMap<String, String>();
         }
-        molecularData.add(uri);
+        molecularData.put(uri, marker);
     }
 
     /**
      * @return the detailImages
      */
-    public List<String> getDetailImages() {
+    public Map<String, String> getDetailImages() {
         return detailImages;
     }
     /**
      * @param detailImages the detailImages to set
      */
-    public void setDetailImages(List<String> detailImages) {
+    public void setDetailImages(Map<String, String> detailImages) {
         this.detailImages = detailImages;
     }
 
-    public void addDetailImage(String uri){
+    public void addDetailImage(String uri, String motif){
         if(detailImages==null){
-            detailImages = new ArrayList<String>();
+            detailImages = new HashMap<String, String>();
         }
-        detailImages.add(uri);
+        detailImages.put(uri, motif);
     }
 
 

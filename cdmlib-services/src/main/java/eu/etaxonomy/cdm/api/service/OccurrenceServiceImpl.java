@@ -64,6 +64,7 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -327,9 +328,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, Taxon associatedTaxon){
 
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
-        //        TaxonNameBase name = associatedTaxon.getName();
-        //        name = HibernateProxyHelper.deproxy(name, TaxonNameBase.class);
-        //        dto.setType(!name.getTypeDesignations().isEmpty());
+
+        //types
+        TaxonNameBase name = associatedTaxon.getName();
+        dto.setHasType(!name.getTypeDesignations().isEmpty());
 
         if(fieldUnit.getGatheringEvent()!=null){
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
@@ -352,13 +354,30 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         //iterate over sub derivates
         for (DerivedUnit derivedUnit : derivedUnits) {
+            //current accession number
+            String currentAccessionNumber = derivedUnit.getAccessionNumber()!=null?derivedUnit.getAccessionNumber():"";
+            //current herbarium
+            String currentHerbarium = "";
+            eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
+            if(collection!=null){
+                currentHerbarium = collection.getCode()!=null?collection.getCode():"";
+                //count herbaria
+                Integer count = collectionToCountMap.get(collection);
+                if(count==null){
+                    count = 1;
+                }
+                else{
+                    count++;
+                }
+                collectionToCountMap.put(collection, count);
+            }
             //assemble molecular data
             if(derivedUnit instanceof DnaSample){//.getRecordBasis()==SpecimenOrObservationType.DnaSample){
                 dto.setHasDna(true);
 
                 DnaSample dna = (DnaSample)derivedUnit;
                 if(dna.getBankNumber()!=null){
-                    dto.addMolecularData(dna.getBankNumber());
+                    dto.addMolecularData(dna.getBankNumber(), "SampleDesignation?");//FIXME replace with actual getter
                 }
             }
             //assemble media data
@@ -370,32 +389,43 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
                         dto.setHasSpecimenScan(true);
                         if(mediaUriString!=null){
-                            dto.addSpecimenScan(mediaUriString);
+                            dto.addSpecimenScan(mediaUriString, currentHerbarium+" "+currentAccessionNumber);
                         }
                     }
                     else if(media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))){
                         dto.setHasDetailImage(true);
                         if(mediaUriString!=null){
-                            dto.addDetailImage(mediaUriString);
+                            String motif = "";
+                            if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle(Language.DEFAULT())!=null){
+                                motif = media.getMediaSpecimen().getTitle(Language.DEFAULT()).getText();
+                            }
+                            dto.addDetailImage(mediaUriString, motif);
                         }
                     }
                 }
             }
             //assemble preserved specimen data
             else if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.PreservedSpecimen){
-                eu.etaxonomy.cdm.model.occurrence.Collection collection = derivedUnit.getCollection();
-                if(collection!=null){
-                    Integer count = collectionToCountMap.get(collection);
-                    if(count==null){
-                        count = 1;
-                    }
-                    else{
-                        count++;
-                    }
-                    collectionToCountMap.put(collection, count);
-                }
+
             }
         }
+
+        //citation
+        String citation = "";
+        citation += dto.getCountry();
+        if(fieldUnit.getGatheringEvent()!=null){
+            if(fieldUnit.getGatheringEvent().getLocality()!=null){
+                citation += fieldUnit.getGatheringEvent().getLocality().getText();
+            }
+            if(fieldUnit.getGatheringEvent().getExactLocation()!=null
+                    && fieldUnit.getGatheringEvent().getExactLocation().getLatitude()!=null
+                    && fieldUnit.getGatheringEvent().getExactLocation().getLongitude()!=null){
+                citation += fieldUnit.getGatheringEvent().getExactLocation().getLatitude().toString();
+                citation += ", ";
+                citation += fieldUnit.getGatheringEvent().getExactLocation().getLongitude().toString();
+            }
+        }
+
         //assemble herbaria string
         String herbariaString = "";
         final String herbariaSeparator = ", ";
@@ -413,6 +443,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             herbariaString = herbariaString.substring(0, herbariaString.length()-herbariaSeparator.length());
         }
         dto.setHerbarium(herbariaString);
+        dto.setCitation(citation);
         return dto;
     }
 
