@@ -10,17 +10,17 @@
 package eu.etaxonomy.cdm.model;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
-import javax.persistence.Entity;
-
-import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.beans.factory.config.BeanDefinition;
+import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
+import org.springframework.core.type.filter.AssignableTypeFilter;
 
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
@@ -47,7 +47,7 @@ public enum CdmBaseType {
 
     private Class<? extends CdmBase> baseClass;
 
-    private Collection<Class<? extends CdmBase>> subClasses;
+    private Set<Class<? extends CdmBase>> subClasses;
 
     static Map<Class<? extends CdmBase>,  Class<? extends CdmBase>> subTypeToBaseTypeMap;
 
@@ -70,24 +70,26 @@ public enum CdmBaseType {
         }
     }
 
-    private Collection<Class<? extends CdmBase>> subclassesFor(Class<? extends CdmBase> clazz) throws ClassNotFoundException{
+    public static Set<Class<? extends CdmBase>> subclassesFor(Class<? extends CdmBase> clazz) throws ClassNotFoundException{
 
-        boolean includeAbstract = true;
-        boolean includeInterfaces = false;
+        Set<Class<? extends CdmBase>> subClasses = new HashSet<Class<? extends CdmBase>>();
+        ClassPathScanningCandidateComponentProvider provider = new ClassPathScanningCandidateComponentProvider(true);
+        provider.addIncludeFilter(new AssignableTypeFilter(clazz));
 
-        CdmTypeScanner<CdmBase> scanner = new CdmTypeScanner<CdmBase>(includeAbstract, includeInterfaces);
-        scanner.addIncludeFilter(new CdmAssignableTypeFilter(IdentifiableEntity.class, includeAbstract, includeInterfaces));
-        scanner.addIncludeFilter(new AnnotationTypeFilter(Entity.class));
-        Collection<Class<? extends CdmBase>> classes = scanner.scanTypesIn("eu/etaxonomy/cdm/model");
-
-        return classes;
+        // scan only in eu.etaxonomy.cdm.model
+        Set<BeanDefinition> components = provider.findCandidateComponents("eu/etaxonomy/cdm/model");
+        for (BeanDefinition component : components)
+        {
+            subClasses.add((Class<? extends CdmBase>) Class.forName(component.getBeanClassName()));
+        }
+        return subClasses;
     }
 
     public static Class<? extends CdmBase> baseTypeFor(Class<? extends CdmBase> cdmType){
         return subTypeToBaseTypeMap.get(cdmType);
     }
 
-    public Collection<Class<? extends CdmBase>> getSubClasses() {
+    public Set<Class<? extends CdmBase>> getSubClasses() {
         return subClasses;
     }
 

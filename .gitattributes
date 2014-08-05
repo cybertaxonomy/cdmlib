@@ -696,9 +696,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/NamespacesElement.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/PartialAdapter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/TDWGNamespacePrefixMapper.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/jaxb/UUIDAdapter.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmAssignableTypeFilter.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmBaseType.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/CdmTypeScanner.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/ICdmCacher.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/Address.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/agent/AgentBase.java -text
@@ -1110,7 +1108,6 @@ cdmlib-model/src/main/resources/update/update_r2.1.2.2_r2.4.1.2.mysql.sql -text
 cdmlib-model/src/main/resources/update/update_term_r2.4.2.1-r2.4.2.2.mysql.sql -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/aspectj/PropertyChangeTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/datagenerator/TaxonGenerator.java -text
-cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/CdmTypeScannerTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/DatabaseInitialiser.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/AgentValidationTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/model/agent/InstitutionalMembershipTest.java -text
@@ -1724,8 +1721,8 @@ cdmlib-remote-webapp/ide/eclipse/cdmlib-remote[!!-~]-[!!-~]remote[!!-~]debug[!!-
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]profile.launch -text
 cdmlib-remote-webapp/ide/eclipse/cdmlib-remote-webapp[!!-~]-[!!-~]run.launch -text
 cdmlib-remote-webapp/pom.xml -text
-cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/CdmSpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/PreloadedBeans.java -text
+cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/config/SpringMVCConfig.java -text
 cdmlib-remote-webapp/src/main/java/eu/etaxonomy/cdm/remote/vaadin/redlist/wigetset/AppWidgetSet.gwt.xml -text
 cdmlib-remote-webapp/src/main/resources/log4j.properties -text
 cdmlib-remote-webapp/src/main/webapp/VAADIN/themes/mytheme/favicon.ico -text
@@ -1826,29 +1823,6 @@ cdmlib-remote-webapp/src/main/webapp/js/jquery-ui-1.8.23.custom.min.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery.blockUI.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery.cookie.js -text
 cdmlib-remote-webapp/src/main/webapp/js/jquery.fileDownload.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/css/reset.css -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/css/screen.css -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/images/explorer_icons.png -text svneol=unset#unset
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/images/logo_small.png -text svneol=unset#unset
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/images/pet_store_api.png -text svneol=unset#unset
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/images/throbber.gif -text svneol=unset#unset
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/images/wordnik_api.png -text svneol=unset#unset
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/index.html -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/backbone-min.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/handlebars-1.0.0.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/highlight.7.3.pack.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/jquery-1.8.0.min.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/jquery.ba-bbq.min.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/jquery.slideto.min.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/jquery.wiggle.min.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/shred.bundle.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/shred/content.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/swagger-oauth.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/swagger.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/lib/underscore-min.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/o2c.html -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/swagger-ui.js -text
-cdmlib-remote-webapp/src/main/webapp/swagger-ui/swagger-ui.min.js -text
 cdmlib-remote-webapp/src/main/webapp/xsl/human.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/name.xsl -text
 cdmlib-remote-webapp/src/main/webapp/xsl/oai2.xsl -text

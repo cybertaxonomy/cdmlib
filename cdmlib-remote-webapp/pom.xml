@@ -15,7 +15,6 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <jackson.version>2.2.3</jackson.version>
   </properties>
 
   <scm>
@@ -127,7 +126,7 @@
       <groupId>org.hibernate</groupId>
       <artifactId>hibernate-c3p0</artifactId>
     </dependency>
-    <!-- Vaadin -->
+
     <dependency>
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-server</artifactId>
@@ -153,41 +152,22 @@
       <groupId>com.vaadin</groupId>
       <artifactId>vaadin-client-compiler</artifactId>
     </dependency>
+
     <dependency>
       <groupId>ru.xpoft.vaadin</groupId>
       <artifactId>spring-vaadin-integration</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>exporter</artifactId>
     </dependency>
+
     <dependency>
       <groupId>org.vaadin.addons</groupId>
       <artifactId>wizards-for-vaadin</artifactId>
     </dependency>
-    <!-- swagger -->
-    <dependency>
-      <groupId>com.mangofactory</groupId>
-      <artifactId>swagger-springmvc</artifactId>
-      <version>0.8.5</version>
-    </dependency>
-    <!-- dependencies for swagger-springmvc, added explicitely -->
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-databind</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-core</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <dependency>
-      <groupId>com.fasterxml.jackson.core</groupId>
-      <artifactId>jackson-annotations</artifactId>
-      <version>${jackson.version}</version>
-    </dependency>
-    <!-- testing -->
+
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
@@ -198,6 +178,7 @@
       <artifactId>yjp-controller-api-redist</artifactId>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
