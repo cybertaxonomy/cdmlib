@@ -65,8 +65,8 @@ import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
-import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.TypeDesignationStatusBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
@@ -331,16 +331,17 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         final String separator = ", ";
 
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
-        Map<UUID, SpecimenTypeDesignation> typeSpecimenUUIDtoTypeDesignation = new HashMap<UUID, SpecimenTypeDesignation>();
+        Map<UUID, TypeDesignationStatusBase> typeSpecimenUUIDtoTypeDesignationStatus = new HashMap<UUID, TypeDesignationStatusBase>();
 
-        //types
+        //gather types for this taxon name
         TaxonNameBase<?,?> name = associatedTaxon.getName();
         Set<?> typeDesignations = name.getSpecimenTypeDesignations();
         for (Object object : typeDesignations) {
             if(object instanceof SpecimenTypeDesignation){
                 SpecimenTypeDesignation specimenTypeDesignation = (SpecimenTypeDesignation)object;
                 DerivedUnit typeSpecimen = specimenTypeDesignation.getTypeSpecimen();
-                typeSpecimenUUIDtoTypeDesignation.put(typeSpecimen.getUuid(), specimenTypeDesignation);
+                final TypeDesignationStatusBase typeStatus = specimenTypeDesignation.getTypeStatus();
+                typeSpecimenUUIDtoTypeDesignationStatus.put(typeSpecimen.getUuid(), typeStatus);
             }
         }
 
@@ -362,8 +363,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         getDerivedUnitsFor(fieldUnit, derivedUnits);
         //Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
-        //Type map
-        Map<String, List<String>> typeStatusToAccessionNumber = new HashMap<String, List<String>>();
 
         //iterate over sub derivates
         for (DerivedUnit derivedUnit : derivedUnits) {
@@ -385,11 +384,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 collectionToCountMap.put(collection, count);
             }
             //check if derived unit is a type
-            if(typeSpecimenUUIDtoTypeDesignation.keySet().contains(derivedUnit.getUuid())){
+            if(typeSpecimenUUIDtoTypeDesignationStatus.keySet().contains(derivedUnit.getUuid())){
                 dto.setHasType(true);
-                SpecimenTypeDesignation specimenTypeDesignation = typeSpecimenUUIDtoTypeDesignation.get(derivedUnit.getUuid());
-                SpecimenTypeDesignationStatus specimenTypeDesignationStatus = specimenTypeDesignation.getTypeStatus();
-                String typeStatus = specimenTypeDesignationStatus.getLabel(Language.DEFAULT());
+                TypeDesignationStatusBase typeDesignationStatus = typeSpecimenUUIDtoTypeDesignationStatus.get(derivedUnit.getUuid());
+                String typeStatus = typeDesignationStatus.getLabel();
                 dto.addTypes(typeStatus, currentAccessionNumber);
             }
             //assemble molecular data
@@ -398,7 +396,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
                 DnaSample dna = (DnaSample)derivedUnit;
                 if(dna.getBankNumber()!=null){
-                    dto.addMolecularData(dna.getBankNumber(), "SampleDesignation?");//FIXME replace with actual getter
+                    dto.addMolecularData(dna.getBankNumber(), "[no sample designation]");//FIXME replace with actual getter
                 }
             }
             //assemble media data
@@ -410,17 +408,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                     if(media.getKindOfUnit().getUuid().equals(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"))){
                         dto.setHasSpecimenScan(true);
                         if(mediaUriString!=null){
-                            dto.addSpecimenScan(mediaUriString, currentHerbarium+" "+currentAccessionNumber);
+                            final String imageLinkText = currentHerbarium+" "+currentAccessionNumber;
+                            dto.addSpecimenScan(mediaUriString, !imageLinkText.equals(" ")?imageLinkText:"[no accession]");
                         }
                     }
                     else if(media.getKindOfUnit().getUuid().equals(UUID.fromString("31eb8d02-bf5d-437c-bcc6-87a626445f34"))){
                         dto.setHasDetailImage(true);
                         if(mediaUriString!=null){
                             String motif = "";
-                            if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle(Language.DEFAULT())!=null){
-                                motif = media.getMediaSpecimen().getTitle(Language.DEFAULT()).getText();
+                            if(media.getMediaSpecimen()!=null && media.getMediaSpecimen().getTitle()!=null){
+                                motif = media.getMediaSpecimen().getTitle().getText();
                             }
-                            dto.addDetailImage(mediaUriString, motif);
+                            dto.addDetailImage(mediaUriString, motif!=null?motif:"[no motif]");
                         }
                     }
                 }
@@ -474,9 +473,9 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     private String getMediaUriString(MediaSpecimen mediaSpecimen){
-        if(!getSession().contains(mediaSpecimen)){
-            mediaSpecimen = (MediaSpecimen) load(mediaSpecimen.getUuid());
-        }
+//        if(!getSession().contains(mediaSpecimen)){
+//            mediaSpecimen = (MediaSpecimen) load(mediaSpecimen.getUuid());
+//        }
         String mediaUri = null;
         Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
         if(mediaRepresentations!=null && !mediaRepresentations.isEmpty()){

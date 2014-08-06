@@ -5,6 +5,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.hibernate.envers.tools.Pair;
+
 public class DerivateHierarchyDTO {
 
 	//Filter Flags
@@ -24,9 +26,9 @@ public class DerivateHierarchyDTO {
 	private String protologue;
 	private String citation;
 	private Map<String, List<String>> types;
-	private Map<String, String> specimenScans;
-	private Map<String, String> molecularData;
-	private Map<String, String> detailImages;
+	private List<Pair<String, String>> specimenScans;
+	private List<Pair<String, String>> molecularData;
+	private List<Pair<String, String>> detailImages;
     /**
      * @return the hasDna
      */
@@ -181,64 +183,68 @@ public class DerivateHierarchyDTO {
             list = new ArrayList<String>();
         }
         list.add(accessionNumber);
+        types.put(typeStatus, list);
+    }
+
+    /**
+     * @param specimenScans the specimenScans to set
+     */
+    public void setSpecimenScans(List<Pair<String, String>> specimenScans) {
+        this.specimenScans = specimenScans;
     }
     /**
      * @return the specimenScans
      */
-    public Map<String, String> getSpecimenScans() {
+    public List<Pair<String, String>> getSpecimenScans() {
         return specimenScans;
-    }
-    /**
-     * @param specimenScans the specimenScans to set
-     */
-    public void setSpecimenScans(Map<String, String> specimenScans) {
-        this.specimenScans = specimenScans;
     }
 
     public void addSpecimenScan(String uri, String herbarium){
         if(specimenScans==null){
-            specimenScans = new HashMap<String, String>();
+            specimenScans = new ArrayList<Pair<String,String>>();
         }
-        specimenScans.put(uri, herbarium);
+        specimenScans.add(new Pair<String, String>(uri, herbarium));
     }
+
     /**
      * @return the molecularData
      */
-    public Map<String, String> getMolecularData() {
+    public List<Pair<String, String>> getMolecularData() {
         return molecularData;
     }
+
     /**
      * @param molecularData the molecularData to set
      */
-    public void setMolecularData(Map<String, String> molecularData) {
+    public void setMolecularData(List<Pair<String, String>> molecularData) {
         this.molecularData = molecularData;
     }
 
     public void addMolecularData(String uri, String marker){
         if(molecularData==null){
-            molecularData = new HashMap<String, String>();
+            molecularData = new ArrayList<Pair<String,String>>();
         }
-        molecularData.put(uri, marker);
+        molecularData.add(new Pair<String, String>(uri, marker));
     }
 
     /**
      * @return the detailImages
      */
-    public Map<String, String> getDetailImages() {
+    public List<Pair<String, String>> getDetailImages() {
         return detailImages;
     }
     /**
      * @param detailImages the detailImages to set
      */
-    public void setDetailImages(Map<String, String> detailImages) {
+    public void setDetailImages(List<Pair<String, String>> detailImages) {
         this.detailImages = detailImages;
     }
 
     public void addDetailImage(String uri, String motif){
         if(detailImages==null){
-            detailImages = new HashMap<String, String>();
+            detailImages = new ArrayList<Pair<String,String>>();
         }
-        detailImages.put(uri, motif);
+        detailImages.add(new Pair<String, String>(uri, motif));
     }
 
 
