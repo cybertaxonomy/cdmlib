@@ -21,7 +21,6 @@ import org.apache.lucene.queryParser.ParseException;
 import org.hibernate.criterion.Criterion;
 
 import eu.etaxonomy.cdm.api.service.config.NameDeletionConfigurator;
-import eu.etaxonomy.cdm.api.service.exception.ReferencedObjectUndeletableException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.DocumentSearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
@@ -48,6 +47,7 @@ import eu.etaxonomy.cdm.persistence.dao.initializer.IBeanInitializer;
 import eu.etaxonomy.cdm.persistence.query.MatchMode;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.TaggedText;
+import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 
 public interface INameService extends IIdentifiableEntityService<TaxonNameBase> {
 
@@ -263,47 +263,6 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	@Deprecated
     public List<RelationshipBase> getAllRelationships(int limit, int start);
 
-//	/**
-//	 * Returns all Ranks
-//	 * @return
-//	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead,
-//	 *   this is not possible since  VocabularyService#getVocabulary(VocabularyEnum)
-//	 *   is not returning a OrderedTermVocabulary !!! see also http://dev.e-taxonomy.eu/trac/ticket/3327
-//	 */
-//	@Deprecated
-//    public OrderedTermVocabulary<Rank> getRankVocabulary();
-
-	/**
-	 * Returns all NomenclaturalStatusTypes
-	 * @return
-	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
-	 */
-	@Deprecated
-    public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
-//
-//	/**
-//	 * Returns TypeDesignationStatus vocabulary
-//	 * @return
-//	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
-//	 */
-//	@Deprecated
-//    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary();
-
-	/**
-	 * Returns TypeDesignationStatus ordered vocabulary
-	 * @return
-	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
-	 */
-	@Deprecated
-    public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary();
-
-	/**
-	 * Returns all NameRelationshipTypes
-	 * @return
-	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
-	 */
-	@Deprecated
-    public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary();
 
 	/**
 	 * Return a List of name relationships in which this name is related to
