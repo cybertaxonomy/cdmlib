@@ -196,46 +196,28 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
         propertyChangeSupport.firePropertyChange(evt);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#getUuid()
-     */
     @Override
     public UUID getUuid() {
         return uuid;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#setUuid(java.util.UUID)
-     */
     @Override
     public void setUuid(UUID uuid) {
         this.uuid = uuid;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#getId()
-     */
     @Override
     public int getId() {
         return this.id;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#setId(int)
-     */
     @Override
-    public void setId(int id) {
+    public void setId(int id) {  //see #265 (private ?)
         this.id = id;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreated()
-     */
     @Override
     public DateTime getCreated() {
         return created;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreated(java.util.Calendar)
-     */
     @Override
     public void setCreated(DateTime created) {
         if (created != null){
@@ -247,16 +229,10 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
     }
 
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#getCreatedBy()
-     */
     @Override
     public User getCreatedBy() {
         return this.createdBy;
     }
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.common.ICdmBase#setCreatedBy(eu.etaxonomy.cdm.model.agent.Person)
-     */
     @Override
     public void setCreatedBy(User createdBy) {
         this.createdBy = createdBy;
@@ -393,19 +369,16 @@ public abstract class CdmBase implements Serializable, ICdmBase, Cloneable{
 
 //********************** CLONE *****************************************/
 
-    protected void clone(CdmBase clone){
-        clone.setCreatedBy(createdBy);
-        clone.setId(id);
-        clone.propertyChangeSupport=new PropertyChangeSupport(clone);
-        //Constructor Attributes
-        //clone.setCreated(created);
-        //clone.setUuid(getUuid());
+//    protected void clone(CdmBase clone){
+//        clone.setCreatedBy(createdBy);
+//        clone.setId(id);
+//        clone.propertyChangeSupport=new PropertyChangeSupport(clone);
+//        //Constructor Attributes
+//        //clone.setCreated(created);
+//        //clone.setUuid(getUuid());
+//
+//    }
 
-    }
-
-    /* (non-Javadoc)
-     * @see java.lang.Object#clone()
-     */
     @Override
     public Object clone() throws CloneNotSupportedException{
         CdmBase result = (CdmBase)super.clone();
