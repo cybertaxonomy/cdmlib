@@ -108,6 +108,10 @@ public class CdmAuthority implements GrantedAuthority, ConfigAttribute, IGranted
             throw new ParsingException(authority);
         }
         property = tokens[1];
+        // Making sure that operation is always initialized, for both
+        // - the string representation to have a '[]' 
+        // - and the object representation to be not null 
+        operation = EnumSet.noneOf(CRUD.class);
         if(tokens[2] != null){
             try {
                 operation = Operation.fromString(tokens[2]);
