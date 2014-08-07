@@ -914,8 +914,8 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 
     @Override
     public List<TaggedText> getTaggedName(UUID uuid) {
-        TaxonNameBase taxonNameBase = dao.load(uuid);
-        List taggedName = taxonNameBase.getTaggedName();
+        TaxonNameBase<?,?> taxonNameBase = dao.load(uuid);
+        List<TaggedText> taggedName = taxonNameBase.getTaggedName();
         return taggedName;
     }
     
