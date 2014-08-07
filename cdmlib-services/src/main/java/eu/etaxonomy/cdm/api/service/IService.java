@@ -126,13 +126,13 @@ public interface IService<T extends ICdmBase>{
      * {@link org.hibernate.FlushMode FlushMode} for the session set to 'MANUAL'
      * <p>
      * <b>WARNING:</b>This method should <em>ONLY</em> be used when it is absolutely 
-     * necessary to ensure that the hibernate session is not flushed before a read
+     * necessary and safe to ensure that the hibernate session is not flushed before a read
      * query. A use case for this is the {@link eu.etaxonomy.cdm.api.cache.CdmCacher CdmCacher},
      * (ticket #4276) where a call to {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID) load} 
      * the CDM Entity using the standard {@link #find(UUID) find} method results in recursion 
      * due to the fact that the {@link #find(UUID) find} method triggers a hibernate session 
      * flush which eventually could call {@link eu.etaxonomy.cdm.model.name.NonViralName#getNameCache getNameCache},
-	 * which in turn (in the event that name cahce is null) eventually calls the 
+	 * which in turn (in the event that name cache is null) eventually calls the 
 	 * {@link eu.etaxonomy.cdm.api.cache.CdmCacher#load(UUID uuid) load} again. 
 	 * Apart from these kind of exceptional circumstances, the standard {@link #find(UUID) find}
 	 * method should always be used to ensure that the persistence layer is always in sync with the 
