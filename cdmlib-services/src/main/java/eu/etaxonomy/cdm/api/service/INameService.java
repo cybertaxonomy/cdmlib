@@ -263,15 +263,15 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	@Deprecated
     public List<RelationshipBase> getAllRelationships(int limit, int start);
 
-	/**
-	 * Returns all Ranks
-	 * @return
-	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead,
-	 *   this is not possible since  VocabularyService#getVocabulary(VocabularyEnum)
-	 *   is not returning a OrderedTermVocabulary !!! see also http://dev.e-taxonomy.eu/trac/ticket/3327
-	 */
-	@Deprecated
-    public OrderedTermVocabulary<Rank> getRankVocabulary();
+//	/**
+//	 * Returns all Ranks
+//	 * @return
+//	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead,
+//	 *   this is not possible since  VocabularyService#getVocabulary(VocabularyEnum)
+//	 *   is not returning a OrderedTermVocabulary !!! see also http://dev.e-taxonomy.eu/trac/ticket/3327
+//	 */
+//	@Deprecated
+//    public OrderedTermVocabulary<Rank> getRankVocabulary();
 
 	/**
 	 * Returns all NomenclaturalStatusTypes
@@ -280,14 +280,14 @@ public interface INameService extends IIdentifiableEntityService<TaxonNameBase> 
 	 */
 	@Deprecated
     public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary();
-
-	/**
-	 * Returns TypeDesignationStatus vocabulary
-	 * @return
-	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
-	 */
-	@Deprecated
-    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary();
+//
+//	/**
+//	 * Returns TypeDesignationStatus vocabulary
+//	 * @return
+//	 * @deprecated use VocabularyService#getVocabulary(VocabularyEnum) instead
+//	 */
+//	@Deprecated
+//    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary();
 
 	/**
 	 * Returns TypeDesignationStatus ordered vocabulary

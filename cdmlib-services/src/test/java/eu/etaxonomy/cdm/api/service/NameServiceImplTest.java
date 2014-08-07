@@ -105,40 +105,7 @@ public class NameServiceImplTest extends CdmTransactionalIntegrationTest {
         logger.warn("Not yet implemented");
     }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getRankVocabulary()}.
-     */
-    @Test
-    @Ignore //FIXME assertSame does not work yet
-    public void testGetRankVocabulary() {
-        //TODO move test to vocabulary service
-        OrderedTermVocabulary<Rank> rankVocabulary = nameService.getRankVocabulary();
-        assertNotNull(rankVocabulary);
-        assertEquals(66, rankVocabulary.size());
-        Rank highestRank = rankVocabulary.getHighestTerm();
-        assertEquals(Rank.EMPIRE(), highestRank);
-        assertEquals(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
-        assertSame(Rank.EMPIRE(), highestRank);
-        assertSame(Rank.DOMAIN(), rankVocabulary.getNextLowerTerm(highestRank));
-    }
 
-    /**
-     * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#getTypeDesignationVocabulary()}.
-     */
-    @Test
-    @Ignore  //not yet correctly implemented
-    public void testGetTypeDesignationVocabulary() {
-        //TODO move test to vocabulary service
-        OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary =
-            nameService.getSpecimenTypeDesignationVocabulary();
-        assertNotNull(typeDesignationVocabulary);
-        assertEquals(20, typeDesignationVocabulary.size());
-        SpecimenTypeDesignationStatus highestType = typeDesignationVocabulary.getHighestTerm();
-        assertEquals(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
-        assertEquals(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
-        assertSame(SpecimenTypeDesignationStatus.EPITYPE(), highestType);
-        assertSame(SpecimenTypeDesignationStatus.HOLOTYPE(), typeDesignationVocabulary.getNextLowerTerm(highestType));
-    }
 
     /**
      * Test method for {@link eu.etaxonomy.cdm.api.service.NameServiceImpl#generateTitleCache()}.

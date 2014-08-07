@@ -518,22 +518,22 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return dao.getAllRelationships(limit, start);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * is this not the same as termService.getVocabulary(VocabularyEnum.Rank)
-     * since this returns OrderedTermVocabulary
-     *
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
-     */
-    @Override
-    public OrderedTermVocabulary<Rank> getRankVocabulary() {
-        String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
-        UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<Rank> rankVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return rankVocabulary;
-    }
+//    /**
+//     * FIXME Candidate for harmonization
+//     * is this not the same as termService.getVocabulary(VocabularyEnum.Rank)
+//     * since this returns OrderedTermVocabulary
+//     *
+//     * (non-Javadoc)
+//     * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
+//     */
+//    @Override
+//    public OrderedTermVocabulary<Rank> getRankVocabulary() {
+//        String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
+//        UUID uuid = UUID.fromString(uuidString);
+//        OrderedTermVocabulary<Rank> rankVocabulary =
+//            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
+//        return rankVocabulary;
+//    }
 
     /**
       * FIXME Candidate for harmonization
@@ -553,8 +553,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
     /**
       * FIXME Candidate for harmonization
      * is this the same as termService.getVocabulary(VocabularyEnum.StatusType)
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
      */
     @Override
     public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
@@ -565,20 +563,20 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return nomStatusTypeVocabulary;
     }
 
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
-     */
-    @Override
-    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
-        String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return typeDesigStatusVocabulary;
-    }
+//    /**
+//      * FIXME Candidate for harmonization
+//     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
+//     *  (non-Javadoc)
+//     * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
+//     */
+//    @Override
+//    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
+//        String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
+//        UUID uuid = UUID.fromString(uuidString);
+//        TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary =
+//            vocabularyDao.findByUuid(uuid);
+//        return typeDesigStatusVocabulary;
+//    }
 
     /**
        * FIXME Candidate for harmonization
