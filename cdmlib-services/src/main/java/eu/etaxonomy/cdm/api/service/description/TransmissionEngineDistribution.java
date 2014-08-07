@@ -40,6 +40,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.NullProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.SubProgressMonitor;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
@@ -670,8 +671,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      */
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());
-        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
-        return rankVocabulary.getNextHigherTerm(rank);
+        return rank.getNextHigherTerm();
+//        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
+//        return rankVocabulary.getNextHigherTerm(rank);
     }
 
     /**

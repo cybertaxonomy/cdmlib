@@ -212,13 +212,33 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
         if((object == null) || (!OrderedTermBase.class.isAssignableFrom(object.getClass()))) {
             return false;
         }else{
-            OrderedTermBase orderedTermBase = (OrderedTermBase)object;
+            OrderedTermBase<?> orderedTermBase = (OrderedTermBase<?>)object;
             if (orderedTermBase.getUuid().equals(this.getUuid())){
                 return true;
             }else{
                 return false;
             }
         }
+    }
+    
+    public T getNextHigherTerm(){  //#3327
+    	if (getVocabulary() == null){
+    		return null;
+    	}else{
+    		@SuppressWarnings("unchecked")
+			OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextHigherTerm(this);
+    		return (T)result;
+    	}
+    }
+    
+    public T getNextLowerTerm(){ //#3327
+    	if (getVocabulary() == null){
+    		return null;
+    	}else{
+    		@SuppressWarnings("unchecked")
+			OrderedTermBase<T> result = CdmBase.deproxy(getVocabulary(), OrderedTermVocabulary.class).getNextLowerTerm(this);
+    		return (T)result;
+    	}
     }
 
 //*********************** CLONE ********************************************************/
