@@ -21,6 +21,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.EntityNotFoundException;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -277,6 +279,9 @@ public class EditGeoService implements IEditGeoService {
 
         if(areaVocabularyUuid != null){
             TermVocabulary<NamedArea> areaVocabulary = vocabDao.load(areaVocabularyUuid);
+            if(areaVocabulary == null){
+                throw new EntityNotFoundException("No Vocabulary found for uuid " + areaVocabularyUuid);
+            }
             areas.addAll(areaVocabulary.getTerms());
         }
         if(namedAreaUuids != null && !namedAreaUuids.isEmpty()){
