@@ -198,7 +198,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					tcsElementName = "basionymAuthorship";
 					String basionymAuthorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
 					if (basionymAuthorValue != null){
-						INomenclaturalAuthor basionymAuthor = Team.NewInstance();
+						TeamOrPersonBase<?> basionymAuthor = Team.NewInstance();
 						basionymAuthor.setNomenclaturalTitle(basionymAuthorValue);
 						nonViralName.setBasionymAuthorTeam(basionymAuthor);
 					}
@@ -207,7 +207,7 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 					tcsElementName = "combinationAuthorship";
 					String combinationAuthorValue = (String)ImportHelper.getXmlInputValue(elTaxonName, tcsElementName, taxonNameNamespace);
 					if (combinationAuthorValue != null){
-						INomenclaturalAuthor combinationAuthor = Team.NewInstance();
+						TeamOrPersonBase<?> combinationAuthor = Team.NewInstance();
 						combinationAuthor.setNomenclaturalTitle(combinationAuthorValue);
 						nonViralName.setCombinationAuthorTeam(combinationAuthor);
 					}
