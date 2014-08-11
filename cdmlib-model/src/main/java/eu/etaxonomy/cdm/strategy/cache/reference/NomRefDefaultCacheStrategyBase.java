@@ -25,7 +25,6 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
 public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implements INomenclaturalReferenceCacheStrategy{
 	private static final long serialVersionUID = -725290113353165022L;
 
-	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(NomRefDefaultCacheStrategyBase.class);
 	
 	protected String beforeYear = ". ";
@@ -34,9 +33,17 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 	protected String afterAuthor = ", ";	
 	
 
-	@Override
-	public String getTokenizedNomenclaturalTitel(Reference ref) {
-		String result =  getTitleWithoutYearAndAuthor(ref, true);
+	/**
+	 * Returns the nomenclatural title with micro reference represented as token
+	 * which can later be replaced by the real data.
+	 * 
+	 * @see INomenclaturalReference#MICRO_REFERENCE_TOKEN
+	 * 
+	 * @param ref The reference
+	 * @return
+	 */
+	protected String getTokenizedNomenclaturalTitel(Reference ref) {
+		String result = getTitleWithoutYearAndAuthor(ref, true);
 		result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 		result = addYear(result, ref, true);
 		return result;
@@ -67,14 +74,14 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 			String teamTitle = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
 			if (teamTitle.length() > 0 ){
 				String concat = isNotBlank(result) ? afterAuthor : "";
-				result = team.getTitleCache() + concat + result;
+				result = teamTitle + concat + result;
 			}
 			
 		}
 		return result;
 	}
 	
-	protected abstract String getTitleWithoutYearAndAuthor(Reference reference, boolean isAbbrev);
+	protected abstract String getTitleWithoutYearAndAuthor(Reference<?> reference, boolean isAbbrev);
 
 	
 	@Override
@@ -84,7 +91,7 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 		String nextConcat = "";
 		
 		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
-		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
+		if (team != null &&  isNotBlank(team.getTitleCache())){
 			stringBuilder.append(team.getTitleCache() );
 			nextConcat = afterAuthor;
 		}
@@ -109,10 +116,10 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 			return null;
 		}
 		String year = useFullDatePublished ? nomRef.getDatePublishedString() : nomRef.getYear();
-		if (StringUtils.isBlank(year)){
+		if (isBlank(year)){
 			result = string + afterYear;
 		}else{
-			String concat = isBlank(string)  ? "" : string.endsWith(".")? " " : beforeYear;
+			String concat = isBlank(string)  ? "" : string.endsWith(".")  ? " " : beforeYear;
 			result = string + concat + year + afterYear;
 		}
 		return result;
@@ -120,20 +127,69 @@ public abstract class NomRefDefaultCacheStrategyBase extends StrategyBase implem
 	
 	@Override
 	public String getNomenclaturalCitation(Reference nomenclaturalReference, String microReference) {
-		if (nomenclaturalReference.isProtectedTitleCache()){
-			return nomenclaturalReference.getTitleCache();
+		if (nomenclaturalReference.isProtectedAbbrevTitleCache()){
+			String cache = nomenclaturalReference.getAbbrevTitleCache();
+			return handleDetailAndYearForPreliminary(nomenclaturalReference, cache, microReference);
+			
 		}
 		String result = getTokenizedNomenclaturalTitel(nomenclaturalReference);
-		microReference = CdmUtils.Nz(microReference);
+		//if no data is available and only titleCache is protected take the protected title
+		//this is to avoid empty cache if someone forgets to set also the abbrevTitleCache
+		//we need to think about handling protected not separate for abbrevTitleCache  and titleCache 
+		if (result.equals(INomenclaturalReference.MICRO_REFERENCE_TOKEN) && nomenclaturalReference.isProtectedTitleCache() ){
+			String cache = nomenclaturalReference.getTitleCache();
+			return handleDetailAndYearForPreliminary(nomenclaturalReference, cache, microReference);
+		}
+		
+		microReference = Nz(microReference);
 		if (StringUtils.isNotBlank(microReference)){
 			microReference = getBeforeMicroReference() + microReference;
 			if (microReference.endsWith(".")  && result.contains(INomenclaturalReference.MICRO_REFERENCE_TOKEN + ".") ){
 				microReference = microReference.substring(0, microReference.length() - 1);
 			}
 		}
-		result = result.replaceAll(INomenclaturalReference.MICRO_REFERENCE_TOKEN, microReference);
+		result = replaceMicroRefToken(microReference, result);
 		if (result.startsWith(". ")){  //only year available, remove '. '
 			result = result.substring(2);
+		}
+		return result;
+	}
+
+	/**
+	 * @param microReference
+	 * @param result
+	 * @return
+	 */
+	private String replaceMicroRefToken(String microReference, String string) {
+		int index = string.indexOf(INomenclaturalReference.MICRO_REFERENCE_TOKEN);
+		String before = string.substring(0, index);
+		String after = string.substring(index + INomenclaturalReference.MICRO_REFERENCE_TOKEN.length() );
+		microReference = microReference.trim();   //needed ?
+		if (after.length() > 0){
+			if (  ("".equals(microReference) && before.endsWith(after.substring(0,1)) || microReference.endsWith(after.substring(0,1)))){
+				after = after.substring(1);
+			}
+		}
+		String result = before + microReference + after;
+		return result;
+	}
+
+	/**
+	 * @param nomenclaturalReference
+	 * @param microRef
+	 * @return
+	 */
+	private String handleDetailAndYearForPreliminary(Reference<?> nomenclaturalReference, String cache, String microReference) {
+		String microRef = isNotBlank(microReference) ? getBeforeMicroReference() + microReference : "";
+		if (cache == null){
+			logger.warn("Cache is null. This should never be the case.");
+			cache = "";
+		}
+		String	result = cache + (cache.contains(microRef) ? "" : microRef);
+
+		String date = nomenclaturalReference.getDatePublishedString();
+		if (isNotBlank(date) && ! result.contains(date)){
+			result = result + beforeYear + date;
 		}
 		return result;
 	}

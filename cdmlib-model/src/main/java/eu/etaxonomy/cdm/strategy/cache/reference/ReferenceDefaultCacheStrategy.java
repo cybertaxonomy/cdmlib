@@ -24,18 +24,9 @@ public class ReferenceDefaultCacheStrategy extends StrategyBase implements IRefe
 	private static final long serialVersionUID = 4350124746874497766L;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(ReferenceDefaultCacheStrategy.class);
-	
-	/**
-	 * Constructor
-	 */
-	public ReferenceDefaultCacheStrategy(){
-		super();
-	}
-	public static ReferenceDefaultCacheStrategy NewInstance(){
-		return new ReferenceDefaultCacheStrategy();
-	}
-	
-	
+
+	final static UUID uuid = UUID.fromString("763fe4a0-c79f-4f14-9693-631680225ec3");
+
 	
 	protected String beforeYear = ". ";
 	protected String afterYear = "";
@@ -44,8 +35,25 @@ public class ReferenceDefaultCacheStrategy extends StrategyBase implements IRefe
 	private String blank = " ";
 	private String comma = ",";
 	private String dot =".";
+
 	
-	final static UUID uuid = UUID.fromString("763fe4a0-c79f-4f14-9693-631680225ec3");
+// ****************** FACTORY *******************************/	
+	
+	public static ReferenceDefaultCacheStrategy NewInstance(){
+		return new ReferenceDefaultCacheStrategy();
+	}
+	
+// ***************** CONSTRUCTOR ********************************/
+	
+	/**
+	 * Constructor
+	 */
+	private ReferenceDefaultCacheStrategy(){
+		super();
+	}
+
+	
+	
 	
 
 	@Override

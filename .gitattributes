@@ -995,6 +995,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/NomRefDefau
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/SectionDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/ThesisDefaultCacheStrategy.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/reference/WebPageDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategy.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/StringNotParsableException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/exceptions/UnknownCdmTypeException.java -text

@@ -32,10 +32,10 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 	
 	private String prefixEdition = "ed.";
 	private String prefixSeries = "ser.";
-	private String prefixVolume = "vol.";
+//	private String prefixVolume = "vol.";
 	private String blank = " ";
 	private String comma = ",";
-	private String dot =".";
+//	private String dot =".";
 	
 	final static UUID uuid = UUID.fromString("95cceb30-6b16-4dc3-8243-c15e746565bc");
 	
@@ -70,7 +70,7 @@ public class GenericDefaultCacheStrategy extends InRefDefaultCacheStrategyBase i
 		String titel = CdmUtils.getPreferredNonEmptyString(genericReference.getTitle(), genericReference.getAbbrevTitle(), isAbbrev, true);
 		String edition = CdmUtils.Nz(genericReference.getEdition());
 		//TODO
-		String series = CdmUtils.Nz(genericReference.getSeries()).trim(); //nomenclaturalReference.getSeries();
+		String series = CdmUtils.Nz(genericReference.getSeriesPart()).trim(); //nomenclaturalReference.getSeries();
 		String volume = CdmUtils.Nz(genericReference.getVolume()).trim();
 
 		String nomRefCache = "";
