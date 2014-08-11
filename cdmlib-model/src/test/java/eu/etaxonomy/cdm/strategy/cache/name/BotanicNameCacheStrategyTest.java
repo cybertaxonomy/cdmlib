@@ -23,6 +23,7 @@ import org.junit.Test;
 
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.DefaultTermInitializer;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
@@ -57,10 +58,10 @@ public class BotanicNameCacheStrategyTest extends NameCacheStrategyTestBase{
 	private BotanicalName subGenusName;
 	private BotanicalName speciesName;
 	private BotanicalName subSpeciesName;
-	private INomenclaturalAuthor author;
-	private INomenclaturalAuthor exAuthor;
-	private INomenclaturalAuthor basAuthor;
-	private INomenclaturalAuthor exBasAuthor;
+	private TeamOrPersonBase<?> author;
+	private TeamOrPersonBase<?> exAuthor;
+	private TeamOrPersonBase<?> basAuthor;
+	private TeamOrPersonBase<?> exBasAuthor;
 	private Reference<?> citationRef;
 	ReferenceFactory refFactory;
 	

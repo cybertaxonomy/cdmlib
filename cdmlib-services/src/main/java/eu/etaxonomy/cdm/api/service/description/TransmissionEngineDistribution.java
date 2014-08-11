@@ -45,7 +45,6 @@ import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.description.AbsenceTerm;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Distribution;
@@ -670,8 +669,9 @@ public class TransmissionEngineDistribution { //TODO extends IoBase?
      */
     private Rank findNextHigherRank(Rank rank) {
         rank = (Rank) termService.load(rank.getUuid());
-        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
-        return rankVocabulary.getNextHigherTerm(rank);
+        return rank.getNextHigherTerm();
+//        OrderedTermVocabulary<Rank> rankVocabulary = mameService.getRankVocabulary();;
+//        return rankVocabulary.getNextHigherTerm(rank);
     }
 
     /**

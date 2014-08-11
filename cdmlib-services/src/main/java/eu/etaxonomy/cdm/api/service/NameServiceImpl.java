@@ -15,7 +15,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -33,7 +32,6 @@ import org.apache.lucene.search.WildcardQuery;
 import org.hibernate.criterion.Criterion;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.dao.DataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -51,16 +49,13 @@ import eu.etaxonomy.cdm.api.service.search.QueryFactory;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.ReferencedEntityBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase;
 import eu.etaxonomy.cdm.model.common.RelationshipBase.Direction;
-import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.name.HomotypicalGroup;
@@ -70,7 +65,6 @@ import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
-import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
@@ -518,83 +512,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return dao.getAllRelationships(limit, start);
     }
 
-    /**
-     * FIXME Candidate for harmonization
-     * is this not the same as termService.getVocabulary(VocabularyEnum.Rank)
-     * since this returns OrderedTermVocabulary
-     *
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getRankVocabulary()
-     */
-    @Override
-    public OrderedTermVocabulary<Rank> getRankVocabulary() {
-        String uuidString = "ef0d1ce1-26e3-4e83-b47b-ca74eed40b1b";
-        UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<Rank> rankVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return rankVocabulary;
-    }
-
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.NameRelationshipType)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getNameRelationshipTypeVocabulary()
-     */
-    @Override
-    public TermVocabulary<NameRelationshipType> getNameRelationshipTypeVocabulary() {
-        String uuidString = "6878cb82-c1a4-4613-b012-7e73b413c8cd";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<NameRelationshipType> nameRelTypeVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return nameRelTypeVocabulary;
-    }
-
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.StatusType)
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getStatusTypeVocabulary()
-     */
-    @Override
-    public TermVocabulary<NomenclaturalStatusType> getStatusTypeVocabulary() {
-        String uuidString = "bb28cdca-2f8a-4f11-9c21-517e9ae87f1f";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<NomenclaturalStatusType> nomStatusTypeVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return nomStatusTypeVocabulary;
-    }
-
-    /**
-      * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
-     *  (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
-     */
-    @Override
-    public TermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationStatusVocabulary() {
-        String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
-        UUID uuid = UUID.fromString(uuidString);
-        TermVocabulary<SpecimenTypeDesignationStatus> typeDesigStatusVocabulary =
-            vocabularyDao.findByUuid(uuid);
-        return typeDesigStatusVocabulary;
-    }
-
-    /**
-       * FIXME Candidate for harmonization
-     * is this the same as termService.getVocabulary(VocabularyEnum.SpecimenTypeDesignationStatus)
-     * and also seems to duplicate the above method, differing only in the DAO used and the return type
-     * (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTypeDesignationStatusVocabulary()
-     */
-    @Override
-    public OrderedTermVocabulary<SpecimenTypeDesignationStatus> getSpecimenTypeDesignationVocabulary() {
-        String uuidString = "ab177bd7-d3c8-4e58-a388-226fff6ba3c2";
-        UUID uuid = UUID.fromString(uuidString);
-        OrderedTermVocabulary<SpecimenTypeDesignationStatus> typeDesignationVocabulary =
-            (OrderedTermVocabulary)orderedVocabularyDao.findByUuid(uuid);
-        return typeDesignationVocabulary;
-    }
 
 
     @Override
@@ -615,9 +532,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return new DefaultPagerImpl<HybridRelationship>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#listNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public List<NameRelationship> listNameRelationships(TaxonNameBase name,	Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
@@ -885,9 +799,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return searchResults;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#pageNameRelationships(eu.etaxonomy.cdm.model.name.TaxonNameBase, eu.etaxonomy.cdm.model.common.RelationshipBase.Direction, eu.etaxonomy.cdm.model.name.NameRelationshipType, java.lang.Integer, java.lang.Integer, java.util.List, java.util.List)
-     */
     @Override
     public Pager<NameRelationship> pageNameRelationships(TaxonNameBase name, Direction direction, NameRelationshipType type, Integer pageSize,
             Integer pageNumber, List<OrderHint> orderHints,	List<String> propertyPaths) {
@@ -953,9 +864,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return new DefaultPagerImpl<TaxonNameBase>(pageNumber, numberOfResults, pageSize, results);
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getUuidAndTitleCacheOfNames()
-     */
     @Override
     public List<UuidAndTitleCache> getUuidAndTitleCacheOfNames() {
         return dao.getUuidAndTitleCacheOfNames();
@@ -978,10 +886,6 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         return homotypicalGroupDao.findByUuid(uuid);
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.IIdentifiableEntityService#updateTitleCache(java.lang.Integer, eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy)
-     */
     @Override
     @Transactional(readOnly = false)
     public void updateTitleCache(Class<? extends TaxonNameBase> clazz, Integer stepSize, IIdentifiableEntityCacheStrategy<TaxonNameBase> cacheStrategy, IProgressMonitor monitor) {
@@ -1008,13 +912,10 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.api.service.INameService#getTaggedName(eu.etaxonomy.cdm.model.name.TaxonNameBase)
-     */
     @Override
     public List<TaggedText> getTaggedName(UUID uuid) {
-        TaxonNameBase taxonNameBase = dao.load(uuid);
-        List taggedName = taxonNameBase.getTaggedName();
+        TaxonNameBase<?,?> taxonNameBase = dao.load(uuid);
+        List<TaggedText> taggedName = taxonNameBase.getTaggedName();
         return taggedName;
     }
     

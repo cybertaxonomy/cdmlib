@@ -14,17 +14,14 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
 import org.hibernate.criterion.Criterion;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IIdentifiableEntityServiceConfigurator;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
@@ -334,9 +331,10 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		String oldTitleCache = entity.getTitleCache();
 		entity.setTitleCache(oldTitleCache, false);   //before we had entity.setProtectedTitleCache(false) but this deleted the titleCache itself
 		
-		//NonViralNames have more caches //TODO handle in NameService
+		//NonViralNames and Reference have more caches //TODO handle in NameService
 		String oldNameCache = null;
 		String oldFullTitleCache = null;
+		String oldAbbrevTitleCache = null;
 		if (entity instanceof NonViralName ){
 			NonViralName<?> nvn = (NonViralName) entity;
 			if (!nvn.isProtectedNameCache()){
@@ -348,6 +346,13 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				nvn.setProtectedFullTitleCache(true);
 				oldFullTitleCache = nvn.getFullTitleCache();
 				nvn.setProtectedFullTitleCache(false);
+			}
+		}else if (entity instanceof Reference){
+			Reference<?> ref = (Reference<?>) entity;
+			if (!ref.isProtectedAbbrevTitleCache()){
+				ref.setProtectedAbbrevTitleCache(true);
+				oldAbbrevTitleCache = ref.getAbbrevTitleCache();
+				ref.setProtectedAbbrevTitleCache(false);
 			}
 		}
 		setOtherCachesNull(entity); //TODO find better solution
@@ -367,17 +372,27 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				nvn.getNameCache();
 				nvn.getFullTitleCache();
 			}
+			if (entity instanceof Reference){
+				Reference<?> ref = (Reference<?>) entity;
+				ref.getAbbrevTitleCache();
+			}
 			entitiesToUpdate.add(entity);
 		}else if (entity instanceof NonViralName){
 			NonViralName<?> nvn = (NonViralName) entity;
-			String newnameCache = nvn.getNameCache();
+			String newNameCache = nvn.getNameCache();
 			String newFullTitleCache = nvn.getFullTitleCache();
-			if (oldNameCache == null || (oldNameCache != null && !oldNameCache.equals(newnameCache))){
+			if (oldNameCache == null || (oldNameCache != null && !oldNameCache.equals(newNameCache))){
 				entitiesToUpdate.add(entity);
 			}else if (oldFullTitleCache == null || (oldFullTitleCache != null && !oldFullTitleCache.equals(newFullTitleCache))){
 				entitiesToUpdate.add(entity);
 			}
-		};
+		}else if (entity instanceof Reference){
+			Reference<?> ref = (Reference<?>) entity;
+			String newAbbrevTitleCache = ref.getAbbrevTitleCache();
+			if (oldAbbrevTitleCache == null || (oldAbbrevTitleCache != null && !oldAbbrevTitleCache.equals(newAbbrevTitleCache))){
+				entitiesToUpdate.add(entity);
+			}
+		}
 	}
 	
 	

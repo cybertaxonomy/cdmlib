@@ -28,6 +28,7 @@ import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
 import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.name.CultivarPlantName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NonViralName;
@@ -376,8 +377,8 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 	
 	
 	@SuppressWarnings("unchecked")
-	private INomenclaturalAuthor makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
-		INomenclaturalAuthor result = null; 
+	private TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+		TeamOrPersonBase<?> result = null; 
 		String childName;
 		boolean obligatory;
 		if (elNameCitation != null){
@@ -444,21 +445,21 @@ public class TcsXmlTaxonNameImport extends TcsXmlImportBase implements ICdmIO<Tc
 				childName = "Authorship";
 				obligatory = false;
 				Element elAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor author = makeNameCitation(elAuthorship, authorMap, success); 
+				TeamOrPersonBase author = makeNameCitation(elAuthorship, authorMap, success); 
 				nonViralName.setCombinationAuthorTeam(author);
 				testNoMoreElements();
 				
 				childName = "BasionymAuthorship";
 				obligatory = false;
 				Element elBasionymAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
+				TeamOrPersonBase<?> basionymAuthor = makeNameCitation(elBasionymAuthorship, authorMap, success); 
 				nonViralName.setBasionymAuthorTeam(basionymAuthor);
 				testNoMoreElements();
 				
 				childName = "CombinationAuthorship";
 				obligatory = false;
 				Element elCombinationAuthorship = XmlHelp.getSingleChildElement(success, elCanonicalAuthorship, childName, ns, obligatory);
-				INomenclaturalAuthor combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
+				TeamOrPersonBase<?> combinationAuthor = makeNameCitation(elCombinationAuthorship, authorMap ,success); 
 				if (combinationAuthor != null){
 					nonViralName.setCombinationAuthorTeam(combinationAuthor);
 				}

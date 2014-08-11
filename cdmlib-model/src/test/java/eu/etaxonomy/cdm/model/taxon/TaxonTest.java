@@ -311,10 +311,7 @@ public class TaxonTest extends EntityTestBase {
 
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.model.taxon.Taxon#addTaxonRelation(eu.etaxonomy.cdm.model.taxon.TaxonRelationship)}.
-	 * 
-	 * FIXME addTaxonRelation(TaxonRelationship) is not working at the moment
 	 */
-	//@Ignore
 	@Test
 	public void testAddTaxonRelationTaxonRelationship() {
 		Taxon taxon = Taxon.NewInstance(null, null);

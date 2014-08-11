@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.PolytomousKey;
+import eu.etaxonomy.cdm.model.name.NonViralName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -60,6 +61,14 @@ private ICdmGenericDao genericDao;
 		}
 		super.updateTitleCacheImpl(clazz, stepSize, cacheStrategy, monitor);
 	}
+	
+
+    @Override
+    protected void setOtherCachesNull(Reference ref) {
+        if (! ref.isProtectedAbbrevTitleCache()){
+            ref.setAbbrevTitleCache(null, false);
+        }
+    }
 
 
 	@Autowired
