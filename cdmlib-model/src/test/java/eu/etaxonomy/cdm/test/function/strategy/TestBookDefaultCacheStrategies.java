@@ -71,7 +71,7 @@ public class TestBookDefaultCacheStrategies {
 		generic.setEditor("EditorString");
 		
 		generic.setPages("p.124-754");
-		generic.setSeries("ser2");
+		generic.setSeriesPart("ser2");
 		generic.setVolume("33");
 		System.out.println("FULL: " + generic.getNomenclaturalCitation("4444"));
 		System.out.println("Citation: " + generic.getCitation());
