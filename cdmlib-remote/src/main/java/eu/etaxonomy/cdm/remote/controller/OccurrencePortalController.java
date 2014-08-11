@@ -23,11 +23,14 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.ModelAndView;
 
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -93,6 +96,29 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
         if(sob instanceof DerivedUnit){
             DerivationEvent derivationEvent = ((DerivedUnit)sob).getDerivedFrom();
             mv.addObject(derivationEvent);
+        }
+        return mv;
+    }
+
+    @RequestMapping(value = { "derivateHierarchy" }, method = RequestMethod.GET)
+    public ModelAndView doGetDerivateHierarchy(
+            @PathVariable("uuid") UUID uuid,
+            @RequestParam(value = "taxonUuid", required = true) UUID taxonUuid,
+            HttpServletRequest request,
+            HttpServletResponse response) throws IOException {
+
+        logger.info("doGetDerivateHierarchy() " + request.getRequestURI());
+
+        ModelAndView mv = new ModelAndView();
+
+        List<String> initStrategy = DEFAULT_INIT_STRATEGY;
+
+        SpecimenOrObservationBase sob = doGet(uuid, request, response);
+        if(sob instanceof FieldUnit){
+            final DerivateHierarchyDTO assembleDerivateHierarchyDTO = service.assembleDerivateHierarchyDTO((FieldUnit)sob, taxonUuid);
+            if(assembleDerivateHierarchyDTO!=null){
+                mv.addObject(assembleDerivateHierarchyDTO);
+            }
         }
         return mv;
     }

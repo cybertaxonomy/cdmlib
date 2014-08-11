@@ -239,22 +239,6 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
 
     /**
-     * Assembles a {@link DerivateHierarchyDTO} for each "associated" {@link FieldUnit} found for the given {@link Taxon}.<br>
-     * <br>
-     * See also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
-     * @param includeRelationships
-     * @param associatedTaxon
-     * @param maxDepth
-     * @param pageSize
-     * @param pageNumber
-     * @param orderHints
-     * @param propertyPaths
-     * @return
-     */
-    public Collection<DerivateHierarchyDTO> listDerivateHierarchyDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths);
-
-    /**
      * See {@link #listByAssociatedTaxon(Class, Set, Taxon, Integer, Integer, Integer, List, List)}
      *
      * @param type
@@ -329,5 +313,15 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      * @return <code>true</code> if successfully moved, <code>false</code> otherwise
      */
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
+
+    /**
+     * Assembles a {@link DerivateHierarchyDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
+     * <br>
+     * For the meaning of "associated" see also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
+     * @param fieldUnit
+     * @param associatedTaxonUuid
+     * @return
+     */
+    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
 
 }

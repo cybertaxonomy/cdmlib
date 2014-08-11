@@ -11,6 +11,7 @@
 package eu.etaxonomy.cdm.api.service;
 
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -30,6 +31,7 @@ import org.apache.lucene.search.BooleanQuery;
 import org.apache.lucene.search.SortField;
 import org.hibernate.TransientObjectException;
 import org.hibernate.search.spatial.impl.Rectangle;
+import org.joda.time.Partial;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -52,6 +54,8 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
+import eu.etaxonomy.cdm.model.agent.AgentBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
@@ -59,6 +63,7 @@ import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.MediaRepresentationPart;
@@ -311,24 +316,13 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     @Override
-    public Collection<DerivateHierarchyDTO> listDerivateHierarchyDTOsByAssociatedTaxon(Set<TaxonRelationshipEdge> includeRelationships,
-            Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
-
-        if(!getSession().contains(associatedTaxon)){
-            associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
-        }
-
-        Collection<FieldUnit> fieldUnits = listFieldUnitsByAssociatedTaxon(includeRelationships, associatedTaxon, maxDepth, pageSize, pageNumber, orderHints, propertyPaths);
-
-        Collection<DerivateHierarchyDTO> derivateHierarchyDTOs = new ArrayList<DerivateHierarchyDTO>();
-        for(FieldUnit fieldUnit:fieldUnits){
-            derivateHierarchyDTOs.add(assembleDerivateHierarchyDTO(fieldUnit, associatedTaxon));
-        }
-        return derivateHierarchyDTOs;
-    }
-
-    private DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, Taxon associatedTaxon){
+    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid){
         final String separator = ", ";
+
+        if(!getSession().contains(fieldUnit)){
+            fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
+        }
+        TaxonBase associatedTaxon = taxonService.load(associatedTaxonUuid);
 
         DerivateHierarchyDTO dto = new DerivateHierarchyDTO();
         Map<UUID, TypeDesignationStatusBase> typeSpecimenUUIDtoTypeDesignationStatus = new HashMap<UUID, TypeDesignationStatusBase>();
@@ -348,11 +342,15 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
         if(fieldUnit.getGatheringEvent()!=null){
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
             //Country
-            dto.setCountry(gatheringEvent.getCountry()!=null?gatheringEvent.getCountry().getDescription():"");
+            final NamedArea country = gatheringEvent.getCountry();
+            dto.setCountry(country!=null?country.getDescription():"");
             //Collection
-            dto.setCollection((gatheringEvent.getCollector()!=null?gatheringEvent.getCollector():"") + fieldUnit.getFieldNumber()!=null?fieldUnit.getFieldNumber():"");
+            final AgentBase collector = gatheringEvent.getCollector();
+            final String fieldNumber = fieldUnit.getFieldNumber();
+            dto.setCollection((collector!=null?collector:"") + " " + (fieldNumber!=null?fieldNumber:""));
             //Date
-            dto.setDate(gatheringEvent.getGatheringDate()!=null?gatheringEvent.getGatheringDate().toString():"");
+            final Partial gatheringDate = gatheringEvent.getGatheringDate();
+            dto.setDate(gatheringDate!=null?gatheringDate.toString():"");
         }
 
         //Taxon Name
@@ -395,8 +393,10 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 dto.setHasDna(true);
 
                 DnaSample dna = (DnaSample)derivedUnit;
-                if(dna.getBankNumber()!=null){
-                    dto.addMolecularData(dna.getBankNumber(), "[no sample designation]");//FIXME replace with actual getter
+                for(Sequence sequence:dna.getSequences()){
+                    final URI boldUri = sequence.getBoldUri();
+                    final DefinedTerm dnaMarker = sequence.getDnaMarker();
+                    dto.addMolecularData(boldUri!=null?boldUri.toString():"", dnaMarker!=null?dnaMarker.getLabel():"[no marker]");
                 }
             }
             //assemble media data
@@ -448,6 +448,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 citation += separator;
             }
         }
+        citation += dto.getCollection();
         if(citation.endsWith(separator)){
             citation = citation.substring(0, citation.length()-separator.length());
         }
@@ -473,9 +474,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
     }
 
     private String getMediaUriString(MediaSpecimen mediaSpecimen){
-//        if(!getSession().contains(mediaSpecimen)){
-//            mediaSpecimen = (MediaSpecimen) load(mediaSpecimen.getUuid());
-//        }
         String mediaUri = null;
         Collection<MediaRepresentation> mediaRepresentations = mediaSpecimen.getMediaSpecimen().getRepresentations();
         if(mediaRepresentations!=null && !mediaRepresentations.isEmpty()){

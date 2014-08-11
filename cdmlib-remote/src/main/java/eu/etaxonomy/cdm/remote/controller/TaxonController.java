@@ -34,7 +34,7 @@ import org.springframework.web.servlet.ModelAndView;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
-import eu.etaxonomy.cdm.api.service.dto.DerivateHierarchyDTO;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -202,8 +202,8 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         return mv;
     }
 
-    @RequestMapping(value = "derivateHierarchy", method = RequestMethod.GET)
-    public ModelAndView doGetDerivateHierarchy(
+    @RequestMapping(value = "associatedFieldUnits", method = RequestMethod.GET)
+    public ModelAndView doGetFieldUnits(
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
@@ -216,11 +216,9 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         List<OrderHint> orderHints = new ArrayList<OrderHint>();
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
-        List<String> propertyPath = Arrays.asList(new String[] { "fieldUnit" });
-
         if(tb instanceof Taxon){
-            Collection<DerivateHierarchyDTO> derivateHierarchyDTOs = occurrenceService.listDerivateHierarchyDTOsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, propertyPath);
-            mv.addObject(derivateHierarchyDTOs);
+            Collection<FieldUnit> associatedFieldUnits = occurrenceService.listFieldUnitsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, initializationStrategy);
+            mv.addObject(associatedFieldUnits);
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
