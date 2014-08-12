@@ -477,7 +477,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
             //TODO workaround (see sortIndex doc)
             this.countChildren = childNodes.size();
             child.setParent(null);
-            
+            child.setTreeIndex(null);
             updateSortIndex(childNodes, index);
             child.setSortIndex(null);
         }
@@ -649,7 +649,7 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     protected Set<TaxonNode> getAncestors(){
         Set<TaxonNode> nodeSet = new HashSet<TaxonNode>();
-        nodeSet.add(this);
+       // nodeSet.add(this);
         if(this.getParent() != null){
         	TaxonNode parent =  CdmBase.deproxy(this.getParent(), TaxonNode.class);
             nodeSet.addAll(parent.getAncestors());
@@ -718,7 +718,10 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isDescendant(TaxonNode possibleParent){
-        return possibleParent == null ? false : possibleParent.isAncestor(this);
+    	if (this.treeIndex() == null || possibleParent.treeIndex() == null) {
+    		return false;
+    	}
+    	return possibleParent == null ? false : this.treeIndex().startsWith(possibleParent.treeIndex() );
     }
 
     /**
@@ -729,7 +732,11 @@ public class TaxonNode extends AnnotatableEntity implements ITaxonTreeNode, ITre
      */
     @Transient
     public boolean isAncestor(TaxonNode possibleChild){
-        return possibleChild == null ? false : possibleChild.getAncestors().contains(this);
+    	if (this.treeIndex() == null || possibleChild.treeIndex() == null) {
+    		return false;
+    	}
+       // return possibleChild == null ? false : possibleChild.getAncestors().contains(this);
+        return possibleChild == null ? false : possibleChild.treeIndex().startsWith(this.treeIndex());
     }
 
     /**
