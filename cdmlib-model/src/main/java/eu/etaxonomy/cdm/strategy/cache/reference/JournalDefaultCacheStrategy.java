@@ -16,7 +16,6 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
-import eu.etaxonomy.cdm.model.reference.IJournal;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.StrategyBase;
 
@@ -25,6 +24,9 @@ import eu.etaxonomy.cdm.strategy.StrategyBase;
  * @created 29.06.2008
  */
 public class JournalDefaultCacheStrategy extends StrategyBase implements IReferenceBaseCacheStrategy {
+	private static final long serialVersionUID = 8495999505123620960L;
+
+
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(JournalDefaultCacheStrategy.class);
 

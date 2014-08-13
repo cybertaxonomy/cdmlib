@@ -160,7 +160,7 @@ public class ReferenceFactory {
 	 * @param referenceType
 	 * @return
 	 */
-	public static Reference newReference(ReferenceType referenceType) {
+	public static Reference<?> newReference(ReferenceType referenceType) {
 		if (referenceType == null){
 			return null;
 		}
@@ -197,6 +197,8 @@ public class ReferenceFactory {
 				return newBook();
 			case Generic:
 				return newGeneric();
+			case Section:
+				return newSection();
 			default:
 				logger.warn("Unknown reference type " + referenceType.getMessage() + ". Created generic reference instead.");
 				return newGeneric();	

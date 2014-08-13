@@ -15,9 +15,12 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
-public class ThesisDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements  INomenclaturalReferenceCacheStrategy {
+public class WebPageDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase implements  INomenclaturalReferenceCacheStrategy {
+	private static final long serialVersionUID = 7432751464904190022L;
+
+
 	@SuppressWarnings("unused")
-	private static final Logger logger = Logger.getLogger(ThesisDefaultCacheStrategy.class);
+	private static final Logger logger = Logger.getLogger(WebPageDefaultCacheStrategy.class);
 	
 
 	private String prefixEdition = "ed.";
@@ -27,7 +30,7 @@ public class ThesisDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase i
 	private String comma = ",";
 	private String dot =".";
 	
-	final static UUID uuid = UUID.fromString("95cceb30-6b16-4dc3-8243-c15e746565bc");
+	final static UUID uuid = UUID.fromString("7b36b548-88ee-4180-afc1-4b860db85fa5");
 	
 	@Override
 	protected UUID getUuid() {
@@ -39,14 +42,14 @@ public class ThesisDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase i
 	 * Factory method
 	 * @return
 	 */
-	public static ThesisDefaultCacheStrategy NewInstance(){
-		return new ThesisDefaultCacheStrategy();
+	public static WebPageDefaultCacheStrategy NewInstance(){
+		return new WebPageDefaultCacheStrategy();
 	}
 	
 	/**
 	 * Constructor
 	 */
-	private ThesisDefaultCacheStrategy(){
+	private WebPageDefaultCacheStrategy(){
 		super();
 	}
 
@@ -59,10 +62,6 @@ public class ThesisDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase i
 	@Override
 	protected String getTitleWithoutYearAndAuthor(Reference thesis, boolean isAbbrev){
 		//FIXME this is only a very fast copy and paste from "Generic". Must still be cleaned !
-		
-		if (thesis == null){
-			return null;
-		}
 		
 		//titelAbbrev
 		//TODO

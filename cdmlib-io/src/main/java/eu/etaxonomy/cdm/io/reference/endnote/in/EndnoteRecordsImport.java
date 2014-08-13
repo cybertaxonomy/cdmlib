@@ -983,18 +983,18 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				if (strName_reftype.equals("Journal Article")) {
 					map_article.put(number, article);
 					Reference give_article = map_article.get(number);
-					give_article.setSeries(number);
+					give_article.setSeriesPart(number);
 					reference = give_article;
 				}else if (strName_reftype.equals("Article")){
 					map_article.put(number, article);
 					Reference give_article = map_article.get(number);
-					give_article.setSeries(number);
+					give_article.setSeriesPart(number);
 					reference = give_article;
 				}else {			 
 					logger.warn("The type was not found...");
 					map_generic.put(number, generic);
 					Reference give_generic  = map_generic.get(number);
-					give_generic.setSeries(number);
+					give_generic.setSeriesPart(number);
 					reference =give_generic;
 					success = false;
 				}		 		

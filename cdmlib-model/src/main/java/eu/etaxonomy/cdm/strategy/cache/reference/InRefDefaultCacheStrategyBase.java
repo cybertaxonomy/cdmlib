@@ -79,7 +79,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 			return "";
 		}
 		TeamOrPersonBase<?> team = book.getAuthorTeam();
-		String result = CdmUtils.Nz( team == null ? "" : team.getTitleCache());
+		String result = Nz( team == null ? "" : team.getNomenclaturalTitle());
 		if (! result.trim().equals("")){
 			result = result + seperator;	
 		}
@@ -105,7 +105,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		boolean hasInRef = (inRef != null);
 		// get inRef part
 		if (hasInRef){
-			result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(), inRef.getAbbrevTitle(), isAbbrev, true)  ;
+			result = CdmUtils.getPreferredNonEmptyString(inRef.getTitleCache(), inRef.getAbbrevTitleCache(), isAbbrev, true)  ;
 		}else{
 			if ( ! inRefIsObligatory){
 				return super.getTitleCache(thisRef);
@@ -146,7 +146,9 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 						logger.warn("InRefDateString (" + inRefDateString + ") could not be found in result (" + result +")");
 					}
 				}else{
-					result = result + beforeYear + thisRefDate + afterYear;
+					//avoid duplicate dots ('..')
+					String bYearSeparator = result.substring(result.length() -1).equals(beforeYear.substring(0, 1)) ? beforeYear.substring(1) : beforeYear;
+					result = result + bYearSeparator + thisRefDate + afterYear;
 				}
 			}else{
 				result = result + beforeYear + thisRefDate + afterYear;

@@ -23,7 +23,7 @@ public class BookDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase imp
 	private static final Logger logger = Logger.getLogger(BookDefaultCacheStrategy.class);
 	
 	private String prefixEdition = "ed.";
-	private String prefixSeries = "ser.";
+	private String prefixSeries = ", ser.";
 	private String prefixVolume = "vol.";
 	private String blank = " ";
 	private String comma = ",";
@@ -60,26 +60,25 @@ public class BookDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase imp
 		}
 		//TODO
 		String title = CdmUtils.getPreferredNonEmptyString(ref.getTitle(), ref.getAbbrevTitle(), isAbbrev, true);
-		String edition = CdmUtils.Nz(ref.getEdition()).trim();
-		//TODO
-		String series = ""; //nomenclaturalReference.getSeries();
+		String edition = Nz(ref.getEdition()).trim();
+		String series = ""; //TODO ref.getSeries();  //SeriesPart is handled later
+		String refSeriesPart = Nz(ref.getSeriesPart()); 
 		String volume = CdmUtils.Nz(ref.getVolume()).trim();
 		String refYear = "";  //TODO nomenclaturalReference.getYear();
 
 
 		String nomRefCache = "";
-		boolean lastCharIsDouble;
 		Integer len;
-		String lastChar;
+		String lastChar = "";
 		String character =".";
 		len = title.length();
 		if (len > 0){
 			lastChar = title.substring(len-1, len);
 		}
 		//lastCharIsDouble = f_core_CompareStrings(RIGHT(@TitelAbbrev,1),character);
-		lastCharIsDouble = title.equals(character);
+		boolean lastCharIsDouble = title.equals(character);
 
-		if(lastCharIsDouble  && edition.length() == 0 && series.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
+		if(lastCharIsDouble  && edition.length() == 0 && refSeriesPart.length() == 0 && volume.length() == 0 && refYear.length() > 0 ){
 			title =  title.substring(1, len-1); //  SUBSTRING(@TitelAbbrev,1,@LEN-1)
 		}
 
@@ -87,7 +86,7 @@ public class BookDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase imp
 		boolean needsComma = false;
 		//titelAbbrev
 		if (!"".equals(title) ){
-			String postfix = StringUtils.isNotBlank(edition) ? "" : blank; 
+			String postfix = isNotBlank(edition + refSeriesPart) ? "" : blank; 
 			nomRefCache = title + postfix; 
 		}
 		//edition
@@ -103,9 +102,9 @@ public class BookDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase imp
 		
 		//inSeries
 		String seriesPart = "";
-		if (StringUtils.isNotBlank(series)){
-			seriesPart = series;
-			if (isNumeric(series)){
+		if (StringUtils.isNotBlank(refSeriesPart)){
+			seriesPart = refSeriesPart;
+			if (isNumeric(refSeriesPart)){
 				seriesPart = prefixSeries + blank + seriesPart;
 			}
 			if (needsComma){
@@ -122,6 +121,8 @@ public class BookDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase imp
 			volumePart = volume;
 			if (needsComma){
 				volumePart = comma + blank + volumePart;
+			}else{
+				volumePart = "" + volumePart;
 			}
 			//needsComma = false;
 		}

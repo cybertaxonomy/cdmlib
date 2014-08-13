@@ -80,7 +80,7 @@ public class ArticleDefaultCacheStrategyTest {
 
 		article1.setInJournal(null);
 		//TODO should not be needed here
-		article1.setTitleCache(null);
+		article1.setTitleCache(null, false);
 		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
 	}
 	
@@ -116,20 +116,69 @@ public class ArticleDefaultCacheStrategyTest {
 
 		article1.setInJournal(null);
 		//TODO should not be needed here
-		article1.setTitleCache(null);
+		article1.setTitleCache(null, false);
 		Assert.assertEquals("Team1, My article in " + ArticleDefaultCacheStrategy.UNDEFINED_JOURNAL + ". 1975", article1.getTitleCache());	
 	}
 
 	@Test
 	public void testGetNomenclaturalCitation(){
 		journal1.setTitle("My journal");
+		journal1.setTitle("M. J.");
 		journal1.setAuthorTeam(team2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
 		article1.setAuthorTeam(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
-		Assert.assertEquals("in My journal: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		Assert.assertEquals("in M. J.: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		
+		article1.setVolume("22");
+		Assert.assertEquals("in M. J. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		article1.setSeriesPart("ser. 11");
+		Assert.assertEquals("in M. J., ser. 11, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		
 	}
+
+	/**
+	 * After ser. , sect. , abt. we want to have a comma, if there is not yet one following anyway 
+	 */
+	@Test
+	public void testGetNomenclaturalCitationSerSectAbt(){
+		article1.setInJournal(journal1);
+		article1.setVolume("22");
+		journal1.setAbbrevTitle("J. Pl. Eur.");
+		journal1.setAuthorTeam(team2);
+		article1.setDatePublished(TimePeriod.NewInstance(1975));
+		//no ser, sect, abt
+		Assert.assertEquals("in J. Pl. Eur. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		//ser
+		journal1.setAbbrevTitle("J. Pl. Eur., ser. 3");
+		Assert.assertEquals("in J. Pl. Eur., ser. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		journal1.setAbbrevTitle("J. Pl. Eur., Ser. 3");
+		Assert.assertEquals("in J. Pl. Eur., Ser. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		journal1.setAbbrevTitle("J. Pl. Eur., ser. 3, s.n.");
+		Assert.assertEquals("in J. Pl. Eur., ser. 3, s.n. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		//sect
+		journal1.setAbbrevTitle("J. Pl. Eur., sect. 3");
+		Assert.assertEquals("in J. Pl. Eur., sect. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		journal1.setAbbrevTitle("J. Pl. Eur., Sect. 3");
+		Assert.assertEquals("in J. Pl. Eur., Sect. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		journal1.setAbbrevTitle("J. Pl. Eur., Sect. 3, something");
+		Assert.assertEquals("in J. Pl. Eur., Sect. 3, something 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		//abt
+		journal1.setAbbrevTitle("J. Pl. Eur., abt. 3");
+		Assert.assertEquals("in J. Pl. Eur., abt. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		journal1.setAbbrevTitle("J. Pl. Eur., Abt. 3");
+		Assert.assertEquals("in J. Pl. Eur., Abt. 3, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		journal1.setAbbrevTitle("J. Pl. Eur., abt. 3, no comma");
+		Assert.assertEquals("in J. Pl. Eur., abt. 3, no comma 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		
+		journal1.setAbbrevTitle("J. Pl. Eur., sect. 3");
+		article1.setSeriesPart("1");
+		Assert.assertEquals("in J. Pl. Eur., sect. 3, ser. 1, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+		article1.setSeriesPart("Series 2");
+		Assert.assertEquals("in J. Pl. Eur., sect. 3, Series 2, 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
+	}
+
 
 	
 	@Test 
@@ -140,9 +189,9 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setInJournal(journal1);
 		article1.setAuthorTeam(team1);
 		article1.setVolume("34");
-		article1.setSeries("ser. 2");
+		article1.setSeriesPart("ser. 2");
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
-		Assert.assertEquals("in My journal ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference<?>)article1, false));
+		Assert.assertEquals("in My journal, ser. 2, 34", defaultStrategy.getTitleWithoutYearAndAuthor((Reference<?>)article1, false));
 	}
 	
 	@Test 

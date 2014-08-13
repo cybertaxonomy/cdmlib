@@ -13,27 +13,20 @@ import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
- * A reference cache rendering strategy for all subclasses implementing INomenclaturalReference.
+ * A reference formatting strategy for all subclasses implementing INomenclaturalReference.
  * @author a.mueller
  *
  * @param <T> The concrete Reference class this strategy applies for
  */
 public interface INomenclaturalReferenceCacheStrategy extends IReferenceBaseCacheStrategy {
 	
-	
-	/**
-	 * returns the composed scientific taxon name string without authors nor year
-	 * @param object
-	 * @return
-	 */
-	public String getTitleCache(Reference nomenclaturalReference);
-	
-	/**
-	 * returns the composed author string 
-	 * @param object
-	 * @return
-	 */
-	public String getTokenizedNomenclaturalTitel(Reference referenceBase);
+//	
+//	/**
+//	 * Returns the composed author string 
+//	 * @param object
+//	 * @return
+//	 */
+//	public String getTokenizedNomenclaturalTitel(Reference referenceBase);
 	
 	/**
 	 * Returns the character sequence before the micro reference (e.g. ": ") 

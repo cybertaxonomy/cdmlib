@@ -10,7 +10,6 @@ package eu.etaxonomy.cdm.strategy.cache.reference;
 
 import java.util.UUID;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -62,8 +61,8 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 		result = addYear(result, article, false);
 		TeamOrPersonBase<?> team = article.getAuthorTeam();
 		result = CdmUtils.concat(" ", article.getTitle(), result);
-		if (team != null &&  StringUtils.isNotBlank(team.getTitleCache())){
-			String authorSeparator = StringUtils.isNotBlank(article.getTitle())? afterAuthor : " ";
+		if (team != null &&  isNotBlank(team.getTitleCache())){
+			String authorSeparator = isNotBlank(article.getTitle())? afterAuthor : " ";
 			result = team.getTitleCache() + authorSeparator + result;
 		}
 		return result;
@@ -79,8 +78,8 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 		TeamOrPersonBase<?> team = article.getAuthorTeam();
 		String articleTitle = CdmUtils.getPreferredNonEmptyString(article.getAbbrevTitle(), article.getTitle(), false, true);
 		result = CdmUtils.concat(" ", articleTitle, result);  //Article should maybe left out for nomenclatural references (?)
-		if (team != null &&  StringUtils.isNotBlank(team.getNomenclaturalTitle())){
-			String authorSeparator = StringUtils.isNotBlank(articleTitle) ? afterAuthor : " ";
+		if (team != null &&  isNotBlank(team.getNomenclaturalTitle())){
+			String authorSeparator = isNotBlank(articleTitle) ? afterAuthor : " ";
 			result = team.getNomenclaturalTitle() + authorSeparator + result;
 		}
 		return result;
@@ -101,7 +100,7 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 			journalTitel = UNDEFINED_JOURNAL;
 		}
 		
-		String series = Nz(article.getSeries()).trim();
+		String series = Nz(article.getSeriesPart()).trim();
 		String volume = Nz(article.getVolume()).trim();
 		
 		boolean needsComma = false;
@@ -110,14 +109,19 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 
 		//inJournal
 		nomRefCache = prefixReferenceJounal + blank; 
-		
+				
 		//titelAbbrev
 		if (isNotBlank(journalTitel)){
-			nomRefCache = nomRefCache + journalTitel + blank; 
+			nomRefCache = nomRefCache + journalTitel;
+			needsComma = makeNeedsComma(needsComma, nomRefCache, volume, series);
+			if (! needsComma){
+				nomRefCache = nomRefCache + blank;
+			}
 		}
 		
+		//series and vol.
 		nomRefCache = getSeriesAndVolPart(series, volume, needsComma, nomRefCache);
-		
+				
 		//delete "."
 		while (nomRefCache.endsWith(".")){
 			nomRefCache = nomRefCache.substring(0, nomRefCache.length()-1);
@@ -126,6 +130,27 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 		return nomRefCache.trim();
 	}
 	
+	private boolean makeNeedsComma(boolean needsComma, String nomRefCache, String volume, String series) {
+		if (needsComma){
+			return true;
+		}else{
+			nomRefCache = nomRefCache.toLowerCase();
+			int serIndex = nomRefCache.indexOf(" ser. ");
+			int sectIndex = nomRefCache.indexOf(" sect. ");
+			int abtIndex = nomRefCache.indexOf(" abt. ");
+			int index = Math.max(Math.max(serIndex, sectIndex), abtIndex);
+			int commaIndex = nomRefCache.indexOf(",", index);
+			if (index > -1 && commaIndex == -1 && isNotBlank(volume)){
+				return true;
+			}else if (isNotBlank(series)){
+				return true;
+			}else{
+				return false;
+			}
+		}
+	}
+
+
 	protected String getSeriesAndVolPart(String series, String volume,
 			boolean needsComma, String nomRefCache) {
 		//inSeries
@@ -135,9 +160,9 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 			if (CdmUtils.isNumeric(series)){
 				seriesPart = prefixSeries + blank + seriesPart;
 			}
-			if (needsComma){
-				seriesPart = comma + seriesPart;
-			}
+//			if (needsComma){
+				seriesPart = comma + blank + seriesPart;
+//			}
 			needsComma = true;
 		}
 		nomRefCache += seriesPart;

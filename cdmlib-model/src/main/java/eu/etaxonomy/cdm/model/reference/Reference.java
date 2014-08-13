@@ -9,6 +9,8 @@
 
 package eu.etaxonomy.cdm.model.reference;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.net.URI;
 import java.util.List;
 
@@ -176,6 +178,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
     //TODO Val #3379
 //    @NullOrNotEmpty
 	@Length(max = 255)
+    @Deprecated //series and seriesPart are duplicates #4293 
 	protected String series;
 
     @XmlElement(name = "Volume")
@@ -365,6 +368,24 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	protected Reference(ReferenceType type) {
 		this.type = type;
 	}
+	
+	@Override
+    protected void initListener(){
+        PropertyChangeListener listener = new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent ev) {
+            	if (!ev.getPropertyName().equals("titleCache") && !ev.getPropertyName().equals("abbrevTitleCache") && !ev.getPropertyName().equals("cacheStrategy")){
+            		if (! isProtectedTitleCache()){
+            			titleCache = null;	
+            		}
+            		if (! isProtectedAbbrevTitleCache()){
+            			abbrevTitleCache = null;	
+            		}
+            	}
+            }
+        };
+        addPropertyChangeListener(listener);
+    }
 
 
 //*************************** GETTER / SETTER ******************************************/
@@ -427,15 +448,15 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		this.editor = editor;
 	}
 
-	@Override
-    public String getSeries() {
-		return series;
-	}
-
-	@Override
-    public void setSeries(String series) {
-		this.series = series;
-	}
+//	@Override
+//    public String getSeries() {
+//		return series;
+//	}
+//
+//	@Override
+//    public void setSeries(String series) {
+//		this.series = series;
+//	}
 
 	@Override
     public String getVolume() {
@@ -872,9 +893,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#generateTitle()
-	 */
+
 	@Override
     public String generateTitle() {
 		rectifyCacheStrategy();
@@ -922,91 +941,56 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	}
 
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#getHasProblem()
-	 */
 	@Override
     public int getParsingProblem(){
 		return this.parsingProblem;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setHasProblem(boolean)
-	 */
 	@Override
     public void setParsingProblem(int parsingProblem){
 		this.parsingProblem = parsingProblem;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem()
-	 */
 	@Override
     public boolean hasProblem(){
 		return parsingProblem != 0;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#hasProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
-	 */
 	@Override
     public boolean hasProblem(ParserProblem problem) {
 		return getParsingProblems().contains(problem);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemStarts()
-	 */
 	@Override
     public int getProblemStarts(){
 		return this.problemStarts;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemStarts(int)
-	 */
 	@Override
     public void setProblemStarts(int start) {
 		this.problemStarts = start;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#problemEnds()
-	 */
 	@Override
     public int getProblemEnds(){
 		return this.problemEnds;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#setProblemEnds(int)
-	 */
 	@Override
     public void setProblemEnds(int end) {
 		this.problemEnds = end;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#addProblem(eu.etaxonomy.cdm.strategy.parser.NameParserWarning)
-	 */
 	@Override
     public void addParsingProblem(ParserProblem warning){
 		parsingProblem = ParserProblem.addProblem(parsingProblem, warning);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#removeParsingProblem(eu.etaxonomy.cdm.strategy.parser.ParserProblem)
-	 */
 	@Override
     public void removeParsingProblem(ParserProblem problem) {
 		parsingProblem = ParserProblem.removeProblem(parsingProblem, problem);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IParsable#getParsingProblems()
-	 */
 	@Override
     @Transient
 	public List<ParserProblem> getParsingProblems() {

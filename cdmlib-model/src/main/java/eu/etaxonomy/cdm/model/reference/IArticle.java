@@ -29,13 +29,13 @@ public interface IArticle extends ISection, IVolumeReference, INomenclaturalRefe
 	/**
 	 * Returns the series information for this article
 	 */
-	public String getSeries();
+	public String getSeriesPart();
 
 	/**
 	 * Sets the series information for this article
 	 * @param series
 	 */
-	public void setSeries(String series);
+	public void setSeriesPart(String series);
 	
 	
 	

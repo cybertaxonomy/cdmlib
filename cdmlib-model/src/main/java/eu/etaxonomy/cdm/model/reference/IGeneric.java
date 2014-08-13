@@ -43,13 +43,13 @@ public interface IGeneric extends IPublicationBase, INomenclaturalReference, IVo
 	/**
 	 * Returns the series of this generic reference
 	 */
-	public String getSeries();
+	public String getSeriesPart();
 	
 	/**
 	 * Sets the series for this generic reference
 	 * @param series
 	 */
-	public void setSeries(String series);
+	public void setSeriesPart(String series);
 	
 	/**
 	 * Returns the pages (page span this reference covers in its in-reference) 
