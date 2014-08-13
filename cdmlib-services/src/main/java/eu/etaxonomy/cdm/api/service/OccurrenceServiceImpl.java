@@ -85,7 +85,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
 import eu.etaxonomy.cdm.persistence.dao.initializer.AbstractBeanInitializer;
 import eu.etaxonomy.cdm.persistence.dao.occurrence.IOccurrenceDao;
-import eu.etaxonomy.cdm.persistence.dao.taxon.ITaxonDao;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -113,9 +112,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private AbstractBeanInitializer beanInitializer;
-
-    @Autowired
-    private ITaxonDao taxonDao;
 
     @Autowired
     private ILuceneIndexToolProvider luceneIndexToolProvider;
@@ -303,7 +299,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             Taxon associatedTaxon, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         if(!getSession().contains(associatedTaxon)){
-            associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+            associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
         Set<FieldUnit> fieldUnits = new HashSet<FieldUnit>();
@@ -538,7 +534,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 //        Integer start = PagerUtils.startFor(pageSize, pageNumber);
 
         if(!getSession().contains(associatedTaxon)){
-            associatedTaxon = (Taxon) taxonDao.load(associatedTaxon.getUuid());
+            associatedTaxon = (Taxon) taxonService.load(associatedTaxon.getUuid());
         }
 
         if(includeRelationships != null) {
@@ -568,7 +564,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             String taxonUUID, Integer maxDepth, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints, List<String> propertyPaths) {
 
         UUID uuid = UUID.fromString(taxonUUID);
-        Taxon tax = (Taxon) taxonDao.load(uuid);
+        Taxon tax = (Taxon) taxonService.load(uuid);
        //TODO REMOVE NULL STATEMENT
 type=null;
         return pageByAssociatedTaxon( type,includeRelationships,tax, maxDepth, pageSize, pageNumber, orderHints, propertyPaths );
