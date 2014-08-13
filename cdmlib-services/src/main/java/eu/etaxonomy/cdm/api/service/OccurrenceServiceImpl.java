@@ -317,7 +317,6 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Override
     public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid){
-        final String separator = ", ";
 
         if(!getSession().contains(fieldUnit)){
             fieldUnit = (FieldUnit) load(fieldUnit.getUuid());
@@ -347,7 +346,7 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             //Collection
             final AgentBase collector = gatheringEvent.getCollector();
             final String fieldNumber = fieldUnit.getFieldNumber();
-            dto.setCollection((collector!=null?collector:"") + " " + (fieldNumber!=null?fieldNumber:""));
+            dto.setCollection(((collector!=null?collector:"") + " " + (fieldNumber!=null?fieldNumber:"")).trim());
             //Date
             final Partial gatheringDate = gatheringEvent.getGatheringDate();
             dto.setDate(gatheringDate!=null?gatheringDate.toString():"");
@@ -359,8 +358,11 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
         Collection<DerivedUnit> derivedUnits = new ArrayList<DerivedUnit>();
         getDerivedUnitsFor(fieldUnit, derivedUnits);
+
         //Herbaria map
         Map<eu.etaxonomy.cdm.model.occurrence.Collection, Integer> collectionToCountMap = new HashMap<eu.etaxonomy.cdm.model.occurrence.Collection, Integer>();
+        //List of accession numbers for citation
+        List<String> preservedSpecimenAccessionNumbers = new ArrayList<String>();
 
         //iterate over sub derivates
         for (DerivedUnit derivedUnit : derivedUnits) {
@@ -426,14 +428,16 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             //assemble preserved specimen data
             else if(derivedUnit.getRecordBasis()==SpecimenOrObservationType.PreservedSpecimen){
-
+                if(!currentAccessionNumber.isEmpty()){
+                    preservedSpecimenAccessionNumbers.add(currentAccessionNumber);
+                }
             }
         }
 
+        final String separator = ", ";
         //assemble citation
         String citation = "";
-        citation += dto.getCountry();
-        citation += separator;
+        citation += !dto.getCountry().isEmpty()?dto.getCountry()+separator:"";
         if(fieldUnit.getGatheringEvent()!=null){
             if(fieldUnit.getGatheringEvent().getLocality()!=null){
                 citation += fieldUnit.getGatheringEvent().getLocality().getText();
@@ -448,10 +452,18 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
                 citation += separator;
             }
         }
-        citation += dto.getCollection();
-        if(citation.endsWith(separator)){
-            citation = citation.substring(0, citation.length()-separator.length());
+        citation += !dto.getCollection().isEmpty()?dto.getCollection()+separator:"";
+        if(!preservedSpecimenAccessionNumbers.isEmpty()){
+            citation += "(";
+            for(String accessionNumber:preservedSpecimenAccessionNumbers){
+                if(!accessionNumber.isEmpty()){
+                    citation += accessionNumber+separator;
+                }
+            }
+            citation = removeTail(citation, separator);
+            citation += ")";
         }
+        citation = removeTail(citation, separator);
         dto.setCitation(citation);
 
         //assemble herbaria string
@@ -466,11 +478,23 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
             }
             herbariaString += separator;
         }
-        if(herbariaString.endsWith(separator)){
-            herbariaString = herbariaString.substring(0, herbariaString.length()-separator.length());
-        }
+        herbariaString = removeTail(herbariaString, separator);
         dto.setHerbarium(herbariaString);
+
         return dto;
+    }
+
+
+    /**
+     * @param string
+     * @param tail
+     * @return
+     */
+    private String removeTail(String string, final String tail) {
+        if(string.endsWith(tail)){
+            string = string.substring(0, string.length()-tail.length());
+        }
+        return string;
     }
 
     private String getMediaUriString(MediaSpecimen mediaSpecimen){
