@@ -113,7 +113,7 @@ public class OccurrencePortalController extends BaseController<SpecimenOrObserva
 
         List<String> initStrategy = DEFAULT_INIT_STRATEGY;
 
-        SpecimenOrObservationBase sob = doGet(uuid, request, response);
+        SpecimenOrObservationBase sob = service.load(uuid);
         if(sob instanceof FieldUnit){
             final DerivateHierarchyDTO assembleDerivateHierarchyDTO = service.assembleDerivateHierarchyDTO((FieldUnit)sob, taxonUuid);
             if(assembleDerivateHierarchyDTO!=null){

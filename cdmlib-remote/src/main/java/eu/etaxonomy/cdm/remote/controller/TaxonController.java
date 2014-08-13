@@ -192,8 +192,8 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         if(tb instanceof Taxon){
-            List<SpecimenOrObservationBase<?>> specimensOrObersvations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
-            mv.addObject(specimensOrObersvations);
+            List<SpecimenOrObservationBase<?>> specimensOrObservations = occurrenceService.listByAssociatedTaxon(null, null, (Taxon)tb, null, null, null, orderHints, null);
+            mv.addObject(specimensOrObservations);
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
             return null;
@@ -207,7 +207,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
             @PathVariable("uuid") UUID uuid,
             HttpServletRequest request,
             HttpServletResponse response) throws IOException {
-        logger.info("doGetDerivateHierarchy() - " + request.getRequestURI());
+        logger.info("doGetFieldUnits() - " + request.getRequestURI());
 
         ModelAndView mv = new ModelAndView();
 
@@ -217,7 +217,7 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
         orderHints.add(new OrderHint("titleCache", SortOrder.DESCENDING));
 
         if(tb instanceof Taxon){
-            Collection<FieldUnit> associatedFieldUnits = occurrenceService.listFieldUnitsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, initializationStrategy);
+            Collection<FieldUnit> associatedFieldUnits = occurrenceService.listFieldUnitsByAssociatedTaxon(null, (Taxon)tb, null, null, null, orderHints, null);
             mv.addObject(associatedFieldUnits);
         } else {
             HttpStatusMessage.UUID_REFERENCES_WRONG_TYPE.send(response);
