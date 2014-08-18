@@ -752,6 +752,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
                 if (taxa.size()>0){
                     query.setParameterList("taxa", taxa );
                 }else{
+                    logger.warn("there are no taxa for the query: " + queryString);
                     return null;
                 }
             } else if(doSynonyms){
@@ -796,7 +797,7 @@ public class TaxonDaoHibernateImpl extends IdentifiableDaoBase<TaxonBase> implem
 
         Query query = prepareQuery(doTaxa, doSynonyms, doMisappliedNames, searchField, queryString, classification, matchMode, namedAreas, doCount, false);
 
-        if(pageSize != null &&  !doCount) {
+        if(pageSize != null &&  !doCount && query != null) {
             query.setMaxResults(pageSize);
             if(pageNumber != null) {
                 query.setFirstResult(pageNumber * pageSize);

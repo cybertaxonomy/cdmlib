@@ -1,14 +1,15 @@
 // $Id$
 /**
 * Copyright (C) 2009 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 package eu.etaxonomy.cdm.api.service.config;
 
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,18 +22,20 @@ public class MatchingTaxonConfigurator {
 	public static MatchingTaxonConfigurator NewInstance(){
 		return new MatchingTaxonConfigurator();
 	}
-	
+
 	private String taxonNameTitle;
-	
+
 	private UUID secUuid;
-	
+
 	private UUID classificationUuid;
-	
+
 	private boolean includeSynonyms = true;
-	
+
 	private boolean onlyMatchingSecUuid = false;
-	
+
 	private boolean onlyMatchingClassificationUuid = false;
+
+	private List<String> propertyPath = null;
 
 	/**
 	 * @return the taxonName
@@ -118,6 +121,20 @@ public class MatchingTaxonConfigurator {
 			boolean onlyMatchingClassificationUuid) {
 		this.onlyMatchingClassificationUuid = onlyMatchingClassificationUuid;
 	}
-	
-	
+
+    /**
+     * @return the propertyPath
+     */
+    public List<String> getPropertyPath() {
+        return propertyPath;
+    }
+
+    /**
+     * @param propertyPath the propertyPath to set
+     */
+    public void setPropertyPath(List<String> propertyPath) {
+        this.propertyPath = propertyPath;
+    }
+
+
 }
