@@ -938,12 +938,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
-    /**
-     * @param config
-     * @return
-     */
-    List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
-
+    
 
 
 
