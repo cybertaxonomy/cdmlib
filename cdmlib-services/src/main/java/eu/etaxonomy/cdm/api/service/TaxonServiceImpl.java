@@ -1188,7 +1188,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
              //PolytomousKey TODO
 
-             boolean usedInPolytomousKey = checkForPolytomousKeys(taxon);
+             
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
 
@@ -3060,7 +3060,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                 this.saveOrUpdate(toTaxon);
                 //TODO: configurator and classification
-                this.deleteTaxon(fromTaxon, null, null);
+                TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
+                config.setDeleteNameIfPossible(false);
+                this.deleteTaxon(fromTaxon, config, null);
                 return synonymRelationship.getSynonym();
 
     }
