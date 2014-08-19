@@ -2,7 +2,8 @@ package eu.etaxonomy.cdm.model.media;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -96,11 +97,12 @@ public class MediaUtils {
             }
         }
 
-        Map<Media, MediaRepresentation> returnMediaList = new HashMap<Media, MediaRepresentation>(mediaList.size());
+        Map<Media, MediaRepresentation> returnMediaList;
         if(mediaList != null){
+            returnMediaList = new LinkedHashMap<Media, MediaRepresentation>(mediaList.size());
             for(Media media : mediaList){
 
-                Set<MediaRepresentation> candidateRepresentations = new HashSet<MediaRepresentation>();
+                Set<MediaRepresentation> candidateRepresentations = new LinkedHashSet<MediaRepresentation>();
                 candidateRepresentations.addAll(media.getRepresentations());
 
                 SortedMap<Integer, MediaRepresentation> prefRepresentations
@@ -118,6 +120,9 @@ public class MediaUtils {
                 }
 
             }
+        }
+        else{
+            returnMediaList = new HashMap<Media, MediaRepresentation>();
         }
         return returnMediaList;
     }
