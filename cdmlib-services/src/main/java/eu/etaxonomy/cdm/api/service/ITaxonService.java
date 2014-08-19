@@ -939,7 +939,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
     
-
+    public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 
 
 

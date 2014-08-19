@@ -3282,6 +3282,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         return result;
     }
+    @Override
+    public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
+        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
+        return taxonList;
+    }
 
    
 }
