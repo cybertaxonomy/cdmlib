@@ -33,13 +33,10 @@ import org.apache.lucene.search.DocIdSet;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.search.QueryWrapperFilter;
 import org.apache.lucene.search.SortField;
-import org.hibernate.ObjectDeletedException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.PermissionDeniedDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import eu.etaxonomy.cdm.api.service.DeleteResult.DeleteStatus;
 import eu.etaxonomy.cdm.api.service.config.DeleteConfiguratorBase;
 import eu.etaxonomy.cdm.api.service.config.IFindTaxaAndNamesConfigurator;
 import eu.etaxonomy.cdm.api.service.config.IncludedTaxonConfiguration;
@@ -64,7 +61,6 @@ import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.search.SearchResultBuilder;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
-import eu.etaxonomy.cdm.database.PermissionDeniedException;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.hibernate.search.DefinedTermBaseClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
@@ -1192,7 +1188,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
              //PolytomousKey TODO
 
-             boolean usedInPolytomousKey = checkForPolytomousKeys(taxon);
+             
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
 
@@ -1205,15 +1201,15 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                         name.removeTaxonBase(taxon);
                         nameService.merge(name);
                         DeleteResult nameResult = new DeleteResult();
-                       
+
                         nameResult = nameService.delete(name, config.getNameDeletionConfig());
-                       
+
                         if (nameResult.isError()){
                         	//result.setError();
                         	result.addRelatedObject(name);
                         	result.addExceptions(nameResult.getExceptions());
                         }
-                        
+
                     }
 
             }
@@ -1239,16 +1235,16 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             if ((taxon.getTaxonNodes() == null || taxon.getTaxonNodes().size()== 0)  ){
             	try{
             		UUID uuid = dao.delete(taxon);
-            		
+
             	}catch(Exception e){
             		result.addException(e);
             		result.setError();
-            		
+
             	}
             } else {
             	result.setError();
             	result.addException(new Exception("The Taxon can't be deleted."));
-               
+
             }
         }else {
         	List<Exception> exceptions = new ArrayList<Exception>();
@@ -1258,7 +1254,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         	}
         	result.addExceptions(exceptions);
         	result.setError();
-        	
+
         }
         return result;
 
@@ -1314,8 +1310,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         this.deleteSynonym(syn, null);
         return result;
     }
-   
-    
+
+
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#deleteSynonym(eu.etaxonomy.cdm.model.taxon.Synonym, eu.etaxonomy.cdm.model.taxon.Taxon, boolean, boolean)
@@ -1344,8 +1340,8 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             config = new SynonymDeletionConfigurator();
         }
         List<String> messages = isDeletable(synonym, config);
-       
-       
+
+
         if (messages.isEmpty()){
             synonym = CdmBase.deproxy(dao.merge(synonym), Synonym.class);
 
@@ -1384,7 +1380,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
             	result.addException(new ReferencedObjectUndeletableException("Synonym can not be deleted it is used in a synonymRelationship."));
                 return result;
             }
-            
+
             return result;
         }else{
         	List<Exception> exceptions = new ArrayList<Exception>();
@@ -3064,7 +3060,9 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
                 this.saveOrUpdate(toTaxon);
                 //TODO: configurator and classification
-                this.deleteTaxon(fromTaxon, null, null);
+                TaxonDeletionConfigurator config = new TaxonDeletionConfigurator();
+                config.setDeleteNameIfPossible(false);
+                this.deleteTaxon(fromTaxon, config, null);
                 return synonymRelationship.getSynonym();
 
     }
@@ -3284,7 +3282,11 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         }
         return result;
     }
+    @Override
+    public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config){
+        List<TaxonBase> taxonList = dao.getTaxaByName(true, false, false, config.getTaxonNameTitle(), null, MatchMode.EXACT, null, 0, 0, config.getPropertyPath());
+        return taxonList;
+    }
 
-
-
+   
 }

@@ -31,6 +31,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 	private String blank = " ";
 	
 	
+	
 	protected abstract String getInRefType();
 	
 	protected String afterInRefAuthor = ", ";
@@ -58,6 +59,14 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		if (inRef == null ||  (thisRef.hasDatePublished() ) ){
 			GenericDefaultCacheStrategy inRefStrategy = GenericDefaultCacheStrategy.NewInstance();
 			result =  inRef == null ? "" : inRefStrategy.getTitleWithoutYearAndAuthor(inRef, true);
+			//added //TODO unify with non-inRef references formatting
+			
+			if (isNotBlank(thisRef.getVolume())){
+				result = result + " " + thisRef.getVolume();
+			}
+			//TODO series / edition
+			
+			//end added
 			result += INomenclaturalReference.MICRO_REFERENCE_TOKEN;
 			result = addYear(result, thisRef, true);
 		}else{
@@ -73,6 +82,8 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		result = "in " +  result;
 		return result;
 	}
+	
+
 	
 	protected String getInRefAuthorPart(Reference book, String seperator){
 		if (book == null){

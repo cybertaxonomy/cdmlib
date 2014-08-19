@@ -28,6 +28,7 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 	private String blank = " ";
 	private String comma = ",";
 	private String prefixSeries = "ser.";
+
 	
 	final static UUID uuid = UUID.fromString("0d45343a-0c8a-4a64-97ca-e94974b65c96");
 	
@@ -149,8 +150,7 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 			}
 		}
 	}
-
-
+	
 	protected String getSeriesAndVolPart(String series, String volume,
 			boolean needsComma, String nomRefCache) {
 		//inSeries
@@ -180,5 +180,8 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 		nomRefCache += volumePart;
 		return nomRefCache;
 	}
+
+
+
 
 }

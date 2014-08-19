@@ -37,6 +37,7 @@ import org.hibernate.envers.Audited;
 import org.hibernate.search.annotations.Indexed;
 import org.hibernate.search.annotations.IndexedEmbedded;
 
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -283,7 +284,9 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
         if (taxon == null){
             return null;
         }
+        Classification classification;
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
+            classification = HibernateProxyHelper.deproxy(taxonNode.getClassification(), Classification.class);
             if (taxonNode.getClassification().equals(this)){
                 return taxonNode;
             }

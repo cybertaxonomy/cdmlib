@@ -233,7 +233,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * Deletes a taxon from the underlying database according to the given {@link TaxonDeletionConfigurator configurator}.
      * @param taxon
      * @param config
-     * 
+     *
      */
     public DeleteResult deleteTaxon(Taxon taxon, TaxonDeletionConfigurator config, Classification classification) ;
 
@@ -809,17 +809,17 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
     public int countAllRelationships();
 
     public List<TaxonNameBase> findIdenticalTaxonNames(List<String> propertyPath);
-    
+
     public List<TaxonNameBase> findIdenticalTaxonNameIds(List<String> propertyPath);
-    
+
     public String getPhylumName(TaxonNameBase name);
 
     public long deleteSynonymRelationships(Synonym syn);
-    
+
     /**
-     * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or 
+     * Returns all {@link Taxon taxa} which are {@link TaxonRelationshipType#CONGRUENT_TO() congruent} or
      * {@link TaxonRelationshipType#INCLUDES() included} in the taxon represented by the given taxon uuid.
-     * The result also returns the path to these taxa represented by the uuids of 
+     * The result also returns the path to these taxa represented by the uuids of
      * the {@link TaxonRelationshipType taxon relationships types} and doubtful information.
      * If classificationUuids is set only taxa of classifications are returned which are included
      * in the given {@link Classification classifications}. ALso the path to these taxa may not include
@@ -831,7 +831,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * as doubtful and date information. The original taxon is included in the result.
      */
     public IncludedTaxaDTO listIncludedTaxa(UUID taxonUuid, IncludedTaxonConfiguration configuration);
-    	
+
 
    /**
      * Removes a synonym.<BR><BR>
@@ -852,7 +852,7 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
      * @param synonym
      * @param removeNameIfPossible
      * @return deleteResult
-     * 
+     *
      */
     public DeleteResult deleteSynonym(Synonym synonym, SynonymDeletionConfigurator config);
 
@@ -938,8 +938,8 @@ public interface ITaxonService extends IIdentifiableEntityService<TaxonBase>{
 
     public List<Taxon> listAcceptedTaxaFor(UUID synonymUuid, UUID classificationUuid, Integer pageSize, Integer pageNumber, List<OrderHint> orderHints,
             List<String> propertyPaths);
-
-
+    
+    public List<TaxonBase> findTaxaByName(MatchingTaxonConfigurator config);
 
 
 

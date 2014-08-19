@@ -118,7 +118,12 @@ public class GenericDefaultCacheStrategyTest {
 		//TODO author still unclear
 //		Assert.assertEquals("Unexpected nom. ref.", "in Authorteam, My bk. tit.: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
 		Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit.: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
-		
+		generic1.setVolume("23");
+		Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit. 23: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
+		generic1.setSeriesPart("ser. 11");
+		//TODO
+//		Assert.assertEquals("Unexpected nom. ref.", "in AT., My bk. tit., ser. 11, 23: pp. 44. 1987", generic1.getNomenclaturalCitation("pp. 44"));
+
 		
 		//protected
 		generic1.setAbbrevTitleCache("My prot. abb. tit. in a bk.", true);
