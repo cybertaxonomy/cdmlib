@@ -744,6 +744,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/ITreeNode.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IVersionableEntity.java -text svneol=unset#text/plain
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableEntity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/IdentifiableSource.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/Identifier.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSID.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDAuthority.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/common/LSIDWSDLLocator.java -text

@@ -105,7 +105,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElement(name = "TitleCache", required = true)
     @XmlJavaTypeAdapter(FormattedTextAdapter.class)
-    @Column(length=255, name="titleCache")
+    @Column(name="titleCache")
     @Match(value=MatchMode.CACHE, cacheReplaceMode=ReplaceMode.ALL)
     @NotEmpty(groups = Level2.class) // implictly NotNull
     @Size(max = 800)  //see #1592
@@ -146,6 +146,14 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
     private Set<Extension> extensions = new HashSet<Extension>();
+    
+    @XmlElementWrapper(name = "Identifiers", nillable = true)
+    @XmlElement(name = "Identifier")
+    @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
+    @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
+    @Merge(MergeMode.ADD_CLONE)
+    @NotNull
+    private Set<Identifier> identifiers = new HashSet<Identifier>();
 
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
@@ -305,6 +313,55 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
         getCredits().remove(index);
     }
 
+    @Override
+    public Set<Identifier> getIdentifiers(){
+        if(this.identifiers == null) {
+            this.identifiers = new HashSet<Identifier>();
+        }
+        return this.identifiers;
+    }
+    /**
+     * @param type
+     * @return a Set of extension value strings
+     */
+    public Set<String> getIdentifiers(DefinedTerm type){
+       return getIdentifiers(type.getUuid());
+    }
+    /**
+     * @param extensionTypeUuid
+     * @return a Set of extension value strings
+     */
+    public Set<String> getIdentifiers(UUID identifierTypeUuid){
+        Set<String> result = new HashSet<String>();
+        for (Identifier identifier : getIdentifiers()){
+            if (identifier.getType().getUuid().equals(identifierTypeUuid)){
+                result.add(identifier.getIdentifier());
+            }
+        }
+        return result;
+    }
+
+    public Identifier addIdentifier(String identifier, DefinedTerm identifierType){
+    	Identifier result = Identifier.NewInstance(this, identifier, identifierType);
+    	return result;
+    }
+
+    @Override
+    public void addIdentifier(Identifier identifier){
+        if (identifier != null){
+        	identifier.setIdentifiedObj(this);
+            getIdentifiers().add(identifier);
+        }
+    }
+    @Override
+    public void removeIdentifier(Identifier identifier){
+        if (identifier != null){
+        	logger.warn("TODO");
+//        	identifier.setExtendedObj(null);
+            getIdentifiers().remove(identifier);
+        }
+    }
+    
     @Override
     public Set<Extension> getExtensions(){
         if(extensions == null) {

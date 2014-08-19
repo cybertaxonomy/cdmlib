@@ -80,6 +80,13 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void removeExtension(Extension extension);
 
+    public Set<Identifier> getIdentifiers();
+
+    public void addIdentifier(Identifier identifier);
+
+    public void removeIdentifier(Identifier identifier);
+
+    
     /**
      * Overrides {@link eu.etaxonomy.cdm.model.common.CdmBase#toString()}.
      * This returns an String that identifies the object well without beeing necessarily unique.
