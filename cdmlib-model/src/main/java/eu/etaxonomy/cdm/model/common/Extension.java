@@ -132,9 +132,6 @@ public class Extension extends VersionableEntity implements Cloneable {
 
 //***************************** TO STRING ***********************************
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
-	 */
 	@Override
 	public String toString() {
 		if (StringUtils.isNotBlank(this.value)){
@@ -147,9 +144,6 @@ public class Extension extends VersionableEntity implements Cloneable {
 	
 //****************** CLONE ************************************************/
 	 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		Extension result = (Extension)super.clone();	
