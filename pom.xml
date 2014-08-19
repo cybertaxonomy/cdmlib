@@ -106,6 +106,25 @@
             <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
             <timezone>+1</timezone>
             <roles>
+                <role>Architect</role>
+                <role>Java Developer</role>
+                <role>Release Manager</role>
+            </roles>
+            <url />
+        </developer>
+         <developer>
+            <!-- your SVN account id please! -->
+            <id>c.mathew</id>
+            <name>
+                Cherian Mathew 
+            </name>
+            <email>c.mathew [at] bgbm.org</email>
+            <organization>
+                Botanical Garden Botanical Museum Berlin
+            </organization>
+            <organizationUrl>http://www.bgbm.org/BioDivInf/</organizationUrl>
+            <timezone>+1</timezone>
+            <roles>
                 <role>Java Developer</role>
             </roles>
             <url />
