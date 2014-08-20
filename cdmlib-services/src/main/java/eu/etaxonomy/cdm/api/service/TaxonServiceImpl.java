@@ -853,6 +853,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
         Set<Taxon> taxa = new HashSet<Taxon>();
         List<Media> taxonMedia = new ArrayList<Media>();
+        List<Media> nonImageGalleryImages = new ArrayList<Media>();
 
         if (limitToGalleries == null) {
             limitToGalleries = false;
@@ -877,11 +878,18 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                 if (!limitToGalleries || taxonDescription.isImageGallery()) {
                     for (DescriptionElementBase element : taxonDescription.getElements()) {
                         for (Media media : element.getMedia()) {
-                            taxonMedia.add(media);
+                            if(taxonDescription.isImageGallery()){
+                                taxonMedia.add(media);
+                            }
+                            else{
+                                nonImageGalleryImages.add(media);
+                            }
                         }
                     }
                 }
             }
+            //put images from image gallery first (#3242)
+            taxonMedia.addAll(nonImageGalleryImages);
         }
 
 
@@ -1188,7 +1196,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
 
              //PolytomousKey TODO
 
-             
+
             //TaxonNameBase
             if (config.isDeleteNameIfPossible()){
 
@@ -3288,5 +3296,5 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         return taxonList;
     }
 
-   
+
 }
