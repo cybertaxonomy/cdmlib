@@ -3078,7 +3078,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
     @Override
     public List<String> isDeletable(TaxonBase taxonBase, DeleteConfiguratorBase config){
         List<String> result = new ArrayList<String>();
-        Set<CdmBase> references = commonService.getReferencingObjects(taxonBase);
+        Set<CdmBase> references = commonService.getReferencingObjectsForDeletion(taxonBase);
         if (taxonBase instanceof Taxon){
             TaxonDeletionConfigurator taxonConfig = (TaxonDeletionConfigurator) config;
             result = isDeletableForTaxon(references, taxonConfig);
@@ -3093,7 +3093,7 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
         String message;
         List<String> result = new ArrayList<String>();
         for (CdmBase ref: references){
-            if (!(ref instanceof SynonymRelationship || ref instanceof Taxon || ref instanceof TaxonNameBase || ref instanceof Extension)){
+            if (!(ref instanceof SynonymRelationship || ref instanceof Taxon || ref instanceof TaxonNameBase )){
                 message = "The Synonym can't be deleted as long as it is referenced by " + ref.getClass().getSimpleName() + " with id "+ ref.getId();
                 result.add(message);
             }
