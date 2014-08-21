@@ -31,18 +31,49 @@ public class MediaUtils {
     public static MediaRepresentation findBestMatchingRepresentation(Media media, Class<? extends MediaRepresentationPart> representationPartType, Integer size, Integer height, Integer widthOrDuration, String[] mimeTypes){
         // find best matching representations of each media
         SortedMap<Integer, MediaRepresentation> prefRepresentations
-            = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes, size, widthOrDuration, height);
-            try {
-                // take first one and remove all other representations
-                MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
+        = filterAndOrderMediaRepresentations(media.getRepresentations(), null, mimeTypes, size, widthOrDuration, height);
+        try {
+            // take first one and remove all other representations
+            MediaRepresentation prefOne = prefRepresentations.get(prefRepresentations.firstKey());
 
-                return prefOne;
+            return prefOne;
 
-            } catch (NoSuchElementException nse) {
-                /* IGNORE */
-            }
-            return null;
+        } catch (NoSuchElementException nse) {
+            /* IGNORE */
         }
+        return null;
+    }
+
+    /**
+     * Creates one single {@link MediaRepresentationPart} for the given {@link Media}
+     * if it does not already exists. Otherwise the first part found is returned.<br>
+     * @param media the media for which the representation part should be created
+     * @return the first or newly created representation part
+     */
+    public static MediaRepresentationPart initFirstMediaRepresentationPart(Media media) {
+        MediaRepresentationPart mediaRepresentationPart;
+        Set<MediaRepresentation> representations = media.getRepresentations();
+        if(representations!=null && representations.size()>0){
+            MediaRepresentation mediaRepresentation = representations.iterator().next();
+            List<MediaRepresentationPart> parts = mediaRepresentation.getParts();
+            if(parts!=null && parts.size()>0){
+                mediaRepresentationPart = parts.iterator().next();
+            }
+            else{
+                mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+                mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+            }
+        }
+        else{
+            mediaRepresentationPart = MediaRepresentationPart.NewInstance(null, null);
+
+            MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance();
+            mediaRepresentation.addRepresentationPart(mediaRepresentationPart);
+            media.addRepresentation(mediaRepresentation);
+        }
+        return mediaRepresentationPart;
+    }
+
 
     /**
      * Filters the given List of Media by the supplied filter parameters <code>representationPartType</code>,
