@@ -35,6 +35,7 @@ import eu.etaxonomy.cdm.api.service.dto.IncludedTaxaDTO;
 import eu.etaxonomy.cdm.api.service.exception.HomotypicalGroupChangeException;
 import eu.etaxonomy.cdm.datagenerator.TaxonGenerator;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
@@ -694,17 +695,13 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         UUID markerUUID = marker.getUuid();
        // taxon2 = (Taxon)service.load(uuidTaxon2);
         synonym1 = (Synonym)service.load(uuidSynonym1);
-
+        //the marker should not prevent the deletion
         DeleteResult result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
-        if (!result.isError()){
+        if (result.isError()){
         	Assert.fail();
         }
-        commitAndStartNewTransaction(tableNames);
-        synonym1.removeMarker(marker1);
-        synonym1.removeMarker(marker2);
-        service.update(synonym1);
         
-        result = service.deleteSynonym(synonym1, new SynonymDeletionConfigurator());
+       
        
         
         commitAndStartNewTransaction(tableNames);
@@ -741,6 +738,8 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         Taxon taxon1 = (Taxon)service.load(uuidTaxon1);
         Taxon taxon2 = (Taxon)service.load(uuidTaxon2);
         Synonym synonym1 = (Synonym)service.load(uuidSynonym1);
+        synonym1.addExtension(Extension.NewInstance());
+        service.saveOrUpdate(synonym1);
        
         service.deleteSynonym(synonym1, taxon1, new SynonymDeletionConfigurator());
 
@@ -1190,6 +1189,14 @@ public class TaxonServiceImplTest extends CdmTransactionalIntegrationTest {
         //assertNull(synName);
         assertNotNull(taxonName);
         assertNull(taxon);
+        config.setDeleteNameIfPossible(true);
+        Taxon newTaxon = Taxon.NewInstance(BotanicalName.NewInstance(Rank.SPECIES()), null);
+        service.save(newTaxon);
+        result = service.deleteTaxon(newTaxon, config, null);
+        if (result.isError()){
+        	Assert.fail();
+        }
+        
 
     }
 
