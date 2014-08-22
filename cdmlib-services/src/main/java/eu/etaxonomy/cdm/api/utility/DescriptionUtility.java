@@ -237,9 +237,7 @@ public class DescriptionUtility {
                 preferred.add(distribution);
             } else {
                 if(distribution.getStatus() == null){
-                    // highestStatus is considered higher if
-                    // highestStatus != null && distribution.getStatus() == null
-                    compareResult = highestStatus != null ? -1 : 0;
+                    continue;
                 } else {
                     compareResult = highestStatus.compareTo(distribution.getStatus());
                 }
