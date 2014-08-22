@@ -16,16 +16,18 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.Transient;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
@@ -230,14 +232,14 @@ public class EditGeoServiceUtilities {
             String projectToLayer, List<Language> languages){
 
 
-        /**
+        /*
          * generateMultipleAreaDataParameters switches between the two possible styles:
          * 1. ad=layername1:area-data||layername2:area-data
          * 2. ad=layername1:area-data&ad=layername2:area-data
          */
         boolean generateMultipleAreaDataParameters = false;
 
-        /**
+        /*
          * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
          * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
          *
@@ -249,6 +251,11 @@ public class EditGeoServiceUtilities {
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
         List<String> legendLabels = new ArrayList<String>();
+        /*
+         * statusToStyleIdSortMap:
+         * used to sort the area styles after the order of the status
+         */
+        SortedMap<PresenceAbsenceTermBase<?>, Integer> statusToStyleIdSortMap = new TreeMap<PresenceAbsenceTermBase<?>, Integer>();
 
 
         String borderWidth = "0.1";
@@ -261,6 +268,8 @@ public class EditGeoServiceUtilities {
             return "";
         }
 
+        presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
+
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
 
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
@@ -268,11 +277,18 @@ public class EditGeoServiceUtilities {
 
         groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
-        presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
         Map<String, String> parameters = new HashMap<String, String>();
 
         //style
+
+        // sort the styles after the status terms
+        // since the status terms are have an inverse natural order
+        // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
+//        Integer[] styleIds = statusToStyleIdSortMap.values().toArray(new Integer[statusToStyleIdSortMap.size()]);
+//        ArrayUtils.reverse(styleIds);
+
+
         int styleCounter = 0;
         for (PresenceAbsenceTermBase<?> status: statusList){
 
@@ -306,6 +322,8 @@ public class EditGeoServiceUtilities {
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
             areaStyles.put(styleCounter, styleValues);
+            statusToStyleIdSortMap.put(status, styleCounter);
+
             legendLabels.add(styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
             styleCounter++;
         }
@@ -314,12 +332,15 @@ public class EditGeoServiceUtilities {
         List<String> styledAreasPerLayer;
         List<String> areasPerStyle;
         /**
+         * Map<Integer, Integer> styleUsage
+         *
          * Used to avoid reusing styles in multiple layers
          *
          * key: the style id
          * value: the count of how often the style has been used for different layers, starts with 0 for first time use
          */
         Map<Integer, Integer> styleUsage = new HashMap<Integer, Integer>();
+
         char styleChar;
         for (String layerString : layerMap.keySet()){
             // each layer
@@ -359,9 +380,16 @@ public class EditGeoServiceUtilities {
         }
 
         if(areaStyles.size() > 0){
-            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
-            styleIds.addAll(areaStyles.keySet());
-            Collections.sort(styleIds);
+//            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
+//            styleIds.addAll(areaStyles.keySet());
+//            Collections.sort(styleIds);
+
+            // sort the styles after the status terms
+            // since the status terms are have an inverse natural order
+            // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
+//            Integer[] styleIds = statusToStyleIdSortMap.values().toArray(new Integer[statusToStyleIdSortMap.size()]);
+//            ArrayUtils.reverse(styleIds);
+
             StringBuilder db = new StringBuilder();
             for(Integer sid : styleIds){
                 if(db.length() > 0){
@@ -451,15 +479,15 @@ public class EditGeoServiceUtilities {
             IGeoServiceAreaMapping mapping) {
 
         if (area != null){
-            String geoLayerString = getWMSLayerName(area, mapping);
+            String geoLayerName = getWMSLayerName(area, mapping);
 
-            if(geoLayerString == null){
+            if(geoLayerName == null){
                /* IGNORE areas for which no layer is mapped */
             } else {
-                Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
+                Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerName);
                 if (styleMap == null) {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
-                    layerMap.put(geoLayerString, styleMap);
+                    layerMap.put(geoLayerName, styleMap);
                 }
                 addDistributionToStyleMap(distribution, styleMap, statusList);
             }

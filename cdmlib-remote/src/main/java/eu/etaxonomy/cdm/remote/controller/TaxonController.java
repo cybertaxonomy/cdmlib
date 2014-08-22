@@ -69,7 +69,11 @@ public class TaxonController extends BaseController<TaxonBase, ITaxonService>
 
     public TaxonController(){
         super();
-        setInitializationStrategy(Arrays.asList(new String[]{"$","name.nomenclaturalReference"}));
+        setInitializationStrategy(Arrays.asList(new String[]{
+                "$",
+                "name.nomenclaturalReference"
+                }
+        ));
     }
 
 
