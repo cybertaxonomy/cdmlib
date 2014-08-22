@@ -16,6 +16,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -27,7 +28,8 @@ import java.util.UUID;
 
 import javax.persistence.Transient;
 
-import org.apache.commons.lang.ArrayUtils;
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
@@ -65,6 +67,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
  * @created 17.11.2008
  */
 public class EditGeoServiceUtilities {
+    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
+
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
     private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
@@ -250,13 +254,7 @@ public class EditGeoServiceUtilities {
 
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
-        List<String> legendLabels = new ArrayList<String>();
-        /*
-         * statusToStyleIdSortMap:
-         * used to sort the area styles after the order of the status
-         */
-        SortedMap<PresenceAbsenceTermBase<?>, Integer> statusToStyleIdSortMap = new TreeMap<PresenceAbsenceTermBase<?>, Integer>();
-
+        List<String> legendSortList = new ArrayList<String>();
 
         String borderWidth = "0.1";
         String borderColorRgb = "";
@@ -277,18 +275,9 @@ public class EditGeoServiceUtilities {
 
         groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
 
-
         Map<String, String> parameters = new HashMap<String, String>();
 
         //style
-
-        // sort the styles after the status terms
-        // since the status terms are have an inverse natural order
-        // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
-//        Integer[] styleIds = statusToStyleIdSortMap.values().toArray(new Integer[statusToStyleIdSortMap.size()]);
-//        ArrayUtils.reverse(styleIds);
-
-
         int styleCounter = 0;
         for (PresenceAbsenceTermBase<?> status: statusList){
 
@@ -301,8 +290,8 @@ public class EditGeoServiceUtilities {
             if (languages.size() == 0){
                 languages.add(Language.DEFAULT());
             }
-            Representation representation = status.getPreferredRepresentation(languages);
-            String statusLabel = representation.getLabel();
+            Representation statusRepresentation = status.getPreferredRepresentation(languages);
+            String statusLabel = statusRepresentation.getLabel();
             //statusLabel.replace('introduced: ', '');
             statusLabel = statusLabel.replace("introduced: ", "introduced, ");
             statusLabel = statusLabel.replace("native: ", "native,  ");
@@ -322,9 +311,9 @@ public class EditGeoServiceUtilities {
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
             areaStyles.put(styleCounter, styleValues);
-            statusToStyleIdSortMap.put(status, styleCounter);
 
-            legendLabels.add(styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
+            String legendEntry = styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel);
+            legendSortList.add(StringUtils.leftPad(String.valueOf(status.getOrderIndex()), INT_MAX_LENGTH, '0') + legendEntry );
             styleCounter++;
         }
 
@@ -380,16 +369,9 @@ public class EditGeoServiceUtilities {
         }
 
         if(areaStyles.size() > 0){
-//            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
-//            styleIds.addAll(areaStyles.keySet());
-//            Collections.sort(styleIds);
-
-            // sort the styles after the status terms
-            // since the status terms are have an inverse natural order
-            // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
-//            Integer[] styleIds = statusToStyleIdSortMap.values().toArray(new Integer[statusToStyleIdSortMap.size()]);
-//            ArrayUtils.reverse(styleIds);
-
+            ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
+            styleIds.addAll(areaStyles.keySet());
+            Collections.sort(styleIds); // why is it necessary to sort here?
             StringBuilder db = new StringBuilder();
             for(Integer sid : styleIds){
                 if(db.length() > 0){
@@ -399,10 +381,27 @@ public class EditGeoServiceUtilities {
             }
             parameters.put("as", db.toString());
         }
-        if(legendLabels.size() > 0){
-            parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
-        }
+        if(legendSortList.size() > 0){
+            // sort the label entries after the status terms
+            Collections.sort(legendSortList);
+            // since the status terms are have an inverse natural order
+            // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
+            // the sorted list must be reverted
+//            Collections.reverse(legendSortList);
+            // remove the prepended order index (like 000000000000001 ) from the legend entries
+            @SuppressWarnings("unchecked")
+            Collection<String> legendEntries = CollectionUtils.collect(legendSortList, new Transformer()
+            {
+                @Override
+                public String transform(Object o)
+                {
+                  String s = ((String) o);
+                  return s.substring(INT_MAX_LENGTH, s.length());
+                }
+              });
 
+            parameters.put("title", StringUtils.join(legendEntries.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+        }
 
         if(generateMultipleAreaDataParameters){
             // not generically possible since parameters can not contain duplicate keys with value "ad"
