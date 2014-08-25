@@ -76,10 +76,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         return null;
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.ICdmDataSource#testConnection()
-     */
     @Override
     public boolean testConnection() throws ClassNotFoundException, SQLException {
 
@@ -197,10 +193,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
 
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.ICdmDataSource#executeUpdate(java.lang.String)
-     */
     @Override
     public int executeUpdate (String sqlUpdate) throws SQLException{
 
@@ -216,7 +208,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
             return result;
         } catch(SQLException e) {
             try{
-                if (! connection.getAutoCommit()){
+                if (connection != null && ! connection.getAutoCommit()){
                     connection.rollback();
                 }
             }catch (SQLException ex){
@@ -228,10 +220,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         }
     }
 
-
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.ICdmDataSource#startTransaction()
-     */
     @Override
     public void startTransaction() {
         try {
@@ -245,9 +233,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.ICdmDataSource#commitTransaction()
-     */
     @Override
     public void commitTransaction() throws SQLException {
         try {
@@ -270,9 +255,7 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.ICdmDataSource#getMetaData()
-     */
+
     @Override
     public DatabaseMetaData getMetaData() {
         Connection connection = null;
@@ -285,9 +268,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         }
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.database.ICdmDataSource#closeOpenConnections()
-     */
     @Override
     public void closeOpenConnections() {
         try {
@@ -298,6 +278,25 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         } catch (SQLException e) {
             logger.error("Error closing the connection");
         }
+    }
+    
+    
+    @Override
+    public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
+		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
+		
+		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()) {
+			String value = null;
+			try {
+				value = (String)getSingleValue(mdpn.getSqlQuery());
+			} catch (SQLException e) {
+				throw new CdmSourceException(e.getMessage());
+			}			
+			if(value != null) {
+				cdmMetaDataMap.put(mdpn, value);
+			}		
+		}
+		return cdmMetaDataMap;
     }
 
     // ************ javax.sql.DataSource base interfaces ********************/
@@ -368,24 +367,6 @@ abstract class CdmDataSourceBase extends CdmSource implements ICdmDataSource  {
         //copied from org.springframework.jdbc.datasource.AbstractDataSource, not checked if this is correct
         return java.util.logging.Logger.getLogger(java.util.logging.Logger.GLOBAL_LOGGER_NAME);
     }
-    
-    @Override
-    public Map<MetaDataPropertyName, String> getMetaDataMap() throws CdmSourceException {
-		Map<MetaDataPropertyName, String> cdmMetaDataMap = new HashMap<MetaDataPropertyName, String>();
-		
-		for(MetaDataPropertyName mdpn : MetaDataPropertyName.values()) {
-			String value = null;
-			try {
-				value = (String)getSingleValue(mdpn.getSqlQuery());
-			} catch (SQLException e) {
-				throw new CdmSourceException(e.getMessage());
-			}			
-			if(value != null) {
-				cdmMetaDataMap.put(mdpn, value);
-			}		
-		}
-		return cdmMetaDataMap;
-    }
 
-    
+ 
 }

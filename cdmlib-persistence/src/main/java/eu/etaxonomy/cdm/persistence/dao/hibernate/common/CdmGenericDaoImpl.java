@@ -192,6 +192,28 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 		}
 		
 	}
+	@Override
+	public Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase){
+		Set<CdmBase> result = getReferencingObjects(referencedCdmBase);
+		Set<ReferenceHolder> holderSet = referenceMap.get(IdentifiableEntity.class);
+		try {
+			if (holderSet == null){
+				holderSet = makeHolderSet(IdentifiableEntity.class);
+				referenceMap.put(IdentifiableEntity.class, holderSet);
+			}
+			Set<CdmBase> resultIdentifiableEntity = new HashSet<CdmBase>();
+			for (ReferenceHolder refHolder: holderSet){
+				handleReferenceHolder(referencedCdmBase, resultIdentifiableEntity, refHolder);
+			}
+			result.removeAll(resultIdentifiableEntity);
+			
+			return result;
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new RuntimeException(e);
+		}
+		
+	}
 
 	/**
 	 * @param referencedCdmBase

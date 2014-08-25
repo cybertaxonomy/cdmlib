@@ -118,7 +118,7 @@ public class ManagementController {
     @RequestMapping(value = { "reindex" }, method = RequestMethod.GET)
     public synchronized ModelAndView doReindex(
              @RequestParam(value = "frontendBaseUrl", required = false) String frontendBaseUrl,
-            @RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
+             @RequestParam(value = "type", required = false) Class<? extends CdmBase>[] types,
              @RequestParam(value = "priority", required = false) Integer priority,
             HttpServletRequest request, HttpServletResponse response)
             throws Exception {

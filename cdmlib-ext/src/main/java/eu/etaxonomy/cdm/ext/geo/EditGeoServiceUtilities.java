@@ -22,10 +22,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 import java.util.UUID;
 
 import javax.persistence.Transient;
 
+import org.apache.commons.collections.CollectionUtils;
+import org.apache.commons.collections.Transformer;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.codehaus.jackson.JsonParseException;
@@ -63,6 +67,8 @@ import eu.etaxonomy.cdm.persistence.dao.common.IDefinedTermDao;
  * @created 17.11.2008
  */
 public class EditGeoServiceUtilities {
+    private static final int INT_MAX_LENGTH = String.valueOf(Integer.MAX_VALUE).length();
+
     private static final Logger logger = Logger.getLogger(EditGeoServiceUtilities.class);
 
     private static PresenceAbsenceTermBase<?> defaultStatus = PresenceTerm.PRESENT();
@@ -230,14 +236,14 @@ public class EditGeoServiceUtilities {
             String projectToLayer, List<Language> languages){
 
 
-        /**
+        /*
          * generateMultipleAreaDataParameters switches between the two possible styles:
          * 1. ad=layername1:area-data||layername2:area-data
          * 2. ad=layername1:area-data&ad=layername2:area-data
          */
         boolean generateMultipleAreaDataParameters = false;
 
-        /**
+        /*
          * doNotReuseStyles is a workaround for a problem in the EDIT MapService,
          * see https://dev.e-taxonomy.eu/trac/ticket/2707#comment:24
          *
@@ -248,8 +254,7 @@ public class EditGeoServiceUtilities {
 
         List<String>  perLayerAreaData = new ArrayList<String>();
         Map<Integer, String> areaStyles = new HashMap<Integer, String>();
-        List<String> legendLabels = new ArrayList<String>();
-
+        List<String> legendSortList = new ArrayList<String>();
 
         String borderWidth = "0.1";
         String borderColorRgb = "";
@@ -261,14 +266,14 @@ public class EditGeoServiceUtilities {
             return "";
         }
 
+        presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
+
         Collection<Distribution> filteredDistributions = DescriptionUtility.filterDistributions(distributions, subAreaPreference, statusOrderPreference, hideMarkedAreas);
 
         Map<String, Map<Integer, Set<Distribution>>> layerMap = new HashMap<String, Map<Integer, Set<Distribution>>>();
         List<PresenceAbsenceTermBase<?>> statusList = new ArrayList<PresenceAbsenceTermBase<?>>();
 
         groupStylesAndLayers(filteredDistributions, layerMap, statusList, mapping);
-
-        presenceAbsenceTermColors = mergeMaps(getDefaultPresenceAbsenceTermBaseColors(), presenceAbsenceTermColors);
 
         Map<String, String> parameters = new HashMap<String, String>();
 
@@ -285,8 +290,8 @@ public class EditGeoServiceUtilities {
             if (languages.size() == 0){
                 languages.add(Language.DEFAULT());
             }
-            Representation representation = status.getPreferredRepresentation(languages);
-            String statusLabel = representation.getLabel();
+            Representation statusRepresentation = status.getPreferredRepresentation(languages);
+            String statusLabel = statusRepresentation.getLabel();
             //statusLabel.replace('introduced: ', '');
             statusLabel = statusLabel.replace("introduced: ", "introduced, ");
             statusLabel = statusLabel.replace("native: ", "native,  ");
@@ -306,7 +311,9 @@ public class EditGeoServiceUtilities {
             String styleValues = StringUtils.join(new String[]{fillColorRgb, borderColorRgb, borderWidth, borderDashingPattern}, ',');
 
             areaStyles.put(styleCounter, styleValues);
-            legendLabels.add(styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel));
+
+            String legendEntry = styleCode + ID_FROM_VALUES_SEPARATOR + encode(statusLabel);
+            legendSortList.add(StringUtils.leftPad(String.valueOf(status.getOrderIndex()), INT_MAX_LENGTH, '0') + legendEntry );
             styleCounter++;
         }
 
@@ -314,12 +321,15 @@ public class EditGeoServiceUtilities {
         List<String> styledAreasPerLayer;
         List<String> areasPerStyle;
         /**
+         * Map<Integer, Integer> styleUsage
+         *
          * Used to avoid reusing styles in multiple layers
          *
          * key: the style id
          * value: the count of how often the style has been used for different layers, starts with 0 for first time use
          */
         Map<Integer, Integer> styleUsage = new HashMap<Integer, Integer>();
+
         char styleChar;
         for (String layerString : layerMap.keySet()){
             // each layer
@@ -361,7 +371,7 @@ public class EditGeoServiceUtilities {
         if(areaStyles.size() > 0){
             ArrayList<Integer> styleIds = new ArrayList<Integer>(areaStyles.size());
             styleIds.addAll(areaStyles.keySet());
-            Collections.sort(styleIds);
+            Collections.sort(styleIds); // why is it necessary to sort here?
             StringBuilder db = new StringBuilder();
             for(Integer sid : styleIds){
                 if(db.length() > 0){
@@ -371,10 +381,27 @@ public class EditGeoServiceUtilities {
             }
             parameters.put("as", db.toString());
         }
-        if(legendLabels.size() > 0){
-            parameters.put("title", StringUtils.join(legendLabels.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
-        }
+        if(legendSortList.size() > 0){
+            // sort the label entries after the status terms
+            Collections.sort(legendSortList);
+            // since the status terms are have an inverse natural order
+            // (as all other ordered term, see OrderedTermBase.performCompareTo(T orderedTerm, boolean skipVocabularyCheck)
+            // the sorted list must be reverted
+//            Collections.reverse(legendSortList);
+            // remove the prepended order index (like 000000000000001 ) from the legend entries
+            @SuppressWarnings("unchecked")
+            Collection<String> legendEntries = CollectionUtils.collect(legendSortList, new Transformer()
+            {
+                @Override
+                public String transform(Object o)
+                {
+                  String s = ((String) o);
+                  return s.substring(INT_MAX_LENGTH, s.length());
+                }
+              });
 
+            parameters.put("title", StringUtils.join(legendEntries.iterator(), VALUE_LIST_ENTRY_SEPARATOR));
+        }
 
         if(generateMultipleAreaDataParameters){
             // not generically possible since parameters can not contain duplicate keys with value "ad"
@@ -451,15 +478,15 @@ public class EditGeoServiceUtilities {
             IGeoServiceAreaMapping mapping) {
 
         if (area != null){
-            String geoLayerString = getWMSLayerName(area, mapping);
+            String geoLayerName = getWMSLayerName(area, mapping);
 
-            if(geoLayerString == null){
+            if(geoLayerName == null){
                /* IGNORE areas for which no layer is mapped */
             } else {
-                Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerString);
+                Map<Integer, Set<Distribution>> styleMap = layerMap.get(geoLayerName);
                 if (styleMap == null) {
                     styleMap = new HashMap<Integer, Set<Distribution>>();
-                    layerMap.put(geoLayerString, styleMap);
+                    layerMap.put(geoLayerName, styleMap);
                 }
                 addDistributionToStyleMap(distribution, styleMap, statusList);
             }
