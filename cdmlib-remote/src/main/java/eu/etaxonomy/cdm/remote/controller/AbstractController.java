@@ -36,7 +36,7 @@ import eu.etaxonomy.cdm.remote.controller.util.PagerParameters;
  */
 public abstract class AbstractController<T extends CdmBase, SERVICE extends IService<T>> {
 
-    private static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
+    protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
             "$"
     });
 

@@ -169,25 +169,25 @@ public class Rank extends OrderedTermBase<Rank> {
         return new Rank(rankClass, term, label, labelAbbrev);
     }
 
-	/**
-	 * The {@link RankClass rank class} of a rank. It is usually needed for correct formatting of a
-	 * rank by using e.g. isSupraGeneric(). Prior to v3.3 this was computed by comparison of ranks.
-	 */
-	@XmlAttribute(name ="RankClass")
-	@NotNull
-	@Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
-		parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
-	)
-	private RankClass rankClass;
+    /**
+     * The {@link RankClass rank class} of a rank. It is usually needed for correct formatting of a
+     * rank by using e.g. isSupraGeneric(). Prior to v3.3 this was computed by comparison of ranks.
+     */
+    @XmlAttribute(name ="RankClass")
+    @NotNull
+    @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
+        parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.name.RankClass")}
+    )
+    private RankClass rankClass;
 
 
 //********************************** Constructor *********************************/
 
-  	//for hibernate use only
-  	@Deprecated
-  	protected Rank() {
-		super(TermType.Rank);
-	}
+      //for hibernate use only
+      @Deprecated
+      protected Rank() {
+        super(TermType.Rank);
+    }
 
     /**
      * Class constructor: creates an additional rank instance with a description
@@ -457,12 +457,12 @@ public class Rank extends OrderedTermBase<Rank> {
 // ************************ GETTER / SETTER **********************************/
 
     public RankClass getRankClass() {
-		return rankClass;
-	}
+        return rankClass;
+    }
 
-	public void setRankClass(RankClass rankClass) {
-		this.rankClass = rankClass;
-	}
+    public void setRankClass(RankClass rankClass) {
+        this.rankClass = rankClass;
+    }
 
 // ******************************** METHODS ***************************************/
 
@@ -692,13 +692,13 @@ public class Rank extends OrderedTermBase<Rank> {
     }
 
     private static String normalizeSectionAndSubsection(String idInVoc) {
-		if (idInVoc.equals("sect.")){
-			return "sect.(bot.)";
-		}else if (idInVoc.equals("subsect.")){
-			return "subsect.(bot.)";
-		}
-    	return idInVoc;
-	}
+        if (idInVoc.equals("sect.")){
+            return "sect.(bot.)";
+        }else if (idInVoc.equals("subsect.")){
+            return "subsect.(bot.)";
+        }
+        return idInVoc;
+    }
 
     private static String normalizeSpecialForm(String idInVoc) {
         if (idInVoc.equals("f.sp.") || idInVoc.equals("f. sp.")){
@@ -707,7 +707,7 @@ public class Rank extends OrderedTermBase<Rank> {
         return idInVoc;
     }
 
-	// TODO
+    // TODO
     // Preliminary implementation to cover Botany and Zoology.
     /**
      * Returns the rank identified through an abbreviated name for a given nomenclatural code.
@@ -908,7 +908,8 @@ public class Rank extends OrderedTermBase<Rank> {
      * @return	the abbreviation string for <i>this</i> rank
      */
     public String getAbbreviation(){
-        Language language = Language.getLanguageFromUuid(Language.uuidEnglish);
+//        Language language = Language.getLanguageFromUuid(Language.uuidEnglish);
+        Language language = Language.getDefaultLanguage();  
         String result = this.getRepresentation(language).getAbbreviatedLabel();
         if (result== null) {
             logger.warn("Abbreviation for this Rank " + this.toString() +  " not yet implemented");
@@ -980,7 +981,7 @@ public class Rank extends OrderedTermBase<Rank> {
         if (StringUtils.isBlank(abbrevLabel)){
             logger.info("Abbreviated label for rank is NULL or empty.Can't add rank to abbrevLabel map: " + CdmUtils.Nz(rank.getLabel()));
         }else{
-        	idInVocMap.put(abbrevLabel, rank.getUuid());
+            idInVocMap.put(abbrevLabel, rank.getUuid());
         }
     }
 
