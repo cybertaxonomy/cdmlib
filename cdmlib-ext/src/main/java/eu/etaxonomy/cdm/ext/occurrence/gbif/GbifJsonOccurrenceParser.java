@@ -169,7 +169,23 @@ public class GbifJsonOccurrenceParser {
                 }
 
                 if(record.has(ELEVATION)){
-                    derivedUnitFacade.setAbsoluteElevation(record.getInt(ELEVATION));
+                    try {
+                        //parse integer and strip of unit
+                        String string = record.getString(ELEVATION);
+                        int length = string.length();
+                        StringBuilder builder = new StringBuilder();
+                        for(int i=0;i<length;i++){
+                            if(Character.isDigit(string.charAt(i))){
+                                builder.append(string.charAt(i));
+                            }
+                            else{
+                                break;
+                            }
+                        }
+                        derivedUnitFacade.setAbsoluteElevation(Integer.parseInt(builder.toString()));
+                    } catch (NumberFormatException e) {
+                        logger.warn("Could not parse elevation", e);
+                    }
                 }
 
                 //Date (Gathering Period)
