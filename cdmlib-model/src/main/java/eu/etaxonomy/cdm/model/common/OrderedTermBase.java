@@ -122,12 +122,12 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
      */
     protected int performCompareTo(T orderedTerm, boolean skipVocabularyCheck) {
 
-        orderedTerm = (T) CdmBase.deproxy(orderedTerm, OrderedTermBase.class);
+    	OrderedTermBase<?> orderedTermLocal = CdmBase.deproxy(orderedTerm, OrderedTermBase.class);
         if(!skipVocabularyCheck){
-            if (this.vocabulary == null || orderedTerm.vocabulary == null){
-                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTerm.toString() + ") of class " + this.getClass() + " or " + orderedTerm.getClass() + " does not belong to a vocabulary and therefore can not be compared");
+            if (this.vocabulary == null || orderedTermLocal.vocabulary == null){
+                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTermLocal.toString() + ") of class " + this.getClass() + " or " + orderedTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
-            if (! this.getVocabulary().getUuid().equals(orderedTerm.vocabulary.getUuid())){
+            if (! this.getVocabulary().getUuid().equals(orderedTermLocal.vocabulary.getUuid())){
                 throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
             }
         }
@@ -135,7 +135,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase> extends Defined
         int orderThat;
         int orderThis;
         try {
-            orderThat = orderedTerm.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
+            orderThat = orderedTermLocal.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
             orderThis = orderIndex; //OLD: this.getVocabulary().getTerms().indexOf(this);
         } catch (RuntimeException e) {
             throw e;
