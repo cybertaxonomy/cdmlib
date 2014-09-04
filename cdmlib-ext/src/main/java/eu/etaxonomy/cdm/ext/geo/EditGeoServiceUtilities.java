@@ -119,9 +119,9 @@ public class EditGeoServiceUtilities {
              * and now something very hacky ...
              * ONLY-A-TEST is set by the Test class EditGeoServiceTest
              *
-             * TODO remove according line from
-             * EditGeoServiceTest.setUp() when the hardcoded colors for flora of
-             * cyprus are no longer needed !!
+             * FIXME remove according line from
+             * EditGeoServiceTest.setUp() since the hardcoded colors for flora of
+             * cyprus should no longer be needed : #4268 (allow defining custom presence and absence term colors for EditGeoServiceUtilities)
              */
             String onlyTest = System.getProperty("ONLY-A-TEST"); //
             if(onlyTest != null && onlyTest.equals("TRUE")){
