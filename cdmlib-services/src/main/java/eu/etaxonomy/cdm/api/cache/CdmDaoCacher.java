@@ -28,7 +28,9 @@ public class CdmDaoCacher<T extends CdmBase> extends CdmCacher<T> {
 	@Override
 	protected void initDefaultTerms() {
 	    // adding default language to the cdm cacher
-        put(Language.uuidEnglish,Language.ENGLISH());
+	    if(Language.ENGLISH() != null) {
+	        put(Language.uuidEnglish,Language.ENGLISH());
+	    }
     }
 
 	/* (non-Javadoc)
