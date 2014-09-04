@@ -61,7 +61,7 @@ import eu.etaxonomy.cdm.strategy.parser.ParserProblem;
 public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<BfnXmlImportState> {
 	private static final Logger logger = Logger.getLogger(BfnXmlImportTaxonName.class);
 
-	private static final String strNomenclaturalCode = "Botanical";
+	private static final String strNomenclaturalCode = "Zoological";//"Botanical";
 	private static int i = 0;
 	
 	public BfnXmlImportTaxonName(){
@@ -162,7 +162,7 @@ public class BfnXmlImportTaxonName extends BfnXmlImportBase implements ICdmIO<Bf
 		for(TaxonBase tb:taxonBaseList){
 			if(tb instanceof Taxon){
 				Taxon taxon = (Taxon) tb;
-				classification.addChildTaxon(taxon, null, null, null);
+				classification.addChildTaxon(taxon, null, null);
 			}
 		}
 		IClassificationService classificationService = getClassificationService();

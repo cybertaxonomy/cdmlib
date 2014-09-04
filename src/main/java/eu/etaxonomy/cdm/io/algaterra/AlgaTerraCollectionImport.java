@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
@@ -183,7 +184,7 @@ public class AlgaTerraCollectionImport  extends BerlinModelImportBase {
 		}
 		
 		collection.setTownOrLocation(town);
-		collection.addSource(String.valueOf(collectionId), namespace, sourceRef, null);
+		collection.addSource(OriginalSourceType.Import, String.valueOf(collectionId), namespace, sourceRef, null);
 		
 		collectionMap.put(String.valueOf(collectionId), collection);
 		collectionsToSave.add(collection);  //or subcollection ? 

@@ -73,7 +73,7 @@ public class TaraxacumActivator {
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	//ignore null
 	static final boolean ignoreNull = true;
@@ -238,7 +238,7 @@ public class TaraxacumActivator {
 			Reference citation = null;
 			String microcitation = null;
 			
-			taxonNodeInTarax = parentNodeInCich.addChildNode(taxonNodeInTarax, citation, microcitation, null);
+			taxonNodeInTarax = parentNodeInCich.addChildNode(taxonNodeInTarax, citation, microcitation);
 			//parentNodeInCich.getClassification().addParentChild(parentInCich, taraxacumInTaraxTaxon, null, null);
 		
 			parentNodeInCich.deleteChildNode(taxonNodeInCich);

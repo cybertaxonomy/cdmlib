@@ -27,7 +27,6 @@ import org.joda.time.format.DateTimeFormatter;
 import org.springframework.format.datetime.joda.DateTimeParser;
 import org.springframework.stereotype.Component;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.algaterra.validation.AlgaTerraDnaImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
@@ -37,17 +36,16 @@ import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
-import eu.etaxonomy.cdm.model.molecular.GenBankAccession;
-import eu.etaxonomy.cdm.model.molecular.Locus;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -124,7 +122,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		Set<SpecimenOrObservationBase> samplesToSave = new HashSet<SpecimenOrObservationBase>();
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		
-		Map<String, FieldObservation> ecoFactFieldObservationMap = (Map<String, FieldObservation>) partitioner.getObjectMap(ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
+		Map<String, FieldUnit> ecoFactFieldObservationMap = (Map<String, FieldUnit>) partitioner.getObjectMap(ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 		
@@ -165,9 +163,12 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 					Sequence sequence = makeSequence(rs, dnaSample, dnaFactId, importDateTime);
 					
 					//locus
-					Locus locus = Locus.NewInstance(keywordsStr, definitionStr);
+					//FIXME Deduplicate DnaMarker
+					DefinedTerm locus = DefinedTerm.NewDnaMarkerInstance(definitionStr, keywordsStr, null);
 					locus.setCreated(importDateTime);
-					sequence.setLocus(locus);
+					this.getTermService().save(locus);
+					
+					sequence.setDnaMarker(locus);
 					
 					//GenBank Accession
 					makeGenBankAccession(rs, sequence, importDateTime, dnaFactId);
@@ -198,7 +199,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 							ref.setTitleCache(referenceStr, true);
 							referenceMap.put(referenceStr, ref);
 						}
-						sequence.setPublishedIn(ref);
+						sequence.addCitation(ref);
 					}
 					
 					//save
@@ -229,7 +230,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		Integer ecoFactFk = nullSafeInt(rs, "ecoFactId");
 		if (ecoFactFk != null){
 			
-			DerivedUnitBase<?> ecoFact = (DerivedUnitBase<?>)state.getRelatedObject(ECO_FACT_DERIVED_UNIT_NAMESPACE, ecoFactFk.toString());
+			DerivedUnit ecoFact = (DerivedUnit)state.getRelatedObject(ECO_FACT_DERIVED_UNIT_NAMESPACE, ecoFactFk.toString());
 			if (ecoFact == null){
 				logger.warn("EcoFact is null for ecoFactFk: " + ecoFactFk + ", DnaFactId: " + dnaFactId);
 			}else{
@@ -284,31 +285,19 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 
 	private Sequence makeSequence(ResultSet rs, DnaSample dnaSample, int dnaFactId, DateTime importDateTime) throws SQLException {
 		String sequenceStr = rs.getString("PlainSequence");
-		Integer originalLen = null;
 		Integer seqLen = nullSafeInt(rs, "SeqLen");
-		if (seqLen == null){
-			if (sequenceStr != null){
-				seqLen = sequenceStr.length();
-			}
-		}
-		
-		if (sequenceStr != null){
-			originalLen = sequenceStr.length();
-			if (originalLen > 255){
-				logger.warn("Sequence truncated. Id: " + dnaFactId);
-				sequenceStr = sequenceStr.substring(0, 255);
-			}
-		}else{
+
+		if (sequenceStr == null){
 			logger.warn("PlainSequence is null. Id: " + dnaFactId);
-		}
-		Sequence sequence = Sequence.NewInstance(sequenceStr);
-		sequence.setLength(seqLen);
-		if (! originalLen.equals(seqLen)){
-			logger.warn("SeqLen (" + seqLen+ ") and OriginalLen ("+originalLen+") differ for dnaFact: "  + dnaFactId);
+		}else{
+			if (sequenceStr.length() != seqLen){
+				logger.warn("SeqLen (" + seqLen+ ") and OriginalLen ("+sequenceStr.length()+") differ for dnaFact: "  + dnaFactId);
+			}
 		}
 		
+		Sequence sequence = Sequence.NewInstance(sequenceStr, seqLen);
 		sequence.setCreated(importDateTime);
-		dnaSample.addSequences(sequence);
+		dnaSample.addSequence(sequence);
 		return sequence;
 	}
 
@@ -343,10 +332,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 				accessionStr = null;
 			}
 			if (isGenBankAccessionNumber(accessionStr, versionStr, genBankUri, dnaFactId) || genBankUri != null){
-				GenBankAccession accession = GenBankAccession.NewInstance(accessionStr);
-				accession.setUri(genBankUri);
-				accession.setCreated(importDateTime);
-				sequence.addGenBankAccession(accession);				
+				sequence.setGeneticAccessionNumber(accessionStr);
 			}
 		}
 	}
@@ -377,35 +363,10 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		return ECO_FACT_FIELD_OBSERVATION_NAMESPACE;
 	}
 
-
-	private DerivedUnitType makeDerivedUnitType(String recordBasis) {
-		DerivedUnitType result = null;
-		if (StringUtils.isBlank(recordBasis)){
-			result = DerivedUnitType.DerivedUnit;
-		} else if (recordBasis.equalsIgnoreCase("FossileSpecimen")){
-			result = DerivedUnitType.Fossil;
-		}else if (recordBasis.equalsIgnoreCase("HumanObservation")){
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("Literature")){
-			logger.warn("Literature record basis not yet supported");
-			result = DerivedUnitType.DerivedUnit;
-		}else if (recordBasis.equalsIgnoreCase("LivingSpecimen")){
-			result = DerivedUnitType.LivingBeing;
-		}else if (recordBasis.equalsIgnoreCase("MachineObservation")){
-			logger.warn("MachineObservation record basis not yet supported");
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("PreservedSpecimen")){
-			result = DerivedUnitType.Specimen;
-		}
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
@@ -430,9 +391,9 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 
 			//eco fact derived unit map
 			nameSpace = AlgaTerraFactEcologyImport.ECO_FACT_DERIVED_UNIT_NAMESPACE;
-			cdmClass = DerivedUnitBase.class;
+			cdmClass = DerivedUnit.class;
 			idSet = ecoFactFkSet;
-			Map<String, DerivedUnitBase> derivedUnitMap = (Map<String, DerivedUnitBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, DerivedUnit> derivedUnitMap = (Map<String, DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, derivedUnitMap);
 			
 		} catch (SQLException e) {
@@ -441,11 +402,6 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new AlgaTerraDnaImportValidator();

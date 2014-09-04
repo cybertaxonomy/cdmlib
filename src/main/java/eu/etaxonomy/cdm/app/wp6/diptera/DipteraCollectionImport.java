@@ -18,6 +18,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.transaction.TransactionStatus;
 
@@ -29,7 +30,7 @@ import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 /**
@@ -66,10 +67,10 @@ public class DipteraCollectionImport {
 	 * @param colletionMap 
 	 */
 	private void addCollectionsToSpecimen(CdmApplicationController cdmApp, Map<String, Collection> colletionMap) {
-		List<SpecimenOrObservationBase> specimens = (cdmApp.getOccurrenceService().list(Specimen.class, null, null, null, null));
-		for (SpecimenOrObservationBase specOrObservBase : specimens){
-			if (specOrObservBase instanceof Specimen){
-				handleSingleSpecimen((Specimen)specOrObservBase, colletionMap);
+		List<SpecimenOrObservationBase> specimens = (cdmApp.getOccurrenceService().list(DerivedUnit.class, null, null, null, null));
+		for (SpecimenOrObservationBase<?> specOrObservBase : specimens){
+			if (specOrObservBase.getRecordBasis().isPreservedSpecimen()){
+				handleSingleSpecimen((DerivedUnit)specOrObservBase, colletionMap);
 			}else{
 				logger.warn("There are specimenOrObservationBase objects which are not of class Specimen. This is probably an error.");
 			}
@@ -82,10 +83,10 @@ public class DipteraCollectionImport {
 	 * @param specimen 
 	 * @param colletionMap
 	 */
-	private void handleSingleSpecimen(Specimen specimen, Map<String, Collection> collectionMap) {
+	private void handleSingleSpecimen(DerivedUnit specimen, Map<String, Collection> collectionMap) {
 		String titleCache = specimen.getTitleCache();
 		String collectionCode = getCollectionCode(titleCache);
-		if (CdmUtils.isEmpty(collectionCode)){
+		if (StringUtils.isBlank(collectionCode)){
 			logger.warn("Collection code is empty for: " + titleCache);
 		}else{
 			Collection collection = collectionMap.get(collectionCode);
@@ -215,13 +216,13 @@ public class DipteraCollectionImport {
 		
 		institution.setName(instituteName);
 		
-		if (CdmUtils.isNotEmpty(lowerInstitutionName)){
+		if (StringUtils.isNotBlank(lowerInstitutionName)){
 			Institution lowerInstitution = Institution.NewInstance();
 			lowerInstitution.setName(lowerInstitutionName);
 			lowerInstitution.setIsPartOf(institution);
 		}
 		
-		if (CdmUtils.isNotEmpty(higherInstitutionName)){
+		if (StringUtils.isNotBlank(higherInstitutionName)){
 			Institution higherInstitution = Institution.NewInstance();
 			higherInstitution.setName(higherInstitutionName);
 			institution.setIsPartOf(higherInstitution);

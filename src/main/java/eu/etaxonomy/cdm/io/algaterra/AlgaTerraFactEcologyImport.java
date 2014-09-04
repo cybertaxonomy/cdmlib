@@ -22,9 +22,9 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeCacheStrategy;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
+import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.algaterra.validation.AlgaTerraSpecimenImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
@@ -40,14 +40,10 @@ import eu.etaxonomy.cdm.model.description.IndividualsAssociation;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Fossil;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -111,7 +107,7 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		Set<TaxonBase> taxaToSave = new HashSet<TaxonBase>();
 		
 		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
-		Map<String, DerivedUnitBase> ecoFactDerivedUnitMap = (Map<String, DerivedUnitBase>) partitioner.getObjectMap(ECO_FACT_DERIVED_UNIT_NAMESPACE);
+		Map<String, DerivedUnit> ecoFactDerivedUnitMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(ECO_FACT_DERIVED_UNIT_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -135,15 +131,17 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 					//source ref
 					Reference<?> sourceRef = state.getTransactionalSourceReference();
 				
-					DerivedUnitBase<?> ecoFact = ecoFactDerivedUnitMap.get(String.valueOf(ecoFactId));
-					
+					DerivedUnit ecoFact = ecoFactDerivedUnitMap.get(String.valueOf(ecoFactId));
+					if (ecoFact == null){
+						logger.warn("EcoFact is null for EcoFact: " + CdmUtils.Nz(ecoFactId) + ", taxonId: " + CdmUtils.Nz(taxonId));
+					}
 					
 					//description element
 					if (taxonId != null){
 						Taxon taxon = getTaxon(state, taxonId, taxonMap, factId);		
 						
 						if(taxon != null){
-							DerivedUnitBase identifiedSpecimen = makeIdentifiedSpecimen(ecoFact, recordBasis);
+							DerivedUnit identifiedSpecimen = makeIdentifiedSpecimen(ecoFact, recordBasis);
 							
 							makeDetermination(state, rs, taxon, identifiedSpecimen, factId, partitioner);
 													
@@ -178,16 +176,16 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		}
 	}
 	
-	private void makeIndividualsAssociation(AlgaTerraImportState state, Taxon taxon, Reference<?> sourceRef, DerivedUnitBase<?> identifiedSpecimen){
+	private void makeIndividualsAssociation(AlgaTerraImportState state, Taxon taxon, Reference<?> sourceRef, DerivedUnit identifiedSpecimen){
 		TaxonDescription taxonDescription = getTaxonDescription(state, taxon, sourceRef);
 		IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
-		Feature feature = makeFeature(identifiedSpecimen);
+		Feature feature = makeFeature(identifiedSpecimen.getRecordBasis());
 		indAssociation.setAssociatedSpecimenOrObservation(identifiedSpecimen);
 		indAssociation.setFeature(feature);
 		taxonDescription.addElement(indAssociation);	
 	}
 	
-	private void makeDetermination(AlgaTerraImportState state, ResultSet rs, Taxon taxon, DerivedUnitBase<?> identifiedSpecimen, int factId, ResultSetPartitioner partitioner) throws SQLException {
+	private void makeDetermination(AlgaTerraImportState state, ResultSet rs, Taxon taxon, DerivedUnit identifiedSpecimen, int factId, ResultSetPartitioner partitioner) throws SQLException {
 		Date identifiedWhen = rs.getDate("IdentifiedWhen");
 		Date identifiedWhenEnd = rs.getDate("IdentiedWhenEnd");
 		boolean restrictedFlag = rs.getBoolean("RestrictedFlag");
@@ -228,15 +226,15 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 
 
 
-	private DerivedUnitBase<?> makeIdentifiedSpecimen(DerivedUnitBase<?> ecoFact, String recordBasis) {
+	private DerivedUnit makeIdentifiedSpecimen(DerivedUnit ecoFact, String recordBasis) {
 		//TODO event type
 		DerivationEvent event = DerivationEvent.NewInstance();
-		DerivedUnitType derivedUnitType = makeDerivedUnitType(recordBasis);
+		SpecimenOrObservationType derivedUnitType = makeDerivedUnitType(recordBasis);
 		if (derivedUnitType == null){
-			logger.warn("NULL");
+			logger.warn("derivedUnitType is NULL");
 		}
 		
-		DerivedUnitBase<?> result = derivedUnitType.getNewDerivedUnitInstance();
+		DerivedUnit result = DerivedUnit.NewInstance(derivedUnitType);
 		result.setDerivedFrom(event);
 		ecoFact.addDerivationEvent(event);
 		
@@ -263,7 +261,7 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 	 * @param type 
 	 * @return
 	 */
-	private DerivedUnitFacade getDerivedUnit(AlgaTerraImportState state, int ecoFactId, Map<String, DerivedUnit> derivedUnitMap, DerivedUnitType type) {
+	private DerivedUnitFacade getDerivedUnit(AlgaTerraImportState state, int ecoFactId, Map<String, DerivedUnit> derivedUnitMap, SpecimenOrObservationType type) {
 		String key = String.valueOf(ecoFactId);
 		DerivedUnit derivedUnit = derivedUnitMap.get(key);
 		DerivedUnitFacade facade;
@@ -281,52 +279,10 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		
 		return facade;
 	}
+
+
 	
-	private Feature makeFeature(SpecimenOrObservationBase unit) {
-		if (unit.isInstanceOf(DerivedUnit.class)){
-			return Feature.INDIVIDUALS_ASSOCIATION();
-		}else if (unit.isInstanceOf(FieldObservation.class) || unit.isInstanceOf(Observation.class) ){
-			return Feature.OBSERVATION();
-		}else if (unit.isInstanceOf(Fossil.class) || unit.isInstanceOf(LivingBeing.class) || unit.isInstanceOf(Specimen.class )){
-			return Feature.SPECIMEN();
-		}
-		logger.warn("No feature defined for derived unit class: " + unit.getClass().getSimpleName());
-		return null;
-	}
-
-
-	private DerivedUnitType makeDerivedUnitType(String recordBasis) {
-		DerivedUnitType result = null;
-		if (StringUtils.isBlank(recordBasis)){
-			result = DerivedUnitType.DerivedUnit;
-		} else if (recordBasis.equalsIgnoreCase("FossileSpecimen")){
-			result = DerivedUnitType.Fossil;
-		}else if (recordBasis.equalsIgnoreCase("Observation")){
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("HumanObservation")){
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("Literature")){
-			logger.warn("Literature record basis not yet supported");
-			result = DerivedUnitType.DerivedUnit;
-		}else if (recordBasis.equalsIgnoreCase("LivingSpecimen")){
-			result = DerivedUnitType.LivingBeing;
-		}else if (recordBasis.equalsIgnoreCase("LivingCulture")){
-			logger.warn("LivingCulture record basis not yet supported");
-			result = DerivedUnitType.DerivedUnit;
-		}else if (recordBasis.equalsIgnoreCase("MachineObservation")){
-			logger.warn("MachineObservation record basis not yet supported");
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("PreservedSpecimen")){
-			result = DerivedUnitType.Specimen;
-		}
-		return result;
-	}
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
 		Class cdmClass;
@@ -353,9 +309,9 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 
 			//derived unit map
 			nameSpace = AlgaTerraFactEcologyImport.ECO_FACT_DERIVED_UNIT_NAMESPACE;
-			cdmClass = DerivedUnitBase.class;
+			cdmClass = DerivedUnit.class;
 			idSet = extensionFkSet;
-			Map<String, DerivedUnitBase> derivedUnitMap = (Map<String, DerivedUnitBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, DerivedUnit> derivedUnitMap = (Map<String, DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, derivedUnitMap);
 
 			//nom reference map

@@ -26,10 +26,11 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TextData;
@@ -89,13 +90,13 @@ public class DipteraPostImportUpdater {
 						String newText = parseNewText(text);
 						citation.removeText(language);
 						citation.putText(language, newText);
-						TaxonNameBase scientificName = getScientificName(originalNameString, nameMap, nameDuplicateMap);
+						TaxonNameBase<?,?> scientificName = getScientificName(originalNameString, nameMap, nameDuplicateMap);
 						
 						Set<DescriptionElementSource> sources = citation.getSources();
 						if (sources.size() > 1){
 							logger.warn("There are more then 1 sources for a description");
 						}else if (sources.size() == 0){
-							DescriptionElementSource source = DescriptionElementSource.NewInstance();
+							DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
 							citation.addSource(source);
 							sources = citation.getSources();
 						}

@@ -28,7 +28,6 @@ import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.api.service.IVocabularyService;
 import eu.etaxonomy.cdm.common.ResultWrapper;
-import eu.etaxonomy.cdm.common.UuidGenerator;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -36,10 +35,10 @@ import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.CategoricalDataTest;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
@@ -113,7 +112,7 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 
 		String bfnElementName = "EIGENSCHAFT";
 		List<Element> elFeatureList = (List<Element>)elFeatureNames.getChildren(bfnElementName, bfnNamespace);
-		List<Feature> featureList = new ArrayList<>();
+		List<Feature> featureList = new ArrayList<Feature>();
 		//for each taxonName
 		for (Element elFeature : elFeatureList){
 			
@@ -175,7 +174,6 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 		FeatureTree featureTree = FeatureTree.NewInstance(featureList);
 		String featureTreeName = "RedListFeatureTree";
 		featureTree.setTitleCache(featureTreeName);
-		featureTree.setLabel("RedListFeatureTree", Language.GERMAN());
 		getFeatureTreeService().save(featureTree);
 	}
 
@@ -216,7 +214,7 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 			String childElementName = "LWERT";
 			createOrUpdateStates(success, idNamespace, config, bfnNamespace, elListValues, childElementName, redListCat, state);
 		}
-		createOrUpdateTermVocabulary(vocabularyService, redListCat, "RedList Feature");
+		createOrUpdateTermVocabulary(TermType.Feature, vocabularyService, redListCat, "RedList Feature");
 	}
 
 	/**
@@ -224,7 +222,7 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 	 * @param term
 	 */
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	private TermVocabulary createOrUpdateTermVocabulary(IVocabularyService vocabularyService, DefinedTermBase term, String strTermVocabulary) {
+	private TermVocabulary createOrUpdateTermVocabulary(TermType termType, IVocabularyService vocabularyService, DefinedTermBase term, String strTermVocabulary) {
 		TermVocabulary termVocabulary = null;
 		List<TermVocabulary> vocList = vocabularyService.list(TermVocabulary.class, null, null, null, VOC_CLASSIFICATION_INIT_STRATEGY);
 		for(TermVocabulary tv : vocList){
@@ -233,7 +231,7 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 			}
 		}
 		if(termVocabulary == null){
-			termVocabulary = TermVocabulary.NewInstance(strTermVocabulary, strTermVocabulary, strTermVocabulary, null);
+			termVocabulary = TermVocabulary.NewInstance(termType, strTermVocabulary, strTermVocabulary, strTermVocabulary, null);
 		}
 		termVocabulary.addTerm(term);			
 		vocabularyService.saveOrUpdate(termVocabulary);
@@ -286,7 +284,7 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 				e.printStackTrace();
 			}
 			String vocName = redListCat.toString()+" States";
-			termVocabulary = (OrderedTermVocabulary) getVocabulary(vocabularyStateUuid, vocName, vocName, vocName, null, true, null); 	
+			termVocabulary = (OrderedTermVocabulary) getVocabulary(TermType.State, vocabularyStateUuid, vocName, vocName, vocName, null, true, null); 	
 			State stateTerm = getStateTerm(state, stateTermUuid, matchedListValue, matchedListValue, matchedListValue, termVocabulary);
 //			State stateTerm = State.NewInstance(matchedListValue,matchedListValue, matchedListValue);
 					

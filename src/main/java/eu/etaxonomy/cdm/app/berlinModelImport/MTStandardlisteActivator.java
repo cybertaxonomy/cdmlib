@@ -65,7 +65,7 @@ public class MTStandardlisteActivator {
 
 
 		//NomeclaturalCode
-		static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+		static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	// ****************** ALL *****************************************
 		

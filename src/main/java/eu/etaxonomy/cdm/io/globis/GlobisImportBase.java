@@ -38,7 +38,7 @@ import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
@@ -146,7 +146,7 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	 * @return
 	 */
 	protected NamedArea getCountry(GlobisImportState state, String countryStr) {
-		NamedArea country = WaterbodyOrCountry.getWaterbodyOrCountryByLabel(countryStr);
+		NamedArea country = Country.getCountryByLabel(countryStr);
 		if (country == null){
 			try {
 				country = (NamedArea)state.getTransformer().getNamedAreaByKey(countryStr);

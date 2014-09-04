@@ -24,13 +24,15 @@ import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.description.DescriptionElementSource;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.persistence.query.OrderHint;
@@ -49,7 +51,7 @@ public class CommonNameExcelImport extends ExcelImporterBase<CichorieaeCommonNam
 	protected static final String COMMON_NAME_COLUMN = "common name";
 	protected static final String REFERENCE_COLUMN = "Literaturnummer";
 	protected static final String DISTIRBUTION_COLUMN = "Verbreitung";
-	protected static final String AREA_COLUMN = "Vorschlag Bezeichnung Länder/Regionen";
+	protected static final String AREA_COLUMN = "Vorschlag Bezeichnung Lï¿½nder/Regionen";
 
 	private Map<String, NamedArea> areaStore = new HashMap<String, NamedArea>();
 	private Map<String, Language> languageStore = new HashMap<String, Language>();
@@ -134,7 +136,7 @@ public class CommonNameExcelImport extends ExcelImporterBase<CichorieaeCommonNam
 		//species name
 		String speciesStr = taxonLight.getSpecies();
 		TaxonDescription taxonDesc = getTaxon(state, speciesStr);
-		Reference ref = getReference(state, taxonLight);
+		Reference<?> ref = getReference(state, taxonLight);
 
 		NamedArea area = getArea(state, taxonLight.getArea());
 		
@@ -181,7 +183,7 @@ public class CommonNameExcelImport extends ExcelImporterBase<CichorieaeCommonNam
 				e.printStackTrace();
 			}
 			if (result == null){
-				List<DefinedTermBase> candidates = getTermService().findByTitle(WaterbodyOrCountry.class, area, null, criteria, null, null, orderHints, null).getRecords();
+				List<DefinedTermBase> candidates = getTermService().findByTitle(Country.class, area, null, criteria, null, null, orderHints, null).getRecords();
 				if (candidates.size() == 0){
 					candidates = getTermService().findByTitle(NamedArea.class, area, null, criteria, null, null, orderHints, null).getRecords();
 				}
@@ -236,10 +238,10 @@ public class CommonNameExcelImport extends ExcelImporterBase<CichorieaeCommonNam
 	}
 
 	private TaxonDescription getNewDescription(CichorieaeCommonNameImportState state, Taxon taxon) {
-		Reference excelRef = state.getConfig().getSourceReference();
+		Reference<?> excelRef = state.getConfig().getSourceReference();
 		TaxonDescription desc = TaxonDescription.NewInstance(taxon, false);
 		desc.setTitleCache("Common Names Excel import", true);
-		desc.addSource(null, null, excelRef, null);
+		desc.addSource(OriginalSourceType.Import, null, null, excelRef, null);
 		return desc;
 	}
 
@@ -253,7 +255,7 @@ public class CommonNameExcelImport extends ExcelImporterBase<CichorieaeCommonNam
 			for (String strCommonName : commonNamesList){
 				CommonTaxonName commonName = CommonTaxonName.NewInstance(strCommonName, language, area);
 				if (ref != null || StringUtils.isNotBlank(nameUsedInSource)){
-					DescriptionElementSource source = DescriptionElementSource.NewInstance(ref, null);
+					DescriptionElementSource source = DescriptionElementSource.NewPrimarySourceInstance(ref, null);
 					source.setOriginalNameString(nameUsedInSource);
 					commonName.addSource(source);
 				}else{
@@ -299,7 +301,7 @@ public class CommonNameExcelImport extends ExcelImporterBase<CichorieaeCommonNam
 					}else if (result.getId() == 0){
 //						UUID uuidLanguageVoc = UUID.fromString("45ac7043-7f5e-4f37-92f2-3874aaaef2de"); 
 						UUID uuidLanguageVoc = UUID.fromString("434cea89-9052-4567-b2db-ff77f42e9084"); 
-						TermVocabulary<Language> voc = getVocabulary(uuidLanguageVoc, "User Defined Languages", "User Defined Languages", null, null, false, result);
+						TermVocabulary<Language> voc = getVocabulary(TermType.Language, uuidLanguageVoc, "User Defined Languages", "User Defined Languages", null, null, false, result);
 //						TermVocabulary<Language> voc = getVocabularyService().find(uuidLanguageVoc);
 						voc.addTerm(result);
 						getTermService().saveOrUpdate(result);

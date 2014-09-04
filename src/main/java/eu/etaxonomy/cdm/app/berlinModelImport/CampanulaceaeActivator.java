@@ -66,7 +66,7 @@ public class CampanulaceaeActivator {
 	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
 	
 	//NomeclaturalCode
-	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	//ignore null
 	static final boolean ignoreNull = true;

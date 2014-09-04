@@ -18,7 +18,6 @@ import junit.framework.Assert;
 
 import org.apache.log4j.Logger;
 
-import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.CdmPersistentDataSource;
@@ -64,7 +63,7 @@ public class SDDImportActivator {
        dataSourceName = (dataSourceName.equals("")) ? "cdm_test4" : dataSourceName;
        username = (username.equals("")) ? "ljm" : username;
        
-       ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", dataSourceName, 3306, username, password, NomenclaturalCode.ICBN);
+       ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", dataSourceName, 3306, username, password, NomenclaturalCode.ICNAFP);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("127.0.0.1", "cdm_edit_cichorieae", 3306, "ljm", password, NomenclaturalCode.ICBN);
        //ICdmDataSource dataSource = CdmDataSource.NewMySqlInstance("160.45.63.201", "cdm_edit_cichorieae", 3306, "edit", password, NomenclaturalCode.ICBN);
        boolean connectionAvailable;
@@ -87,7 +86,7 @@ public class SDDImportActivator {
 //			CdmApplicationController.NewInstance(loadedDataSource, DbSchemaValidation.CREATE);
            NomenclaturalCode loadedCode = loadedDataSource.getNomenclaturalCode();
 
-           Assert.assertEquals(NomenclaturalCode.ICBN, loadedCode);
+           Assert.assertEquals(NomenclaturalCode.ICNAFP, loadedCode);
        } catch (DataSourceNotFoundException e) {
            // TODO Auto-generated catch block
            e.printStackTrace();

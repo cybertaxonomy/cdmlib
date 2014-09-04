@@ -29,7 +29,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -94,7 +94,7 @@ public class AlgaTerraPictureImport  extends AlgaTerraImageImportBase {
 		
 //		Map<String, DerivedUnitBase> ecoFactMap = (Map<String, DerivedUnitBase>) partitioner.getObjectMap(AlgaTerraSpecimenImportBase.ECO_FACT_DERIVED_UNIT_NAMESPACE);
 		Map<String, TaxonBase> taxonMap = (Map<String, TaxonBase>) partitioner.getObjectMap(BerlinModelTaxonImport.NAMESPACE);
-		Map<String, DerivedUnitBase<?>> specimenMap = (Map<String, DerivedUnitBase<?>>) partitioner.getObjectMap(AlgaTerraFactEcologyImport.FACT_ECOLOGY_NAMESPACE);
+		Map<String, DerivedUnit> specimenMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(AlgaTerraFactEcologyImport.FACT_ECOLOGY_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -155,10 +155,10 @@ public class AlgaTerraPictureImport  extends AlgaTerraImageImportBase {
 
 
 
-	private void handlePictureSpecificFields(ResultSet rs, Media media, AlgaTerraImportState state, Map<String, DerivedUnitBase<?>> specimenMap) throws SQLException {
+	private void handlePictureSpecificFields(ResultSet rs, Media media, AlgaTerraImportState state, Map<String, DerivedUnit> specimenMap) throws SQLException {
 		Integer specimenFactId = nullSafeInt(rs, "FactFk");
 		if (specimenFactId != null){
-			DerivedUnitBase<?> specimen = specimenMap.get(String.valueOf(specimenFactId));
+			DerivedUnit specimen = specimenMap.get(String.valueOf(specimenFactId));
 			if (specimen == null){
 				logger.warn("Specimen not found for FactFK: " + specimenFactId);
 			}else{

@@ -65,7 +65,7 @@ public class CommonNameImportConfigurator extends ExcelImportConfiguratorBase im
 
 	private CommonNameImportConfigurator(URI source, ICdmDataSource destination) {
 	   super(source, destination, defaultTransformer);
-	   setNomenclaturalCode(NomenclaturalCode.ICBN); 
+	   setNomenclaturalCode(NomenclaturalCode.ICNAFP); 
 	   setSource(source);
 	   setDestination(destination);
 	}

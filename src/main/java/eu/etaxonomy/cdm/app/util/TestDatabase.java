@@ -36,21 +36,21 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.description.TaxonInteraction;
 import eu.etaxonomy.cdm.model.description.TaxonNameDescription;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
-import eu.etaxonomy.cdm.model.taxon.Classification;
 
 /**
  * @author a.babadshanjan
@@ -67,7 +67,7 @@ public class TestDatabase {
 		
 		logger.info("Setting DB " + dbname);
 		String password = AccountStore.readOrStorePassword(dbname, server, username, null);
-		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, NomenclaturalCode.ICBN);
+		ICdmDataSource datasource = CdmDataSource.NewMySqlInstance(server, dbname, username, password, NomenclaturalCode.ICNAFP);
 		return datasource;
 	}
 	
@@ -118,7 +118,7 @@ public class TestDatabase {
 	    Feature feature1 = Feature.BIOLOGY_ECOLOGY();
 	    
 	    TaxonNameDescription taxNameDescription = TaxonNameDescription.NewInstance();
-	    taxNameDescription.addFeature(feature1);
+//	    taxNameDescription.addFeature(feature1);    //no longer supported since v3.3
 	    QuantitativeData element = QuantitativeData.NewInstance();
 	    StatisticalMeasurementValue statisticalValue = StatisticalMeasurementValue.NewInstance();
 	    statisticalValue.setType(StatisticalMeasure.MAX());
@@ -126,14 +126,14 @@ public class TestDatabase {
 	    element.addStatisticalValue(statisticalValue);
 	    taxNameDescription.addElement(element);
 	    
-	    SpecimenOrObservationBase<?> specimen = Specimen.NewInstance();
+	    SpecimenOrObservationBase<?> specimen = DerivedUnit.NewPreservedSpecimenInstance();
 	    
 	    specimen.setIndividualCount(12);
 	    
 	    
 	    Feature featureIndAss = Feature.INDIVIDUALS_ASSOCIATION();
 	    TaxonNameDescription newTaxNameDesc = TaxonNameDescription.NewInstance();
-	    newTaxNameDesc.addFeature(featureIndAss);
+//	    newTaxNameDesc.addFeature(featureIndAss);   //no longer supported since v3.3
 	    IndividualsAssociation indAss = IndividualsAssociation.NewInstance();
 	    indAss.setAssociatedSpecimenOrObservation(specimen);
 	    
@@ -269,13 +269,13 @@ public class TestDatabase {
 
 		
 		//locationFeature.
-		WaterbodyOrCountry area = WaterbodyOrCountry.NewInstance("", "locationTest", null);
+		Country area = Country.NewInstance("", "locationTest", null);
 		area.setType(NamedAreaType.NATURAL_AREA());
 		
-		//WaterbodyOrCountry woC= WaterbodyOrCountry.NewInstance();
-		area.addWaterbodyOrCountry(WaterbodyOrCountry.AFGHANISTAN());
+		//Country woC= Country.NewInstance();
+		area.addCountry(Country.AFGHANISTAN());
 		taxDesc.addGeoScope(area);
-		taxDesc.addFeature(locationFeature);
+//		taxDesc.addFeature(locationFeature);   //no longer supported since v3.3
 		root1T.addDescription(taxDesc);
 		
 		
@@ -301,16 +301,16 @@ public class TestDatabase {
 		//TODO: Adapt to classification
 		taxTree = Classification.NewInstance("TestTree");
 		
-		root1TNode = taxTree.addChildTaxon(root1T, sec, null, null);
-		child1Node = root1TNode.addChildTaxon(child1, null, null, null);
-		child2Node = root1TNode.addChildTaxon(child2, null, null, null);
-		child21Node = child2Node.addChildTaxon(child21, null, null, null);
+		root1TNode = taxTree.addChildTaxon(root1T, sec, null);
+		child1Node = root1TNode.addChildTaxon(child1, null, null);
+		child2Node = root1TNode.addChildTaxon(child2, null, null);
+		child21Node = child2Node.addChildTaxon(child21, null, null);
 		
 		taxTree2 = Classification.NewInstance("TestTree2");
 		
-		root2TNode = taxTree2.addChildTaxon(root2T, sec, null, null);
-		root2TNode.addChildTaxon(child1, sec, "p.1010", syn11);
-		root2TNode.addChildTaxon(child2, null, null, null);
+		root2TNode = taxTree2.addChildTaxon(root2T, sec, null);
+		root2TNode.addChildTaxon(child1, sec, "p.1010").setSynonymToBeUsed(syn11);
+		root2TNode.addChildTaxon(child2, null, null);
 		
 		/*
 		root1T.addTaxonomicChild(child1, sec, "p.1010");

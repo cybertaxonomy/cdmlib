@@ -42,7 +42,7 @@ import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.media.MediaRepresentation;
 import eu.etaxonomy.cdm.model.media.Rights;
-import eu.etaxonomy.cdm.model.media.RightsTerm;
+import eu.etaxonomy.cdm.model.media.RightsType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.model.taxon.TaxonBase;
@@ -264,7 +264,7 @@ public class PalmaeImageImport extends AbstractImageImporter {
 						if (metaData.containsKey(MetaData.COPYRIGHT)){
 							//TODO: maybe search for the identic right... 
 							Rights copyright = Rights.NewInstance();
-							copyright.setType(RightsTerm.COPYRIGHT());
+							copyright.setType(RightsType.COPYRIGHT());
 							Person copyrightOwner;
 							if (artist != null && !artist.getLastname().equalsIgnoreCase(getLastName(metaData.get(MetaData.COPYRIGHT)))){
 								copyrightOwner = Person.NewInstance();

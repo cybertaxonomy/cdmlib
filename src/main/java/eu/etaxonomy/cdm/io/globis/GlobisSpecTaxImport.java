@@ -24,7 +24,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
@@ -36,6 +35,7 @@ import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -46,8 +46,9 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
@@ -210,7 +211,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 						name.addExtension(citedTypeLocality, exTypeCitedTypeLoc);
 					}
 
-					name.addSource(String.valueOf(specTaxId), SPEC_TAX_NAMESPACE, state.getTransactionalSourceReference(), null);
+					name.addSource(OriginalSourceType.Import, String.valueOf(specTaxId), SPEC_TAX_NAMESPACE, state.getTransactionalSourceReference(), null);
 					
 					namesToSave.add(name);
 					
@@ -316,7 +317,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 			return;
 		}
 		
-		FieldObservation fieldObservation = makeTypeFieldObservation(state, rs);
+		FieldUnit fieldObservation = makeTypeFieldObservation(state, rs);
 		
 		//typeDepository
 		String specTypeDepositoriesStr = rs.getString("SpecTypeDepository");
@@ -329,7 +330,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 		
 		//TODO several issues
 		if (specTypeDepositories.length == 0){
-			Specimen specimen = makeSingleTypeSpecimen(fieldObservation);
+			DerivedUnit specimen = makeSingleTypeSpecimen(fieldObservation);
 			makeTypeDesignation(name, rs, specimen, specTaxId);
 			makeTypeIdInSource(state, specimen, "null", specTaxId);
 		}
@@ -337,7 +338,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 			specTypeDepositoryStr = specTypeDepositoryStr.trim();
 			
 			//Specimen
-			Specimen specimen = makeSingleTypeSpecimen(fieldObservation);
+			DerivedUnit specimen = makeSingleTypeSpecimen(fieldObservation);
 
 			if (specTypeDepositoryStr.equals("??")){
 				//unknown
@@ -367,10 +368,10 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	}
 
 
-	private void makeTypeIdInSource(GlobisImportState state, Specimen specimen, String collectionCode, Integer specTaxId) {
+	private void makeTypeIdInSource(GlobisImportState state, DerivedUnit specimen, String collectionCode, Integer specTaxId) {
 		String namespace = TYPE_NAMESPACE;
 		String id = getTypeId(specTaxId, collectionCode);
-		IdentifiableSource source = IdentifiableSource.NewInstance(id, namespace, state.getTransactionalSourceReference(), null);
+		IdentifiableSource source = IdentifiableSource.NewInstance(OriginalSourceType.Import, id, namespace, state.getTransactionalSourceReference(), null);
 		specimen.addSource(source);
 	}
 
@@ -403,7 +404,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	 * @param specimen
 	 * @param specTaxId 
 	 */
-	protected Collection makeCollection(GlobisImportState state, String specTypeDepositoryStr, Specimen specimen, Integer specTaxId) {
+	protected Collection makeCollection(GlobisImportState state, String specTypeDepositoryStr, DerivedUnit specimen, Integer specTaxId) {
 		
 		//Collection
 		specTypeDepositoryStr = specTypeDepositoryStr.replace("Washington, D.C.", "Washington@ D.C.");
@@ -489,7 +490,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	 * @param specTaxId 
 	 * @return
 	 */
-	protected String makeAdditionalSpecimenInformation( String specTypeDepositoryStr, Specimen specimen, Integer specTaxId) {
+	protected String makeAdditionalSpecimenInformation( String specTypeDepositoryStr, DerivedUnit specimen, Integer specTaxId) {
 		//doubful
 		if (specTypeDepositoryStr.endsWith("?")){
 			Marker.NewInstance(specimen, true, MarkerType.IS_DOUBTFUL());
@@ -527,11 +528,11 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	 * @param fieldObservation
 	 * @return
 	 */
-	protected Specimen makeSingleTypeSpecimen(FieldObservation fieldObservation) {
+	protected DerivedUnit makeSingleTypeSpecimen(FieldUnit fieldObservation) {
 		DerivationEvent derivEvent = DerivationEvent.NewInstance();
 //			derivEvent.setType(DerivationEventType.ACCESSIONING());
 		fieldObservation.addDerivationEvent(derivEvent);
-		Specimen specimen = Specimen.NewInstance();
+		DerivedUnit specimen = DerivedUnit.NewPreservedSpecimenInstance();
 		specimen.setDerivedFrom(derivEvent);
 		return specimen;
 	}
@@ -544,17 +545,17 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	 * @return
 	 * @throws SQLException
 	 */
-	protected FieldObservation makeTypeFieldObservation(GlobisImportState state, 
+	protected FieldUnit makeTypeFieldObservation(GlobisImportState state, 
 			ResultSet rs) throws SQLException {
 		
 		String countryString = rs.getString("SpecTypeCountry");
 		
-		DerivedUnitType unitType = DerivedUnitType.Specimen;
+		SpecimenOrObservationType unitType = SpecimenOrObservationType.PreservedSpecimen;
 		DerivedUnitFacade facade = DerivedUnitFacade.NewInstance(unitType);
 		
 		NamedArea typeCountry = getCountry(state, countryString);
 		facade.setCountry(typeCountry);
-		FieldObservation fieldObservation = facade.innerFieldObservation();
+		FieldUnit fieldObservation = facade.innerFieldUnit();
 		return fieldObservation;
 	}
 
@@ -569,7 +570,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 	 * @param specTaxId 
 	 * @throws SQLException 
 	 */
-	protected void makeTypeDesignation(ZoologicalName name, ResultSet rs, Specimen specimen, Integer specTaxId) throws SQLException {
+	protected void makeTypeDesignation(ZoologicalName name, ResultSet rs, DerivedUnit specimen, Integer specTaxId) throws SQLException {
 		//type
 		String specType = rs.getString("SpecType");
 		SpecimenTypeDesignationStatus status = getTypeDesigType(specType, specTaxId);
@@ -681,7 +682,7 @@ public class GlobisSpecTaxImport  extends GlobisImportBase<Reference> implements
 		Rank rank = null;
 		if (isNotBlank(rankStr)){
 			try {
-				rank = Rank.getRankByNameOrAbbreviation(rankStr, NomenclaturalCode.ICZN, true);
+				rank = Rank.getRankByNameOrIdInVoc(rankStr, NomenclaturalCode.ICZN, true);
 			} catch (UnknownCdmTypeException e) {
 				e.printStackTrace();
 			}

@@ -21,7 +21,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.io.algaterra.validation.AlgaTerraTypeImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
@@ -32,6 +31,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignation;
@@ -39,8 +39,8 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -155,7 +155,9 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 					//facade
 					//FIXME - depends on material category
 //					DerivedUnitType type = makeDerivedUnitType(recordBasis);
-					DerivedUnitType type = DerivedUnitType.Specimen;
+					if (i<=2){logger.warn("RecordBasis not yet implemented in TypeImport");}
+					
+					SpecimenOrObservationType type = SpecimenOrObservationType.PreservedSpecimen;
 					DerivedUnitFacade facade = getDerivedUnit(state, typeSpecimenId, typeSpecimenMap, type, ecoFactMap, ecoFactId);
 					
 					//field observation
@@ -246,7 +248,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 		
 		
 		
-		DerivedUnitBase<?> derivedUnit = facade.innerDerivedUnit();
+		DerivedUnit derivedUnit = facade.innerDerivedUnit();
 		
 		//collection
 		String barcode = rs.getString("Barcode");
@@ -262,7 +264,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 			if (ref == null){
 				logger.warn("TypeSpecimen reference (" + refFk + ")not found in biblioRef. TypeSpecimenId: " + typeSpecimenId);
 			}else{
-				IdentifiableSource source = IdentifiableSource.NewInstance(ref, null);
+				IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(ref, null);
 				derivedUnit.addSource(source);
 			}
 		}
@@ -285,7 +287,7 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 	 * @param ecoFactMap 
 	 * @return
 	 */
-	private DerivedUnitFacade getDerivedUnit(AlgaTerraImportState state, int typeSpecimenId, Map<String, DerivedUnit> typeSpecimenMap, DerivedUnitType type, Map<String, DerivedUnit> ecoFactMap, Integer ecoFactId2) {
+	private DerivedUnitFacade getDerivedUnit(AlgaTerraImportState state, int typeSpecimenId, Map<String, DerivedUnit> typeSpecimenMap, SpecimenOrObservationType type, Map<String, DerivedUnit> ecoFactMap, Integer ecoFactId2) {
 		//TODO implement ecoFact map - if not all null anymore
 		String typeKey = String.valueOf(typeSpecimenId);
 		DerivedUnit derivedUnit = typeSpecimenMap.get(typeKey);
@@ -304,27 +306,27 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 		
 		return facade;
 	}
-	private DerivedUnitType makeDerivedUnitType(String recordBasis) {
-		DerivedUnitType result = null;
-		if (StringUtils.isBlank(recordBasis)){
-			result = DerivedUnitType.DerivedUnit;
-		} else if (recordBasis.equalsIgnoreCase("FossileSpecimen")){
-			result = DerivedUnitType.Fossil;
-		}else if (recordBasis.equalsIgnoreCase("HumanObservation")){
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("Literature")){
-			logger.warn("Literature record basis not yet supported");
-			result = DerivedUnitType.DerivedUnit;
-		}else if (recordBasis.equalsIgnoreCase("LivingSpecimen")){
-			result = DerivedUnitType.LivingBeing;
-		}else if (recordBasis.equalsIgnoreCase("MachineObservation")){
-			logger.warn("MachineObservation record basis not yet supported");
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("PreservedSpecimen")){
-			result = DerivedUnitType.Specimen;
-		}
-		return result;
-	}
+//	private DerivedUnitType makeDerivedUnitType(String recordBasis) {
+//		DerivedUnitType result = null;
+//		if (StringUtils.isBlank(recordBasis)){
+//			result = DerivedUnitType.DerivedUnit;
+//		} else if (recordBasis.equalsIgnoreCase("FossileSpecimen")){
+//			result = DerivedUnitType.Fossil;
+//		}else if (recordBasis.equalsIgnoreCase("HumanObservation")){
+//			result = DerivedUnitType.Observation;
+//		}else if (recordBasis.equalsIgnoreCase("Literature")){
+//			logger.warn("Literature record basis not yet supported");
+//			result = DerivedUnitType.DerivedUnit;
+//		}else if (recordBasis.equalsIgnoreCase("LivingSpecimen")){
+//			result = DerivedUnitType.LivingBeing;
+//		}else if (recordBasis.equalsIgnoreCase("MachineObservation")){
+//			logger.warn("MachineObservation record basis not yet supported");
+//			result = DerivedUnitType.Observation;
+//		}else if (recordBasis.equalsIgnoreCase("PreservedSpecimen")){
+//			result = DerivedUnitType.Specimen;
+//		}
+//		return result;
+//	}
 
 	
 	private SpecimenTypeDesignationStatus getSpecimenTypeDesignationStatusByKey(Integer typeStatusFk) {
@@ -392,16 +394,16 @@ public class AlgaTerraTypeImport  extends AlgaTerraSpecimenImportBase {
 
 			//eco fact field observation map
 			nameSpace = AlgaTerraTypeImport.ECO_FACT_FIELD_OBSERVATION_NAMESPACE;
-			cdmClass = FieldObservation.class;
+			cdmClass = FieldUnit.class;
 			idSet = ecoFieldObservationIdSet;
-			Map<String, FieldObservation> fieldObservationMap = (Map<String, FieldObservation>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, FieldUnit> fieldObservationMap = (Map<String, FieldUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, fieldObservationMap);
 
 			//type specimen map
 			nameSpace = AlgaTerraTypeImport.TYPE_SPECIMEN_FIELD_OBSERVATION_NAMESPACE;
-			cdmClass = FieldObservation.class;
+			cdmClass = FieldUnit.class;
 			idSet = typeSpecimenIdSet;
-			Map<String, FieldObservation> typeSpecimenMap = (Map<String, FieldObservation>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, FieldUnit> typeSpecimenMap = (Map<String, FieldUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, typeSpecimenMap);
 
 

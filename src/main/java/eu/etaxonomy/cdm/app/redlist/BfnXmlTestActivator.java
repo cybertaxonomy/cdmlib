@@ -39,20 +39,20 @@ public class BfnXmlTestActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 //	static final String tcsSource = TcsSources.tcsXml_cichorium();
-	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_redlist_lumbricidae();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_redlist_localhost();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_testDB_localhost();
 
 
 
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
-	static final String sourceSecId = "TestBfn";
+	static final String sourceSecId = "TestDATA";
 	
 	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/Regenwuermer2013.xml";
 //	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/rldb_Myxo.xml";
 	static final boolean includeNormalExplicit = true; 
 	
 	//check - import
-	static final CHECK check = CHECK.CHECK_AND_IMPORT;
+	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 	
 	//authors
 	static final boolean doMetaData = false;

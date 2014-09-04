@@ -24,8 +24,8 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.io.common.CdmDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator.CHECK;
 import eu.etaxonomy.cdm.io.sdd.in.SDDImportConfigurator;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StateData;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
@@ -53,7 +53,7 @@ public class TestActivator {
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.NONE;
 //	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.UPDATE;
 	static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.VALIDATE;
-	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICBN;
+	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICNAFP;
 
 
 
@@ -87,7 +87,7 @@ public class TestActivator {
 		TransactionStatus tx = app.startTransaction();
 
 		State state = (State)app.getTermService().find(UUID.fromString("881b9c80-626d-47a6-b308-a63ee5f4178f"));
-		Modifier modifier = (Modifier)app.getTermService().find(UUID.fromString("efc38dad-205c-4028-ad9d-ae509a14b37a"));
+		DefinedTerm modifier = (DefinedTerm)app.getTermService().find(UUID.fromString("efc38dad-205c-4028-ad9d-ae509a14b37a"));
 		CategoricalData cd = CategoricalData.NewInstance();
 		StateData stateData = StateData.NewInstance();
 		stateData.setState(state);
@@ -97,7 +97,7 @@ public class TestActivator {
 		stateData2.setState(state);
 		stateData2.addModifier(modifier);
 
-		cd.addState(stateData2);
+		cd.addStateData(stateData2);
 
 		app.getDescriptionService().saveDescriptionElement(cd);
 		System.out.println("Saved");

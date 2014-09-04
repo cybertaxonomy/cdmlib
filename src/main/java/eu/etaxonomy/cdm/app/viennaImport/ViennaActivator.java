@@ -18,6 +18,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
+import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.common.CdmUtils;
@@ -25,12 +26,14 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.media.ImageFile;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -116,17 +119,19 @@ public class ViennaActivator {
 				Taxon taxon = Taxon.NewInstance(taxonName, sec);
 				
 				logger.info("Create new specimen ...");
-				Specimen specimen = Specimen.NewInstance();
+				DerivedUnit specimenx = DerivedUnit.NewPreservedSpecimenInstance();
+				DerivedUnitFacade specimen = DerivedUnitFacade.NewInstance(SpecimenOrObservationType.PreservedSpecimen);
+				
 				specimen.setCatalogNumber(catalogNumber);
 				specimen.setStoredUnder(taxonName);   //??
 				//TODO
 				//specimen.setCollection(collection);
 				specimen.addAnnotation(Annotation.NewDefaultLanguageInstance(annotation));
 				specimen.addDetermination(getDetermination(taxon, strActor));
-				specimen.addMedia(getMedia(uriPath, strId));
+				specimen.addDerivedUnitMedia(getMedia(uriPath, strId));
 				
 				//Original ID
-				specimen.addSource(IdentifiableSource.NewInstance(strId));
+				specimen.addSource(IdentifiableSource.NewDataImportInstance(strId));
 				
 				
 			}

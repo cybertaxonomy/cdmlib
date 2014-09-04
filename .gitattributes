@@ -215,6 +215,7 @@ src/test/resources/eu/etaxonomy/cdm/io/bfnXml/TcsXmlImportConfiguratorTest-input
 src/test/resources/eu/etaxonomy/cdm/io/bfnXml/TcsXmlImportConfiguratorTest-input.xsd -text
 src/test/resources/eu/etaxonomy/cdm/io/bfnXml/bfnXmlTest-input.xml -text
 src/test/resources/eu/etaxonomy/cdm/io/bfnXml/rldb_Myxo.xml -text
+src/test/resources/eu/etaxonomy/cdm/io/bfnXml/rldb_Myxo.xsd -text
 src/test/resources/eu/etaxonomy/cdm/io/bfnXml/xsi.xsd -text
 src/test/resources/eu/etaxonomy/cdm/io/dataset.xsd -text
 src/test/resources/main/resources/conf.properties -text

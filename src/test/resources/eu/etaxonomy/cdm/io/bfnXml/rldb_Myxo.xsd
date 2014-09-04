@@ -1,0 +1,158 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" elementFormDefault="qualified">
+  <xs:element name="ROTELISTEDATEN">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="EIGENSCHAFTEN"/>
+        <xs:element ref="TAXONYME"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EIGENSCHAFTEN">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="EIGENSCHAFT"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="EIGENSCHAFT">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="METAINFOS"/>
+        <xs:element minOccurs="0" ref="LISTENWERTE"/>
+        <xs:element ref="RAUMINFOS"/>
+      </xs:sequence>
+      <xs:attribute name="standardname" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="METAINFOS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="MWERT"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="MWERT">
+    <xs:complexType mixed="true">
+      <xs:attribute name="name" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LISTENWERTE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="LWERT"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="LWERT">
+    <xs:complexType mixed="true">
+      <xs:attribute name="reihenfolge" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RAUMINFOS">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="RAUM"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RAUM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="RWERT"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="RWERT">
+    <xs:complexType>
+      <xs:simpleContent>
+        <xs:extension base="xs:integer">
+          <xs:attribute name="name" use="required" type="xs:NCName"/>
+        </xs:extension>
+      </xs:simpleContent>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TAXONYME">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="TAXONYM"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="TAXONYM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="WISSNAME"/>
+        <xs:element minOccurs="0" ref="SYNONYME"/>
+        <xs:element ref="INFORMATIONEN"/>
+      </xs:sequence>
+      <xs:attribute name="reihenfolge" use="required" type="xs:integer"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SYNONYME">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="SYNONYM"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="SYNONYM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="WISSNAME"/>
+        <xs:element ref="STATI"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="STATI">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="STATUS"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="STATUS">
+    <xs:complexType mixed="true">
+      <xs:attribute name="typ" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="INFORMATIONEN">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="BEZUGSRAUM"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="BEZUGSRAUM">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="IWERT"/>
+      </xs:sequence>
+      <xs:attribute name="name" use="required" type="xs:NCName"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="IWERT">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="WERT"/>
+        <xs:element ref="FORMATWERT"/>
+      </xs:sequence>
+      <xs:attribute name="standardname" use="required"/>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="WERT" type="xs:string"/>
+  <xs:element name="FORMATWERT" type="xs:string"/>
+  <xs:element name="WISSNAME">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element maxOccurs="unbounded" ref="NANTEIL"/>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  <xs:element name="NANTEIL">
+    <xs:complexType mixed="true">
+      <xs:attribute name="bereich" use="required"/>
+    </xs:complexType>
+  </xs:element>
+</xs:schema>

@@ -108,7 +108,7 @@ public class CommonNameRow {
 	
 	public void parseSpecies(String species){
 		INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
-		BotanicalName name = (BotanicalName)parser.parseFullName(species, NomenclaturalCode.ICBN, null);
+		BotanicalName name = (BotanicalName)parser.parseFullName(species, NomenclaturalCode.ICNAFP, null);
 		if (name.isProtectedTitleCache()){
 			logger.warn("Name could not be parsed: " + species);
 		}

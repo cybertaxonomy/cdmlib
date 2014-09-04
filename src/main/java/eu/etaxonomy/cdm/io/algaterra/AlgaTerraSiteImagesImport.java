@@ -26,7 +26,7 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 
 
@@ -85,7 +85,7 @@ public class AlgaTerraSiteImagesImport  extends AlgaTerraImageImportBase {
 		
 		Set<SpecimenOrObservationBase> unitsToSave = new HashSet<SpecimenOrObservationBase>();
 		
-		Map<String, FieldObservation> ecoFactFieldObservationMap = (Map<String, FieldObservation>) partitioner.getObjectMap(AlgaTerraSpecimenImportBase.ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
+		Map<String, FieldUnit> ecoFactFieldObservationMap = (Map<String, FieldUnit>) partitioner.getObjectMap(AlgaTerraSpecimenImportBase.ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -107,7 +107,7 @@ public class AlgaTerraSiteImagesImport  extends AlgaTerraImageImportBase {
 				try {
 					
 					//TODO use deduplicated ecofact
-					FieldObservation fieldObservation = ecoFactFieldObservationMap.get(String.valueOf(ecoFactFk));
+					FieldUnit fieldObservation = ecoFactFieldObservationMap.get(String.valueOf(ecoFactFk));
 					
 					if (fieldObservation == null){
 						logger.warn("Could not find eco fact field observation (" + ecoFactFk +") for site image " +  figureId);
@@ -168,9 +168,9 @@ public class AlgaTerraSiteImagesImport  extends AlgaTerraImageImportBase {
 			
 			//field observation map
 			nameSpace = AlgaTerraSpecimenImportBase.ECO_FACT_FIELD_OBSERVATION_NAMESPACE;
-			cdmClass = FieldObservation.class;
+			cdmClass = FieldUnit.class;
 			idSet = ecoFactIdSet;
-			Map<String, FieldObservation> fieldObservationMap = (Map<String,FieldObservation>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, FieldUnit> fieldObservationMap = (Map<String,FieldUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, fieldObservationMap);
 
 			

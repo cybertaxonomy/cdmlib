@@ -24,10 +24,13 @@ import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.IInputTransformer;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.io.excel.common.ExcelImporterBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
@@ -38,8 +41,7 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.NamedAreaLevel;
 import eu.etaxonomy.cdm.model.location.NamedAreaType;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
@@ -112,8 +114,8 @@ public class CyprusDistributionImport extends ExcelImporterBase<CyprusImportStat
 		CyprusDistributionRow taxonLight = state.getCyprusDistributionRow();
 		//species name
 		String taxonStr = taxonLight.getSpecies();
-		if ("#entfällt#".equalsIgnoreCase(taxonStr)){
-			logger.warn("entfällt");
+		if ("#entfï¿½llt#".equalsIgnoreCase(taxonStr)){
+			logger.warn("entfï¿½llt");
 			return;
 		}
 		Taxon taxon = getTaxon(state, taxonStr);
@@ -144,7 +146,7 @@ public class CyprusDistributionImport extends ExcelImporterBase<CyprusImportStat
 			if (distributionStr.contains(String.valueOf(i))){
 				NamedArea area = this.divisions.get(String.valueOf(i));
 				Distribution distribution = Distribution.NewInstance(area, status);
-				distribution.addSource(null, null, ref, null);
+				distribution.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, ref, null);
 				description.addElement(distribution);
 			}
 		}
@@ -154,7 +156,7 @@ public class CyprusDistributionImport extends ExcelImporterBase<CyprusImportStat
 		Reference<?> excelRef = state.getConfig().getSourceReference();
 		TaxonDescription desc = TaxonDescription.NewInstance(taxon, false);
 		desc.setTitleCache(excelRef.getTitleCache() + " for " + taxon.getTitleCache(), true);
-		desc.addSource(null, null, excelRef, null);
+		desc.addSource(OriginalSourceType.Import, null, null, excelRef, null);
 		return desc;
 	}
 
@@ -360,9 +362,9 @@ public class CyprusDistributionImport extends ExcelImporterBase<CyprusImportStat
 			getTermService().save(areaLevel);
 		}
 		
-		TermVocabulary<NamedArea> areaVocabulary = getVocabulary(CyprusTransformer.uuidCyprusDivisionsVocabulary, "Cyprus devisions", "Cyprus divisions", null, null, true, NamedArea.NewInstance());
-		TdwgArea tdwg4Cyprus = (TdwgArea)getTermService().find(UUID.fromString("9d447b51-e363-4dde-ae40-84c55679983c"));
-		WaterbodyOrCountry isoCountryCyprus = (WaterbodyOrCountry)getTermService().find(UUID.fromString("4b13d6b8-7eca-4d42-8172-f2018051ca19"));
+		TermVocabulary<NamedArea> areaVocabulary = getVocabulary(TermType.NamedArea, CyprusTransformer.uuidCyprusDivisionsVocabulary, "Cyprus devisions", "Cyprus divisions", null, null, true, NamedArea.NewInstance());
+		NamedArea tdwg4Cyprus = (NamedArea)getTermService().find(UUID.fromString("9d447b51-e363-4dde-ae40-84c55679983c"));
+		Country isoCountryCyprus = (Country)getTermService().find(UUID.fromString("4b13d6b8-7eca-4d42-8172-f2018051ca19"));
 		
 		for(int i = 1; i <= 8; i++){
 			UUID divisionUuid = transformer.getNamedAreaUuid(String.valueOf(i));

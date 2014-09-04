@@ -29,6 +29,7 @@ import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.name.BotanicalName;
 import eu.etaxonomy.cdm.model.name.NameTypeDesignation;
@@ -179,7 +180,7 @@ public class CaryoTaxonImport  extends DbImportBase<CaryoImportState, CaryoImpor
 				
 				classification.addParentChild(parent, taxon, sec, null);
 				
-				taxon.addSource(String.valueOf(taxonId), "NCUGenID", sec, null);
+				taxon.addSource(OriginalSourceType.Import, String.valueOf(taxonId), "NCUGenID", sec, null);
 				
 				
 				
@@ -754,7 +755,7 @@ public class CaryoTaxonImport  extends DbImportBase<CaryoImportState, CaryoImpor
 				BotanicalName name = BotanicalName.NewInstance(Rank.FAMILY());
 				name.setGenusOrUninomial(family);
 				Taxon taxon = Taxon.NewInstance(name, state.getTransactionalSourceReference());
-				classification.addChildTaxon(taxon, null, null, null);
+				classification.addChildTaxon(taxon, null, null);
 	//			taxon.addSource(id, idNamespace, citation, null);
 				
 				familyMap.put(family, taxon);

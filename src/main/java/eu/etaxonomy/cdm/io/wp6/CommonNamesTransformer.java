@@ -15,11 +15,11 @@ import java.util.UUID;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.io.common.mapping.InputTransformerBase;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.location.NamedArea;
-import eu.etaxonomy.cdm.model.location.TdwgArea;
 
 /**
  * @author a.mueller
@@ -100,11 +100,11 @@ public final class CommonNamesTransformer extends InputTransformerBase {
 	@Override
 	public NamedArea getNamedAreaByKey(String key) throws UndefinedTransformerMethodException {
 		if (CdmUtils.isEmpty(key)){return null;
-//		}else if (key.equalsIgnoreCase("Australia")){return WaterbodyOrCountry.AUSTRALIACOMMONWEALTHOF();
-		}else if (key.equalsIgnoreCase("Azores")){return TdwgArea.getAreaByTdwgAbbreviation("AZO-OO");
-		}else if (key.equalsIgnoreCase("Canary Islands")){return TdwgArea.getAreaByTdwgAbbreviation("CNY-OO");
-		}else if (key.equalsIgnoreCase("North America")){return TdwgArea.getAreaByTdwgAbbreviation("7");
-		}else if (key.equalsIgnoreCase("Tansania")){return TdwgArea.getAreaByTdwgAbbreviation("TAN-OO");
+//		}else if (key.equalsIgnoreCase("Australia")){return Country.AUSTRALIACOMMONWEALTHOF();
+		}else if (key.equalsIgnoreCase("Azores")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("AZO-OO");
+		}else if (key.equalsIgnoreCase("Canary Islands")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("CNY-OO");
+		}else if (key.equalsIgnoreCase("North America")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("7");
+		}else if (key.equalsIgnoreCase("Tansania")){return TdwgAreaProvider.getAreaByTdwgAbbreviation("TAN-OO");
 		
 		}else{
 			return null;

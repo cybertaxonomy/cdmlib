@@ -22,7 +22,6 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade.DerivedUnitType;
 import eu.etaxonomy.cdm.io.algaterra.validation.AlgaTerraSpecimenImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
@@ -30,25 +29,27 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
-import eu.etaxonomy.cdm.model.description.Modifier;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TextData;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -120,7 +121,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		
 		//TODO do we still need this map? EcoFacts are not handled separate from Facts.
 		//However, they have duplicates on derived unit level. Also check duplicateFk. 
-		Map<String, FieldObservation> ecoFactFieldObservationMap = (Map<String, FieldObservation>) partitioner.getObjectMap(ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
+		Map<String, FieldUnit> ecoFactFieldObservationMap = (Map<String, FieldUnit>) partitioner.getObjectMap(ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -147,7 +148,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 					Reference<?> sourceRef = state.getTransactionalSourceReference();
 				
 					//facade
-					DerivedUnitType type = makeDerivedUnitType(recordBasis);
+					SpecimenOrObservationType type = makeDerivedUnitType(recordBasis);
 					
 					DerivedUnitFacade facade;
 					//field observation
@@ -155,10 +156,10 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 						facade = DerivedUnitFacade.NewInstance(type);
 						handleFieldObservationSpecimen(rs, facade, state, partitioner);
 						handleEcoFactSpecificFieldObservation(rs,facade, state);
-						FieldObservation fieldObservation = facade.getFieldObservation(true);
+						FieldUnit fieldObservation = facade.getFieldUnit(true);
 						ecoFactFieldObservationMap.put(String.valueOf(ecoFactId), fieldObservation);
 					}else{
-						FieldObservation fieldObservation = ecoFactFieldObservationMap.get(String.valueOf(duplicateFk));
+						FieldUnit fieldObservation = ecoFactFieldObservationMap.get(String.valueOf(duplicateFk));
 						facade = DerivedUnitFacade.NewInstance(type, fieldObservation);
 					}
 						
@@ -166,7 +167,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 					handleEcoFactSpecificDerivedUnit(rs,facade, state);
 
 					
-					DerivedUnitBase<?> objectToSave = facade.innerDerivedUnit();
+					DerivedUnit objectToSave = facade.innerDerivedUnit();
 					objectsToSave.add(objectToSave); 
 					
 
@@ -208,7 +209,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 			MarkerType alkalinityMarkerType = getMarkerType(state, uuidMarkerAlkalinity, "Alkalinity", "Alkalinity", null);
 			boolean alkFlag = Boolean.valueOf(alkalinityFlag.toString());
 			Marker alkalinityMarker = Marker.NewInstance(alkalinityMarkerType, alkFlag);
-			facade.getFieldObservation(true).addMarker(alkalinityMarker);
+			facade.getFieldUnit(true).addMarker(alkalinityMarker);
 		}
 		
 		
@@ -288,7 +289,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 				logger.warn("Methods not yet handled: " + method);
 			}
 			//parameter
-			TermVocabulary<Feature> vocParameter = getVocabulary(uuidVocParameter, "Feature vocabulary for AlgaTerra measurement parameters", "Parameters", null, null, false, Feature.COMMON_NAME());
+			TermVocabulary<Feature> vocParameter = getVocabulary(TermType.Feature, uuidVocParameter, "Feature vocabulary for AlgaTerra measurement parameters", "Parameters", null, null, false, Feature.COMMON_NAME());
 			if (StringUtils.isNotBlank(parameter)){
 				UUID featureUuid = getParameterFeatureUuid(state, parameter);
 				Feature feature = getFeature(state, featureUuid, parameter, parameter, null, vocParameter);
@@ -299,7 +300,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 				quantData.setUnit(unit);
 				try {
 					
-					Set<Modifier> valueModifier = new HashSet<Modifier>();
+					Set<DefinedTerm> valueModifier = new HashSet<DefinedTerm>();
 					valueStr = normalizeAndModifyValue(state, valueStr, valueModifier);
 					//value
 					Float valueFlt = Float.valueOf(valueStr);  //TODO maybe change model to Double ??
@@ -321,17 +322,17 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		
 	}
 
-	private String normalizeAndModifyValue(AlgaTerraImportState state, String valueStr, Set<Modifier> valueModifier) {
+	private String normalizeAndModifyValue(AlgaTerraImportState state, String valueStr, Set<DefinedTerm> valueModifier) {
 		valueStr = valueStr.replace(",", ".");
 		if (valueStr.startsWith("<")){
-			TermVocabulary<Modifier> measurementValueModifierVocabulary = getVocabulary(uuidMeasurementValueModifier, "Measurement value modifier", "Measurement value modifier", null, null, false, Modifier.NewInstance());
-			Modifier modifier = getModifier(state, uuidModifierLowerThan, "Lower", "Lower than the given measurement value", "<", measurementValueModifierVocabulary);
+			TermVocabulary<DefinedTerm> measurementValueModifierVocabulary = getVocabulary(TermType.Modifier, uuidMeasurementValueModifier, "Measurement value modifier", "Measurement value modifier", null, null, false, DefinedTerm.NewModifierInstance(null, null, null));
+			DefinedTerm modifier = getModifier(state, uuidModifierLowerThan, "Lower", "Lower than the given measurement value", "<", measurementValueModifierVocabulary);
 			valueModifier.add(modifier);
 			valueStr = valueStr.replace("<", "");
 		}
 		if (valueStr.startsWith(">")){
-			TermVocabulary<Modifier> measurementValueModifierVocabulary = getVocabulary(uuidMeasurementValueModifier, "Measurement value modifier", "Measurement value modifier", null, null, false, Modifier.NewInstance());
-			Modifier modifier = getModifier(state, uuidModifierGreaterThan, "Lower", "Lower than the given measurement value", "<", measurementValueModifierVocabulary);
+			TermVocabulary<DefinedTerm> measurementValueModifierVocabulary = getVocabulary(TermType.Modifier, uuidMeasurementValueModifier, "Measurement value modifier", "Measurement value modifier", null, null, false, DefinedTerm.NewModifierInstance(null, null, null));
+			DefinedTerm modifier = getModifier(state, uuidModifierGreaterThan, "Lower", "Lower than the given measurement value", "<", measurementValueModifierVocabulary);
 			valueModifier.add(modifier);
 			valueStr = valueStr.replace(">", "");
 		}
@@ -370,44 +371,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		}
 	}
 
-	private Feature makeFeature(DerivedUnitType type) {
-		if (type.equals(DerivedUnitType.DerivedUnit)){
-			return Feature.INDIVIDUALS_ASSOCIATION();
-		}else if (type.equals(DerivedUnitType.FieldObservation) || type.equals(DerivedUnitType.Observation) ){
-			return Feature.OBSERVATION();
-		}else if (type.equals(DerivedUnitType.Fossil) || type.equals(DerivedUnitType.LivingBeing) || type.equals(DerivedUnitType.Specimen )){
-			return Feature.SPECIMEN();
-		}
-		logger.warn("No feature defined for derived unit type: " + type);
-		return null;
-	}
-
-
-	private DerivedUnitType makeDerivedUnitType(String recordBasis) {
-		DerivedUnitType result = null;
-		if (StringUtils.isBlank(recordBasis)){
-			result = DerivedUnitType.DerivedUnit;
-		} else if (recordBasis.equalsIgnoreCase("FossileSpecimen")){
-			result = DerivedUnitType.Fossil;
-		}else if (recordBasis.equalsIgnoreCase("HumanObservation")){
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("Literature")){
-			logger.warn("Literature record basis not yet supported");
-			result = DerivedUnitType.DerivedUnit;
-		}else if (recordBasis.equalsIgnoreCase("LivingSpecimen")){
-			result = DerivedUnitType.LivingBeing;
-		}else if (recordBasis.equalsIgnoreCase("MachineObservation")){
-			logger.warn("MachineObservation record basis not yet supported");
-			result = DerivedUnitType.Observation;
-		}else if (recordBasis.equalsIgnoreCase("PreservedSpecimen")){
-			result = DerivedUnitType.Specimen;
-		}
-		return result;
-	}
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
+	@Override
 	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
 		String nameSpace;
 		Class cdmClass;
@@ -429,9 +393,9 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 			
 			//field observation map for duplicates
 			nameSpace = AlgaTerraEcoFactImport.ECO_FACT_FIELD_OBSERVATION_NAMESPACE;
-			cdmClass = FieldObservation.class;
+			cdmClass = FieldUnit.class;
 			idSet = fieldObservationIdSet;
-			Map<String, FieldObservation> fieldObservationMap = (Map<String, FieldObservation>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, FieldUnit> fieldObservationMap = (Map<String, FieldUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, fieldObservationMap);
 
 			//collections
@@ -450,7 +414,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 
 			//terms
 			nameSpace = AlgaTerraEcoFactImport.TERMS_NAMESPACE;
-			cdmClass = FieldObservation.class;
+			cdmClass = FieldUnit.class;  //????????
 			idSet = termsIdSet;
 			Map<String, DefinedTermBase> termMap = (Map<String, DefinedTermBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, termMap);
@@ -461,21 +425,13 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new AlgaTerraSpecimenImportValidator();
 		return validator.validate(state);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! ((AlgaTerraImportState)state).getAlgaTerraConfigurator().isDoEcoFacts();
 	}

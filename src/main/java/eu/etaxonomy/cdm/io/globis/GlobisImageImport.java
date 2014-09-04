@@ -36,11 +36,12 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.Marker;
 import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -110,7 +111,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 		
 		Set<Media> objectsToSave = new HashSet<Media>();
 		
-		Map<String, Specimen> typeMap = (Map<String, Specimen>) partitioner.getObjectMap(TYPE_NAMESPACE);
+		Map<String, DerivedUnit> typeMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(TYPE_NAMESPACE);
 		
 		Map<String, Taxon> taxonMap = (Map<String, Taxon>) partitioner.getObjectMap(TAXON_NAMESPACE);
 		Map<String, ZoologicalName> specTaxNameMap = (Map<String, ZoologicalName>) partitioner.getObjectMap(SPEC_TAX_NAMESPACE);
@@ -150,7 +151,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
         			
         			String title = null;
         			
-        			Specimen specimen = null;
+        			DerivedUnit specimen = null;
         			if (spectaxID != null){
         				//try to find type specimen
         				if (isNotBlank(motiv) && (motiv.startsWith("type specimen"))){
@@ -172,7 +173,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
         			
         			//not type specimen
         			if (specimen == null){
-						specimen = Specimen.NewInstance();
+						specimen = DerivedUnit.NewPreservedSpecimenInstance();
 						specimen.setTitleCache("Specimen for " + title );
 						String collectionCode = transformCopyright2CollectionCode(copyright);
 						//TODO
@@ -182,11 +183,11 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 					
 					
 					//source
-					specimen.addSource(String.valueOf(bildID), IMAGE_NAMESPACE, state.getTransactionalSourceReference(), null);
+					specimen.addSource(OriginalSourceType.Import, String.valueOf(bildID), IMAGE_NAMESPACE, state.getTransactionalSourceReference(), null);
 					
 					//GART id (specimenID)
 					if (isNotBlank(specimenId)){
-						specimen.addSource(specimenId, "specimenId", refGart, null);
+						specimen.addSource(OriginalSourceType.Lineage, specimenId, "specimenId", refGart, null);
 					}
 					//bemerkungen
 					if (isNotBlank(bemerkungen)){
@@ -448,9 +449,9 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 			
 			//type map
 			nameSpace = GlobisSpecTaxImport.TYPE_NAMESPACE;
-			cdmClass = Specimen.class;
+			cdmClass = DerivedUnit.class;
 			idSet = typeIdSet;
-			Map<String, Specimen> typeMap = (Map<String, Specimen>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			Map<String, DerivedUnit> typeMap = (Map<String, DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, typeMap);
 			
 			

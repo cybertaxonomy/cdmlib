@@ -35,17 +35,15 @@ import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
 import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Point;
-import eu.etaxonomy.cdm.model.location.WaterbodyOrCountry;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
-import eu.etaxonomy.cdm.model.occurrence.DerivedUnitBase;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldObservation;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.LivingBeing;
-import eu.etaxonomy.cdm.model.occurrence.Observation;
-import eu.etaxonomy.cdm.model.occurrence.Specimen;
+import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -152,20 +150,22 @@ public class SynthesysCacheActivator {
 			/**
 			 * SPECIMEN OR OBSERVATION OR LIVING
 			 */
-			DerivedUnitBase<?> derivedThing = null;
+			DerivedUnit derivedThing = null;
 			//create specimen
 			if (this.recordBasis != null){
 				if (this.recordBasis.toLowerCase().startsWith("s")) {//specimen
-					derivedThing = Specimen.NewInstance();				
+					derivedThing = DerivedUnit.NewPreservedSpecimenInstance();				
 				}
 				else if (this.recordBasis.toLowerCase().startsWith("o")) {//observation
-					derivedThing = Observation.NewInstance();				
+					derivedThing = DerivedUnit.NewInstance(SpecimenOrObservationType.Observation);				
 				}
 				else if (this.recordBasis.toLowerCase().startsWith("l")) {//living -> fossil, herbarium sheet....???
-					derivedThing = LivingBeing.NewInstance();
+					derivedThing = DerivedUnit.NewInstance(SpecimenOrObservationType.LivingSpecimen);	
 				}
 			}
-			if (derivedThing == null) derivedThing = Observation.NewInstance();
+			if (derivedThing == null){
+				derivedThing =  DerivedUnit.NewInstance(SpecimenOrObservationType.Observation);
+			}
 
 			TaxonNameBase<?,?> taxonName = null;
 			Taxon taxon = null;
@@ -322,7 +322,7 @@ public class SynthesysCacheActivator {
 			NamedArea area = NamedArea.NewInstance();
 			
 
-			WaterbodyOrCountry country = null;
+			Country country = null;
 //			System.out.println("isocountry "+this.isocountry);
 			if (this.isocountry != null)
 				country = app.getOccurrenceService().getCountryByIso(this.isocountry);
@@ -336,14 +336,14 @@ public class SynthesysCacheActivator {
 //				System.out.println(iter.next().toString());
 			
 			if (country != null){
-				area.addWaterbodyOrCountry(country);
+				area.addCountry(country);
 				System.out.println("country not null!");
 			}
 //			else{
 //				if (this.country != null){
-//					List<WaterbodyOrCountry>countries = app.getOccurrenceService().getWaterbodyOrCountryByName(this.country);
+//					List<Country>countries = app.getOccurrenceService().getCountryByName(this.country);
 //					if (countries.size() >0)
-//						area.addWaterbodyOrCountry(countries.get(0));
+//						area.addCountry(countries.get(0));
 //					else
 //						System.out.println("NO COUNTRY");//TODO need to add a new country!
 //				}
@@ -371,17 +371,17 @@ public class SynthesysCacheActivator {
 			}
 
 			//create field/observation
-			FieldObservation fieldObservation = FieldObservation.NewInstance();
+			FieldUnit fieldUnit = FieldUnit.NewInstance();
 			//add fieldNumber
-			fieldObservation.setFieldNumber(this.fieldNumber);
+			fieldUnit.setFieldNumber(this.fieldNumber);
 
 			//join gatheringEvent to fieldObservation
-			fieldObservation.setGatheringEvent(gatheringEvent);
+			fieldUnit.setGatheringEvent(gatheringEvent);
 
 
 //			//link fieldObservation and specimen
 			DerivationEvent derivationEvent = DerivationEvent.NewInstance();
-			derivationEvent.addOriginal(fieldObservation);
+			derivationEvent.addOriginal(fieldUnit);
 			derivedThing.addDerivationEvent(derivationEvent);
 //			derivationEvent.addDerivative(derivedThing);
 

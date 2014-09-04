@@ -22,6 +22,7 @@ import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
 import eu.etaxonomy.cdm.model.description.FeatureTree;
@@ -37,7 +38,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller
  * @created 01.10.2009
- * @version 1.0
  */
 public class PalmaePostImportUpdater {
 	private static final Logger logger = Logger.getLogger(PalmaePostImportUpdater.class);
@@ -263,7 +263,7 @@ public class PalmaePostImportUpdater {
 		TextData textData = TextData.NewInstance(Feature.CITATION());
 		//creates text (name: reference)
 		//textData.putText(nameUsageTaxon.getName().getTitleCache()+": " + nameUsageTaxon.getSec().getTitleCache(), Language.DEFAULT());
-		textData.addSource(null, null, nameUsageTaxon.getSec(), null, nameUsageTaxon.getName(), nameUsageTaxon.getName().getTitleCache());
+		textData.addSource(OriginalSourceType.PrimaryTaxonomicSource, null, null, nameUsageTaxon.getSec(), null, nameUsageTaxon.getName(), nameUsageTaxon.getName().getTitleCache());
 		myDescription.addElement(textData);
 		return true;
 	}
