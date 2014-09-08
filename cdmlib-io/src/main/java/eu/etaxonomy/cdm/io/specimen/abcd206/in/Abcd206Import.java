@@ -315,20 +315,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
              * GATHERING EVENT
              */
             // gathering event
-            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), dataHolder.locality, dataHolder.languageIso,
+            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(state.getConfig().getCdmAppController().getTermService(), dataHolder.locality, dataHolder.languageIso,
                     dataHolder.longitude, dataHolder.latitude, dataHolder.gatheringAgentList, dataHolder.gatheringTeamList,state.getConfig());
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country, state.getConfig(), getTermService(), getOccurrenceService());
+            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country, state.getConfig(), state.getConfig().getCdmAppController().getTermService(), getOccurrenceService());
 
             DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
 
             // other areas
             unitsGatheringArea = new UnitsGatheringArea();
             //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
-            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), getTermService());
+            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), state.getConfig().getCdmAppController().getTermService());
             ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
@@ -851,7 +851,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
                     }
 
-                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) getTermService().find(specimenTypeDesignationstatus.getUuid());
+                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) config.getCdmAppController().getTermService().find(specimenTypeDesignationstatus.getUuid());
                     //Designation
                     TaxonNameBase<?,?> name = taxon.getName();
                     SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
@@ -1430,7 +1430,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         for (Feature feature: features){
             String tmpF = feature.getTitleCache();
             if (tmpF.equalsIgnoreCase(featureName)) {
-                currentFeature=(Feature)feature;
+                currentFeature=feature;
             }
         }
         if (currentFeature == null) {
