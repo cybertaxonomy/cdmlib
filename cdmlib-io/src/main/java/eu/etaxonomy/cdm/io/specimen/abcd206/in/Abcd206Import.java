@@ -315,20 +315,24 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
              * GATHERING EVENT
              */
             // gathering event
-            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(state.getConfig().getCdmAppController().getTermService(), dataHolder.locality, dataHolder.languageIso,
+            ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+            if(cdmAppController==null){
+                cdmAppController = this;
+            }
+            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(), dataHolder.locality, dataHolder.languageIso,
                     dataHolder.longitude, dataHolder.latitude, dataHolder.gatheringAgentList, dataHolder.gatheringTeamList,state.getConfig());
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country, state.getConfig(), state.getConfig().getCdmAppController().getTermService(), getOccurrenceService());
+            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country, state.getConfig(), cdmAppController.getTermService(), getOccurrenceService());
 
             DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
 
             // other areas
             unitsGatheringArea = new UnitsGatheringArea();
             //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
-            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), state.getConfig().getCdmAppController().getTermService());
+            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), cdmAppController.getTermService());
             ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
@@ -851,7 +855,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
                     }
 
-                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) config.getCdmAppController().getTermService().find(specimenTypeDesignationstatus.getUuid());
+                    ICdmApplicationConfiguration cdmAppController = config.getCdmAppController();
+                    if(cdmAppController == null){
+                        cdmAppController = this;
+                    }
+                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid());
                     //Designation
                     TaxonNameBase<?,?> name = taxon.getName();
                     SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
