@@ -69,9 +69,8 @@ public class SaveCdmEntitiesTest {
         //scan SpecimenOrObservationBase
         for(DeterminationEvent determinationEvent:specimen.getDeterminations()){
             //modifier
-            DefinedTerm modifier = determinationEvent.getModifier();
-            if(termService.find(modifier.getUuid())==null){
-                termService.save(modifier);
+            if(determinationEvent.getModifier()!=null){
+                persistTerm(termService, determinationEvent.getModifier());
             }
             //references DONE with cascading
 //            for (Reference reference : determinationEvent.getReferences()) {
