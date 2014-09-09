@@ -84,9 +84,9 @@ public class SaveCdmEntitiesTest {
 //            }
         }
         //kindOfUnit
-        persistTermIfNecessary(termService, specimen.getKindOfUnit());
+        persistTerm(termService, specimen.getKindOfUnit());
         //lifeStage
-        persistTermIfNecessary(termService, specimen.getLifeStage());
+        persistTerm(termService, specimen.getLifeStage());
 
         //FieldUnit
         if(specimen instanceof FieldUnit){
@@ -94,10 +94,10 @@ public class SaveCdmEntitiesTest {
             GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
             if(gatheringEvent!=null){
                 //country
-                persistTermIfNecessary(termService, gatheringEvent.getCountry());
+                persistTerm(termService, gatheringEvent.getCountry());
                 //collecting areas
                 for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
-                    persistTermIfNecessary(termService, namedArea);
+                    persistTerm(termService, namedArea);
                 }
             }
             for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
@@ -112,11 +112,11 @@ public class SaveCdmEntitiesTest {
             DerivedUnit derivedUnit = (DerivedUnit)specimen;
             if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
                 for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
-                    persistTermIfNecessary(termService, type);
+                    persistTerm(termService, type);
                 }
             }
             if(derivedUnit.getPreservation()!=null){
-                persistTermIfNecessary(termService, derivedUnit.getPreservation().getMedium());
+                persistTerm(termService, derivedUnit.getPreservation().getMedium());
             }
             if(derivedUnit.getStoredUnder()!=null){
                 if(nameService.find(derivedUnit.getStoredUnder().getUuid())==null){
@@ -129,9 +129,9 @@ public class SaveCdmEntitiesTest {
         }
     }
 
-    private void persistTermIfNecessary(ITermService termService, DefinedTermBase<?> term){
-        if(term!=null && termService.find(term.getUuid())==null){
-            termService.save(term);
+    private void persistTerm(ITermService termService, DefinedTermBase<?> term){
+        if(term!=null){
+            termService.saveOrUpdate(term);
         }
     }
     //potential fields that are not persisted cascadingly
@@ -161,7 +161,7 @@ public class SaveCdmEntitiesTest {
 
     @Test
     public void testSaveSpecimen(){
-        DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+        DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE_DROP;
 //        ICdmDataSource datasource = CdmDataSource.NewMySqlInstance("localhost", "test_db", "root", "root");
         ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test_db", "root", "root");
         CdmApplicationController applicationController = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
