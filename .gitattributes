@@ -1905,6 +1905,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonListControll
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonNodeListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalController.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TaxonPortalListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/TermListController.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/controller/VocabularyController.java -text
@@ -2387,6 +2388,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestService.java -t
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/function/TestTaxonFunction.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/CreateDataTestNoUnit.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/SaveCdmEntitiesTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TermLoaderIntegrationTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/integration/TestTaxonServices.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/test/suite/CdmTestSuite.java -text

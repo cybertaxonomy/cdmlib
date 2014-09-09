@@ -67,9 +67,12 @@ import eu.etaxonomy.cdm.model.name.SpecimenTypeDesignationStatus;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
+import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -315,20 +318,24 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
              * GATHERING EVENT
              */
             // gathering event
-            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(getTermService(), dataHolder.locality, dataHolder.languageIso,
+            ICdmApplicationConfiguration cdmAppController = state.getConfig().getCdmAppController();
+            if(cdmAppController==null){
+                cdmAppController = this;
+            }
+            UnitsGatheringEvent unitsGatheringEvent = new UnitsGatheringEvent(cdmAppController.getTermService(), dataHolder.locality, dataHolder.languageIso,
                     dataHolder.longitude, dataHolder.latitude, dataHolder.gatheringAgentList, dataHolder.gatheringTeamList,state.getConfig());
 
             // country
             UnitsGatheringArea unitsGatheringArea = new UnitsGatheringArea();
             //  unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(), getTermService());
-            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country, state.getConfig(), getTermService(), getOccurrenceService());
+            unitsGatheringArea.setParams(dataHolder.isocountry, dataHolder.country, state.getConfig(), cdmAppController.getTermService(), getOccurrenceService());
 
             DefinedTermBase<?> areaCountry =  unitsGatheringArea.getCountry();
 
             // other areas
             unitsGatheringArea = new UnitsGatheringArea();
             //            unitsGatheringArea.setConfig(state.getConfig(),getOccurrenceService(),getTermService());
-            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), getTermService());
+            unitsGatheringArea.setAreas(dataHolder.namedAreaList,state.getConfig(), cdmAppController.getTermService());
             ArrayList<DefinedTermBase> nas = unitsGatheringArea.getAreas();
             for (DefinedTermBase namedArea : nas) {
                 unitsGatheringEvent.addArea(namedArea);
@@ -357,6 +364,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     try {
                         media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
                         derivedUnitFacade.addDerivedUnitMedia(media);
+                        if(state.getConfig().isDoAddMediaAsMediaSpecimen()){
+                            //add media also as media specimen
+                            MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
+                            mediaSpecimen.setMediaSpecimen(media);
+                            DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.PREPARATION());
+                            derivationEvent.addDerivative(mediaSpecimen);
+                            derivedUnitFacade.innerDerivedUnit().addDerivationEvent(derivationEvent);
+                        }
+
                     } catch (MalformedURLException e) {
                         // TODO Auto-generated catch block
                         e.printStackTrace();
@@ -851,7 +867,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
                     }
 
-                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) getTermService().find(specimenTypeDesignationstatus.getUuid());
+                    ICdmApplicationConfiguration cdmAppController = config.getCdmAppController();
+                    if(cdmAppController == null){
+                        cdmAppController = this;
+                    }
+                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid());
                     //Designation
                     TaxonNameBase<?,?> name = taxon.getName();
                     SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
@@ -1430,7 +1450,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         for (Feature feature: features){
             String tmpF = feature.getTitleCache();
             if (tmpF.equalsIgnoreCase(featureName)) {
-                currentFeature=(Feature)feature;
+                currentFeature=feature;
             }
         }
         if (currentFeature == null) {

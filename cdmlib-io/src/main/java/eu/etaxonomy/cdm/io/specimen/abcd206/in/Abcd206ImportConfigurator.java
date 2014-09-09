@@ -49,6 +49,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
     private boolean allowReuseOtherClassifications =true;
+    private boolean doAddMediaAsMediaSpecimen = false;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -59,6 +60,7 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private static IInputTransformer defaultTransformer = null;
 
     private URI sourceUri;
+
 
     @Override
     @SuppressWarnings("unchecked")
@@ -216,6 +218,10 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.addIndividualsAssociationsSuchAsSpecimenAndObservations = doCreateIndividualsAssociations;
     }
 
+    public void setAddMediaAsMediaSpecimen(boolean doAddMediaAsMediaSpecimen) {
+        this.doAddMediaAsMediaSpecimen = doAddMediaAsMediaSpecimen;
+    }
+
     /**
      * Create an IndividualsAssociations for each determination element in the ABCD data. ABCD has no such concept as IndividualsAssociations so the only way to
      *
@@ -310,6 +316,19 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         return namedAreaDecisions.get(areaStr);
     }
 
+    /**
+     * @return the doAddMediaAsMediaSpecimen
+     */
+    public boolean isDoAddMediaAsMediaSpecimen() {
+        return doAddMediaAsMediaSpecimen;
+    }
+
+    /**
+     * @param doAddMediaAsMediaSpecimen the doAddMediaAsMediaSpecimen to set
+     */
+    public void setDoAddMediaAsMediaSpecimen(boolean doAddMediaAsMediaSpecimen) {
+        this.doAddMediaAsMediaSpecimen = doAddMediaAsMediaSpecimen;
+    }
 
     /**
      * @return the allowReuseOtherClassifications

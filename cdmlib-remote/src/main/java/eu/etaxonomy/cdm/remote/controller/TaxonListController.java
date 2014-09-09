@@ -70,6 +70,11 @@ import eu.etaxonomy.cdm.remote.editor.UuidList;
 public class TaxonListController extends IdentifiableListController<TaxonBase, ITaxonService> {
 
 
+    private static final List<String> SIMPLE_TAXON_INIT_STRATEGY = DEFAULT_INIT_STRATEGY;
+    protected List<String> getSimpleTaxonInitStrategy() {
+        // TODO Auto-generated method stub
+        return SIMPLE_TAXON_INIT_STRATEGY;
+    }
 
     /**
      *
@@ -189,7 +194,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         return service.findTaxaAndNamesByFullText(searchModes, query,
                 classification, areaSet, status, null,
                 false, pagerParams.getPageSize(), pagerParams.getPageIndex(),
-                OrderHint.NOMENCLATURAL_SORT_ORDER, initializationStrategy);
+                OrderHint.NOMENCLATURAL_SORT_ORDER, getSimpleTaxonInitStrategy());
     }
 
     /**
@@ -227,8 +232,8 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      *         the following strategy {@link #SIMPLE_TAXON_INIT_STRATEGY}
      * @throws IOException
      */
-    @RequestMapping(method = RequestMethod.GET, value={"findTaxaAndNames"}) // TODO should be find, see TaxonListPortaController
-    public Pager<IdentifiableEntity> doFindTaxaAndNames(
+    @RequestMapping(method = RequestMethod.GET, value={"find"})
+    public Pager<IdentifiableEntity> doFind(
             @RequestParam(value = "query", required = true) String query,
             @RequestParam(value = "tree", required = false) UUID treeUuid,
             @RequestParam(value = "area", required = false) Set<NamedArea> areas,
@@ -245,15 +250,12 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
              throws IOException {
 
 
-        logger.info("findTaxaAndNames : " + request.getRequestURI() + "?" + request.getQueryString() );
+        logger.info("find : " + request.getRequestURI() + "?" + request.getQueryString() );
 
         PagerParameters pagerParams = new PagerParameters(pageSize, pageNumber);
         pagerParams.normalizeAndValidate(response);
 
         IFindTaxaAndNamesConfigurator config = new FindTaxaAndNamesConfiguratorImpl();
-
-        config.setTaxonPropertyPath(initializationStrategy);
-
         config.setPageNumber(pagerParams.getPageIndex());
         config.setPageSize(pagerParams.getPageSize());
         config.setTitleSearchString(query);
@@ -262,7 +264,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
         config.setDoMisappliedNames(doMisappliedNames != null ? doMisappliedNames : Boolean.FALSE);
         config.setDoTaxaByCommonNames(doTaxaByCommonNames != null ? doTaxaByCommonNames : Boolean.FALSE );
         config.setMatchMode(matchMode != null ? matchMode : MatchMode.BEGINNING);
-//        config.setTaxonPropertyPath(SIMPLE_TAXON_INIT_STRATEGY);
+        config.setTaxonPropertyPath(getSimpleTaxonInitStrategy());
         config.setNamedAreas(areas);
         if(treeUuid != null){
             Classification classification = classificationService.find(treeUuid);
@@ -326,8 +328,8 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
 
         Pager<SearchResult<TaxonBase>> pager = service.findByDescriptionElementFullText(
                 clazz, queryString, classification, features, languages, highlighting,
-                pagerParams.getPageSize(), pagerParams.getPageIndex(), ((List<OrderHint>)null),
-                initializationStrategy);
+                pagerParams.getPageSize(), pagerParams.getPageIndex(),
+                ((List<OrderHint>)null), getSimpleTaxonInitStrategy());
         return pager;
     }
 
@@ -404,7 +406,7 @@ public class TaxonListController extends IdentifiableListController<TaxonBase, I
      * @param areaSet
      */
     static public void includeAllSubAreas(Set<NamedArea> areaSet, ITermService termService) {
-    	Collection<NamedArea> tmpAreas = new HashSet<NamedArea>(areaSet);
+        Collection<NamedArea> tmpAreas = new HashSet<NamedArea>(areaSet);
         // expand all areas to include also the sub areas
         Pager<NamedArea> pager = null;
         while(true){
