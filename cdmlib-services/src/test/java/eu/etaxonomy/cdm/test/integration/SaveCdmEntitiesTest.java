@@ -10,9 +10,6 @@
 package eu.etaxonomy.cdm.test.integration;
 
 import static org.junit.Assert.assertEquals;
-
-import org.junit.Test;
-
 import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
 import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
@@ -158,7 +155,7 @@ public class SaveCdmEntitiesTest {
     -storedUnder CDM TaxonNameBase
     */
 
-    @Test
+//    @Test
     public void testSaveSpecimen(){
         DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE_DROP;
 //        ICdmDataSource datasource = CdmDataSource.NewMySqlInstance("localhost", "test_db", "root", "root");
