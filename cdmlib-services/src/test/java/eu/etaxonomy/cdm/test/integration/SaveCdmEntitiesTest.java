@@ -73,15 +73,15 @@ public class SaveCdmEntitiesTest {
             if(termService.find(modifier.getUuid())==null){
                 termService.save(modifier);
             }
-            //references
-            for (Reference reference : determinationEvent.getReferences()) {
-                if(referenceService.find(reference.getUuid())==null){
-                    referenceService.save(reference);
-                }
-                else{
-                    //TODO user interaction??
-                }
-            }
+            //references DONE with cascading
+//            for (Reference reference : determinationEvent.getReferences()) {
+//                if(referenceService.find(reference.getUuid())==null){
+//                    referenceService.save(reference);
+//                }
+//                else{
+//                    //TODO user interaction??
+//                }
+//            }
         }
         //kindOfUnit
         persistTermIfNecessary(termService, specimen.getKindOfUnit());
@@ -137,7 +137,7 @@ public class SaveCdmEntitiesTest {
     //potential fields that are not persisted cascadingly
     /*
      * SOOB
-    -DescriptionBase?? Wie instantiieren?
+    -DescriptionBase?? how to instantiate?
     -determinations
     --modifier TERM
     --setOfReferences CDM
@@ -156,12 +156,13 @@ public class SaveCdmEntitiesTest {
     ---types TERM
     -preservationMethod
     --medium TERM
-    -storedUnder CDM TaxonNameBase 
+    -storedUnder CDM TaxonNameBase
     */
 
     @Test
     public void testSaveSpecimen(){
         DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
+//        ICdmDataSource datasource = CdmDataSource.NewMySqlInstance("localhost", "test_db", "root", "root");
         ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test_db", "root", "root");
         CdmApplicationController applicationController = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 
@@ -244,8 +245,8 @@ public class SaveCdmEntitiesTest {
 
             //SpecOrObservationBase
             fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
-//            fieldUnit.setLifeStage(DefinedTerm.NewStageInstance("Live stage", "stage", null));
-//            fieldUnit.setKindOfUnit(DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null));
+            fieldUnit.setLifeStage(DefinedTerm.NewStageInstance("Live stage", "stage", null));
+            fieldUnit.setKindOfUnit(DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null));
             fieldUnit.setIndividualCount(3);
             fieldUnit.putDefinition(Language.ENGLISH(), "definition");
             fieldUnit.setPublish(true);
@@ -255,11 +256,11 @@ public class SaveCdmEntitiesTest {
             determinationEvent.setModifier(DefinedTerm.DETERMINATION_MODIFIER_AFFINIS());
             determinationEvent.setPreferredFlag(true);
             Reference<?> reference = getReference();
-            applicationController.getReferenceService().saveOrUpdate(reference);
             determinationEvent.addReference(reference);
 
 
             //save specimen
+            persistNonCascadedElements(fieldUnit, conversation, applicationController);
             occurrenceService.saveOrUpdate(fieldUnit);
             try{
                 conversation.commit();
