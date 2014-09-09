@@ -26,6 +26,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
 import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
@@ -39,6 +40,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
+import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
@@ -58,20 +60,81 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  */
 public class SaveCdmEntitiesTest {
 
-    private void handleNonCascadedElements(SpecimenOrObservationBase<?> specimen, ConversationHolder conversation, CdmApplicationController applicationController){
+    private void persistNonCascadedElements(SpecimenOrObservationBase<?> specimen, ConversationHolder conversation, CdmApplicationController applicationController){
         //services
         ITermService termService = applicationController.getTermService();
         IReferenceService referenceService = applicationController.getReferenceService();
         INameService nameService = applicationController.getNameService();
-        
+
         //scan SpecimenOrObservationBase
         for(DeterminationEvent determinationEvent:specimen.getDeterminations()){
+            //modifier
             DefinedTerm modifier = determinationEvent.getModifier();
             if(termService.find(modifier.getUuid())==null){
-                
+                termService.save(modifier);
+            }
+            //references
+            for (Reference reference : determinationEvent.getReferences()) {
+                if(referenceService.find(reference.getUuid())==null){
+                    referenceService.save(reference);
+                }
+                else{
+                    //TODO user interaction??
+                }
+            }
+        }
+        //kindOfUnit
+        persistTermIfNecessary(termService, specimen.getKindOfUnit());
+        //lifeStage
+        persistTermIfNecessary(termService, specimen.getLifeStage());
+
+        //FieldUnit
+        if(specimen instanceof FieldUnit){
+            FieldUnit fieldUnit = (FieldUnit)specimen;
+            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+            if(gatheringEvent!=null){
+                //country
+                persistTermIfNecessary(termService, gatheringEvent.getCountry());
+                //collecting areas
+                for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
+                    persistTermIfNecessary(termService, namedArea);
+                }
+            }
+            for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
+                for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
+                    persistNonCascadedElements(derivedUnit, conversation, applicationController);
+                }
+            }
+        }
+
+        //DerivedUnit
+        else if(specimen instanceof DerivedUnit){
+            DerivedUnit derivedUnit = (DerivedUnit)specimen;
+            if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
+                for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
+                    persistTermIfNecessary(termService, type);
+                }
+            }
+            if(derivedUnit.getPreservation()!=null){
+                persistTermIfNecessary(termService, derivedUnit.getPreservation().getMedium());
+            }
+            if(derivedUnit.getStoredUnder()!=null){
+                if(nameService.find(derivedUnit.getStoredUnder().getUuid())==null){
+                    //TODO persist name??
+                }
+                else{
+                    //TODO user interaction??
+                }
             }
         }
     }
+
+    private void persistTermIfNecessary(ITermService termService, DefinedTermBase<?> term){
+        if(term!=null && termService.find(term.getUuid())==null){
+            termService.save(term);
+        }
+    }
+    //potential fields that are not persisted cascadingly
     /*
      * SOOB
     -DescriptionBase?? Wie instantiieren?
@@ -83,8 +146,9 @@ public class SaveCdmEntitiesTest {
     - sex TERM
 
     FieldUnit
-    -Country TERM
-    -CollectingAreas TERM
+    -GatheringEvent
+    --Country TERM
+    --CollectingAreas TERM
 
     DerivedUnit
     -collection
@@ -92,13 +156,13 @@ public class SaveCdmEntitiesTest {
     ---types TERM
     -preservationMethod
     --medium TERM
-    -storedUnder CDM TaxonNameBase (überhaupt neu anlegen?)
+    -storedUnder CDM TaxonNameBase 
     */
 
     @Test
     public void testSaveSpecimen(){
         DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-        ICdmDataSource datasource = CdmDataSource.NewMySqlInstance("localhost", "test_db", "root", "root");
+        ICdmDataSource datasource = CdmDataSource.NewH2EmbeddedInstance("test_db", "root", "root");
         CdmApplicationController applicationController = CdmApplicationController.NewInstance(datasource, dbSchemaValidation);
 
         ConversationHolder conversation = applicationController.NewConversation();
