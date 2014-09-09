@@ -1,8 +1,8 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
@@ -69,7 +69,7 @@ public class DeterminationEvent extends EventBase {
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private SpecimenOrObservationBase identifiedUnit;
-	
+
 	@XmlElement(name = "Taxon")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
@@ -77,25 +77,26 @@ public class DeterminationEvent extends EventBase {
 	@IndexedEmbedded
     @Cascade(CascadeType.SAVE_UPDATE)
     private TaxonBase taxon;
-	
+
 	@XmlElement(name = "Modifier")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)
 	private DefinedTerm modifier;
-	
+
 	@XmlElement(name = "PreferredFlag")
 	private boolean preferredFlag;
-	
+
 	@XmlElementWrapper(name = "SetOfReferences")
 	@XmlElement(name = "Reference")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToMany(fetch = FetchType.LAZY)
+	@Cascade(CascadeType.SAVE_UPDATE)
 	private Set<Reference> setOfReferences = new HashSet<Reference>();
 
-	
-	
+
+
 	/**
 	 * Factory method
 	 * @return
@@ -103,7 +104,7 @@ public class DeterminationEvent extends EventBase {
 	public static DeterminationEvent NewInstance(){
 		return new DeterminationEvent();
 	}
-	
+
 	/**
 	 * Factory method
 	 * @return
@@ -115,14 +116,14 @@ public class DeterminationEvent extends EventBase {
 		identifiedUnit.addDetermination(result);
 		return result;
 	}
-	
+
 	/**
 	 * Constructor
 	 */
 	protected DeterminationEvent() {
 		super();
 	}
-	
+
 	public DefinedTerm getModifier() {
 		return modifier;
 	}
@@ -136,7 +137,7 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param taxon    taxon
 	 */
 	public void setTaxon(TaxonBase taxon){
@@ -149,7 +150,7 @@ public class DeterminationEvent extends EventBase {
 	}
 
 	/**
-	 * 
+	 *
 	 * @param identificationDate    identificationDate
 	 */
 	public void setIdentificationDate(Partial identificationDate){
@@ -160,7 +161,7 @@ public class DeterminationEvent extends EventBase {
 	public AgentBase getDeterminer() {
 		return this.getActor();
 	}
-	
+
 	public void setDeterminer(AgentBase determiner) {
 		this.setActor(determiner);
 	}
@@ -172,7 +173,7 @@ public class DeterminationEvent extends EventBase {
 	public void setIdentifiedUnit(SpecimenOrObservationBase identifiedUnit) {
 		this.identifiedUnit = identifiedUnit;
 	}
-	
+
 	public boolean getPreferredFlag() {
 		return preferredFlag;
 	}
@@ -180,7 +181,7 @@ public class DeterminationEvent extends EventBase {
 	public void setPreferredFlag(boolean preferredFlag) {
 		this.preferredFlag = preferredFlag;
 	}
-	
+
 	public Set<Reference> getReferences() {
 		return setOfReferences;
 	}
@@ -188,19 +189,19 @@ public class DeterminationEvent extends EventBase {
 	public void setReferences(Set<Reference> references) {
 		this.setOfReferences = references;
 	}
-	
+
 	public void addReference(Reference reference) {
 		this.setOfReferences.add(reference);
 	}
-	
-//*********** CLONE **********************************/	
-	
-	/** 
+
+//*********** CLONE **********************************/
+
+	/**
 	 * Clones <i>this</i> determination event. This is a shortcut that enables to
 	 * create a new instance that differs only slightly from <i>this</i> determination event
 	 * by modifying only some of the attributes.<BR>
 	 * This method overrides the clone method from {@link EventBase EventBase}.
-	 * 
+	 *
 	 * @see EventBase#clone()
 	 * @see java.lang.Object#clone()
 	 */
@@ -222,7 +223,7 @@ public class DeterminationEvent extends EventBase {
 			return null;
 		}
 	}
-	
-	
+
+
 
 }
