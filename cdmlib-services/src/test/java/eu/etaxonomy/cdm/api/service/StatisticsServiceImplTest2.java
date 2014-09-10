@@ -54,7 +54,7 @@ public class StatisticsServiceImplTest2 extends CdmTransactionalIntegrationTest 
 					// Service
 					StatisticsTypeEnum.SYNONYMS,
 					StatisticsTypeEnum.TAXON_NAMES,
-					StatisticsTypeEnum.NOMECLATURAL_REFERENCES,
+					StatisticsTypeEnum.NOMENCLATURAL_REFERENCES,
 					StatisticsTypeEnum.DESCRIPTIVE_SOURCE_REFERENCES });
 
 	// private static final String[] TYPES = { "CLASSIFICATION",
