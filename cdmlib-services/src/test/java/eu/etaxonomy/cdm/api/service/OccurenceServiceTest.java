@@ -17,13 +17,35 @@ import org.junit.Test;
 import org.unitils.spring.annotation.SpringBeanByType;
 
 import eu.etaxonomy.cdm.api.service.molecular.ISequenceService;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.IdentifiableSource;
+import eu.etaxonomy.cdm.model.common.Language;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.Point;
+import eu.etaxonomy.cdm.model.location.ReferenceSystem;
 import eu.etaxonomy.cdm.model.molecular.DnaSample;
 import eu.etaxonomy.cdm.model.molecular.Sequence;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
+import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
+import eu.etaxonomy.cdm.model.occurrence.PreservationMethod;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
+import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -39,6 +61,81 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
 
     @SpringBeanByType
     private ISequenceService sequenceService;
+
+    @Test
+    public void testGetNonCascadedAssociatedElements(){
+        //Collection
+        Collection collection = Collection.NewInstance();
+        Collection subCollection = Collection.NewInstance();
+        subCollection.setSuperCollection(collection);
+
+        Institution institution = Institution.NewInstance();
+        institution.addType(DefinedTerm.NewInstitutionTypeInstance("Research and teaching", "botanical garden", "BGBM"));
+        collection.setInstitute(institution);
+
+        //Source
+        Reference<?> article = ReferenceFactory.newArticle(getReference(), Person.NewInstance(), "title", "pages", "series", "volume", TimePeriod.NewInstance(2014));
+        IdentifiableSource source = IdentifiableSource.NewPrimarySourceInstance(article, "microCitation");
+
+        //FieldUnit
+        FieldUnit fieldUnit = FieldUnit.NewInstance();
+        Person primaryCollector = Person.NewInstance();
+        primaryCollector.setLifespan(TimePeriod.NewInstance(2014));
+        fieldUnit.setPrimaryCollector(primaryCollector);
+        fieldUnit.addSource(source);
+
+        //GatheringEvent
+        GatheringEvent gatheringEvent = GatheringEvent.NewInstance();
+        fieldUnit.setGatheringEvent(gatheringEvent);
+        gatheringEvent.putLocality(Language.ENGLISH(), "locality");
+        gatheringEvent.setExactLocation(Point.NewInstance(22.4, -34.2,
+                ReferenceSystem.NewInstance("MyReferenceSystem", "label", "labelAbbrev"), 33));
+        gatheringEvent.setCountry(Country.GERMANY());
+        gatheringEvent.addCollectingArea(NamedArea.EUROPE());
+
+        //Derived Unit
+        MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.StillImage);
+        mediaSpecimen.setCollection(collection);
+        BotanicalName storedUnder = BotanicalName.NewInstance(Rank.SPECIES());
+        mediaSpecimen.setStoredUnder(storedUnder);
+        PreservationMethod preservation = PreservationMethod.NewInstance(null, "My preservation");
+        mediaSpecimen.setPreservation(preservation);
+
+        //DerivationEvent
+        DerivationEvent event = DerivationEvent.NewInstance(DerivationEventType.ACCESSIONING());
+        event.addOriginal(fieldUnit);
+        event.addDerivative(mediaSpecimen);
+
+
+        //SpecOrObservationBase
+        fieldUnit.setSex(DefinedTerm.SEX_FEMALE());
+        fieldUnit.setLifeStage(DefinedTerm.NewStageInstance("Live stage", "stage", null));
+        fieldUnit.setKindOfUnit(DefinedTerm.NewKindOfUnitInstance("Kind of unit", "Kind of unit", null));
+        fieldUnit.putDefinition(Language.ENGLISH(), "definition");
+
+        //Determination
+        DeterminationEvent determinationEvent = DeterminationEvent.NewInstance(getTaxon(), mediaSpecimen);
+        determinationEvent.setModifier(DefinedTerm.NewModifierInstance("modifierDescription", "modifierLabel", "mofifierLabelAbbrev"));
+        determinationEvent.setPreferredFlag(true);
+        Reference<?> reference = getReference();
+        determinationEvent.addReference(reference);
+
+        //save specimen
+        assertEquals("Incorrect number of non cascaded CDM entities", 8, occurrenceService.getNonCascadedAssociatedElements(fieldUnit).size());
+
+    }
+    private Reference<?> getReference() {
+        Reference<?> result = ReferenceFactory.newGeneric();
+        result.setTitle("some generic reference");
+        return result;
+   }
+   private Taxon getTaxon() {
+       Reference<?> sec = getReference();
+       TaxonNameBase<?,?> name = BotanicalName.NewInstance(Rank.GENUS());
+       Taxon taxon = Taxon.NewInstance(name, sec);
+       return taxon;
+
+   }
 
     @Test
     public void testMoveDerivate(){

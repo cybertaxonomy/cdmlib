@@ -25,6 +25,7 @@ import eu.etaxonomy.cdm.api.facade.DerivedUnitFacadeNotSupportedException;
 import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.search.SearchResult;
 import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -276,4 +277,10 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
      */
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
+    /**
+     * Returns a collection of {@link ICdmBase}s that are not persisted via cascading when saving the given specimen (mostly DefinedTerms).
+     * @param specimen the specimen that is checked for non-cascaded elements.
+     * @return collection of non-cascaded element associated with the specimen
+     */
+    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen);
 }
