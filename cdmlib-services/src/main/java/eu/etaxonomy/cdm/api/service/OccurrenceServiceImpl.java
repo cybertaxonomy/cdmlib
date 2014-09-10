@@ -54,9 +54,9 @@ import eu.etaxonomy.cdm.api.service.util.TaxonRelationshipEdge;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
 import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.CdmBaseType;
-import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
+import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.UuidAndTitleCache;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
@@ -77,7 +77,6 @@ import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
-import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -106,6 +105,12 @@ public class OccurrenceServiceImpl extends IdentifiableServiceBase<SpecimenOrObs
 
     @Autowired
     private ITaxonService taxonService;
+
+    @Autowired
+    private ITermService termService;
+
+    @Autowired
+    private INameService nameService;
 
     @Autowired
     private ISequenceService sequenceService;
@@ -740,6 +745,92 @@ type=null;
             return true;
         }
         return false;
+    }
+
+    @Override
+    public Collection<ICdmBase> getNonCascadedAssociatedElements(SpecimenOrObservationBase<?> specimen){
+        //potential fields that are not persisted cascadingly
+        /*
+         * SOOB
+        -DescriptionBase
+        -determinations
+        --modifier TERM
+        -kindOfUnit TERM
+        -lifeStage TERM
+        -sex TERM
+
+        FieldUnit
+        -GatheringEvent
+        --Country TERM
+        --CollectingAreas TERM
+
+        DerivedUnit
+        -collection
+        --institute
+        ---types TERM
+        -preservationMethod
+        --medium TERM
+        -storedUnder CDM TaxonNameBase
+        */
+
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+        //scan SpecimenOrObservationBase
+        for(DeterminationEvent determinationEvent:specimen.getDeterminations()){
+            //modifier
+            if(determinationEvent.getModifier()!=null){
+                nonCascadedCdmEntities.add(determinationEvent.getModifier());
+            }
+        }
+        //kindOfUnit
+        if(specimen.getKindOfUnit()!=null){
+            nonCascadedCdmEntities.add(specimen.getKindOfUnit());
+        }
+        //lifeStage
+        if(specimen.getLifeStage()!=null){
+            nonCascadedCdmEntities.add(specimen.getLifeStage());
+        }
+        //sex
+        if(specimen.getSex()!=null){
+            nonCascadedCdmEntities.add(specimen.getSex());
+        }
+
+        //FieldUnit
+        if(specimen instanceof FieldUnit){
+            FieldUnit fieldUnit = (FieldUnit)specimen;
+            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+            if(gatheringEvent!=null){
+                //country
+                if(gatheringEvent.getCountry()!=null){
+                    nonCascadedCdmEntities.add(gatheringEvent.getCountry());
+                }
+                //collecting areas
+                for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
+                    nonCascadedCdmEntities.add(namedArea);
+                }
+            }
+            for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
+                for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
+                    nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(derivedUnit));
+                }
+            }
+        }
+
+        //DerivedUnit
+        else if(specimen instanceof DerivedUnit){
+            DerivedUnit derivedUnit = (DerivedUnit)specimen;
+            if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
+                for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
+                    nonCascadedCdmEntities.add(type);
+                }
+            }
+            if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
+                nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
+            }
+            if(derivedUnit.getStoredUnder()!=null){
+                nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
+            }
+        }
+        return nonCascadedCdmEntities;
     }
 
 }

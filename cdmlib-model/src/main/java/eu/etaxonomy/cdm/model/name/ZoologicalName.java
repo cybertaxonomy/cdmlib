@@ -260,7 +260,7 @@ public class ZoologicalName extends NonViralName<ZoologicalName> implements Clon
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> zoological taxon name, that is the
 	 * International Code of Zoological Nomenclature. This method overrides
-	 * the getNomeclaturalCode method from {@link NonViralName NonViralName}.
+	 * the getNomenclaturalCode method from {@link NonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for animals
 	 * @see  	NonViralName#isCodeCompliant()

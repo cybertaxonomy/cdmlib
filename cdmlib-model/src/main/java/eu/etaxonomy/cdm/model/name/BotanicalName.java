@@ -302,7 +302,7 @@ public class BotanicalName extends NonViralName<BotanicalName> implements Clonea
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> botanical taxon name, that is the
 	 * International Code of Botanical Nomenclature. This method overrides
-	 * the getNomeclaturalCode method from {@link NonViralName NonViralName}.
+	 * the getNomenclaturalCode method from {@link NonViralName NonViralName}.
 	 *
 	 * @return  the nomenclatural code for plants
 	 * @see  	NonViralName#isCodeCompliant()

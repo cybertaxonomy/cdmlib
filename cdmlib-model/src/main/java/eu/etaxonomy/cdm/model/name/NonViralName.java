@@ -934,9 +934,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
         return false;
     }
 
-    /* (non-Javadoc)
-     * @see eu.etaxonomy.cdm.model.name.TaxonNameBase#getNomeclaturalCode()
-     */
+
     /**
      * Returns null as {@link NomenclaturalCode nomenclatural code} that governs
      * the construction of <i>this</i> non viral taxon name since there is no specific
@@ -944,7 +942,7 @@ public class NonViralName<T extends NonViralName> extends TaxonNameBase<T, INonV
      * subclasses {@link BacterialName BacterialName},
      * {@link BotanicalName BotanicalName}, {@link CultivarPlantName CultivarPlantName} and
      * {@link ZoologicalName ZoologicalName}.
-     * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
+     * This method overrides the {@link TaxonNameBase#getNomenclaturalCode()} method from {@link TaxonNameBase TaxonNameBase}.
      *
      * @return  null
      * @see  	#isCodeCompliant()
