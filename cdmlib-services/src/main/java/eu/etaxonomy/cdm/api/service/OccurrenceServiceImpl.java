@@ -798,41 +798,58 @@ type=null;
 
         //FieldUnit
         if(specimen instanceof FieldUnit){
-            FieldUnit fieldUnit = (FieldUnit)specimen;
-            GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
-            if(gatheringEvent!=null){
-                //country
-                if(gatheringEvent.getCountry()!=null){
-                    nonCascadedCdmEntities.add(gatheringEvent.getCountry());
-                }
-                //collecting areas
-                for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
-                    nonCascadedCdmEntities.add(namedArea);
-                }
-            }
-            for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
-                for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
-                    nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(derivedUnit));
-                }
-            }
+            nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements((FieldUnit)specimen));
         }
-
         //DerivedUnit
         else if(specimen instanceof DerivedUnit){
             DerivedUnit derivedUnit = (DerivedUnit)specimen;
-            if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
-                for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
-                    nonCascadedCdmEntities.add(type);
+            if(derivedUnit.getDerivedFrom()!=null){
+                Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
+                getFieldUnits(derivedUnit, fieldUnits);
+                for(FieldUnit fieldUnit:fieldUnits){
+                    nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(fieldUnit));
                 }
-            }
-            if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
-                nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
-            }
-            if(derivedUnit.getStoredUnder()!=null){
-                nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
             }
         }
         return nonCascadedCdmEntities;
     }
+
+    private Collection<ICdmBase> getNonCascadedAssociatedElements(FieldUnit fieldUnit){
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+        GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+        if(gatheringEvent!=null){
+            //country
+            if(gatheringEvent.getCountry()!=null){
+                nonCascadedCdmEntities.add(gatheringEvent.getCountry());
+            }
+            //collecting areas
+            for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
+                nonCascadedCdmEntities.add(namedArea);
+            }
+        }
+        for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
+            for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
+                nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(derivedUnit));
+            }
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    private Collection<ICdmBase> getNonCascadedAssociatedElements(DerivedUnit derivedUnit){
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+        if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
+            for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
+                nonCascadedCdmEntities.add(type);
+            }
+        }
+        if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
+            nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
+        }
+        if(derivedUnit.getStoredUnder()!=null){
+            nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
+        }
+        return nonCascadedCdmEntities;
+    }
+
 
 }
