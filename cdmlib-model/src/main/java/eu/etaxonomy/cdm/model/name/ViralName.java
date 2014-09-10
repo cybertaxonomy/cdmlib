@@ -176,7 +176,7 @@ public class ViralName extends TaxonNameBase<ViralName, INameCacheStrategy<Viral
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> viral taxon name, that is the
 	 * International Code of Virus Classification and Nomenclature.
-	 * This method overrides the getNomeclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
+	 * This method overrides the getNomenclaturalCode method from {@link TaxonNameBase TaxonNameBase}.
 	 *
 	 * @return  the nomenclatural code for viruses
 	 * @see  	#isCodeCompliant()

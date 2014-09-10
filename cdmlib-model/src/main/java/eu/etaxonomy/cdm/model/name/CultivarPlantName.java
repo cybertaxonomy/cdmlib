@@ -161,7 +161,7 @@ public class CultivarPlantName extends BotanicalName implements Cloneable{
 	 * Returns the {@link NomenclaturalCode nomenclatural code} that governs
 	 * the construction of <i>this</i> cultivar taxon name, that is the
 	 * International Code of Nomenclature for Cultivated Plants. This method
-	 * overrides the getNomeclaturalCode method from {@link NonViralName#getNomeclaturalCode() NonViralName}.
+	 * overrides the getNomenclaturalCode method from {@link NonViralName#getNomenclaturalCode() NonViralName}.
 	 *
 	 * @return  the nomenclatural code for cultivated plants
 	 * @see  	NonViralName#isCodeCompliant()
