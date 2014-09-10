@@ -137,7 +137,6 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
     }
 
     /**
-     * (non-Javadoc)
      * @implements {@link IClassificationService#loadTreeBranch(TaxonNode, Rank, List)
      * @see eu.etaxonomy.cdm.api.service.ITaxonService#loadTreeBranchTo(eu.etaxonomy.cdm.model.taxon.TaxonNode, eu.etaxonomy.cdm.model.name.Rank, java.util.List)
      * FIXME Candidate for harmonization
@@ -166,7 +165,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
                 throw new NullPointerException("The name of the taxon associated with taxonNode " + parentNode + " is NULL");
             }
 
-            Rank parentNodeRank = parentNode.getTaxon().getName().getRank();
+            Rank parentNodeRank = parentNode.getTaxon().getName() == null ? null : parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
             if(baseRank != null && baseRank.isLower(parentNodeRank)){
                 break;
