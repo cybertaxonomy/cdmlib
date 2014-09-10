@@ -137,7 +137,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 				counter -=statisticsDao.countNomenclaturalReferences(); 
 				break;
 
-			case NOMECLATURAL_REFERENCES:
+			case NOMENCLATURAL_REFERENCES:
 
 				counter = statisticsDao.countNomenclaturalReferences();
 				break;
@@ -219,7 +219,7 @@ public class StatisticsServiceImpl implements IStatisticsService {
 					counter = statisticsDao
 							.countDescriptive(false, (Classification) filter);
 					break;
-				case NOMECLATURAL_REFERENCES:
+				case NOMENCLATURAL_REFERENCES:
 					counter = statisticsDao
 							.countNomenclaturalReferences((Classification) filter);
 					break;
