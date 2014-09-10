@@ -316,6 +316,16 @@ public interface IOccurrenceService extends IIdentifiableEntityService<SpecimenO
     public boolean moveDerivate(SpecimenOrObservationBase<?> from, SpecimenOrObservationBase<?> to, DerivedUnit derivate);
 
     /**
+     * Assembles a {@link DerivateHierarchyDTO} for the given field unit uuid which is associated to the {@link Taxon}.<br>
+     * <br>
+     * For the meaning of "associated" see also {@link #listFieldUnitsByAssociatedTaxon(Set, Taxon, Integer, Integer, Integer, List, List)}
+     * @param fieldUnit
+     * @param associatedTaxonUuid
+     * @return
+     */
+    public DerivateHierarchyDTO assembleDerivateHierarchyDTO(FieldUnit fieldUnit, UUID associatedTaxonUuid);
+
+    /**
      * Returns a collection of {@link ICdmBase}s that are not persisted via cascading when saving the given specimen (mostly DefinedTerms).
      * @param specimen the specimen that is checked for non-cascaded elements.
      * @return collection of non-cascaded element associated with the specimen
