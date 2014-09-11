@@ -52,7 +52,6 @@ import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 @Audited
 public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<?>> extends OrderedTermBase<T> {
     private static final long serialVersionUID = 1596291470042068880L;
-    @SuppressWarnings("unused")
     private static final Logger logger = Logger.getLogger(PresenceAbsenceTermBase.class);
 
     private String defaultColor = "000000";
@@ -130,6 +129,7 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
      * @throws NullPointerException
      *             if the specified object is null
      */
+    @Override
     protected int performCompareTo(T presenceAbsenceTerm, boolean skipVocabularyCheck) {
 
     	PresenceAbsenceTermBase<?> presenceAbsenceTermLocal = CdmBase.deproxy(presenceAbsenceTerm, PresenceAbsenceTermBase.class);
