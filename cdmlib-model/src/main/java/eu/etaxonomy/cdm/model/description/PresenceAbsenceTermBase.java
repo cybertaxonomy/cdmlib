@@ -22,10 +22,12 @@ import javax.xml.bind.annotation.XmlType;
 import org.apache.log4j.Logger;
 import org.hibernate.envers.Audited;
 
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.VocabularyEnum;
 
 
 /**
@@ -109,6 +111,62 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
     //TODO check RGB length 6 and between 000000 and FFFFFF
     public void setDefaultColor(String defaultColor) {
         this.defaultColor = defaultColor;
+    }
+    
+    /**
+     * Compares this OrderedTermBase with the specified OrderedTermBase for
+     * order. Returns a -1, 0, or +1 if the orderId of this object is greater
+     * than, equal to, or less than the specified object.
+     * <p>
+     * <b>Note:</b> The compare logic of this method is the <b>inverse logic</b>
+     * of the the one implemented in
+     * {@link java.lang.Comparable#compareTo(java.lang.Object)}
+     *
+     * @param orderedTerm
+     *            the OrderedTermBase to be compared
+     * @param skipVocabularyCheck
+     *            whether to skip checking if both terms to compare are in the
+     *            same vocabulary
+     * @throws NullPointerException
+     *             if the specified object is null
+     */
+    protected int performCompareTo(T presenceAbsenceTerm, boolean skipVocabularyCheck) {
+
+    	PresenceAbsenceTermBase<?> presenceAbsenceTermLocal = CdmBase.deproxy(presenceAbsenceTerm, PresenceAbsenceTermBase.class);
+        if(!skipVocabularyCheck){
+            if (this.vocabulary == null || presenceAbsenceTermLocal.vocabulary == null){
+                throw new IllegalStateException("An ordered term (" + this.toString() + " or " + presenceAbsenceTermLocal.toString() + ") of class " + this.getClass() + " or " + presenceAbsenceTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
+            }
+            if (! this.getVocabulary().getUuid().equals(presenceAbsenceTermLocal.vocabulary.getUuid())){
+               //throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared" + this.getTitleCache() + " and " + orderedTermLocal.getTitleCache());
+            	if (presenceAbsenceTermLocal.getVocabulary().getUuid().equals(VocabularyEnum.AbsenceTerm.getUuid()) || presenceAbsenceTermLocal.getVocabulary().getUuid().equals(VocabularyEnum.PresenceTerm.getUuid())){
+            		logger.debug("2 presenceAbsence terms do not belong to the same vocabulary, the absent terms will be ordered behind the presence terms");
+            		if (this.getVocabulary().getUuid().equals(VocabularyEnum.AbsenceTerm.getUuid())){
+            			return 1;
+            		}else{
+            			return -1;
+            		}
+            	}else{
+                	throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared " + this.getTitleCache() + " and " + presenceAbsenceTerm.getTitleCache());
+                }
+            }
+        }
+
+        int orderThat;
+        int orderThis;
+        try {
+            orderThat = presenceAbsenceTerm.orderIndex;//OLD: this.getVocabulary().getTerms().indexOf(orderedTerm);
+            orderThis = orderIndex; //OLD: this.getVocabulary().getTerms().indexOf(this);
+        } catch (RuntimeException e) {
+            throw e;
+        }
+        if (orderThis > orderThat){
+            return -1;
+        }else if (orderThis < orderThat){
+            return 1;
+        }else {
+            return 0;
+        }
     }
 
 }
