@@ -85,7 +85,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
 
     /**
      * Compares this OrderedTermBase with the specified OrderedTermBase for
-     * order. Returns a -1, 0, or +1 if the orderId of this object is greater
+     * order. Returns a -1, 0, or +1 if the orderIndex of this object is greater
      * than, equal to, or less than the specified object. In case the parameter
      * is <code>null</code> the
      * <p>
