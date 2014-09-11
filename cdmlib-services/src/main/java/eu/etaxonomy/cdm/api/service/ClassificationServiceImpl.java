@@ -167,7 +167,7 @@ public class ClassificationServiceImpl extends IdentifiableServiceBase<Classific
 
             Rank parentNodeRank = parentNode.getTaxon().getName() == null ? null : parentNode.getTaxon().getName().getRank();
             // stop if the next parent is higher than the baseRank
-            if(baseRank != null && baseRank.isLower(parentNodeRank)){
+            if(baseRank != null && parentNodeRank != null && baseRank.isLower(parentNodeRank)){
                 break;
             }
 
