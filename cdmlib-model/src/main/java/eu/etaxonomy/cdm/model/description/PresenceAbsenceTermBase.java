@@ -27,7 +27,8 @@ import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermBase;
 import eu.etaxonomy.cdm.model.common.TermType;
-import eu.etaxonomy.cdm.model.common.VocabularyEnum;
+import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.taxon.Taxon;
 
 
 /**
@@ -56,8 +57,8 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
 
     private String defaultColor = "000000";
 
-	
-//********************************** Constructor *******************************************************************/	
+
+//********************************** Constructor *******************************************************************/
 
   	//for hibernate use only
   	@Deprecated
@@ -79,8 +80,8 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
     protected PresenceAbsenceTermBase(String term, String label, String labelAbbrev) {
         super(TermType.PresenceAbsenceTerm, term, label, labelAbbrev);
     }
-    
-//******************************** METHODS ****************************/    
+
+//******************************** METHODS ****************************/
 
     /* (non-Javadoc)
      * @see eu.etaxonomy.cdm.model.common.DefinedTermBase#readCsvLine(java.util.List)
@@ -88,10 +89,10 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
     @Override
     public T readCsvLine(Class<T> termClass, List<String> csvLine, Map<UUID,DefinedTermBase> terms, boolean abbrevAsId) {
         T newInstance = super.readCsvLine(termClass, csvLine, terms, abbrevAsId);
-        String abbreviatedLabel = (String)csvLine.get(4);
+        String abbreviatedLabel = csvLine.get(4);
 //		String uuid = (String)csvLine.get(0);
 //		map.put(abbreviatedLabel, UUID.fromString(uuid));
-        String color = (String)csvLine.get(5);
+        String color = csvLine.get(5);
         newInstance.setDefaultColor(color);
         newInstance.getRepresentation(Language.DEFAULT()).setAbbreviatedLabel(abbreviatedLabel);
         return newInstance;
@@ -111,7 +112,7 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
     public void setDefaultColor(String defaultColor) {
         this.defaultColor = defaultColor;
     }
-    
+
     /**
      * Compares this OrderedTermBase with the specified OrderedTermBase for
      * order. Returns a -1, 0, or +1 if the orderId of this object is greater
@@ -137,18 +138,13 @@ public abstract class PresenceAbsenceTermBase<T extends PresenceAbsenceTermBase<
             if (this.vocabulary == null || presenceAbsenceTermLocal.vocabulary == null){
                 throw new IllegalStateException("An ordered term (" + this.toString() + " or " + presenceAbsenceTermLocal.toString() + ") of class " + this.getClass() + " or " + presenceAbsenceTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
-            if (! this.getVocabulary().getUuid().equals(presenceAbsenceTermLocal.vocabulary.getUuid())){
-               //throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared" + this.getTitleCache() + " and " + orderedTermLocal.getTitleCache());
-            	if (presenceAbsenceTermLocal.getVocabulary().getUuid().equals(VocabularyEnum.AbsenceTerm.getUuid()) || presenceAbsenceTermLocal.getVocabulary().getUuid().equals(VocabularyEnum.PresenceTerm.getUuid())){
-            		logger.debug("2 presenceAbsence terms do not belong to the same vocabulary, the absent terms will be ordered behind the presence terms");
-            		if (this.getVocabulary().getUuid().equals(VocabularyEnum.AbsenceTerm.getUuid())){
-            			return 1;
-            		}else{
-            			return -1;
-            		}
+            if (!(presenceAbsenceTerm.getClass().equals(this.getClass())) ){
+              if (presenceAbsenceTermLocal instanceof AbsenceTerm){
+            		return 1;
             	}else{
-                	throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared " + this.getTitleCache() + " and " + presenceAbsenceTerm.getTitleCache());
-                }
+            		return -1;
+            	}
+
             }
         }
 
