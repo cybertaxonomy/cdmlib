@@ -229,7 +229,7 @@ public class DescriptionUtility {
     private static Set<Distribution> byHighestOrderPresenceAbsenceTerm(Set<Distribution> distributions){
 
         Set<Distribution> preferred = new HashSet<Distribution>();
-        PresenceAbsenceTermBase<?> highestStatus = null;
+        PresenceAbsenceTermBase highestStatus = null;  //we need to leave generics here as for some reason highestStatus.compareTo later jumps into the wrong class for calling compareTo
         int compareResult;
         for (Distribution distribution : distributions) {
             if(highestStatus == null){
