@@ -214,7 +214,7 @@
         <description:Feature id="0" uuid="urn-uuid-05817b4d-ec77-4aa7-bce0-ea87737a4a19">
             <common:Representations>
                 <common:Representation id="0" uuid="urn-uuid-e61e2801-f42c-4bf9-bcea-602a5ef8ade0">
-                    <common:Text>Nomeclatural Discussion</common:Text>
+                    <common:Text>Nomenclatural Discussion</common:Text>
                     <common:Language>urn-uuid-e9f8cdb7-6819-44e8-95d3-e2d0690c3523</common:Language>
                 </common:Representation>
             </common:Representations>

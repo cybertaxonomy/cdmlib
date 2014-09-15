@@ -92,18 +92,12 @@ import eu.etaxonomy.cdm.strategy.parser.NonViralNameParserImpl;
 public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator, Abcd206ImportState> {
     private static final Logger logger = Logger.getLogger(Abcd206Import.class);
 
-
     private final boolean DEBUG = true;
 
     private static final String PREFERRED = "_preferred_";
     private static final String CODE = "_code_";
     private static final String COLON = ":";
     private static final String SPLITTER = "--";
-
-
-
-
-
     private static String prefix = "";
 
     //TODO make all fields ABCD206ImportState variables
@@ -126,6 +120,28 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         super();
     }
 
+    /**
+     * TODO: quick and dirty fix to avoid NonUniqueObjectExceptions
+     * They occurred because this import is a bean therefore a singleton but uses
+     * class variables which should be unique for every single import.
+     */
+    private void resetFields(){
+        classification = null;
+        ref = null;
+
+        dataHolder = null;
+        derivedUnitBase = null;
+
+        associationRefs = new ArrayList<OriginalSourceBase<?>>();
+        associationSourcesSet=false;
+        descriptionRefs = new ArrayList<OriginalSourceBase<?>>();
+        descriptionSourcesSet=false;
+        derivedUnitSources = new ArrayList<OriginalSourceBase<?>>();
+        derivedUnitSourcesSet=false;
+        descriptionGroupSet = false;
+        descriptionGroup = null;
+    }
+
     @Override
     protected boolean doCheck(Abcd206ImportState state) {
         logger.warn("Checking not yet implemented for " + this.getClass().getSimpleName());
@@ -136,6 +152,8 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     @Override
     @SuppressWarnings("rawtypes")
     public void doInvoke(Abcd206ImportState state) {
+        resetFields();
+
         state.setTx(startTransaction());
         logger.info("INVOKE Specimen Import from ABCD2.06 XML ");
 

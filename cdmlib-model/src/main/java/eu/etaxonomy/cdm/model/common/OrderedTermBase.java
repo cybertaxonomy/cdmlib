@@ -85,13 +85,15 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
 
     /**
      * Compares this OrderedTermBase with the specified OrderedTermBase for
-     * order. Returns a -1, 0, or +1 if the orderId of this object is greater
+     * order. Returns a -1, 0, or +1 if the orderIndex of this object is greater
      * than, equal to, or less than the specified object. In case the parameter
      * is <code>null</code> the
      * <p>
-     * <b>Note:</b> The compare logic of this method is the <b>inverse logic</b>
-     * of the the one implemented in
-     * {@link java.lang.Comparable#compareTo(java.lang.Object)}
+     * <b>Note:</b> The compare logic of this method might appear to be <b>inverse</b>
+     * to the one mentioned in
+     * {@link java.lang.Comparable#compareTo(java.lang.Object)}. This is, because the logic here
+     * is that the lower the orderIndex the higher the term. E.g. the very high {@link Rank}
+     * Kingdom may have an orderIndex close to 1.
      *
      * @param orderedTerm
      *            the OrderedTermBase to be compared
