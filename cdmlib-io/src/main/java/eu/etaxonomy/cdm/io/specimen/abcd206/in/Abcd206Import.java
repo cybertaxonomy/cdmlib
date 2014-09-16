@@ -737,7 +737,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     break;
                 }
             }
-            dataHolder.identificationList = new ArrayList<String>();
+            dataHolder.identificationList = new ArrayList<Identification>();
             dataHolder.statusList = new ArrayList<SpecimenTypeDesignationStatus>();
             dataHolder.atomisedIdentificationList = new ArrayList<HashMap<String, String>>();
             dataHolder.referenceList = new ArrayList<String[]>();
@@ -1048,7 +1048,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         indAssociation.setAssociatedSpecimenOrObservation(derivedUnitBase);
         indAssociation.setFeature(feature);
 
-        //<<<<<<< .courant
         if (state.getConfig().isInteractWithUser()){
             sourceMap = new HashMap<String, OriginalSourceBase<?>>();
 
@@ -1543,12 +1542,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         return taxon;
     }
 
-
-
-
-
-
-
     /**
      * HandleIdentifications : get the scientific names present in the ABCD
      * document and store link them with the observation/specimen data
@@ -1556,61 +1549,36 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param derivedUnitFacade : the current derivedunitfacade
      */
     private void handleIdentifications(Abcd206ImportState state, DerivedUnitFacade derivedUnitFacade) {
-//        System.out.println("The reference from handleidentification "+ref);
         Abcd206ImportConfigurator config = state.getConfig();
 
-        String fullScientificNameString;
         Taxon taxon = null;
 
         String scientificName = "";
         boolean preferredFlag = false;
 
-        List<String> scientificNames = new ArrayList<String>();
         if (dataHolder.nomenclatureCode == ""){
             dataHolder.nomenclatureCode = config.getNomenclaturalCode().toString();
         }
 
         for (int i = 0; i < dataHolder.identificationList.size(); i++) {
+            Identification identification = dataHolder.identificationList.get(i);
+            scientificName = identification.getScientificName().replaceAll(" et ", " & ");
 
-            fullScientificNameString = dataHolder.identificationList.get(i);
-            fullScientificNameString = fullScientificNameString.replaceAll(" et ", " & ");
-
-            if (fullScientificNameString.indexOf(PREFERRED) != -1) {
-                scientificName = fullScientificNameString.split(PREFERRED)[0];
-                String pTmp = fullScientificNameString.split(PREFERRED)[1].split(CODE)[0];
-                if (pTmp.equals("1") || pTmp.toLowerCase().indexOf("true") != -1) {
-                    preferredFlag = true;
-                }
-                else {
-                    preferredFlag = false;
-                }
+            String preferred = identification.getPreferred();
+            if (preferred.equals("1") || preferred.toLowerCase().indexOf("true") != -1 || dataHolder.identificationList.size()==1) {
+                preferredFlag = true;
             }
             else {
-                scientificName = fullScientificNameString;
+                preferredFlag = false;
             }
-            if(DEBUG) {
-                logger.info("fullscientificname " + fullScientificNameString + ", *" + dataHolder.nomenclatureCode + "*");
+
+            if (identification.getCode().indexOf(':') != -1) {
+                dataHolder.nomenclatureCode = identification.getCode().split(COLON)[1];
             }
-            if (fullScientificNameString.indexOf(CODE) != -1) {
-                if (fullScientificNameString.indexOf(':') != -1) {
-                    dataHolder.nomenclatureCode = fullScientificNameString.split(CODE)[1].split(COLON)[1];
-                }
-                else{
-                    dataHolder.nomenclatureCode = fullScientificNameString.split(CODE)[1];
-                }
+            else{
+                dataHolder.nomenclatureCode = identification.getCode();
             }
-            scientificNames.add(scientificName+SPLITTER+preferredFlag+SPLITTER+i);
-        }
-        for (String name:scientificNames) {
-            scientificName = name.split(SPLITTER)[0];
-            String pref = name.split(SPLITTER)[1];
-            String index = name.split(SPLITTER)[2];
-            if (pref.equalsIgnoreCase("true") || scientificNames.size()==1) {
-                preferredFlag = true;
-            } else {
-                preferredFlag =false;
-            }
-            taxon = getTaxon(state, scientificName,Integer.parseInt(index),null);
+            taxon = getTaxon(state, scientificName, i,null);
             addTaxonNode(taxon, state,preferredFlag);
             linkDeterminationEvent(state, taxon, preferredFlag, derivedUnitFacade);
         }
@@ -1628,7 +1596,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if(p.getTaxon().equals(taxon)) {
                     exist =true;
                 }
-            }catch(Exception e){logger.warn("TaxonNode doesn't seem to have a taxon");}
+            }
+            catch(Exception e){
+                logger.warn("TaxonNode doesn't seem to have a taxon");
+            }
         }
         if (!exist){
             addParentTaxon(taxon, state, preferredFlag);
@@ -1641,8 +1612,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state: the ABCD import state
      */
     private void addParentTaxon(Taxon taxon, Abcd206ImportState state, boolean preferredFlag){
-//        System.out.println("addParentTaxon " + taxon.getTitleCache());
-
         NonViralName<?>  nvname = CdmBase.deproxy(taxon.getName(), NonViralName.class);
         Rank rank = nvname.getRank();
         Taxon genus =null;

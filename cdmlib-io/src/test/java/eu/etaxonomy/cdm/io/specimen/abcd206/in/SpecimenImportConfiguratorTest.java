@@ -13,7 +13,6 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.io.FileNotFoundException;
 import java.net.URISyntaxException;
 import java.net.URL;
 
@@ -27,11 +26,13 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 
 /**
@@ -54,6 +55,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 
 	@SpringBeanByType
     ICommonService commonService;
+
+	@SpringBeanByType
+	ITaxonNodeService taxonNodeService;
 
 
 	private IImportConfigurator configurator;
@@ -121,6 +125,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         boolean result = defaultImport.invoke(configurator2);
         assertTrue("Return value for import.invoke should be true", result);
         assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
+        /*
+         * Classification
+         * - Cichorium
+         *   - Cichorium calvum
+         */
+        assertEquals("Number of TaxonNames is incorrect", 3, taxonNodeService.count(TaxonNode.class));
 /*<<<<<<< .courant
         assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnitBase.class));
         try {

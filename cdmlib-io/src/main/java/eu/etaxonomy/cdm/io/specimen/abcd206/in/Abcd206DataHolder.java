@@ -47,7 +47,7 @@ public class Abcd206DataHolder {
 	protected int altitude;
 
 
-	protected List<String> identificationList;
+	protected List<Identification> identificationList;
 	protected List<SpecimenTypeDesignationStatus> statusList;
 	protected List<HashMap<String, String>> atomisedIdentificationList;
 	protected List<String> namedAreaList;
