@@ -34,6 +34,7 @@ import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
+import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 
 /**
  * @author a.mueller
@@ -120,7 +121,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 //	}
 
 	@Test
-    @DataSet( value="../../../BlankDataSet.xml")  //loadStrategy=CleanSweepInsertLoadStrategy.class
+    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
     public void testDoInvoke2() {
         boolean result = defaultImport.invoke(configurator2);
         assertTrue("Return value for import.invoke should be true", result);
