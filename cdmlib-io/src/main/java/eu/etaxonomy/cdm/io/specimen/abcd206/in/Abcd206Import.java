@@ -160,9 +160,9 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         if (state.getConfig().isInteractWithUser()){
             Map<String,Reference> refMap = new HashMap<String, Reference>();
-            for (Reference tree : references) {
-                if (! StringUtils.isBlank(tree.getTitleCache())) {
-                    refMap.put(tree.getTitleCache(),tree);
+            for (Reference reference : references) {
+                if (! StringUtils.isBlank(reference.getTitleCache())) {
+                    refMap.put(reference.getTitleCache(),reference);
                 }
             }
             ref = sui.askForReference(refMap);
@@ -182,10 +182,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }else{
             if (ref==null){
                 String name = NB(state.getConfig().getSourceReferenceTitle());
-                for (Reference tree : references) {
-                    if (! StringUtils.isBlank(tree.getTitleCache())) {
-                        if (tree.getTitleCache().equalsIgnoreCase(name)) {
-                            ref=tree;
+                for (Reference reference : references) {
+                    if (! StringUtils.isBlank(reference.getTitleCache())) {
+                        if (reference.getTitleCache().equalsIgnoreCase(name)) {
+                            ref=reference;
 //                            System.out.println("FIND SAME REFERENCE");
                         }
                     }
@@ -905,6 +905,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     for (Reference<?> refe: references) {
                         if (refe.getTitleCache().equalsIgnoreCase(strReference)) {
                             reference =refe;
+                            break;
                         }
                     }
                     if (reference ==null){
@@ -1560,8 +1561,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         String fullScientificNameString;
         Taxon taxon = null;
-        Rank.GENUS();
-        Rank.FAMILY();
 
         String scientificName = "";
         boolean preferredFlag = false;
