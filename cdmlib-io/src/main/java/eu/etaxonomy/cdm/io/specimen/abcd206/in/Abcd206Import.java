@@ -1629,7 +1629,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if(p.getTaxon().equals(taxon)) {
                     exist =true;
                 }
-            }catch(Exception e){logger.warn("TaxonNode does'nt seem to have a taxon");}
+            }catch(Exception e){logger.warn("TaxonNode doesn't seem to have a taxon");}
         }
         if (!exist){
             addParentTaxon(taxon, state, preferredFlag);
