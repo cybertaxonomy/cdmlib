@@ -893,7 +893,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         for (String[] fullReference : dataHolder.referenceList) {
             try{
-//                System.out.println(fullReference);
                 List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
 
                 String strReference=fullReference[0];
@@ -910,18 +909,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     }
                     if (reference ==null){
                         reference = ReferenceFactory.newGeneric();
-                        /*<<<<<<< .courant
-                    reference.setTitleCache(strReference);
-                    System.out.println("reference hasproblem2 "+reference.hasProblem());
-                    IdentifiableSource sour = IdentifiableSource.NewInstance(reference,citationDetail);
-                    getReferenceService().saveOrUpdate(sour.getCitation());
-=======*/
                         reference.setTitleCache(strReference, true);
                         save(reference, state);
                     }
                     determinationEvent.addReference(reference);
                 }
-            }catch(Exception e){logger.warn("pv getReferenceList "+e);}
+            } catch (Exception e) {
+                logger.warn("pv getReferenceList " + e);
+            }
         }
         save(derivedUnitBase, state);
 
@@ -1693,6 +1688,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             child = (Taxon) getTaxonService().find(child.getUuid());
             //here we do not have to check if the taxon nodes already exists
             //this is done by classification.addParentChild()
+            //do not add child node if it already exists
+            if(hasTaxonNodeInClassification(child)){
+                return child;
+            }
             node = classification.addParentChild(parent, child, ref, "");
         }
         else {
