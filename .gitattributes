@@ -2344,6 +2344,7 @@ cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/CommonServiceImplTest
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/DescriptionServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/GroupServiceImplTest.java -text
+cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/HandlingCdmEntitiesTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/IdentificationKeyGeneratorTTT.java -text
 cdmlib-services/src/test/java/eu/etaxonomy/cdm/api/service/NameServiceImplTest.java -text
@@ -2407,6 +2408,7 @@ cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/BlankDataSet.xml
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/ClassificationServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/CommonServiceImplTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/FeatureNodeServiceImplTest-indexing.xml -text
+cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/HandlingCdmEntitiesTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.testUpdateTitleCache-result.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/IdentifiableServiceBaseTest.xml -text
 cdmlib-services/src/test/resources/eu/etaxonomy/cdm/api/service/MediaDaoImplTest.xml -text

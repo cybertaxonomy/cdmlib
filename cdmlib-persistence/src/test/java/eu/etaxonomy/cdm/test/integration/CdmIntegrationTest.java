@@ -76,6 +76,8 @@ import eu.etaxonomy.cdm.test.unitils.FlatFullXmlWriter;
  * In order to create DbUnit datasets  for integration tests it is highly recommended method to use the
  * {@link #writeDbUnitDataSetFile(String[])} method.
  *
+ * From {@link http://www.unitils.org/tutorial-database.html}, by default every test is executed in a transaction,
+ * which is committed at the end of the test. This can be disabled using @Transactional(TransactionMode.DISABLED)
  *
  * @see <a href="http://www.unitils.org">unitils home page</a>
  *
