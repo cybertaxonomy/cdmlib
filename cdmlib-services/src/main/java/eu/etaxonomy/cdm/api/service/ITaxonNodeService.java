@@ -12,7 +12,6 @@ package eu.etaxonomy.cdm.api.service;
 
 import java.util.List;
 import java.util.Set;
-import java.util.UUID;
 
 import eu.etaxonomy.cdm.api.service.config.TaxonDeletionConfigurator;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -62,7 +61,7 @@ public interface ITaxonNodeService extends IAnnotatableService<TaxonNode>{
 	 * @return
 	 *
 	 */
-	List<UUID> deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
+	DeleteResult deleteTaxonNodes(Set<ITaxonTreeNode> nodes,
 			TaxonDeletionConfigurator config) ;
 	/**
 	 * deletes the given taxon node the configurator defines whether the children will be deleted too or not

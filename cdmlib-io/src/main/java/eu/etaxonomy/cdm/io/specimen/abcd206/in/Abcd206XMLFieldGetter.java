@@ -84,7 +84,6 @@ public class Abcd206XMLFieldGetter {
     protected void getScientificNames(NodeList group) {
         NodeList identifications, results;
         String tmpName = null;
-        boolean nameFound = false;
 
         for (int j = 0; j < group.getLength(); j++) {
             if (group.item(j).getNodeName().equals(prefix + "Identification")) {
@@ -103,19 +102,14 @@ public class Abcd206XMLFieldGetter {
                         if (dataHolder.nomenclatureCode != null&& dataHolder.nomenclatureCode != "") {
                             // logger.info("TMP NAME P" + tmpName);
 
-                            dataHolder.identificationList.add(tmpName+ "_preferred_"+ identifications.item(m).getTextContent()+ "_code_" + dataHolder.nomenclatureCode);
+                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent(), dataHolder.nomenclatureCode));
                         } else {
-                            dataHolder.identificationList.add(tmpName+ "_preferred_"+ identifications.item(m).getTextContent());
+                            dataHolder.identificationList.add(new Identification(tmpName, identifications.item(m).getTextContent()));
                         }
                         path = identifications.item(m).getNodeName();
                         // getHierarchie(identifications.item(m));
                         dataHolder.knownABCDelements.add(path);
                         path = "";
-                        try {
-                            dataHolder.identificationList.remove(tmpName);
-                        } catch (Exception e) {
-                            logger.info("ohooooooooooo:" + e);
-                        }
                     } else if (identifications.item(m).getNodeName().equals(prefix + "References")) {
                         this.getReferences(identifications.item(m));
                     }
@@ -144,14 +138,9 @@ public class Abcd206XMLFieldGetter {
                 if (!hasPref && tmpName != null) {
                     if (dataHolder.nomenclatureCode != null
                             && dataHolder.nomenclatureCode != "") {
-                        dataHolder.identificationList.add(tmpName+ "_preferred_" + "0" + "_code_"+ dataHolder.nomenclatureCode);
+                        dataHolder.identificationList.add(new Identification(tmpName, "0", dataHolder.nomenclatureCode));
                     } else {
-                        dataHolder.identificationList.add(tmpName+ "_preferred_" + "0");
-                    }
-                    try {
-                        dataHolder.identificationList.remove(tmpName);
-                    } catch (Exception e) {
-                        logger.info("ohooooooooooo:" + e);
+                        dataHolder.identificationList.add(new Identification(tmpName, "0"));
                     }
                 }
             }
@@ -184,9 +173,14 @@ public class Abcd206XMLFieldGetter {
                     }
                     if (scnames.item(n).getNodeName().equals(prefix + "NameAtomised")) {
                         try {
-                            if (scnames.item(n).hasChildNodes()) {String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
-                                dataHolder.nomenclatureCode = tmp.split(prefix)[1];
-                            } else {dataHolder.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();}
+                            if (scnames.item(n).hasChildNodes()) {
+                                String tmp = scnames.item(n).getChildNodes().item(1).getNodeName();
+                                if (tmp.indexOf(prefix) != -1&& prefix.length() > 0) {
+                                    dataHolder.nomenclatureCode = tmp.split(prefix)[1];
+                                }
+                                else {
+                                    dataHolder.nomenclatureCode = scnames.item(n).getChildNodes().item(1).getNodeName();
+                                }
                             }
                         } catch (Exception e) {
                             if(DEBUG) {

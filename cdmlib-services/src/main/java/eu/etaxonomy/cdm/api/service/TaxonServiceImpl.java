@@ -67,7 +67,6 @@ import eu.etaxonomy.cdm.hibernate.search.GroupByTaxonClassBridge;
 import eu.etaxonomy.cdm.hibernate.search.MultilanguageTextFieldBridge;
 import eu.etaxonomy.cdm.model.CdmBaseType;
 import eu.etaxonomy.cdm.model.common.CdmBase;
-import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -1181,10 +1180,10 @@ public class TaxonServiceImpl extends IdentifiableServiceBase<TaxonBase,ITaxonDa
                                 }
                             }
                         config.getTaxonNodeConfig().setDeleteTaxon(false);
-                        List<UUID> deletedNodes = nodeService.deleteTaxonNodes(nodesList, config);
-                        if (deletedNodes.isEmpty() && !nodesList.isEmpty()){
-                        	 result.setError();
-                             result.addException(new Exception("There are an error in deleting the taxon nodes."));
+                        DeleteResult resultNodes = nodeService.deleteTaxonNodes(nodesList, config);
+                        if (!resultNodes.isOk()){
+                        	result.addExceptions(resultNodes.getExceptions());
+                        	result.setStatus(resultNodes.getStatus());
                         }
                     }
                     if (!success){
