@@ -26,12 +26,15 @@ import org.unitils.spring.annotation.SpringBeanByType;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
+import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
+import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.test.integration.CdmTransactionalIntegrationTest;
 import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
@@ -40,46 +43,47 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
  * @author a.mueller
  * @created 29.01.2009
  */
-public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
+public class SpecimenImportTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	IOccurrenceService occurrenceService;
+	private IOccurrenceService occurrenceService;
 
 	@SpringBeanByType
-	ITermService termService;
+	private ITermService termService;
 
 	@SpringBeanByType
-    ICommonService commonService;
+	private ICommonService commonService;
 
 	@SpringBeanByType
-	ITaxonNodeService taxonNodeService;
+	private ITaxonNodeService taxonNodeService;
 
+	@SpringBeanByType
+	private IReferenceService referenceService;
 
 	private IImportConfigurator configurator;
 
 	@Before
 	public void setUp() {
-		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart1.xml";
-        URL url = this.getClass().getResource(inputFile);
-        assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
-        try {
-            configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
-        } catch (URISyntaxException e) {
-            e.printStackTrace();
-            Assert.fail();
-        }
-        assertNotNull("Configurator2 could not be created", configurator);
+		String inputFile = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
+		URL url = this.getClass().getResource(inputFile);
+		assertNotNull("URL for the test file '" + inputFile + "' does not exist", url);
+		try {
+			configurator = Abcd206ImportConfigurator.NewInstance(url.toURI(), null,false);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+			Assert.fail();
+		}
+		assertNotNull("Configurator could not be created", configurator);
 	}
 
 	@Test
 	public void testInit() {
-	    System.out.println("TEST INIT");
 		assertNotNull("import instance should not be null", defaultImport);
 		assertNotNull("nameService should not be null", nameService);
 		assertNotNull("occurence service should not be null", occurrenceService);
@@ -88,17 +92,23 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
 	}
 
 	@Test
-    @DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
-    public void testDoInvoke() {
-        boolean result = defaultImport.invoke(configurator);
-        assertTrue("Return value for import.invoke should be true", result);
-        assertEquals("Number of TaxonNames is incorrect", 2, nameService.count(TaxonNameBase.class));
-        /*
+	@DataSet( value="../../../BlankDataSet.xml", loadStrategy=CleanSweepInsertLoadStrategy.class)
+	public void testDoInvoke() {
+		boolean result = defaultImport.invoke(configurator);
+		assertTrue("Return value for import.invoke should be true", result);
+		assertEquals("Number of TaxonNames is incorrect", 4, nameService.count(TaxonNameBase.class));
+		/*
+		 * 5 taxon nodes:
+		 *
          * Classification
-         * - Cichorium
-         *   - Cichorium calvum
+         * - Campanula
+         *   - Campanula patula
+         *   - Campanula tridentata
+         *   - Campanula lactiflora
          */
-        assertEquals("Number of TaxonNodes is incorrect", 3, taxonNodeService.count(TaxonNode.class));
-        assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnit.class));
-    }
+        assertEquals("Number of TaxonNodes is incorrect", 5, taxonNodeService.count(TaxonNode.class));
+		assertEquals("Number of derived units is incorrect", 11, occurrenceService.count(DerivedUnit.class));
+		assertEquals("Number of field units is incorrect", 11, occurrenceService.count(FieldUnit.class));
+		assertEquals("Number of field units is incorrect", 1, referenceService.count(Reference.class));
+	}
 }

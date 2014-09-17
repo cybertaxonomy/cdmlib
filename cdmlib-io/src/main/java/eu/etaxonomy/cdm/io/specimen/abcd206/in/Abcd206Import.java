@@ -416,7 +416,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
 
                 Reference<?> reference = ReferenceFactory.newGeneric();
-                reference.setTitleCache(strReference);
+                reference.setTitle(strReference);
 
                 IdentifiableSource sour = getIdentifiableSource(reference,citationDetail);
 
@@ -1606,6 +1606,15 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
     }
 
+    private boolean hasTaxonNodeInClassification(Taxon taxon){
+        for (TaxonNode node : taxon.getTaxonNodes()){
+            if(node.getClassification().equals(classification)){
+                return true;
+            }
+        }
+        return false;
+    }
+
     /**
      * Add the hierarchy for a Taxon(add higher taxa)
      * @param taxon: a taxon to add as a node
@@ -1678,15 +1687,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
      * @param state
      */
     private Taxon saveOrUpdateClassification(Taxon parent, Taxon child, Abcd206ImportState state) {
-//        System.out.println("ADD CLASSIFICATION parent child "+parent+"," +child);
         TaxonNode node =null;
         if (parent != null) {
             parent = (Taxon) getTaxonService().find(parent.getUuid());
             child = (Taxon) getTaxonService().find(child.getUuid());
+            //here we do not have to check if the taxon nodes already exists
+            //this is done by classification.addParentChild()
             node = classification.addParentChild(parent, child, ref, "");
         }
-        if (parent == null) {
+        else {
             child = (Taxon) getTaxonService().find(child.getUuid());
+            //do not add child node if it already exists
+            if(hasTaxonNodeInClassification(child)){
+                return child;
+            }
             node =classification.addChildTaxon(child, ref, null);
         }
         save(classification, state);
