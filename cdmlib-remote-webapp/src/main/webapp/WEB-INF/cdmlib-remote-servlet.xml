@@ -19,4 +19,7 @@
     <!--
     <context:component-scan base-package="eu/etaxonomy/cdm/remote/vaadin" />
     -->
+    
+    <!-- FIXME:Remoting Expose remoting services currently only for testing -->
+<!--     <import resource="classpath:/eu/etaxonomy/cdm/remoting-services.xml"/> -->
 </beans>

@@ -49,7 +49,8 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     private Map<String, Person> titleCachePerson;
     private String defaultAuthor="";
     private boolean allowReuseOtherClassifications =true;
-    private boolean doAddMediaAsMediaSpecimen = false;
+    private boolean addMediaAsMediaSpecimen = false;
+    private boolean determinationOnFieldUnitLevel = false;
 
 
     private final SpecimenUserInteraction specimenUserInteraction = new SpecimenUserInteraction();
@@ -218,10 +219,6 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
         this.addIndividualsAssociationsSuchAsSpecimenAndObservations = doCreateIndividualsAssociations;
     }
 
-    public void setAddMediaAsMediaSpecimen(boolean doAddMediaAsMediaSpecimen) {
-        this.doAddMediaAsMediaSpecimen = doAddMediaAsMediaSpecimen;
-    }
-
     /**
      * Create an IndividualsAssociations for each determination element in the ABCD data. ABCD has no such concept as IndividualsAssociations so the only way to
      *
@@ -319,15 +316,20 @@ public class Abcd206ImportConfigurator extends ImportConfiguratorBase<Abcd206Imp
     /**
      * @return the doAddMediaAsMediaSpecimen
      */
-    public boolean isDoAddMediaAsMediaSpecimen() {
-        return doAddMediaAsMediaSpecimen;
+    public boolean isAddMediaAsMediaSpecimen() {
+        return addMediaAsMediaSpecimen;
     }
 
-    /**
-     * @param doAddMediaAsMediaSpecimen the doAddMediaAsMediaSpecimen to set
-     */
-    public void setDoAddMediaAsMediaSpecimen(boolean doAddMediaAsMediaSpecimen) {
-        this.doAddMediaAsMediaSpecimen = doAddMediaAsMediaSpecimen;
+    public void setAddMediaAsMediaSpecimen(boolean addMediaAsMediaSpecimen) {
+        this.addMediaAsMediaSpecimen = addMediaAsMediaSpecimen;
+    }
+
+    public boolean isDeterminationOnFieldUnitLevel() {
+        return determinationOnFieldUnitLevel;
+    }
+
+    public void setDeterminationOnFieldUnitLevel(boolean determinationOnFieldUnitLevel) {
+        this.determinationOnFieldUnitLevel = determinationOnFieldUnitLevel;
     }
 
     /**

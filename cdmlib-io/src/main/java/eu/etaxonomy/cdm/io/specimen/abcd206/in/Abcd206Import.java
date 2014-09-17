@@ -42,6 +42,7 @@ import eu.etaxonomy.cdm.model.agent.Institution;
 import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableSource;
 import eu.etaxonomy.cdm.model.common.Language;
@@ -71,6 +72,7 @@ import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEventType;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
+import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.GatheringEvent;
 import eu.etaxonomy.cdm.model.occurrence.MediaSpecimen;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
@@ -106,6 +108,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
     private Abcd206DataHolder dataHolder;
     private DerivedUnit derivedUnitBase;
+    private FieldUnit fieldUnit;
 
     private List<OriginalSourceBase<?>> associationRefs = new ArrayList<OriginalSourceBase<?>>();
     boolean associationSourcesSet=false;
@@ -131,6 +134,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
 
         dataHolder = null;
         derivedUnitBase = null;
+        fieldUnit = null;
 
         associationRefs = new ArrayList<OriginalSourceBase<?>>();
         associationSourcesSet=false;
@@ -331,6 +335,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             // create facade
             DerivedUnitFacade derivedUnitFacade = getFacade();
             derivedUnitBase = derivedUnitFacade.innerDerivedUnit();
+            fieldUnit = derivedUnitFacade.getFieldUnit(true);
 
             /**
              * GATHERING EVENT
@@ -382,10 +387,14 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     try {
                         media = getImageMedia(multimediaObject, READ_MEDIA_DATA);
                         derivedUnitFacade.addDerivedUnitMedia(media);
-                        if(state.getConfig().isDoAddMediaAsMediaSpecimen()){
-                            //add media also as media specimen
+                        if(state.getConfig().isAddMediaAsMediaSpecimen()){
+                            //add media also as specimen scan
                             MediaSpecimen mediaSpecimen = MediaSpecimen.NewInstance(SpecimenOrObservationType.Media);
                             mediaSpecimen.setMediaSpecimen(media);
+                            DefinedTermBase specimenScanTerm = getTermService().load(UUID.fromString("acda15be-c0e2-4ea8-8783-b9b0c4ad7f03"));
+                            if(specimenScanTerm instanceof DefinedTerm){
+                                mediaSpecimen.setKindOfUnit((DefinedTerm) specimenScanTerm);
+                            }
                             DerivationEvent derivationEvent = DerivationEvent.NewInstance(DerivationEventType.PREPARATION());
                             derivationEvent.addDerivative(mediaSpecimen);
                             derivedUnitFacade.innerDerivedUnit().addDerivationEvent(derivationEvent);
@@ -875,65 +884,52 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         determinationEvent.setIdentifiedUnit(derivedUnitBase);
         derivedUnitBase.addDetermination(determinationEvent);
 
-        try {
-            if(DEBUG){
-                logger.info("NB TYPES INFO: "+ dataHolder.statusList.size());
-            }
-            for (SpecimenTypeDesignationStatus specimenTypeDesignationstatus : dataHolder.statusList) {
-                if (specimenTypeDesignationstatus != null) {
-                    if(DEBUG){
-                        logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
-                    }
-
-                    ICdmApplicationConfiguration cdmAppController = config.getCdmAppController();
-                    if(cdmAppController == null){
-                        cdmAppController = this;
-                    }
-                    specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid());
-                    //Designation
-                    TaxonNameBase<?,?> name = taxon.getName();
-                    SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
-
-                    designation.setTypeStatus(specimenTypeDesignationstatus);
-                    designation.setTypeSpecimen(derivedUnitBase);
-                    name.addTypeDesignation(designation, true);
+        if(DEBUG){
+            logger.info("NB TYPES INFO: "+ dataHolder.statusList.size());
+        }
+        for (SpecimenTypeDesignationStatus specimenTypeDesignationstatus : dataHolder.statusList) {
+            if (specimenTypeDesignationstatus != null) {
+                if(DEBUG){
+                    logger.info("specimenTypeDesignationstatus :"+ specimenTypeDesignationstatus);
                 }
+
+                ICdmApplicationConfiguration cdmAppController = config.getCdmAppController();
+                if(cdmAppController == null){
+                    cdmAppController = this;
+                }
+                specimenTypeDesignationstatus = (SpecimenTypeDesignationStatus) cdmAppController.getTermService().find(specimenTypeDesignationstatus.getUuid());
+                //Designation
+                TaxonNameBase<?,?> name = taxon.getName();
+                SpecimenTypeDesignation designation = SpecimenTypeDesignation.NewInstance();
+
+                designation.setTypeStatus(specimenTypeDesignationstatus);
+                designation.setTypeSpecimen(derivedUnitBase);
+                name.addTypeDesignation(designation, true);
             }
-        } catch (Exception e) {
-            logger.warn("PB addding SpecimenType " + e);
         }
 
         for (String[] fullReference : dataHolder.referenceList) {
-            try{
-//                System.out.println(fullReference);
-                List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
+            List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
 
-                String strReference=fullReference[0];
-                String citationDetail = fullReference[1];
-                String citationURL = fullReference[2];
+            String strReference=fullReference[0];
+            String citationDetail = fullReference[1];
+            String citationURL = fullReference[2];
 
-                if (isNotBlank(strReference)){
-                    Reference<?> reference = null;
-                    for (Reference<?> refe: references) {
-                        if (refe.getTitleCache().equalsIgnoreCase(strReference)) {
-                            reference =refe;
-                            break;
-                        }
+            if (isNotBlank(strReference)){
+                Reference<?> reference = null;
+                for (Reference<?> refe: references) {
+                    if (refe.getTitleCache().equalsIgnoreCase(strReference)) {
+                        reference =refe;
+                        break;
                     }
-                    if (reference ==null){
-                        reference = ReferenceFactory.newGeneric();
-                        /*<<<<<<< .courant
-                    reference.setTitleCache(strReference);
-                    System.out.println("reference hasproblem2 "+reference.hasProblem());
-                    IdentifiableSource sour = IdentifiableSource.NewInstance(reference,citationDetail);
-                    getReferenceService().saveOrUpdate(sour.getCitation());
-=======*/
-                        reference.setTitleCache(strReference, true);
-                        save(reference, state);
-                    }
-                    determinationEvent.addReference(reference);
                 }
-            }catch(Exception e){logger.warn("pv getReferenceList "+e);}
+                if (reference ==null){
+                    reference = ReferenceFactory.newGeneric();
+                    reference.setTitleCache(strReference, true);
+                    save(reference, state);
+                }
+                determinationEvent.addReference(reference);
+            }
         }
         save(derivedUnitBase, state);
 
@@ -943,6 +939,20 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             }
 
             makeIndividualsAssociation(state, taxon, determinationEvent);
+
+            if(state.getConfig().isDeterminationOnFieldUnitLevel()){
+                DeterminationEvent fieldUnitDeterminationEvent = DeterminationEvent.NewInstance();
+                fieldUnitDeterminationEvent.setTaxon(determinationEvent.getTaxon());
+                fieldUnitDeterminationEvent.setPreferredFlag(determinationEvent.getPreferredFlag());
+                fieldUnitDeterminationEvent.setIdentifiedUnit(fieldUnit);
+                Set<Reference> references = determinationEvent.getReferences();
+                for (Reference reference : references) {
+                    fieldUnitDeterminationEvent.addReference(reference);
+                }
+                fieldUnit.addDetermination(fieldUnitDeterminationEvent);
+                makeIndividualsAssociation(state, taxon, fieldUnitDeterminationEvent);
+            }
+
             save(derivedUnitBase, state);
         }
     }
@@ -1200,12 +1210,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
     }
 
     /**
-     * @param derivedUnitBase2
+     * @param specimen
      * @param source
      * @return
      */
-    private boolean sourceNotLinkedToElement(DerivedUnit derivedUnitBase2, OriginalSourceBase<?> source) {
-        Set<IdentifiableSource> linkedSources = derivedUnitBase2.getSources();
+    private boolean sourceNotLinkedToElement(SpecimenOrObservationBase<?> specimen, OriginalSourceBase<?> source) {
+        Set<IdentifiableSource> linkedSources = specimen.getSources();
         for (IdentifiableSource is:linkedSources){
             Reference a = is.getCitation();
             Reference b = source.getCitation();
@@ -1665,7 +1675,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (spe != null){
                     species = getTaxon(state, prefix+" "+name+" "+spe, -1, Rank.SPECIES());
                     if (preferredFlag) {
-                        parent = 	saveOrUpdateClassification(subgenus, species, state);
+                        parent = saveOrUpdateClassification(subgenus, species, state);
                     }
                 }
             }
@@ -1675,7 +1685,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 if (name != null){
                     species = getTaxon(state, prefix+" "+name, -1, Rank.SPECIES());
                     if (preferredFlag) {
-                        parent = 	saveOrUpdateClassification(genus, species, state);
+                        parent = saveOrUpdateClassification(genus, species, state);
                     }
                 }
             }
@@ -1683,7 +1693,7 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         if (rank.isInfraSpecific()){
             subspecies = getTaxon(state, nvname.getFullTitleCache(), -1, Rank.SUBSPECIES());
             if (preferredFlag) {
-                parent = 	saveOrUpdateClassification(species, subspecies, state);
+                parent = saveOrUpdateClassification(species, subspecies, state);
             }
         }
         if (preferredFlag) {
@@ -1705,6 +1715,10 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
             child = (Taxon) getTaxonService().find(child.getUuid());
             //here we do not have to check if the taxon nodes already exists
             //this is done by classification.addParentChild()
+            //do not add child node if it already exists
+            if(hasTaxonNodeInClassification(child)){
+                return child;
+            }
             node = classification.addParentChild(parent, child, ref, "");
         }
         else {

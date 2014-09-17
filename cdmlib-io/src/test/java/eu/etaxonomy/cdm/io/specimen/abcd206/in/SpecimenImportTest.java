@@ -109,6 +109,6 @@ public class SpecimenImportTest extends CdmTransactionalIntegrationTest {
         assertEquals("Number of TaxonNodes is incorrect", 5, taxonNodeService.count(TaxonNode.class));
 		assertEquals("Number of derived units is incorrect", 11, occurrenceService.count(DerivedUnit.class));
 		assertEquals("Number of field units is incorrect", 11, occurrenceService.count(FieldUnit.class));
-		assertEquals("Number of field units is incorrect", 1, referenceService.count(Reference.class));
+		assertEquals("Number of references is incorrect", 1, referenceService.count(Reference.class));
 	}
 }
