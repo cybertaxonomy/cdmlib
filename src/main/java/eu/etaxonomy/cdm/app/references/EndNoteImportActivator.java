@@ -15,8 +15,7 @@ import eu.etaxonomy.cdm.io.reference.endnote.in.EndnoteImportConfigurator;
 
 public class EndNoteImportActivator {
 	/* SerializeFrom DB **/
-	//private static final ICdmDataSource cdmSource = CdmDestinations.localH2Diptera();
-	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2Diptera();
+	private static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 	
 	// Import:
 	private static String importFileNameString =	"file:/C:/EndNoteTest.xml";

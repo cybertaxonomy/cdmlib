@@ -33,19 +33,36 @@ import eu.etaxonomy.cdm.model.taxon.Taxon;
  * @created 12.09.2012
  */
 public abstract class AlgaTerraImageImportBase extends BerlinModelImportBase{
-	public AlgaTerraImageImportBase(String tableName, String pluralString) {
-		super(tableName, pluralString);
-		// TODO Auto-generated constructor stub
-	}
-
-
-
-
 	private static final Logger logger = Logger.getLogger(AlgaTerraImageImportBase.class);
 
 	public static final String TERMS_NAMESPACE = "ALGA_TERRA_TERMS";
 
+	private static final String ALGAE_URL_BASE = "http://mediastorage.bgbm.org/fsi/server?type=image&profile=jpeg&quality=100&source=Algaterra%2FAlgae%2F";
+	private static final String SITE_URL_BASE =  "http://mediastorage.bgbm.org/fsi/server?type=image&profile=jpeg&quality=100&source=Algaterra%2FSites%2F";
+	private static final String VOUCHER_URL_BASE =  "http://mediastorage.bgbm.org/fsi/server?type=image&profile=jpeg&quality=100&source=Algaterra%2FVoucher%2F";
 
+	private static final String ALGAE_URL_ORIGINAL = "http://media.bgbm.org/erez/erez?cmd=get&src=Algaterra%2FAlgae%2F";
+	private static final String SITE_URL_ORIGINAL = "http://media.bgbm.org/erez/erez?cmd=get&src=Algaterra%2FSites%2F";
+	private static final String VOUCHER_URL_ORIGINAL = "http://media.bgbm.org/erez/erez?cmd=get&src=Algaterra%2FVoucher%2F";
+	
+	
+	protected enum PathType {
+		Image (ALGAE_URL_BASE, ALGAE_URL_ORIGINAL),
+		Site (SITE_URL_BASE, SITE_URL_ORIGINAL),
+		Voucher (VOUCHER_URL_BASE, VOUCHER_URL_ORIGINAL)
+		;
+		
+		String urlThumbnail;
+		String urlOriginal;
+		private PathType(String urlThumbnail, String urlOriginal){
+			this.urlThumbnail = urlThumbnail;
+			this.urlOriginal = urlOriginal;
+		}
+	}
+
+	public AlgaTerraImageImportBase(String tableName, String pluralString) {
+		super(tableName, pluralString);
+	}
 
 	
 	/**
@@ -57,10 +74,11 @@ public abstract class AlgaTerraImageImportBase extends BerlinModelImportBase{
 	 * @return
 	 * @throws SQLException
 	 */
-	protected Media handleSingleImage(ResultSet rs, IdentifiableEntity<?> identifiableEntity, AlgaTerraImportState state, ResultSetPartitioner partitioner) throws SQLException {
+	protected Media handleSingleImage(ResultSet rs, IdentifiableEntity<?> identifiableEntity, AlgaTerraImportState state, ResultSetPartitioner partitioner, PathType pathType) throws SQLException {
+		
 		try {
 			String figurePhrase = rs.getString("FigurePhrase");
-			String filePath = rs.getString("filePath");
+//			String filePath = rs.getString("filePath");
 			String fileName = rs.getString("fileName");
 			//TODO  publishFlag
 			Boolean publishFlag = rs.getBoolean("RestrictedFlag");
@@ -69,17 +87,41 @@ public abstract class AlgaTerraImageImportBase extends BerlinModelImportBase{
 			if (isBlank(fileName)){
 				throw new RuntimeException("FileName is missing");
 			}
-			if (isBlank(filePath)){
-				filePath = state.getAlgaTerraConfigurator().getImageBaseUrl();
-			}
-			String fullPath = filePath + fileName;
+//			if (isBlank(filePath)){
+//				filePath = state.getAlgaTerraConfigurator().getImageBaseUrl();
+//			}
 			
-			boolean isFigure = false;
-			Media media = getImageMedia(fullPath, READ_MEDIA_DATA, isFigure);
+			
+			//handle thumbnail
+			String filePath = pathType.urlThumbnail;
+			String fullPath = filePath + fileName;
+			Media media = getImageMedia(fullPath, READ_MEDIA_DATA);
+			if (media == null){
+				logger.warn("Thumbnail image not found: " + filePath);
+			}
+			
+			//handle original
+			if (state.getAlgaTerraConfigurator().isImportOriginalSizeMedia()){
+				filePath = pathType.urlOriginal;
+				fullPath = filePath + fileName;
+				Media mediaOriginal = getImageMedia(fullPath, READ_MEDIA_DATA);
+				if (mediaOriginal != null){
+					if (media == null){
+						media = mediaOriginal;
+					}else {
+						media.addRepresentation(mediaOriginal.getRepresentations().iterator().next());
+					}
+				}else{
+					logger.warn("Original image not found: " + filePath);
+				}
+			}
 			
 			if (media == null){
 				throw new RuntimeException ("Media not found for " +fullPath);
 			}
+			
+			
+			
 			if (isNotBlank(figurePhrase)){
 				media.putTitle(Language.DEFAULT(), figurePhrase);
 			}

@@ -40,7 +40,7 @@ public class VibrantActivator {
 	
 	static final Source iopiSource = BerlinModelSources.iopi();
 	static final Source mclSource = BerlinModelSources.mcl();
-	static final Source emSource = BerlinModelSources.PESI3_euroMed();
+	static final Source emSource = BerlinModelSources.euroMed_PESI3();
 	static final URI dioscoreaceaeSource = DwcaScratchpadImportActivator.dwca_emonocots_dioscoreaceae();
 	static final URI cypripedioideaeSource = DwcaScratchpadImportActivator.dwca_emonocots_cypripedioideae();
 	static final URI zingiberaceaeSource = DwcaScratchpadImportActivator.dwca_emonocots_zingiberaceae();

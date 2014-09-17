@@ -187,7 +187,11 @@ public final class GlobisTransformer extends InputTransformerBase {
 		}else if (area.equals("Dominica")){return Country.DOMINICACOMMONWEALTHOF();
 		}else if (area.equals("Liechtenstein")){return Country.LIECHTENSTEINPRINCIPALITYOF();
 		}else if (area.matches("B(y)?elarus")){return Country.BELARUS();
+		}else if (area.equals("Turkey")){return Country.TURKEYREPUBLICOF();
+		}else if (area.equals("Turkmenistan")){return Country.TURKMENISTAN();
+		
 		}else if (area.matches("United States: Alaska")){ return TdwgAreaProvider.getAreaByTdwgAbbreviation("ASK");
+		
 		
 		}else{	
 			if (unhandledCountries.contains(area)){

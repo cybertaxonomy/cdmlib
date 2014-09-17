@@ -21,6 +21,7 @@ import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
+import eu.etaxonomy.cdm.common.UTF8;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.globis.validation.GlobisCurrentSpeciesImportValidator;
@@ -42,7 +43,6 @@ import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 /**
  * @author a.mueller
  * @created 20.02.2010
- * @version 1.0
  */
 @Component
 public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
@@ -51,18 +51,12 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 	private int modCount = 10000;
 	private static final String pluralString = "current taxa";
 	private static final String dbTableName = "current_species";
-	private static final Class cdmTargetClass = Taxon.class;  //not needed
+	private static final Class<?> cdmTargetClass = Taxon.class;  //not needed
 	
 	public GlobisCurrentSpeciesImport(){
 		super(pluralString, dbTableName, cdmTargetClass);
 	}
 
-
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.globis.GlobisImportBase#getIdQuery()
-	 */
 	@Override
 	protected String getIdQuery() {
 		String strRecordQuery = 
@@ -71,12 +65,6 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 		return strRecordQuery;	
 	}
 
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(GlobisImportConfigurator config) {
 		String strRecordQuery = 
@@ -87,20 +75,12 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 		return strRecordQuery;
 	}
 	
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.globis.GlobisImportBase#doPartition(eu.etaxonomy.cdm.io.common.ResultSetPartitioner, eu.etaxonomy.cdm.io.globis.GlobisImportState)
-	 */
 	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, GlobisImportState state) {
 		boolean success = true;
 		
 		Set<TaxonBase> objectsToSave = new HashSet<TaxonBase>();
-		
 		Map<String, Taxon> taxonMap = (Map<String, Taxon>) partitioner.getObjectMap(TAXON_NAMESPACE);
-//		Map<String, DerivedUnit> ecoFactDerivedUnitMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(ECO_FACT_DERIVED_UNIT_NAMESPACE);
-		
 		ResultSet rs = partitioner.getResultSet();
 
 		Classification classification = getClassification(state);
@@ -121,8 +101,6 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
         		
         		//TODO
         		//fiSpcspcgrptax
-        		
-        	
         		
 				try {
 					
@@ -197,8 +175,9 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 					
 					classification.addParentChild(nextHigherTaxon, species, sourceRef, null);
 					
-					handleCountries(state, rs, species);
+					handleCountries(state, rs, species, taxonId);
 					
+					//common names -> not used anymore
 					handleCommonNames(state, rs, species);
 					
 					this.doIdCreatedUpdatedNotes(state, species, rs, taxonId, TAXON_NAMESPACE);
@@ -208,12 +187,10 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 
 				} catch (Exception e) {
 					logger.warn("Exception in current_species: IDcurrentspec " + taxonId + ". " + e.getMessage());
-//					e.printStackTrace();
+					e.printStackTrace();
 				} 
                 
             }
-           
-//            logger.warn("Specimen: " + countSpecimen + ", Descriptions: " + countDescriptions );
 
 			logger.warn(pluralString + " to save: " + objectsToSave.size());
 			getTaxonService().save(objectsToSave);	
@@ -225,7 +202,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 		}
 	}
 
-	private void handleCountries(GlobisImportState state, ResultSet rs, Taxon species) throws SQLException {
+	private void handleCountries(GlobisImportState state, ResultSet rs, Taxon species, Integer taxonId) throws SQLException {
 		String countriesStr = rs.getString("dtSpcCountries");
 		if (isBlank(countriesStr)){
 			return;
@@ -269,7 +246,9 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 				Distribution distribution = Distribution.NewInstance(country, status);
 				desc.addElement(distribution);
 			}else{
-				logger.warn("Country string not recognized: " + countryStr);
+				if (countryStr.length() > 0){
+					logger.warn("Country string not recognized : " + countryStr + " for IDcurrentspec " + taxonId);
+				}
 			}
 		}
 	}
@@ -285,7 +264,13 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 		if (result.endsWith(".")){
 			result = result.substring(0,result.length() - 1);
 		}
-		return result; 
+		while (result.startsWith(UTF8.NO_BREAK_SPACE.toString())){
+			result = result.substring(1);  //
+		}
+		if (result.matches("\\s+")){
+			result = "";
+		}
+		return result.trim(); 
 	}
 	
 	private void handleCommonNames(GlobisImportState state, ResultSet rs, Taxon species) throws SQLException {
@@ -332,6 +317,10 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 
 
 	private Taxon getParent(Taxon child, Classification classification) {
+		if (child == null){
+			logger.warn("Child is null");
+			return null;
+		}
 		for (TaxonNode node :  child.getTaxonNodes()){
 			if (node.getClassification().equals(classification)){
 				if (node.getParent() != null){
@@ -365,7 +354,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 			taxon = Taxon.NewInstance(name, state.getTransactionalSourceReference());
 			
 			taxonMap.put(key, taxon);
-			handleAuthorAndYear(author, name, taxonId);
+			handleAuthorAndYear(author, name, taxonId, state);
 			getTaxonService().save(taxon);
 		}
 		
@@ -405,7 +394,7 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 			zooName.setInfraGenericEpithet(subGenusEpi);
 		}
 		zooName.setGenusOrUninomial(genusEpi);
-		handleAuthorAndYear(author, zooName, taxonId);
+		handleAuthorAndYear(author, zooName, taxonId, state);
 		
 		Taxon taxon = Taxon.NewInstance(zooName, state.getTransactionalSourceReference());
 		
@@ -415,11 +404,8 @@ public class GlobisCurrentSpeciesImport  extends GlobisImportBase<Taxon> {
 
 
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	@Override
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, GlobisImportState state) {
 		String nameSpace;
 		Class cdmClass;
 		Set<String> idSet;

@@ -41,8 +41,6 @@ import eu.etaxonomy.cdm.model.description.TaxonDescription;
 import eu.etaxonomy.cdm.model.occurrence.DerivationEvent;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.DeterminationEvent;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -68,11 +66,7 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		super(dbTableName, pluralString);
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
-	 */
+
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = " SELECT f.factId " + 
@@ -82,9 +76,6 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery =   
@@ -97,9 +88,7 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		return strQuery;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState bmState) {
 		boolean success = true;
 		
@@ -141,7 +130,7 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 						Taxon taxon = getTaxon(state, taxonId, taxonMap, factId);		
 						
 						if(taxon != null){
-							DerivedUnit identifiedSpecimen = makeIdentifiedSpecimen(ecoFact, recordBasis);
+							DerivedUnit identifiedSpecimen = makeIdentifiedSpecimen(ecoFact, recordBasis, taxonId, ecoFactId);
 							
 							makeDetermination(state, rs, taxon, identifiedSpecimen, factId, partitioner);
 													
@@ -179,7 +168,7 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 	private void makeIndividualsAssociation(AlgaTerraImportState state, Taxon taxon, Reference<?> sourceRef, DerivedUnit identifiedSpecimen){
 		TaxonDescription taxonDescription = getTaxonDescription(state, taxon, sourceRef);
 		IndividualsAssociation indAssociation = IndividualsAssociation.NewInstance();
-		Feature feature = makeFeature(identifiedSpecimen.getRecordBasis());
+		Feature feature = makeFeature(identifiedSpecimen.getRecordBasis(), state);
 		indAssociation.setAssociatedSpecimenOrObservation(identifiedSpecimen);
 		indAssociation.setFeature(feature);
 		taxonDescription.addElement(indAssociation);	
@@ -204,11 +193,14 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		TeamOrPersonBase<?> author = getAuthor(identifiedBy);
 		determination.setDeterminer(author);
 		if (refFk != null){
-			Map<String, Reference> biblioRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE);
-			Map<String, Reference> nomRefMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE);
+			Map<String, Reference> refMap = (Map<String, Reference>) partitioner.getObjectMap(BerlinModelReferenceImport.REFERENCE_NAMESPACE);
 			
-			Reference<?> ref = getReferenceOnlyFromMaps(biblioRefMap, nomRefMap, String.valueOf(refFk));
-			determination.addReference(ref);
+			Reference<?> ref = refMap.get(String.valueOf(refFk));
+			if (ref != null){
+				determination.addReference(ref);
+			}else{
+				logger.warn("Ref not found for Determination Event");
+			}
 		}else{
 			//IdentificationReference is not to be handled according to Henning
 			if (StringUtils.isNotBlank(identificationReference)){
@@ -225,19 +217,25 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 	}
 
 
-
-	private DerivedUnit makeIdentifiedSpecimen(DerivedUnit ecoFact, String recordBasis) {
+                                                                                                                                                                                                                                                                                          
+	private DerivedUnit makeIdentifiedSpecimen(DerivedUnit ecoFact, String recordBasis, Integer taxonId, Integer ecoFactId) {
 		//TODO event type
 		DerivationEvent event = DerivationEvent.NewInstance();
 		SpecimenOrObservationType derivedUnitType = makeDerivedUnitType(recordBasis);
 		if (derivedUnitType == null){
-			logger.warn("derivedUnitType is NULL");
+			String message = "derivedUnitType is NULL for recordBasis (%s). Use dummy type instead. (TaxonId = %s)";
+			logger.warn(String.format(message, recordBasis, taxonId));
+			derivedUnitType = SpecimenOrObservationType.PreservedSpecimen;
 		}
 		
 		DerivedUnit result = DerivedUnit.NewInstance(derivedUnitType);
 		result.setDerivedFrom(event);
-		ecoFact.addDerivationEvent(event);
-		
+		if (ecoFact == null){
+			String message = "EcoFact (%s) is null for taxonId (%s)";
+			logger.warn(String.format(message, ecoFactId, taxonId));
+		}else{
+			ecoFact.addDerivationEvent(event);
+		}
 		return result;
 	}
 
@@ -280,12 +278,10 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		return facade;
 	}
 
-
-	
 	@Override
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, BerlinModelImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
@@ -314,19 +310,12 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 			Map<String, DerivedUnit> derivedUnitMap = (Map<String, DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
 			result.put(nameSpace, derivedUnitMap);
 
-			//nom reference map
-			nameSpace = BerlinModelReferenceImport.NOM_REFERENCE_NAMESPACE;
+			//reference map
+			nameSpace = BerlinModelReferenceImport.REFERENCE_NAMESPACE;
 			cdmClass = Reference.class;
 			idSet = referenceIdSet;
-			Map<String, Reference> nomReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, nomReferenceMap);
-
-			//biblio reference map
-			nameSpace = BerlinModelReferenceImport.BIBLIO_REFERENCE_NAMESPACE;
-			cdmClass = Reference.class;
-			idSet = referenceIdSet;
-			Map<String, Reference> biblioReferenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, biblioReferenceMap);
+			Map<String, Reference> referenceMap = (Map<String, Reference>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, referenceMap);
 
 			
 		} catch (SQLException e) {
@@ -335,21 +324,15 @@ public class AlgaTerraFactEcologyImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new AlgaTerraSpecimenImportValidator();
 		return validator.validate(state);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
-		return ! ((AlgaTerraImportState)state).getAlgaTerraConfigurator().isDoEcoFacts();
+		return ! ((AlgaTerraImportState)state).getAlgaTerraConfigurator().isDoFactEcology();
 	}
 	
 }

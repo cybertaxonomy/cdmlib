@@ -143,8 +143,8 @@ public abstract class BfnXmlImportBase  extends CdmImportBase<BfnXmlImportConfig
 	protected Element getDataSetElement(BfnXmlImportConfigurator bfnConfig){
 		Element root = bfnConfig.getSourceRoot();
 		
-		if (! "ROTELISTEDATEN".equals(root.getName())){//"DataSet"
-			logger.error("Root element is not 'ROTELISTEDATEN'");
+		if (! "DEBExport".equals(root.getName())){//"DataSet"
+			logger.error("Root element is not 'DEBExport'");
 			return null;
 		}
 		if (bfnConfig.getBfnXmlNamespace() == null){
@@ -152,7 +152,7 @@ public abstract class BfnXmlImportBase  extends CdmImportBase<BfnXmlImportConfig
 			return null;
 		}
 		if (! bfnConfig.getBfnXmlNamespace().equals(root.getNamespace())){
-			logger.error("Wrong namespace for element 'ROTELISTEDATEN'");
+			logger.error("Wrong namespace for element 'DEBExport'");
 			return null;
 		}
 		//TODO prevent multiple elements

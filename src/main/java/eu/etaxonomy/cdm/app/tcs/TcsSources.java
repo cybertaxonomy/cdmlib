@@ -28,7 +28,6 @@ public class TcsSources {
 	private static final Logger logger = Logger.getLogger(TcsSources.class);
 	
 	
-	@SuppressWarnings("deprecation")
 	public static URI normalExplicit(){
 		try {
 //			URL url = new File(("C:\\localCopy\\eclipse\\cdmlib\\trunk\\app-import\\src\\main\\resources\\excel\\NormalExplicit.xls")).toURL();
@@ -84,21 +83,6 @@ public class TcsSources {
 		
 	}
 
-	
-	public static String arecaceae_short(){
-		//		Monocots rdf
-		URL url = new SDDSources().getClass().getResource("/arecaceae_short.rdf");
-		String sourceUrl = url.toString();
-		return sourceUrl;
-	}
-
-	public static String tcsXmlTest_local(){
-		//		tcsXmlTest.xml
-		URL url = new TcsSources().getClass().getResource("/tcs/tcsXmlTest.xml");
-		String sourceUrl = url.toString();
-		return sourceUrl;
-		
-	}	
 
 	public static String tcsXml_cichorium(){
 		//		tcsXmlTest.xml
@@ -106,6 +90,18 @@ public class TcsSources {
 		String sourceUrl = url.toString();
 		return sourceUrl;	
 	}
+
+	public static String tcsXml_nyctaginaceae(){
+		try {
+			File file = new File("\\\\PESIIMPORT3\\caryo\\nyctaginaceae\\ipni-Nyctaginaceae-Caryophyllaceae.xml");
+			return file.toURI().toURL().toString();
+		} catch (MalformedURLException e) {
+			throw new RuntimeException(e);
+		}
+		
+	}
+
+	
 	
 	public static String tcsXml_localPath(){
 		File file = new File("C:\\localCopy\\Data\\tdwg\\Cichorium_tcs.xml");

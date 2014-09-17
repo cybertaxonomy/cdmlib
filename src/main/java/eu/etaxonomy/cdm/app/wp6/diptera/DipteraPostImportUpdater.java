@@ -68,7 +68,7 @@ public class DipteraPostImportUpdater {
 			int modCount = 100;
 			int page = 0;
 			int count = cdmApp.getTaxonService().count(Taxon.class);
-			List<TaxonBase> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
+			List<Taxon> taxonList = cdmApp.getTaxonService().list(Taxon.class, 100000, page, null, null);
 			List<TaxonNameBase> nameList = cdmApp.getNameService().list(null, 100000, page, null, null);
 			Map<String, TaxonNameBase> nameMap = new HashMap<String, TaxonNameBase>();
 			Map<String, TaxonNameBase> nameDuplicateMap = new HashMap<String, TaxonNameBase>();
@@ -76,40 +76,36 @@ public class DipteraPostImportUpdater {
 			
 			int i = 0;
 			
-			Taxon taxon;
-			for (TaxonBase taxonBase : taxonList){
+			for (Taxon taxon : taxonList){
 				if ((i++ % modCount) == 0){ logger.warn("taxa handled: " + (i-1));}
 				
-				if (taxonBase.isInstanceOf(Taxon.class)){
-					taxon = CdmBase.deproxy(taxonBase, Taxon.class);
-					Set<TextData> citations = getCitations(taxon);
-					for (TextData citation : citations){
-						Language language = Language.DEFAULT();
-						String text = citation.getText(language);
-						String originalNameString = parseOriginalNameString(text);
-						String newText = parseNewText(text);
-						citation.removeText(language);
-						citation.putText(language, newText);
-						TaxonNameBase<?,?> scientificName = getScientificName(originalNameString, nameMap, nameDuplicateMap);
-						
-						Set<DescriptionElementSource> sources = citation.getSources();
-						if (sources.size() > 1){
-							logger.warn("There are more then 1 sources for a description");
-						}else if (sources.size() == 0){
-							DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
-							citation.addSource(source);
-							sources = citation.getSources();
-						}
-						for (DescriptionElementSource source : sources){
-							if (scientificName != null){
-								source.setNameUsedInSource(scientificName);
-							}else{
-								source.setOriginalNameString(originalNameString);
-							}
-						}
-						
-						citationsToSave.add(citation);
+				Set<TextData> citations = getCitations(taxon);
+				for (TextData citation : citations){
+					Language language = Language.DEFAULT();
+					String text = citation.getText(language);
+					String originalNameString = parseOriginalNameString(text);
+					String newText = parseNewText(text);
+					citation.removeText(language);
+					citation.putText(language, newText);
+					TaxonNameBase<?,?> scientificName = getScientificName(originalNameString, nameMap, nameDuplicateMap);
+					
+					Set<DescriptionElementSource> sources = citation.getSources();
+					if (sources.size() > 1){
+						logger.warn("There are more then 1 sources for a description");
+					}else if (sources.size() == 0){
+						DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.PrimaryTaxonomicSource);
+						citation.addSource(source);
+						sources = citation.getSources();
 					}
+					for (DescriptionElementSource source : sources){
+						if (scientificName != null){
+							source.setNameUsedInSource(scientificName);
+						}else{
+							source.setOriginalNameString(originalNameString);
+						}
+					}
+					
+					citationsToSave.add(citation);
 				}
 			}
 				

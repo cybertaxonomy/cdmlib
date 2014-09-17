@@ -67,7 +67,7 @@ public class DipteraCollectionImport {
 	 * @param colletionMap 
 	 */
 	private void addCollectionsToSpecimen(CdmApplicationController cdmApp, Map<String, Collection> colletionMap) {
-		List<SpecimenOrObservationBase> specimens = (cdmApp.getOccurrenceService().list(DerivedUnit.class, null, null, null, null));
+		List<DerivedUnit> specimens = cdmApp.getOccurrenceService().list(DerivedUnit.class, null, null, null, null);
 		for (SpecimenOrObservationBase<?> specOrObservBase : specimens){
 			if (specOrObservBase.getRecordBasis().isPreservedSpecimen()){
 				handleSingleSpecimen((DerivedUnit)specOrObservBase, colletionMap);
@@ -75,7 +75,8 @@ public class DipteraCollectionImport {
 				logger.warn("There are specimenOrObservationBase objects which are not of class Specimen. This is probably an error.");
 			}
 		}
-		cdmApp.getOccurrenceService().save(specimens);
+		List<SpecimenOrObservationBase> specimenList = new ArrayList<SpecimenOrObservationBase>(specimens);
+		cdmApp.getOccurrenceService().save(specimenList);
 	}
 
 

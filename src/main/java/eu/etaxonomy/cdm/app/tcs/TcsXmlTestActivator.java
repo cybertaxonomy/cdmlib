@@ -34,12 +34,12 @@ public class TcsXmlTestActivator {
 	
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-	static final String tcsSource = TcsSources.tcsXml_cichorium();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_andreasM();
+//	static final String tcsSource = TcsSources.tcsXml_cichorium();
+	static final String tcsSource = TcsSources.tcsXml_nyctaginaceae();
+	
 	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
-//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_local_postgres_CdmTest();
 
-	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
+	static final UUID treeUuid = UUID.fromString("00708000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "TestTCS";
 	
 	static final boolean includeNormalExplicit = true; 
@@ -97,8 +97,8 @@ public class TcsXmlTestActivator {
 //			refService.saveOrUpdate((Reference)book);
 //			tcsImport.getCdmAppController().close();
 			
-			NormalExplicitTestActivator normExActivator = new NormalExplicitTestActivator();
-			normExActivator.doImport(destination, DbSchemaValidation.VALIDATE);
+//			NormalExplicitTestActivator normExActivator = new NormalExplicitTestActivator();
+//			normExActivator.doImport(destination, DbSchemaValidation.VALIDATE);
 			
 			logger.info("End");
 			System.out.println("End import from TCS ("+ source.toString() + ")...");

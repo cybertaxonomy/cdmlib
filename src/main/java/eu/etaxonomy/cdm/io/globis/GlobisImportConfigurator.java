@@ -24,7 +24,6 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 public class GlobisImportConfigurator extends DbImportConfiguratorBase<GlobisImportState> implements IImportConfigurator{
 	@SuppressWarnings("unused")
@@ -40,6 +39,8 @@ public class GlobisImportConfigurator extends DbImportConfiguratorBase<GlobisImp
 	//TODO needed ??
 	private Method userTransformationMethod;
 	
+	
+	private boolean doAuthors = true;
 	private boolean doImages = true;
 	private boolean doCurrentTaxa = true;
 	private boolean doSpecTaxa = true;
@@ -55,7 +56,7 @@ public class GlobisImportConfigurator extends DbImportConfiguratorBase<GlobisImp
 	
 	protected void makeIoClassList(){
 		ioClassList = new Class[]{
-				//ErmsGeneralImportValidator.class
+				 GlobisAuthorImport.class,
 				 GlobisReferenceImport.class
 	//			, ErmsReferenceImport.class
 				, GlobisCurrentSpeciesImport.class
@@ -161,6 +162,16 @@ public class GlobisImportConfigurator extends DbImportConfiguratorBase<GlobisImp
 
 	public boolean isDoReadMediaData() {
 		return doReadMediaData;
+	}
+
+
+	public boolean isDoAuthors() {
+		return doAuthors;
+	}
+
+
+	public void setDoAuthors(boolean doAuthors) {
+		this.doAuthors = doAuthors;
 	}
 
 }

@@ -9,6 +9,12 @@
 
 package eu.etaxonomy.cdm.app.jaxb;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.net.URI;
 
 import org.apache.log4j.Logger;
@@ -24,15 +30,15 @@ import eu.etaxonomy.cdm.io.jaxb.JaxbExportConfigurator;
 /**
  * @author a.babadshanjan
  * @created 25.09.2008
- * @version 1.0
  */
 public class JaxbExportActivator {
 
 	/* SerializeFrom DB **/
-	private static final ICdmDataSource cdmSource = CdmDestinations.localH2Diptera();
+//	private static final ICdmDataSource cdmSource = CdmDestinations.localH2();
+	private static final ICdmDataSource cdmSource = CdmDestinations.cdm_production_flora_deutschland();
 	
 	// Export:
-	private static String exportFileName = "C:\\export_test_app_import.xml";
+	private static String exportFileName = "file:/F:/data/redlist/standardliste/standardliste_jaxb.xml";
 
 	/** NUMBER_ROWS_TO_RETRIEVE = 0 is the default case to retrieve all rows.
 	 * For testing purposes: If NUMBER_ROWS_TO_RETRIEVE >0 then retrieve 
@@ -81,9 +87,7 @@ public class JaxbExportActivator {
 	private CdmApplicationController initDb(ICdmDataSource db) {
 
 		// Init source DB
-		CdmApplicationController appCtrInit = null;
-
-		appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.VALIDATE, false);
+		CdmApplicationController appCtrInit = TestDatabase.initDb(db, DbSchemaValidation.VALIDATE, false);
 
 		return appCtrInit;
 	}
@@ -103,11 +107,23 @@ public class JaxbExportActivator {
 		JaxbExportActivator sc = new JaxbExportActivator();
 		ICdmDataSource source = CdmDestinations.chooseDestination(args) != null ? CdmDestinations.chooseDestination(args) : cdmSource;
 		String file = chooseFile(args);
+		if (file == null){
+			file = exportFileName;
+		}
 		URI uri = URI.create(file);
-		CdmApplicationController appCtr = null;
-		appCtr = sc.initDb(source);
-				
-		sc.invokeExport(source, uri);
+		try {
+			File myFile = new File(uri);
+			PrintWriter writer = new PrintWriter(new OutputStreamWriter(new FileOutputStream(myFile), "UTF8"), true);
+			sc.initDb(source);
+					
+			sc.invokeExport(source, uri);
+		} catch (UnsupportedEncodingException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 		
 	}
 

@@ -41,7 +41,7 @@ public class CichorieaeActivator {
 	 * ALTER TABLE `statisticalmeasurementvalue_definedtermbase`  DROP INDEX `modifiers_id`;
 	 * 
 	 ********************************************************************************/
-	static final ICdmDataSource cdmDestination = CdmDestinations.local_cdm_edit_cichorieae_a();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql();
 	static final String sddSource = SDDSources.Cichorieae_DA_export_sdd();
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 

@@ -10,11 +10,16 @@
 
 package eu.etaxonomy.cdm.io.algaterra.validation;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.Source;
 
 /**
  * @author a.mueller
@@ -22,15 +27,15 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
  * @version 1.0
  */
 public class AlgaTerraSpecimenImportValidator implements IOValidator<BerlinModelImportState> {
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(AlgaTerraSpecimenImportValidator.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+
+	@Override
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
 		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-//		result &= checkTaxonIsAccepted(bmiConfig);
+		result &= checkOrphanedEcologyFacts(bmiConfig);
 		//result &= checkPartOfJournal(bmiConfig);
 		System.out.println("Checking for Specimen not yet fully implemented");
 		return result;
@@ -39,50 +44,35 @@ public class AlgaTerraSpecimenImportValidator implements IOValidator<BerlinModel
 	
 	//******************************** CHECK *************************************************
 		
-//		private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator config){
-//			try {
-//				boolean result = true;
-//				Source source = config.getSource();
-//				String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status, PTaxon.PTRefFk, Reference.RefCache " + 
-//							" FROM emOccurrence INNER JOIN " +
-//								" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk INNER JOIN " + 
-//				                " Name ON PTaxon.PTNameFk = Name.NameId INNER JOIN " +
-//				                " Status ON PTaxon.StatusFk = Status.StatusId LEFT OUTER JOIN " +
-//				                " Reference ON PTaxon.PTRefFk = Reference.RefId " + 
-//							" WHERE (PTaxon.StatusFk <> 1)  ";
-//
-//				if (StringUtils.isNotBlank(config.getOccurrenceFilter())){
-//					strQuery += String.format(" AND (%s) ", config.getOccurrenceFilter()) ; 
-//				}
-//
-//				
-//				ResultSet resulSet = source.getResultSet(strQuery);
-//				boolean firstRow = true;
-//				while (resulSet.next()){
-//					if (firstRow){
-//						System.out.println("========================================================");
-//						System.out.println("There are Occurrences for a taxon that is not accepted!");
-//						System.out.println("========================================================");
-//					}
-//					int occurrenceId = resulSet.getInt("OccurrenceId");
-////					int statusFk = resulSet.getInt("StatusFk");
-//					String status = resulSet.getString("Status");
-//					String fullNameCache = resulSet.getString("FullNameCache");
-//					String ptRefFk = resulSet.getString("PTRefFk");
-//					String ptRef = resulSet.getString("RefCache");
-//					
-//					System.out.println("OccurrenceId:" + occurrenceId + "\n  Status: " + status + 
-//							"\n  FullNameCache: " + fullNameCache +  "\n  ptRefFk: " + ptRefFk +
-//							"\n  sec: " + ptRef );
-//					
-//					result = firstRow = false;
-//				}
-//				
-//				return result;
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				return false;
-//			}
-//		}
+		private static boolean checkOrphanedEcologyFacts(BerlinModelImportConfigurator config){
+			try {
+				boolean result = true;
+				Source source = config.getSource();
+				String strQuery = "SELECT * FROM Fact " + 
+						" WHERE FactCategoryFk = 202 AND ExtensionFk NOT IN (SELECT EcoFactId FROM EcoFact) " +
+						" ORDER BY ExtensionFk  ";
+
+				ResultSet resulSet = source.getResultSet(strQuery);
+				boolean firstRow = true;
+				while (resulSet.next()){
+					if (firstRow){
+						System.out.println("========================================================");
+						System.out.println("There EcologyFacts with pointing to non existing EcoFacts!");
+						System.out.println("========================================================");
+					}
+					int factId = resulSet.getInt("FactId");
+					int extensionFk = resulSet.getInt("ExtensionFk");
+					
+					System.out.println("FactId:" + factId + "\n  ExtensionFk: " + extensionFk);
+					
+					result = firstRow = false;
+				}
+				
+				return result;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 
 }

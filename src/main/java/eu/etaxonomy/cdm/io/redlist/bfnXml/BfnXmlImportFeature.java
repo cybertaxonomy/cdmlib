@@ -14,12 +14,15 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
+import javax.management.ObjectInstance;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.hibernate.id.UUIDGenerator;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
 import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
@@ -105,64 +108,86 @@ public class BfnXmlImportFeature extends BfnXmlImportBase implements ICdmIO<BfnX
 		Element elDataSet = getDataSetElement(config);
 		Namespace bfnNamespace = config.getBfnXmlNamespace();
 		
+		List contentXML = elDataSet.getContent();
+		Element currentElement = null;
+		for(Object object:contentXML){
 		
-		childName = "EIGENSCHAFTEN";
-		obligatory = false;
-		Element elFeatureNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, bfnNamespace, obligatory);
+			if(object instanceof Element){
+				currentElement = (Element)object;
 
-		String bfnElementName = "EIGENSCHAFT";
-		List<Element> elFeatureList = (List<Element>)elFeatureNames.getChildren(bfnElementName, bfnNamespace);
-		List<Feature> featureList = new ArrayList<Feature>();
-		//for each taxonName
-		for (Element elFeature : elFeatureList){
-			
-			if(elFeature.getAttributeValue("standardname", bfnNamespace).equalsIgnoreCase("RL Kat.")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			String featureLabel = "Kat. +/-";
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase(featureLabel)){
-				//getFeature(state, null, featureLabel, featureLabel, null, null);
-				
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("aktuelle Bestandsstituation")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("langfristiger Bestandstrend")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("kurzfristiger Bestandstrend")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Risikofaktoren")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Verantwortlichkeit")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("alte RL- Kat.")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Neobiota")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Eindeutiger Code")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Kommentar zur Taxonomie")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
-			}
-			if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Kommentar zur Gefährdung")){
-				makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+				if(currentElement.getName().equalsIgnoreCase("ROTELISTEDATEN")){
+					
+					TransactionStatus tx = startTransaction();
+
+					childName = "EIGENSCHAFTEN";
+					obligatory = false;
+					Element elFeatureNames = XmlHelp.getSingleChildElement(success, currentElement, childName, bfnNamespace, obligatory);
+
+					String bfnElementName = "EIGENSCHAFT";
+					List<Element> elFeatureList = (List<Element>)elFeatureNames.getChildren(bfnElementName, bfnNamespace);
+					List<Feature> featureList = new ArrayList<Feature>();
+					//for each taxonName
+					for (Element elFeature : elFeatureList){
+
+						if(elFeature.getAttributeValue("standardname", bfnNamespace).equalsIgnoreCase("RL Kat.")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						String featureLabel = "Kat. +/-";
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase(featureLabel)){
+							//getFeature(state, null, featureLabel, featureLabel, null, null);
+
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("aktuelle Bestandsstituation")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("langfristiger Bestandstrend")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("kurzfristiger Bestandstrend")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Risikofaktoren")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Verantwortlichkeit")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("alte RL- Kat.")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Neobiota")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Eindeutiger Code")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Kommentar zur Taxonomie")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+						if(elFeature.getAttributeValue("standardname").equalsIgnoreCase("Kommentar zur Gefährdung")){
+							makeFeature(termService, vocabularyService, featureList,success, obligatory, idNamespace, config, bfnNamespace,elFeature, state);
+						}
+					}
+					createFeatureTree(featureList);
+					//		termService.save(featureMap.objects());
+					
+					commitTransaction(tx);
+					
+					logger.info("end create features ...");
+					
+					
+					
+					if (!success.getValue()){
+						state.setUnsuccessfull();
+					}
+					//FIXME: Only take the first RoteListeData Features
+					
+					
+					return;
+				}
 			}
 		}
-		createFeatureTree(featureList);
-//		termService.save(featureMap.objects());
-		logger.info("end create features ...");
-		if (!success.getValue()){
-			state.setUnsuccessfull();
-		}
-
 		return;
 
 	}

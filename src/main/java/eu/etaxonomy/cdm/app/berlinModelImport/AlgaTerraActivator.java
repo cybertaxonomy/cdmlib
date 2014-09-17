@@ -64,7 +64,10 @@ public class AlgaTerraActivator {
 	static final UUID specimenFeatureTreeUuid = UUID.fromString("ba86246e-d4d0-419f-832e-86d70b1e4bd7");
 	
 	static final boolean loginAsDefaultAdmin = true;
+	//TODO set to false for final import
 	static final boolean removeRestricted = true;
+	
+	static final boolean importOriginalSizeMedia = false;
 	
 	//check - import
 	static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
@@ -102,33 +105,33 @@ public class AlgaTerraActivator {
 	//alga terra specific
 	static final boolean ecoFacts = true;
 	static final boolean doFactEcology = true;
-	static final boolean doImages = true;
+	static final boolean doImages = false;
 	static final boolean doDna = true;
-	static final boolean doMorphology = false;
+	static final boolean doMorphology = true;
 
 // ************************ NONE **************************************** //
 	
 //	//authors
 //	static final boolean doAuthors = false;
 //	//references
-//	static final DO_REFERENCES doReferences =  DO_REFERENCES.ALL;
+//	static final DO_REFERENCES doReferences =  DO_REFERENCES.NONE;
 //	//names
 //	static final boolean doTaxonNames = false;
 //	static final boolean doRelNames = false;
 //	static final boolean doNameStatus = false;
-//	static final boolean doTypes = false;
+//	static final boolean doTypes = true;
 //	static final boolean doNameFacts = false;
 //	
 //	//taxa
-//	static final boolean doTaxa = true;
+//	static final boolean doTaxa = false;
 //	static final boolean doRelTaxa = false;
 //	static final boolean doFacts = false;
 //	
 //  //alga terra specific
-//	static final boolean ecoFacts = true;
+//	static final boolean ecoFacts = false;
 //	static final boolean doFactEcology = false;
 //	static final boolean doImages = false;
-//	static final boolean doDna = true;
+//	static final boolean doDna = false;
 //	static final boolean doMorphology = false;
 	
 	
@@ -164,6 +167,7 @@ public class AlgaTerraActivator {
 		config.setSourceRefUuid(sourceRefUuid);
 		config.setIgnoreNull(ignoreNull);
 		config.setRemoveRestricted(removeRestricted);
+		config.setImportOriginalSizeMedia(importOriginalSizeMedia);
 		
 		config.setIncludeFlatClassifications(includeFlatClassifications);
 		config.setIncludeAllNonMisappliedRelatedClassifications(includeAllNonMisappliedRelatedClassifications);

@@ -13,6 +13,8 @@ import java.net.URI;
 import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
 
@@ -27,18 +29,24 @@ import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.TdwgAreaProvider;
 import eu.etaxonomy.cdm.model.agent.Team;
 import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
+import eu.etaxonomy.cdm.model.common.Annotation;
+import eu.etaxonomy.cdm.model.common.AnnotationType;
+import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.OrderedTermVocabulary;
 import eu.etaxonomy.cdm.model.common.TermType;
+import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.location.NamedArea;
+import eu.etaxonomy.cdm.model.location.NamedAreaType;
 import eu.etaxonomy.cdm.model.location.Point;
 import eu.etaxonomy.cdm.model.location.ReferenceSystem;
-import eu.etaxonomy.cdm.model.location.Country;
 import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
@@ -100,10 +108,10 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 			TransactionStatus txStatus = this.startTransaction();
 		
 			boolean isOrdered = true;
-			OrderedTermVocabulary<State> climateVoc = (OrderedTermVocabulary)getVocabulary(TermType.State, uuidVocAlgaTerraClimate, "Climate", "Climate", abbrevLabel, uri, isOrdered, null);
-			OrderedTermVocabulary<State> habitatVoc = (OrderedTermVocabulary)getVocabulary(TermType.State, uuidVocAlgaTerraHabitat, "Habitat", "Habitat", abbrevLabel, uri, isOrdered, null);
-			OrderedTermVocabulary<State> lifeformVoc = (OrderedTermVocabulary)getVocabulary(TermType.State, uuidVocAlgaTerraLifeForm, "Lifeform", "Lifeform", abbrevLabel, uri, isOrdered, null);
-			
+			State tmp = State.NewInstance();
+			OrderedTermVocabulary<State> climateVoc = (OrderedTermVocabulary<State>)getVocabulary(TermType.State, uuidVocAlgaTerraClimate, "Climate", "Climate", abbrevLabel, uri, isOrdered, tmp);
+			OrderedTermVocabulary<State> habitatVoc = (OrderedTermVocabulary<State>)getVocabulary(TermType.State, uuidVocAlgaTerraHabitat, "Habitat", "Habitat", abbrevLabel, uri, isOrdered, tmp);
+			OrderedTermVocabulary<State> lifeformVoc = (OrderedTermVocabulary<State>)getVocabulary(TermType.State, uuidVocAlgaTerraLifeForm, "Lifeform", "Lifeform", abbrevLabel, uri, isOrdered, tmp);
 			
 			Feature feature = getFeature(state, uuidFeatureAlgaTerraClimate, "Climate","Climate", null, null);
 			feature.setSupportsCategoricalData(true);
@@ -152,13 +160,69 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 				addOriginalSource(stateTerm, id.toString(), "EcoLifeForm", state.getTransactionalSourceReference());
 				getTermService().saveOrUpdate(stateTerm);
 			}
+		
+			//material category
+			TermVocabulary<DefinedTerm> materialCategoryVoc = getVocabulary(TermType.KindOfUnit, AlgaTerraImportTransformer.uuidKindOfUnitVoc, "Alga Terra Material Category", "Alga Terra Material Category", abbrevLabel, uri, false, DefinedTerm.NewKindOfUnitInstance(null, null, null));
+			getVocabularyService().save(materialCategoryVoc);
+			
+			String materialSql = "SELECT * FROM MaterialCategory WHERE MaterialCategoryId <> 16 ";
+			rs = source.getResultSet(materialSql);
+			while (rs.next()){
+				Integer id = rs.getInt("MaterialCategoryId");
+				String category = rs.getString("MaterialCategory");
+				String description = rs.getString("Description");
+				UUID uuid = UUID.randomUUID();
+				
+				DefinedTerm kindOfUnit = DefinedTerm.NewKindOfUnitInstance(description, category, null);
+				kindOfUnit.setUuid(uuid);
+				addOriginalSource(kindOfUnit, id.toString(), "MaterialCategory", state.getTransactionalSourceReference());
+				materialCategoryVoc.addTerm(kindOfUnit);
+				getTermService().saveOrUpdate(kindOfUnit);
+				materialCategoryMapping.put(id, uuid);
+			}
+			
+			//areas
+			OrderedTermVocabulary<NamedArea> informalAreasVoc = (OrderedTermVocabulary<NamedArea>)getVocabulary(TermType.NamedArea, AlgaTerraImportTransformer.uuidNamedAreaVocAlgaTerraInformalAreas, "AlgaTerra Specific Areas", "AlgaTerra Specific Areas", abbrevLabel, uri, true, NamedArea.NewInstance());
+			getVocabularyService().save(informalAreasVoc);
+			
+			String areaSql = "SELECT * FROM TDWGGazetteer WHERE subL4 = 1 ";
+			rs = source.getResultSet(areaSql);
+			while (rs.next()){
+				String l1Code = rs.getString("L1Code");
+				String l2Code = rs.getString("L2Code");
+				String l3Code = rs.getString("L3Code");
+				String l4Code = rs.getString("L4Code");
+				String gazetteer = rs.getString("Gazetteer");
+				Integer id = rs.getInt("ID");
+				String notes = rs.getString("Notes");
+				//TODO stable uuids
+//				UUID uuid = UUID.fromString(rs.getString("UUID"));
+				UUID uuid = UUID.randomUUID();
+				subL4Mapping.put(id, uuid);
+				
+				String tdwgCode =  (l4Code != null) ? l4Code : (l3Code != null) ? l3Code : (l2Code != null) ? l2Code : l1Code;
+				
+				NamedArea tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwgCode);
+				NamedArea newArea  = getNamedArea(state, uuid ,gazetteer, gazetteer, null, null, null, informalAreasVoc, TermMatchMode.UUID_ONLY, null);
+				if (isNotBlank(notes)){
+					newArea.addAnnotation(Annotation.NewInstance(notes, AnnotationType.EDITORIAL(), Language.DEFAULT()));
+				}
+				
+				addOriginalSource(newArea, id.toString(), "TDWGGazetteer", state.getTransactionalSourceReference());
+				getTermService().saveOrUpdate(newArea);
+				newArea.setPartOf(tdwgArea);
+				informalAreasVoc.addTerm(newArea);
+			}
 			
 			this.commitTransaction(txStatus);
 			
 			state.setSpecimenVocabulariesCreated(true);
-		}
-		
+		}	
 	}
+	
+	//tmp
+	static Map<Integer, UUID> subL4Mapping = new HashMap<Integer, UUID>();
+	static Map<Integer, UUID> materialCategoryMapping = new HashMap<Integer, UUID>();
 	
 	protected String getLocalityString(){
 		return "Locality";
@@ -225,7 +289,7 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 			makeAreas(state, rs, facade);
 
 			//notes
-			//TODO is this an annotation on field observation or on the derived unit?
+			//=> not required according to Henning
 			
 			//id, created, updated, notes
 			if (unitId != null){
@@ -242,6 +306,7 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	protected void handleFirstDerivedSpecimen(ResultSet rs, DerivedUnitFacade facade, AlgaTerraImportState state, ResultSetPartitioner partitioner) throws SQLException {
 		Integer unitId = nullSafeInt(rs, "unitId");
 		Integer collectionFk = nullSafeInt(rs,"CollectionFk");
+		String label = rs.getString("Label"); 
 		
 		//collection
 		if (collectionFk != null){
@@ -250,8 +315,17 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 				facade.setCollection(subCollection);
 			}else{
 				Collection collection = state.getRelatedObject(AlgaTerraCollectionImport.NAMESPACE_COLLECTION, String.valueOf(collectionFk), Collection.class);
+				if (collection == null){
+					logger.warn("Collection for collectionFK " + collectionFk + " can not be found.");
+				}
 				facade.setCollection(collection);
 			}
+		}
+		
+		//Label
+		if (isNotBlank(label)){
+			//TODO implement label #4218, #3090, #3084
+			logger.warn("Label not yet implemented for specimen, #4218, #3090, #3084");
 		}
 		
 		//TODO id, created for fact +  ecoFact
@@ -284,7 +358,7 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	
 
 	private void makeAreas(AlgaTerraImportState state, ResultSet rs, DerivedUnitFacade facade) throws SQLException {
-	   	Object gazetteerId = rs.getObject("GazetteerId");
+	   	Integer gazetteerId = nullSafeInt(rs, "GazetteerId");
 	   	if (gazetteerId != null){
 	   		//TDWG
 	   		NamedArea tdwgArea;
@@ -296,8 +370,19 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	   			if (isNotBlank(tdwg3)){
 	   				tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(tdwg3);
 	   			}else{
-	   				Integer tdwg2 = rs.getInt("L2Code");   				
-	   				tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(String.valueOf(tdwg2));
+	   				Number tdwg2D = nullSafeDouble(rs, "L2Code"); 
+	   				if (tdwg2D != null){
+	   					Integer tdwg2 = tdwg2D.intValue();
+		   				tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(String.valueOf(tdwg2));
+	   				}else{
+	   					Number tdwg1D = nullSafeDouble(rs, "L1Code");   				
+		   				if (tdwg1D != null){
+		   					Integer tdwg1 = tdwg1D.intValue();
+		   					tdwgArea = TdwgAreaProvider.getAreaByTdwgAbbreviation(String.valueOf(tdwg1));
+		   				}else{
+		   					tdwgArea = null;
+		   				}
+	   				}
 		   		}
 	   		}
 	   		if (tdwgArea == null){
@@ -314,9 +399,29 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 		   		country = Country.getCountryByIso3166A2(isoCountry);
 	   		}else if (isNotBlank(countryStr)){
 	   			logger.warn("Country exists but no ISO code");
+	   		}else{
+	   			
 	   		}
-	   		if (country == null){
-	   			logger.warn("Country does not exist for GazetteerID " + gazetteerId);
+	   		
+	   		NamedArea subL4Area = null;
+	   		Boolean subL4 = nullSafeBoolean(rs, "subL4");
+	   		if (subL4 != null && subL4.booleanValue() == true){
+	   			subL4Area = makeSubL4Area(state, gazetteerId);
+	   			if (subL4Area != null){
+	   				facade.addCollectingArea(subL4Area);
+	   			}else{
+	   				logger.warn("SubL4 area not found for gazetteerId: " + gazetteerId);
+	   			}
+	   		}
+	   		
+	   		if (country == null ){
+	   			if (! gazetteerId.equals(40)){//special handling for Borneo, TDWG area is enough here as it matches exactly
+		   			if (subL4Area == null ){
+		   				logger.warn("Country does not exist and SubL4 could not be found for GazetteerID " + gazetteerId);
+		   			}else {  
+		   				logger.info("Country could not be defined but subL4 area was added");
+		   			}
+	   			}
 	   		}else{
 	   			facade.setCountry(country);
 	   		}
@@ -329,6 +434,12 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	   	if (isNotBlank(waterbodyStr)){
 	   		if (waterbodyStr.equals("Atlantic Ocean")){
 	   			waterbody = NamedArea.ATLANTICOCEAN();
+	   		}else if (waterbodyStr.equals("Pacific Ocean")){
+	   			waterbody = NamedArea.PACIFICOCEAN();
+	   		}else if (waterbodyStr.equals("Indian Ocean")){
+	   			waterbody = NamedArea.INDIANOCEAN();
+	   		}else if (waterbodyStr.equals("Arctic Ocean")){
+	   			waterbody = NamedArea.ARCTICOCEAN();
 	   		}else{
 	   			logger.warn("Waterbody not recognized: " + waterbody);
 	   		}
@@ -342,6 +453,34 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	   	//TODO -> SpecimenImport (not existing in TypeSpecimen)
 	}
 
+
+	private NamedArea makeSubL4Area(AlgaTerraImportState state, Integer gazetteerId) {
+		UUID uuid = subL4Mapping.get(gazetteerId);
+		NamedArea area = (NamedArea)getTermService().find(uuid);
+		if (area == null){
+			logger.warn("SubL4 area could not be found in repository");
+		}
+		return area;
+	}
+
+	private boolean handleMissingCountry(AlgaTerraImportState state, DerivedUnitFacade facade, Integer gazetteerId) {
+		NamedArea area = null;
+		if (gazetteerId != null){
+			if (gazetteerId.equals(42)){
+				area = getNamedArea(state, AlgaTerraImportTransformer.uuidNamedAreaBorneo, null, null, null, null, null);
+			}else if (gazetteerId.equals(1684)){
+				area = getNamedArea(state, AlgaTerraImportTransformer.uuidNamedAreaPatagonia, null, null, null, null, null);
+			}else if (gazetteerId.equals(2167)){
+				area = getNamedArea(state, AlgaTerraImportTransformer.uuidNamedAreaTierraDelFuego, null, null, null, null, null);
+			}
+		}
+		if (area != null){
+			facade.addCollectingArea(area);
+			return true;
+		}
+		return false;
+		
+	}
 
 	protected SpecimenOrObservationType makeDerivedUnitType(String recordBasis) {
 		SpecimenOrObservationType result = null;
@@ -372,13 +511,20 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 	}
 
 
-	protected Feature makeFeature(SpecimenOrObservationType type) {
+	protected Feature makeFeature(SpecimenOrObservationType type, AlgaTerraImportState state) {
 		if (type.equals(SpecimenOrObservationType.DerivedUnit)){
 			return Feature.INDIVIDUALS_ASSOCIATION();
 		}else if (type.isFeatureObservation()){
 			return Feature.OBSERVATION();
 		}else if (type.isPreservedSpecimen()){
 			return Feature.SPECIMEN();
+		}else if (type.equals(SpecimenOrObservationType.LivingSpecimen)){
+			UUID uuid = AlgaTerraImportTransformer.uuidFeatureLivingSpecimen;
+			Feature feature = getFeature(state, uuid, "Living Specimen", "Living Specimen", null, Feature.SPECIMEN().getVocabulary());
+			if (feature == null){
+				logger.warn("Living Specimen Feature could not be created");
+			}
+			return feature;
 		}
 		logger.warn("No feature defined for derived unit type: " + type);
 		return null;
@@ -393,8 +539,7 @@ public abstract class AlgaTerraSpecimenImportBase extends BerlinModelImportBase{
 		}else if(geoCodeMethod.startsWith("Google")){
 			return ReferenceSystem.GOOGLE_EARTH();
 		}else if(geoCodeMethod.startsWith("Map")){
-			logger.warn("Reference system " +  geoCodeMethod +  " not yet supported.");
-			return null;
+			return ReferenceSystem.MAP();
 		}else if(geoCodeMethod.startsWith("WikiProjekt Georeferenzierung") || geoCodeMethod.startsWith("http://toolserver.org/~geohack/geohack.php") ){
 			return ReferenceSystem.WGS84();
 		}else {

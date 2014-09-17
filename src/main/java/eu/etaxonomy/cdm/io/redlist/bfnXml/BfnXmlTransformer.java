@@ -139,8 +139,41 @@ public final class BfnXmlTransformer {
 	public static final UUID stateTermRLKatOldD = UUID.fromString("075a456c-2291-436c-9b9c-b06d95bf6fc6");
 	public static final UUID stateTermRLKatOldNb = UUID.fromString("72faec78-6db9-4471-9a65-c6d2337bd324");
 	public static final UUID stateTermRLKatOldKn = UUID.fromString("92276f3e-3c09-4761-ba5b-b49697c6d5ce");
-	
 	public static final UUID stateTermEmpty = UUID.fromString("1d357340-5329-4f43-a454-7f99625a1d71");
+	
+	
+	public static TaxonRelationshipType concept2TaxonRelation(String conceptStatus) throws UnknownCdmTypeException{
+		if(conceptStatus == null) {
+			return null;
+		}else if(conceptStatus.equalsIgnoreCase("!=")){
+			return TaxonRelationshipType.CONGRUENT_TO();
+		}else if(conceptStatus.equalsIgnoreCase("!=,>")){
+			return TaxonRelationshipType.CONGRUENT_OR_INCLUDES();
+		}else if(conceptStatus.equalsIgnoreCase("!=,<")){
+			return TaxonRelationshipType.CONGRUENT_OR_INCLUDED_OR_INCLUDES();
+		}else if(conceptStatus.equalsIgnoreCase(">")){	
+			return TaxonRelationshipType.INCLUDES();
+		}else if(conceptStatus.equalsIgnoreCase(">,><")){
+			return TaxonRelationshipType.INCLUDES_OR_OVERLAPS();
+//		}else if(conceptStatus.equalsIgnoreCase("<")){//TODO: should be just Included In
+//			return TaxonRelationshipType.INCLUDED_OR_INCLUDES();
+		}else if(conceptStatus.equalsIgnoreCase(">,><")){//TODO: should be Included In Or Overlaps
+			return TaxonRelationshipType.INCLUDED_OR_INCLUDES_OR_OVERLAPS();
+		}else if(conceptStatus.equalsIgnoreCase("><")){
+			return TaxonRelationshipType.OVERLAPS();
+		}else if(conceptStatus.equalsIgnoreCase("~")){//TODO Included in not here
+			return TaxonRelationshipType.CONGRUENT_OR_INCLUDES_OR_OVERLAPS();
+		}else if(conceptStatus.equalsIgnoreCase("?")){
+			return TaxonRelationshipType.ALL_RELATIONSHIPS();
+		}else if(conceptStatus.equalsIgnoreCase("/=")){
+			return TaxonRelationshipType.EXCLUDES();
+		}else if(conceptStatus.equalsIgnoreCase("\\")){
+			return TaxonRelationshipType.EXCLUDES();
+		}
+		else{
+			throw new UnknownCdmTypeException("Unknown concept relation status " + conceptStatus);
+		}
+	}
 	
 	
 	/** Creates an cdm-Rank by the tcs rank
@@ -163,6 +196,8 @@ public final class BfnXmlTransformer {
 		//species group
 		}else if (strRank.equals("subsp_aggr")){return Rank.SUBSPECIFICAGGREGATE();
 		}else if (strRank.equals("ssp")){return Rank.SUBSPECIES();
+		}else if (strRank.equals("subsp.")){return Rank.SUBSPECIES();
+		}else if (strRank.equals("subsp")){return Rank.SUBSPECIES();
 		}else if (strRank.equals("sp")){return Rank.SPECIES();
 		}else if (strRank.equals("spezies")){return Rank.SPECIES();
 		//below subspecies

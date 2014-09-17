@@ -125,7 +125,7 @@ public class AlgaTerraPictureImport  extends AlgaTerraImageImportBase {
 					}else{
 						Taxon taxon = CdmBase.deproxy(taxonBase, Taxon.class);
 						
-						Media media = handleSingleImage(rs, taxon, state, partitioner);
+						Media media = handleSingleImage(rs, taxon, state, partitioner, PathType.Image);
 						
 						handlePictureSpecificFields(rs, media, state, specimenMap);
 						
@@ -175,13 +175,11 @@ public class AlgaTerraPictureImport  extends AlgaTerraImageImportBase {
 		
 	}
 
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+
+	@Override
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, BerlinModelImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
@@ -216,20 +214,13 @@ public class AlgaTerraPictureImport  extends AlgaTerraImageImportBase {
 	}
 
 
-	
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new AlgaTerraTypeImportValidator();
 		return validator.validate(state);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState bmState){
 		AlgaTerraImportConfigurator config = ((AlgaTerraImportState) bmState).getAlgaTerraConfigurator();
 		return !  ( config.isDoTypes() && config.isDoImages()) ;

@@ -34,7 +34,7 @@ public class CicadActivator {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String sddSource = SDDSources.Cicad_local();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2_Cicad();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 

@@ -51,7 +51,7 @@ public class EuroMedActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 //	static final Source berlinModelSource = BerlinModelSources.euroMed();
-	static final Source berlinModelSource = BerlinModelSources.PESI3_euroMed();
+	static final Source berlinModelSource = BerlinModelSources.euroMed_PESI3();
 	
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_pesi_euroMed();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_mysql();

@@ -18,6 +18,7 @@ import eu.etaxonomy.cdm.common.AccountStore;
 import eu.etaxonomy.cdm.database.CdmDataSource;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
+import eu.etaxonomy.cdm.io.api.application.CdmIoApplicationController;
 import eu.etaxonomy.cdm.io.jaxb.DataSet;
 import eu.etaxonomy.cdm.model.agent.AgentBase;
 import eu.etaxonomy.cdm.model.agent.Institution;
@@ -71,13 +72,11 @@ public class TestDatabase {
 		return datasource;
 	}
 	
-    public static CdmApplicationController 
-    initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
+    public static CdmApplicationController initDb(ICdmDataSource db, DbSchemaValidation dbSchemaValidation, boolean omitTermLoading) {
     	
 		logger.info("Initializing database '" + db.getName() + "'");
 		
-		CdmApplicationController appCtrInit = null;
-		appCtrInit = CdmApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
+		CdmApplicationController appCtrInit = CdmIoApplicationController.NewInstance(db, dbSchemaValidation, omitTermLoading);
 		
 		return appCtrInit;
     }

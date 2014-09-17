@@ -40,7 +40,8 @@ public class CacheUpdater {
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_edit_cichorieae_preview_direct();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_production_cichorieae();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+//	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
+	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_test_local_euromed3();
 
 	static final List<String> classListStrings =  Arrays.asList(new String[]{
 			//IdentifiableEntity.class.getName(),

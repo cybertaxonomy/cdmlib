@@ -30,14 +30,14 @@ public class SpecimenImportActivator {
 
     //database validation status (create, update, validate ...)
     static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
-    	final static String excelSource = "/home/pkelbert/Documents/Proibiosphere/ChenopodiumQuentin/dca_UK_records.xls";
-   // final static String excelSource = "/home/pkelbert/Documents/Proibiosphere/ChenopodiumQuentin/dca_UK_specimens.xls";
+    final static String excelSource = "/home/pkelbert/Documents/Proibiosphere/ChenopodiumQuentin/dca_UK_records.xls";
+    // final static String excelSource = "/home/pkelbert/Documents/Proibiosphere/ChenopodiumQuentin/dca_UK_specimens.xls";
 
     //	final static String xmlSource = "C:\\localCopy\\eclipse\\cdmlib\\app-import\\src\\main\\resources\\specimenABCD\\CDMtabular9c04a474e2_23_09_08.xls";
 
 
 
-    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
+    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_chenopodium_local();
     //check - import
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 
@@ -61,6 +61,7 @@ public class SpecimenImportActivator {
             specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
             specimenImportConfigurator.setDoAutomaticParsing(true);
             specimenImportConfigurator.setReUseExistingMetadata(true);
+            specimenImportConfigurator.setDebugInstitutionOnly(true);
 
             //            specimenImportConfigurator.setDoMatchTaxa(true);
             specimenImportConfigurator.setReUseTaxon(true);
@@ -68,11 +69,11 @@ public class SpecimenImportActivator {
             //            specimenImportConfigurator.setDoCreateIndividualsAssociations(true);
 
             Reference<?> ref = ReferenceFactory.newBook();
-                        ref.setUuid(UUID.fromString("98b0a618-a95b-464e-943a-25aaaef202f6"));//observations
-                        ref.setTitle("Chenopodium vulvaria observations from the British Isles");
+            ref.setUuid(UUID.fromString("98b0a618-a95b-464e-943a-25aaaef202f6"));//observations
+            ref.setTitle("Chenopodium vulvaria observations from the British Isles");
             //
-//            ref.setUuid(UUID.fromString("5480eed1-1a23-4ce8-ac4d-c2893e178dea"));//specimens
-//            ref.setTitle("Chenopodium vulvaria specimens from the British Isles");
+            //            ref.setUuid(UUID.fromString("5480eed1-1a23-4ce8-ac4d-c2893e178dea"));//specimens
+            //            ref.setTitle("Chenopodium vulvaria specimens from the British Isles");
 
             specimenImportConfigurator.setDataReference(ref);
             specimenImportConfigurator.setSourceReference(null);

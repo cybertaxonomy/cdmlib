@@ -45,8 +45,19 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 	
 	private boolean doMetaData = true;
 	private boolean doSpecimen = true;
-	
-//	//references
+	private boolean doInformationImport = true;
+	private boolean fillSecondList = false;
+
+
+	public boolean isFillSecondList() {
+		return fillSecondList;
+	}
+
+	public void setFillSecondList(boolean fillSecondList) {
+		this.fillSecondList = fillSecondList;
+	}
+
+	//	//references
 	private DO_REFERENCES doReferences = DO_REFERENCES.ALL;
 //	//names
 	private boolean doTaxonNames = true;
@@ -309,6 +320,13 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 	public void setPlaceholderClass(ITcsXmlPlaceholderClass placeholderClass) {
 		this.placeholderClass = placeholderClass;
 	}
+	
+	public boolean isDoInformationImport() {
+		return doInformationImport;
+	}
 
+	public void setDoInformationImport(boolean doInformationImport) {
+		this.doInformationImport = doInformationImport;
+	}
 	
 }

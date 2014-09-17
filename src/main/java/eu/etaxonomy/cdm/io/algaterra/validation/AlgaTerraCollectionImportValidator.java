@@ -61,7 +61,7 @@ public class AlgaTerraCollectionImportValidator implements IOValidator<BerlinMod
 //				while (resulSet.next()){
 //					if (firstRow){
 //						System.out.println("========================================================");
-//						System.out.println("There are Occurrences for a taxon that is not accepted!");
+//						System.out.println("There are xxx for a taxon that is not accepted!");
 //						System.out.println("========================================================");
 //					}
 //					int occurrenceId = resulSet.getInt("OccurrenceId");

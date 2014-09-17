@@ -19,6 +19,7 @@ import java.util.UUID;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
+import org.hibernate.NonUniqueObjectException;
 import org.joda.time.DateTime;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
@@ -30,6 +31,10 @@ import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
 import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.DbImportMapping;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
+import eu.etaxonomy.cdm.model.agent.INomenclaturalAuthor;
+import eu.etaxonomy.cdm.model.agent.Person;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.AnnotatableEntity;
 import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.AnnotationType;
@@ -37,8 +42,8 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.User;
-import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.location.Country;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.name.ZoologicalName;
 import eu.etaxonomy.cdm.strategy.exceptions.StringNotParsableException;
 import eu.etaxonomy.cdm.strategy.parser.INonViralNameParser;
@@ -64,17 +69,16 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	
 	private String pluralString;
 	private String dbTableName;
-	//TODO needed?
 	private Class cdmTargetClass;
 
-	private INonViralNameParser parser = NonViralNameParserImpl.NewInstance();
+	private INonViralNameParser<?> parser = NonViralNameParserImpl.NewInstance();
 
 	
 	/**
 	 * @param dbTableName
 	 * @param dbTableName2 
 	 */
-	public GlobisImportBase(String pluralString, String dbTableName, Class cdmTargetClass) {
+	public GlobisImportBase(String pluralString, String dbTableName, Class<?> cdmTargetClass) {
 		this.pluralString = pluralString;
 		this.dbTableName = dbTableName;
 		this.cdmTargetClass = cdmTargetClass;
@@ -107,38 +111,133 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	 * @param authorAndYear
 	 * @param zooName
 	 */
-	protected void handleAuthorAndYear(String authorAndYear, ZoologicalName zooName, Integer id) {
+	protected void handleAuthorAndYear(String authorAndYear, ZoologicalName zooName, Integer id, GlobisImportState state) {
 		if (isBlank(authorAndYear)){
 			return;
-		}
-		try {
-			String doubtfulAuthorAndYear = null;
-			if(authorAndYear.matches(".+\\,\\s\\[\\d{4}\\].*")){
-				doubtfulAuthorAndYear = authorAndYear;
-				authorAndYear = authorAndYear.replace("[", "").replace("]", "");
-			}
-			if (authorAndYear.contains("?")){
-				authorAndYear = authorAndYear.replace("H?bner", "H\u00fcbner");
-				authorAndYear = authorAndYear.replace("Oberth?r", "Oberth\u00fcr");
-				authorAndYear = authorAndYear.replace("M?n?tri?s","M\u00E9n\u00E9tri\u00E9s");
-				authorAndYear = authorAndYear.replace("Schifferm?ller","Schifferm\u00fcller");
+		}else if ("[Denis & Schifferm\u00FCller], 1775".equals(authorAndYear)){
+			handleDenisSchiffermueller(zooName, state);
+			return;
+		}else{
+			try {
+				String doubtfulAuthorAndYear = null;
+				if(authorAndYear.matches(".+\\,\\s\\[\\d{4}\\].*")){
+					doubtfulAuthorAndYear = authorAndYear;
+					authorAndYear = authorAndYear.replace("[", "").replace("]", "");
+				}
 				
-				//TODO remove
-				authorAndYear = authorAndYear.replace("?", "");
+				parser.parseAuthors(zooName, authorAndYear);
+				deduplicateAuthors(zooName, state);
 				
+				if (doubtfulAuthorAndYear != null){
+					zooName.setAuthorshipCache(doubtfulAuthorAndYear, true);
+				}
+				
+			} catch (StringNotParsableException e) {
+				logger.warn("Author could not be parsed: " + authorAndYear + " for id "  +id);
+				zooName.setAuthorshipCache(authorAndYear, true);
 			}
-			
-			parser.parseAuthors(zooName, authorAndYear);
-			if (doubtfulAuthorAndYear != null){
-				zooName.setAuthorshipCache(doubtfulAuthorAndYear, true);
-			}
-			
-		} catch (StringNotParsableException e) {
-			logger.warn("Author could not be parsed: " + authorAndYear + " for id "  +id);
-			zooName.setAuthorshipCache(authorAndYear, true);
 		}
 	}
+
+	/**
+	 * @param zooName
+	 * @param state
+	 */
+	private void handleDenisSchiffermueller(ZoologicalName zooName,
+			GlobisImportState state) {
+		String teamStr = "Denis & Schifferm\u00FCller";
+		Team team = state.getTeam(teamStr);
+		if (team == null){
+			team = Team.NewInstance();
+			state.putTeam(teamStr, team);
+			getAgentService().save(team);
+		}
+		zooName.setCombinationAuthorTeam(team);
+		zooName.setPublicationYear(1775);
+		zooName.setAuthorshipCache("[Denis & Schifferm\u00FCller], 1775", true);
+	}
 	
+
+	private void deduplicateAuthors(ZoologicalName zooName, GlobisImportState state) {
+		zooName.setCombinationAuthorTeam(getExistingAuthor(zooName.getCombinationAuthorTeam(), state));
+		zooName.setExCombinationAuthorTeam(getExistingAuthor(zooName.getExCombinationAuthorTeam(), state));
+		zooName.setBasionymAuthorTeam(getExistingAuthor(zooName.getBasionymAuthorTeam(), state));
+		zooName.setExBasionymAuthorTeam(getExistingAuthor(zooName.getExBasionymAuthorTeam(), state));
+	}
+
+	private TeamOrPersonBase<?> getExistingAuthor(INomenclaturalAuthor nomAuthor, GlobisImportState state) {
+		TeamOrPersonBase<?> author = (TeamOrPersonBase<?>)nomAuthor;
+		if (author == null){
+			return null;
+		}
+		if (author instanceof Person){
+			Person person = state.getPerson(author.getTitleCache());
+			return saveAndDecide(person, author, author.getTitleCache(), state);
+		}else if (author instanceof Team){
+			String key = GlobisAuthorImport.makeTeamKey((Team)author, state, getAgentService());
+			Team existingTeam = state.getTeam(key);
+			if (existingTeam == null){
+				Team newTeam = Team.NewInstance();
+				for (Person member :((Team) author).getTeamMembers()){
+					Person existingPerson = state.getPerson(member.getTitleCache());
+					if (existingPerson != null){
+						try {
+							getAgentService().update(existingPerson);
+						} catch (NonUniqueObjectException nuoe){
+							// person already exists in 
+							existingPerson = CdmBase.deproxy(getAgentService().find(existingPerson.getUuid()), Person.class);
+							state.putPerson(existingPerson.getTitleCache(), existingPerson);
+						} catch (Exception e) {
+							throw new RuntimeException (e);
+						}
+						newTeam.addTeamMember(existingPerson);
+//						
+//						logger.warn("newTeam " + newTeam.getId());
+					}else{
+						newTeam.addTeamMember(member);
+					}	
+				}
+				author = newTeam;
+			}
+			
+			return saveAndDecide(existingTeam, author, key, state);
+		}else{
+			logger.warn("Author type not supported: " + author.getClass().getName());
+			return author;
+		}
+	}
+
+	private TeamOrPersonBase<?> saveAndDecide(TeamOrPersonBase<?> existing, TeamOrPersonBase<?> author, String key, GlobisImportState state) {
+		if (existing != null){
+			try {
+				getAgentService().update(existing);
+			} catch (NonUniqueObjectException nuoe){
+				// person already exists in 
+				existing = CdmBase.deproxy(getAgentService().find(existing.getUuid()), TeamOrPersonBase.class);
+				putAgent(existing, key, state);
+			} catch (Exception e) {
+				throw new RuntimeException (e);
+			}
+			return existing;
+		}else{
+			getAgentService().save(author);
+			putAgent(author, key, state);
+			return author;
+		}
+	}
+
+	/**
+	 * @param author
+	 * @param key
+	 * @param state
+	 */
+	private void putAgent(TeamOrPersonBase<?> agent, String key, GlobisImportState state) {
+		if (agent instanceof Team){
+			state.putTeam(key, (Team)agent);
+		}else{
+			state.putPerson(key, (Person)agent);
+		}
+	}
 
 	/**
 	 * @param state
@@ -234,14 +333,8 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 		GlobisImportConfigurator config = state.getConfig();
 		Object createdWhen = rs.getObject("Created_When");
 		String createdWho = rs.getString("Created_Who");
-		Object updatedWhen = null;
-		String updatedWho = null;
-		try {
-			updatedWhen = rs.getObject("Updated_When");
-			updatedWho = rs.getString("Updated_who");
-		} catch (SQLException e) {
-			//Table "Name" has no updated when/who
-		}
+		Object updatedWhen = rs.getObject("Updated_When");
+		String updatedWho = rs.getString("Updated_who");
 		String notes = rs.getString("notes");
 		
 		boolean success  = true;
@@ -288,7 +381,7 @@ public abstract class GlobisImportBase<CDM_BASE extends CdmBase> extends CdmImpo
 	}
 	
 	private User getUser(String userString, GlobisImportState state){
-		if (StringUtils.isBlank(userString)){
+		if (isBlank(userString)){
 			return null;
 		}
 		userString = userString.trim();

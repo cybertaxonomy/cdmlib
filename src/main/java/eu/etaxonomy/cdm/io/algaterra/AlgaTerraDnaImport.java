@@ -85,6 +85,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 					" WHERE f.FactCategoryFk = 203 ";
 		if (state.getAlgaTerraConfigurator().isRemoveRestricted()){
 				result = result + " AND df.ProtectedFlag = 0 ";
+				logger.warn("DNA with protectedFlag = 0 is currently not imported");
 		}
 		result += " ORDER BY df.DNAFactID ";
 		return result;
@@ -106,9 +107,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		return strQuery;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState bmState) {
 		boolean success = true;
 		
@@ -237,10 +236,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 				DerivationEvent.NewSimpleInstance(ecoFact, dnaSample, DerivationEventType.DNA_EXTRACTION());
 				samplesToSave.add(ecoFact);
 			}
-		}
-		
-		
-		
+		}	
 	}
 
 
@@ -290,7 +286,9 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		if (sequenceStr == null){
 			logger.warn("PlainSequence is null. Id: " + dnaFactId);
 		}else{
-			if (sequenceStr.length() != seqLen){
+			if (seqLen == null){
+				logger.warn("SeqLen is null for dnaFact: "  + dnaFactId);
+			}else if (sequenceStr.length() != seqLen){
 				logger.warn("SeqLen (" + seqLen+ ") and OriginalLen ("+sequenceStr.length()+") differ for dnaFact: "  + dnaFactId);
 			}
 		}
@@ -364,7 +362,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 	}
 
 	@Override
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, BerlinModelImportState state) {
 		String nameSpace;
 		Class<?> cdmClass;
 		Set<String> idSet;
@@ -378,7 +376,6 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 			while (rs.next()){
 				handleForeignKey(rs, taxonIdSet, "taxonId");
 				handleForeignKey(rs, ecoFactFkSet, "ecoFactId");
-
 			}
 			
 			//taxon map
@@ -408,10 +405,7 @@ public class AlgaTerraDnaImport  extends AlgaTerraSpecimenImportBase {
 		return validator.validate(state);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! ((AlgaTerraImportState)state).getAlgaTerraConfigurator().isDoDna();
 	}

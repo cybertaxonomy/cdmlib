@@ -61,7 +61,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 	private UUID uuidArtNonSpecTaxMarkerType = UUID.fromString("be362085-0f5b-4314-96d1-78b9b129ef6d") ;
 	private static final String pluralString = "images";
 	private static final String dbTableName = "Einzelbilder";
-	private static final Class cdmTargetClass = Media.class;  //not needed
+	private static final Class<?> cdmTargetClass = Media.class;  //not needed
 	
 	private static UUID uuidGartRef = UUID.fromString("af85470f-6e54-4304-9d29-fd117cd56161"); 
 	
@@ -345,7 +345,7 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 				}
 			}
 			
-			media = this.getImageMedia(uri.toString(), readMediaData, false);
+			media = this.getImageMedia(uri.toString(), readMediaData);
 			media.putTitle(Language.ENGLISH(), legend);
 			this.doIdCreatedUpdatedNotes(state, media, rs, bildID, IMAGE_NAMESPACE);
 			
@@ -407,18 +407,13 @@ public class GlobisImageImport  extends GlobisImportBase<Taxon> {
 			logger.warn("Unknown copyright entry: " + copyright);
 			return "";
 		}
-
-	
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	
+	@Override
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, GlobisImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		try{

@@ -42,7 +42,7 @@ public class SynthesysCacheActivator {
 
 //  static final ICdmDataSource cdmDestination = CdmDestinations.mon_cdm();
 //    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
-    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_local();
+    static final ICdmDataSource cdmDestination = CdmDestinations.proibiosphere_chenopodium_local();
     static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
     static final CHECK check = CHECK.IMPORT_WITHOUT_CHECK;
 

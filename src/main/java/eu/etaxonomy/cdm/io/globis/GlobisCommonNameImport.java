@@ -40,7 +40,10 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 /**
  * @author a.mueller
  * @created 20.02.2010
- * @version 1.0
+ * 
+ * OPEN ISSUES:
+ * 
+ * ...
  */
 @Component
 public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
@@ -49,7 +52,7 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 	private int modCount = 10000;
 	private static final String pluralString = "common names";
 	private static final String dbTableName = "species_language";
-	private static final Class cdmTargetClass = Taxon.class;  //not needed
+	private static final Class<?> cdmTargetClass = Taxon.class;  //not needed
 	
 	public GlobisCommonNameImport(){
 		super(pluralString, dbTableName, cdmTargetClass);
@@ -58,10 +61,6 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 	//dirty but acceptable for globis environment
 	private Map<Integer,Reference> refMap = new HashMap<Integer,Reference>();
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.globis.GlobisImportBase#getIdQuery()
-	 */
 	@Override
 	protected String getIdQuery() {
 		String strRecordQuery = 
@@ -71,11 +70,6 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 	}
 
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(GlobisImportConfigurator config) {
 		String strRecordQuery = 
@@ -85,11 +79,6 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 		return strRecordQuery;
 	}
 	
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.globis.GlobisImportBase#doPartition(eu.etaxonomy.cdm.io.common.ResultSetPartitioner, eu.etaxonomy.cdm.io.globis.GlobisImportState)
-	 */
 	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, GlobisImportState state) {
 		boolean success = true;
@@ -97,7 +86,6 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 		Set<TaxonBase> objectsToSave = new HashSet<TaxonBase>();
 		
 		Map<String, Taxon> taxonMap = (Map<String, Taxon>) partitioner.getObjectMap(TAXON_NAMESPACE);
-//		Map<String, DerivedUnit> ecoFactDerivedUnitMap = (Map<String, DerivedUnit>) partitioner.getObjectMap(ECO_FACT_DERIVED_UNIT_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -161,8 +149,6 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
                 
             }
            
-//            logger.warn("Specimen: " + countSpecimen + ", Descriptions: " + countDescriptions );
-
 			logger.warn(pluralString + " to save: " + objectsToSave.size());
 			getTaxonService().save(objectsToSave);	
 			
@@ -174,7 +160,6 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 	}
 
 	
-
 	private Map<String,Language> languageMap = new HashMap<String,Language>();
 	private Language getLanguage(String isoLang) {
 		Language result = languageMap.get(isoLang);
@@ -190,11 +175,14 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 	}
 	
 	private Reference<?> handleReference(GlobisImportState state, Integer refId){
+		if (refId == null){
+			return null;
+		}
 		Reference<?> result = refMap.get(refId);
 		
 		if (result == null){
 			try {
-				String sql = "SELECT * FROM references WHERE ReferenceID = " + refId;
+				String sql = "SELECT * FROM [references] WHERE ReferenceID = " + refId;
 				ResultSet rs = state.getConfig().getSource().getResultSet(sql);
 				rs.next();
 				
@@ -203,7 +191,7 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 				String details = rs.getString("Details");
 				Integer year = nullSafeInt(rs, "year");
 				result = ReferenceFactory.newGeneric();
-				result.setTitleCache(details);
+				result.setTitleCache(details, true);
 				result.setTitle(title);
 				result.setDatePublished(TimePeriod.NewInstance(year));
 
@@ -233,23 +221,15 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 		return result;
 	}
 
-
-
-
 	private Person makeSingleAuthor(String authors) {
 		Person result = Person.NewTitledInstance(authors);
 		return result;
 	}
 
-
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	@Override
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, GlobisImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		try{
@@ -273,19 +253,14 @@ public class GlobisCommonNameImport  extends GlobisImportBase<Taxon> {
 		return result;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+
 	@Override
 	protected boolean doCheck(GlobisImportState state){
 //		IOValidator<GlobisImportState> validator = new GlobisCurrentSpeciesImportValidator();
 		return true;
 	}
 	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(GlobisImportState state){
 		return ! state.getConfig().isDoCommonNames();
 	}

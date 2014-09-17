@@ -10,11 +10,16 @@
 
 package eu.etaxonomy.cdm.io.algaterra.validation;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 import org.apache.log4j.Logger;
 
+import eu.etaxonomy.cdm.io.algaterra.AlgaTerraImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
+import eu.etaxonomy.cdm.io.common.Source;
 
 /**
  * @author a.mueller
@@ -24,13 +29,12 @@ import eu.etaxonomy.cdm.io.common.IOValidator;
 public class AlgaTerraMorphologyImportValidator implements IOValidator<BerlinModelImportState> {
 	private static final Logger logger = Logger.getLogger(AlgaTerraMorphologyImportValidator.class);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.IOValidator#validate(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
+
+	@Override
 	public boolean validate(BerlinModelImportState state) {
 		boolean result = true;
-		BerlinModelImportConfigurator bmiConfig = state.getConfig();
-//		result &= checkTaxonIsAccepted(bmiConfig);
+		AlgaTerraImportConfigurator config = (AlgaTerraImportConfigurator)state.getConfig();
+		result &= checkMissingCultureStrains(config);
 		//result &= checkPartOfJournal(bmiConfig);
 		System.out.println("Checking for Morphology not yet implemented");
 		return result;
@@ -39,50 +43,35 @@ public class AlgaTerraMorphologyImportValidator implements IOValidator<BerlinMod
 	
 	//******************************** CHECK *************************************************
 		
-//		private static boolean checkTaxonIsAccepted(BerlinModelImportConfigurator config){
-//			try {
-//				boolean result = true;
-//				Source source = config.getSource();
-//				String strQuery = "SELECT emOccurrence.OccurrenceId, PTaxon.StatusFk, Name.FullNameCache, Status.Status, PTaxon.PTRefFk, Reference.RefCache " + 
-//							" FROM emOccurrence INNER JOIN " +
-//								" PTaxon ON emOccurrence.PTNameFk = PTaxon.PTNameFk AND emOccurrence.PTRefFk = PTaxon.PTRefFk INNER JOIN " + 
-//				                " Name ON PTaxon.PTNameFk = Name.NameId INNER JOIN " +
-//				                " Status ON PTaxon.StatusFk = Status.StatusId LEFT OUTER JOIN " +
-//				                " Reference ON PTaxon.PTRefFk = Reference.RefId " + 
-//							" WHERE (PTaxon.StatusFk <> 1)  ";
-//
-//				if (StringUtils.isNotBlank(config.getOccurrenceFilter())){
-//					strQuery += String.format(" AND (%s) ", config.getOccurrenceFilter()) ; 
-//				}
-//
-//				
-//				ResultSet resulSet = source.getResultSet(strQuery);
-//				boolean firstRow = true;
-//				while (resulSet.next()){
-//					if (firstRow){
-//						System.out.println("========================================================");
-//						System.out.println("There are Occurrences for a taxon that is not accepted!");
-//						System.out.println("========================================================");
-//					}
-//					int occurrenceId = resulSet.getInt("OccurrenceId");
-////					int statusFk = resulSet.getInt("StatusFk");
-//					String status = resulSet.getString("Status");
-//					String fullNameCache = resulSet.getString("FullNameCache");
-//					String ptRefFk = resulSet.getString("PTRefFk");
-//					String ptRef = resulSet.getString("RefCache");
-//					
-//					System.out.println("OccurrenceId:" + occurrenceId + "\n  Status: " + status + 
-//							"\n  FullNameCache: " + fullNameCache +  "\n  ptRefFk: " + ptRefFk +
-//							"\n  sec: " + ptRef );
-//					
-//					result = firstRow = false;
-//				}
-//				
-//				return result;
-//			} catch (SQLException e) {
-//				e.printStackTrace();
-//				return false;
-//			}
-//		}
+		private static boolean checkMissingCultureStrains(AlgaTerraImportConfigurator config){
+			try {
+				boolean result = true;
+				Source source = config.getSource();
+				String strQuery = "SELECT mf.morphoFactId, mf.CultureStrainNo, eco.ecoFactId " +
+						" FROM MorphoFact mf LEFT JOIN EcoFact eco ON eco.CultureStrain  = mf.CultureStrainNo " +
+						" WHERE CultureStrainNo IS NOT NULL AND ecoFactId IS NULL " +
+						" ORDER BY MorphoFactId ";
+
+				ResultSet resulSet = source.getResultSet(strQuery);
+				boolean firstRow = true;
+				while (resulSet.next()){
+					if (firstRow){
+						System.out.println("========================================================");
+						System.out.println("There are MorphoFacts with no matching EcoFacts!");
+						System.out.println("========================================================");
+					}
+					int morphoFactId = resulSet.getInt("morphoFactId");
+					String cultureStrain = resulSet.getString("CultureStrainNo");
+					
+					System.out.println("MorphoFactId:" + morphoFactId + "\n  cultureStrainNo: " + cultureStrain);
+					result = firstRow = false;
+				}
+				
+				return result;
+			} catch (SQLException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}
 
 }

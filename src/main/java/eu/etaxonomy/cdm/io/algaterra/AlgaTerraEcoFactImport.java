@@ -71,11 +71,6 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		super(dbTableName, pluralString);
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
-	 */
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
 		String result = " SELECT EcoFactId " + 
@@ -84,14 +79,11 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery =   
             " SELECT EcoFact.*, EcoFact.EcoFactId as unitId, " + 
-               " tg.ID AS GazetteerId, tg.L2Code, tg.L3Code, tg.L4Code, tg.Country, tg.ISOCountry, " +
+               " tg.ID AS GazetteerId, tg.L1Code, tg.L2Code, tg.L3Code, tg.L4Code, tg.Country, tg.ISOCountry, tg.subL4, " +
                " ec.UUID as climateUuid, eh.UUID as habitatUuid, elf.UUID as lifeFormUuid " +
             " FROM EcoFact " +
                  " LEFT OUTER JOIN TDWGGazetteer tg ON EcoFact.TDWGGazetteerFk = tg.ID " +
@@ -104,9 +96,7 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		return strQuery;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState bmState) {
 		boolean success = true;
 		
@@ -177,10 +167,8 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 				} 
                 
             }
-           
-//            logger.warn("Specimen: " + countSpecimen + ", Descriptions: " + countDescriptions );
-
-			logger.warn("Taxa to save: " + objectsToSave.size());
+ 
+			logger.warn("Specimen to save: " + objectsToSave.size());
 			getOccurrenceService().save(objectsToSave);	
 			
 			return success;
@@ -250,7 +238,6 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 		addCategoricalValue(state, fieldDescription, lifeFormUuid, uuidFeatureAlgaTerraLifeForm);
 		
 
-		
 		//parameters
 		makeParameter(state, rs, getFieldObservationDescription(facade));
 
@@ -263,9 +250,6 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 			facade.setAccessionNumber(voucher);
 		}
 	}
-
-
-
 
 
 	private void addCategoricalValue(AlgaTerraImportState importState, DescriptionBase description, String uuidTerm, UUID featureUuid) {
@@ -286,7 +270,9 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 			
 			//method
 			if (StringUtils.isNotBlank(method)){
-				logger.warn("Methods not yet handled: " + method);
+				//TODO
+				//see http://dev.e-taxonomy.eu/trac/ticket/4205
+				logger.warn("Methods not yet handled: " + method + ", #4205");
 			}
 			//parameter
 			TermVocabulary<Feature> vocParameter = getVocabulary(TermType.Feature, uuidVocParameter, "Feature vocabulary for AlgaTerra measurement parameters", "Parameters", null, null, false, Feature.COMMON_NAME());
@@ -372,9 +358,9 @@ public class AlgaTerraEcoFactImport  extends AlgaTerraSpecimenImportBase {
 	}
 
 	@Override
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, BerlinModelImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		

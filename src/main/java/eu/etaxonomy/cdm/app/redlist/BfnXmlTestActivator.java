@@ -42,12 +42,13 @@ public class BfnXmlTestActivator {
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_redlist_localhost();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_testDB_localhost();
 
+	private static final String sourceReferenceTitle = "Mammalia";
 
 
 	static final UUID treeUuid = UUID.fromString("00000000-0c97-48ac-8d33-6099ed68c625");
 	static final String sourceSecId = "TestDATA";
 	
-	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/Regenwuermer2013.xml";
+	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/saeuger.xml";
 //	private static final String strSource = "/eu/etaxonomy/cdm/io/bfnXml/rldb_Myxo.xml";
 	static final boolean includeNormalExplicit = true; 
 	
@@ -66,6 +67,7 @@ public class BfnXmlTestActivator {
 	static final boolean doTaxa = true;
 	static final boolean doRelTaxa = false;
 
+
 	
 	private void doImport(){
 		System.out.println("Start import from BfnXML to "+ cdmDestination.getDatabase() + " ...");
@@ -78,7 +80,9 @@ public class BfnXmlTestActivator {
 			
 			BfnXmlImportConfigurator bfnImportConfigurator = BfnXmlImportConfigurator.NewInstance(source,  destination);
 			
-			bfnImportConfigurator.setClassificationName("RoteListe 2013 Lumbricidae");
+			bfnImportConfigurator.setSourceReferenceTitle(sourceReferenceTitle);
+			
+			bfnImportConfigurator.setClassificationName("Mammale");
 			bfnImportConfigurator.setClassificationUuid(treeUuid);
 			bfnImportConfigurator.setSourceSecId(sourceSecId);
 			

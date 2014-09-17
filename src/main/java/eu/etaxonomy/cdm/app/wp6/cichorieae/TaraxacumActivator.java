@@ -244,7 +244,13 @@ public class TaraxacumActivator {
 			parentNodeInCich.deleteChildNode(taxonNodeInCich);
 			
 			app.getTaxonService().save(parentInCich);
-			app.getTaxonService().delete(taraxacumInCichTaxon);
+			try{
+				app.getTaxonService().delete(taraxacumInCichTaxon);
+			}catch(Exception e){ //TODO debug to repair Jenkins
+				e.printStackTrace();
+				return false;
+			}
+				
 			try {
 //				app.getClassificationService().delete(treeInTaraxacum); //throws exception
 			} catch (Exception e) {

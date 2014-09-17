@@ -21,7 +21,6 @@ import eu.etaxonomy.cdm.api.application.CdmApplicationController;
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
 import eu.etaxonomy.cdm.database.DbSchemaValidation;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
 import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.FeatureNode;
@@ -60,19 +59,19 @@ public class PalmaePostImportUpdater {
 			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
 			FeatureNode root = tree.getRoot();
 			
-			List<DefinedTermBase> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
-			for (DefinedTermBase feature : featureList){
+			List<Feature> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
+			for (Feature feature : featureList){
 				String label = feature.getLabel();
 				if (relationships.equals(label)){
-					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
+					FeatureNode newNode = FeatureNode.NewInstance(feature);
 					root.addChild(newNode);
 					count++;
 				}else if(taxonomicAccounts.equals(label)){
-					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
+					FeatureNode newNode = FeatureNode.NewInstance(feature);
 					root.addChild(newNode);
 					count++;
 				}else if(fossilRecord.equals(label)){
-					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
+					FeatureNode newNode = FeatureNode.NewInstance(feature);
 					root.addChild(newNode);
 					count++;
 				}
@@ -135,11 +134,11 @@ public class PalmaePostImportUpdater {
 			UUID featureTreeUuid = PalmaeActivator.featureTreeUuid;
 			FeatureTree tree = cdmApp.getFeatureTreeService().find(featureTreeUuid);
 			FeatureNode root = tree.getRoot();
-			List<DefinedTermBase> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
+			List<Feature> featureList = cdmApp.getTermService().list(Feature.class, null, null, null, null);
 			count = 0;
-			for (DefinedTermBase feature : featureList){
+			for (Feature feature : featureList){
 				if (feature.equals(Feature.CITATION())){
-					FeatureNode newNode = FeatureNode.NewInstance((Feature)feature);
+					FeatureNode newNode = FeatureNode.NewInstance(feature);
 					root.addChild(newNode);
 					count++;
 				}

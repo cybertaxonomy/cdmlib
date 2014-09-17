@@ -22,11 +22,11 @@ public class BerlinModelSources {
 	
 	
 
-	public static Source PESI3_euroMed(){
+	public static Source euroMed_PESI3(){
 		//	BerlinModel - Euro+Med
 		String dbms = Source.SQL_SERVER_2008;
 		String strServer = "PESIIMPORT3";
-		String strDB = "EuroPlusMed_01";
+		String strDB = "EM_2014_06";
 		int port = 1433;
 		String userName = "pesiexport";
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
@@ -42,13 +42,13 @@ public class BerlinModelSources {
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	
-	public static Source euroMed(){
+	public static Source euroMed_BGBM42(){
 		//	BerlinModel - Euro+Med
-		String dbms = Source.SQL_SERVER_2005;
+		String dbms = Source.SQL_SERVER_2008;
 		String strServer = "BGBM42";
 		String strDB = "EuroPlusMed_00_Edit";
-		int port = 1247;
-		String userName = "webUser";
+		int port = 1433;  //was 1247
+		String userName = "Webuser";  //was webUser  or pesiexport
 		return  makeSource(dbms, strServer, strDB, port, userName, null);
 	}
 	

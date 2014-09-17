@@ -4,7 +4,6 @@
 package eu.etaxonomy.cdm.io.algaterra;
 
 import eu.etaxonomy.cdm.database.ICdmDataSource;
-import eu.etaxonomy.cdm.io.algaterra.validation.AlgaTerraMorphologyImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelAuthorImport;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelAuthorTeamImport;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelFactsImport;
@@ -28,8 +27,8 @@ import eu.etaxonomy.cdm.io.common.Source;
  */
 public class AlgaTerraImportConfigurator extends BerlinModelImportConfigurator {
 
-
 	private boolean doEcoFacts = true;
+	
 	private boolean doFactEcology = true;
 	
 	private boolean doImages = true;
@@ -40,7 +39,7 @@ public class AlgaTerraImportConfigurator extends BerlinModelImportConfigurator {
 	
 	private boolean removeRestricted = false;  //if true, all records with protected or restricted flag will be filtered
 	
-	private String imageBaseUrl = "http://www.algaterra.org/ATDB/Figures/";
+	private boolean importOriginalSizeMedia = true;
 	
 	public static AlgaTerraImportConfigurator NewInstance(Source berlinModelSource, ICdmDataSource destination){
 		return new AlgaTerraImportConfigurator(berlinModelSource, destination);
@@ -101,14 +100,6 @@ public class AlgaTerraImportConfigurator extends BerlinModelImportConfigurator {
 		this.doEcoFacts = doEcoFacts;
 	}
 
-	public String getImageBaseUrl() {
-		return imageBaseUrl;
-	}
-
-	public void setImageBaseUrl(String imageBaseUrl) {
-		this.imageBaseUrl = imageBaseUrl;
-	}
-
 	public boolean isDoImages() {
 		return doImages;
 	}
@@ -147,6 +138,14 @@ public class AlgaTerraImportConfigurator extends BerlinModelImportConfigurator {
 
 	public void setDoMorphology(boolean doMorphology) {
 		this.doMorphology = doMorphology;
+	}
+
+	public boolean isImportOriginalSizeMedia() {
+		return importOriginalSizeMedia;
+	}
+
+	public void setImportOriginalSizeMedia(boolean importOriginalSizeMedia) {
+		this.importOriginalSizeMedia = importOriginalSizeMedia;
 	}
 
 

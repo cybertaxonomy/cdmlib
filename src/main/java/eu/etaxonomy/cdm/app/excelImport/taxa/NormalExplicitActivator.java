@@ -1,8 +1,8 @@
 /**
  * Copyright (C) 2007 EDIT
- * European Distributed Institute of Taxonomy 
+ * European Distributed Institute of Taxonomy
  * http://www.e-taxonomy.eu
- * 
+ *
  * The contents of this file are subject to the Mozilla Public License Version 1.1
  * See LICENSE.TXT at the top of this package for the full license terms.
  */
@@ -27,31 +27,32 @@ import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
  */
 public class NormalExplicitActivator {
 	private static final Logger logger = Logger.getLogger(NormalExplicitActivator.class);
-    
-//	private static String fileName = 
+
+//	private static String fileName =
 //		new String("D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\NormalExplicit.xls");
-	
-	private static URI source  = 
-		URI.create("file:/C:/localCopy/meetings_workshops/2011_G�ttingen/GermanSL12/GermanSL.xls");
+
+	private static URI source  =
+//		URI.create("file:/C:/localCopy/meetings_workshops/2011_G�ttingen/GermanSL12/GermanSL.xls");
+	        URI.create("/home/pkelbert/Documents/Proibiosphere/Presentations/Demo/Excel/Cichorium_simple.xls");
 
 	private static DbSchemaValidation dbSchemaValidation = DbSchemaValidation.CREATE;
-	
+
 //	private static final ICdmDataSource destinationDb = CdmDestinations.cdm_test_jaxb();
-	private static final ICdmDataSource destinationDb = CdmDestinations.cdm_test_local_mysql();
-    
+	private static final ICdmDataSource destinationDb = CdmDestinations.mon_cdm();
+
     public static void main(String[] args) {
 
     	NomenclaturalCode code = NomenclaturalCode.ICNAFP;
     	URI uri = source;
-		NormalExplicitImportConfigurator normalExplicitImportConfigurator = 
+		NormalExplicitImportConfigurator normalExplicitImportConfigurator =
     		NormalExplicitImportConfigurator.NewInstance(uri, destinationDb, code,dbSchemaValidation);
 
-		CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport = 
+		CdmDefaultImport<NormalExplicitImportConfigurator> normalExplicitImport =
 			new CdmDefaultImport<NormalExplicitImportConfigurator>();
 
 		// invoke import
 		logger.debug("Invoking Normal Explicit Excel import");
 		normalExplicitImport.invoke(normalExplicitImportConfigurator);
-    	    	
+
     }
 }

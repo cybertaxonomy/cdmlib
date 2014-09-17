@@ -77,7 +77,7 @@ public class TestTransaction {
 	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
 	    	List<Reference> references = appCtr.getReferenceService().list(null, MAX_ENTRIES, 0, null, null);
 	    	Reference sec = references.get(0);
-	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
+	    	List<Taxon> taxa = (List)appCtr.getTaxonService().list(Taxon.class, MAX_ENTRIES, 0, null, null);
 
 			name1 = 
 				BotanicalName.NewInstance(rankSpecies, "Hyoseris", null, "lucida", null, author, null, "1", null);
@@ -150,12 +150,12 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends AgentBase> agents = appCtr.getAgentService().list(null, MAX_ENTRIES, 0, null, null);
+	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().list(TeamOrPersonBase.class, MAX_ENTRIES, 0, null, null);
 	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
-	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
+	    	TeamOrPersonBase<?> author = agents.get(0);
 	    	List<Reference> references = appCtr.getReferenceService().list(null, MAX_ENTRIES, 0, null, null);
-	    	Reference sec = references.get(0);
-	    	List<Taxon> taxa = appCtr.getTaxonService().getAllTaxa(MAX_ENTRIES, 0);
+	    	Reference<?> sec = references.get(0);
+	    	List<Taxon> taxa = appCtr.getTaxonService().list(Taxon.class, MAX_ENTRIES, 0, null, null);
 
 			name1 = 
 				BotanicalName.NewInstance(rankSpecies, "Launaea", null, "child1", null, author, null, "1", null);
@@ -251,12 +251,10 @@ public class TestTransaction {
 			
 	    	TransactionStatus txStatOne = appCtr.startTransaction();
 	    	
-	    	List<? extends AgentBase> agents = appCtr.getAgentService().list(null, MAX_ENTRIES, 0, null, null);
-	    	//List<TeamOrPersonBase> agents = appCtr.getAgentService().getAllAgents(MAX_ENTRIES, 0);
-	    	//Agent author = agents.get(0);
-	    	TeamOrPersonBase author = (TeamOrPersonBase) agents.get(0);
+	    	List<TeamOrPersonBase> agents = appCtr.getAgentService().list(TeamOrPersonBase.class, MAX_ENTRIES, 0, null, null);
+	    	TeamOrPersonBase author = agents.get(0);
 	    	List<Reference> references = appCtr.getReferenceService().list(null, MAX_ENTRIES, 0, null, null);
-	    	Reference sec = references.get(0);
+	    	Reference<?> sec = references.get(0);
 
 			name1 = 
 				BotanicalName.NewInstance(rankSpecies, "NewTaxon1", null, "taxon1", null, author, null, "1", null);

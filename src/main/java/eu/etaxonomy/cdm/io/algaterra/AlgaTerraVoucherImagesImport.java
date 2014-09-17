@@ -24,6 +24,7 @@ import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.globis.GlobisImportState;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.media.Media;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
@@ -33,7 +34,6 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
 /**
  * @author a.mueller
  * @created 20.03.2008
- * @version 1.0
  */
 @Component
 public class AlgaTerraVoucherImagesImport  extends AlgaTerraImageImportBase {
@@ -113,7 +113,7 @@ public class AlgaTerraVoucherImagesImport  extends AlgaTerraImageImportBase {
 					}
 					
 					//field observation
-					Media media = handleSingleImage(rs, derivedUnit, state, partitioner);
+					Media media = handleSingleImage(rs, derivedUnit, state, partitioner, PathType.Voucher);
 					
 					handleVoucherImageSpecificFields(rs, media, state);
 					
@@ -150,12 +150,10 @@ public class AlgaTerraVoucherImagesImport  extends AlgaTerraImageImportBase {
 	}
 
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#getRelatedObjectsForPartition(java.sql.ResultSet)
-	 */
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	@Override
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, BerlinModelImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		

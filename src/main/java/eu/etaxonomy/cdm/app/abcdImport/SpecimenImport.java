@@ -25,7 +25,7 @@ public class SpecimenImport {
     private static Logger logger = Logger.getLogger(SpecimenImport.class);
 
     //database validation status (create, update, validate ...)
-    static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
+    static DbSchemaValidation hbm2dll = DbSchemaValidation.VALIDATE;
     //  final static String xmlSource = "/home/patricia/Desktop/multiABCD.xml";
     //final static String xmlSource = "D:\\_Tagungen\\2010-09 TDWG 2010\\Workshop\\data\\specimen\\Picris pauciflora\\B-W14632-000_B-W14632-010_B100097145_B100097146_B100326668_B180004364_B180017717_.xml";
 //    final static String xmlSource = "/home/pkelbert/workspace/proibiosphere/cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml";
@@ -54,20 +54,20 @@ public class SpecimenImport {
             ICdmDataSource destination = cdmDestination;
             Abcd206ImportConfigurator specimenImportConfigurator = Abcd206ImportConfigurator.NewInstance(source,  destination);
 
-//            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
+////            specimenImportConfigurator.setClassificationName(specimenImportConfigurator.getSourceReferenceTitle());
             specimenImportConfigurator.setSourceSecId("specimen");
             specimenImportConfigurator.setCheck(check);
             specimenImportConfigurator.setDbSchemaValidation(hbm2dll);
-            specimenImportConfigurator.setParseNameAutomatically(false);
+            specimenImportConfigurator.setParseNameAutomatically(true);
             specimenImportConfigurator.setReuseExistingMetadata(true);
-            specimenImportConfigurator.reuseExistingDescriptiveGroups(false);
-
+            specimenImportConfigurator.reuseExistingDescriptiveGroups(true);
+//
             specimenImportConfigurator.setReuseExistingTaxaWhenPossible(true);
-
+//
             specimenImportConfigurator.setAddIndividualsAssociationsSuchAsSpecimenAndObservations(true);
             specimenImportConfigurator.setUseClassification(true);
             specimenImportConfigurator.setInteractWithUser(true);
-
+//
             specimenImportConfigurator.setSourceReference(null);
             specimenImportConfigurator.setTaxonReference(null);
 

@@ -33,7 +33,7 @@ public class LIASActivator {
 	//database validation status (create, update, validate ...)
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
 	static final String sddSource = SDDSources.LIAS_local();
-	static final ICdmDataSource cdmDestination = CdmDestinations.localH2_LIAS();
+	static final ICdmDataSource cdmDestination = CdmDestinations.localH2();
 
 	//	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_portal_test_localhost();
 

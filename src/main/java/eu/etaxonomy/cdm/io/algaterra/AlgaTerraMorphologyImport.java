@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.io.algaterra;
 
+import java.net.URI;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
@@ -20,36 +21,33 @@ import java.util.UUID;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.TransactionStatus;
 
-import eu.etaxonomy.cdm.api.facade.DerivedUnitFacade;
 import eu.etaxonomy.cdm.io.algaterra.validation.AlgaTerraMorphologyImportValidator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator;
 import eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState;
 import eu.etaxonomy.cdm.io.common.IOValidator;
 import eu.etaxonomy.cdm.io.common.ResultSetPartitioner;
+import eu.etaxonomy.cdm.io.common.Source;
 import eu.etaxonomy.cdm.io.common.mapping.UndefinedTransformerMethodException;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
-import eu.etaxonomy.cdm.model.common.DefinedTermBase;
-import eu.etaxonomy.cdm.model.common.Language;
-import eu.etaxonomy.cdm.model.common.Marker;
-import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.TermType;
 import eu.etaxonomy.cdm.model.common.TermVocabulary;
 import eu.etaxonomy.cdm.model.description.CategoricalData;
 import eu.etaxonomy.cdm.model.description.DescriptionBase;
+import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.Feature;
 import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.description.QuantitativeData;
+import eu.etaxonomy.cdm.model.description.SpecimenDescription;
 import eu.etaxonomy.cdm.model.description.State;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasure;
 import eu.etaxonomy.cdm.model.description.StatisticalMeasurementValue;
 import eu.etaxonomy.cdm.model.description.TextData;
-import eu.etaxonomy.cdm.model.occurrence.Collection;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationBase;
-import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 import eu.etaxonomy.cdm.model.reference.Reference;
 
 
@@ -63,65 +61,262 @@ public class AlgaTerraMorphologyImport  extends AlgaTerraSpecimenImportBase {
 
 	
 	private static int modCount = 5000;
-	private static final String pluralString = "eco facts";
-	private static final String dbTableName = "EcoFact";  //??  
+	private static final String pluralString = "morpho facts";
+	private static final String dbTableName = "MorphoFact";   
 
 
 	public AlgaTerraMorphologyImport(){
 		super(dbTableName, pluralString);
 	}
 	
-	
-	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getIdQuery()
-	 */
+
 	@Override
 	protected String getIdQuery(BerlinModelImportState state) {
-		String result = " SELECT EcoFactId " + 
-				" FROM EcoFact  " +
-				" ORDER BY EcoFact.DuplicateFk, EcoFact.EcoFactId ";
+		String result = " SELECT MorphoFactId " + 
+				" FROM MorphoFact  " +
+				" ORDER BY MorphoFact.MorphoFactId ";
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportBase#getRecordQuery(eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportConfigurator)
-	 */
+
 	@Override
 	protected String getRecordQuery(BerlinModelImportConfigurator config) {
 			String strQuery =   
-            " SELECT EcoFact.*, EcoFact.EcoFactId as unitId, " + 
-               " tg.ID AS GazetteerId, tg.L2Code, tg.L3Code, tg.L4Code, tg.Country, tg.ISOCountry, " +
-               " ec.UUID as climateUuid, eh.UUID as habitatUuid, elf.UUID as lifeFormUuid " +
-            " FROM EcoFact " +
-                 " LEFT OUTER JOIN TDWGGazetteer tg ON EcoFact.TDWGGazetteerFk = tg.ID " +
-                 " LEFT OUTER JOIN EcoClimate  ec  ON EcoFact.ClimateFk  = ec.ClimateId " +
-                 " LEFT OUTER JOIN EcoHabitat  eh  ON EcoFact.HabitatFk  = eh.HabitatId " +
-                 " LEFT OUTER JOIN EcoLifeForm elf ON EcoFact.LifeFormFk = elf.LifeFormId " +
-              " WHERE (EcoFact.EcoFactId IN (" + ID_LIST_TOKEN + ")  )"  
-            + " ORDER BY EcoFact.DuplicateFk, EcoFact.EcoFactId "
+            " SELECT mf.*, mf.MorphoFactId as unitId, ecoFact.ecoFactId as ecoFactId,  size.* " + 
+            " FROM MorphoFact mf " +
+            	" LEFT OUTER JOIN MorphoSizeRange size ON mf.SizeRangeFk = size.SizeRangeId " +
+            	" LEFT OUTER JOIN MorphoValveDescription valve1Desc ON mf.Valve1DescriptionFk = valve1Desc.ValveDescriptionId " +
+            	" LEFT OUTER JOIN MorphoValveDescription valve2Desc ON mf.Valve2DescriptionFk = valve2Desc.ValveDescriptionId " +
+            	" LEFT OUTER JOIN EcoFact ecoFact ON ecoFact.CultureStrain = mf.CultureStrainNo " +
+              " WHERE (mf.MorphoFactId IN (" + ID_LIST_TOKEN + ")  )"  
+            + " ORDER BY mf.MorphoFactId "
             ;
 		return strQuery;
 	}
+	
+	
+	private Map<String, TermVocabulary<State>> vocabularyMap = new HashMap<String, TermVocabulary<State>>();
+	private Map<String, Feature> featureMap = new HashMap<String, Feature>();
+	private Map<String, Map<Integer, State>> algaTerraMorphoStates = new HashMap<String, Map<Integer, State>>();
+	private TermVocabulary<Feature> algaTerraMorphoFeatures = TermVocabulary
+			.NewInstance(TermType.Feature, "Alga Terra Morphology Features", "AT Morphology Features", null, null);
+	
+	private void doMorphoListen(AlgaTerraImportState state) throws SQLException{
+		
+		TransactionStatus txStatus = this.startTransaction();
+		
+		getVocabularyService().save(algaTerraMorphoFeatures);
+		
+		//chloroplast position
+		String baseName = "Chloroplast Position";
+		UUID uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocChloroplastPosition;
+		boolean isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates, 
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+		
+		//Chloroplast Shape
+		baseName = "Chloroplast Shape";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocChloroplastShape;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.berlinModel.in.IPartitionedIO#doPartition(eu.etaxonomy.cdm.io.berlinModel.in.ResultSetPartitioner, eu.etaxonomy.cdm.io.berlinModel.in.BerlinModelImportState)
-	 */
+		//Chloroplast Shape
+		baseName = "Chloroplast Structure";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocChloroplastStructure;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+
+		//Growth Form
+		baseName = "Growth Form";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocGrowthForm;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+
+		//Organisation Level
+		baseName = "Organisation Level";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocOrganisationLevel;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+
+
+		//Raphe
+		baseName = "Raphe";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocRaphe;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+
+		//Shape
+		baseName = "Shape";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocShape;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+
+		//Symmetrie
+		baseName = "Symmetry";
+		uuidStateVocabulary = AlgaTerraImportTransformer.uuidVocSymmetry;
+		isOrdered = false;
+		makeFeatureAndVocabulary(state, vocabularyMap, featureMap, algaTerraMorphoStates,
+				algaTerraMorphoFeatures, baseName, uuidStateVocabulary, isOrdered);
+
+		getVocabularyService().saveOrUpdate(algaTerraMorphoFeatures);
+		
+		this.commitTransaction(txStatus);
+	}
+
+
+	private void makeFeatureAndVocabulary(AlgaTerraImportState state,
+			Map<String, TermVocabulary<State>> vocabularyMap,
+			Map<String, Feature> featureMap, Map<String, Map<Integer, State>> allMorphoStates, 
+			TermVocabulary<Feature> algaTerraMorphoFeatures, String baseName,
+			UUID uuidStateVocabulary, boolean isOrdered)
+			throws SQLException {
+		
+		Source source = state.getAlgaTerraConfigurator().getSource();
+		
+		Map<Integer, State> morphoStates = new HashMap<Integer, State>();
+		allMorphoStates.put(baseName, morphoStates);	
+		
+		String baseNameCamel = baseName.replace(" ", "");
+		
+		//make feature
+		handleSingleFeature(state, featureMap, algaTerraMorphoFeatures,	baseName);
+		
+		//make term vocabulary
+		String vocDescription = "The vocabulary for the " + baseName + " in AlgaTerra";
+		String vocLabel = baseName;
+		String vocAbbrevLabel = null;
+		URI termSourceUri = null;
+		TermVocabulary<State> voc = getVocabulary(TermType.State, uuidStateVocabulary,vocDescription, vocLabel, vocAbbrevLabel, termSourceUri, isOrdered, null);
+		vocabularyMap.put(vocLabel, voc);
+		
+		String idField = baseNameCamel + "Id";
+		String sql =  "SELECT " + idField + "," + baseNameCamel + ", Description FROM Morpho" + baseNameCamel;
+		ResultSet rs = source.getResultSet(sql);
+		while (rs.next()){
+			Integer id = rs.getInt(idField);
+			String label = rs.getString(baseNameCamel);
+			String description = rs.getString("Description");
+			State term = State.NewInstance(description, label, null);
+			voc.addTerm(term);
+			term.addSource(OriginalSourceType.Import, String.valueOf(id), baseNameCamel, state.getTransactionalSourceReference() , null);
+			morphoStates.put(id, term);
+		}
+		getVocabularyService().saveOrUpdate(voc);
+	}
+
+
+	private Feature handleSingleFeature(AlgaTerraImportState state,
+			Map<String, Feature> featureMap,
+			TermVocabulary<Feature> algaTerraMorphoFeatures, String baseName) {
+		
+		String baseNameCamel = baseName.replace(" ", "");
+		
+		UUID uuidFeature = null;
+		try {
+			uuidFeature = AlgaTerraImportTransformer.getFeatureUuid(baseName);
+		} catch (UndefinedTransformerMethodException e) {
+			throw new RuntimeException(e);
+		}
+		Feature feature = getFeature(state, uuidFeature, baseName, baseName, null, algaTerraMorphoFeatures);
+		algaTerraMorphoFeatures.addTerm(feature);
+		featureMap.put(baseNameCamel, feature);
+		return feature;
+	}
+	
+	private void doNonListenFeatures(AlgaTerraImportState state) throws SQLException{
+		String baseName = "Apices";
+		handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName);
+		
+		baseName = "Chloroplast Number";
+		handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName);
+		
+		baseName = "Pyrenoid";
+		handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName);
+		
+		baseName = "Cell Wall";
+		handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName);
+		
+		baseName = "Reproductive Stages";
+		handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName);
+		
+		makeValveFeatures(state, featureMap, algaTerraMorphoFeatures);
+		
+	}
+
+	
+
+
+	private void makeValveFeatures(AlgaTerraImportState state,
+			Map<String, Feature> featureMap2,
+			TermVocabulary<Feature> algaTerraMorphoFeatures2) {
+		
+		String baseName = "Valve 1";
+		handleSingleValve(state, featureMap, algaTerraMorphoFeatures, baseName);
+
+		baseName = "Valve 2";
+		handleSingleValve(state, featureMap, algaTerraMorphoFeatures, baseName);
+		
+	}
+
+
+	private void handleSingleValve(AlgaTerraImportState state,
+			Map<String, Feature> featureMap2,
+			TermVocabulary<Feature> algaTerraMorphoFeatures2, String valveStr) {
+		
+		Feature featureValve = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, valveStr);
+		
+		String baseName = "Striae Frequency";
+		Feature featureSub = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName + " " + valveStr);
+		//TODO is partOf correct here? see also below
+		featureSub.setPartOf(featureValve);
+		
+		baseName = "Striae Orientation Mid"; //Mid Valve
+		featureSub = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName + " " + valveStr);
+		featureSub.setPartOf(featureValve);
+		
+		baseName = "Striae Orientation Apices";
+		featureSub = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName + " " + valveStr);
+		featureSub.setPartOf(featureValve);
+		
+		baseName = "Central Area";
+		featureSub = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName + " " + valveStr);
+		featureSub.setPartOf(featureValve);
+		
+		baseName = "Axial Area";
+		featureSub = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName + " " + valveStr);
+		featureSub.setPartOf(featureValve);
+		
+		baseName = "has Raphe";
+		featureSub = handleSingleFeature(state, featureMap, algaTerraMorphoFeatures, baseName + " " + valveStr);
+		featureSub.setPartOf(featureValve);
+	}
+
+
+	@Override
+	protected void doInvoke(BerlinModelImportState state) {
+		AlgaTerraImportState atState = (AlgaTerraImportState)state;
+		try {
+			doMorphoListen(atState);
+			doNonListenFeatures(atState);
+		} catch (SQLException e) {
+			throw new RuntimeException(e);
+		}
+		super.doInvoke(state);
+	}
+
+
+	@Override
 	public boolean doPartition(ResultSetPartitioner partitioner, BerlinModelImportState bmState) {
 		boolean success = true;
 		
 		AlgaTerraImportState state = (AlgaTerraImportState)bmState;
-		try {
-			makeVocabulariesAndFeatures(state);
-		} catch (SQLException e1) {
-			logger.warn("Exception occurred when trying to create Ecofact vocabularies: " + e1.getMessage());
-			e1.printStackTrace();
-		}
 		Set<SpecimenOrObservationBase> objectsToSave = new HashSet<SpecimenOrObservationBase>();
-		
-		//TODO do we still need this map? EcoFacts are not handled separate from Facts.
-		//However, they have duplicates on derived unit level. Also check duplicateFk. 
-		Map<String, FieldUnit> ecoFactFieldObservationMap = (Map<String, FieldUnit>) partitioner.getObjectMap(ECO_FACT_FIELD_OBSERVATION_NAMESPACE);
 		
 		ResultSet rs = partitioner.getResultSet();
 
@@ -134,53 +329,91 @@ public class AlgaTerraMorphologyImport  extends AlgaTerraSpecimenImportBase {
                 
         		if ((i++ % modCount) == 0 && i!= 1 ){ logger.info(pluralString + " handled: " + (i-1));}
 				
-				int ecoFactId = rs.getInt("EcoFactId");
-				Integer duplicateFk = nullSafeInt(rs, "DuplicateFk");
-				
-				//FIXME RecordBasis is in Fact table, which is not part of the query anymore.
-				//Some EcoFacts have multiple RecordBasis types in Fact. Henning will check this.
-//				String recordBasis = rs.getString("RecordBasis");
-				String recordBasis = "PreservedSpecimen";
+				int morphoFactId = rs.getInt("MorphoFactId");
+				String cultureStrainNo = rs.getString("CultureStrainNo");
 				
 				try {
 					
 					//source ref
 					Reference<?> sourceRef = state.getTransactionalSourceReference();
-				
-					//facade
-					SpecimenOrObservationType type = makeDerivedUnitType(recordBasis);
 					
-					DerivedUnitFacade facade;
-					//field observation
-					if (duplicateFk == null){
-						facade = DerivedUnitFacade.NewInstance(type);
-						handleFieldObservationSpecimen(rs, facade, state, partitioner);
-						handleEcoFactSpecificFieldObservation(rs,facade, state);
-						FieldUnit fieldObservation = facade.getFieldUnit(true);
-						ecoFactFieldObservationMap.put(String.valueOf(ecoFactId), fieldObservation);
-					}else{
-						FieldUnit fieldObservation = ecoFactFieldObservationMap.get(String.valueOf(duplicateFk));
-						facade = DerivedUnitFacade.NewInstance(type, fieldObservation);
-					}
+					//ecoFact
+					DerivedUnit ecoFact = makeDerivationFromEcoFact(state, rs, morphoFactId);
+					if (ecoFact != null){
+						SpecimenDescription desc = SpecimenDescription.NewInstance();
+						desc.setTitleCache("Morphology for " + cultureStrainNo , true);
 						
-					handleFirstDerivedSpecimen(rs, facade, state, partitioner);
-					handleEcoFactSpecificDerivedUnit(rs,facade, state);
-
-					
-					DerivedUnit objectToSave = facade.innerDerivedUnit();
-					objectsToSave.add(objectToSave); 
-					
-
+						ecoFact.addDescription(desc);
+						
+						String baseLabel = "Organisation Level";
+						handleStateTerm(state, rs, baseLabel, desc);
+						
+						baseLabel = "Growth Form";
+						handleStateTerm(state, rs, baseLabel, desc);
+						
+						baseLabel = "Shape";
+						handleStateTerm(state, rs, baseLabel, desc);
+						
+						baseLabel = "Symmetry";
+						handleStateTerm(state, rs, baseLabel, desc);
+						
+						baseLabel = "Raphe";
+						handleStateTerm(state, rs, baseLabel, desc);
+	
+						baseLabel = "Chloroplast Shape";
+						handleStateTerm(state, rs, baseLabel, desc);
+	
+						baseLabel = "Chloroplast Structure";
+						handleStateTerm(state, rs, baseLabel, desc);
+	
+						baseLabel = "Chloroplast Position";
+						handleStateTerm(state, rs, baseLabel, desc);
+						
+						baseLabel = "Apices";
+						handleTextData(state, rs, baseLabel, desc);
+						
+						baseLabel = "Chloroplast Number";
+						handleTextData(state, rs, baseLabel, desc);
+						
+						baseLabel = "Pyrenoid";
+						handleTextData(state, rs, baseLabel, desc);
+						
+						baseLabel = "Cell Wall";
+						handleTextData(state, rs, baseLabel, desc);
+						
+						baseLabel = "Reproductive Stages";
+						handleTextData(state, rs, baseLabel, desc);
+						
+						//TODO to which object to add this information
+						this.doId(state, desc, morphoFactId, dbTableName);
+						String notes = rs.getString("Notes");
+						this.doNotes(desc, notes);
+	
+			            objectsToSave.add(ecoFact); 
+					}else if (cultureStrainNo != null) {
+						logger.warn("cultureStrainNo (" + cultureStrainNo + ") exists but no ecoFact found for morphoFact " + morphoFactId);
+					}else{
+						logger.info("No cultureStrainNo defined for morphoFact " + morphoFactId);
+					}
 				} catch (Exception e) {
-					logger.warn("Exception in ecoFact: ecoFactId " + ecoFactId + ". " + e.getMessage());
+					logger.warn("Exception in morphoFact: morphoFactId " + morphoFactId + ". " + e.getMessage());
 					e.printStackTrace();
 				} 
                 
             }
-           
-//            logger.warn("Specimen: " + countSpecimen + ", Descriptions: " + countDescriptions );
+            
+            //TODO DataEntryBy, 
+            //GrowthFormExplanation, ShapeExplanation, RapheExplanation, ChloroplastExplanation, 
+            //SizeRangeFk, SizeRangeExplanation,
+            //Valve1RapheFlag, Valve1DescriptionFk,
+            //Valve2RapheFlag, Valve2DescriptionFk,
+            //StriaeFrequencyExplanation,
+            //PyrenoidExplanation,
 
-			logger.warn("Taxa to save: " + objectsToSave.size());
+            //Not required:  OrganisationLevelExplanation, ValveLinearShape, ValveShape, SymmetryExplanation,
+            //Rimoportula, Fultoportula, Description, CultureCollection
+           
+			logger.warn("Specimen to save: " + objectsToSave.size());
 			getOccurrenceService().save(objectsToSave);	
 			
 			return success;
@@ -190,6 +423,61 @@ public class AlgaTerraMorphologyImport  extends AlgaTerraSpecimenImportBase {
 		}
 	}
 	
+	private DerivedUnit makeDerivationFromEcoFact(AlgaTerraImportState state, ResultSet rs, Integer morphoFactId) throws SQLException {
+		Integer ecoFactFk = nullSafeInt(rs, "ecoFactId");
+		if (ecoFactFk != null){
+			
+			DerivedUnit ecoFact = (DerivedUnit)state.getRelatedObject(ECO_FACT_DERIVED_UNIT_NAMESPACE, ecoFactFk.toString());
+			if (ecoFact == null){
+				logger.warn("EcoFact is null for ecoFactFk: " + ecoFactFk + ", morphoFactId: " + morphoFactId);
+				return null;
+			}else{
+				return ecoFact;
+			}
+		}else{
+			return null;
+		}
+	}
+	
+	private void handleTextData(AlgaTerraImportState state, ResultSet rs,
+			String baseLabel, SpecimenDescription desc) throws SQLException {
+		String baseLabelCamel = baseLabel.replace(" ", "");
+		
+		String value = rs.getString(baseLabelCamel);
+		if (value != null){
+			Feature feature = this.featureMap.get(baseLabelCamel);
+			if (feature == null){
+				logger.warn("Feature is null");
+			}
+			TextData textData = TextData.NewInstance(feature);
+			desc.addElement(textData);
+		}
+	}
+
+
+	private void handleStateTerm(AlgaTerraImportState algaTerraState, ResultSet rs,
+			String baseLabel, SpecimenDescription desc) throws SQLException {
+		
+		String baseLabelCamel = baseLabel.replace(" ", "");
+		Integer id = nullSafeInt(rs, baseLabelCamel + "Fk");
+		if (id != null){
+			Feature feature = this.featureMap.get(baseLabelCamel);
+			State state = getState(baseLabel, id);
+			if (feature == null || state == null){
+				logger.warn("Feature or state is null");
+			}
+			DescriptionElementBase deb = CategoricalData.NewInstance(state, feature);
+			desc.addElement(deb);
+		}
+	}
+
+
+	private State getState(String baseLabel, Integer id) {
+		Map<Integer, State> stateMap = this.algaTerraMorphoStates.get(baseLabel);
+		return stateMap.get(id);
+	}
+
+
 	protected String getDerivedUnitNameSpace(){
 		return ECO_FACT_DERIVED_UNIT_NAMESPACE;
 	}
@@ -199,83 +487,6 @@ public class AlgaTerraMorphologyImport  extends AlgaTerraSpecimenImportBase {
 	}
 
 
-
-	private void handleEcoFactSpecificFieldObservation(ResultSet rs, DerivedUnitFacade facade, AlgaTerraImportState state) throws SQLException {
-		
-		Object alkalinityFlag = rs.getBoolean("AlkalinityFlag");
-		
-		//alkalinity marker
-		if (alkalinityFlag != null){
-			MarkerType alkalinityMarkerType = getMarkerType(state, uuidMarkerAlkalinity, "Alkalinity", "Alkalinity", null);
-			boolean alkFlag = Boolean.valueOf(alkalinityFlag.toString());
-			Marker alkalinityMarker = Marker.NewInstance(alkalinityMarkerType, alkFlag);
-			facade.getFieldUnit(true).addMarker(alkalinityMarker);
-		}
-		
-		
-		DescriptionBase<?> fieldDescription = getFieldObservationDescription(facade);
-
-		//habitat, ecology, community, etc.
-		String habitat = rs.getString("HabitatExplanation");
-		
-		if (isNotBlank(habitat)){
-			Feature habitatExplanation = getFeature(state, uuidFeatureHabitatExplanation, "Habitat Explanation", "HabitatExplanation", null, null);
-			TextData textData = TextData.NewInstance(habitatExplanation);
-			textData.putText(Language.DEFAULT(), habitat);
-			fieldDescription.addElement(textData);
-		}
-		
-		String community = rs.getString("Comunity");
-		if (isNotBlank(community)){
-			Feature communityFeature = getFeature(state, uuidFeatureSpecimenCommunity, "Community", "The community of a specimen (e.g. other algae in the same sample)", null, null);
-			TextData textData = TextData.NewInstance(communityFeature);
-			textData.putText(Language.DEFAULT(), community);
-			fieldDescription.addElement(textData);
-		}
-
-		String additionalData = rs.getString("AdditionalData");
-		if (isNotBlank(additionalData)){  //or handle it as Annotation ??
-			Feature additionalDataFeature = getFeature(state, uuidFeatureAdditionalData, "Additional Data", "Additional Data", null, null);
-			TextData textData = TextData.NewInstance(additionalDataFeature);
-			textData.putText(Language.DEFAULT(), additionalData);
-			fieldDescription.addElement(textData);
-		}
-		
-		String climateUuid = rs.getString("climateUuid");
-		String habitatUuid = rs.getString("habitatUuid");
-		String lifeFormUuid = rs.getString("lifeFormUuid");
-		
-		addCategoricalValue(state, fieldDescription, climateUuid, uuidFeatureAlgaTerraClimate);
-		addCategoricalValue(state, fieldDescription, habitatUuid, Feature.HABITAT().getUuid());
-		addCategoricalValue(state, fieldDescription, lifeFormUuid, uuidFeatureAlgaTerraLifeForm);
-		
-
-		
-		//parameters
-		makeParameter(state, rs, getFieldObservationDescription(facade));
-
-	}
-	
-	private void handleEcoFactSpecificDerivedUnit(ResultSet rs, DerivedUnitFacade facade, AlgaTerraImportState state) throws SQLException {
-		//collection
-		String voucher = rs.getString("Voucher");
-		if (StringUtils.isNotBlank(voucher)){
-			facade.setAccessionNumber(voucher);
-		}
-	}
-
-
-
-
-
-	private void addCategoricalValue(AlgaTerraImportState importState, DescriptionBase description, String uuidTerm, UUID featureUuid) {
-		if (uuidTerm != null){
-			State state = this.getStateTerm(importState, UUID.fromString(uuidTerm));
-			Feature feature = getFeature(importState, featureUuid);
-			CategoricalData categoricalData = CategoricalData.NewInstance(state, feature);
-			description.addElement(categoricalData);
-		}
-	}
 
 	private void makeParameter(AlgaTerraImportState state, ResultSet rs, DescriptionBase<?> descriptionBase) throws SQLException {
 		for (int i = 1; i <= 10; i++){
@@ -373,52 +584,25 @@ public class AlgaTerraMorphologyImport  extends AlgaTerraSpecimenImportBase {
 
 
 	@Override
-	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs) {
+	public Map<Object, Map<String, ? extends CdmBase>> getRelatedObjectsForPartition(ResultSet rs, BerlinModelImportState state) {
 		String nameSpace;
-		Class cdmClass;
+		Class<?> cdmClass;
 		Set<String> idSet;
 		Map<Object, Map<String, ? extends CdmBase>> result = new HashMap<Object, Map<String, ? extends CdmBase>>();
 		
 		try{
-			Set<String> fieldObservationIdSet = new HashSet<String>();
-			Set<String> termsIdSet = new HashSet<String>();
-			Set<String> collectionIdSet = new HashSet<String>();
-			
+			Set<String> ecoFactFkSet = new HashSet<String>();
+						
 			while (rs.next()){
-				handleForeignKey(rs, fieldObservationIdSet, "DuplicateFk");
-				handleForeignKey(rs, termsIdSet, "ClimateFk");
-				handleForeignKey(rs, termsIdSet, "HabitatFk");
-				handleForeignKey(rs, termsIdSet, "LifeFormFk");
-				handleForeignKey(rs, collectionIdSet, "CollectionFk");
+				handleForeignKey(rs, ecoFactFkSet, "ecoFactId");
 			}
 			
-			//field observation map for duplicates
-			nameSpace = AlgaTerraMorphologyImport.ECO_FACT_FIELD_OBSERVATION_NAMESPACE;
-			cdmClass = FieldUnit.class;
-			idSet = fieldObservationIdSet;
-			Map<String, FieldUnit> fieldObservationMap = (Map<String, FieldUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, fieldObservationMap);
-
-			//collections
-			nameSpace = AlgaTerraCollectionImport.NAMESPACE_COLLECTION;
-			cdmClass = Collection.class;
-			idSet = collectionIdSet;
-			Map<String, Collection> collectionMap = (Map<String, Collection>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, collectionMap);
-
-			//sub-collections
-			nameSpace = AlgaTerraCollectionImport.NAMESPACE_SUBCOLLECTION;
-			cdmClass = Collection.class;
-			idSet = collectionIdSet;
-			Map<String, Collection> subCollectionMap = (Map<String, Collection>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, subCollectionMap);
-
-			//terms
-			nameSpace = AlgaTerraMorphologyImport.TERMS_NAMESPACE;
-			cdmClass = FieldUnit.class;
-			idSet = termsIdSet;
-			Map<String, DefinedTermBase> termMap = (Map<String, DefinedTermBase>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
-			result.put(nameSpace, termMap);
+			//eco fact derived unit map
+			nameSpace = AlgaTerraFactEcologyImport.ECO_FACT_DERIVED_UNIT_NAMESPACE;
+			cdmClass = DerivedUnit.class;
+			idSet = ecoFactFkSet;
+			Map<String, DerivedUnit> derivedUnitMap = (Map<String, DerivedUnit>)getCommonService().getSourcedObjectsByIdInSource(cdmClass, idSet, nameSpace);
+			result.put(nameSpace, derivedUnitMap);
 			
 		} catch (SQLException e) {
 			throw new RuntimeException(e);
@@ -426,21 +610,13 @@ public class AlgaTerraMorphologyImport  extends AlgaTerraSpecimenImportBase {
 		return result;
 	}
 
-
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#doCheck(eu.etaxonomy.cdm.io.common.IoStateBase)
-	 */
 	@Override
 	protected boolean doCheck(BerlinModelImportState state){
 		IOValidator<BerlinModelImportState> validator = new AlgaTerraMorphologyImportValidator();
 		return validator.validate(state);
 	}
 
-
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
-	 */
+	@Override
 	protected boolean isIgnore(BerlinModelImportState state){
 		return ! ((AlgaTerraImportState)state).getAlgaTerraConfigurator().isDoMorphology();
 	}

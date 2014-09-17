@@ -9,9 +9,6 @@
 
 package eu.etaxonomy.cdm.app.jaxb;
 
-import java.io.File;
-import java.util.UUID;
-
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.app.common.CdmDestinations;
@@ -24,6 +21,7 @@ import eu.etaxonomy.cdm.database.ICdmDataSource;
  */
 public class CdmDiffActivator {
 
+	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmDiffActivator.class);
 
 	static DbSchemaValidation hbm2dll = DbSchemaValidation.CREATE;
