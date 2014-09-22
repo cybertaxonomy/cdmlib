@@ -63,7 +63,7 @@ public class GlobisActivator {
 	static final int partitionSize = 3000;
 
 
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICZN;
 
 	

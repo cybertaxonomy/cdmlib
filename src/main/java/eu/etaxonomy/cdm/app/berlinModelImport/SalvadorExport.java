@@ -47,7 +47,7 @@ public class SalvadorExport {
 	static final CHECK check = CHECK.EXPORT_WITHOUT_CHECK;
 
 
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICNAFP;
 
 // ****************** ALL *****************************************

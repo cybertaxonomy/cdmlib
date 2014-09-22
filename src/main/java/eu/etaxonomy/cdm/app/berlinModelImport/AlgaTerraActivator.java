@@ -79,7 +79,7 @@ public class AlgaTerraActivator {
 	
 	private EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
 
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 	
 	static String factFilter = " factCategoryFk NOT IN (7, 201, 202, 203, 204, 205, 206, 207, 208, 1000 ) ";

@@ -58,7 +58,7 @@ public class MTMooseActivator {
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
 
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 // ****************** ALL *****************************************

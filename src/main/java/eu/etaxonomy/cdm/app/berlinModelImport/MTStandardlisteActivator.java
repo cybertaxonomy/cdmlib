@@ -64,7 +64,7 @@ public class MTStandardlisteActivator {
 
 		
 
-		//NomeclaturalCode
+		//NomenclaturalCode
 		static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	// ****************** ALL *****************************************

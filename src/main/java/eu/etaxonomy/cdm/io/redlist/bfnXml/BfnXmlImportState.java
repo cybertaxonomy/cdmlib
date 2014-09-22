@@ -16,6 +16,7 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.io.common.ImportStateBase;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
+import eu.etaxonomy.cdm.model.reference.Reference;
 
 /**
  * @author a.mueller
@@ -23,6 +24,9 @@ import eu.etaxonomy.cdm.model.description.CommonTaxonName;
  * @version 1.0
  */
 public class BfnXmlImportState extends ImportStateBase<BfnXmlImportConfigurator, BfnXmlImportBase>{
+	private Reference refA;
+	private Reference refB;
+	private Reference currentRef;
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(BfnXmlImportState.class);
 
@@ -41,9 +45,28 @@ public class BfnXmlImportState extends ImportStateBase<BfnXmlImportConfigurator,
 		this.commonNameMap = commonNameMap;
 	}
 
+	public void setFirstListSecRef(Reference ref) {
+		this.refA = ref;
+	}
+	
+	public void setSecondListSecRef(Reference ref) {
+		this.refB = ref;
+	}
 
+	public Reference getFirstListSecRef(){
+		return refA;
+	}
 	
-	
+	public Reference getSecondListSecRef(){
+		return refB;
+	}
+
+	public void setCurrentRef(Reference currentRef) {
+		this.currentRef = currentRef;
+	}
+	public Reference getCurrentRef(){
+		return currentRef;
+	}
 	
 //	/* (non-Javadoc)
 //	 * @see eu.etaxonomy.cdm.io.common.IoStateBase#initialize(eu.etaxonomy.cdm.io.common.IoConfiguratorBase)

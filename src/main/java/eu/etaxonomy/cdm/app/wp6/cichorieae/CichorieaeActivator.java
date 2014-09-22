@@ -91,7 +91,7 @@ public class CichorieaeActivator {
 	//editor - import
 	static final EDITOR editor = EDITOR.EDITOR_AS_EDITOR;
 	
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	//ignore null

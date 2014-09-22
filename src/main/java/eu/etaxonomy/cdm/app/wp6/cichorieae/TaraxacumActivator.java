@@ -72,7 +72,7 @@ public class TaraxacumActivator {
 	//static final CHECK check = CHECK.CHECK_ONLY;
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode = NomenclaturalCode.ICNAFP;
 
 	//ignore null

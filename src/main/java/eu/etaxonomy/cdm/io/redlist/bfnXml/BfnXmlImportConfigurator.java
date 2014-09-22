@@ -104,6 +104,7 @@ public class BfnXmlImportConfigurator extends ImportConfiguratorBase<BfnXmlImpor
 //		};
 		
 		ioClassList = new Class[]{
+				BfnXmlImportMetaData.class,
 				BfnXmlImportFeature.class,
 				BfnXmlImportTaxonName.class
 		};

@@ -59,7 +59,7 @@ public class SalvadorActivator {
 	static final CHECK check = CHECK.CHECK_AND_IMPORT;
 	static final IImportConfigurator.EDITOR editor = IImportConfigurator.EDITOR.EDITOR_AS_EDITOR;
 
-	//NomeclaturalCode
+	//NomenclaturalCode
 	static final NomenclaturalCode nomenclaturalCode  = NomenclaturalCode.ICNAFP;
 	
 	//ignore null
