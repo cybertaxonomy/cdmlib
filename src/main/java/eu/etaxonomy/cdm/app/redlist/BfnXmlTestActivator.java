@@ -41,7 +41,9 @@ public class BfnXmlTestActivator {
 //	static final String tcsSource = TcsSources.tcsXml_cichorium();
 	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_redlist_localhost();
 //	static final ICdmDataSource cdmDestination = CdmDestinations.cdm_testDB_localhost();
-
+	/**
+	 * If Metadata exists this will be overwritten
+	 */
 	private static final String sourceReferenceTitle = "Mammalia";
 
 
