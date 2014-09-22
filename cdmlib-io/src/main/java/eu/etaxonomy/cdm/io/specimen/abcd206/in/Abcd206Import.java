@@ -950,7 +950,6 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                     fieldUnitDeterminationEvent.addReference(reference);
                 }
                 fieldUnit.addDetermination(fieldUnitDeterminationEvent);
-                makeIndividualsAssociation(state, taxon, fieldUnitDeterminationEvent);
             }
 
             save(derivedUnitBase, state);
