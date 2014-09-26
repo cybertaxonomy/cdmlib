@@ -19,7 +19,7 @@ import com.vaadin.ui.PasswordField;
 import com.vaadin.ui.TextField;
 
 import eu.etaxonomy.cdm.remote.vaadin.service.AuthenticationService;
-import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.BfnView;
+import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ClassificationSelectorView;
 
 /**
  * 
@@ -85,7 +85,7 @@ public class LoginForm extends FormLayout{
 				try{
 					boolean isAuthenticated = authenticationController.authenticate(userName.getValue(), passwordField.getValue());
 					if(isAuthenticated){
-						Page.getCurrent().setUriFragment("!"+ BfnView.NAME); //DashBoardView
+						Page.getCurrent().setUriFragment("!"+ ClassificationSelectorView.NAME);//DashBoardView BfnView.NAME
 					}
 				}catch(AuthenticationException e){
 					Notification.show("Bad credentials",Notification.Type.ERROR_MESSAGE);
