@@ -145,6 +145,26 @@ public class XmlHelp {
 		}
 		return childAttribute.getValue();
 	}
+	
+	public static String getChildContent(Element element, String childElementName, Namespace childElementNamespace, String childAttributeName, Namespace childAttributeNamespace){
+		Element child = element.getChild(childElementName, childElementNamespace);
+		if (child == null){
+			return null;
+		}
+		List childContent = child.getContent();
+		if (childContent.isEmpty()){
+			return null;
+		}
+		for (Object content:childContent){
+			if (content instanceof Element){
+				Element contentEl = (Element)content;
+				if (contentEl.getName().equals(childAttributeName)){
+					return contentEl.getText();
+				}
+			}
+		}
+		return null;
+	}
 
 	/**
 	 * @param parent
@@ -331,12 +351,14 @@ public class XmlHelp {
 			success.setValue(false);
 			return null;	
 		}else if (elList.size() == 0){
+			elList = getChildren(parentElement, childName, null);
 			logger.info("There is no '" + childName + "' element");
 			if (obligatory){
 				success.setValue(false);
 			}
 			return null;
 		}
+		
 		Element childElement = elList.get(0);		
 		return childElement;
 	}	
@@ -355,6 +377,32 @@ public class XmlHelp {
 			return null;
 		}
 		return elList;
+	}
+
+	public static String getChildContentAttributeValue(Element element,
+			String childAttributeName, Namespace taxonNameNamespace, String childElementName,
+			Namespace childElementNamespace) {
+		Element child = element.getChild(childAttributeName, taxonNameNamespace);
+		if (child == null){
+			return null;
+		}
+		List childContent = child.getContent();
+		if (childContent.isEmpty()){
+			return null;
+		}
+		for (Object content:childContent){
+			if (content instanceof Element){
+				Element contentEl = (Element)content;
+				if (contentEl == null){
+					return null;
+				}
+				if (!(contentEl.getAttributeValue(childElementName) == null)){
+					Attribute at = contentEl.getAttribute("ressource");
+					if (at != null)return at.getValue();
+				}
+			}
+		}
+		return null;
 	}	
 	
 }

@@ -21,6 +21,8 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 import org.springframework.stereotype.Component;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -68,13 +70,13 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		return result;
 	}
 	
-	protected static CdmSingleAttributeXmlMapperBase[] standardMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] standardMappers = new CdmSingleAttributeRDFMapperBase[]{
 //		new CdmTextElementMapper("genusPart", "genusOrUninomial")
 	
 	};
 
 	
-	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] operationalMappers = new CdmSingleAttributeRDFMapperBase[]{
 		 new CdmUnclearMapper("hasName")
 		,new CdmUnclearMapper("hasName")
 		, new CdmUnclearMapper("accordingTo")
@@ -82,7 +84,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		, new CdmUnclearMapper("code", nsTgeo)	
 	};
 	
-	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] unclearMappers = new CdmSingleAttributeRDFMapperBase[]{
 		new CdmUnclearMapper("primary")
 		, new CdmUnclearMapper("note", nsTcom)	
 		, new CdmUnclearMapper("taxonStatus", nsTpalm)
@@ -103,20 +105,20 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		
 		String xmlElementName;
 		String xmlAttributeName;
-		Namespace elementNamespace;
-		Namespace attributeNamespace;
+		String elementNamespace;
+		String attributeNamespace;
 		
 		logger.info("start makeTaxa ...");
 		
 		TcsRdfImportConfigurator config = state.getConfig();
-		Element root = config.getSourceRoot();
+		Model root = config.getSourceRoot();
 		
-		Namespace rdfNamespace = config.getRdfNamespace();
+		String rdfNamespace = config.getRdfNamespaceURIString();
 		
 		String idNamespace = "TaxonConcept";
 		xmlElementName = "TaxonConcept";
-		elementNamespace = config.getTcNamespace();
-		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
+		elementNamespace = config.getTcNamespaceURIString();
+		/*List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
 		ITaxonService taxonService = getTaxonService();
 		
@@ -137,7 +139,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 			
 			//hasName
 			xmlElementName = "hasName";
-			elementNamespace = config.getTcNamespace();
+			String conceptNamespace = config.getTcNamespaceURIString();
 			xmlAttributeName = "resource";
 			attributeNamespace = rdfNamespace;
 			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
@@ -205,6 +207,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		logger.info("saving " + taxonMap.size()+ " taxa ...");
 		taxonService.save(taxonMap.objects());
 		logger.info("end makeTaxa ...");
+		*/
 		return;
 	}
 	

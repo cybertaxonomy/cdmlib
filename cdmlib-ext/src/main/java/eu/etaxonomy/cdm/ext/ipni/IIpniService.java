@@ -9,6 +9,7 @@
 */
 package eu.etaxonomy.cdm.ext.ipni;
 
+import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 import java.util.UUID;
@@ -51,7 +52,8 @@ public interface IIpniService {
 	public static final String SIMPLE_NAME_SERVICE_URL = "http://www.uk.ipni.org/ipni/simplePlantNameSearch.do";
 	public static final String ADVANCED_NAME_SERVICE_URL = "http://www.uk.ipni.org/ipni/advPlantNameSearch.do";
 	public static final String PUBLICATION_SERVICE_URL = "http://www.uk.ipni.org/ipni/advPublicationSearch.do";
-	
+	public static final String ID_PUBLICATION_SERVICE_URL = "http://www.uk.ipni.org/ipni/idPublicationSearch.do";
+	public static final String ID_NAMESEARCH_SERVICE_URL = "http://www.ipni.org/ipni/idPlantNameSearch.do";
 	
 	 /**
 	 * Enumeration of the four return delimited data formats provided by IPNI.<BR/>
@@ -125,7 +127,33 @@ public interface IIpniService {
 	 * @return
 	 */
 	public List<BotanicalName> getNamesSimple(String wholeName, ICdmApplicationConfiguration services, IpniServiceNamesConfigurator config);
-
+	
+	/**
+	 * Returns the name matching the id parameter according to the IPNI Quick search function.
+	 * See {@link http://www.uk.ipni.org/sample_searches.html#name_quick} for further explanation about the IPNI Quick search.
+	 * <BR/><BR/>
+	 * 
+	 * Please be aware that not all data returned by IPNI are transformed into CDM data as some of the data types are not available in the
+	 * CDM and some types are just not yet implemented.
+	 *  
+	 * @param id
+	 * @return
+	 */
+	public InputStream getNamesById(String id);
+	
+	
+	/**
+	 * Returns the publication matching the id parameter according to the IPNI Quick search function.
+	 * See {@link http://www.uk.ipni.org/sample_searches.html#name_quick} for further explanation about the IPNI Quick search.
+	 * <BR/><BR/>
+	 * 
+	 * Please be aware that not all data returned by IPNI are transformed into CDM data as some of the data types are not available in the
+	 * CDM and some types are just not yet implemented.
+	 *  
+	 * @param id
+	 * @return
+	 */
+	public InputStream getPublicationsById(String id);
 	
 	/**
 	 * Returns a list of names matching the relevant parameters according to the IPNI full search function.

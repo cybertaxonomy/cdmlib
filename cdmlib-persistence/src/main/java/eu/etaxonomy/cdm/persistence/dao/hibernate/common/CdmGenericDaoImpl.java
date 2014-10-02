@@ -125,6 +125,7 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 	@Override
 	public List<CdmBase> getCdmBasesByFieldAndClass(Class clazz, String propertyName, CdmBase referencedCdmBase){
 		Session session = super.getSession();
+	
 		Criteria criteria = session.createCriteria(clazz);
 		criteria.add(Restrictions.eq(propertyName, referencedCdmBase));
 		return criteria.list();

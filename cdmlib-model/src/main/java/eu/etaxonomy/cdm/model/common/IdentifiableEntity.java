@@ -383,6 +383,20 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     @Override
+    public void addSources(Set<IdentifiableSource> sources) {
+        if (sources != null){
+        	for (IdentifiableSource source: sources){
+	            IdentifiableEntity<?> oldSourcedObj = source.getSourcedObj();
+	            if (oldSourcedObj != null && oldSourcedObj != this){
+	                oldSourcedObj.getSources().remove(source);
+	            }
+	            getSources().add(source);
+	            source.setSourcedObj(this);
+        	}
+        }
+    }
+    
+    @Override
     public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;

@@ -54,7 +54,6 @@ import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
 
-
 /**
 * @author a.mueller
 * @created Aug 16, 2010
@@ -167,6 +166,7 @@ public class IpniService  implements IIpniService{
 		 AUTHOR,
 		 NAME,
 		 PUBLICATION,
+		 ID
 	}
 	
 	public enum IpniRank{
@@ -277,7 +277,7 @@ public class IpniService  implements IIpniService{
             	result = buildAuthorList(content, services, config);
             }else if (serviceType.equals(ServiceType.NAME)){
             	result = buildNameList(content, services, config);
-            }else{
+            }else {
             	result = buildPublicationList(content, services, config);
             }
             if(responseCode == HttpURLConnection.HTTP_OK){
@@ -296,6 +296,43 @@ public class IpniService  implements IIpniService{
         // error
         return null;
     }
+	
+	public InputStream queryServiceForID (String request, URL serviceUrl){
+		
+		try {
+			
+            // create the request url
+            URL newUrl = new URL(serviceUrl.getProtocol(),
+                                                     serviceUrl.getHost(),
+                                                     serviceUrl.getPort(),
+                                                     serviceUrl.getPath() 
+                                                     + "?" + request);
+            
+            
+            URI newUri = newUrl.toURI();
+                       
+            logger.info("Firing request for URI: " + newUri);
+                
+            HttpResponse response = UriUtils.getResponse(newUri, null);
+            
+            int responseCode = response.getStatusLine().getStatusCode();
+            
+            // get the content at the resource
+            InputStream content = response.getEntity().getContent();
+            return content;
+           
+		   } catch (IOException e) {
+	            logger.error("No content for request: " + request);
+	        } catch (URISyntaxException e) {
+				logger.error("Given URL could not be transformed into URI", e);
+			}
+         
+		return null;
+	
+	}
+
+	
+
 
 	private List<Reference> buildPublicationList( InputStream content, ICdmApplicationConfiguration services, IIpniServiceConfigurator iConfig) throws IOException {
 		IpniServicePublicationConfigurator config = (IpniServicePublicationConfigurator)iConfig;
@@ -407,9 +444,11 @@ public class IpniService  implements IIpniService{
 		
 		String line = reader.readLine();
 		while (StringUtils.isNotBlank(line)){
+			
 			BotanicalName name = getNameFromLine(line,parameterMap, appConfig);
 			result.add(name);
 			line = reader.readLine();
+			
 		}
 
 		
@@ -882,6 +921,25 @@ public class IpniService  implements IIpniService{
 			throw new RuntimeException("This should not happen", e);
 		}
 		return serviceUrl;
+	}
+
+
+	@Override
+	public InputStream getNamesById(String id) {
+		
+	
+		String request = "id="+id + "&output_format=lsid-metadata";
+		return queryServiceForID(request, getServiceUrl(IIpniService.ID_NAMESEARCH_SERVICE_URL));
+		
+	}
+	
+	@Override
+	public InputStream getPublicationsById(String id) {
+		
+	
+		String request = "id="+id ;
+		return queryServiceForID(request, getServiceUrl(IIpniService.ID_PUBLICATION_SERVICE_URL));
+		
 	}
 
 		

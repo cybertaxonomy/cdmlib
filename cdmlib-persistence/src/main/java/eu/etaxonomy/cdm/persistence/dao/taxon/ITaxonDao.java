@@ -420,6 +420,7 @@ public interface ITaxonDao extends IIdentifiableDao<TaxonBase>, ITitledDao<Taxon
      */
     public List<UuidAndTitleCache<TaxonNode>> getTaxonNodeUuidAndTitleCacheOfAcceptedTaxaByClassification(Classification classification);
 
+  
     /**
      * Creates all inferred synonyms for the species in the tree and insert it to the database
      * @param tree

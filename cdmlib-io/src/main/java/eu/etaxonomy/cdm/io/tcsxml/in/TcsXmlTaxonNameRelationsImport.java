@@ -11,10 +11,12 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
@@ -24,9 +26,15 @@ import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
+import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
+import eu.etaxonomy.cdm.model.name.NameRelationship;
 import eu.etaxonomy.cdm.model.name.NameRelationshipType;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 @Component
 public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements ICdmIO<TcsXmlImportState> {
@@ -98,7 +106,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				String id = elTaxonName.getAttributeValue("id");
 //				TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
 				
-				makeNomenclaturalNoteType(config, elBasionym, relType, taxonNameMap, nameStore, id, inverse);
+				makeNomenclaturalNoteType(config, elBasionym, relType, taxonNameMap, nameStore, removeVersionOfRef(id), inverse);
 			}// end Basionyms
 			
 			//SpellingCorrections
@@ -181,15 +189,89 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 			List<Element> elPublicationStatusList = elTaxonName.getChildren(tcsElementName, tcsNamespace);
 			for (Element elPublicationStatus: elPublicationStatusList){
 				
-				//nameRelCount++;
+				nameRelCount++;
 				//TODO PublicationStatus
-				logger.warn("PublicationStatus not yet implemented " );
+				//logger.warn("PublicationStatus not yet implemented " );
+				NomenclaturalStatusType statusType = null;
+				NameRelationshipType nameRelType = null;
+				List<Content> content = elPublicationStatus.getContent();
+				Element el = elPublicationStatus.getChild("Note");
+				Iterator<Content> iterator = content.iterator();
+				Content next;
+				String ruleConsidered = null;
+				String relatedName = null;
+				while (iterator.hasNext()){
+					next = iterator.next();
+					String test = next.getClass().getName();
+					if (next.getClass().getName().equals("org.jdom.Element")){
+						Element element = (Element)next;
+						NomenclaturalStatus status;
+						try {
+							if (element.getName().equals("Note")){
+								Iterator<Content> iteratorNote = element.getContent().iterator();
+								Content nextNote;
+								while (iteratorNote.hasNext()){
+									nextNote = iteratorNote.next();
+									test = nextNote.getClass().getName();
+									if (nextNote.getValue().startsWith("nom. inval.")){
+										statusType =TcsXmlTransformer.nomStatusString2NomStatus("nom. inval.");
+									} else if (nextNote.getValue().startsWith("nom. illeg.")){
+										statusType =TcsXmlTransformer.nomStatusString2NomStatus("nom. illeg.");
+									} else if (nextNote.getValue().startsWith("nom. superfl.")){
+										statusType =TcsXmlTransformer.nomStatusString2NomStatus("nom. superfl.");
+									} else if (nextNote.getValue().startsWith("[isonym]")){
+										//in cdm NameRelationship
+										nameRelType = NameRelationshipType.LATER_ISONYM();
+									}
+									
+								}
+							}else if (element.getName().equals("RuleConsidered")){
+								Iterator<Content> iteratorNote = element.getContent().iterator();
+								Content nextNote;
+								while (iteratorNote.hasNext()){
+									nextNote = iteratorNote.next();
+									ruleConsidered = nextNote.getValue();
+								}
+							}else if (element.getName().equals("RelatedName")){
+								Iterator<Content> iteratorNote = element.getContent().iterator();
+								Content nextNote;
+								while (iteratorNote.hasNext()){
+									nextNote = iteratorNote.next();
+									relatedName = nextNote.getValue();
+								}
+							}
+						} catch (UnknownCdmTypeException e) {
+							// TODO Auto-generated catch block
+							logger.warn(e.getMessage());
+						}
+					}
+						
+				}
+				TaxonNameBase taxonName = null;
+				if (statusType != null || nameRelType != null){
+					String id = elTaxonName.getAttributeValue("id");
+					
+					taxonName=  taxonNameMap.get(removeVersionOfRef(id));
+				}
+				if (taxonName != null){
+					if (statusType != null){
+						NomenclaturalStatus status = NomenclaturalStatus.NewInstance(statusType);
+						if (ruleConsidered != null){
+							status.setRuleConsidered(ruleConsidered);
+						}
+						taxonName.addStatus(status);
+					}
+					if (nameRelType != null){
+						String id = elTaxonName.getAttributeValue("id");
+						
+						TaxonNameBase relatedTaxonName =  taxonNameMap.get(removeVersionOfRef(id));
+						taxonName.addRelationshipFromName(relatedTaxonName, nameRelType, ruleConsidered);
+					}
+				}
 				
-				///NameRelationshipType relType = NameRelationshipType.XXX
-				//boolean inverse = false;
-				//
-				//String id = elTaxonName.getAttributeValue("id");
-				//makeNomenclaturalNoteType(tcsConfig, elPublicationStatus, relType, taxonNameMap, nameStore, id, inverse);
+				
+				
+				
 			}// end PublicationStatus
 			
 			//BasedOn
@@ -199,8 +281,12 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 				
 				//nameRelCount++;
 				//TODO BasedOn
-				logger.warn("BasedOn not yet implemented " );
-				
+				logger.debug("BasedOn not yet implemented " );
+				/*
+				 * <tcs:BasedOn>
+						<tcs:RelatedName ref="urn:lsid:ipni.org:names:151372-1"></tcs:RelatedName>
+					</tcs:BasedOn>
+				 */
 				///NameRelationshipType relType = NameRelationshipType.XXX
 				//boolean inverse = false;
 				//
@@ -224,6 +310,7 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		return;
 	}
 	
+
 	private  boolean makeNomenclaturalNoteType(TcsXmlImportConfigurator tcsConfig, Element elRelation, NameRelationshipType relType, MapWrapper<TaxonNameBase<?,?>> taxonNameMap, Set<TaxonNameBase> nameStore, String id, boolean inverse){
 		if (elRelation == null){
 			return false;
@@ -237,14 +324,15 @@ public class TcsXmlTaxonNameRelationsImport extends TcsXmlImportBase implements 
 		//TODO relType
 		String relatedNameId = elRelatedName.getAttributeValue("ref");
 		
-		TaxonNameBase<?,?> fromName = taxonNameMap.get(id);
-		TaxonNameBase<?,?> toName = taxonNameMap.get(relatedNameId);
+		TaxonNameBase<?,?> fromName = taxonNameMap.get(removeVersionOfRef(id));
+		
+		TaxonNameBase<?,?> toName = taxonNameMap.get(removeVersionOfRef(relatedNameId));
 		if (fromName == null){
-			logger.warn("fromName (" + id + ") not found in Map! Relationship not set!");
+			//logger.warn("fromName (" + id + ") not found in Map! Relationship not set!");
 			return false;
 		}
 		if (toName == null){
-			logger.warn("toName (" + id + ") not found in Map! Relationship not set!");
+			//logger.warn("toName (" + relatedNameId + ") not found in Map! Relationship not set!");
 			return false;
 		}
 

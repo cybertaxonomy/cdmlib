@@ -1489,7 +1489,13 @@ public class Taxon extends TaxonBase<IIdentifiableEntityCacheStrategy<Taxon>>
             this.getName().getHomotypicalGroup().addTypifiedName(synonym.getName());
 
         }
-        SynonymRelationship synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), citation, microCitation);
+    	SynonymRelationship synRel = null;
+    	if (!this.getSynonyms().contains(synonym)){
+    		synRel = addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF(), citation, microCitation);
+    	} else{
+    		logger.warn("The synonym is already related to the taxon.");
+    		
+    	}
         return synRel;
     }
 

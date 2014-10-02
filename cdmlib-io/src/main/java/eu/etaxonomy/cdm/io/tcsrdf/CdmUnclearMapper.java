@@ -14,13 +14,16 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+
 
 /**
  * @author a.mueller
  * @created 29.07.2008
  * @version 1.0
  */
-public class CdmUnclearMapper extends CdmSingleAttributeXmlMapperBase {
+public class CdmUnclearMapper extends CdmSingleAttributeRDFMapperBase {
 	private static final Logger logger = Logger.getLogger(CdmUnclearMapper.class);
 	
 	
@@ -28,9 +31,9 @@ public class CdmUnclearMapper extends CdmSingleAttributeXmlMapperBase {
 	 * @param dbValue
 	 * @param cdmValue
 	 */
-	public CdmUnclearMapper(String sourceElementString, Namespace sourceNamespace) {
+	public CdmUnclearMapper(String sourceElementString, String sourceNamespace) {
 		super(sourceElementString, null);
-		this.sourceNamespace = sourceNamespace;
+		this.sourceNameSpace = sourceNamespace;
 	}
 
 	/**
@@ -41,21 +44,23 @@ public class CdmUnclearMapper extends CdmSingleAttributeXmlMapperBase {
 		super(dbAttributString, null);
 	}
 	
-	public Namespace getSourceNamespace(){
-		return sourceNamespace;
+	public String getSourceNamespace(){
+		return sourceNameSpace;
 	}
 	
 	public Class getTypeClass(){
 		return String.class;
 	}
 	
-	public boolean mapsSource(Content content, Element parentElement){
+	public boolean mapsSource(Resource content, Statement parentElement){
 		return super.mapsSource(content, parentElement);
 	}
 	
 	public String toString(){
 		return this.getSourceElement();
 	}
+
+	
 
 
 }

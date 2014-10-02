@@ -12,30 +12,49 @@ package eu.etaxonomy.cdm.io.tcsxml.in;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OBLIGATORY;
 import static eu.etaxonomy.cdm.io.common.ImportHelper.OVERWRITE;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 import org.jdom.Text;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import eu.etaxonomy.cdm.common.CdmUtils;
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.ext.ipni.IpniService;
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
+import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsrdf.CdmSingleAttributeXmlMapperBase;
+import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
+import eu.etaxonomy.cdm.model.name.CultivarPlantName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
+import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.name.ZoologicalName;
+import eu.etaxonomy.cdm.model.reference.INomenclaturalReference;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
+import eu.etaxonomy.cdm.strategy.exceptions.UnknownCdmTypeException;
 
 /**
  * @author a.mueller
@@ -52,6 +71,8 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
 	
+	@Autowired
+	IpniService service;
 	
 	protected abstract void doInvoke(TcsXmlImportState state);
 	
@@ -187,6 +208,11 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		T result = null;
 		String linkType = element.getAttributeValue("linkType");
 		String ref = element.getAttributeValue("ref");
+		if (ref != null){
+			if (ref.matches("urn:lsid:ipni.org:.*:*")){
+				ref = ref.substring(0,ref.lastIndexOf(":"));
+			}
+		}
 		if(ref == null && linkType == null){
 			result = getInstance(clazz);
 			if (result != null){
@@ -197,7 +223,11 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 			//TODO
 			result = objectMap.get(ref);
 			if (result == null){
-				logger.warn("Object (ref = " + ref + ")could not be found in WrapperMap");
+				result = getInstance(clazz);
+				if (result != null){
+					String title = element.getTextNormalize();
+					result.setTitleCache(title, true);
+				}
 			}
 		}else if(linkType.equals("external")){
 			logger.warn("External link types not yet implemented");
@@ -275,7 +305,174 @@ public abstract class TcsXmlImportBase  extends CdmImportBase<TcsXmlImportConfig
 		}
 		return result;
 	}
+	
+	
+	
+	
+	
+	protected void testNoMoreElements(){
+		//TODO
+		//logger.info("testNoMoreElements Not yet implemented");
+	}
+	
+	
+	
 
+	
+	@SuppressWarnings("unchecked")
+	protected TeamOrPersonBase<?> makeNameCitation(Element elNameCitation, MapWrapper<Person> authorMap, ResultWrapper<Boolean> success){
+		TeamOrPersonBase<?> result = null; 
+		String childName;
+		boolean obligatory;
+		if (elNameCitation != null){
+			Namespace ns = elNameCitation.getNamespace();
+			
+			childName = "Authors";
+			obligatory = false;
+			Element elAuthors = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
+			testNoMoreElements();
+
+			if (elAuthors != null){
+				childName = "AgentName";
+				List<Element> elAgentList = elAuthors.getChildren(childName, ns);
+				Team team = Team.NewInstance();
+				result = team;
+				if (elAgentList.size() > 1){
+					for(Element elAgent : elAgentList){
+						Person teamMember = makeAgent(elAgent, ns, authorMap, success);
+						team.addTeamMember(teamMember);
+					}
+				}else if(elAgentList.size() == 1){
+					result = makeAgent(elAgentList.get(0), ns, authorMap, success);
+				}
+			}else{
+				childName = "Simple";
+				obligatory = true;
+				Element elSimple = XmlHelp.getSingleChildElement(success, elNameCitation, childName, ns, obligatory);
+				String simple = (elSimple == null)? "" : elSimple.getTextNormalize();
+				result = Team.NewInstance();
+				result.setNomenclaturalTitle(simple);
+			}
+		}
+		return result;
+	}
+
+	private Person makeAgent(Element elAgentName, Namespace ns, MapWrapper<Person> agentMap, ResultWrapper<Boolean> success){
+		Person result = null;
+		if (elAgentName != null){
+			String authorTitle = elAgentName.getTextNormalize();
+			result = Person.NewTitledInstance(authorTitle);
+			Class<? extends Person> clazz = Person.class;
+			result = makeReferenceType(elAgentName, clazz, agentMap, success);
+			return result;
+		}else{
+			return null;
+		}
+	}
+	
+	
+
+	
+	
+
+	
+	
+	
+	protected Integer getIntegerYear(String year){
+		try {
+			Integer result = Integer.valueOf(year);
+			return result;
+		} catch (NumberFormatException e) {
+			logger.warn("Year string could not be parsed. Set = 9999 instead");
+			return 9999;
+		}
+	}
+
+	protected String removeVersionOfRef(String ref){
+		if (ref != null && ref.matches("urn:lsid:ipni.org:.*:.*:.*")){
+			return ref = ref.substring(0,ref.lastIndexOf(":"));
+		} else {
+			return ref;
+		}
+		
+	}
+	
+
+	
+	protected void makeTypification(TaxonNameBase name, Element elTypifiacation, ResultWrapper<Boolean> success){
+		if (elTypifiacation != null){
+			//logger.warn("makeTypification not yet implemented");
+			//success.setValue(false);
+		}
+	}
+
+	
+	protected void makePublicationStatus(TaxonNameBase name, Element elPublicationStatus, ResultWrapper<Boolean> success){
+		//Status
+			
+		if (elPublicationStatus != null){
+			//logger.warn("makePublicationStatus not yet implemented");
+			//success.setValue(false);
+		}
+	}
+	
+	protected void makeProviderLink(TaxonNameBase name, Element elProviderLink, ResultWrapper<Boolean> success){
+		if (elProviderLink != null){
+			//logger.warn("makeProviderLink not yet implemented");
+			//success.setValue(false);
+		}
+	}
+	
+
+	protected void makeProviderSpecificData(TaxonNameBase name, Element elProviderSpecificData, ResultWrapper<Boolean> success){
+		if (elProviderSpecificData != null){
+			
+			/*Namespace ns = elProviderSpecificData.getNamespace();
+			
+			String childName = "ipniData";
+			boolean obligatory = true;
+			Element elIpniData = XmlHelp.getSingleChildElement(success, elProviderSpecificData, childName, ns, obligatory);
+			
+			childName = "citationType";
+			Element elCitationType = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
+			
+			childName = "referenceRemarks";
+			Element elReferenceRemarks = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
+			
+			childName = "suppressed";
+			Element elSuppressed = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
+			
+			childName = "score";
+			Element elScore = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
+			
+			childName = "nomenclaturalSynonym";
+			Element elNomenclaturalSynonym = XmlHelp.getSingleChildElement(success, elIpniData, childName, ns, obligatory);
+			
+			childName = "RelatedName";
+			Element elRelatedName = XmlHelp.getSingleChildElement(success, elNomenclaturalSynonym, childName, ns, obligatory);
+			
+			//create homotypic synonym
+			
+			*/
+			
+		}
+	}
+	
+	
+	/* (non-Javadoc)
+	 * @see eu.etaxonomy.cdm.io.common.CdmIoBase#isIgnore(eu.etaxonomy.cdm.io.common.IImportConfigurator)
+	 */
+	protected boolean isIgnore(TcsXmlImportState state){
+		return ! state.getConfig().isDoTaxonNames();
+	}
+	
+	
+	protected static final Reference<?> unknownSec(){
+		Reference<?> result = ReferenceFactory.newGeneric();
+		result.setTitleCache("UNKNOWN", true);
+		return result;
+	}
+	
 
 
 }

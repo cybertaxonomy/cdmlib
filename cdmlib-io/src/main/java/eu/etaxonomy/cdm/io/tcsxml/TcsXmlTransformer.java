@@ -13,6 +13,8 @@ import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.name.HybridRelationshipType;
+import eu.etaxonomy.cdm.model.name.NameRelationshipType;
 import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
 import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.Rank;
@@ -114,15 +116,15 @@ public final class TcsXmlTransformer {
 		}else if (strRank.equals("dom")){return Rank.DOMAIN();
 		}else if (strRank.equals("taxsupragen")){return Rank.SUPRAGENERICTAXON();
 		//family group
-		}else if (strRank.equals("infrafam")){return Rank.FAMILY();
-		}else if (strRank.equals("subfam")){return Rank.FAMILY();
+		}else if (strRank.equals("infrafam")){return Rank.INFRAFAMILY();
+		}else if (strRank.equals("subfam")){return Rank.SUBFAMILY();
 		}else if (strRank.equals("fam")){return Rank.FAMILY();
-		}else if (strRank.equals("superfam")){return Rank.FAMILY();
+		}else if (strRank.equals("superfam")){return Rank.SUPERFAMILY();
 		//family subdivision
-		}else if (strRank.equals("intratrib")){return Rank.FAMILY();
-		}else if (strRank.equals("subtrib")){return Rank.FAMILY();
-		}else if (strRank.equals("trib")){return Rank.FAMILY();
-		}else if (strRank.equals("supertrib")){return Rank.FAMILY();
+		}else if (strRank.equals("intratrib")){return Rank.TRIBE();
+		}else if (strRank.equals("subtrib")){return Rank.SUBTRIBE();
+		}else if (strRank.equals("trib")){return Rank.TRIBE();
+		}else if (strRank.equals("supertrib")){return Rank.SUPERTRIBE();
 		}	
 		else {
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
@@ -238,7 +240,7 @@ public final class TcsXmlTransformer {
 //		}else if (tcsRelationshipType.equals("has vernacular")){return TaxonRelationshipType.X; 
 //		}else if (tcsRelationshipType.equals("is vernacular for")){return TaxonRelationshipType.X; 
 //		}else if (tcsRelationshipType.equals("is ambiregnal of")){return TaxonRelationshipType.X; 
-//		}else if (tcsRelationshipType.equals("is hybrid child of")){return TaxonRelationshipType.X; 
+		}else if (tcsRelationshipType.equals("is hybrid child of")){return HybridRelationshipType.FIRST_PARENT();
 //		}else if (tcsRelationshipType.equals("is hybrid parent of")){return TaxonRelationshipType.X; 
 //		}else if (tcsRelationshipType.equals("is male parent of")){return TaxonRelationshipType.X; 
 //		}else if (tcsRelationshipType.equals("is first parent of")){return TaxonRelationshipType.X; 
@@ -311,6 +313,7 @@ public final class TcsXmlTransformer {
 		}else if ("Provisional".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();
 		}else if ("nom. provis.".equalsIgnoreCase(nomStatus)){return NomenclaturalStatusType.PROVISIONAL();
 		}
+		
 		else {
 			throw new UnknownCdmTypeException("Unknown Nomenclatural status type " + nomStatus);
 		}

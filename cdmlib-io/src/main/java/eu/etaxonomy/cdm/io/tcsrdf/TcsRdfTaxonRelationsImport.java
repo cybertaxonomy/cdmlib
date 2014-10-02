@@ -18,6 +18,8 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -74,11 +76,10 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
 		
 		TcsRdfImportConfigurator config = state.getConfig();
-		Element root = config.getSourceRoot();
-		Namespace taxonConceptNamespace = config.getTcNamespace();
-
+		Model root = config.getSourceRoot();
+		String taxonConceptNamespace = config.getTcNamespaceURIString();
 		xmlElementName = "TaxonConcept";
-		elementNamespace = taxonConceptNamespace;
+		/*elementNamespace = taxonConceptNamespace;
 		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
 
 		int i = 0;
@@ -122,6 +123,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		getTaxonService().save(taxonStore);
 		
 		logger.info("end makeRelTaxa ...");
+		*/
 		return;
 
 	}
@@ -135,17 +137,17 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 		boolean success = true;
 		String xmlElementName;
 		String xmlAttributeName;
-		Namespace elementNamespace;
-		Namespace attributeNamespace;
+		String elementNamespace;
+		String attributeNamespace;
 		TcsRdfImportConfigurator tcsConfig = state.getConfig();
 		//relationship
 		xmlElementName = "relationshipCategory";
-		elementNamespace = tcsConfig.getTcNamespace();
+		elementNamespace = tcsConfig.getTcNamespaceURIString();
 		xmlAttributeName = "resource";
-		attributeNamespace = tcsConfig.getRdfNamespace();
-		String strRelCategory = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
+		attributeNamespace = tcsConfig.getRdfNamespaceURIString();
+	/*	String strRelCategory = XmlHelp.getChildAttributeValue(elRelationship, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
 		try {
-			RelationshipTermBase relType = TcsRdfTransformer.tcsRelationshipCategory2Relationship(strRelCategory);
+			RelationshipTermBase relType = TcsRdfTransformer.tcsRelationshipCategory2Relationship(strRelCategory.trim());
 			boolean isReverse = TcsRdfTransformer.isReverseRelationshipCategory(strRelCategory);
 			//toTaxon
 			xmlElementName = "toTaxon";
@@ -176,7 +178,8 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 					}else if (relType instanceof TaxonRelationshipType){
 						success &= makeTaxonRelType((TaxonRelationshipType)relType, state, taxonTo, fromTaxon, strTaxonAbout , citation, microReference);
 					}else{
-						logger.warn("Unknown Relationshiptype");
+						System.out.println("Unknown Relationshiptype" + strRelCategory);
+						logger.warn("Unknown Relationshiptype" + strRelCategory);
 						success = false;
 					}
 					taxonStore.add(toTaxon);
@@ -195,7 +198,7 @@ public class TcsRdfTaxonRelationsImport extends TcsRdfImportBase implements ICdm
 			//TODO
 			logger.warn("tc:relationshipCategory " + strRelCategory + " not yet implemented");
 			return false;
-		}
+		}*/
 		return success;
 	}
 	

@@ -14,13 +14,16 @@ import org.jdom.Content;
 import org.jdom.Element;
 import org.jdom.Namespace;
 
+import com.hp.hpl.jena.rdf.model.Resource;
+import com.hp.hpl.jena.rdf.model.Statement;
+
 /**
  * @author a.mueller
  * @created 29.07.2008
  * @version 1.0
  */
 
-public class CdmTextElementMapper extends CdmSingleAttributeXmlMapperBase {
+public class CdmTextElementMapper extends CdmSingleAttributeRDFMapperBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(CdmTextElementMapper.class);
 	
@@ -28,9 +31,9 @@ public class CdmTextElementMapper extends CdmSingleAttributeXmlMapperBase {
 	 * @param dbValue
 	 * @param cdmValue
 	 */
-	public CdmTextElementMapper(String sourceElementString,Namespace sourceNamespace, String cdmAttributeString) {
+	public CdmTextElementMapper(String sourceElementString, String sourceNamespace, String cdmAttributeString) {
 		super(sourceElementString, cdmAttributeString);
-		this.sourceNamespace = sourceNamespace;
+		this.sourceNameSpace = sourceNamespace;
 	}
 
 	/**
@@ -41,15 +44,21 @@ public class CdmTextElementMapper extends CdmSingleAttributeXmlMapperBase {
 		super(dbAttributString, cdmAttributeString);
 	}
 	
-	public Namespace getSourceNamespace(){
-		return sourceNamespace;
+	public String getSourceNamespace(){
+		return sourceNameSpace;
 	}
 		
 	public Class getTypeClass(){
 		return String.class;
 	}
 	
-	public boolean mapsSource(Content content, Element parentElement){
+	public boolean mapsSource(Resource content, Statement parentElement){
 		return super.mapsSource(content, parentElement);	
 	}
+
+	
+
+	
+
+	
 }

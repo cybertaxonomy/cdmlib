@@ -61,33 +61,73 @@ public final class TcsRdfTransformer {
 	/** Creates an cdm-Rank by the tcs rank
 	 */
 	public static Rank rankString2Rank (String strRank) throws UnknownCdmTypeException{
-		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonRank#";
-		String tcsFamily = tcsRoot + "Family";
-		String tcsSubFamily = tcsRoot + "Subfamily";
-		String tcsTribe = tcsRoot + "Tribe";
-		String tcsSubtribe = tcsRoot + "Subtribe";
-		String tcsGenus = tcsRoot + "Genus";
-		String tcsSpecies = tcsRoot + "Species";
-		String tcsSubSpecies = tcsRoot + "Subspecies";
-		String tcsVariety = tcsRoot + "Variety";
-		String tcsSubVariety = tcsRoot + "Sub-Variety";
-		String tcsForm = tcsRoot + "Form";
+		String tcsRoot = "http://rs.tdwg.org/ontology/voc/taxonrank#";
+		String tcsFamily = "family";
+		String tcsSubFamily = "subfamily";
+		String tcsTribe =  "tribe";
+		String tcsSubtribe =  "subtribe";
+		String tcsGenus =  "genus";
+		String tcsSection = "section";
+		String tcsSpecies =  "species";
+		String tcsSubSpecies = "subspecies";
+		String tcsVariety = "variety";
+		String tcsSubVariety =  "subvariety";
+		String tcsForm =  "form";
 
-
-
+		
+		String tcsAbbFamily = "fam.";
+		String tcsAbbrSubFamily =  "subfam.";
+		String tcsAbbrTribe =  "trib.";
+		String tcsAbbrSubtribe =  "subtrib.";
+		String tcsAbbrGenus =  "gen.";
+		String tcsAbbrSubGenus =  "subgen.";
+		String tcsAbbrSection = "sect.";
+		String tcsAbbrSubSection = "subsect.";
+		String tcsAbbrSeries = "ser.";
+		String tcsAbbrSpecies =  "spec.";
+		String tcsAbbrSubSpecies = "subsp.";
+		String tcsAbbrVariety = "var.";
+		String tcsAbbrSubVariety ="subvar.";
+		String tcsAbbrForm = "f.";
+		String tcsAbbrForma = "forma";
+		String tcsAbbrSubForm = "subf.";
+		String tcsAbbrInfraspecUnranked ="[infrasp.unranked]";
+		String tcsAbbrInfragenUnranked ="[infragen.unranked]";
+		String tcsAbbrNothoSubSpecies = "nothosubsp.";
+		
 		if (strRank == null){return null;
-		}else if (tcsFamily.equals(strRank)){return Rank.FAMILY();
-		}else if (tcsSubFamily.equals(strRank)){return Rank.SUBFAMILY();
-		}else if (tcsTribe.equals(strRank)){return Rank.TRIBE();
-		}else if (tcsSubtribe.equals(strRank)){return Rank.SUBTRIBE();
-		}else if (tcsGenus.equals(strRank)){return Rank.GENUS();
-		}else if (tcsSpecies.equals(strRank)){return Rank.SPECIES();
-		}else if (tcsVariety.equals(strRank)){return Rank.VARIETY();
-		}else if (tcsSubVariety.equals(strRank)){return Rank.SUBVARIETY();
-		}else if (tcsSubSpecies.equals(strRank)){return Rank.SUBSPECIES();
-		}else if (tcsForm.equals(strRank)){return Rank.FORM();
+		}else{
+			strRank = strRank.toLowerCase();
 		}
-		else {
+		if (tcsFamily.equals(strRank) || tcsRoot.concat(tcsFamily).equals(strRank)){return Rank.FAMILY();
+		}else if (tcsSubFamily.equals(strRank)|| tcsRoot.concat(tcsSubFamily).equals(strRank)){return Rank.SUBFAMILY();
+		}else if (tcsTribe.equals(strRank)|| tcsRoot.concat(tcsTribe).equals(strRank)){return Rank.TRIBE();
+		}else if (tcsSubtribe.equals(strRank)|| tcsRoot.concat(tcsSubtribe).equals(strRank)){return Rank.SUBTRIBE();
+		}else if (tcsGenus.equals(strRank)|| tcsRoot.concat(tcsGenus).equals(strRank)){return Rank.GENUS();
+		}else if (tcsSection.equals(strRank)|| tcsRoot.concat(tcsSection).equals(strRank)){return Rank.SECTION_BOTANY();
+		}else if (tcsSpecies.equals(strRank)|| tcsRoot.concat(tcsSpecies).equals(strRank)){return Rank.SPECIES();
+		}else if (tcsVariety.equals(strRank)|| tcsRoot.concat(tcsVariety).equals(strRank)){return Rank.VARIETY();
+		}else if (tcsSubVariety.equals(strRank)|| tcsRoot.concat(tcsSubVariety).equals(strRank)){return Rank.SUBVARIETY();
+		}else if (tcsSubSpecies.equals(strRank) || tcsRoot.concat(tcsSubSpecies).equals(strRank)){return Rank.SUBSPECIES();
+		}else if (tcsForm.equals(strRank)|| tcsRoot.concat(tcsForm).equals(strRank)){return Rank.FORM();
+		}else if (tcsAbbFamily.equals(strRank)){return Rank.FAMILY();
+		}else if (tcsAbbrSubFamily.equals(strRank)){return Rank.SUBFAMILY();
+		}else if (tcsAbbrTribe.equals(strRank)){return Rank.TRIBE();
+		}else if (tcsAbbrSubtribe.equals(strRank)){return Rank.SUBTRIBE();
+		}else if (tcsAbbrGenus.equals(strRank)){return Rank.GENUS();
+		}else if (tcsAbbrSubGenus.equals(strRank)){return Rank.SUBGENUS();
+		}else if (tcsAbbrSection.equals(strRank)){return Rank.SECTION_BOTANY();
+		}else if (tcsAbbrSubSection.equals(strRank)){return Rank.SUBSECTION_BOTANY();
+		}else if (tcsAbbrSeries.equals(strRank)){return Rank.SERIES();
+		}else if (tcsAbbrSpecies.equals(strRank)){return Rank.SPECIES();
+		}else if (tcsAbbrSubSpecies.equals(strRank) || tcsAbbrNothoSubSpecies.equals(strRank)){return Rank.SUBSPECIES();
+		}else if (tcsAbbrVariety.equals(strRank)){return Rank.VARIETY();
+		}else if (tcsAbbrSubVariety.equals(strRank)){return Rank.SUBVARIETY();
+		}else if (tcsAbbrForm.equals(strRank) ||tcsAbbrForma.equals(strRank)){return Rank.FORM();
+		}else if (tcsAbbrSubForm.equals(strRank)){return Rank.SUBFORM();
+		}else if (tcsAbbrInfraspecUnranked.equals(strRank)){return Rank.UNRANKED_INFRASPECIFIC();
+		}else if (tcsAbbrInfragenUnranked.equals(strRank)){return Rank.UNRANKED_INFRAGENERIC();
+		}else{
 			throw new UnknownCdmTypeException("Unknown Rank " + strRank);
 		}
 	}
@@ -96,7 +136,9 @@ public final class TcsRdfTransformer {
 	 */
 	public static NomenclaturalCode nomCodeString2NomCode (String nomCode) throws UnknownCdmTypeException{
 
+		
 		String tcsRoot = "http://rs.tdwg.org/ontology/voc/TaxonName#";
+		String tcsBotanical = tcsRoot + "botanical";
 		String tcsICBN = tcsRoot + "ICBN";
 		String tcsICZN = tcsRoot + "ICZN";
 		String tcsICNCP = tcsRoot + "ICNCP";
@@ -105,6 +147,7 @@ public final class TcsRdfTransformer {
 
 		if (nomCode == null){ return null;
 		}else if (tcsICBN.equals(nomCode)){return NomenclaturalCode.ICNAFP;
+		}else if (tcsBotanical.equals(nomCode)){return NomenclaturalCode.ICNAFP;
 		}else if (tcsICZN.equals(nomCode)){return NomenclaturalCode.ICZN;
 		}else if (tcsICNCP.equals(nomCode)){return NomenclaturalCode.ICNCP;
 		}else if (tcsBacteriological.equals(nomCode)){return NomenclaturalCode.ICNB;

@@ -19,6 +19,8 @@ import org.jdom.Element;
 import org.jdom.Namespace;
 import org.springframework.stereotype.Component;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
@@ -63,18 +65,18 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 
 		Set<TaxonNameBase> nameStore = new HashSet<TaxonNameBase>();
 		TcsRdfImportConfigurator config = state.getConfig();
-		Element source = config.getSourceRoot();
+		//Model source = config.getSourceRoot();
 		
 		logger.info("start makeNameRelationships ...");
 		INameService nameService = getNameService();
 
 //		<tn:hasBasionym rdf:resource="palm_tn_14530"/>
 		
-		Element root = config.getSourceRoot();
+		Model root = config.getSourceRoot();
 		
-		Namespace rdfNamespace = config.getRdfNamespace();
-		Namespace taxonNameNamespace = config.getTnNamespace();
-		
+		String rdfNamespace = config.getRdfNamespaceURIString();
+		String taxonNameNamespace = config.getTnNamespaceURIString();
+		/*
 		List<Element> elTaxonNames = root.getChildren("TaxonName", taxonNameNamespace);
 		
 		int i = 0;
@@ -131,6 +133,7 @@ public class TcsRdfTaxonNameRelationsImport extends TcsRdfImportBase implements 
 		logger.info(nameRelCount + " nameRelations handled");
 		nameService.save(nameStore);
 		logger.info("end makeNameRelationships ...");
+		*/
 		return;
 	}
 	

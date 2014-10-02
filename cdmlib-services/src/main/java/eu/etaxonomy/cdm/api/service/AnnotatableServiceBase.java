@@ -60,4 +60,5 @@ public abstract class AnnotatableServiceBase<T extends AnnotatableEntity,DAO ext
 	public int countMarkers(Class<? extends T> clazz, Boolean technical) {
 		return dao.countMarkers(clazz, technical);
 	}
+
 }

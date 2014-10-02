@@ -27,6 +27,7 @@ import eu.etaxonomy.cdm.api.service.pager.Pager;
 import eu.etaxonomy.cdm.api.service.pager.impl.DefaultPagerImpl;
 import eu.etaxonomy.cdm.common.monitor.DefaultProgressMonitor;
 import eu.etaxonomy.cdm.common.monitor.IProgressMonitor;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ISourceable;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
@@ -242,6 +243,7 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			
 			List<T> entitiesToUpdate = new ArrayList<T>();
 			for (T entity : list){
+				HibernateProxyHelper.deproxy(entity, clazz);
 				if (entity.isProtectedTitleCache() == false){
 					updateTitleCacheForSingleEntity(cacheStrategy, entitiesToUpdate, entity);
 				}
@@ -336,17 +338,23 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 		String oldFullTitleCache = null;
 		String oldAbbrevTitleCache = null;
 		if (entity instanceof NonViralName ){
-			NonViralName<?> nvn = (NonViralName) entity;
-			if (!nvn.isProtectedNameCache()){
-				nvn.setProtectedNameCache(true);
-				oldNameCache = nvn.getNameCache();
-				nvn.setProtectedNameCache(false);
+			
+			try{
+				NonViralName<?> nvn = (NonViralName) entity;
+				if (!nvn.isProtectedNameCache()){
+					nvn.setProtectedNameCache(true);
+					oldNameCache = nvn.getNameCache();
+					nvn.setProtectedNameCache(false);
+				}
+				if (!nvn.isProtectedFullTitleCache()){
+					nvn.setProtectedFullTitleCache(true);
+					oldFullTitleCache = nvn.getFullTitleCache();
+					nvn.setProtectedFullTitleCache(false);
+				}
+			}catch(ClassCastException e){
+				System.out.println("entity: " + entity.getTitleCache());
 			}
-			if (!nvn.isProtectedFullTitleCache()){
-				nvn.setProtectedFullTitleCache(true);
-				oldFullTitleCache = nvn.getFullTitleCache();
-				nvn.setProtectedFullTitleCache(false);
-			}
+			
 		}else if (entity instanceof Reference){
 			Reference<?> ref = (Reference<?>) entity;
 			if (!ref.isProtectedAbbrevTitleCache()){
@@ -355,9 +363,22 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				ref.setProtectedAbbrevTitleCache(false);
 			}
 		}
-		setOtherCachesNull(entity); //TODO find better solution
+		setOtherCachesNull(entity);
+		String newTitleCache= null;
+		NonViralName<?> nvn = null;//TODO find better solution
+		try{
+		if (entity instanceof NonViralName){
+			nvn = (NonViralName) entity;
+			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
+		} else{
+			 newTitleCache = entityCacheStrategy.getTitleCache(entity);
+		}
+		}catch (ClassCastException e){
+			nvn = HibernateProxyHelper.deproxy(entity, NonViralName.class);
+			newTitleCache = entityCacheStrategy.getTitleCache(nvn);
+			//System.out.println("titleCache: " +entity.getTitleCache());
+		}
 		
-		String newTitleCache = entityCacheStrategy.getTitleCache(entity);
 		if (oldTitleCache == null || oldTitleCache != null && ! oldTitleCache.equals(newTitleCache) ){
 			entity.setTitleCache(null, false);
 			String newCache = entity.getTitleCache();
@@ -367,8 +388,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 			if (oldTitleCache == null){
 				logger.info("oldTitleCache should never be null");
 			}
-			if (entity instanceof NonViralName){
-				NonViralName<?> nvn = (NonViralName) entity;
+			if (nvn != null){
+				//NonViralName<?> nvn = (NonViralName) entity;
 				nvn.getNameCache();
 				nvn.getFullTitleCache();
 			}
@@ -377,8 +398,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				ref.getAbbrevTitleCache();
 			}
 			entitiesToUpdate.add(entity);
-		}else if (entity instanceof NonViralName){
-			NonViralName<?> nvn = (NonViralName) entity;
+		}else if (nvn != null){
+			//NonViralName<?> nvn = (NonViralName) entity;
 			String newNameCache = nvn.getNameCache();
 			String newFullTitleCache = nvn.getFullTitleCache();
 			if (oldNameCache == null || (oldNameCache != null && !oldNameCache.equals(newNameCache))){
@@ -393,6 +414,8 @@ public abstract class IdentifiableServiceBase<T extends IdentifiableEntity,DAO e
 				entitiesToUpdate.add(entity);
 			}
 		}
+		
+		
 	}
 	
 	
