@@ -477,6 +477,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXModsExtractor.java 
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXTreatmentExtractor.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXXMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeRDFMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmTextElementMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmUnclearMapper.java -text
