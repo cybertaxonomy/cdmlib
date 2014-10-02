@@ -156,8 +156,8 @@ public Element getSourceRoot(InputStream is){
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}catch (Exception e) {
-			System.err.println("The InputStream does not contain an rdf file.");
-			//e.printStackTrace();
+			logger.warn("The InputStream does not contain an rdf file.");
+			logger.warn(e.getMessage());
 		}
 		return null;
 	}

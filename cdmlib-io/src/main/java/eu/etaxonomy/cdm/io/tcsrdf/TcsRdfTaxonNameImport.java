@@ -174,18 +174,9 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 	
 	private TaxonNameBase handleNameResource(Resource nameAbout, TcsRdfImportConfigurator config){
 		String idNamespace = "TaxonName";
-		//Attribute about = elTaxonName.getAttribute("about", rdfNamespace);
-		
-		//create TaxonName element
-		
-		
-		System.out.println("name about "+nameAbout.getLocalName());
-		
-		
+				
 		StmtIterator stmts = nameAbout.listProperties();
-		while ( stmts.hasNext() ) {
-            System.out.println( stmts.next() );
-        }
+		
 		Property prop = nameAbout.getModel().getProperty(config.getTnNamespaceURIString()+"nomenclaturalCode");
 		Statement stateNomenclaturalCode = nameAbout.getProperty(prop);
 		String strNomenclaturalCode = stateNomenclaturalCode.getObject().toString();
@@ -656,7 +647,6 @@ public class TcsRdfTaxonNameImport  extends TcsRdfImportBase implements ICdmIO<T
 		Model model = ModelFactory.createDefaultModel();
 		try{
 			model.read(is, null);
-			model.write(System.out);
 			
 			config.makeNamespaces(model);
 			

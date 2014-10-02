@@ -206,7 +206,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					
 					if (!(taxonBase instanceof Synonym)){
 						logger.debug("The taxon " + basionymName.getTitleCache() + " is used in a concept and can not be a synonym " + name.getTitleCache() + "but will be added as basionym for the homotypical group");
-						System.out.println("The taxon " + basionymName.getTitleCache() + " is used in a concept and can not be used as basionym of " + name.getTitleCache());
 						basionymName.getHomotypicalGroup().setGroupBasionym(basionymName);
 						basionymName.getHomotypicalGroup().addTypifiedName(name);
 					} else if (taxonBase instanceof Synonym){
@@ -550,7 +549,6 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 									
 									result = Taxon.NewInstance(name, null);
 								}else{
-									System.out.println(name.getTitleCache());
 									result = (TaxonBase)name.getTaxa().iterator().next();
 								}
 								name.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);
