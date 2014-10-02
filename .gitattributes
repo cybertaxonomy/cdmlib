@@ -209,6 +209,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformed.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IInputTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IRdfMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
