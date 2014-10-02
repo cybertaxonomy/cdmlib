@@ -19,14 +19,10 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
-import org.apache.poi.hpsf.Property;
-import org.apache.jena.*;
 import org.jdom.Content;
 import org.jdom.Element;
-import org.jdom.Namespace;
 import org.jdom.Text;
 
-import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
