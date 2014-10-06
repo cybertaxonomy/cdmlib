@@ -32,6 +32,7 @@ cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/NullProgressMonitor
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/ProgressMonitorWrapper.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/RestServiceProgressMonitor.java -text
 cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/monitor/SubProgressMonitor.java -text
+cdmlib-commons/src/main/java/eu/etaxonomy/cdm/common/profiler/ProfilerController.java -text
 cdmlib-commons/src/main/resources/MUST-EXIST.txt -text
 cdmlib-commons/src/main/resources/log4j.properties -text
 cdmlib-commons/src/test/java/eu/etaxonomy/cdm/common/CdmUtilsTest.java -text
