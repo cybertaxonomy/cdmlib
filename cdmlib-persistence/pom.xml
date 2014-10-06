@@ -336,7 +336,12 @@
         <artifactId>p6spy</artifactId>
     </dependency>
   
-	
+	<!-- Profiling -->
+	<dependency>
+		<groupId>com.yourkit</groupId>
+		<artifactId>yjp-controller-api-redist</artifactId>
+		<scope>test</scope>
+	</dependency>
   </dependencies>
   
 </project>
