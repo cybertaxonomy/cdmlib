@@ -260,6 +260,13 @@
             <name>Maven Repository for iText</name>
             <url>http://maven.itextpdf.com/</url>
         </repository>
+		<!-- for jena snapshot -->
+		<repository>
+        	<id>apache</id>
+            <name>Apache Repository for Snapshots</name>
+            <url>https://repository.apache.org/content/repositories/snapshots/</url>
+        </repository>
+		
 	<!-- Vaadin -->
 	<repository>
     	  <id>vaadin-addons</id>
