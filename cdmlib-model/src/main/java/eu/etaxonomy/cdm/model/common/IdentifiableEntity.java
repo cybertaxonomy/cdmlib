@@ -397,6 +397,11 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
     
     @Override
+    public void removeSources() {
+       this.sources.clear();
+    }
+    
+    @Override
     public IdentifiableSource addSource(OriginalSourceType type, String id, String idNamespace, Reference citation, String microCitation) {
         if (id == null && idNamespace == null && citation == null && microCitation == null){
             return null;

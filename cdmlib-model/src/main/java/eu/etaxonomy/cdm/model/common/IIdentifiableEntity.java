@@ -94,4 +94,6 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public byte[] getData();
 
+	void removeSources();
+
 }
