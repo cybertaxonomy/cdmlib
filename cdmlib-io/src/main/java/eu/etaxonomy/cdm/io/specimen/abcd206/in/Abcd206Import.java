@@ -909,7 +909,12 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
         }
 
         for (String[] fullReference : dataHolder.referenceList) {
+<<<<<<< .working
             List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
+=======
+            try{
+                List<Reference> references = getReferenceService().list(Reference.class, null, null, null, null);
+>>>>>>> .merge-rechts.r21726
 
             String strReference=fullReference[0];
             String citationDetail = fullReference[1];
@@ -922,7 +927,17 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                         reference =refe;
                         break;
                     }
+<<<<<<< .working
+=======
+                    if (reference ==null){
+                        reference = ReferenceFactory.newGeneric();
+                        reference.setTitleCache(strReference, true);
+                        save(reference, state);
+                    }
+                    determinationEvent.addReference(reference);
+>>>>>>> .merge-rechts.r21726
                 }
+<<<<<<< .working
                 if (reference ==null){
                     reference = ReferenceFactory.newGeneric();
                     reference.setTitleCache(strReference, true);
@@ -930,6 +945,11 @@ public class Abcd206Import extends SpecimenImportBase<Abcd206ImportConfigurator,
                 }
                 determinationEvent.addReference(reference);
             }
+=======
+            } catch (Exception e) {
+                logger.warn("pv getReferenceList " + e);
+            }
+>>>>>>> .merge-rechts.r21726
         }
         save(derivedUnitBase, state);
 
