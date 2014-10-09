@@ -410,6 +410,12 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
         addSource(source);
         return source;
     }
+    @Override
+    public void addSources(Set<DescriptionElementSource> sources){
+    	for (DescriptionElementSource source:sources){
+    		addSource(source);
+    	}
+    }
     
     
     /* (non-Javadoc)

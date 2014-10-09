@@ -20,6 +20,7 @@ import org.springframework.stereotype.Component;
 import eu.etaxonomy.cdm.api.service.IReferenceService;
 import eu.etaxonomy.cdm.common.DoubleResult;
 import eu.etaxonomy.cdm.common.XmlHelp;
+
 import eu.etaxonomy.cdm.io.common.ICdmIO;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -37,8 +38,10 @@ public class TcsXmlPublicationsImport extends TcsXmlImportBase implements ICdmIO
 
 	private static int modCount = 1000;
 	
+	
 	public TcsXmlPublicationsImport(){
 		super();
+		
 	}
 	
 	@Override

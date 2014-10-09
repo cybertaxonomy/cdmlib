@@ -21,8 +21,9 @@ import java.util.Set;
 import org.apache.log4j.Logger;
 import org.jdom.Content;
 import org.jdom.Element;
-import org.jdom.Namespace;
 import org.jdom.Text;
+
+import com.hp.hpl.jena.rdf.model.Statement;
 
 import eu.etaxonomy.cdm.io.common.CdmImportBase;
 import eu.etaxonomy.cdm.io.common.ImportHelper;
@@ -37,12 +38,13 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfigurator, TcsRdfImportState> {
 	private static final Logger logger = Logger.getLogger(TcsRdfImportBase.class);
 
-	protected static Namespace nsTcom = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/Common#");
-	protected static Namespace nsTn = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonName#");
-	protected static Namespace nsTgeo = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/GeographicRegion#");
-	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
-	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
-	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
+	protected static String nsTcom = "http://rs.tdwg.org/ontology/voc/Common#";
+	protected static String nsTn = "http://rs.tdwg.org/ontology/voc/TaxonName#";
+	protected static String nsTgeo = "http://rs.tdwg.org/ontology/voc/GeographicRegion#";
+	protected static String nsTc = "http://rs.tdwg.org/ontology/voc/TaxonConcept#";
+	protected static String nsTpub = "http://rs.tdwg.org/ontology/voc/PublicationCitation#";
+	protected static String nsTm = "http://rs.tdwg.org/ontology/voc/Team";
+	protected static String nsTpalm = "http://wp5.e-taxonomy.eu/import/palmae/common";
 	
 	
 	protected abstract void doInvoke(TcsRdfImportState state);
@@ -58,13 +60,13 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 //		return doInvoke(state);
 //	}
 	
-	protected boolean makeStandardMapper(Element parentElement, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeXmlMapperBase[] classMappers){
+	protected boolean makeStandardMapper(Statement resource, CdmBase ref, Set<String> omitAttributes, CdmSingleAttributeRDFMapperBase[] classMappers){
 		if (omitAttributes == null){
 			omitAttributes = new HashSet<String>();
 		}
 		boolean result = true;	
-		for (CdmSingleAttributeXmlMapperBase mapper : classMappers){
-			Object value = getValue(mapper, parentElement);
+		for (CdmSingleAttributeRDFMapperBase mapper : classMappers){
+			Object value = getValue(mapper, resource);
 			//write to destination
 			if (value != null){
 				String destinationAttribute = mapper.getDestinationAttribute();
@@ -76,17 +78,11 @@ public abstract class TcsRdfImportBase  extends CdmImportBase<TcsRdfImportConfig
 		return result;
 	}
 	
-	private Object getValue(CdmSingleAttributeXmlMapperBase mapper, Element parentElement){
+	public Object getValue(CdmSingleAttributeRDFMapperBase mapper, Statement resource){
 		String sourceAttribute = mapper.getSourceAttribute();
-		Namespace sourceNamespace = mapper.getSourceNamespace(parentElement);
-		Element child = parentElement.getChild(sourceAttribute, sourceNamespace);
-		if (child == null){
-			return null;
-		}
-		if (child.getContentSize() > 1){
-			logger.warn("Element is not String");
-		}
-		Object value = child.getTextTrim();
+		String sourceNamespace = mapper.getSourceNameSpace(resource);
+		String value = resource.getProperty(resource.getModel().createProperty(sourceNamespace+sourceAttribute)).getString();
+		
 		return value;
 	}
 	

@@ -23,6 +23,11 @@ public interface ISourceable<T extends IOriginalSource> {
 	public Set<T> getSources();
 
 	/**
+	 * Adds a set of original sources (citations) for this sourceable object
+	 * @return
+	 */
+	public void addSources(Set<T> sources);
+	/**
 	 * Adds a source to this object
 	 * @param source
 	 */

@@ -117,11 +117,7 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	}
 	
 	
-	protected static final Reference<?> unknownSec(){
-		Reference<?> result = ReferenceFactory.newGeneric();
-		result.setTitleCache("UNKNOWN", true);
-		return result;
-	}
+	
 	
 	@Override
 	public void doInvoke(TcsXmlImportState state){
@@ -236,7 +232,9 @@ public class TcsXmlTaxonImport  extends TcsXmlImportBase implements ICdmIO<TcsXm
 	
 				testAdditionalElements(elTaxonConcept, elementList);
 				ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), strId, idNamespace);
-				taxonMap.put(strId, taxonBase);
+				//delete the version information
+				
+				taxonMap.put(removeVersionOfRef(strId), taxonBase);
 			}
 			
 		}

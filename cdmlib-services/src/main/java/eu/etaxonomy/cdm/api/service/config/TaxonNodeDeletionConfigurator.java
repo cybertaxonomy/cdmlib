@@ -25,7 +25,7 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 public class TaxonNodeDeletionConfigurator extends DeleteConfiguratorBase {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(TaxonNodeDeletionConfigurator.class);
-
+	
 	/**
 	 * 
 	 * 

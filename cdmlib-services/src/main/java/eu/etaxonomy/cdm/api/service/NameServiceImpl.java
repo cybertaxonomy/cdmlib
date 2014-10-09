@@ -152,49 +152,14 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
         }
         if (messages.isEmpty()){
         //remove references to this name
-        	// if (config.isRemoveAllNameRelationships()){
-             	removeNameRelationshipsByDeleteConfig(name, config);
-             //}
+        	removeNameRelationshipsByDeleteConfig(name, config);
+            
            //remove name from homotypical group
-             HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
-             if (homotypicalGroup != null){
-                 homotypicalGroup.removeTypifiedName(name);
-             }
-             
-             
-             
-	        
-	
-	
-	        /*check if this name is still used somewhere
-	
-	        //name relationships
-	        if (! name.getNameRelations().isEmpty() && !config.isRemoveAllNameRelationships()){
-	            String message = "Name can't be deleted as it is used in name relationship(s). Remove name relationships prior to deletion.";
-	            throw new ReferencedObjectUndeletableException(message);
-	//			return null;
-	        }
-	
-	        //concepts
-	        if (! name.getTaxonBases().isEmpty()){
-	            String message = "Name can't be deleted as it is used in concept(s). Remove or change concept prior to deletion.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	
-	        //hybrid relationships
-	        if (name.isInstanceOf(NonViralName.class)){
-	            NonViralName nvn = CdmBase.deproxy(name, NonViralName.class);
-	//			if (! nvn.getHybridChildRelations().isEmpty()){
-	//				String message = "Name can't be deleted as it is a child in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-	//				throw new RuntimeException(message);
-	//			}
-	            if (! nvn.getHybridParentRelations().isEmpty()){
-	                String message = "Name can't be deleted as it is a parent in (a) hybrid relationship(s). Remove hybrid relationships prior to deletion.";
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	        }
-	         */
-	        //all type designation relationships are removed as they belong to the name
+            HomotypicalGroup homotypicalGroup = name.getHomotypicalGroup();
+            if (homotypicalGroup != null){
+                homotypicalGroup.removeTypifiedName(name);
+            }
+             //all type designation relationships are removed as they belong to the name
 	        deleteTypeDesignation(name, null);
 	//		//type designations
 	//		if (! name.getTypeDesignations().isEmpty()){
@@ -202,54 +167,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
 	//			throw new ReferrencedObjectUndeletableException(message);
 	//		}
 	
-	        /*check references with only reverse mapping
-	        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
-	        for (CdmBase referencingObject : referencingObjects){
-	            //DerivedUnit?.storedUnder
-	            if (referencingObject.isInstanceOf(DerivedUnit.class)){
-	                String message = "Name can't be deleted as it is used as derivedUnit#storedUnder by %s. Remove 'stored under' prior to deleting this name";
-	                message = String.format(message, CdmBase.deproxy(referencingObject, DerivedUnit.class).getTitleCache());
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	            //DescriptionElementSource#nameUsedInSource
-	            if (referencingObject.isInstanceOf(DescriptionElementSource.class)){
-	                String message = "Name can't be deleted as it is used as descriptionElementSource#nameUsedInSource";
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	            //NameTypeDesignation#typeName
-	            if (referencingObject.isInstanceOf(NameTypeDesignation.class)){
-	                String message = "Name can't be deleted as it is used as a name type in a NameTypeDesignation";
-	                throw new ReferencedObjectUndeletableException(message);
-	            }
-	
-	            //TaxonNameDescriptions#taxonName
-	            //deleted via cascade?
-	
-	            //NomenclaturalStatus
-	            //deleted via cascade?
-	
-	        }
-	
-	        //TODO inline references
-	
-	        if (!config.isIgnoreIsBasionymFor() && name.isGroupsBasionym()){
-	            String message = "Name can't be deleted as it is a basionym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	        if (!config.isIgnoreHasBasionym() && (name.getBasionyms().size()>0)){
-	            String message = "Name can't be deleted as it has a basionym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	        if (!config.isIgnoreIsReplacedSynonymFor() && name.isReplacedSynonym()){
-	            String message = "Name can't be deleted as it is a replaced synonym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	        if (!config.isIgnoreHasReplacedSynonym() && (name.getReplacedSynonyms().size()>0)){
-	            String message = "Name can't be deleted as it has a replaced synonym.";
-	            throw new ReferencedObjectUndeletableException(message);
-	        }
-	
-	         */
+	       
 	        try{
 	        UUID nameUuid = dao.delete(name);
 	        }catch(Exception e){
@@ -966,7 +884,7 @@ public class NameServiceImpl extends IdentifiableServiceBase<TaxonNameBase,ITaxo
                 result.add(message);
             }
         }
-        Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
+     	Set<CdmBase> referencingObjects = genericDao.getReferencingObjects(name);
         for (CdmBase referencingObject : referencingObjects){
             //DerivedUnit?.storedUnder
             if (referencingObject.isInstanceOf(DerivedUnit.class)){

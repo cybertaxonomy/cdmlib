@@ -130,7 +130,7 @@ public abstract class OrderedTermBase<T extends OrderedTermBase<?>> extends Defi
                 throw new IllegalStateException("An ordered term (" + this.toString() + " or " + orderedTermLocal.toString() + ") of class " + this.getClass() + " or " + orderedTermLocal.getClass() + " does not belong to a vocabulary and therefore can not be compared");
             }
             if (! this.getVocabulary().getUuid().equals(orderedTermLocal.vocabulary.getUuid())){
-                throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared");
+               throw new IllegalStateException("2 terms do not belong to the same vocabulary and therefore can not be compared: " + this.getTitleCache() + " and " + orderedTermLocal.getTitleCache());
             }
         }
 

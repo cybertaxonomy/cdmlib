@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.log4j.Logger;
@@ -29,6 +31,16 @@ public class TcsXmlImportState extends ImportStateBase<TcsXmlImportConfigurator,
 	//TODO make it better
 	private Map<String, CommonTaxonName> commonNameMap = null;
 	
+	private List<String> missingConceptLSIDs = new ArrayList<String>();
+	
+	public List<String> getMissingConceptLSIDs() {
+		return missingConceptLSIDs;
+	}
+
+	public void setmissingConceptLSIDs(List<String> missingConceptLSIDs) {
+		this.missingConceptLSIDs = missingConceptLSIDs;
+	}
+
 	public TcsXmlImportState(TcsXmlImportConfigurator config) {
 		super(config);
 	}

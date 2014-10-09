@@ -34,7 +34,7 @@ public class DetailWindow extends CustomComponent{
 		Window window = new Window();
 		window.setHeight("600px");
 		window.setWidth("400px");
-		window.setCaption("Detail Window " + taxon.getName().getTitleCache());
+		window.setCaption(taxon.getName().getTitleCache());
 		window.setContent(constructDescriptionTree(taxon));
 		return window;
 	}

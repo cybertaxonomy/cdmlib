@@ -1220,7 +1220,7 @@ public abstract class CdmImportBase<CONFIG extends IImportConfigurator, STATE ex
 				uri = new URI(uriString);
 				try {
 					if (readMediaData){
-						logger.warn(uri);
+						logger.info("Read media data from: " + uri);
 						imageInfo = ImageInfo.NewInstance(uri, 0);
 					}
 				} catch (Exception e) {

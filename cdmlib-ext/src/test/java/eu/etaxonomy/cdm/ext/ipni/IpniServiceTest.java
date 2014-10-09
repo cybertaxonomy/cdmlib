@@ -3,6 +3,7 @@
  */
 package eu.etaxonomy.cdm.ext.ipni;
 
+import java.io.InputStream;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -196,6 +197,18 @@ public class IpniServiceTest {
 		}
 
 	}	
+	
+	@Test
+	//@Ignore
+	public void testNameID(){
+		ICdmApplicationConfiguration services = null;
+		IpniServiceNamesConfigurator config = null;
+		InputStream content = service1.getNamesById("416415-1");
+		
+		
+		Assert.assertNotNull(content);
+	}
+	
 	
 	/**
 	 * Test method for {@link eu.etaxonomy.cdm.ext.ipni.IpniService#getServiceUrl()}.

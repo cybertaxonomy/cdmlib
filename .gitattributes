@@ -209,6 +209,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformed.
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IDbImportTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IInputTransformer.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IMappingImport.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IRdfMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/IXmlMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/InputTransformerBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/common/mapping/MultipleAttributeMapperBase.java -text
@@ -477,6 +478,7 @@ cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXModsExtractor.java 
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXTreatmentExtractor.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/taxonx2013/TaxonXXMLFieldGetter.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmOneToManyXmlMapper.java -text
+cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeRDFMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmSingleAttributeXmlMapperBase.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmTextElementMapper.java -text
 cdmlib-io/src/main/java/eu/etaxonomy/cdm/io/tcsrdf/CdmUnclearMapper.java -text
@@ -565,7 +567,6 @@ cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/in/SDDImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/sdd/out/SDDCdmExporterTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportConfiguratorTestNonEmptyDB.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.java -text
-cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest.java -text
 cdmlib-io/src/test/java/eu/etaxonomy/cdm/io/taxonx/TaxonXImportConfiguratorTest.java -text
@@ -642,6 +643,7 @@ cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportT
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/ABCDImportTestCalvumPart2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest-input.xml -text
+cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.doInvoke2.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/abcd206/in/SpecimenImportConfiguratorTest.xml -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelImportConfiguratorTest-input.xls -text
 cdmlib-io/src/test/resources/eu/etaxonomy/cdm/io/specimen/excel/in/ExcelSpecimenImportExampleTest-input.xls -text
@@ -1565,6 +1567,7 @@ cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibenate/permissio
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CacheStrategyGeneratorTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/CdmDeleteListenerTest.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/persistence/hibernate/replace/ReferringObjectMetadataFactoryTest.java -text
+cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/profiler/ProfileController.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/profiler/ProfilerController.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/Datasource.java -text
 cdmlib-persistence/src/test/java/eu/etaxonomy/cdm/test/function/TestCdmApplicationUtils.java -text
@@ -2078,6 +2081,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/MetadataController.j
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/service/Utils.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/VaadinConfigurer.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/VaadinUI.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/ClassificationSelectionForm.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/DemoTaxonTable.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/DetailWindow.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/HorizontalToolbar.java -text
@@ -2086,6 +2090,7 @@ cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/components/TaxonTable
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/service/AuthenticationService.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/disabled/DefaultView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/BfnView.java -text
+cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/ClassificationSelectorView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/DashBoardView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/ErrorView.java -text
 cdmlib-remote/src/main/java/eu/etaxonomy/cdm/remote/vaadin/uiset/redlist/views/LoginView.java -text

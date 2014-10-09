@@ -13,10 +13,15 @@ import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URL;
+import java.util.Map;
 
 import org.apache.log4j.Logger;
 import org.jdom.Element;
 import org.jdom.Namespace;
+
+import com.hp.hpl.jena.rdf.model.Model;
+import com.hp.hpl.jena.rdf.model.ModelFactory;
+
 
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.database.ICdmDataSource;
@@ -51,19 +56,29 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	private boolean doTaxa = true;
 	private boolean doRelTaxa = true;
 	private boolean doFacts = true;
-
-	//rdfNamespace
+	Map<String, String> nsPrefixMap;
+	/*//rdfNamespace
 	private Namespace rdfNamespace;
-	//TaxonConcept namespace
-	private Namespace tcNamespace;
+	//Team namespace
+	private Namespace tmNamespace;
+	//Person namespace
+	private Namespace personNamespace;
 	//TaxonName namespace
 	private Namespace tnNamespace;
+	//TaxonConcept namespace
+	private Namespace tcNamespace;
 	//TDWG common namespace
 	private Namespace commonNamespace;
 	//TDWG geoNamespace
 	private Namespace geoNamespace;
 	//publicationNamespace
 	private Namespace publicationNamespace;
+	//owlNamespace
+	private Namespace owlNamespace;
+	//dcNamespace
+	private Namespace dcNamespace;
+	//dcTermsNamespace
+	private Namespace dcTermsNamespace;
 	//palmNamespace
 	private Namespace palmNamespace;
 
@@ -74,7 +89,9 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	protected static Namespace nsTc = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/TaxonConcept#");
 	protected static Namespace nsTpub = Namespace.getNamespace("http://rs.tdwg.org/ontology/voc/PublicationCitation#");
 	protected static Namespace nsTpalm = Namespace.getNamespace("http://wp5.e-taxonomy.eu/import/palmae/common");
-
+	
+	String[] prefixArray = {"rdf", "tm", "p","tc","tcom", "tgeo","owl","dc","dcterms","tn"};
+*/
 	@Override
     protected void makeIoClassList(){
 		ioClassList = new Class[]{
@@ -111,16 +128,17 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 	/**
 	 * @return
 	 */
-	public Element getSourceRoot(){
+	public Model getSourceRoot(){
 		URI source = getSource();
 		try {
 			URL url;
 			url = source.toURL();
 			Object o = url.getContent();
 			InputStream is = (InputStream)o;
-			Element root = XmlHelp.getRoot(is);
-			makeNamespaces(root);
-			return root;
+			Model model = ModelFactory.createDefaultModel();
+			model.read(is, null);
+			makeNamespaces(model);
+			return model;
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}catch (Exception e) {
@@ -129,33 +147,45 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		}
 		return null;
 	}
-
-	private boolean makeNamespaces(Element root){
-		//String strTnNamespace = "http://rs.tdwg.org/ontology/voc/TaxonName#";
-		//Namespace taxonNameNamespace = Namespace.getNamespace("tn", strTnNamespace);
-
-		String prefix;
-		rdfNamespace = root.getNamespace();
+public Element getSourceRoot(InputStream is){
+		
+		try {
+			Element root = XmlHelp.getRoot(is);
+			makeNamespaces(root);
+			return root;
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}catch (Exception e) {
+			logger.warn("The InputStream does not contain an rdf file.");
+			logger.warn(e.getMessage());
+		}
+		return null;
+	}
+	
+	
+	private void makeNamespaces(Element root){
+		
+		String prefix = "rdf";
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 		prefix = "tc";
-		tcNamespace = root.getNamespace(prefix);
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 		prefix = "tn";
-		tnNamespace = root.getNamespace(prefix);
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 		prefix = "tcom";
-		commonNamespace = root.getNamespace(prefix);
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 		prefix = "tgeo";
-		geoNamespace = root.getNamespace(prefix);
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 		prefix = "tpub";
-		publicationNamespace = root.getNamespace(prefix);
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
 
 		prefix = "tpalm";
-		palmNamespace = root.getNamespace(prefix);
-
-		if (rdfNamespace == null || tcNamespace == null || tnNamespace == null ||
-				commonNamespace == null ||	geoNamespace == null || publicationNamespace == null
-				|| palmNamespace == null){
-			logger.warn("At least one Namespace is NULL");
-		}
-		return true;
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
+		prefix = "tm";
+		nsPrefixMap.put(prefix, root.getNamespace().getURI().toString());
+	}
+	public void makeNamespaces(Model model){
+		nsPrefixMap = model.getNsPrefixMap();
+		
 	}
 
 
@@ -186,66 +216,55 @@ public class TcsRdfImportConfigurator extends ImportConfiguratorBase<TcsRdfImpor
 		}
 	}
 
-	public Namespace getRdfNamespace() {
-		return rdfNamespace;
+	public String getRdfNamespaceURIString() {
+		return nsPrefixMap.get("rdf");
+	}
+	
+	public String getTeamNamespaceURIString() {
+		return nsPrefixMap.get("tm");
 	}
 
-	public void setRdfNamespace(Namespace rdfNamespace) {
-		this.rdfNamespace = rdfNamespace;
+	public void setNamespace(Namespace namespace) {
+		this.nsPrefixMap.put(namespace.getPrefix(), namespace.getURI());
 	}
 
-	public Namespace getTcNamespace() {
-		return tcNamespace;
+	public String getTcNamespaceURIString() {
+		return nsPrefixMap.get("tc");
 	}
 
-	public void setTcNamespace(Namespace tcNamespace) {
-		this.tcNamespace = tcNamespace;
+	
+
+	public String getTnNamespaceURIString() {
+		return nsPrefixMap.get("tn");
 	}
 
-	public Namespace getTnNamespace() {
-		return tnNamespace;
+	
+
+	public String getCommonNamespaceURIString() {
+		return nsPrefixMap.get("tcom");
 	}
 
-	public void setTnNamespace(Namespace tnNamespace) {
-		this.tnNamespace = tnNamespace;
+	
+
+	public String getGeoNamespaceURIString() {
+		return nsPrefixMap.get("tgeo");
 	}
 
-	public Namespace getCommonNamespace() {
-		return commonNamespace;
+	
+
+	public String getPublicationNamespaceURI() {
+		return nsPrefixMap.get("tpub");
 	}
 
-	public void setCommonNamespace(Namespace commonNamespace) {
-		this.commonNamespace = commonNamespace;
-	}
-
-	public Namespace getGeoNamespace() {
-		return geoNamespace;
-	}
-
-	public void setGeoNamespace(Namespace geoNamespace) {
-		this.geoNamespace = geoNamespace;
-	}
-
-	public Namespace getPublicationNamespace() {
-		return publicationNamespace;
-	}
-
-	public void setPublicationNamespace(Namespace publicationNamespace) {
-		this.publicationNamespace = publicationNamespace;
-	}
+	
 	/**
 	 * @return the palmNamespace
 	 */
-	public Namespace getPalmNamespace() {
-		return palmNamespace;
+	public String getPalmNamespaceURIString() {
+		return nsPrefixMap.get("tpalm");
 	}
 
-	/**
-	 * @param palmNamespace the palmNamespace to set
-	 */
-	public void setPalmNamespace(Namespace palmNamespace) {
-		this.palmNamespace = palmNamespace;
-	}
+	
 
 	/**
 	 * if false references in this rdf file are not published in the bibliography list

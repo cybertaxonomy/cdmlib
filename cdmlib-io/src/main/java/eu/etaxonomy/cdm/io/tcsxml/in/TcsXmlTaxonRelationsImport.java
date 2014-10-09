@@ -9,6 +9,9 @@
 
 package eu.etaxonomy.cdm.io.tcsxml.in;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -16,22 +19,46 @@ import java.util.Map;
 import java.util.Set;
 
 import org.apache.log4j.Logger;
+import org.jdom.Attribute;
 import org.jdom.Element;
+import org.jdom.JDOMException;
 import org.jdom.Namespace;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
+
+import com.ibm.lsid.server.soap.InputStreamDataSource;
 
 import eu.etaxonomy.cdm.common.ResultWrapper;
 import eu.etaxonomy.cdm.common.XmlHelp;
+import eu.etaxonomy.cdm.ext.ipni.IpniService;
+import eu.etaxonomy.cdm.hibernate.HibernateProxyHelper;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
+import eu.etaxonomy.cdm.io.common.ImportHelper;
 import eu.etaxonomy.cdm.io.common.MapWrapper;
 import eu.etaxonomy.cdm.io.tcsxml.TcsXmlTransformer;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfImportConfigurator;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTaxonNameImport;
+import eu.etaxonomy.cdm.io.tcsrdf.TcsRdfTransformer;
+import eu.etaxonomy.cdm.model.agent.Team;
+import eu.etaxonomy.cdm.model.agent.TeamOrPersonBase;
 import eu.etaxonomy.cdm.model.common.CdmBase;
+import eu.etaxonomy.cdm.model.common.Marker;
+import eu.etaxonomy.cdm.model.common.MarkerType;
+import eu.etaxonomy.cdm.model.common.OriginalSourceType;
 import eu.etaxonomy.cdm.model.common.RelationshipTermBase;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
 import eu.etaxonomy.cdm.model.description.CommonTaxonName;
 import eu.etaxonomy.cdm.model.description.TaxonDescription;
+import eu.etaxonomy.cdm.model.name.BotanicalName;
+import eu.etaxonomy.cdm.model.name.NomenclaturalCode;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatus;
+import eu.etaxonomy.cdm.model.name.NomenclaturalStatusType;
 import eu.etaxonomy.cdm.model.name.NonViralName;
+import eu.etaxonomy.cdm.model.name.Rank;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
+import eu.etaxonomy.cdm.model.reference.IGeneric;
 import eu.etaxonomy.cdm.model.reference.Reference;
+import eu.etaxonomy.cdm.model.reference.ReferenceFactory;
 import eu.etaxonomy.cdm.model.taxon.Synonym;
 import eu.etaxonomy.cdm.model.taxon.SynonymRelationshipType;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
@@ -51,9 +78,14 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	private static final Logger logger = Logger.getLogger(TcsXmlTaxonRelationsImport.class);
 
 	private static int modCount = 30000;
-
+	
+	@Autowired
+	private TcsRdfTaxonNameImport rdfNameImport;
+	private TcsRdfImportConfigurator rdfConfig = TcsRdfImportConfigurator.NewInstance(null, null);
+	
 	public TcsXmlTaxonRelationsImport(){
 		super();
+		
 	}
 	
 	@Override
@@ -73,7 +105,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		
 		logger.info("start make taxon relations ...");
 		MapWrapper<TaxonBase> taxonMap = (MapWrapper<TaxonBase>)state.getStore(ICdmIO.TAXON_STORE);
-		MapWrapper<TaxonNameBase<?,?>> taxonNameMap = (MapWrapper<TaxonNameBase<?,?>>)state.getStore(ICdmIO.TAXONNAME_STORE);
+		MapWrapper<TaxonNameBase> taxonNameMap = (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE);
 		MapWrapper<Reference> referenceMap = (MapWrapper<Reference>)state.getStore(ICdmIO.REFERENCE_STORE);
 
 		Set<TaxonBase> taxonStore = new HashSet<TaxonBase>();
@@ -98,17 +130,35 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		int taxonRelCount = 0;
 		
 		//for each taxonConcept
+		logger.info("NUmber of taxon concepts: " + elTaxonConceptList.size());
 		for (Element elTaxonConcept : elTaxonConceptList){
 			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
 			taxonRelCount += makeTaxonConcept(state, taxonMap, taxonStore, elTaxonConcept, tcsNamespace, success);	
 		}//elTaxonConcept
-	
+		logger.info("Taxa handled: " + taxonStore.size());
 		//TaxonRelationshipAssertions
 		taxonRelCount += makeTaxonRelationshipAssertion(state, taxonMap, referenceMap, taxonStore, elDataSet, tcsNamespace, success);	
 		
 		logger.info("Taxa to save: " + taxonStore.size());
 		getTaxonService().save(taxonStore);
 		
+		//do basionym relationships
+		childName = "TaxonNames";
+		obligatory = false;
+		Element elTaxonNames = XmlHelp.getSingleChildElement(success, elDataSet, childName, tcsNamespace, obligatory);
+		
+		childName = "TaxonName";
+		List<Element> elTaxonNameList =  elTaxonNames == null ? new ArrayList<Element>() : elTaxonNames.getChildren(childName, tcsNamespace);
+		
+		logger.info("NUmber of taxon concepts: " + elTaxonNameList.size());
+		for (Element elTaxonName : elTaxonNameList){
+			if ((i++ % modCount) == 0){ logger.info("Taxa handled: " + (i-1));}
+			taxonRelCount += makeBasionymRelations(state, taxonMap, taxonNameMap, taxonStore, elTaxonName, tcsNamespace, success);	
+		}//elTaxonConcept
+		logger.info("Taxa handled: " + taxonStore.size());
+		
+		
+		taxonStore = null;
 		logger.info("end make taxon relations ...");
 		if (!success.getValue()){
 			state.setUnsuccessfull();
@@ -116,6 +166,98 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 		return;
 	}
 	
+	private int makeBasionymRelations(TcsXmlImportState state,
+			MapWrapper<TaxonBase> taxonMap, MapWrapper<TaxonNameBase> taxonNameMap, Set<TaxonBase> taxonStore,
+			Element elTaxonName, Namespace tcsNamespace,
+			ResultWrapper<Boolean> success) {
+
+		/*
+		 * <tcs:Basionym>
+				<tcs:RelatedName ref="urn:lsid:ipni.org:names:50000063-1">Caryophyllaceae</tcs:RelatedName>
+			</tcs:Basionym>
+		 */
+		
+		
+		String childName = "Basionym";
+		boolean obligatory = false;
+		Element elBasionymRelationships = XmlHelp.getSingleChildElement(success, elTaxonName, childName, tcsNamespace, obligatory);
+		if (elBasionymRelationships != null){
+			childName = "RelatedName";
+			obligatory = false;
+			Element elBasionym = XmlHelp.getSingleChildElement(success, elBasionymRelationships, childName, tcsNamespace, obligatory);
+			
+			String id = elTaxonName.getAttributeValue("id");
+			TaxonNameBase name = taxonNameMap.get(removeVersionOfRef(id));
+			TaxonBase taxonBase = (TaxonBase)name.getTaxonBases().iterator().next();
+			
+			String ref = elBasionym.getAttributeValue("ref");
+			TaxonNameBase basionymName = taxonNameMap.get(removeVersionOfRef(ref));
+			
+			if (basionymName != null){
+				basionymName = HibernateProxyHelper.deproxy(basionymName, TaxonNameBase.class);
+				TaxonBase basionym;
+				if (basionymName.getTaxonBases().isEmpty()){
+					 basionym = Synonym.NewInstance(basionymName, null);
+				}else{
+					basionym = (TaxonBase)basionymName.getTaxonBases().iterator().next();
+				}
+				//Synonym basionymSyn;
+				if (basionym instanceof Taxon){
+					
+					if (!(taxonBase instanceof Synonym)){
+						logger.debug("The taxon " + basionymName.getTitleCache() + " is used in a concept and can not be a synonym " + name.getTitleCache() + "but will be added as basionym for the homotypical group");
+						basionymName.getHomotypicalGroup().setGroupBasionym(basionymName);
+						basionymName.getHomotypicalGroup().addTypifiedName(name);
+					} else if (taxonBase instanceof Synonym){
+						Synonym synonym = (Synonym) taxonBase;
+						((Taxon)basionym).addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						basionym.getHomotypicGroup().setGroupBasionym(basionymName);
+						taxonStore.add(basionym);
+					}
+				}else{
+					if (taxonBase instanceof Taxon){
+						Synonym synonym = (Synonym) basionym;
+						((Taxon)taxonBase).addSynonym(synonym, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						taxonBase.getHomotypicGroup().setGroupBasionym(basionymName);
+						taxonStore.add(taxonBase);
+					} else{
+						if (((Synonym)taxonBase).getAcceptedTaxa().iterator().hasNext()){
+							Taxon acc = ((Synonym)taxonBase).getAcceptedTaxa().iterator().next();
+							
+							acc.addHomotypicSynonym((Synonym)basionym, null, null);
+							basionymName.getHomotypicalGroup().setGroupBasionym(basionymName);
+						}
+					}
+				}
+				
+				
+			} else{
+				basionymName = NonViralName.NewInstance(name.getRank());
+				childName = "RelatedName";
+				obligatory = true;
+				Element elName = XmlHelp.getSingleChildElement(success, elBasionym, childName, tcsNamespace, obligatory);
+				String strName = (elName == null)? "" : elName.getTextNormalize();
+				basionymName.setTitleCache(strName, false);
+				Synonym basionymSyn = Synonym.NewInstance(basionymName, unknownSec());
+				if (taxonBase instanceof Taxon){
+					Taxon taxon = (Taxon)taxonBase;
+					taxon.addSynonym(basionymSyn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+					taxon.getHomotypicGroup().setGroupBasionym(basionymName);
+					taxonStore.add(taxon);
+				} else{
+					Synonym syn = (Synonym) taxonBase;
+					if (!syn.getAcceptedTaxa().isEmpty()){
+						Taxon accTaxon = (Taxon)syn.getAcceptedTaxa().iterator().next();
+						accTaxon.addSynonym(basionymSyn, SynonymRelationshipType.HOMOTYPIC_SYNONYM_OF());
+						accTaxon.getHomotypicGroup().setGroupBasionym(basionymName);
+						taxonStore.add(accTaxon);
+					}
+				}
+			}
+		}
+		return 1;
+	}
+
 	private int makeTaxonConcept(TcsXmlImportState state, MapWrapper<TaxonBase> taxonMap, Set<TaxonBase> taxonStore, Element elTaxonConcept, Namespace tcsNamespace, ResultWrapper<Boolean> success){
 		int taxonRelCount = 0;
 		
@@ -127,8 +269,9 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			//Relationships
 			String tcsElementName = "TaxonRelationship";
 			List<Element> elTaxonRelationshipList = elTaxonRelationships.getChildren(tcsElementName, tcsNamespace);
-
+			logger.info("Number of taxonrelationships: " + elTaxonRelationshipList.size());
 			for (Element elTaxonRelationship: elTaxonRelationshipList){
+			
 				taxonRelCount++;
 				logger.debug("TaxonRelationship "+  taxonRelCount);
 				
@@ -138,7 +281,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 //				String strPrimary = elTaxonConcept.getAttributeValue("primary"); //If primary='true' the concept is the first level response to a query. If 'false' the concept may be a secondary concept linked directly or indirectly to the definition of a primary concept.
 //				String strForm = elTaxonConcept.getAttributeValue("form");  //anamorph, teleomorph, hybrid
 				
-				TaxonBase fromTaxon = taxonMap.get(strId);
+				TaxonBase fromTaxon = taxonMap.get(removeVersionOfRef(strId));
 				makeRelationshipType(state, elTaxonRelationship, taxonMap, taxonStore, fromTaxon, success);
 			
 				if (fromTaxon instanceof Taxon){
@@ -228,7 +371,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 				
 				//toTaxon (should be part of relationshipType)
 				boolean isSynonym = (relType instanceof SynonymRelationshipType);
-				TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, isSynonym, success);
+				TaxonBase toTaxon = getToTaxon(elRelationship, taxonMap, state.getMissingConceptLSIDs(), isSynonym, success, state);
 				
 				if (toTaxon != null && fromTaxon != null){
 					//exchange taxa if relationship is inverse
@@ -277,10 +420,10 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 					}
 				}else{
 					if (toTaxon == null){
-						logger.warn("toTaxon (" + /*strToTaxon + */ ") could  not be found in taxonMap. Relationship of type " + strRelType + " was not added to CDM");
+					//	logger.warn("toTaxon (" + /*strToTaxon + */ ") could  not be found in taxonMap. Relationship of type " + strRelType + " was not added to CDM");
 					}
 					if (fromTaxon == null){
-						logger.warn("fromTaxon (" + /*strTaxonAbout + */") could not be found in taxonMap. Relationship was not added to CDM");
+					//	logger.warn("fromTaxon (" + /*strTaxonAbout + */") could not be found in taxonMap. Relationship was not added to CDM");
 					}
 					success.setValue(false);
 				}
@@ -366,7 +509,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	}
 	
 	
-	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, boolean isSynonym, ResultWrapper<Boolean> success){
+	@SuppressWarnings("rawtypes")
+	private TaxonBase getToTaxon(Element elTaxonRelationship, MapWrapper<TaxonBase> map, List<String> missingNameID,boolean isSynonym, ResultWrapper<Boolean> success, TcsXmlImportState state){
 		TaxonBase result = null;
 		if (elTaxonRelationship == null || map == null){
 			success.setValue(false);
@@ -375,11 +519,48 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			boolean obligatory = true;
 			Element elToTaxonConcept = XmlHelp.getSingleChildElement(success, elTaxonRelationship, childName, elTaxonRelationship.getNamespace(), obligatory);
 			
+		/*	<tcs:TaxonConcept id="urn:lsid:ipni.test:concepts:1670-2:1.2">
+			<tcs:Name scientific="true" ref="urn:lsid:ipni.org:names:1670-2:1.2"></tcs:Name>
+			<tcs:TaxonRelationships>
+				<tcs:TaxonRelationship type="is child taxon of">
+					<tcs:ToTaxonConcept ref="urn:lsid:ipni.test:concepts:30216889-2"></tcs:ToTaxonConcept>
+				</tcs:TaxonRelationship>
+			</tcs:TaxonRelationships>
+		</tcs:TaxonConcept>
+			*/
 			String linkType = elToTaxonConcept.getAttributeValue("linkType");
 			if (linkType == null || linkType.equals("local")){
 				String ref = elToTaxonConcept.getAttributeValue("ref");
 				if (ref != null){
 					result = map.get(ref);
+					if (result == null){
+						
+						
+						String[] split= ref.split(":");
+						String id = split[split.length-1];
+						logger.info("get name for id " + id);
+						InputStream nameStream = service.getNamesById(id);
+					
+						try{
+							String nameUri = "urn:lsid:ipni.org:names:"+ id;
+							TaxonNameBase name = rdfNameImport.handleRdfElementFromStream(nameStream, rdfConfig, (MapWrapper<TaxonNameBase>)state.getStore(ICdmIO.TAXONNAME_STORE), nameUri);
+							if (name != null){
+								if (name.getTaxa().isEmpty()){
+									
+									result = Taxon.NewInstance(name, null);
+								}else{
+									result = (TaxonBase)name.getTaxa().iterator().next();
+								}
+								name.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);
+								result.addSource(OriginalSourceType.Import, ref, "TaxonConcept", null, null);
+								
+								map.put(removeVersionOfRef(ref), result);
+							}
+						}catch(Exception e){
+							logger.debug(e.getMessage());
+							e.printStackTrace();
+						}
+					}
 				}else{
 					String title = elToTaxonConcept.getTextNormalize();
 					//TODO synonym?
@@ -404,6 +585,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	
 	
 	
+	
+
 	private boolean relationExists(Taxon taxonTo, Synonym synonym, SynonymRelationshipType synRelType){
 		if (synonym == null){
 			return false;
@@ -420,7 +603,8 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 			return false;
 		}
 	}
-
+	
+	
 	private boolean makeHomotypicSynonymRelations(Taxon aboutTaxon){
 		TaxonNameBase<?,?> aboutName = aboutTaxon.getName();
 		if (aboutName != null){
@@ -445,5 +629,7 @@ public class TcsXmlTaxonRelationsImport extends TcsXmlImportBase implements ICdm
 	protected boolean isIgnore(TcsXmlImportState state){
 		return ! state.getConfig().isDoRelTaxa();
 	}
+	
+	
 	
 }

@@ -3,6 +3,7 @@ package eu.etaxonomy.cdm.remote.vaadin.components;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 
@@ -12,14 +13,20 @@ import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import com.vaadin.data.util.BeanItemContainer;
+import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Table;
 
+import eu.etaxonomy.cdm.api.service.IClassificationService;
 import eu.etaxonomy.cdm.api.service.IDescriptionService;
+import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.api.service.ITermService;
+import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.description.DescriptionElementBase;
 import eu.etaxonomy.cdm.model.description.PresenceAbsenceTermBase;
+import eu.etaxonomy.cdm.model.taxon.Classification;
 import eu.etaxonomy.cdm.model.taxon.Taxon;
+import eu.etaxonomy.cdm.model.taxon.TaxonNode;
 import eu.etaxonomy.cdm.remote.dto.vaadin.CdmTaxonTableCollection;
 
 /**
@@ -50,6 +57,10 @@ public class DemoTaxonTable extends Table{
 	IDescriptionService descriptionService;
 	@Autowired
 	ITermService termService;
+	@Autowired
+	IClassificationService clService;
+	@Autowired
+	ITaxonNodeService taxonNodeService;
 
 	Logger logger = Logger.getLogger(DemoTaxonTable.class);
 
@@ -61,11 +72,15 @@ public class DemoTaxonTable extends Table{
 
 		final BeanItemContainer<CdmTaxonTableCollection> redListContainer = new BeanItemContainer<CdmTaxonTableCollection>(CdmTaxonTableCollection.class);
 		//TODO: Make use of paging
+		VaadinSession session = VaadinSession.getCurrent();
+		UUID uuid = UUID.fromString(session.getAttribute("classificationUUID").toString());
+		Classification classification = clService.load(uuid);
+		List<TaxonNode> listAllNodes = taxonNodeService.listAllNodesForClassification(classification, null, null);
+
 		Collection<Taxon> listTaxon = taxonService.list(Taxon.class, null, null, null, NODE_INIT_STRATEGY);
-
-		for(Taxon taxonBase:listTaxon){
-
-			Taxon taxon = taxonBase;
+		for(TaxonNode taxonNode:listAllNodes){
+			
+			Taxon taxon = taxonNode.getTaxon();
 			List<PresenceAbsenceTermBase> termList = termService.list(PresenceAbsenceTermBase.class, null, null, null, DESCRIPTION_INIT_STRATEGY);
 			List<DescriptionElementBase> listTaxonDescription = descriptionService.listDescriptionElementsForTaxon(taxon, null, null, null, null, DESCRIPTION_INIT_STRATEGY);
 			CdmTaxonTableCollection tableCollection = new CdmTaxonTableCollection(taxon, listTaxonDescription, termList);

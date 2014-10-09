@@ -729,6 +729,7 @@ public class TaxonNameDaoHibernateImpl extends IdentifiableDaoBase<TaxonNameBase
     @Override
     public UUID delete (TaxonNameBase persistentObject){
         Set<TaxonBase> taxonBases = persistentObject.getTaxonBases();
+      
         super.delete(persistentObject);
 
         for (TaxonBase taxonBase: taxonBases){

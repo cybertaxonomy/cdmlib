@@ -305,6 +305,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
             homotypicalGroup = new HomotypicalGroup();
         }
         homotypicalGroup.addTypifiedName(this);
+        this.homotypicalGroup = homotypicalGroup;
     }
 
     abstract protected Map<String, java.lang.reflect.Field> getAllFields();
@@ -1224,7 +1225,7 @@ public abstract class TaxonNameBase<T extends TaxonNameBase<?,?>, S extends INam
      */
 
     public HomotypicalGroup getHomotypicalGroup() {
-        return homotypicalGroup;
+    	return homotypicalGroup;
     }
 
     /*

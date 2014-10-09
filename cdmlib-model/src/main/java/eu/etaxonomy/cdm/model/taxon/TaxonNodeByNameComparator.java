@@ -104,19 +104,22 @@ public class TaxonNodeByNameComparator extends AbstractStringComparator<TaxonNod
             if (name instanceof NonViralName){
                 if (logger.isTraceEnabled()){logger.trace(name + " isNonViralName");}
                 NonViralName<?> nonViralName = (NonViralName<?>)name;
-                if (name.isInfraSpecific()){
-                    if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
-                    if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
-                        titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
-                    }
-                }
-                if (name.isInfraGeneric()){
-                    if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
-                    titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
-                }
-                if (nonViralName.isSpeciesAggregate()){
-                    if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
-                    titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
+                if (nonViralName.getGenusOrUninomial() != null){
+                	if (name.isInfraSpecific() && nonViralName.getSpecificEpithet() != null 
+                			&& nonViralName.getInfraSpecificEpithet() != null){
+                		if (logger.isTraceEnabled()){logger.trace(name + " isInfraSpecific");}
+                		if (nonViralName.getSpecificEpithet().equals(nonViralName.getInfraSpecificEpithet())){
+                			titleCache = nonViralName.getNameCache() + " "+nonViralName.getAuthorshipCache();
+                		}
+                	}
+                	if (name.isInfraGeneric() && nonViralName.getInfraGenericEpithet() != null){
+                		if (logger.isTraceEnabled()){logger.trace(name + " isInfraGeneric");}
+                		titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getInfraGenericEpithet();
+                	}
+                	if (nonViralName.isSpeciesAggregate() && nonViralName.getSpecificEpithet() != null){
+                		if (logger.isTraceEnabled()){logger.trace(name + " isSpeciesAggregate");}
+                		titleCache = nonViralName.getGenusOrUninomial() + " " + nonViralName.getSpecificEpithet();
+                	}
                 }
 
             }

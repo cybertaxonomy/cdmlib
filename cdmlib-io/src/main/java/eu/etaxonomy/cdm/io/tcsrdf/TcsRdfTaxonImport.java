@@ -21,6 +21,8 @@ import org.jdom.filter.ElementFilter;
 import org.jdom.filter.Filter;
 import org.springframework.stereotype.Component;
 
+import com.hp.hpl.jena.rdf.model.Model;
+
 import eu.etaxonomy.cdm.api.service.ITaxonService;
 import eu.etaxonomy.cdm.common.XmlHelp;
 import eu.etaxonomy.cdm.io.common.ICdmIO;
@@ -68,13 +70,13 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		return result;
 	}
 	
-	protected static CdmSingleAttributeXmlMapperBase[] standardMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] standardMappers = new CdmSingleAttributeRDFMapperBase[]{
 //		new CdmTextElementMapper("genusPart", "genusOrUninomial")
 	
 	};
 
 	
-	protected static CdmSingleAttributeXmlMapperBase[] operationalMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] operationalMappers = new CdmSingleAttributeRDFMapperBase[]{
 		 new CdmUnclearMapper("hasName")
 		,new CdmUnclearMapper("hasName")
 		, new CdmUnclearMapper("accordingTo")
@@ -82,7 +84,7 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		, new CdmUnclearMapper("code", nsTgeo)	
 	};
 	
-	protected static CdmSingleAttributeXmlMapperBase[] unclearMappers = new CdmSingleAttributeXmlMapperBase[]{
+	protected static CdmSingleAttributeRDFMapperBase[] unclearMappers = new CdmSingleAttributeRDFMapperBase[]{
 		new CdmUnclearMapper("primary")
 		, new CdmUnclearMapper("note", nsTcom)	
 		, new CdmUnclearMapper("taxonStatus", nsTpalm)
@@ -103,108 +105,20 @@ public class TcsRdfTaxonImport  extends TcsRdfImportBase implements ICdmIO<TcsRd
 		
 		String xmlElementName;
 		String xmlAttributeName;
-		Namespace elementNamespace;
-		Namespace attributeNamespace;
+		String elementNamespace;
+		String attributeNamespace;
 		
 		logger.info("start makeTaxa ...");
 		
 		TcsRdfImportConfigurator config = state.getConfig();
-		Element root = config.getSourceRoot();
+		Model root = config.getSourceRoot();
 		
-		Namespace rdfNamespace = config.getRdfNamespace();
+		String rdfNamespace = config.getRdfNamespaceURIString();
 		
 		String idNamespace = "TaxonConcept";
 		xmlElementName = "TaxonConcept";
-		elementNamespace = config.getTcNamespace();
-		List<Element> elTaxonConcepts = root.getChildren(xmlElementName, elementNamespace);
-
-		ITaxonService taxonService = getTaxonService();
+		elementNamespace = config.getTcNamespaceURIString();
 		
-		//debug names
-		if (false){
-			for (Object nameResource : taxonNameMap.keySet()){
-				System.out.println(nameResource);
-			}
-		}
-		
-		int i = 0;
-		//for each taxonConcept
-		for (Element elTaxonConcept : elTaxonConcepts){
-			if ((i++ % modCount) == 0 && i > 1){ logger.info("Taxa handled: " + (i-1));}
-			
-			//
-			String taxonAbout = elTaxonConcept.getAttributeValue("about", rdfNamespace);
-			
-			//hasName
-			xmlElementName = "hasName";
-			elementNamespace = config.getTcNamespace();
-			xmlAttributeName = "resource";
-			attributeNamespace = rdfNamespace;
-			String strNameResource= XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-			TaxonNameBase<?,?> taxonNameBase = taxonNameMap.get(strNameResource);
-			if (taxonNameBase == null){
-				logger.warn("Taxon has no name: " + taxonAbout + "; Resource: " + strNameResource);
-			}
-			
-			
-			//accordingTo
-			xmlElementName = "accordingTo";
-			elementNamespace = config.getTcNamespace();
-			xmlAttributeName = "resource";
-			attributeNamespace = rdfNamespace;
-			//String strAccordingTo = elTaxonConcept.getChildTextTrim(xmlElementName, elementNamespace);
-			String strAccordingTo = XmlHelp.getChildAttributeValue(elTaxonConcept, xmlElementName, elementNamespace, xmlAttributeName, attributeNamespace);
-			
-			
-//			//FIXME
-//			String secId = "pub_999999";
-			Reference<?> sec = referenceMap.get(strAccordingTo);
-			if (sec == null){
-				sec = nomRefMap.get(strAccordingTo);
-			}
-			if (sec == null){
-				logger.warn("sec could not be found in referenceMap or nomRefMap for secId: " + strAccordingTo);
-			}
-			
-			TaxonBase<?> taxonBase;
-			Namespace geoNamespace = config.getGeoNamespace();
-			if (hasIsSynonymRelation(elTaxonConcept, rdfNamespace) || isSynonym(elTaxonConcept, config.getPalmNamespace())){
-				//Synonym
-				taxonBase = Synonym.NewInstance(taxonNameBase, sec);
-				List<DescriptionElementBase> geo = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
-				if (geo.size() > 0){
-					logger.warn("Synonym (" + taxonAbout + ") has geo description!");
-				}
-			}else{
-				//Taxon
-				Taxon taxon = Taxon.NewInstance(taxonNameBase, sec);
-				List<DescriptionElementBase> geoList = makeGeo(elTaxonConcept, geoNamespace, rdfNamespace);
-				TaxonDescription description = TaxonDescription.NewInstance(taxon);
-				//TODO type
-				description.addSource(OriginalSourceType.Unknown, null, null, taxon.getSec(), null);
-				for (DescriptionElementBase geo: geoList){
-					description.addElement(geo);
-					//TODO type
-					DescriptionElementSource source = DescriptionElementSource.NewInstance(OriginalSourceType.Unknown, null, null, taxon.getSec(), null);
-					geo.addSource(source);
-				}
-				taxon.addDescription(description);
-				taxonBase = taxon;
-			}
-			
-			Set<String> omitAttributes = null;
-			makeStandardMapper(elTaxonConcept, taxonBase, omitAttributes, standardMappers);
-
-			ImportHelper.setOriginalSource(taxonBase, config.getSourceReference(), taxonAbout, idNamespace);
-			checkAdditionalContents(elTaxonConcept, standardMappers, operationalMappers, unclearMappers);
-			
-			taxonMap.put(taxonAbout, taxonBase);
-			
-		}
-		//invokeRelations(source, cdmApp, deleteAll, taxonMap, referenceMap);
-		logger.info("saving " + taxonMap.size()+ " taxa ...");
-		taxonService.save(taxonMap.objects());
-		logger.info("end makeTaxa ...");
 		return;
 	}
 	

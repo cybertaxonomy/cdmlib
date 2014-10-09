@@ -382,8 +382,10 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
             if (childNode != null && ! childNode.isTopmostNode()){
                 //...different to the parent taxon  throw exception
                 if ( !(childNode.getParent().getTaxon().equals(parent) )){
-                    throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
-                //... same as the parent taxon do nothing but overwriting citation and microCitation
+                	if (childNode.getParent().getTaxon().getId() != 0 && childNode.getParent().getTaxon().getName().equals(parent.getName())){
+                		throw new IllegalStateException("The child taxon is already part of the tree but has an other parent taxon than the parent to be added. Child: " + child.toString() + ", new parent:" + parent.toString() + ", old parent: " + childNode.getParent().getTaxon().toString()) ;
+                	} 
+                    //... same as the parent taxon do nothing but overwriting citation and microCitation
                 }else{
                     handleCitationOverwrite(childNode, citation, microCitation);
                     return childNode;
