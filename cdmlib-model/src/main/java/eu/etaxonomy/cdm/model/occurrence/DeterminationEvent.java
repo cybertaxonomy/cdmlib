@@ -61,6 +61,8 @@ import eu.etaxonomy.cdm.model.taxon.TaxonBase;
 @Indexed
 @Audited
 public class DeterminationEvent extends EventBase {
+	private static final long serialVersionUID = 5065341354427569773L;
+
 	private static final Logger logger = Logger.getLogger(DeterminationEvent.class);
 
 	@XmlElement(name = "IdentifiedUnit")
