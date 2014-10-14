@@ -284,10 +284,10 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
         if (taxon == null){
             return null;
         }
-        Classification classification;
+        
         for (TaxonNode taxonNode: taxon.getTaxonNodes()){
-            classification = HibernateProxyHelper.deproxy(taxonNode.getClassification(), Classification.class);
-            if (taxonNode.getClassification().equals(this)){
+        	Classification classification = HibernateProxyHelper.deproxy(taxonNode.getClassification(), Classification.class);
+            if (classification.equals(this)){
                 return taxonNode;
             }
         }
@@ -405,7 +405,7 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                 //TODO test if child is topmostNode otherwise throw IllegalStateException
                 if (! this.isTopmostInTree(child)){
                     //throw new IllegalStateException("Child is not a topmost node but must be");
-                    if (childNode.getClassification() != null){
+                    if (childNode.getClassification() != null && childNode.getParent() == null){
                         logger.warn("Child has no parent and is not a topmost node, child: " + child.getId() + " classification: " + childNode.getClassification().getId());
                     }else{
                         logger.warn("ChildNode has no classification: " + childNode.getId());
