@@ -142,8 +142,8 @@ public class Primer extends AnnotatableEntity {
 
 	// ********************* CLONE ********************/
 	/**
-	 * Clones <i>this</i> sequence. This is a shortcut that enables to create
-	 * a new instance that differs only slightly from <i>this</i> sequencing by
+	 * Clones <i>this</i> primer. This is a shortcut that enables to create
+	 * a new instance that differs only slightly from <i>this</i> primer by
 	 * modifying only some of the attributes.<BR><BR>
 	 *
 	 *
@@ -153,9 +153,10 @@ public class Primer extends AnnotatableEntity {
 	@Override
 	public Object clone()  {
 		try{
-		Sequence result = (Sequence)super.clone();
+		Primer result = (Primer)super.clone();
 
 //		don't change label, sequence
+		result.publishedIn = this.publishedIn;
 
 		return result;
 		}catch (CloneNotSupportedException e) {
