@@ -64,10 +64,11 @@ public abstract class OriginalSourceBase<T extends ISourceable> extends Referenc
 	 */
 	@XmlAttribute(name ="type")
 	@Column(name="sourceType")
-	//@NotNull
+	@NotNull
     @Type(type = "eu.etaxonomy.cdm.hibernate.EnumUserType",
     	parameters = {@org.hibernate.annotations.Parameter(name="enumClass", value="eu.etaxonomy.cdm.model.common.OriginalSourceType")}
     )
+	@Audited
 	private OriginalSourceType type;
 	
 	//The object's ID in the source, where the alternative string comes from
