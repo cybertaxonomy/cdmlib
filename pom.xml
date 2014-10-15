@@ -954,9 +954,8 @@
 			<!-- TODO xerces xmlParserAPIs duplicates many classes from jre and xml-apis. It is a dependency that comes with xom:xom  -->
 			<dependency>
 				<groupId>org.apache.jena</groupId>
-				<artifactId>apache-jena-libs</artifactId>
-				<type>pom</type>
-				<version>2.11.2</version>
+				<artifactId>jena-tdb</artifactId>
+				<version>1.0.2</version>
 			</dependency>
 			
 			<dependency>

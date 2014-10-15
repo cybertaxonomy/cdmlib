@@ -129,7 +129,8 @@
 		</dependency>
 		<dependency>
  			<groupId>org.apache.jena</groupId>
- 			<artifactId>apache-jena-libs</artifactId>
+ 			<artifactId>jena-tdb</artifactId>
+ 			
 		</dependency>
 	</dependencies>
 </project>
