@@ -920,12 +920,12 @@
                 <artifactId>httpclient</artifactId>
                 <version>${httpcomponents.version}</version>
             </dependency>
-	<dependency>
-		<groupId>org.apache.httpcomponents</groupId>
-		<artifactId>httpcore</artifactId>
-	<!--	<version>${httpcomponents.version}</version> -->
-		<version>4.2.4</version>
-		</dependency>
+			<dependency>
+				<groupId>org.apache.httpcomponents</groupId>
+				<artifactId>httpcore</artifactId>
+		<!--	<version>${httpcomponents.version}</version> -->
+				<version>4.2.4</version>
+			</dependency>
             <dependency>
                 <groupId>commons-io</groupId>
                 <artifactId>commons-io</artifactId>
@@ -952,7 +952,11 @@
 			<!-- TODO com.springsource.org.aopalliance  and com.springsource.org.apache.commons.logging seem to be duplicates of e.g. apache commons-logging. Needs to be further checked.   
 			-->
 			<!-- TODO xerces xmlParserAPIs duplicates many classes from jre and xml-apis. It is a dependency that comes with xom:xom  -->
-			
+			<dependency>
+				<groupId>org.apache.jena</groupId>
+				<artifactId>apache-jena-libs</artifactId>
+				<version>2.11.2</version>
+			</dependency>
 			
 			<dependency>
                 <groupId>net.sf.ezmorph</groupId>
