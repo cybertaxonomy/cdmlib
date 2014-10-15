@@ -55,24 +55,15 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
     private Set<Media> media = new HashSet<Media>();
 	
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#getMedia()
-	 */
     @Override
 	public Set<Media> getMedia() {
 		return media;
 	}
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#addMedia(eu.etaxonomy.cdm.model.media.Media)
-	 */
     @Override
 	public void addMedia(Media media) {
 		this.media.add(media);
 	}
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.media.IMediaEntity#removeMedia(eu.etaxonomy.cdm.model.media.Media)
-	 */
     @Override
 	public void removeMedia(Media media) {
 		this.media.remove(media);
@@ -80,9 +71,6 @@ public abstract class IdentifiableMediaEntity<S extends IIdentifiableEntityCache
 	
 //******************** CLONE **********************************************/
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.IdentifiableEntity#clone()
-	 */
 	@Override
 	public Object clone() throws CloneNotSupportedException{
 		IdentifiableMediaEntity<?> result = (IdentifiableMediaEntity<?>)super.clone();
