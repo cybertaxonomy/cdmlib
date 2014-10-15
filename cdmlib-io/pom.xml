@@ -131,7 +131,6 @@
  			<groupId>org.apache.jena</groupId>
  			<artifactId>apache-jena-libs</artifactId>
 		</dependency>
-
 	</dependencies>
 </project>
 
