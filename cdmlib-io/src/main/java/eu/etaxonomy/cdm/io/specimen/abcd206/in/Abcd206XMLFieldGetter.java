@@ -601,23 +601,23 @@ public class Abcd206XMLFieldGetter {
      * @param root
      */
     protected void getGatheringPeople(Element root) {
-        NodeList group, childs, person;
         try {
-            group = root.getElementsByTagName(prefix + "GatheringAgent");
             dataHolder.gatheringAgentList = new ArrayList<String>();
+
+            NodeList group = root.getElementsByTagName(prefix + "GatheringAgent");
             for (int i = 0; i < group.getLength(); i++) {
-                childs = group.item(i).getChildNodes();
-                for (int j = 0; j < childs.getLength(); j++) {
-                    if (childs.item(j).getNodeName().equals(prefix + "Person")) {
-                        person = childs.item(j).getChildNodes();
-                        for (int k = 0; k < person.getLength(); k++) {
-                            if (person.item(k).getNodeName().equals(prefix + "FullName")) {
-                                path = person.item(k).getNodeName();
-                                getHierarchie(person.item(k));
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Person")) {
+                        NodeList persons = children.item(j).getChildNodes();
+                        for (int k = 0; k < persons.getLength(); k++) {
+                            if (persons.item(k).getNodeName().equals(prefix + "FullName")) {
+                                path = persons.item(k).getNodeName();
+                                getHierarchie(persons.item(k));
                                 dataHolder.knownABCDelements.add(path);
                                 path = "";
-                                if (!person.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
-                                    dataHolder.gatheringAgentList.add(person.item(k).getTextContent());
+                                if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
+                                    dataHolder.gatheringAgentList.add(persons.item(k).getTextContent());
                                 }
                             }
                         }
@@ -625,6 +625,29 @@ public class Abcd206XMLFieldGetter {
 
                 }
             }
+
+            group = root.getElementsByTagName(prefix + "Gathering");
+            for (int i = 0; i < group.getLength(); i++) {
+                NodeList children = group.item(i).getChildNodes();
+                for (int j = 0; j < children.getLength(); j++) {
+                    if (children.item(j).getNodeName().equals(prefix + "Agents")) {
+                        NodeList persons = children.item(j).getChildNodes();
+                        for (int k = 0; k < persons.getLength(); k++) {
+                            if (persons.item(k).getNodeName().equals(prefix + "GatheringAgentsText")) {
+                                path = persons.item(k).getNodeName();
+                                getHierarchie(persons.item(k));
+                                dataHolder.knownABCDelements.add(path);
+                                path = "";
+                                if (!persons.item(k).getTextContent().trim().equalsIgnoreCase("none")) {
+                                    dataHolder.gatheringAgentList.add(persons.item(k).getTextContent());
+                                }
+                            }
+                        }
+                    }
+
+                }
+            }
+
         } catch (NullPointerException e) {
             dataHolder.gatheringAgentList = new ArrayList<String>();
         }
