@@ -18,12 +18,12 @@ import java.net.URL;
 
 import org.junit.Assert;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.unitils.dbunit.annotation.DataSet;
 import org.unitils.spring.annotation.SpringBeanByName;
 import org.unitils.spring.annotation.SpringBeanByType;
 
+import eu.etaxonomy.cdm.api.service.IAgentService;
 import eu.etaxonomy.cdm.api.service.ICommonService;
 import eu.etaxonomy.cdm.api.service.INameService;
 import eu.etaxonomy.cdm.api.service.IOccurrenceService;
@@ -32,6 +32,8 @@ import eu.etaxonomy.cdm.api.service.ITaxonNodeService;
 import eu.etaxonomy.cdm.api.service.ITermService;
 import eu.etaxonomy.cdm.io.common.CdmApplicationAwareDefaultImport;
 import eu.etaxonomy.cdm.io.common.IImportConfigurator;
+import eu.etaxonomy.cdm.model.agent.Institution;
+import eu.etaxonomy.cdm.model.agent.Person;
 import eu.etaxonomy.cdm.model.name.TaxonNameBase;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
 import eu.etaxonomy.cdm.model.occurrence.FieldUnit;
@@ -47,23 +49,26 @@ import eu.etaxonomy.cdm.test.unitils.CleanSweepInsertLoadStrategy;
 public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationTest {
 
 	@SpringBeanByName
-	CdmApplicationAwareDefaultImport<?> defaultImport;
+	private CdmApplicationAwareDefaultImport<?> defaultImport;
 
 	@SpringBeanByType
-	INameService nameService;
+	private INameService nameService;
 
 	@SpringBeanByType
-	IOccurrenceService occurrenceService;
+	private IOccurrenceService occurrenceService;
 
 	@SpringBeanByType
-	ITermService termService;
+	private ITermService termService;
 
 	@SpringBeanByType
-    ICommonService commonService;
+	private ICommonService commonService;
 
 	@SpringBeanByType
-	ITaxonNodeService taxonNodeService;
-	
+	private ITaxonNodeService taxonNodeService;
+
+	@SpringBeanByType
+	private IAgentService agentService;
+
 	@SpringBeanByType
 	private IReferenceService referenceService;
 
@@ -84,7 +89,7 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
             Assert.fail();
         }
         assertNotNull("Configurator2 could not be created", configurator);
-        
+
         //test2
         String inputFile2 = "/eu/etaxonomy/cdm/io/specimen/abcd206/in/Campanula_ABCD_import_3_taxa_11_units.xml";
 		URL url2 = this.getClass().getResource(inputFile2);
@@ -121,8 +126,12 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
          */
         assertEquals("Number of TaxonNodes is incorrect", 3, taxonNodeService.count(TaxonNode.class));
         assertEquals("Number of specimen and observation is incorrect", 10, occurrenceService.count(DerivedUnit.class));
+        //Asch. + Mitarbeiter der Floristischen Kartierung Deutschlands
+        assertEquals("Number of persons is incorrect", 2, agentService.count(Person.class));
+        //BfN
+        assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
     }
-	
+
 
 	@Test
 	@DataSet(value="SpecimenImportConfiguratorTest.doInvoke2.xml",  loadStrategy=CleanSweepInsertLoadStrategy.class)
@@ -142,6 +151,9 @@ public class SpecimenImportConfiguratorTest extends CdmTransactionalIntegrationT
         assertEquals("Number of TaxonNodes is incorrect", 5, taxonNodeService.count(TaxonNode.class));
 		assertEquals("Number of derived units is incorrect", 11, occurrenceService.count(DerivedUnit.class));
 		assertEquals("Number of field units is incorrect", 11, occurrenceService.count(FieldUnit.class));
-		assertEquals("Number of field units is incorrect", 1, referenceService.count(Reference.class));
+		assertEquals("Number of gathering agents is incorrect", 4, agentService.count(Person.class));
+		//BGBM
+		assertEquals("Number of institutions is incorrect", 1, agentService.count(Institution.class));
+		assertEquals("Number of references is incorrect", 1, referenceService.count(Reference.class));
 	}
 }
