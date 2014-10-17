@@ -472,8 +472,8 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				
 				Contact contact =  new Contact();
 				Address address = Address.NewInstance();
-				reference.setAuthorship(authorTeam);
-				authorTeam.setContact(contact);		 
+				reference.setAuthorship(authorship);
+				authorship.setContact(contact);		 
 				contact.addAddress(address);
 				address.setLocality(address_style);
 			}
