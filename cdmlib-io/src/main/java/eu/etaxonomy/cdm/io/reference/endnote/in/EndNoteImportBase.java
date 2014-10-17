@@ -23,8 +23,6 @@ import eu.etaxonomy.cdm.io.common.CdmImportBase;
 public abstract class EndNoteImportBase  extends CdmImportBase<EndnoteImportConfigurator, EndnoteImportState> {
 	private static final Logger logger = Logger.getLogger(EndNoteImportBase.class);
 
-//	protected abstract void doInvoke(EndnoteImportState state);
-
 	protected Element getXmlElement(EndnoteImportConfigurator tcsConfig){
 		Element root = tcsConfig.getSourceRoot();
 		
