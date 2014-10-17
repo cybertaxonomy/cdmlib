@@ -74,7 +74,7 @@ public class TestDatabase {
 		TransactionStatus txStatus = appCtr.startTransaction();
 		DataSet dataSet = buildDataSet();
 
-		appCtr.getTaxonService().save(dataSet.getTaxonBases());
+		appCtr.getTaxonService().save((List)dataSet.getTaxonBases());
 
 		appCtr.commitTransaction(txStatus);
 		appCtr.close();
@@ -237,7 +237,7 @@ public class TestDatabase {
 		dataSet.setTerms(terms);
 		dataSet.setReferences(references);
 		dataSet.setTaxonomicNames(taxonomicNames);
-		dataSet.setTaxonBases(taxonBases);
+		dataSet.setTaxonBases((List)taxonBases);
 
 		return dataSet;
 

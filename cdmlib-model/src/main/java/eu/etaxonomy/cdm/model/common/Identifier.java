@@ -39,7 +39,8 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Identifier", propOrder = {
     "identifier",
-    "identifierType"
+    "type",
+    "identifiedObj"    
 })
 @Entity
 @Audited

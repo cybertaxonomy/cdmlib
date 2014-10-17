@@ -23,6 +23,7 @@ import javax.persistence.Embedded;
 import javax.persistence.FetchType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderColumn;
 import javax.persistence.Transient;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
@@ -81,9 +82,10 @@ import eu.etaxonomy.cdm.validation.Level2;
     "lsid",
     "titleCache",
     "protectedTitleCache",
-    "rights",
-    "extensions",
     "credits",
+    "extensions",
+    "identifiers",
+    "rights",
     "sources"
 })
 @Audited
@@ -149,6 +151,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
 
     @XmlElementWrapper(name = "Identifiers", nillable = true)
     @XmlElement(name = "Identifier")
+//    @OrderColumn(name="sortIndex")
     @OneToMany(fetch = FetchType.LAZY, orphanRemoval=true)
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)

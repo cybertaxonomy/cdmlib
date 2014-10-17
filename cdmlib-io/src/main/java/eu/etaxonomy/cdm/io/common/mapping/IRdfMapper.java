@@ -1,8 +1,5 @@
 package eu.etaxonomy.cdm.io.common.mapping;
 
-import org.jdom.Content;
-import org.jdom.Element;
-
 import com.hp.hpl.jena.rdf.model.Resource;
 import com.hp.hpl.jena.rdf.model.Statement;
 

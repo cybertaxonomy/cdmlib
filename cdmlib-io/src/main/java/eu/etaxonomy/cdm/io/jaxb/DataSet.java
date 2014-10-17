@@ -254,7 +254,7 @@ public class DataSet {
       @XmlElement(name = "Taxon", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Taxon.class),
       @XmlElement(name = "Synonym", namespace = "http://etaxonomy.eu/cdm/model/taxon/1.0", type = Synonym.class)
     })
-    protected List<TaxonBase> taxonBases = new ArrayList<TaxonBase>();
+    protected List<TaxonBase<?>> taxonBases = new ArrayList<TaxonBase<?>>();
 
     @XmlElementWrapper(name = "Media")
     @XmlElements({
@@ -603,7 +603,7 @@ public class DataSet {
      *     {@link Collection<TaxonBase> }
      *     
      */
-    public void addTaxonBases(Collection<TaxonBase> value) {
+    public void addTaxonBases(Collection<TaxonBase<?>> value) {
     	this.taxonBases.addAll(value);
     }
 
@@ -615,7 +615,7 @@ public class DataSet {
      *     {@link List<TaxonBase> }
      *     
      */
-    public List<TaxonBase> getTaxonBases() {
+    public List<TaxonBase<?>> getTaxonBases() {
     	return taxonBases;
     }
 
@@ -627,7 +627,7 @@ public class DataSet {
      *     {@link List<TaxonBase> }
      *     
      */
-    public void setTaxonBases(List<TaxonBase> value) {
+    public void setTaxonBases(List<TaxonBase<?>> value) {
         this.taxonBases = value;
     }
 
