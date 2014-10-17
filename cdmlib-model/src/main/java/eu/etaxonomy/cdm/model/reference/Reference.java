@@ -173,14 +173,6 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Length(max = 255)
 	protected String editor;
 
-    @XmlElement(name = "Series")
-    @Field
-    //TODO Val #3379
-//    @NullOrNotEmpty
-	@Length(max = 255)
-    @Deprecated //series and seriesPart are duplicates #4293 
-	protected String series;
-
     @XmlElement(name = "Volume")
     @Field
     //TODO Val #3379

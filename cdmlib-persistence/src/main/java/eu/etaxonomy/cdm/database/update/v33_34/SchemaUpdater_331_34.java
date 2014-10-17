@@ -16,6 +16,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -103,7 +104,33 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		
 		addIdentifierTables(stepList);
 		
+		
+		//remove series from Reference  #4293
+		stepName = "Copy series to series part";
+		String sql = " UPDATE Reference r " +
+				" SET r.seriespart = r.series " + 
+				" WHERE r.series is NOT NULL AND r.seriesPart IS NULL ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "Reference", 99);
+		stepList.add(step);
+
+		stepName = "Set series to NULL";
+		sql = " UPDATE Reference r " +
+				" SET r.series = NULL " + 
+				" WHERE r.series = r.seriesPart ";
+		step = SimpleSchemaUpdaterStep.NewAuditedInstance(stepName, sql, "Reference", 99);
+		stepList.add(step);
+
+		//TODO check all series are null
+		
+		stepName = "Remove series column";
+		tableName = "Reference";
+		String oldColumnName = "series";
+		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
+		stepList.add(step);
+
 		return stepList;
+		
+		
 
 	}
 
