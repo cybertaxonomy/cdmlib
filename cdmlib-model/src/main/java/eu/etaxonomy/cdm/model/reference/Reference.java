@@ -91,7 +91,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "abbrevTitleCache",
     "protectedAbbrevTitleCache",
 	"nomenclaturallyRelevant",
-    "authorTeam",
+    "authorship",
     "referenceAbstract",
     "title",
     "abbrevTitle",
