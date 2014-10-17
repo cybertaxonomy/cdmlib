@@ -318,7 +318,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@Merge(MergeMode.OR)
 	private boolean nomenclaturallyRelevant;
 
-	@XmlElement(name = "AuthorTeam")
+	@XmlElement(name = "Authorship")
 	@XmlIDREF
 	@XmlSchemaType(name = "IDREF")
 	@ManyToOne(fetch = FetchType.LAZY)

@@ -11,7 +11,7 @@ public class ReferenceBaseBeanProcessor extends
 
 	@Override
 	public List<String> getIgnorePropNames() {
-		//return Arrays.asList(new String[]{ "authorTeam" }); //FIXME ?????
+		//return Arrays.asList(new String[]{ "authorship" }); //FIXME ?????
 		return null;
 	}
 

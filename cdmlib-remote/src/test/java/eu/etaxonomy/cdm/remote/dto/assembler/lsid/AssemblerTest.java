@@ -100,7 +100,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         lsid = new LSID("urn:lsid:example.org:taxonconcepts:1");
 
         authorship = Person.NewInstance();
-        authorship.setTitleCache("authorTeam.titleCache", true);
+        authorship.setTitleCache("authorship.titleCache", true);
         authorship.setLsid(new LSID("urn:lsid:dagg.org:agents:2"));
 
         name = BotanicalName.NewInstance(null);

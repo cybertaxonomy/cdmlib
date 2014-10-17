@@ -252,7 +252,7 @@ public class DefaultMergeStrategyTest {
 		
 		
 		//CdmBase
-		Assert.assertSame("AuthorTeam must be the one of book2", team2, book1.getAuthorship());
+		Assert.assertSame("Authorship must be the one of book2", team2, book1.getAuthorship());
 		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
 		
 		//Transient

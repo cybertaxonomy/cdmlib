@@ -561,7 +561,7 @@
   <xsl:template match="nomenclaturalReference">
     <xsl:text> (</xsl:text>
     <fo:inline>
-      <xsl:value-of select="authorTeam/titleCache"/>
+      <xsl:value-of select="authorship/titleCache"/>
       <xsl:text> </xsl:text>
       <xsl:value-of select="datePublished/start"/>: </fo:inline>
     <xsl:text> </xsl:text>

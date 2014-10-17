@@ -47,19 +47,19 @@ public class ReferenceController extends BaseController<Reference, IReferenceSer
 
     private static final List<String> NOMENCLATURAL_CITATION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
-            "authorTeam",
+            "authorship",
             "inReference.inReference",
             "inReference.authorship"
     });
 
     private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
-            "authorTeam.$"
+            "authorship.$"
     });
 
     public ReferenceController(){
         setInitializationStrategy(Arrays.asList(new String[]{
                 "$",
-                "authorTeam.$"
+                "authorship.$"
              }));
     }
 
@@ -101,7 +101,7 @@ public class ReferenceController extends BaseController<Reference, IReferenceSer
     }
 
     @RequestMapping(
-            value = {"authorTeam"},
+            value = {"authorship"},
             method = RequestMethod.GET)
         public ModelAndView doGetAuthorTeam(
                 @PathVariable("uuid") UUID uuid,
