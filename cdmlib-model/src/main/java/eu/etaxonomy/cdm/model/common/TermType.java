@@ -431,8 +431,10 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
     
     
     /**
-     * An (often global unique) Identifier Type such as DOI, LSID, Barcode, Sample Designation, ... which can be used
-     * as type in {@link Identifier#type} 
+     * An Identifier Type which can be used as a type in {@link Identifier#type} . It may often be a global unique identifier such as DOI, LSID, Barcode ....
+     * But also local identifier types such Sample Designation, Catalog Number, 
+     * Accession Number, ... are allowed.
+     * {@link Identifier#type}
      */
     @XmlEnumValue("IdentifierType")
     IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier", "IDE", null),

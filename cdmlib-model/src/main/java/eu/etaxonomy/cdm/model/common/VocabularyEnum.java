@@ -91,7 +91,8 @@ public enum VocabularyEnum {
 	DnaMarkerChloroplast("e572d370-a27b-40d3-974c-cb17562b59cf", DefinedTerm.class),
 	PlantKindOfUnit("5167c47b-7726-4dba-b02f-dafb7629481b", DefinedTerm.class),
 	SpecimenKindOfUnit("b0344ec4-12f7-40d3-82c1-0092e9780bbd", DefinedTerm.class),
-	MediaSpecimenKindOfUnit("56f47c83-8d42-404a-88fc-03c57b560f6d", DefinedTerm.class)
+	MediaSpecimenKindOfUnit("56f47c83-8d42-404a-88fc-03c57b560f6d", DefinedTerm.class),
+	IdentifierType("67d91839-484e-4183-8b4c-6a4a80dfc066", DefinedTerm.class)
 	;
 	
 	

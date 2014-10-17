@@ -1074,6 +1074,7 @@ cdmlib-model/src/main/resources/terms/ExtensionType.csv -text
 cdmlib-model/src/main/resources/terms/Feature.csv -text
 cdmlib-model/src/main/resources/terms/FormerCountries -text
 cdmlib-model/src/main/resources/terms/HybridRelationshipType.csv -text
+cdmlib-model/src/main/resources/terms/IdentifierType.csv -text
 cdmlib-model/src/main/resources/terms/InstitutionType.csv -text
 cdmlib-model/src/main/resources/terms/Language.csv -text
 cdmlib-model/src/main/resources/terms/MarkerType.csv -text
