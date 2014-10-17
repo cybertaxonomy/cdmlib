@@ -104,27 +104,31 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			throw new RuntimeException ("ColumnNames and columnTypes must be of same size. Step: " + getStepName());
 		}
 			
-		for (int i = 0; i < columnNames.size(); i++){
-			boolean isNotNull = this.isNotNull == null ? false : this.isNotNull.get(i);
-			if ("integer".equals(columnTypes.get(i)) || "int".equals(columnTypes.get(i))){
-				String referencedTable = (this.referencedTables == null) ?  null : this.referencedTables.get(i);
-				ColumnAdder adder = ColumnAdder.NewIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull, referencedTable);
-				this.columnAdders.add(adder);
-			}else if ("boolean".equals(columnTypes.get(i)) || "bit".equals(columnTypes.get(i))){
-				String defaultValue = this.defaultValues == null ? null : this.defaultValues.get(i).toString();
-				ColumnAdder adder = ColumnAdder.NewBooleanInstance(getStepName(), this.tableName,  this.columnNames.get(i), includeAudTable, Boolean.valueOf(defaultValue));
-				this.columnAdders.add(adder);
-			}else if (columnTypes.get(i).startsWith("string")){
-				Integer length = Integer.valueOf(columnTypes.get(i).substring("string_".length()));
-				ColumnAdder adder = ColumnAdder.NewStringInstance(this.getStepName(), this.tableName, this.columnNames.get(i), length, includeAudTable);
-				this.columnAdders.add(adder);
-			}else if ("tinyint".equals(columnTypes.get(i)) ){
-				ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
-				this.columnAdders.add(adder);
-			}else if ("double".equals(columnTypes.get(i)) ){
-				ColumnAdder adder = ColumnAdder.NewDoubleInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
-				this.columnAdders.add(adder);
+		try {
+			for (int i = 0; i < columnNames.size(); i++){
+				boolean isNotNull = this.isNotNull == null ? false : this.isNotNull.get(i);
+				if ("integer".equals(columnTypes.get(i)) || "int".equals(columnTypes.get(i))){
+					String referencedTable = (this.referencedTables == null) ?  null : this.referencedTables.get(i);
+					ColumnAdder adder = ColumnAdder.NewIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull, referencedTable);
+					this.columnAdders.add(adder);
+				}else if ("boolean".equals(columnTypes.get(i)) || "bit".equals(columnTypes.get(i))){
+					String defaultValue = this.defaultValues == null ? null : this.defaultValues.get(i).toString();
+					ColumnAdder adder = ColumnAdder.NewBooleanInstance(getStepName(), this.tableName,  this.columnNames.get(i), includeAudTable, Boolean.valueOf(defaultValue));
+					this.columnAdders.add(adder);
+				}else if (columnTypes.get(i).startsWith("string")){
+					Integer length = Integer.valueOf(columnTypes.get(i).substring("string_".length()));
+					ColumnAdder adder = ColumnAdder.NewStringInstance(this.getStepName(), this.tableName, this.columnNames.get(i), length, includeAudTable);
+					this.columnAdders.add(adder);
+				}else if ("tinyint".equals(columnTypes.get(i)) ){
+					ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
+					this.columnAdders.add(adder);
+				}else if ("double".equals(columnTypes.get(i)) ){
+					ColumnAdder adder = ColumnAdder.NewDoubleInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
+					this.columnAdders.add(adder);
+				}
 			}
+		} catch (Exception e) {
+			throw new RuntimeException(e);
 		}
 	}
 	

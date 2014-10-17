@@ -428,6 +428,14 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
      */
     @XmlEnumValue("DnaMarker")
     DnaMarker(UUID.fromString("7fdddb4f-b0ec-4ce0-bc28-dc94e30e8252"), "DNA Marker", "DMA", null),
+    
+    
+    /**
+     * An (often global unique) Identifier Type such as DOI, LSID, Barcode, Sample Designation, ... which can be used
+     * as type in {@link Identifier#type} 
+     */
+    @XmlEnumValue("IdentifierType")
+    IdentifierType(UUID.fromString("d24eda99-0716-467f-aa1e-4c0f2b6c3922"), "Identifier", "IDE", null),
     ;
 
     @SuppressWarnings("unused")
@@ -492,6 +500,7 @@ public enum TermType implements IEnumTerm<TermType>, Serializable{
             case Stage:
             case KindOfUnit:
             case PresenceAbsenceTerm:
+            case IdentifierType:
             case DnaMarker:
                 return DefinedTerm.NewInstance(this, null, "Untitled", null);
             case Feature:

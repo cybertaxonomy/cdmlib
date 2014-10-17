@@ -104,6 +104,11 @@ public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEnti
 	}
 
 
+	/**
+	 * The identifier type. E.g. DOI, LSID, Barcode, Sample Designation, ...
+	 * @see TermType#IdentifierType 
+	 * @return
+	 */
 	public DefinedTerm getType() {
 		return type;
 	}
