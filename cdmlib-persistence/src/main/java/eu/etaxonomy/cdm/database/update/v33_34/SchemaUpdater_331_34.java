@@ -20,6 +20,7 @@ import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
+import eu.etaxonomy.cdm.database.update.TableCreator;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 
 /**
@@ -100,8 +101,155 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		stepList.add(step);
 		
 		
+		addIdentifierTables(stepList);
+		
 		return stepList;
 
+	}
+
+	private void addIdentifierTables(List<ISchemaUpdaterStep> stepList) {
+		
+		//Identifier
+		String stepName = "Create Identifier table";
+		boolean includeCdmBaseAttributes = true;
+		String tableName = "@@Identifier@@";
+		String[] columnNames = new String[]{"identifier","identifiedObj_type", "identifiedObj_id","type_id"};
+		String[] columnTypes = new String[]{"char(800)","char(255)","int","int"};
+		String[] referencedTables = new String[]{"","","","DefinedTermBase"};
+		ISchemaUpdaterStep step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes); 
+		stepList.add(step);
+
+		//TODO AgentBase_Identifier
+		stepName = "Create AgentBase_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@AgentBase_Identifier@@";
+		columnNames = new String[]{"AgentBase_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"AgentBase","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+		
+		//TODO Classification_Identifier
+		stepName = "Create Classification_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@Classification_Identifier@@";
+		columnNames = new String[]{"Classification_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"Classification","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO Collection_Identifier
+		stepName = "Create Collection_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@Collection_Identifier@@";
+		columnNames = new String[]{"Collection_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"Collection","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO DefinedTermBase_Identifier
+		stepName = "Create DefinedTermBase_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@DefinedTermBase_Identifier@@";
+		columnNames = new String[]{"DefinedTermBase_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"DefinedTermBase","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+		
+		//TODO DescriptionBase_Identifier
+		stepName = "Create DescriptionBase_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@DescriptionBase_Identifier@@";
+		columnNames = new String[]{"DescriptionBase_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"DescriptionBase","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO FeatureTree_Identifier
+		stepName = "Create FeatureTree_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@FeatureTree_Identifier@@";
+		columnNames = new String[]{"FeatureTree_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"FeatureTree","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO Media_Identifier
+		stepName = "Create Media_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@Media_Identifier@@";
+		columnNames = new String[]{"Media_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"Media","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO PolytomousKey_Identifier
+		stepName = "Create PolytomousKey_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@PolytomousKey_Identifier@@";
+		columnNames = new String[]{"PolytomousKey_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"PolytomousKey","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO Reference_Identifier
+		stepName = "Create Reference_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@Reference_Identifier@@";
+		columnNames = new String[]{"Reference_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"Reference","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO SpecimenOrObservationBase_Identifier
+		stepName = "Create SpecimenOrObservationBase_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@PolytomousKey_Identifier@@";
+		columnNames = new String[]{"SpecimenOrObservationBase_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"SpecimenOrObservationBase","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO TaxonBase_Identifier
+		stepName = "Create TaxonBase_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@TaxonBase_Identifier@@";
+		columnNames = new String[]{"TaxonBase_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"TaxonBase","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO TaxonNameBase_Identifier
+		stepName = "Create TaxonNameBase_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@TaxonNameBase_Identifier@@";
+		columnNames = new String[]{"TaxonNameBase_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"TaxonNameBase","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		//TODO TermVocabulary_Identifier
+		stepName = "Create TermVocabulary_Identifier table";
+		includeCdmBaseAttributes = false;
+		tableName = "@@TermVocabulary_Identifier@@";
+		columnNames = new String[]{"TermVocabulary_id","identifiers_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"TermVocabulary","Identifier"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		stepList.add(step);
+
+		
 	}
 
 	@Override
