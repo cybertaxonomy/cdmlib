@@ -10,6 +10,7 @@
 
 package eu.etaxonomy.cdm.strategy.merge;
 
+import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
@@ -411,7 +412,7 @@ public class DefaultMergeStrategyTest {
 		team1.setTitleCache("Team1", true);
 		team1.setNomenclaturalTitle("T.1");
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		String street3 = "Street3";
 		team2.addAddress(street3, null, null, null, null, null, Point.NewInstance(1.1, 2.2, null, 4));

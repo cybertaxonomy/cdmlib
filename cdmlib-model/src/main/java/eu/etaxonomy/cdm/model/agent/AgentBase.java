@@ -9,6 +9,7 @@
 
 package eu.etaxonomy.cdm.model.agent;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Set;
 
@@ -158,7 +159,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @param url
 	 * @see eu.etaxonomy.cdm.model.agent.Contact#addUrl(java.lang.String)
 	 */
-	public void addUrl(String url) {
+	public void addUrl(URI url) {
 		getNewOrExistingContact(true).addUrl(url);
 	}
 	/**
@@ -198,7 +199,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @see eu.etaxonomy.cdm.model.agent.Contact#getUrls()
 	 */
 	@Transient
-	public List<String> getUrls() {
+	public List<URI> getUrls() {
 		return getNewOrExistingContact(false).getUrls();
 	}
 	/**

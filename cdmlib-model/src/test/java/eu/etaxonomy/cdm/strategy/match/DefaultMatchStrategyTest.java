@@ -10,6 +10,8 @@
 
 package eu.etaxonomy.cdm.strategy.match;
 
+import java.net.URI;
+
 import org.apache.log4j.Logger;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -402,7 +404,7 @@ public class DefaultMatchStrategyTest {
 		Assert.assertTrue("Teams should match", matchStrategy.invoke(team1, team3));
 		
 		String street1 = "Strasse1";
-		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", "www.abc.de", Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
+		team1.setContact(Contact.NewInstance(street1, "12345", "Berlin", Country.ARGENTINAARGENTINEREPUBLIC(),"pobox" , "Region", "a@b.de", "f12345", "+49-30-123456", URI.create("www.abc.de"), Point.NewInstance(2.4, 3.2, ReferenceSystem.WGS84(), 3)));
 		team2.setContact(Contact.NewInstance("Street2", null, "London", null, null, null, null, "874599873", null, null, null));
 		Assert.assertTrue("Contacts should be ignoredin default match strategy", matchStrategy.invoke(team1, team2));
 		

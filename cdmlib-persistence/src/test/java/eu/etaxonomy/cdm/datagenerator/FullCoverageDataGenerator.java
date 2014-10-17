@@ -174,7 +174,7 @@ public class FullCoverageDataGenerator {
 		contact.addEmailAddress("a@b.de");
 		contact.addFaxNumber("f:010-123456");
 		contact.addPhoneNumber("p:090-987654");
-		contact.addUrl(URI.create("http:\\\\www.abc.de").toString());
+		contact.addUrl(URI.create("http:\\\\www.abc.de"));
 		
 		//Address
 		Address address = Address.NewInstance(Country.GERMANY(), "locality", "pobox", "12345", "region", "street", locality);
