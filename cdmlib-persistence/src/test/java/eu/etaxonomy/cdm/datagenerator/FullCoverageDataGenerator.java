@@ -483,7 +483,7 @@ public class FullCoverageDataGenerator {
 	private void createReference(List<CdmBase> cdmBases) {
 		Reference<?> reference = ReferenceFactory.newArticle();
 		Person author = Person.NewTitledInstance("Author team");
-		reference.setAuthorTeam(author);
+		reference.setAuthorship(author);
 		reference.setTitle("ref title");
 		reference.setAbbrevTitle("abbrev title");
 		reference.setDatePublished(TimePeriodParser.parseString("1999"));

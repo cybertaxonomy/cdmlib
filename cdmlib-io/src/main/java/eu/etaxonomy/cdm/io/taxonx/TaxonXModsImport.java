@@ -210,7 +210,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				contentList.remove(elNamePart);
 			}
 		}
-		ref.setAuthorTeam(authorTeam);
+		ref.setAuthorship(authorTeam);
 		
 		removeEmptyContent(contentList);
 		for (Content o: contentList){

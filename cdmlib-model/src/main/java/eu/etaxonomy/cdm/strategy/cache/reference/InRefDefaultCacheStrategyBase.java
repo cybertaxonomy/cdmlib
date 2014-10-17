@@ -89,7 +89,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		if (book == null){
 			return "";
 		}
-		TeamOrPersonBase<?> team = book.getAuthorTeam();
+		TeamOrPersonBase<?> team = book.getAuthorship();
 		String result = Nz( team == null ? "" : team.getNomenclaturalTitle());
 		if (! result.trim().equals("")){
 			result = result + seperator;	
@@ -136,7 +136,7 @@ public abstract class InRefDefaultCacheStrategyBase extends NomRefDefaultCacheSt
 		}
 		
 		//section author
-		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorTeam();
+		TeamOrPersonBase<?> thisRefTeam = thisRef.getAuthorship();
 		String thisRefAuthor = "";
 		if (thisRefTeam != null){
 			thisRefAuthor = CdmUtils.getPreferredNonEmptyString(thisRefTeam.getTitleCache(), thisRefTeam.getNomenclaturalTitle(), isAbbrev, true);

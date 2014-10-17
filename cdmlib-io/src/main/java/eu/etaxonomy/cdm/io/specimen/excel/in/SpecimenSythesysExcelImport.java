@@ -874,7 +874,7 @@ implements ICdmIO<SpecimenSynthesysExcelImportState> {
         if (ref == null){
             ref = state.getConfig().getSourceReference();
         }
-        AgentBase<?> agent= ref.getAuthorTeam();
+        AgentBase<?> agent= ref.getAuthorship();
         if (agent != null){
             if (agent.getClass().equals(Team.class)){
                 for (Person p : ((Team) agent).getTeamMembers()){

@@ -175,7 +175,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
        		if (ref == null){
        			logger.warn("mods:name exists but reference is null");
        		}else if (persons.size()==1){
-                ref.setAuthorTeam(persons.get(0));
+                ref.setAuthorship(persons.get(0));
             }
             else{
                 Team authorTeam = Team.NewInstance();
@@ -193,7 +193,7 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                     }
                 }
 
-                ref.setAuthorTeam(authorTeam);
+                ref.setAuthorship(authorTeam);
             }
             if (editors.size()>0) {
                 ref.setEditor(StringUtils.join(editors,", "));

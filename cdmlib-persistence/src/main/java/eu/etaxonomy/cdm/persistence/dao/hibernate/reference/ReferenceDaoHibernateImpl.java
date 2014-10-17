@@ -56,7 +56,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		FullTextSession fullTextSession = Search.getFullTextSession(getSession());
 
 		for(Reference reference : list(null,null)) { // re-index all agents
-			Hibernate.initialize(reference.getAuthorTeam());
+			Hibernate.initialize(reference.getAuthorship());
 
 			if(reference.getType().equals(ReferenceType.Article)) {
 				Hibernate.initialize(((IArticle)reference).getInJournal());

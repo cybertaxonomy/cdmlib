@@ -70,7 +70,7 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setTitle("auct.");
 		IBook book1 = ReferenceFactory.newBook();
 		book1.setTitle("My book title");
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		Reference<?> inRef = (Reference<?>)book1;
 		generic1.setInReference(inRef);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
@@ -82,7 +82,7 @@ public class GenericDefaultCacheStrategyTest {
 	@Test
 	public void testGetInRefWithoutInRef(){
 		generic1.setTitle("My generic title");
-		generic1.setAuthorTeam(team1);
+		generic1.setAuthorship(team1);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "My generic title: 2", generic1.getNomenclaturalCitation("2"));
 	}
@@ -92,7 +92,7 @@ public class GenericDefaultCacheStrategyTest {
 		generic1.setTitle("Part Title");
 		IBook book1 = ReferenceFactory.newBook();
 		book1.setTitle("My book title");
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		Reference<?> inRef = (Reference<?>)book1;
 		generic1.setInReference(inRef);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
@@ -108,7 +108,7 @@ public class GenericDefaultCacheStrategyTest {
 		IBook book1 = ReferenceFactory.newBook();
 		book1.setTitle("My book title");
 		book1.setAbbrevTitle("My bk. tit.");
-		book1.setAuthorTeam(team1);  //TODO handling not yet defined
+		book1.setAuthorship(team1);  //TODO handling not yet defined
 		Reference<?> inRef = (Reference<?>)book1;
 		generic1.setInReference(inRef);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
@@ -143,14 +143,14 @@ public class GenericDefaultCacheStrategyTest {
 	@Test
 	public void testGetTitleCacheWithoutInRef(){
 		generic1.setTitle("My generic title");
-		generic1.setAuthorTeam(team1);
+		generic1.setAuthorship(team1);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Authorteam, My generic title", generic1.getTitleCache());
 	}
 	
 	@Test
 	public void testAuthorOnly(){
-		generic1.setAuthorTeam(team1);
+		generic1.setAuthorship(team1);
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Authorteam", generic1.getTitleCache());
 		Assert.assertEquals("", generic1.getNomenclaturalCitation(null));
@@ -158,7 +158,7 @@ public class GenericDefaultCacheStrategyTest {
 	
 	@Test
 	public void testYearAndAuthorOnly(){
-		generic1.setAuthorTeam(team1);
+		generic1.setAuthorship(team1);
 		generic1.setDatePublished(TimePeriodParser.parseString("1792"));
 		generic1.setTitleCache(null, false);  //reset cache in case aspectJ is not enabled
 		Assert.assertEquals("Unexpected title cache.", "Authorteam, 1792", generic1.getTitleCache());	
@@ -167,7 +167,7 @@ public class GenericDefaultCacheStrategyTest {
 	
 	@Test
 	public void testDoubleDotBeforeYear(){
-		generic1.setAuthorTeam(team1);
+		generic1.setAuthorship(team1);
 		String detail = "sine no.";
 		generic1.setAbbrevTitle("My title");
 		generic1.setDatePublished(TimePeriodParser.parseString("1883-1884"));

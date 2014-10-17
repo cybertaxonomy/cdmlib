@@ -177,7 +177,7 @@ public class DublinCoreSchemaAdapter extends SchemaAdapterBase<Reference>{
 				if(dcFieldName.equals(DC_CREATOR)){
 					TeamOrPersonBase authorTeam = new Team();
 					authorTeam.setTitleCache(text, true);
-					reference.setAuthorTeam(authorTeam);
+					reference.setAuthorship(authorTeam);
 				}
 				
 			}

@@ -136,7 +136,7 @@ public class ReferenceFactory {
 	public static Reference newBookSection(Reference book, Person partAuthor,
 			String sectionTitle, String pages) {
 		Reference<?> bookSection = newBookSection();
-		bookSection.setAuthorTeam(partAuthor);
+		bookSection.setAuthorship(partAuthor);
 		bookSection.setTitle(sectionTitle);
 		bookSection.setPages(pages);
 		return bookSection;
@@ -146,7 +146,7 @@ public class ReferenceFactory {
 			String title, String pages, String series, String volume, TimePeriod datePublished) {
 		Reference<?> article = newArticle();
 		article.setInReference(inJournal);
-		article.setAuthorTeam(partAuthor);
+		article.setAuthorship(partAuthor);
 		article.setTitle(title);
 		article.setPages(pages);
 		article.setVolume(volume);

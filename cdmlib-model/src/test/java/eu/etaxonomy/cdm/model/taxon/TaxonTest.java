@@ -65,7 +65,7 @@ public class TaxonTest extends EntityTestBase {
 	public void setUp() throws Exception {
 		Person linne =new Person("Carl", "Linné", "L.");
 		sec= ReferenceFactory.newBook();
-		sec.setAuthorTeam(linne);
+		sec.setAuthorship(linne);
 		sec.setTitleCache("Schönes saftiges Allgäu", true);
 		misSec = ReferenceFactory.newBook();
 		misSec.setTitleCache("Stupid book", true);

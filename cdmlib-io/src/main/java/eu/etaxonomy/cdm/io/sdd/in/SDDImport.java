@@ -594,8 +594,8 @@ public class SDDImport extends XmlImportBase<SDDImportConfigurator, SDDImportSta
 					team.addTeamMember(edit);
 				}
 			}
-			sec.setAuthorTeam(team);
-			sourceReference.setAuthorTeam(team);
+			sec.setAuthorship(team);
+			sourceReference.setAuthorship(team);
 		}
 
 		if (copyright != null) {

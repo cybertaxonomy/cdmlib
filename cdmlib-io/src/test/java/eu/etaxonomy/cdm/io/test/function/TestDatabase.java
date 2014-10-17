@@ -175,12 +175,12 @@ public class TestDatabase {
 
         // references
 		sec = ReferenceFactory.newBook();
-		sec.setAuthorTeam(linne);
+		sec.setAuthorship(linne);
 		sec.setTitleCache("Plant Speciation", true);
 		references.add(sec);
 
 		citRef = ReferenceFactory.newDatabase();
-		citRef.setAuthorTeam(linne);
+		citRef.setAuthorship(linne);
 		citRef.setTitleCache("BioCASE", true);
 		references.add(citRef);
 

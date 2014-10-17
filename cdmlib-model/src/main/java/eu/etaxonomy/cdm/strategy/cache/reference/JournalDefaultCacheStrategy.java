@@ -97,7 +97,7 @@ public class JournalDefaultCacheStrategy extends StrategyBase implements IRefere
 //		result = addYear(result, journal);
 		
 		
-		TeamOrPersonBase<?> team = journal.getAuthorTeam();
+		TeamOrPersonBase<?> team = journal.getAuthorship();
 		if (team != null){
 			String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
 			if (StringUtils.isNotBlank(author)){
@@ -111,7 +111,7 @@ public class JournalDefaultCacheStrategy extends StrategyBase implements IRefere
 	public String getCitation(Reference referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
 		
-		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
+		TeamOrPersonBase<?> team = referenceBase.getAuthorship();
 		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
 			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
 			stringBuilder.append(team.getTitleCache() + afterAuthor);

@@ -383,7 +383,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 	    
 	    Reference<?> nomRef;
 		if ( (nomRef = (Reference<?>)nameToBeFilled.getNomenclaturalReference()) != null ){
-			nomRef.setAuthorTeam((TeamOrPersonBase<?>)nameToBeFilled.getCombinationAuthorTeam());
+			nomRef.setAuthorship((TeamOrPersonBase<?>)nameToBeFilled.getCombinationAuthorTeam());
 		}
 	}
 	
@@ -696,7 +696,7 @@ public class NonViralNameParserImpl extends NonViralNameParserImplRegExBase impl
 			
 			TeamOrPersonBase<?> authorTeam = author(authorString);
 			IBook inBook = parseBook(bookString);
-			inBook.setAuthorTeam(authorTeam);
+			inBook.setAuthorship(authorTeam);
 			result.setInBook(inBook);
 		}
 		return result;

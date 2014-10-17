@@ -192,7 +192,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				referenceList.add(reference);
 				reference = null;
 			} else if (reference != null && qName.equals(AUTHORS)) {
-				reference.setAuthorTeam(authorTeam);
+				reference.setAuthorship(authorTeam);
 				authorTeam = null;
 			} else if (reference != null && qName.equals(SUBJECTS)) {
 				//TODO implement, but no equivalent in the cdm model		

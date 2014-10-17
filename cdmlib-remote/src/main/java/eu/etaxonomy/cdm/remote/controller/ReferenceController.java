@@ -109,8 +109,8 @@ public class ReferenceController extends BaseController<Reference, IReferenceSer
                 HttpServletResponse response) {
         ModelAndView mv = new ModelAndView();
         Reference rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
-        if(rb.getAuthorTeam() != null){
-            mv.addObject(rb.getAuthorTeam());
+        if(rb.getAuthorship() != null){
+            mv.addObject(rb.getAuthorship());
         }
         return mv;
     }

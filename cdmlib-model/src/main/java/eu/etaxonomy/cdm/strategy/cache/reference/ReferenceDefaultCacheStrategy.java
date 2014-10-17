@@ -83,7 +83,7 @@ public class ReferenceDefaultCacheStrategy extends StrategyBase implements IRefe
 		}
 		
 		result = addYear(result, ref);
-		TeamOrPersonBase<?> team = ref.getAuthorTeam();
+		TeamOrPersonBase<?> team = ref.getAuthorship();
 		if (team != null){
 			String author = CdmUtils.getPreferredNonEmptyString(team.getTitleCache(), team.getNomenclaturalTitle(), isAbbrev, true);
 			if (isNotBlank(author)){
@@ -111,7 +111,7 @@ public class ReferenceDefaultCacheStrategy extends StrategyBase implements IRefe
 	public String getCitation(Reference referenceBase) {
 		StringBuilder stringBuilder = new StringBuilder();
 		
-		TeamOrPersonBase<?> team = referenceBase.getAuthorTeam();
+		TeamOrPersonBase<?> team = referenceBase.getAuthorship();
 		if (team != null &&  ! (team.getTitleCache() == null) && ! team.getTitleCache().trim().equals("")){
 			//String author = CdmUtils.Nz(team == null? "" : team.getTitleCache());
 			stringBuilder.append(team.getTitleCache() + afterAuthor);

@@ -113,7 +113,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         name.setRank(Rank.SPECIES());
 
         sec = ReferenceFactory.newBook();
-        sec.setAuthorTeam(authorTeam);
+        sec.setAuthorship(authorTeam);
         sec.setTitleCache("sec.titleCache", true);
         sec.setLsid(new LSID("urn:lsid:example.org:references:1"));
 
@@ -154,7 +154,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
 
         book = ReferenceFactory.newBook();
         book.setTitle("Book.title");
-        book.setAuthorTeam(authorTeam);
+        book.setAuthorship(authorTeam);
         book.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
         book.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
         book.setEdition("1st Edition");
@@ -172,7 +172,7 @@ public class AssemblerTest extends UnitilsJUnit4 {
         bookSection.setInReference((Reference<?>)book);
         bookSection.setPages("999 ff.");
         bookSection.setTitle("BookSection.title");
-        bookSection.setAuthorTeam(authorTeam);
+        bookSection.setAuthorship(authorTeam);
         bookSection.setCreated(new DateTime(2004, 12, 25, 12, 0, 0, 0));
         bookSection.setDatePublished(new TimePeriod(new Partial(DateTimeFieldType.year(), 1800)));
         bookSection.setReferenceAbstract("referenceAbstract");

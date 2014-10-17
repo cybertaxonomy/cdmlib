@@ -118,7 +118,7 @@ public class DefaultMergeStrategyTest {
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
 		book1 = ReferenceFactory.newBook();
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
 		book1.setVolume(volumeString1);
@@ -131,7 +131,7 @@ public class DefaultMergeStrategyTest {
 		book1.setNomenclaturallyRelevant(false);
 		
 		book2 = ReferenceFactory.newBook();
-		book2.setAuthorTeam(team2);
+		book2.setAuthorship(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
 		book2.setVolume(volumeString2);
@@ -229,7 +229,7 @@ public class DefaultMergeStrategyTest {
 		try {
 			bookMergeStrategy.setMergeMode("edition", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("volume", MergeMode.NULL);
-			bookMergeStrategy.setMergeMode("authorTeam", MergeMode.SECOND);
+			bookMergeStrategy.setMergeMode("authorship", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("created", MergeMode.SECOND);
 			bookMergeStrategy.setMergeMode("updated",MergeMode.NULL);
 			bookMergeStrategy.setMergeMode("datePublished", MergeMode.SECOND);
@@ -252,7 +252,7 @@ public class DefaultMergeStrategyTest {
 		
 		
 		//CdmBase
-		Assert.assertSame("AuthorTeam must be the one of book2", team2, book1.getAuthorTeam());
+		Assert.assertSame("AuthorTeam must be the one of book2", team2, book1.getAuthorship());
 		Assert.assertSame("In Series must be the one of book2", printSeries2, book1.getInReference());
 		
 		//Transient

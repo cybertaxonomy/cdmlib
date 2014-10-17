@@ -107,7 +107,7 @@ public class DefaultMatchStrategyTest {
 		annotation2 = Annotation.NewInstance(annotationString2, null);
 		
 		book1 = ReferenceFactory.newBook();
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		book1.setTitle(title1);
 		book1.setEdition(editionString1);
 		book1.setVolume(volumeString1);
@@ -120,7 +120,7 @@ public class DefaultMatchStrategyTest {
 		((Reference<?>) book1).setNomenclaturallyRelevant(false);
 		
 		book2 = ReferenceFactory.newBook();
-		book2.setAuthorTeam(team2);
+		book2.setAuthorship(team2);
 		book2.setTitle(title2);
 		book2.setEdition(editionString2);
 		book2.setVolume(volumeString2);
@@ -323,11 +323,11 @@ public class DefaultMatchStrategyTest {
 		
 		Assert.assertTrue("Equal books should match", matchStrategy.invoke(book1, book2));
 		
-		book1.setAuthorTeam(person1);
-		book2.setAuthorTeam(person1);
+		book1.setAuthorship(person1);
+		book2.setAuthorship(person1);
 		Assert.assertTrue("Books with same author should match", matchStrategy.invoke(book1, book2));
 		
-		book2.setAuthorTeam(person2);
+		book2.setAuthorship(person2);
 		Assert.assertFalse("Books with different authors should not match", matchStrategy.invoke(book1, book2));
 		
 		person2.setPrefix("pre1");

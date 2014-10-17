@@ -389,7 +389,7 @@ public class IpniService  implements IIpniService{
 		String author = valueMap.get(PUBLICATION_AUTHOR_TEAM);
 		if (StringUtils.isNotBlank(author)){
 			Team team = Team.NewTitledInstance(author, author);
-			ref.setAuthorTeam(team);
+			ref.setAuthorship(team);
 		}
 		
 		//remarks
@@ -399,12 +399,12 @@ public class IpniService  implements IIpniService{
 
 
 		String tl2AuthorString = valueMap.get(TL2_AUTHOR);
-		if (ref.getAuthorTeam() == null){
+		if (ref.getAuthorship() == null){
 			Team tl2Author = Team.NewTitledInstance(tl2AuthorString, null);
-			ref.setAuthorTeam(tl2Author);
+			ref.setAuthorship(tl2Author);
 		}else{
 			//TODO parse name, 
-			ref.getAuthorTeam().setTitleCache(tl2AuthorString, true);
+			ref.getAuthorship().setTitleCache(tl2AuthorString, true);
 			ref.addAnnotation(Annotation.NewInstance(tl2AuthorString, AnnotationType.EDITORIAL(), Language.ENGLISH()));
 		}
 

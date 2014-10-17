@@ -474,7 +474,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		Person author = Person.NewInstance();
 		author.setTitleCache("Author", true);
 		ref1.addAnnotation(Annotation.NewInstance("A1", Language.DEFAULT()));
-		ref1.setAuthorTeam(author);
+		ref1.setAuthorship(author);
 		name.setBasionymAuthorTeam(author);
 		
 		name.setNomenclaturalReference(ref1);
@@ -749,8 +749,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		team3.addTeamMember(person3);
 		team3.addEmailAddress("emailAddress3");
 		
-		book1.setAuthorTeam(team2);
-		book2.setAuthorTeam(team3);
+		book1.setAuthorship(team2);
+		book2.setAuthorship(team3);
 		
 		Credit credit1 = Credit.NewInstance(team3, "credit1");
 		book2.addCredit(credit1);
@@ -763,8 +763,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 				
 		cdmGenericDao.merge(team2, team3, null);
 		
-		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorTeam());
-		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorTeam());
+		Assert.assertSame("Author of book1 must be team2.", team2, book1.getAuthorship());
+		Assert.assertSame("Author of book2 must be team2.", team2, book2.getAuthorship());
 		Assert.assertSame("Agent of credit1 must be team2.", team2, credit1.getAgent());
 
 		Assert.assertEquals("Team2 must have 3 persons as members.",3, team2.getTeamMembers().size());
@@ -930,9 +930,9 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 //			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 //			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			
-			book1.setAuthorTeam(person1);
-			book2.setAuthorTeam(person1);
-			book3.setAuthorTeam(person1);
+			book1.setAuthorship(person1);
+			book2.setAuthorship(person1);
+			book3.setAuthorship(person1);
 			
 			boolean m = matchStrategy.invoke(book1, book3);
 			boolean m2 = matchStrategy.invoke(book2, book3);
@@ -940,8 +940,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 2 entries", 2, matchResult.size());
 			
-			book2.setAuthorTeam(person2);
-			book3.setAuthorTeam(person3);
+			book2.setAuthorship(person2);
+			book3.setAuthorship(person3);
 			matchResult = cdmGenericDao.findMatching(book3, null);
 			Assert.assertEquals("Resultlist must have no entries", 0, matchResult.size());
 			
@@ -968,7 +968,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		
 		book1.setTitle("Title1");
 		book1.setEdition("Edition1");
-		book1.setAuthorTeam(team1);
+		book1.setAuthorship(team1);
 		
 		
 		IBook book2 = (IBook) ((Reference)book1).clone();
@@ -1027,12 +1027,12 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			boolean teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertTrue("Team1 and team2 should match" ,teamsMatch);
 			
-			book3.setAuthorTeam(team2);
+			book3.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
 
-			book3.setAuthorTeam(null);
+			book3.setAuthorship(null);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));
@@ -1047,8 +1047,8 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 			teamsMatch = teamMatcher.invoke(team1, team2);
 			Assert.assertFalse("Team1 and team2 should not match" ,teamsMatch);
 			
-			book3.setAuthorTeam(team1);
-			book2.setAuthorTeam(team2);
+			book3.setAuthorship(team1);
+			book2.setAuthorship(team2);
 			matchResult = cdmGenericDao.findMatching(book3, matchStrategy);
 			Assert.assertEquals("Resultlist must have 1 entries", 1, matchResult.size());
 			Assert.assertTrue("Resultlist must contain book 1", matchResult.contains(book1));

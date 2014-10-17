@@ -71,10 +71,10 @@ public class ArticleDefaultCacheStrategyTest {
 	@Test
 	public void testGetTitleCache(){
 		journal1.setTitle("My journal");
-		journal1.setAuthorTeam(team2);
+		journal1.setAuthorship(team2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
-		article1.setAuthorTeam(team1);
+		article1.setAuthorship(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
@@ -90,10 +90,10 @@ public class ArticleDefaultCacheStrategyTest {
 	//set to null by setInJournal(null)
 	public void testGetTitleCache2(){
 		journal1.setTitle("My journal");
-		journal1.setAuthorTeam(team2);
+		journal1.setAuthorship(team2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
-		article1.setAuthorTeam(team1);
+		article1.setAuthorship(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("Team1, My article in My journal. 1975", article1.getTitleCache());
 
@@ -106,10 +106,10 @@ public class ArticleDefaultCacheStrategyTest {
 		
 		journal1.setTitle("My journal");
 		journal1.setTitle("M. Journ.");
-		journal1.setAuthorTeam(team2);
+		journal1.setAuthorship(team2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
-		article1.setAuthorTeam(team1);
+		article1.setAuthorship(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		article1.setAbbrevTitle("M. Art.");
 		Assert.assertEquals("T., M. Art. in M. Journ. 1975", article1.getAbbrevTitleCache());  //double dot may be removed in future #3645
@@ -124,10 +124,10 @@ public class ArticleDefaultCacheStrategyTest {
 	public void testGetNomenclaturalCitation(){
 		journal1.setTitle("My journal");
 		journal1.setTitle("M. J.");
-		journal1.setAuthorTeam(team2);
+		journal1.setAuthorship(team2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
-		article1.setAuthorTeam(team1);
+		article1.setAuthorship(team1);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		Assert.assertEquals("in M. J.: 55. 1975", article1.getNomenclaturalCitation(detail1));
 		
@@ -146,7 +146,7 @@ public class ArticleDefaultCacheStrategyTest {
 		article1.setInJournal(journal1);
 		article1.setVolume("22");
 		journal1.setAbbrevTitle("J. Pl. Eur.");
-		journal1.setAuthorTeam(team2);
+		journal1.setAuthorship(team2);
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
 		//no ser, sect, abt
 		Assert.assertEquals("in J. Pl. Eur. 22: 55. 1975", article1.getNomenclaturalCitation(detail1));
@@ -184,10 +184,10 @@ public class ArticleDefaultCacheStrategyTest {
 	@Test 
 	public void testGetTitleWithoutYearAndAuthor(){
 		journal1.setTitle("My journal");
-		journal1.setAuthorTeam(team2);
+		journal1.setAuthorship(team2);
 		article1.setTitle("My article");
 		article1.setInJournal(journal1);
-		article1.setAuthorTeam(team1);
+		article1.setAuthorship(team1);
 		article1.setVolume("34");
 		article1.setSeriesPart("ser. 2");
 		article1.setDatePublished(TimePeriod.NewInstance(1975));
@@ -197,12 +197,12 @@ public class ArticleDefaultCacheStrategyTest {
 	@Test 
 	public void testOldExistingBugs(){
 		journal1.setTitle("Univ. Calif. Publ. Bot.");
-		journal1.setAuthorTeam(null);
+		journal1.setAuthorship(null);
 		
 		Team articleAuthor = Team.NewTitledInstance("Babc. & Stebbins", "Babc. & Stebbins");
 		article1.setTitle("");
 		article1.setInJournal(journal1);
-		article1.setAuthorTeam(articleAuthor);
+		article1.setAuthorship(articleAuthor);
 		article1.setVolume("18");
 		article1.setDatePublished(TimePeriod.NewInstance(1943));
 		Assert.assertEquals("Babc. & Stebbins in Univ. Calif. Publ. Bot. 18. 1943", defaultStrategy.getTitleCache((Reference<?>)article1));

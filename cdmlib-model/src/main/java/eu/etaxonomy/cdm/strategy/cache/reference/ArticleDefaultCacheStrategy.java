@@ -60,7 +60,7 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 		}
 		String result =  getTitleWithoutYearAndAuthor(article, false);
 		result = addYear(result, article, false);
-		TeamOrPersonBase<?> team = article.getAuthorTeam();
+		TeamOrPersonBase<?> team = article.getAuthorship();
 		result = CdmUtils.concat(" ", article.getTitle(), result);
 		if (team != null &&  isNotBlank(team.getTitleCache())){
 			String authorSeparator = isNotBlank(article.getTitle())? afterAuthor : " ";
@@ -76,7 +76,7 @@ public class ArticleDefaultCacheStrategy extends NomRefDefaultCacheStrategyBase 
 		}
 		String result =  getTitleWithoutYearAndAuthor(article, true);
 		result = addYear(result, article, false);
-		TeamOrPersonBase<?> team = article.getAuthorTeam();
+		TeamOrPersonBase<?> team = article.getAuthorship();
 		String articleTitle = CdmUtils.getPreferredNonEmptyString(article.getAbbrevTitle(), article.getTitle(), false, true);
 		result = CdmUtils.concat(" ", articleTitle, result);  //Article should maybe left out for nomenclatural references (?)
 		if (team != null &&  isNotBlank(team.getNomenclaturalTitle())){

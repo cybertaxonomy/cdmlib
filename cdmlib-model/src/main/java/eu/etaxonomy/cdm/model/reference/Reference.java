@@ -98,8 +98,7 @@ import eu.etaxonomy.cdm.validation.annotation.ReferenceCheck;
     "editor",
 	"volume",
 	"pages",
-	"series",
-    "edition",
+	"edition",
     "isbn",
     "issn",
     "doi",
@@ -325,7 +324,9 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@ManyToOne(fetch = FetchType.LAZY)
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
-	private TeamOrPersonBase<?> authorTeam;
+	private TeamOrPersonBase<?> authorship;
+	
+	
 
 //	@XmlElement(name = "ReferenceIdentity")
 //	@XmlIDREF
@@ -660,16 +661,16 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 * @see 	eu.etaxonomy.cdm.model.agent.TeamOrPersonBase
 	 */
 	@Override
-    public TeamOrPersonBase getAuthorTeam(){
-		return this.authorTeam;
+    public TeamOrPersonBase getAuthorship(){
+		return this.authorship;
 	}
 
 	/**
-	 * @see #getAuthorTeam()
+	 * @see #getAuthorship()
 	 */
 	@Override
-    public void setAuthorTeam(TeamOrPersonBase authorTeam){
-		this.authorTeam = authorTeam;
+    public void setAuthorship(TeamOrPersonBase authorTeam){
+		this.authorship = authorTeam;
 	}
 
 	/**

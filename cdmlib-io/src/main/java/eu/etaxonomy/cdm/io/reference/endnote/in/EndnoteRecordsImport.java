@@ -292,7 +292,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strSize = elStyle.getAttributeValue("size");
 							String author_style =  elStyle.getTextNormalize();
 
-							reference.setAuthorTeam(authorTeam);
+							reference.setAuthorship(authorTeam);
 						    authorTeam.setNomenclaturalTitle(author_style);						  
 					}
 				}
@@ -332,7 +332,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 							String strSize_secondary = elStyle_secondary.getAttributeValue("size");
 							String  secondary_author=  elStyle_secondary.getTextNormalize();
  					 
-							reference.setAuthorTeam(authorTeam);
+							reference.setAuthorship(authorTeam);
 							authorTeam.setTitleCache(secondary_author, true);
 						}
 					}
@@ -472,7 +472,7 @@ public class EndnoteRecordsImport extends EndNoteImportBase implements ICdmIO<En
 				
 				Contact contact =  new Contact();
 				Address address = Address.NewInstance();
-				reference.setAuthorTeam(authorTeam);
+				reference.setAuthorship(authorTeam);
 				authorTeam.setContact(contact);		 
 				contact.addAddress(address);
 				address.setLocality(address_style);
