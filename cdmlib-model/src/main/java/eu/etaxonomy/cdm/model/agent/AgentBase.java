@@ -104,6 +104,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 			Contact newContact = Contact.NewInstance();
 			if (create){
 				contact = newContact;
+				this.setContact(contact);
 			}
 			return contact;
 		}
@@ -121,10 +122,10 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @param location
 	 * @see eu.etaxonomy.cdm.model.agent.Contact#addAddress(java.lang.String, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.location.Country, java.lang.String, java.lang.String, eu.etaxonomy.cdm.model.location.Point)
 	 */
-	public void addAddress(String street, String postcode, String locality,
+	public Address addAddress(String street, String postcode, String locality,
 			Country country, String pobox, String region,
 			Point location) {
-		getNewOrExistingContact(true).addAddress(street, postcode, locality, country, pobox, region,
+		return getNewOrExistingContact(true).addAddress(street, postcode, locality, country, pobox, region,
 				location);
 	}
 	/**
@@ -234,7 +235,7 @@ public abstract class AgentBase<S extends IIdentifiableEntityCacheStrategy> exte
 	 * @param url
 	 * @see eu.etaxonomy.cdm.model.agent.Contact#removeUrl(java.lang.String)
 	 */
-	public void removeUrl(String url) {
+	public void removeUrl(URI url) {
 		getNewOrExistingContact(false).removeUrl(url);
 	}
 	

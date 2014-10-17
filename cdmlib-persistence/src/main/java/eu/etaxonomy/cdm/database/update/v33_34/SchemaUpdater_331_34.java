@@ -18,6 +18,7 @@ import org.apache.log4j.Logger;
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
 import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
+import eu.etaxonomy.cdm.database.update.ColumnTypeChanger;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
@@ -150,6 +151,15 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		ifExists = true;
 		step = TableDroper.NewInstance(stepName, tableName, ! INCLUDE_AUDIT, ifExists);
 		stepList.add(step);
+		
+		//change size of AgentBase_contact_urls.contact_urls_element  #3920
+		stepName = "Change length of AgentBase_contact_urls.contact_urls_element";
+		tableName = "AgentBase_contact_urls";
+		columnName = "contact_urls_element";
+		step = ColumnTypeChanger.NewStringSizeInstance(stepName, tableName,
+				columnName, 330, INCLUDE_AUDIT);
+		stepList.add(step);
+		
 		
 		return stepList;
 		
