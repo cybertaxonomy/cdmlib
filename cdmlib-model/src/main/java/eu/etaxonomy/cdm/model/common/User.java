@@ -20,6 +20,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Transient;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -101,6 +102,7 @@ public class User extends CdmBase implements UserDetails {
     @XmlElement(name = "Username")
     @Column(unique = true)
     @Field(analyze = Analyze.NO)
+    @NotNull
     protected String username;
 
     /**

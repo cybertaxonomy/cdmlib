@@ -17,6 +17,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -67,6 +68,7 @@ public class Group extends CdmBase {
     @XmlElement(name = "Name")
     @Column(unique = true)
     @Field
+    @NotNull
     protected String name;
 
     @XmlElementWrapper(name = "Members")

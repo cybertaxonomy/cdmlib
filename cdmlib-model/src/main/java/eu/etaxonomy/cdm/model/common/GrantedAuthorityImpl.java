@@ -11,6 +11,7 @@ package eu.etaxonomy.cdm.model.common;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.validation.constraints.NotNull;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -31,6 +32,7 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
 
     @XmlElement(name = "Authority")
     @Column(unique = true)
+    @NotNull
     private String authority;
 
     protected GrantedAuthorityImpl() {
@@ -41,9 +43,6 @@ public class GrantedAuthorityImpl extends CdmBase implements GrantedAuthority {
         return new GrantedAuthorityImpl();
     }
 
-    /* (non-Javadoc)
-     * @see org.springframework.security.core.GrantedAuthority#getAuthority()
-     */
     @Override
     public String getAuthority() {
         return authority;
