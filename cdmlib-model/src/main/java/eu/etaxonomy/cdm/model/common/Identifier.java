@@ -44,7 +44,7 @@ import eu.etaxonomy.cdm.validation.annotation.NullOrNotEmpty;
 @Entity
 @Audited
 @Table(appliesTo="Identifier", indexes = { @Index(name = "identifierIndex", columnNames = { "identifier" }) })
-public class Identifier<T extends IdentifiableEntity> extends VersionableEntity {
+public class Identifier<T extends IdentifiableEntity<?>> extends VersionableEntity {
 	private static final long serialVersionUID = -798893563577142030L;
 	private static final Logger logger = Logger.getLogger(IdentifiableSource.class);
 
@@ -74,8 +74,8 @@ public class Identifier<T extends IdentifiableEntity> extends VersionableEntity 
     
 // **************************** FACTORY ******************************/    
     
-    public static Identifier NewInstance(IdentifiableEntity entity, String identifier, DefinedTerm type){
-    	return new Identifier(entity, identifier, type);
+    public static <T extends IdentifiableEntity<?>> Identifier<T> NewInstance(T entity, String identifier, DefinedTerm type){
+    	return new Identifier<T>(entity, identifier, type);
     }
 
 // ************************* CONSTRUCTOR ************************************    
@@ -83,7 +83,7 @@ public class Identifier<T extends IdentifiableEntity> extends VersionableEntity 
     @Deprecated  //for hibernate use only
     protected Identifier(){};
     
-    public Identifier (IdentifiableEntity<?> entity, String identifier, DefinedTerm type){
+    public Identifier (T entity, String identifier, DefinedTerm type){
     	this.identifier = identifier;
     	this.type = type;
     	logger.warn("Identified object not yet implemented");

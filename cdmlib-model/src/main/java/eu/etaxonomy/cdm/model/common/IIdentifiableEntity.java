@@ -80,7 +80,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void removeExtension(Extension extension);
 
-    public Set<Identifier> getIdentifiers();
+    public List<Identifier> getIdentifiers();
 
     public void addIdentifier(Identifier identifier);
 

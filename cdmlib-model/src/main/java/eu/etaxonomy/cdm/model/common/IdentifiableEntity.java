@@ -153,7 +153,7 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     @Cascade({CascadeType.SAVE_UPDATE, CascadeType.MERGE, CascadeType.DELETE})
     @Merge(MergeMode.ADD_CLONE)
     @NotNull
-    private Set<Identifier> identifiers = new HashSet<Identifier>();
+    private List<Identifier> identifiers = new ArrayList<Identifier>();
 
     @XmlElementWrapper(name = "Sources", nillable = true)
     @XmlElement(name = "IdentifiableSource")
@@ -314,9 +314,9 @@ public abstract class IdentifiableEntity<S extends IIdentifiableEntityCacheStrat
     }
 
     @Override
-    public Set<Identifier> getIdentifiers(){
+    public List<Identifier> getIdentifiers(){
         if(this.identifiers == null) {
-            this.identifiers = new HashSet<Identifier>();
+            this.identifiers = new ArrayList<Identifier>();
         }
         return this.identifiers;
     }
