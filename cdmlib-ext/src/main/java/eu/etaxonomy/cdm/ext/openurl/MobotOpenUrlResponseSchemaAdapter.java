@@ -157,7 +157,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 		OpenUrlReference reference = null;
 		
 		ResponseStatus status = null;
-		Team authorTeam = null;
+		Team authorship = null;
 		String message = null;
 		
 		String elementName = null;
@@ -175,7 +175,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 			} else if (status != null && qName.equals(OPENURL_RESPONSE_CITATION)) {
 				reference = new OpenUrlReference();
 			} else if (reference != null && qName.equals(AUTHORS)) {
-				authorTeam = Team.NewInstance();
+				authorship = Team.NewInstance();
 			} else if (reference != null && qName.equals(SUBJECTS)) {
 				//TODO implement, but no equivalent in the cdm model			
 			} else {
@@ -192,8 +192,8 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				referenceList.add(reference);
 				reference = null;
 			} else if (reference != null && qName.equals(AUTHORS)) {
-				reference.setAuthorship(authorTeam);
-				authorTeam = null;
+				reference.setAuthorship(authorship);
+				authorship = null;
 			} else if (reference != null && qName.equals(SUBJECTS)) {
 				//TODO implement, but no equivalent in the cdm model		
 			}else {
@@ -311,9 +311,9 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 				}
 				
 				// --- Reference.authorship --- //
-				if(authorTeam != null && reference != null){
+				if(authorship != null && reference != null){
 					if(elementNameToStore.equals("String")){
-						authorTeam.addTeamMember(Person.NewTitledInstance(trimmedText));
+						authorship.addTeamMember(Person.NewTitledInstance(trimmedText));
 					}
 				}
 				

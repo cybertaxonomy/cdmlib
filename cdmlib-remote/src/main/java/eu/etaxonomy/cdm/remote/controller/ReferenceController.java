@@ -52,7 +52,7 @@ public class ReferenceController extends BaseController<Reference, IReferenceSer
             "inReference.authorship"
     });
 
-    private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
+    private static final List<String> CITATION_WITH_AUTHORSHIP_INIT_STRATEGY = Arrays.asList(new String []{
             "authorship.$"
     });
 
@@ -103,12 +103,12 @@ public class ReferenceController extends BaseController<Reference, IReferenceSer
     @RequestMapping(
             value = {"authorship"},
             method = RequestMethod.GET)
-        public ModelAndView doGetAuthorTeam(
+        public ModelAndView doGetAuthorship(
                 @PathVariable("uuid") UUID uuid,
                 HttpServletRequest request,
                 HttpServletResponse response) {
         ModelAndView mv = new ModelAndView();
-        Reference rb = service.load(uuid, CITATION_WITH_AUTHORTEAM_INIT_STRATEGY);
+        Reference rb = service.load(uuid, CITATION_WITH_AUTHORSHIP_INIT_STRATEGY);
         if(rb.getAuthorship() != null){
             mv.addObject(rb.getAuthorship());
         }

@@ -1195,15 +1195,15 @@
       <xsl:sort select="sources/e[1]/citation/datePublished/start"/>
       <xsl:for-each select="sources/e">
         
-        <xsl:variable name="lastname_text" select="citation/authorTeam/lastname"/>
-        <xsl:variable name="prev_lastname_text" select="preceding-sibling::e[1]/citation/authorTeam/lastname"/>
+        <xsl:variable name="lastname_text" select="citation/authorship/lastname"/>
+        <xsl:variable name="prev_lastname_text" select="preceding-sibling::e[1]/citation/authorship/lastname"/>
         
         <xsl:if test="nameUsedInSource/uuid=$name-uuid">
           <xsl:text>; </xsl:text>
           <fo:inline>
-            <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
+            <!--xsl:value-of select="citation/authorship/titleCache"/-->
             <!--TODO wrap this in a variable and compare the previous variable to this one to see if we're dealing with the same name-->
-            <xsl:for-each select="citation/authorTeam/teamMembers/e">
+            <xsl:for-each select="citation/authorship/teamMembers/e">
               <xsl:value-of select="lastname"/>
               <xsl:choose>
                 <xsl:when test="position() != last()">
@@ -1214,7 +1214,7 @@
 
 <xsl:choose>
             <xsl:when test="$lastname_text != $prev_lastname_text">
-            <xsl:value-of select="citation/authorTeam/lastname"/><!--TODO We print lastname here as well as the author list is this a mistake?-->
+            <xsl:value-of select="citation/authorship/lastname"/><!--TODO We print lastname here as well as the author list is this a mistake?-->
             
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
@@ -1250,8 +1250,8 @@
         <xsl:if test="nameUsedInSource/uuid=$name-uuid">
           <xsl:text>; </xsl:text>
           <fo:inline>
-            <!--xsl:value-of select="citation/authorTeam/titleCache"/-->
-            <xsl:for-each select="citation/authorTeam/teamMembers/e">
+            <!--xsl:value-of select="citation/authorship/titleCache"/-->
+            <xsl:for-each select="citation/authorship/teamMembers/e">
               <xsl:value-of select="lastname"/>
               <xsl:choose>
                 <xsl:when test="position() != last()">
@@ -1260,7 +1260,7 @@
               </xsl:choose>
             </xsl:for-each>
             
-            <xsl:value-of select="citation/authorTeam/lastname"/>
+            <xsl:value-of select="citation/authorship/lastname"/>
             <xsl:text> (</xsl:text>
             <xsl:value-of select="citation/datePublished/start"/>
             <xsl:text>: </xsl:text>
@@ -1379,7 +1379,7 @@
 
   <xsl:template name="Referencesold">
     
-      <!-- need to sort by lastname of the first author i.e. //citation/authorTeam/teamMembers/e[1]/lastname -->
+      <!-- need to sort by lastname of the first author i.e. //citation/authorship/teamMembers/e[1]/lastname -->
       <xsl:for-each select="//citation">
 
         <!-- TODO sorting only works for the first citation, implement correctly -->

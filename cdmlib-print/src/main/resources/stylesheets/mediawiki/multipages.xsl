@@ -345,8 +345,8 @@
 		<!-- first of all check if any of the data we show exist: TODO remove this 
 			test, if we modified CDM services, to export proper data -->
 		<xsl:if
-			test="exists($reference-node/authorTeam/teamMembers/e[1]/lastname) 
-            or exists($reference-node/authorTeam/lastname) or exists($reference-node/datePublished/start)
+			test="exists($reference-node/authorship/teamMembers/e[1]/lastname) 
+            or exists($reference-node/authorship/lastname) or exists($reference-node/datePublished/start)
             or exists($reference-node/title)">
 
 			<!-- use the citation-uuid as a unique name for the reference -->
@@ -357,9 +357,9 @@
 				select="concat('{{EDIT_Reference|name=',$citation-uuid,'|content=')" />
 
 			<xsl:choose>
-				<xsl:when test="exists($reference-node/authorTeam/teamMembers)">
+				<xsl:when test="exists($reference-node/authorship/teamMembers)">
 					<xsl:text>{{aut|</xsl:text>
-					<xsl:for-each select="$reference-node/authorTeam/teamMembers/e">
+					<xsl:for-each select="$reference-node/authorship/teamMembers/e">
 						<xsl:value-of select="lastname" />
 						<xsl:choose>
 							<xsl:when test="position() != last()">
@@ -371,9 +371,9 @@
 				</xsl:when>
 				<xsl:otherwise>
 					<xsl:choose>
-						<xsl:when test="exists($reference-node/authorTeam/lastname)">
+						<xsl:when test="exists($reference-node/authorship/lastname)">
 							<xsl:text>{{aut|</xsl:text>
-							<xsl:value-of select="$reference-node/authorTeam/lastname" />
+							<xsl:value-of select="$reference-node/authorship/lastname" />
 							<xsl:text>}} </xsl:text>
 						</xsl:when>
 						<xsl:otherwise>

@@ -612,7 +612,7 @@ public class CdmGenericDaoImplTest extends CdmTransactionalIntegrationTest{
 		article1.addMedia(media1);
 		article2.addMedia(media2);
 		
-//		ref1.setAuthorTeam(author);
+//		ref1.setAuthorship(author);
 //		name1.setBasionymAuthorTeam(author);
 		
 		name1.setNomenclaturalReference(article1);

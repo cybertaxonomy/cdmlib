@@ -178,22 +178,22 @@ public class TaxonXModsExtractor extends TaxonXExtractor{
                 ref.setAuthorship(persons.get(0));
             }
             else{
-                Team authorTeam = Team.NewInstance();
+                Team authorship = Team.NewInstance();
                 for (Person pers:persons){
-                    authorTeam.addTeamMember(pers);
+                    authorship.addTeamMember(pers);
                 }
 
-                if (!personMap.containsKey(authorTeam.getTitleCache()) && (authorTeam.getTeamMembers().size()>0)){
-                    UUID uuid = importer.getAgentService().saveOrUpdate(authorTeam);
-                    personMap.put(authorTeam.getTitleCache(),uuid);
+                if (!personMap.containsKey(authorship.getTitleCache()) && (authorship.getTeamMembers().size()>0)){
+                    UUID uuid = importer.getAgentService().saveOrUpdate(authorship);
+                    personMap.put(authorship.getTitleCache(),uuid);
                 }else{
-                    if(authorTeam.getTeamMembers().size()>1) {
-                    	UUID uuid = personMap.get(authorTeam.getTitleCache());
-                        authorTeam =  (Team) importer.getAgentService().find(uuid);
+                    if(authorship.getTeamMembers().size()>1) {
+                    	UUID uuid = personMap.get(authorship.getTitleCache());
+                        authorship =  (Team) importer.getAgentService().find(uuid);
                     }
                 }
 
-                ref.setAuthorship(authorTeam);
+                ref.setAuthorship(authorship);
             }
             if (editors.size()>0) {
                 ref.setEditor(StringUtils.join(editors,", "));
