@@ -1290,7 +1290,7 @@
     <xsl:for-each select="//nomenclaturalReference[count(. | key('citations-by-uuid', uuid)[1]) = 1] | //citation[count(. | key('citations-by-uuid', uuid)[1]) = 1]">
     <!--xsl:for-each select="//nomenclaturalReference[count(. | key('nomenclaturalrefs-by-uuid', uuid)[1]) = 1]"-->
       <!--xsl:for-each select="//nomenclaturalReference"-->
-        <xsl:sort select="authorTeam/lastname | authorTeam/teamMembers/e[1]/lastname" />
+        <xsl:sort select="authorship/lastname | authorship/teamMembers/e[1]/lastname" />
       <xsl:sort select="datePublished/start"></xsl:sort>
 
       <fo:block linefeed-treatment="preserve" text-align="justify" text-indent="-{$taxon-name-indentation}" start-indent="{$taxon-name-indentation}">
@@ -1299,11 +1299,11 @@
           <!-- filter out repeated citation uuids. Could write a controller method in the CDM to get all unique references for a TaxonNode -->
           
           <!--I am only listing references which have at least one author name. If there are other references in the database - why don't these have an author name-->
-              <xsl:if test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">               
+              <xsl:if test="authorship/teamMembers/e[1]/lastname != '' or authorship/lastname != ''">               
                 <!--xsl:text>&#xA;</xsl:text-->
                 <xsl:choose>
-                  <xsl:when test="authorTeam/teamMembers/e[1]/lastname != ''">
-                    <xsl:for-each select="authorTeam/teamMembers/e">
+                  <xsl:when test="authorship/teamMembers/e[1]/lastname != ''">
+                    <xsl:for-each select="authorship/teamMembers/e">
                       <fo:inline>
                         <xsl:value-of select="lastname"/>
                         <xsl:text> </xsl:text>
@@ -1316,11 +1316,11 @@
                       </fo:inline>
                     </xsl:for-each>
                   </xsl:when>
-                  <xsl:otherwise test="authorTeam/lastname != ''">
+                  <xsl:otherwise test="authorship/lastname != ''">
                     <fo:inline>
-                      <xsl:value-of select="authorTeam/lastname"/>
+                      <xsl:value-of select="authorship/lastname"/>
                       <xsl:text> </xsl:text>
-                      <xsl:value-of select="authorTeam/firstname"/>
+                      <xsl:value-of select="authorship/firstname"/>
                     </fo:inline>                                 
                   </xsl:otherwise>
                 </xsl:choose>                            
@@ -1383,8 +1383,8 @@
       <xsl:for-each select="//citation">
 
         <!-- TODO sorting only works for the first citation, implement correctly -->
-        <xsl:sort select="authorTeam/lastname"/>
-        <xsl:sort select="authorTeam/teamMembers/e[1]/lastname"/>
+        <xsl:sort select="authorship/lastname"/>
+        <xsl:sort select="authorship/teamMembers/e[1]/lastname"/>
         <fo:block>
         <fo:inline>
           
@@ -1404,11 +1404,11 @@
            <!-- .[not(preceding-sibling::Link[@personId   = current()/@personId -->
           <xsl:choose>
                          
-            <xsl:when test="authorTeam/teamMembers/e[1]/lastname != '' or authorTeam/lastname != ''">                                     
+            <xsl:when test="authorship/teamMembers/e[1]/lastname != '' or authorship/lastname != ''">                                     
             
               <xsl:choose>
-                <xsl:when test="authorTeam/teamMembers/e[1]/lastname != ''">
-                <xsl:for-each select="authorTeam/teamMembers/e">
+                <xsl:when test="authorship/teamMembers/e[1]/lastname != ''">
+                <xsl:for-each select="authorship/teamMembers/e">
                   <fo:inline font-weight="bold">
                     <xsl:value-of select="lastname"/>
                     <xsl:choose>
@@ -1419,9 +1419,9 @@
                   </fo:inline>
                 </xsl:for-each>
                 </xsl:when>
-                <xsl:otherwise test="authorTeam/lastname != ''">
+                <xsl:otherwise test="authorship/lastname != ''">
                   <fo:inline font-weight="bold">
-                    <xsl:value-of select="authorTeam/lastname"/>
+                    <xsl:value-of select="authorship/lastname"/>
                   </fo:inline>                                 
                 </xsl:otherwise>
               </xsl:choose>                            

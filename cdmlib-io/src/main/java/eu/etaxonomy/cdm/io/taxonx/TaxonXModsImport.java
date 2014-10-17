@@ -171,7 +171,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 		int PARSED = 1;
 		Namespace nsMods = elModsName.getNamespace();
 		List<Content> contentList = elModsName.getContent();
-		Team authorTeam = Team.NewInstance();
+		Team authorship = Team.NewInstance();
 		
 		//name
 		List<Element> elNameParts = elModsName.getChildren("namePart", nsMods);
@@ -187,7 +187,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			if (elNamePart != null){
 				String namePart = elNamePart.getTextNormalize();
 				contentList.remove(elNamePart);
-				authorTeam.setTitleCache(namePart, true);
+				authorship.setTitleCache(namePart, true);
 			}
 			if (elNameParts.size()> 1){
 				logger.warn("Multiple nameparts of unexpected type");
@@ -200,7 +200,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 			for (Element elNamePart: tmpNamePartList){
 				if (elNamePart.getAttributeValue("type").equals("family")){
 					lastTeamMember = Person.NewInstance();
-					authorTeam.addTeamMember(lastTeamMember);
+					authorship.addTeamMember(lastTeamMember);
 					lastTeamMember.setLastname(elNamePart.getTextNormalize());
 				}else if (elNamePart.getAttributeValue("type").equals("given")){
 					lastTeamMember.setFirstname(elNamePart.getTextNormalize());
@@ -210,7 +210,7 @@ public class TaxonXModsImport extends CdmIoBase<TaxonXImportState> implements IC
 				contentList.remove(elNamePart);
 			}
 		}
-		ref.setAuthorship(authorTeam);
+		ref.setAuthorship(authorship);
 		
 		removeEmptyContent(contentList);
 		for (Content o: contentList){

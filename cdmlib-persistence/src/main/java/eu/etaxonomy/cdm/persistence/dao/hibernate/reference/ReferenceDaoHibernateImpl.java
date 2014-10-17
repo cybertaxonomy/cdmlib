@@ -98,7 +98,7 @@ public class ReferenceDaoHibernateImpl extends IdentifiableDaoBase<Reference> im
 		Session session = getSession();
 
 		Query query = session.createQuery("select " +
-				"r.uuid, r.titleCache, ab.titleCache from " + type.getSimpleName() + " as r left outer join r.authorTeam as ab ");//"select uuid, titleCache from " + type.getSimpleName());
+				"r.uuid, r.titleCache, ab.titleCache from " + type.getSimpleName() + " as r left outer join r.authorship as ab ");//"select uuid, titleCache from " + type.getSimpleName());
 
 		List<Object[]> result = query.list();
 

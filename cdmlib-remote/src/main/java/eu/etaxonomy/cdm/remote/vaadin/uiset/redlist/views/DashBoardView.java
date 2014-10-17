@@ -561,7 +561,7 @@ public class DashBoardView extends CustomComponent implements View{
     protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.*",
-            "elements.sources.citation.authorTeam.$",
+            "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",
@@ -613,7 +613,7 @@ public class DashBoardView extends CustomComponent implements View{
             "elements.$",
             "elements.states.*",
             "elements.inDescription",
-            "elements.sources.citation.authorTeam",
+            "elements.sources.citation.authorship",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",

@@ -35,7 +35,7 @@ public class ClassificationListController extends IdentifiableListController<Cla
 
 
 	protected static final List<String> DEFAULT_INIT_STRATEGY = Arrays.asList(new String []{
-			"reference.authorTeam"
+			"reference.authorship"
 	});
 	
 		

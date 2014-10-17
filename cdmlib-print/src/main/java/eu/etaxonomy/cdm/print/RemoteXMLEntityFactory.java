@@ -86,7 +86,7 @@ public class RemoteXMLEntityFactory extends XmlEntityFactoryBase {
 	private static final String NAME_TYPE_DESIGNATIONS = "name/" + UUID
 			+ "/typeDesignations";
 
-	// TAXON_ACCEPTED should populate references but authorTeam is not always
+	// TAXON_ACCEPTED should populate references but authorship is not always
 	// populated so call the reference controller directly
 	private static final String REFERENCES = "portal/reference/" + UUID;
 

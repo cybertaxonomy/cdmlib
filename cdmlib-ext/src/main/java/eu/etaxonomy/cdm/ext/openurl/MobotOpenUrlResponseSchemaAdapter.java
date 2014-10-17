@@ -310,7 +310,7 @@ public class MobotOpenUrlResponseSchemaAdapter extends SchemaAdapterBase<Referen
 					}
 				}
 				
-				// --- Reference.authorTeam --- //
+				// --- Reference.authorship --- //
 				if(authorTeam != null && reference != null){
 					if(elementNameToStore.equals("String")){
 						authorTeam.addTeamMember(Person.NewTitledInstance(trimmedText));

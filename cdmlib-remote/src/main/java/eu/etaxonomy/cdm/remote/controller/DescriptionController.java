@@ -86,7 +86,7 @@ public class DescriptionController extends BaseController<DescriptionBase, IDesc
     protected static final List<String> TAXONDESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.$",
-            "elements.sources.citation.authorTeam",
+            "elements.sources.citation.authorship",
             "elements.sources.nameUsedInSource",
             "elements.multilanguageText",
             "elements.media",

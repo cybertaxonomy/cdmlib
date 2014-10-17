@@ -140,7 +140,7 @@ public class NonViralNameParserImplTest {
 		name = parser.parseReferencedName(strNameWith3Authors, botanicCode, speciesRank);
 		Assert.assertFalse("No problems should exist", name.hasProblem());
 		Assert.assertEquals("Name should not include reference part", "Abies alba Mess., L. & Mill.", name.getTitleCache());
-		Assert.assertEquals("Name should have authorteam with 2 authors", 3, ((Team)name.getCombinationAuthorTeam()).getTeamMembers().size());
+		Assert.assertEquals("Name should have authorship with 2 authors", 3, ((Team)name.getCombinationAuthorTeam()).getTeamMembers().size());
 		Assert.assertEquals("Mess., L. & Mill., Sp. Pl., ed. 3. 1987", name.getNomenclaturalReference().getTitleCache());
 		
 	}

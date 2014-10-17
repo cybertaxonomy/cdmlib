@@ -669,8 +669,8 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	 * @see #getAuthorship()
 	 */
 	@Override
-    public void setAuthorship(TeamOrPersonBase authorTeam){
-		this.authorship = authorTeam;
+    public void setAuthorship(TeamOrPersonBase authorship){
+		this.authorship = authorship;
 	}
 
 	/**
@@ -1311,7 +1311,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 		try {
 			Reference<?> result = (Reference<?>)super.clone();
 			result.setDatePublished(datePublished != null? (TimePeriod)datePublished.clone(): null);
-			//no changes to: title, authorTeam, hasProblem, nomenclaturallyRelevant, uri
+			//no changes to: title, authorship, hasProblem, nomenclaturallyRelevant, uri
 			return result;
 		} catch (CloneNotSupportedException e) {
 			logger.warn("Object does not implement cloneable");

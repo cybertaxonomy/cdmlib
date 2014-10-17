@@ -127,7 +127,7 @@ public class DemoTaxonTable extends Table{
 	protected static final List<String> DESCRIPTION_INIT_STRATEGY = Arrays.asList(new String []{
             "$",
             "elements.*",
-            "elements.sources.citation.authorTeam.$",
+            "elements.sources.citation.authorship.$",
             "elements.sources.nameUsedInSource.originalNameString",
             "elements.area.level",
             "elements.modifyingText",

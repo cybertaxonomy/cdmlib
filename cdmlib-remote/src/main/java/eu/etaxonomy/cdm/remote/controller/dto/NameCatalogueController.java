@@ -219,13 +219,13 @@ public class NameCatalogueController extends AbstractController<TaxonNameBase, I
             "taxon.name",
             "classification",
             "classification.reference.$",
-            "classification.reference.authorTeam.$" });
+            "classification.reference.authorship.$" });
 
     /** Hibernate classification vocabulary initialisation strategy */
     private static final List<String> VOC_CLASSIFICATION_INIT_STRATEGY = Arrays.asList(new String[] {
             "classification",
             "classification.reference.$",
-            "classification.reference.authorTeam.$" });
+            "classification.reference.authorship.$" });
 
     /** Hibernate classification vocabulary initialisation strategy */
     private static final List<String> COMMON_INIT_STRATEGY = Arrays.asList(new String[] {});

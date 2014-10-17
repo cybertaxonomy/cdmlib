@@ -49,7 +49,7 @@ public class ReferenceController extends BaseController<Reference, IReferenceSer
             "$",
             "authorTeam",
             "inReference.inReference",
-            "inReference.authorTeam"
+            "inReference.authorship"
     });
 
     private static final List<String> CITATION_WITH_AUTHORTEAM_INIT_STRATEGY = Arrays.asList(new String []{
