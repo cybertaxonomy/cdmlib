@@ -34,17 +34,12 @@ public class TermDefaultCacheStrategy<T extends TermBase> extends IdentifiableEn
 	
 	final static UUID uuid = UUID.fromString("9cdf52c1-bac4-4b6c-a7f9-1a87401bd8f9");
 	
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.StrategyBase#getUuid()
-	 */
 	@Override
 	protected UUID getUuid() {
 		return uuid;
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy#getTitleCache(eu.etaxonomy.cdm.model.common.IdentifiableEntity)
-	 */
+	@Override
 	public String getTitleCache(T term) {
 		String result = null;
 		if (term.getRepresentations().size() > 0) {
