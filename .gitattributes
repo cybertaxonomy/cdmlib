@@ -953,7 +953,6 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecord.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecordImpl.java -text
-cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/View.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/AuditEventContext.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/AuditEventContextHolder.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/context/AuditEventContextHolderStrategy.java -text

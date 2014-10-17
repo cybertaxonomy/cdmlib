@@ -325,8 +325,7 @@ public class Reference<S extends IReferenceBaseCacheStrategy> extends Identifiab
 	@IndexedEmbedded
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private TeamOrPersonBase<?> authorship;
-	
-	
+
 
 //	@XmlElement(name = "ReferenceIdentity")
 //	@XmlIDREF

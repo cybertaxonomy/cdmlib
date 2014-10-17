@@ -16,12 +16,14 @@ import java.util.List;
 import org.apache.log4j.Logger;
 
 import eu.etaxonomy.cdm.database.update.ColumnAdder;
+import eu.etaxonomy.cdm.database.update.ColumnNameChanger;
 import eu.etaxonomy.cdm.database.update.ColumnRemover;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdater;
 import eu.etaxonomy.cdm.database.update.ISchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.SchemaUpdaterBase;
 import eu.etaxonomy.cdm.database.update.SimpleSchemaUpdaterStep;
 import eu.etaxonomy.cdm.database.update.TableCreator;
+import eu.etaxonomy.cdm.database.update.TableDroper;
 import eu.etaxonomy.cdm.database.update.v31_33.SchemaUpdater_33_331;
 
 /**
@@ -128,6 +130,27 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
 		stepList.add(step);
 
+		//authorTeam -> authorship
+		stepName = "Rename Reference.authorTeam column";
+		tableName = "Reference";
+		oldColumnName = "authorTeam_id";
+		String newColumnName = "authorship_id";
+		step = ColumnNameChanger.NewIntegerInstance(stepName, tableName, oldColumnName, newColumnName, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//remove CDM_VIEW #4316
+		stepName = "Remove CDM_VIEW_CDM_VIEW table";
+		tableName = "CDM_VIEW_CDM_VIEW";
+		boolean ifExists = true;
+		step = TableDroper.NewInstance(stepName, tableName, ! INCLUDE_AUDIT, ifExists);
+		stepList.add(step);
+
+		stepName = "Remove CDM_VIEW table";
+		tableName = "CDM_VIEW";
+		ifExists = true;
+		step = TableDroper.NewInstance(stepName, tableName, ! INCLUDE_AUDIT, ifExists);
+		stepList.add(step);
+		
 		return stepList;
 		
 		
