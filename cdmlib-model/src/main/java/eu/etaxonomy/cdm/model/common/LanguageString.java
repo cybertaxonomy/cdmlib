@@ -37,9 +37,13 @@ public class LanguageString  extends LanguageStringBase implements Cloneable {
 	@SuppressWarnings("unused")
 	private static final Logger logger = Logger.getLogger(LanguageString.class);
 
+//********************* FACTORY *******************************************/	
+	
 	public static LanguageString NewInstance(String text, Language language){
 		return new LanguageString(text, language);
 	}
+
+// ********************* CONSTRUCTOR ********************************/	
 	
 	protected LanguageString() {
 		super();
@@ -49,13 +53,12 @@ public class LanguageString  extends LanguageStringBase implements Cloneable {
 		super(text, language);
 	}
 
-	/* (non-Javadoc)
-	 * @see eu.etaxonomy.cdm.model.common.CdmBase#toString()
-	 */
+
+//*************** TO STRING ***********************************/	
 	@Override
 	public String toString() {
 		if (text == null){
-			return super.toString() + "null";
+			return super.toString() + ":null";
 		}else{
 			String languagePart = "";
 			if (this.language != null){
@@ -68,7 +71,8 @@ public class LanguageString  extends LanguageStringBase implements Cloneable {
 			}
 		}
 	}
-	
+
+// ************************ CLONE ********************************/	
 	@Override
 	public Object clone() throws CloneNotSupportedException {
 		LanguageString result = (LanguageString)super.clone();

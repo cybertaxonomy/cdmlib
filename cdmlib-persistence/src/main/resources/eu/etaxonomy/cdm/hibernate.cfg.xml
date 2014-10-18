@@ -135,6 +135,7 @@
       <mapping class="eu.etaxonomy.cdm.model.metadata.CdmPreference"/>
       <!-- Molecular Package -->
       <mapping class="eu.etaxonomy.cdm.model.molecular.PhylogeneticTree"/>
+      <mapping class="eu.etaxonomy.cdm.model.molecular.DnaQuality"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.DnaSample"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Amplification"/>
       <mapping class="eu.etaxonomy.cdm.model.molecular.Primer"/>

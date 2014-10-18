@@ -196,7 +196,7 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 			if (includeCdmBaseAttributes){
 					updateQuery += " id integer NOT NULL,"
 						+ " created " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
-						+ " uuid varchar(36),"
+						+ " uuid varchar(36) NOT NULL,"
 						+ " updated " + ColumnAdder.getDatabaseColumnType(datasource, "datetime") + ", "
 						+ " createdby_id integer,"
 						+ " updatedby_id integer, ";

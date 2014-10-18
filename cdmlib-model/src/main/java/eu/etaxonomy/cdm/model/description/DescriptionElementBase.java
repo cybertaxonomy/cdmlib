@@ -143,7 +143,7 @@ public abstract class DescriptionElementBase extends AnnotatableEntity implement
     private DescriptionBase inDescription;
     
 	@XmlElement(name = "TimePeriod")
-    private TimePeriod timeperiod = TimePeriod.NewInstance();;
+    private TimePeriod timeperiod = TimePeriod.NewInstance();
 
     @XmlElementWrapper(name = "Sources")
     @XmlElement(name = "DescriptionElementSource")

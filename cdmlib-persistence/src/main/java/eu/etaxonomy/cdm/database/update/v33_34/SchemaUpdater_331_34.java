@@ -160,6 +160,28 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 				columnName, 330, INCLUDE_AUDIT);
 		stepList.add(step);
 		
+		//TODO not null on username, groupname and authority  #4382
+		
+		//DnaQuality #4434
+		//Identifier
+		stepName = "Create dna quality";
+		boolean includeCdmBaseAttributes = true;
+		tableName = "DnaQuality";
+		String[] columnNames = new String[]{"concentration","ratioofabsorbance230_260", "ratioofabsorbance260_280","qualityterm_id"};
+		String[] columnTypes = new String[]{"double","double","double","int"};
+		String[] referencedTables = new String[]{null,null,null,"DefinedTermBase"};
+		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes); 
+		stepList.add(step);
+
+		//DnaQuality in TissueSample
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add foreign key to dna quality";
+		tableName = "SpecimenOrObservationBase";
+		newColumnName = "dnaQuality_id";
+		boolean notNull = false;
+		String referencedTable = "DnaQuality";
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
+		stepList.add(step);
 		
 		return stepList;
 		

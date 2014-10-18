@@ -853,6 +853,7 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/metadata/PreferencePredicate.j
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/metadata/PreferenceSubject.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Amplification.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Cloning.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaQuality.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/DnaSample.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/PhylogeneticTree.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/molecular/Primer.java -text
