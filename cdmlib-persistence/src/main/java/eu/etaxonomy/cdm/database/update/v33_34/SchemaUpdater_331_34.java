@@ -183,10 +183,46 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, notNull, referencedTable);
 		stepList.add(step);
 		
+		//time scope for classifications
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add time scope (start) for classifications";
+		tableName = "Classification";
+		newColumnName = "timeperiod_start";
+		int length = 255;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add time scope (end) for classifications";
+		tableName = "Classification";
+		newColumnName = "timeperiod_end";
+		length = 255;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+
+		//TODO H2 / PostGreSQL / SQL Server
+		stepName = "Add time scope (freetext) for classifications";
+		tableName = "Classification";
+		newColumnName = "timeperiod_freetext";
+		length = 255;
+		step = ColumnAdder.NewStringInstance(stepName, tableName, newColumnName, length, INCLUDE_AUDIT);
+		stepList.add(step);
+		
+		//Classification_GeoScope
+		//TODO
+		stepName = "Create Classification_GeoScope table";
+		includeCdmBaseAttributes = false;
+		tableName = "Classification_GeoScope";
+		columnNames = new String[]{"Classification_id","geoScopes_id"};
+		columnTypes = new String[]{"int","int"};
+		referencedTables = new String[]{"Classification","DefinedTermBase"};
+		TableCreator creator = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		creator.setPrimaryKeyParams("Classification_id,geoScopes_id", "REV,Classification_id,geoScopes_id");
+		stepList.add(creator);
+
+		
 		return stepList;
 		
-		
-
 	}
 
 	private void addIdentifierTables(List<ISchemaUpdaterStep> stepList) {

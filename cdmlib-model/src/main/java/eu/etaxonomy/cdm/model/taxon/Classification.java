@@ -19,12 +19,15 @@ import java.util.Set;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElementWrapper;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
@@ -42,6 +45,8 @@ import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.common.IdentifiableEntity;
 import eu.etaxonomy.cdm.model.common.Language;
 import eu.etaxonomy.cdm.model.common.LanguageString;
+import eu.etaxonomy.cdm.model.common.TimePeriod;
+import eu.etaxonomy.cdm.model.location.NamedArea;
 import eu.etaxonomy.cdm.model.reference.Reference;
 import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
 
@@ -54,8 +59,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "name",
     "rootNode",
     "reference",
-    "microReference"
-
+    "microReference",
+    "timeperiod"
 })
 @XmlRootElement(name = "Classification")
 @Entity
@@ -87,10 +92,22 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     @Cascade({CascadeType.SAVE_UPDATE})
     private Reference<?> reference;
 
-
-
     @XmlElement(name = "microReference")
     private String microReference;
+    
+	@XmlElement(name = "TimePeriod")
+    private TimePeriod timeperiod = TimePeriod.NewInstance();
+	
+    @XmlElementWrapper( name = "GeoScopes")
+    @XmlElement( name = "GeoScope")
+    @XmlIDREF
+    @XmlSchemaType(name="IDREF")
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name="Classification_GeoScope")
+    @Cascade({CascadeType.SAVE_UPDATE})
+    private Set<NamedArea> geoScopes = new HashSet<NamedArea>();
+
+
 
 //	/**
 //	 * If this classification is an alternative classification for a subclassification in
@@ -490,6 +507,25 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
     public void setMicroReference(String microReference) {
         this.microReference = microReference;
     }
+    
+
+    /**
+	 * The point in time, the time period or the season for which this description element 
+	 * is valid. A season may be expressed by not filling the year part(s) of the time period. 
+	 */
+	public TimePeriod getTimeperiod() {
+		return timeperiod;
+	}
+
+	/**
+	 * @see #getTimeperiod()
+	 */
+	public void setTimeperiod(TimePeriod timeperiod) {
+		if (timeperiod == null){
+			timeperiod = TimePeriod.NewInstance();
+		}
+		this.timeperiod = timeperiod;
+	}
 
     @Override
     public String generateTitle() {
