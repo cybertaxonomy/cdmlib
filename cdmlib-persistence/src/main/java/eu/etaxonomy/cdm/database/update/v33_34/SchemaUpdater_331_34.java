@@ -220,6 +220,18 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		creator.setPrimaryKeyParams("Classification_id,geoScopes_id", "REV,Classification_id,geoScopes_id");
 		stepList.add(creator);
 
+		//Classification_Description
+		//TODO
+		stepName = "Create Classification_Description table";
+		includeCdmBaseAttributes = false;
+		tableName = "Classification_Description";
+		columnNames = new String[]{"Classification_id","description_id","description_mapkey_id"};
+		columnTypes = new String[]{"int","int","int"};
+		referencedTables = new String[]{"Classification","LanguageString","DefinedTermBase"};
+		creator = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
+		creator.setPrimaryKeyParams("Classification_id", "REV,Classification_id,description_id,description_mapkey_id");
+		stepList.add(creator);
+
 		
 		return stepList;
 		
