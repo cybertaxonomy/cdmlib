@@ -60,7 +60,8 @@ import eu.etaxonomy.cdm.strategy.cache.common.IIdentifiableEntityCacheStrategy;
     "rootNode",
     "reference",
     "microReference",
-    "timeperiod"
+    "timeperiod",
+    "geoScopes"
 })
 @XmlRootElement(name = "Classification")
 @Entity
@@ -526,6 +527,38 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
 		}
 		this.timeperiod = timeperiod;
 	}
+	
+
+    /**
+     * Returns the set of {@link NamedArea named areas} indicating the geospatial
+     * data where <i>this</i> {@link Classification} is valid.
+     */
+    public Set<NamedArea> getGeoScopes(){
+        return this.geoScopes;
+    }
+
+    /**
+     * Adds a {@link NamedArea named area} to the set of {@link #getGeoScopes() named areas}
+     * delimiting the geospatial area where <i>this</i> {@link Classification} is valid.
+     *
+     * @param geoScope	the named area to be additionally assigned to <i>this</i> taxon description
+     * @see    	   		#getGeoScopes()
+     */
+    public void addGeoScope(NamedArea geoScope){
+        this.geoScopes.add(geoScope);
+    }
+
+    /**
+     * Removes one element from the set of {@link #getGeoScopes() named areas} delimiting
+     * the geospatial area where <i>this</i> {@link Classification} is valid.
+     *
+     * @param  geoScope   the named area which should be removed
+     * @see     		  #getGeoScopes()
+     * @see     		  #addGeoScope(NamedArea)
+     */
+    public void removeGeoScope(NamedArea geoScope){
+        this.geoScopes.remove(geoScope);
+    }
 
     @Override
     public String generateTitle() {
@@ -571,6 +604,12 @@ public class Classification extends IdentifiableEntity<IIdentifiableEntityCacheS
                 rootNodeClone.setClassification(result);
                 result.addChildNode(rootNodeClone, rootNode.getReference(), rootNode.getMicroReference());
                 rootNodeClone.setSynonymToBeUsed(rootNode.getSynonymToBeUsed());
+            }
+            
+            //geo-scopes
+            result.geoScopes = new HashSet<NamedArea>();
+            for (NamedArea namedArea : getGeoScopes()){
+                result.geoScopes.add(namedArea);
             }
 
             return result;
