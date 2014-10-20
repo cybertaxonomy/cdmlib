@@ -12,6 +12,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
@@ -82,7 +83,8 @@ public class EntityValidationResult extends CdmBase {
 	@XmlElement(name = "ValidatedEntityUuid")
 	@XmlJavaTypeAdapter(UUIDAdapter.class)
 	@Type(type = "uuidUserType")
-	@FieldBridge(impl = UuidBridge.class)
+	@Column(length=36)  //TODO needed? Type UUID will always assure that is exactly 36
+    @FieldBridge(impl = UuidBridge.class)  //TODO required?
 	private UUID validatedEntityUuid;
 
 	@XmlElement(name = "ValidatedEntityClass")
