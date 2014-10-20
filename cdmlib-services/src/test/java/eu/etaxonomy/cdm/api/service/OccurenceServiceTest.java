@@ -120,8 +120,23 @@ public class OccurenceServiceTest extends CdmTransactionalIntegrationTest {
         Reference<?> reference = getReference();
         determinationEvent.addReference(reference);
 
-        //save specimen
+        /*NonCascaded
+         * SOOB
+         *  - sex (FEMALE)
+         *  - stage (Live stage)
+         *  - kindOfUnit (Kind of unit)
+         * GatheringEvent
+         *  - country (GERMANY)
+         *  - collectingArea (EUROPE)
+         *  DerivedUnit
+         *  - storedUnder (botanical name)
+         *  DerivedUnit-> Collection -> institiute
+         *  - type (botanical garden)
+         *
+         * */
+
         assertEquals("Incorrect number of non cascaded CDM entities", 8, occurrenceService.getNonCascadedAssociatedElements(fieldUnit).size());
+        assertEquals("Incorrect number of non cascaded CDM entities", 8, occurrenceService.getNonCascadedAssociatedElements(mediaSpecimen).size());
 
     }
     private Reference<?> getReference() {

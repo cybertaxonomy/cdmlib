@@ -776,6 +776,77 @@ type=null;
         */
 
         Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
+
+        //Choose the correct entry point to traverse the graph (FieldUnit or DerivedUnit)
+
+        //FieldUnit
+        if(specimen instanceof FieldUnit){
+            nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements((FieldUnit)specimen));
+        }
+        //DerivedUnit
+        else if(specimen instanceof DerivedUnit){
+            DerivedUnit derivedUnit = (DerivedUnit)specimen;
+            if(derivedUnit.getDerivedFrom()!=null){
+                Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
+                getFieldUnits(derivedUnit, fieldUnits);
+                for(FieldUnit fieldUnit:fieldUnits){
+                    nonCascadedCdmEntities.addAll(getFieldUnitNonCascadedAssociatedElements(fieldUnit));
+                }
+            }
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    private Collection<ICdmBase> getFieldUnitNonCascadedAssociatedElements(FieldUnit fieldUnit){
+        //get non cascaded element on SpecimenOrObservationBase level
+        Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(fieldUnit);
+
+        //get FieldUnit specific elements
+        GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
+        if(gatheringEvent!=null){
+            //country
+            if(gatheringEvent.getCountry()!=null){
+                nonCascadedCdmEntities.add(gatheringEvent.getCountry());
+            }
+            //collecting areas
+            for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
+                nonCascadedCdmEntities.add(namedArea);
+            }
+        }
+        for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
+            for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
+                nonCascadedCdmEntities.addAll(getDerivedUnitNonCascadedAssociatedElements(derivedUnit));
+            }
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    private Collection<ICdmBase> getDerivedUnitNonCascadedAssociatedElements(DerivedUnit derivedUnit){
+        //get non cascaded element on SpecimenOrObservationBase level
+        Collection<ICdmBase> nonCascadedCdmEntities = getSpecimenOrObservationNonCascadedAssociatedElements(derivedUnit);
+
+        //get DerivedUnit specific elements
+        if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
+            for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
+                nonCascadedCdmEntities.add(type);
+            }
+        }
+        if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
+            nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
+        }
+        if(derivedUnit.getStoredUnder()!=null){
+            nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
+        }
+        return nonCascadedCdmEntities;
+    }
+
+    /**
+     * @param specimen
+     * @return
+     */
+    private Collection<ICdmBase> getSpecimenOrObservationNonCascadedAssociatedElements(
+            SpecimenOrObservationBase<?> specimen) {
+        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
         //scan SpecimenOrObservationBase
         for(DeterminationEvent determinationEvent:specimen.getDeterminations()){
             //modifier
@@ -795,61 +866,7 @@ type=null;
         if(specimen.getSex()!=null){
             nonCascadedCdmEntities.add(specimen.getSex());
         }
-
-        //FieldUnit
-        if(specimen instanceof FieldUnit){
-            nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements((FieldUnit)specimen));
-        }
-        //DerivedUnit
-        else if(specimen instanceof DerivedUnit){
-            DerivedUnit derivedUnit = (DerivedUnit)specimen;
-            if(derivedUnit.getDerivedFrom()!=null){
-                Collection<FieldUnit> fieldUnits = new ArrayList<FieldUnit>();
-                getFieldUnits(derivedUnit, fieldUnits);
-                for(FieldUnit fieldUnit:fieldUnits){
-                    nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(fieldUnit));
-                }
-            }
-        }
         return nonCascadedCdmEntities;
     }
-
-    private Collection<ICdmBase> getNonCascadedAssociatedElements(FieldUnit fieldUnit){
-        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
-        GatheringEvent gatheringEvent = fieldUnit.getGatheringEvent();
-        if(gatheringEvent!=null){
-            //country
-            if(gatheringEvent.getCountry()!=null){
-                nonCascadedCdmEntities.add(gatheringEvent.getCountry());
-            }
-            //collecting areas
-            for (NamedArea namedArea : gatheringEvent.getCollectingAreas()) {
-                nonCascadedCdmEntities.add(namedArea);
-            }
-        }
-        for (DerivationEvent derivationEvent : fieldUnit.getDerivationEvents()) {
-            for (DerivedUnit derivedUnit : derivationEvent.getDerivatives()) {
-                nonCascadedCdmEntities.addAll(getNonCascadedAssociatedElements(derivedUnit));
-            }
-        }
-        return nonCascadedCdmEntities;
-    }
-
-    private Collection<ICdmBase> getNonCascadedAssociatedElements(DerivedUnit derivedUnit){
-        Collection<ICdmBase> nonCascadedCdmEntities = new HashSet<ICdmBase>();
-        if(derivedUnit.getCollection()!=null && derivedUnit.getCollection().getInstitute()!=null){
-            for (DefinedTerm type : derivedUnit.getCollection().getInstitute().getTypes()) {
-                nonCascadedCdmEntities.add(type);
-            }
-        }
-        if(derivedUnit.getPreservation()!=null && derivedUnit.getPreservation().getMedium()!=null){
-            nonCascadedCdmEntities.add(derivedUnit.getPreservation().getMedium());
-        }
-        if(derivedUnit.getStoredUnder()!=null){
-            nonCascadedCdmEntities.add(derivedUnit.getStoredUnder());
-        }
-        return nonCascadedCdmEntities;
-    }
-
 
 }
