@@ -167,9 +167,9 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		stepName = "Create dna quality";
 		boolean includeCdmBaseAttributes = true;
 		tableName = "DnaQuality";
-		String[] columnNames = new String[]{"concentration","ratioofabsorbance260_230", "ratioofabsorbance260_280","qualitycheckdate","concentrationunit_id","qualityterm_id"};
-		String[] columnTypes = new String[]{"double","double","double","datetime","int","int"};
-		String[] referencedTables = new String[]{null,null,null,null,"DefinedTermBase","DefinedTermBase"};
+		String[] columnNames = new String[]{"purificationmethod","concentration","ratioofabsorbance260_230", "ratioofabsorbance260_280","qualitycheckdate","concentrationunit_id","qualityterm_id"};
+		String[] columnTypes = new String[]{"string_255","double","double","double","datetime","int","int"};
+		String[] referencedTables = new String[]{null,null,null,null,null,"DefinedTermBase","DefinedTermBase"};
 		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes); 
 		stepList.add(step);
 
