@@ -190,6 +190,11 @@
       <mapping class="eu.etaxonomy.cdm.model.taxon.Classification"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationship"/>
       <mapping class="eu.etaxonomy.cdm.model.taxon.TaxonRelationshipType"/>
+      
+      <!-- Validation Package -->
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityValidationResult"/>
+      <mapping class="eu.etaxonomy.cdm.model.validation.EntityConstraintViolation"/>
+      
       <!-- View Package -->
       <mapping class="eu.etaxonomy.cdm.model.view.AuditEvent"/>
       

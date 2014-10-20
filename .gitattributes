@@ -951,6 +951,9 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationship.java -
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/TaxonRelationshipType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package-info.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/taxon/package.html -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityConstraintViolation.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/EntityValidationResult.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/validation/SeverityType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEvent.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecord.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/model/view/AuditEventRecordImpl.java -text
@@ -1031,8 +1034,10 @@ cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/SpecimenTypeParser.j
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TaxonNameParserHistory.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/TimePeriodParser.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/strategy/parser/location/CoordinateConverter.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/CRUDEventType.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level2.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Level3.java -text
+cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/Severity.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/ValidationException.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/BasionymsMustShareEpithetsAndAuthors.java -text
 cdmlib-model/src/main/java/eu/etaxonomy/cdm/validation/annotation/ChildTaxaMustBeLowerRankThanParent.java -text
