@@ -80,10 +80,48 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
 
     public void removeExtension(Extension extension);
 
+    /**
+     * Returns the list of {@link Identifier alternative identifiers}.
+     * In case the order of these identifiers is important it should be
+     * implemented such that the first item in the list is the most 
+     * important/most current identifier. <BR>
+     * E.g. if a barcode identifier
+     * is more important than the accession number for a certain 
+     * specimen, than the barcode identifier should be before the accession number.
+     * <BR>Or if a sample designation is the most recent of all sample designations
+     * than it should be the first in the list while all history designations come
+     * later.
+     * @return
+     */
     public List<Identifier> getIdentifiers();
 
+    /**
+     * @see #getIdentifiers()
+     * @param identifier
+     */
     public void addIdentifier(Identifier identifier);
+    
+    /**
+     * Adds an identifier at the given position. For use of 
+     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * @param index the list index 
+     * @param identifier the identifier
+     */
+    public void addIdentifier(int index, Identifier identifier);
 
+    /**
+     * Removes an identifier at the given position. For use of 
+     * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * @param index the list index 
+     */
+    public void removeIdentifier(int index);
+
+    
+    /**
+     * Removes an identifier
+     * @see #getIdentifiers()
+     * @param identifier
+     */
     public void removeIdentifier(Identifier identifier);
 
 
