@@ -104,6 +104,7 @@ public class SingleRead extends EventBase implements Cloneable{
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+	@Cascade({CascadeType.SAVE_UPDATE})
 	private MaterialOrMethodEvent materialOrMethod;
 
 
