@@ -1283,8 +1283,8 @@ public class CdmGenericDaoImpl extends CdmEntityDaoBase<CdmBase> implements ICdm
 
 	@Override
 	public void createFullSampleData() {
-		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
-		dataGenerator.fillWithData(getSession());
+//		FullCoverageDataGenerator dataGenerator = new FullCoverageDataGenerator();
+//		dataGenerator.fillWithData(getSession());
 	}
 
 }
