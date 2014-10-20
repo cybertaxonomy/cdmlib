@@ -15,10 +15,7 @@ import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
-import com.vaadin.navigator.Navigator;
 import com.vaadin.server.VaadinService;
-import com.vaadin.server.VaadinServlet;
-import com.vaadin.server.VaadinSession;
 import com.vaadin.ui.Notification;
 import com.vaadin.ui.UI;
 
@@ -35,10 +32,8 @@ import eu.etaxonomy.cdm.api.conversation.ConversationHolder;
  *
  */
 
-//TODO: rename class VaadinAuthenticationService
 @Component
-//@Controller
-public class AuthenticationService{
+public class VaadinAuthenticationService{
 	
 	@Autowired
 	private AuthenticationManager authenticationManager;
@@ -56,7 +51,7 @@ public class AuthenticationService{
 
 		private ConversationHolder conversationHolder;
 	
-	Logger logger = Logger.getLogger(AuthenticationService.class);
+	Logger logger = Logger.getLogger(VaadinAuthenticationService.class);
 	
 	private String userName;
 	
@@ -72,10 +67,10 @@ public class AuthenticationService{
 		UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(user, password);
 		try{
 			Authentication authentication = authenticationManager.authenticate(token);
-			SecurityContext context = SecurityContextHolder.getContext();
-			context.setAuthentication(authentication);
 			conversationHolder = new ConversationHolder(dataSource, sessionFactory, transactionManager);
 			conversationHolder.startTransaction();
+			SecurityContext context = SecurityContextHolder.getContext();
+			context.setAuthentication(authentication);
 			setUserName(user);
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("context", context);
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("isAuthenticated", true);
@@ -94,14 +89,20 @@ public class AuthenticationService{
 		if(isAuth != null){
 			VaadinService.getCurrentRequest().getWrappedSession().setAttribute("isAuthenticated", false);
 		}
+		UI ui = UI.getCurrent();
+		SecurityContextHolder.clearContext();
+		ui.close();
 		conversationHolder.clear();
 		conversationHolder.close();
-		SecurityContextHolder.clearContext();
-		UI ui = UI.getCurrent();
-		ui.close();
-		Navigator navigator = ui.getNavigator();
-		navigator.navigateTo("");
-		VaadinSession.getCurrent().close();
+		conversationHolder.getSessionHolder().getSession().close();
+//		VaadinSession.getCurrent().close();
+		VaadinService.getCurrentRequest().getWrappedSession().invalidate(); 
+		ui.getSession().close();
+		ui.getPage().setLocation("/edit/");
+//		ui.close();
+//		ui.detach();
+//		Navigator navigator = ui.getNavigator();
+//		navigator.navigateTo("");
 	}
 	
 	public boolean isAuthenticated(){

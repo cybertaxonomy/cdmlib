@@ -27,9 +27,9 @@ import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.ErrorView;
 @Component
 @Scope("prototype")//maybe session?
 @Theme("mytheme")
-@PreserveOnRefresh
 public class VaadinUI extends UI {
 
+	
     public VaadinUI(){
         super();
     }
@@ -42,9 +42,9 @@ public class VaadinUI extends UI {
 
     @Autowired
     private VaadinConfigurer vaadinConfigurer;
-
+    
     @Override
-    protected void init(VaadinRequest request) {
+    public void init(VaadinRequest request) {
 
         setSizeFull();
         String packageNameScope = "eu.etaxonomy.cdm.remote.vaadin.uiset." + vaadinConfigurer.vaadinUiSet();

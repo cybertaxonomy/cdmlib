@@ -18,11 +18,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.Panel;
 import com.vaadin.ui.VerticalLayout;
 
-import eu.etaxonomy.cdm.remote.vaadin.uiset.redlist.views.LoginView;
-
 @Component
 @Scope("prototype")
-@VaadinView(LoginView.NAME)
+@VaadinView(DefaultView.NAME)
 public class DefaultView extends CustomComponent implements View{
 
 	private static final long serialVersionUID = 1L;
