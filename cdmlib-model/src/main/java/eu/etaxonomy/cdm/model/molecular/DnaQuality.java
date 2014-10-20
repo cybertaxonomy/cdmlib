@@ -10,27 +10,33 @@
 package eu.etaxonomy.cdm.model.molecular;
 
 
+import javax.persistence.Basic;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.ManyToOne;
-import javax.persistence.Transient;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlIDREF;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
 
 import org.apache.log4j.Logger;
+import org.hibernate.annotations.Type;
 import org.hibernate.envers.Audited;
+import org.hibernate.search.annotations.Analyze;
+import org.hibernate.search.annotations.Field;
+import org.hibernate.search.annotations.FieldBridge;
 import org.joda.time.DateTime;
 
+import eu.etaxonomy.cdm.hibernate.search.DateTimeBridge;
+import eu.etaxonomy.cdm.jaxb.DateTimeAdapter;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
 import eu.etaxonomy.cdm.model.common.VersionableEntity;
+import eu.etaxonomy.cdm.model.description.MeasurementUnit;
 import eu.etaxonomy.cdm.model.occurrence.DerivedUnit;
-import eu.etaxonomy.cdm.model.occurrence.MaterialOrMethodEvent;
 import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
 
 /**
@@ -41,14 +47,13 @@ import eu.etaxonomy.cdm.model.occurrence.SpecimenOrObservationType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "DnaQuality", propOrder = {
-    "ratioOfAbsorbance230_260",
+	"purificationMethod",
+	"ratioOfAbsorbance260_230",
     "ratioOfAbsorbance260_280",
     "concentration",
-    "qualityTerm"
-//    ,"purificationMethod"
-//    ,"dateQualityCheck"
-//    ,"dateNanoDrop"
-    
+    "concentrationUnit",
+    "qualityTerm",
+    "qualityCheckDate"
 })
 @XmlRootElement(name = "DnaQuality")
 @Entity
@@ -70,8 +75,15 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 	}
 
 // ************** ATTRIBUTES ****************************/	
+    
+    //TODO
+//    @XmlTransient
+//    @Transient
+//    private MaterialOrMethodEvent purificationMethod;
+    private String purificationMethod;
+
 	
-	private Double ratioOfAbsorbance230_260;
+	private Double ratioOfAbsorbance260_230;
 	
 	private Double ratioOfAbsorbance260_280;
 	
@@ -81,22 +93,23 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
     @XmlIDREF
     @XmlSchemaType(name = "IDREF")
     @ManyToOne(fetch = FetchType.LAZY)
+	private MeasurementUnit concentrationUnit;
+    
+	
+	@XmlElement(name = "Type")
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @ManyToOne(fetch = FetchType.LAZY)
 	private DefinedTerm qualityTerm;
     
-    //TODO
-    @XmlTransient
-    @Transient
-    private MaterialOrMethodEvent purificationMethod;
-    
-  //TODO
-    @XmlTransient
-    @Transient
-    private DateTime dateQualityCheck;
-    
-  //TODO
-    @XmlTransient
-    @Transient
-    private DateTime dateNanoDrop;
+    @XmlElement (name = "QualityCheckDate", type= String.class)
+    @XmlJavaTypeAdapter(DateTimeAdapter.class)
+    @Type(type="dateTimeUserType")
+    @Basic(fetch = FetchType.LAZY)
+    @Field(analyze = Analyze.NO)
+    @FieldBridge(impl = DateTimeBridge.class)
+    @Audited
+    private DateTime qualityCheckDate;
     
 
 // ******************* CONSTRUCTOR *************************/
@@ -107,13 +120,22 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 	private DnaQuality() {}
 	
 //************ GETTER / SETTER  **********************************/	
+	
 
-	public Double getRatioOfAbsorbance230_260() {
-		return ratioOfAbsorbance230_260;
+	public String getPurificationMethod() {
+		return purificationMethod;
 	}
 
-	public void setRatioOfAbsorbance230_260(Double ratioOfAbsorbance230_260) {
-		this.ratioOfAbsorbance230_260 = ratioOfAbsorbance230_260;
+	public void setPurificationMethod(String purificationMethod) {
+		this.purificationMethod = purificationMethod;
+	}
+
+	public Double getRatioOfAbsorbance260_230() {
+		return ratioOfAbsorbance260_230;
+	}
+
+	public void setRatioOfAbsorbance260_230(Double ratioOfAbsorbance260_230) {
+		this.ratioOfAbsorbance260_230 = ratioOfAbsorbance260_230;
 	}
 
 	public Double getRatioOfAbsorbance260_280() {
@@ -131,6 +153,22 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 
 	public void setConcentration(Double concentration) {
 		this.concentration = concentration;
+	}
+
+	public MeasurementUnit getConcentrationUnit() {
+		return concentrationUnit;
+	}
+
+	public void setConcentrationUnit(MeasurementUnit concentrationUnit) {
+		this.concentrationUnit = concentrationUnit;
+	}
+
+	public DateTime getQualityCheckDate() {
+		return qualityCheckDate;
+	}
+
+	public void setQualityCheckDate(DateTime qualityCheckDate) {
+		this.qualityCheckDate = qualityCheckDate;
 	}
 
 	public DefinedTerm getQualityTerm() {
@@ -163,11 +201,12 @@ public class DnaQuality extends VersionableEntity implements Cloneable {
 			
 			//purification method ??
 			
-			//no changes to: rationXXX, concentration, dates, qualityTerm, 
+			//no changes to: rationXXX, concentration, qualityCheckDate, qualityTerm, 
 			return result;
 			
 		} catch (CloneNotSupportedException e) {
 			throw new RuntimeException(e);  //may not occur as Clonable is implemented 
 		}
 	}
+
 }

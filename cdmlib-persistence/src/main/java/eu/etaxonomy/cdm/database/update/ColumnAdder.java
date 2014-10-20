@@ -64,8 +64,8 @@ public class ColumnAdder extends AuditedSchemaUpdaterStepBase<ColumnAdder> imple
 		return new ColumnAdder(stepName, tableName, newColumnName, "clob", includeAudTable, null, false, null);
 	}
 	
-	public static final ColumnAdder NewDateTimeInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable){
-		return new ColumnAdder(stepName, tableName, newColumnName, "datetime", includeAudTable, null, false, null);
+	public static final ColumnAdder NewDateTimeInstance(String stepName, String tableName, String newColumnName, boolean includeAudTable, boolean notNull){
+		return new ColumnAdder(stepName, tableName, newColumnName, "datetime", includeAudTable, null, notNull, null);
 	}
 	
 	protected ColumnAdder(String stepName, String tableName, String newColumnName, String columnType, boolean includeAudTable, Object defaultValue, boolean notNull, String referencedTable) {

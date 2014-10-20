@@ -127,9 +127,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 				}else if ("tinyint".equals(columnTypes.get(i)) ){
 					ColumnAdder adder = ColumnAdder.NewTinyIntegerInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 					this.columnAdders.add(adder);
+				}else if ("datetime".equals(columnTypes.get(i)) ){
+					ColumnAdder adder = ColumnAdder.NewDateTimeInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
+					this.columnAdders.add(adder);
 				}else if ("double".equals(columnTypes.get(i)) ){
 					ColumnAdder adder = ColumnAdder.NewDoubleInstance(this.getStepName(), this.tableName, this.columnNames.get(i), includeAudTable, isNotNull);
 					this.columnAdders.add(adder);
+				}else{
+					throw new RuntimeException("Column type " + columnTypes.get(i) + " not yet supported");
 				}
 			}
 		} catch (Exception e) {

@@ -167,9 +167,9 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		stepName = "Create dna quality";
 		boolean includeCdmBaseAttributes = true;
 		tableName = "DnaQuality";
-		String[] columnNames = new String[]{"concentration","ratioofabsorbance230_260", "ratioofabsorbance260_280","qualityterm_id"};
-		String[] columnTypes = new String[]{"double","double","double","int"};
-		String[] referencedTables = new String[]{null,null,null,"DefinedTermBase"};
+		String[] columnNames = new String[]{"concentration","ratioofabsorbance260_230", "ratioofabsorbance260_280","qualitycheckdate","concentrationunit_id","qualityterm_id"};
+		String[] columnTypes = new String[]{"double","double","double","datetime","int","int"};
+		String[] referencedTables = new String[]{null,null,null,null,"DefinedTermBase","DefinedTermBase"};
 		step = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes); 
 		stepList.add(step);
 
@@ -255,6 +255,33 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		oldColumnName = "sequence_id";
 		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
 		stepList.add(step);
+		
+		//EntityValidationResult
+		//TODO
+		stepName = "Create EntityValidationResult table";
+		includeCdmBaseAttributes = true;
+		tableName = "EntityValidationResult";
+		columnNames = new String[]{"crudeventtype","userfriendlydescription","userfriendlytypename",
+				"validatedentityclass","validatedentityid","validatedentityuuid"};
+		columnTypes = new String[]{"string_255","string_255","string_255","string_255","int","string_36"};
+		referencedTables = new String[]{null,null,null,null,null,null};
+		creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+		stepList.add(creator);
+
+		
+		//EntityConstraintViolation
+		//TODO
+		stepName = "Create EntityConstraintViolation table";
+		includeCdmBaseAttributes = true;
+		tableName = "EntityConstraintViolation";
+		columnNames = new String[]{"invalidvalue","message","propertypath","severity","userfriendlyfieldname",
+				"validator","entityvalidationresult_id"};
+		columnTypes = new String[]{"string_255","string_255","string_255","string_255","string_255","string_255","int"};
+		referencedTables = new String[]{null,null,null,null,null,null,"EntityValidationResult"};
+		creator = TableCreator.NewNonVersionableInstance(stepName, tableName, columnNames, columnTypes, referencedTables, ! INCLUDE_AUDIT);
+		stepList.add(creator);
+
+		
 		
 		return stepList;
 		
