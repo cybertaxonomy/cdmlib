@@ -383,7 +383,7 @@ public class FullCoverageDataGenerator {
 		
 		Primer forwardPrimer = Primer.NewInstance("forward primer");
 		forwardPrimer.setPublishedIn(getReference());
-		forwardPrimer.setSequence(Sequence.NewInstance("my sequence"));
+		forwardPrimer.setSequence(SequenceString.NewInstance("AGGCCAGT"));
 		
 		Primer reversePrimer = Primer.NewInstance("reverse primer");
 		

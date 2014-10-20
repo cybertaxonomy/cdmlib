@@ -231,7 +231,30 @@ public class SchemaUpdater_331_34 extends SchemaUpdaterBase {
 		creator = TableCreator.NewInstance(stepName, tableName, columnNames, columnTypes, referencedTables, INCLUDE_AUDIT, includeCdmBaseAttributes);
 		creator.setPrimaryKeyParams("Classification_id", "REV,Classification_id,description_id,description_mapkey_id");
 		stepList.add(creator);
+		
+		//Primer.sequence type  #4139
+		stepName = "Add sequence string column to primer";
+		tableName = "Primer";
+		newColumnName = "sequence_string";
+		step = ColumnAdder.NewClobInstance(stepName, tableName, newColumnName,
+				INCLUDE_AUDIT);
+		stepList.add(step);
 
+		//Primer.sequence length
+		stepName = "Add sequence length column to primer";
+		tableName = "Primer";
+		newColumnName = "sequence_length";
+		notNull = false;
+		referencedTable = null;
+		step = ColumnAdder.NewIntegerInstance(stepName, tableName, newColumnName, INCLUDE_AUDIT, null, notNull);
+		stepList.add(step);
+
+		//remove sequence_id column  //we do not move data as we do not expect data available yet
+		stepName = "Remove sequence_id column from primer";
+		tableName = "Primer";
+		oldColumnName = "sequence_id";
+		step = ColumnRemover.NewInstance(stepName, tableName, oldColumnName, INCLUDE_AUDIT); 
+		stepList.add(step);
 		
 		return stepList;
 		

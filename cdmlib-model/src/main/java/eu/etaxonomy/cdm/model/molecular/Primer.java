@@ -57,14 +57,9 @@ public class Primer extends AnnotatableEntity {
 	private String label;
 
 	/** @see #getSequence() */
+	//(see #4139)
 	@XmlElement(name = "Sequence")
-    @XmlIDREF
-    @XmlSchemaType(name = "IDREF")
-    @ManyToOne(fetch=FetchType.LAZY)
-    @Cascade({CascadeType.SAVE_UPDATE})
-	//TODO the use of Sequence in this case is a bit of a overhead since you would expect
-	// just having a SequenceString. This may change in future (see #4139)
-	private Sequence sequence;
+ 	private SequenceString sequence = SequenceString.NewInstance();
 
 	/** @see #getPublishedIn() */
 	@XmlElement(name = "PublishedIn")
@@ -111,14 +106,17 @@ public class Primer extends AnnotatableEntity {
 	 * The DNA {@link Sequence} of this primer. A primer is usually a
 	 * small piece of DNA and therefore can be expressed as a sequence.
 	 */
-	public Sequence getSequence() {
+	public SequenceString getSequence() {
 		return sequence;
 	}
 
 	/**
 	 * @see Primer#getSequence()
 	 */
-	public void setSequence(Sequence sequence) {
+	public void setSequence(SequenceString sequence) {
+		if (sequence == null){
+			sequence = SequenceString.NewInstance();
+		}
 		this.sequence = sequence;
 	}
 
