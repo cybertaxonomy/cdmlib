@@ -150,6 +150,10 @@ public class FullCoverageDataGenerator {
 		createReference(cdmBases);
 		
 		createTaxon(cdmBases);
+		
+		for (CdmBase cdmBase: cdmBases){
+			session.save(cdmBase);
+		}
 	}
 
 
@@ -174,7 +178,7 @@ public class FullCoverageDataGenerator {
 		contact.addEmailAddress("a@b.de");
 		contact.addFaxNumber("f:010-123456");
 		contact.addPhoneNumber("p:090-987654");
-		contact.addUrl(URI.create("http:\\\\www.abc.de").toString());
+		contact.addUrl(URI.create("http://www.abc.de").toString());
 		
 		//Address
 		Address address = Address.NewInstance(Country.GERMANY(), "locality", "pobox", "12345", "region", "street", locality);
@@ -349,9 +353,9 @@ public class FullCoverageDataGenerator {
 	
 	
 	private void createMedia(List<CdmBase> cdmBases){
-		AudioFile audioFile = AudioFile.NewInstance(URI.create("http:\\a.b.de"), 22);
-		ImageFile imageFile = ImageFile.NewInstance(URI.create("http:\\b.c.de"), 44, 467, 55);
-		MovieFile movieFile = MovieFile.NewInstance(URI.create("http:\\b.c.de"), 67);
+		AudioFile audioFile = AudioFile.NewInstance(URI.create("http://a.b.de"), 22);
+		ImageFile imageFile = ImageFile.NewInstance(URI.create("http://b.c.de"), 44, 467, 55);
+		MovieFile movieFile = MovieFile.NewInstance(URI.create("http://b.c.de"), 67);
 		MediaRepresentation mediaRepresentation = MediaRepresentation.NewInstance("mime", "media"); 
 	
 		mediaRepresentation.addRepresentationPart(movieFile);
@@ -493,7 +497,7 @@ public class FullCoverageDataGenerator {
 		reference.setInstitution(institution);
 		reference.setIsbn("1234556");
 		reference.setIssn("issn");
-		reference.setDoi(DOI.fromRegistrantCodeAndSuffix("registrantCode", "suffix"));
+		reference.setDoi(DOI.fromRegistrantCodeAndSuffix("14356", "suffix"));
 		reference.setReferenceAbstract("referenceAbstract");
 		reference.setOrganization("organization");
 		reference.setPages("123-134");
@@ -504,7 +508,7 @@ public class FullCoverageDataGenerator {
 //		reference.setSeriesPart("series");
 		reference.setSeriesPart("seriesPart");
 		reference.setVolume("vol. 3");
-		reference.setUri(URI.create("http:\\rer.abc.de"));
+		reference.setUri(URI.create("http://rer.abc.de"));
 		
 		Reference<?> journal = ReferenceFactory.newJournal();
 		reference.setInJournal(journal);
@@ -667,7 +671,7 @@ public class FullCoverageDataGenerator {
 		
 		//Rights
 		Rights rights = Rights.NewInstance("right", Language.ENGLISH());
-		rights.setUri(URI.create("http:\\rights.abc.de"));
+		rights.setUri(URI.create("http://rights.abc.de"));
 		rights.setAbbreviatedText("abbrev");
 		rights.setType(RightsType.COPYRIGHT());
 		Person owner = Person.NewTitledInstance("Owner");

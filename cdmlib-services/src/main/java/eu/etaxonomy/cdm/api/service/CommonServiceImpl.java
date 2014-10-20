@@ -302,6 +302,10 @@ public class CommonServiceImpl extends ServiceBase<OriginalSourceBase,IOriginalS
     public boolean containsValue(PersistentCollection col, Object element) {
     	return genericDao.containsValue(col, element);
     }
-    
-   
+
+	@Override
+	@Transactional(readOnly = false)
+	public void createFullSampleData() {
+		genericDao.createFullSampleData();
+	}
 }

@@ -206,4 +206,6 @@ public interface ICdmGenericDao {
     public boolean containsValue(PersistentCollection col, Object element);
 
 	Set<CdmBase> getReferencingObjectsForDeletion(CdmBase referencedCdmBase);
+
+	public void createFullSampleData();
 }
