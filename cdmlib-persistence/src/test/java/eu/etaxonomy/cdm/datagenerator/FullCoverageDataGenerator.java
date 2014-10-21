@@ -23,6 +23,7 @@ import eu.etaxonomy.cdm.model.common.Annotation;
 import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.Credit;
 import eu.etaxonomy.cdm.model.common.DefinedTerm;
+import eu.etaxonomy.cdm.model.common.EventBase;
 import eu.etaxonomy.cdm.model.common.Extension;
 import eu.etaxonomy.cdm.model.common.ExtensionType;
 import eu.etaxonomy.cdm.model.common.Group;
@@ -141,7 +142,6 @@ import eu.etaxonomy.cdm.strategy.parser.TimePeriodParser;
  * @author a.mueller
  * @created 3013-12-02
  *
- * TODO under construction
  *
  */
 public class FullCoverageDataGenerator {
@@ -512,7 +512,8 @@ public class FullCoverageDataGenerator {
 		amplification.setSuccessful(true);
 		amplification.setSuccessText("Very successful");
 		handleAnnotatableEntity(amplification);
-
+		handleEventBase(amplification);
+		
 		Primer forwardPrimer = Primer.NewInstance("forward primer");
 		forwardPrimer.setPublishedIn(getReference());
 		forwardPrimer.setSequence(SequenceString.NewInstance("my sequence"));
@@ -614,6 +615,7 @@ public class FullCoverageDataGenerator {
 
 		//Classification
 		Classification classification = Classification.NewInstance("My classification", sec);
+		classification.setMicroReference("p. 123");
 		TaxonNode node = classification.addChildTaxon(taxon, sec,"22");
 		handleIdentifiableEntity(classification);
 		handleAnnotatableEntity(node);
@@ -677,8 +679,8 @@ public class FullCoverageDataGenerator {
 		subCollection.setSuperCollection(collection);
 		handleIdentifiableEntity(collection);
 		handleIdentifiableEntity(subCollection);
-
-
+		cdmBases.add(subCollection);
+		
 		collection.setCode("coll code");
 		collection.setCodeStandard("codeStandard");
 		collection.setName("coll name");
@@ -714,6 +716,7 @@ public class FullCoverageDataGenerator {
 		gatheringEvent.setDistanceToWaterSurfaceMax(100.3);
 		gatheringEvent.setDistanceToWaterSurfaceText("distance to water text");
 		handleAnnotatableEntity(gatheringEvent);
+		handleEventBase(gatheringEvent);
 
 
 		//Derived Unit
@@ -737,6 +740,7 @@ public class FullCoverageDataGenerator {
 		event.addOriginal(fieldUnit);
 		event.addDerivative(mediaSpecimen);
 		handleAnnotatableEntity(event);
+		handleEventBase(event);
 
 
 		//SpecOrObservationBase
@@ -758,7 +762,8 @@ public class FullCoverageDataGenerator {
 		determinationEvent.setPreferredFlag(true);
 		determinationEvent.addReference(getReference());
 		handleAnnotatableEntity(determinationEvent);
-
+		handleEventBase(determinationEvent);
+		
 		cdmBases.add(fieldUnit);
 		cdmBases.add(mediaSpecimen);
 		cdmBases.add(collection);
@@ -790,6 +795,8 @@ public class FullCoverageDataGenerator {
 		handleAnnotatableEntity(botName.getHomotypicalGroup());
 		BotanicalName botName2 = BotanicalName.NewInstance(Rank.SPECIES());
 		HybridRelationship hybridRel = botName2.addHybridChild(botName, HybridRelationshipType.FIRST_PARENT(), "Rule 1.2.3");
+		hybridRel.setCitation(ReferenceFactory.newBook());
+		hybridRel.setCitationMicroReference("p. 123");
 		handleAnnotatableEntity(hybridRel);
 
 		ZoologicalName zooName = ZoologicalName.NewInstance(Rank.GENUS());
@@ -827,6 +834,12 @@ public class FullCoverageDataGenerator {
 		cdmBases.add(zooName);
 	}
 
+	private void handleEventBase(EventBase event){
+		event.setTimeperiod(TimePeriodParser.parseString("1.4.1975-2.5.1980"));
+		event.setActor(Person.NewTitledInstance("EventActor"));
+		event.setDescription("Some interesing event");
+	}
+	
 	private void handleAnnotatableEntity(AnnotatableEntity entity){
 		Annotation annotation = Annotation.NewDefaultLanguageInstance("annotation");
 		entity.addAnnotation(annotation);
