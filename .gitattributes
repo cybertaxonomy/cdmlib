@@ -1197,6 +1197,7 @@ cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/BookSection
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/CdDvdDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/GenericDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/ReferenceTypeTest.java -text
+cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/reference/WebPageDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/cache/taxon/TaxonBaseDefaultCacheStrategyTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/generate/IdentificationKeyGeneratorTest.java -text
 cdmlib-model/src/test/java/eu/etaxonomy/cdm/strategy/match/DefaultMatchStrategyTest.java -text
