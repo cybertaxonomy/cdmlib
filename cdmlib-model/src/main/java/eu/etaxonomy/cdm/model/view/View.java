@@ -1,14 +1,23 @@
 /**
 * Copyright (C) 2007 EDIT
-* European Distributed Institute of Taxonomy 
+* European Distributed Institute of Taxonomy
 * http://www.e-taxonomy.eu
-* 
+*
 * The contents of this file are subject to the Mozilla Public License Version 1.1
 * See LICENSE.TXT at the top of this package for the full license terms.
 */
 
 package eu.etaxonomy.cdm.model.view;
 
+
+import java.util.HashSet;
+import java.util.Set;
+
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Transient;
 
 import org.apache.log4j.Logger;
 import org.hibernate.annotations.Cascade;
@@ -18,10 +27,6 @@ import eu.etaxonomy.cdm.model.common.CdmBase;
 import eu.etaxonomy.cdm.model.common.ICdmBase;
 import eu.etaxonomy.cdm.model.common.IReferencedEntity;
 import eu.etaxonomy.cdm.model.reference.Reference;
-
-import java.util.*;
-
-import javax.persistence.*;
 
 /**
  * use ARCHIVE view/dataset to maintain an archive. All members of that view will
@@ -34,23 +39,23 @@ import javax.persistence.*;
 public class View extends CdmBase implements IReferencedEntity{
 	private static final long serialVersionUID = 3668860188614455213L;
 	private static final Logger logger = Logger.getLogger(View.class);
-	
+
 	private String name;
 	private String description;
-	
+
 	@ManyToOne(fetch = FetchType.LAZY)
 	@Cascade(CascadeType.SAVE_UPDATE)
 	private Reference<?> reference;
-	
+
 	@OneToMany(fetch = FetchType.LAZY)
-	private Set<View> superViews = new HashSet<View>();
-	
+	private final Set<View> superViews = new HashSet<View>();
+
 	@Transient
-	private Set<CdmBase> members = new HashSet<CdmBase>();
-	
+	private final Set<CdmBase> members = new HashSet<CdmBase>();
+
 	@Transient
-	private Set<CdmBase> nonMembers = new HashSet<CdmBase>();
-	
+	private final Set<CdmBase> nonMembers = new HashSet<CdmBase>();
+
 	public String getName(){
 		logger.debug("getName");
 		return this.name;
@@ -62,12 +67,13 @@ public class View extends CdmBase implements IReferencedEntity{
 	public String getDescription(){
 		return this.description;
 	}
-	
+
 	public void setDescription(String description){
 		this.description = description;
 	}
 
-	@Transient
+	@Override
+    @Transient
 	public Reference getCitation() {
 		return getReference();
 	}
@@ -79,7 +85,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	public void setReference(Reference reference) {
 		this.reference = reference;
 	}
-	
+
 	public Set<View> getSuperViews() {
 		return superViews;
 	}
@@ -90,7 +96,7 @@ public class View extends CdmBase implements IReferencedEntity{
 	public void removeSuperView(View superView) {
 		this.superViews.remove(superView);
 	}
-	
+
 	public Set<CdmBase> getMembers() {
 		return members;
 	}
