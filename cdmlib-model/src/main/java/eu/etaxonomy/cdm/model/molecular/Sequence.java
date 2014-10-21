@@ -183,6 +183,14 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		result.getConsensusSequence().setLength(length);
 		return result;
 	}
+	
+	public static Sequence NewInstance(DnaSample dnaSample, String consensusSequence, Integer length){
+		Sequence result = NewInstance(consensusSequence);
+		result.getConsensusSequence().setLength(length);
+		dnaSample.addSequence(result);
+		
+		return result;
+	}
 //*********************** CONSTRUCTOR ****************************************************/
 
 	protected Sequence() {}
@@ -197,12 +205,16 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 		return dnaSample;
 	}
 
-	//TODO bidirectionality??
 	/**
+	 * To be called only from {@link DnaSample#addSequence(Sequence)}
 	 * @see #getDnaSample()
 	 */
-	private void setDnaSample(DnaSample dnaSample) {
+	//TODO implement full bidirectionality
+	protected void setDnaSample(DnaSample dnaSample) {
 		this.dnaSample = dnaSample;
+		if (!dnaSample.getSequences().contains(this)){
+			throw new RuntimeException("Don't use DNA setter");
+		}
 	}
 
 	/**

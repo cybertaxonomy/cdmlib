@@ -114,12 +114,19 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	}
 
 	public void addSequence(Sequence sequence) {
+		if (sequence.getDnaSample() != null){
+			sequence.getDnaSample().removeSequence(sequence);
+		}
 		this.sequences.add(sequence);
+		sequence.setDnaSample(this);
 	}
 
 	public void removeSequence(Sequence sequence) {
+		sequence.setDnaSample(null);
 		this.sequences.remove(sequence);
 	}
+	
+	
 	
 	//amplifications
 	public Set<Amplification> getAmplifications() {
