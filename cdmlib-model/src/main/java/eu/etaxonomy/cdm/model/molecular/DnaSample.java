@@ -75,6 +75,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public static DnaSample NewInstance(){
 		return new DnaSample();
 	}
+	
 
 // ************** ATTRIBUTES ****************************/	
 	
@@ -112,7 +113,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	/**
 	 * Constructor
 	 */
-	private DnaSample() {
+	protected DnaSample() {  //protected for Javassist, otherwise private
 		super(SpecimenOrObservationType.DnaSample);
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
 	}
@@ -209,7 +210,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 		//sequenceSet
 		result.sequences = new HashSet<Sequence>();
 		for(Sequence sequence : this.sequences) {
-			result.addSequence(sequence);
+			result.addSequence((Sequence)sequence.clone());
 		}
 		//no changes to: bankNumber
 		return result;

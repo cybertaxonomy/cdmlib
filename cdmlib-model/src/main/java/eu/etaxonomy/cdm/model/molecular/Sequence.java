@@ -212,7 +212,7 @@ public class Sequence extends AnnotatableEntity implements Cloneable{
 	//TODO implement full bidirectionality
 	protected void setDnaSample(DnaSample dnaSample) {
 		this.dnaSample = dnaSample;
-		if (!dnaSample.getSequences().contains(this)){
+		if (dnaSample != null && !dnaSample.getSequences().contains(this)){
 			throw new RuntimeException("Don't use DNA setter");
 		}
 	}
