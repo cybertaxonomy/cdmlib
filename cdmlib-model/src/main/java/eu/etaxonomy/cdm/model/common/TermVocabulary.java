@@ -92,6 +92,10 @@ public class TermVocabulary<T extends DefinedTermBase> extends TermBase implemen
 		return new TermVocabulary(type);
 	}
 	
+	public static <T extends DefinedTermBase<T>> TermVocabulary<T> NewInstance(TermType type, Class<T> clazz){
+		return new TermVocabulary<T>(type);
+	}
+	
 	public static TermVocabulary NewInstance(TermType type, String description, String label, String abbrev, URI termSourceUri){
 		return new TermVocabulary(type, description, label, abbrev, termSourceUri);
 	}
