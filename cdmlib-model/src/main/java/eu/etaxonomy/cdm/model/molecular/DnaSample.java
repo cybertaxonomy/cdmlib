@@ -72,6 +72,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	public static DnaSample NewInstance(){
 		return new DnaSample();
 	}
+	
 
 // ************** ATTRIBUTES ****************************/	
 	
@@ -101,7 +102,7 @@ public class DnaSample extends DerivedUnit implements Cloneable {
 	/**
 	 * Constructor
 	 */
-	private DnaSample() {
+	protected DnaSample() {  //protected for Javassist, otherwise private
 		super(SpecimenOrObservationType.DnaSample);
 		this.cacheStrategy = new IdentifiableEntityDefaultCacheStrategy<DerivedUnit>();
 	}
