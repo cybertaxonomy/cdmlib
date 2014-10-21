@@ -96,6 +96,15 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     public List<Identifier> getIdentifiers();
 
     /**
+     * Create and add a new identifier.
+     * @see #getIdentifiers()
+     * @param identifier
+     * @param identifierType
+     * @return
+     */
+    public Identifier addIdentifier(String identifier, DefinedTerm identifierType);
+    
+    /**
      * @see #getIdentifiers()
      * @param identifier
      */
@@ -104,6 +113,7 @@ public interface IIdentifiableEntity extends ISourceable<IdentifiableSource>, IA
     /**
      * Adds an identifier at the given position. For use of 
      * <code>index</code> see {@link List#add(int, Object)} and {@link#getIdentifiers()}
+     * @see #getIdentifiers()
      * @param index the list index 
      * @param identifier the identifier
      */
