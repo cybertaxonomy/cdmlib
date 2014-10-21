@@ -271,12 +271,14 @@ public class TableCreator extends AuditedSchemaUpdaterStepBase<TableCreator> imp
 	private boolean createForeignKeys(String tableName, boolean isAudit, ICdmDataSource datasource, IProgressMonitor monitor, CaseType caseType) throws SQLException {
 		boolean result = true;
 		if (includeCdmBaseAttributes){
-			String attribute = "updatedby";
-			String referencedTable = "UserAccount";
-			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+			if (! this.excludeVersionableAttributes){
+				String attribute = "updatedby";
+				String referencedTable = "UserAccount";
+				result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);
+			}
 			
-			attribute = "createdby";
-			referencedTable = "UserAccount";
+			String attribute = "createdby";
+			String referencedTable = "UserAccount";
 			result &= makeForeignKey(tableName, datasource, monitor, attribute, referencedTable, caseType);			
 		
 		}

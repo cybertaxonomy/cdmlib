@@ -55,7 +55,7 @@ public class UsernameConstraintUpdater extends SchemaUpdaterStepBase<UsernameCon
 	
 	private boolean createUuidConstraint(ICdmDataSource datasource, CaseType caseType) {
 		try {
-			String updateQuery = getCreateQuery(datasource, caseType, tableName, "_UniqueKey", "uuid");
+			String updateQuery = getCreateQuery(datasource, caseType, tableName, tableName + "_UniqueKey", "uuid");
 			datasource.executeUpdate(updateQuery);
 			return true;
 		} catch (Exception e) {
